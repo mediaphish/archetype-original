@@ -5,8 +5,16 @@ import Playbooks from "./components/Playbooks.jsx";
 import Speaking from "./components/Speaking.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
+import ChatApp from "./app/ChatApp.jsx";
 
 export default function App() {
+  // Simple routing based on pathname
+  const currentPath = window.location.pathname;
+  
+  if (currentPath === '/app' || currentPath.startsWith('/app/')) {
+    return <ChatApp />;
+  }
+
   return (
     <main>
       <Hero />
