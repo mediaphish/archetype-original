@@ -1,27 +1,46 @@
-// Dark hours: 6:00pm–10:00am CST
-const TZ = "America/Chicago";
-const START_HOUR = 18; // inclusive
-const END_HOUR = 10;   // exclusive
+// src/app/utils/darkHours.js
 
-export function cstNow() {
-  // Return a Date object that represents current time, but we'll always interpret in CST for logic/formatting.
-  return new Date();
+/**
+ * Check if current time is within dark hours (6 PM - 10 AM CST)
+ * @returns {boolean} true if within dark hours, false otherwise
+ */
+export function isDarkHours() {
+  const now = new Date();
+  
+  // Convert to CST (America/Chicago timezone)
+  const cstTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Chicago"}));
+  
+  const hour = cstTime.getHours();
+  
+  // Dark hours: 6 PM (18:00) to 10 AM (10:00) next day
+  // This means 18:00-23:59 and 00:00-09:59
+  return hour >= 18 || hour < 10;
 }
 
-export function isDarkHours(date) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    hourCycle: "h23",
-    timeZone: TZ,
-    hour: "2-digit"
-  }).formatToParts(date);
-  const hour = Number(parts.find((p) => p.type === "hour")?.value || "0");
-  return hour >= START_HOUR || hour < END_HOUR;
-}
-
-export function fmtCST(date) {
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: TZ,
+/**
+ * Get the next available time for live handoffs (10 AM CST)
+ * @returns {string} formatted time string
+ */
+export function getNextAvailableTime() {
+  const now = new Date();
+  const cstTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Chicago"}));
+  
+  // Set to next 10 AM CST
+  const nextAvailable = new Date(cstTime);
+  nextAvailable.setHours(10, 0, 0, 0);
+  
+  // If it's already past 10 AM today, set to 10 AM tomorrow
+  if (cstTime.getHours() >= 10) {
+    nextAvailable.setDate(nextAvailable.getDate() + 1);
+  }
+  
+  return nextAvailable.toLocaleString("en-US", {
+    timeZone: "America/Chicago",
+    weekday: "long",
+    month: "long",
+    day: "numeric",
     hour: "numeric",
-    minute: "2-digit"
-  }).format(date);
+    minute: "2-digit",
+    timeZoneName: "short"
+  });
 }
