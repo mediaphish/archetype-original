@@ -1,17 +1,19 @@
-import React from "react";
-import { isDarkHours, cstNow, fmtCST } from "../utils/darkHours.js";
+// src/app/components/DarkHoursBanner.jsx
+import React from 'react';
+import { isDarkHours, getNextAvailableTime } from '../utils/darkHours.js';
 
 export default function DarkHoursBanner() {
-  const now = cstNow();
-  const dark = isDarkHours(now);
-  if (!dark) return null;
-
+  const isDark = isDarkHours();
+  
+  if (!isDark) {
+    return null;
+  }
+  
   return (
-    <div className="bg-yellow-50 border-b border-yellow-200">
-      <div className="container py-3 text-sm text-yellow-900">
-        <strong>Heads up:</strong> Live handoffs resume at <strong>10:00am CST</strong>.
-        It’s currently {fmtCST(now)}.
-      </div>
+    <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-3 text-center">
+      <p className="text-sm text-yellow-800">
+        <span className="font-medium">Heads up:</span> Live handoffs resume at 10:00 am CST.
+      </p>
     </div>
   );
 }

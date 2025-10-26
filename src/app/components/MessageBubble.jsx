@@ -1,15 +1,17 @@
-import React from "react";
+// src/app/components/MessageBubble.jsx
+import React from 'react';
 
-export default function MessageBubble({ role, text }) {
-  const isUser = role === "user";
+export default function MessageBubble({ message, isUser = false }) {
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
       <div
-        className={`max-w-[85%] rounded-2xl px-4 py-3 border ${
-          isUser ? "bg-black text-white border-black" : "bg-white text-slate-900 border-slate-200"
+        className={`max-w-xs sm:max-w-md px-4 py-2 rounded-lg ${
+          isUser
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-100 text-gray-800'
         }`}
       >
-        <div className="whitespace-pre-wrap leading-relaxed">{text}</div>
+        <p className="text-sm whitespace-pre-wrap">{message}</p>
       </div>
     </div>
   );
