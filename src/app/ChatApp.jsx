@@ -1,171 +1,158 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import DarkHoursBanner from "./components/DarkHoursBanner.jsx";
-import QuickPrompts from "./components/QuickPrompts.jsx";
-import MessageBubble from "./components/MessageBubble.jsx";
-import EscalationButton from "./components/EscalationButton.jsx";
-import { isDarkHours, cstNow } from "./utils/darkHours.js";
+// src/app/ChatApp.jsx
+import React, { useState, useRef, useEffect } from 'react';
+import DarkHoursBanner from './components/DarkHoursBanner.jsx';
+import QuickPrompts from './components/QuickPrompts.jsx';
+import MessageBubble from './components/MessageBubble.jsx';
+import EscalationButton from './components/EscalationButton.jsx';
 
 export default function ChatApp() {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "Welcome to Archetype Original. How can I help? Choose a quick prompt or type your question.",
-      ts: Date.now(),
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [escalationOffered, setEscalationOffered] = useState(false); // toggled by assistant (later)
-  const endRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [showEscalation, setShowEscalation] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const dark = useMemo(() => isDarkHours(cstNow()), []);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    scrollToBottom();
+  }, [messages]);
 
-  async function send(text) {
-    const content = (text ?? input).trim();
-    if (!content || loading) return;
-    const userMsg = { role: "user", content, ts: Date.now() };
-    setMessages((m) => [...m, userMsg]);
-    setInput("");
-    setLoading(true);
+  const handleSendMessage = async (messageText = inputValue) => {
+    if (!messageText.trim()) return;
+
+    const userMessage = { text: messageText, isUser: true };
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+
+    // Check if message contains escalation keywords
+    const escalationKeywords = ['book', 'workshop', 'keynote', 'schedule', 'meeting'];
+    const shouldShowEscalation = escalationKeywords.some(keyword => 
+      messageText.toLowerCase().includes(keyword)
+    );
+    
+    if (shouldShowEscalation) {
+      setShowEscalation(true);
+    }
+
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...messages, userMsg].map(({ role, content }) => ({ role, content })),
-          meta: { source: "ao-app", darkHours: dark },
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: messageText }),
+      });
+
+      const data = await response.json();
+      const assistantMessage = { text: data.response, isUser: false };
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage = { 
+        text: 'Sorry, I encountered an error. Please try again.', 
+        isUser: false 
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    }
+  };
+
+  const handleQuickPrompt = (prompt) => {
+    handleSendMessage(prompt);
+  };
+
+  const handleEscalate = async () => {
+    try {
+      const response = await fetch('/api/handoff', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          message: 'User requested live handoff',
+          timestamp: new Date().toISOString()
         }),
       });
-      const data = await res.json();
-      if (res.ok && data?.reply) {
-        setMessages((m) => [...m, { role: "assistant", content: data.reply, ts: Date.now() }]);
-        if (data?.escalationOffered) setEscalationOffered(true);
-      } else {
-        setMessages((m) => [
-          ...m,
-          {
-            role: "assistant",
-            content:
-              "I hit a snag replying. You can try again, or request a human handoff and I’ll queue it.",
-            ts: Date.now(),
-          },
-        ]);
-        setEscalationOffered(true);
-      }
-    } catch {
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: "Network issue—please try again.", ts: Date.now() },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  }
 
-  async function requestHandoff() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/handoff", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          summary: "User requested escalation from /app shell.",
-          lastMessage: messages[messages.length - 1]?.content || "",
-          darkHours: dark,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessages((m) => [
-          ...m,
-          {
-            role: "assistant",
-            content: dark
-              ? "Got it. I’ll queue your handoff and our team will follow up after 10:00am CST."
-              : "Got it. I’ll notify our team right now.",
-            ts: Date.now(),
-          },
-        ]);
-      } else {
-        setMessages((m) => [
-          ...m,
-          {
-            role: "assistant",
-            content: "Couldn’t create a handoff just now. Please email us via the contact form.",
-            ts: Date.now(),
-          },
-        ]);
-      }
-    } catch {
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: "Network issue—try again shortly.", ts: Date.now() },
-      ]);
-    } finally {
-      setLoading(false);
+      const data = await response.json();
+      
+      const handoffMessage = { 
+        text: data.message || 'Your handoff request has been submitted. We\'ll be in touch soon!', 
+        isUser: false 
+      };
+      setMessages(prev => [...prev, handoffMessage]);
+      setShowEscalation(false);
+    } catch (error) {
+      console.error('Error submitting handoff:', error);
+      const errorMessage = { 
+        text: 'Sorry, there was an error submitting your handoff request. Please try again.', 
+        isUser: false 
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
-  }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b">
-        <div className="container py-4 flex items-center justify-between">
-          <a href="/" className="font-semibold">Archetype Original</a>
-          <nav className="text-sm flex items-center gap-4">
-            <a className="underline" href="/">Home</a>
-            <a className="underline" href="#contact">Contact</a>
-          </nav>
-        </div>
-      </header>
-
+    <div className="h-screen flex flex-col bg-white">
       <DarkHoursBanner />
+      
+      <div className="flex-1 flex flex-col">
+        <div className="p-4 border-b border-gray-200">
+          <h1 className="text-xl font-semibold text-gray-900">Archetype Original</h1>
+          <p className="text-sm text-gray-600">How can I help you today?</p>
+        </div>
 
-      <main className="container py-8">
-        <div className="max-w-3xl mx-auto">
-          <QuickPrompts onPick={send} />
+        <QuickPrompts onPromptSelect={handleQuickPrompt} />
 
-          <div className="mt-6 space-y-4">
-            {messages.map((m, i) => (
-              <MessageBubble key={i} role={m.role} text={m.content} />
-            ))}
-            {loading && (
-              <div className="text-sm text-slate-500 animate-pulse">Thinking…</div>
-            )}
-            <div ref={endRef} />
-          </div>
-
-          <form
-            className="mt-6 flex items-center gap-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              send();
-            }}
-          >
-            <input
-              className="input flex-1"
-              placeholder="Ask anything about business growth, leadership, culture, or Bart…"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={loading}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.length === 0 && (
+            <div className="text-center text-gray-500 py-8">
+              <p>Start a conversation by typing a message or selecting a quick prompt above.</p>
+            </div>
+          )}
+          
+          {messages.map((message, index) => (
+            <MessageBubble
+              key={index}
+              message={message.text}
+              isUser={message.isUser}
             />
-            <button className="btn btn-primary" disabled={loading || !input.trim()} type="submit">
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {showEscalation && (
+          <EscalationButton onEscalate={handleEscalate} />
+        )}
+
+        <div className="p-4 border-t border-gray-200">
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type your message..."
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              onClick={() => handleSendMessage()}
+              disabled={!inputValue.trim()}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
+            >
               Send
             </button>
-          </form>
-
-          <div className="mt-4">
-            <EscalationButton
-              visible={escalationOffered}
-              onClick={requestHandoff}
-              disabled={loading}
-            />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
