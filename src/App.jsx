@@ -1,12 +1,23 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Hero from "./components/Hero.jsx";
 import WhatWeDo from "./components/WhatWeDo.jsx";
 import Playbooks from "./components/Playbooks.jsx";
 import Speaking from "./components/Speaking.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
+import ChatApp from "./app/ChatApp.jsx";
 
 export default function App() {
+  const isApp = useMemo(() => {
+    // Support both /app and /app/ paths
+    const path = typeof window !== "undefined" ? window.location.pathname : "/";
+    return path === "/app" || path.startsWith("/app/");
+  }, []);
+
+  if (isApp) {
+    return <ChatApp />;
+  }
+
   return (
     <main>
       <Hero />
@@ -21,6 +32,7 @@ export default function App() {
           <nav className="text-sm flex items-center gap-4">
             <a className="underline" href="https://scoreboardleadership.com" rel="noreferrer">Scoreboard Leadership</a>
             <a className="underline" href="#contact">Contact</a>
+            <a className="underline" href="/app">/app</a>
           </nav>
         </div>
       </footer>
