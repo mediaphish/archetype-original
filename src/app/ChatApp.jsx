@@ -26,28 +26,32 @@ export default function ChatApp() {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
 
-    // Check if message contains escalation keywords
-    const escalationKeywords = ['book', 'workshop', 'keynote', 'schedule', 'meeting'];
-    const shouldShowEscalation = escalationKeywords.some(keyword => 
-      messageText.toLowerCase().includes(keyword)
-    );
-    
-    if (shouldShowEscalation) {
-      setShowEscalation(true);
-    }
-
     try {
+      // Build conversation history for context
+      const conversationHistory = messages.map(msg => ({
+        role: msg.isUser ? 'user' : 'assistant',
+        content: msg.text
+      }));
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: messageText }),
+        body: JSON.stringify({ 
+          message: messageText,
+          conversationHistory 
+        }),
       });
 
       const data = await response.json();
       const assistantMessage = { text: data.response, isUser: false };
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Show escalation button if triggered
+      if (data.shouldEscalate) {
+        setShowEscalation(true);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage = { 
@@ -62,7 +66,7 @@ export default function ChatApp() {
     handleSendMessage(prompt);
   };
 
-  const handleEscalate = async () => {
+  const handleEscalate = async (triageAnswers, conversationHistory) => {
     try {
       const response = await fetch('/api/handoff', {
         method: 'POST',
@@ -71,7 +75,9 @@ export default function ChatApp() {
         },
         body: JSON.stringify({ 
           message: 'User requested live handoff',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          conversationHistory,
+          triageAnswers
         }),
       });
 
@@ -101,58 +107,66 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white">
-      <DarkHoursBanner />
-      
-      <div className="flex-1 flex flex-col">
-        <div className="p-4 border-b border-gray-200">
-          <h1 className="text-xl font-semibold text-gray-900">Archetype Original</h1>
-          <p className="text-sm text-gray-600">How can I help you today?</p>
-        </div>
-
-        <QuickPrompts onPromptSelect={handleQuickPrompt} />
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 && (
-            <div className="text-center text-gray-500 py-8">
-              <p>Start a conversation by typing a message or selecting a quick prompt above.</p>
-            </div>
-          )}
+    <section className="section bg-slate-50">
+      <div className="container">
+        <div className="card max-w-4xl mx-auto">
+          <DarkHoursBanner />
           
-          {messages.map((message, index) => (
-            <MessageBubble
-              key={index}
-              message={message.text}
-              isUser={message.isUser}
-            />
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
+          <div className="p-6">
+            <div className="text-center mb-6">
+              <h2 className="h2">Let's Talk</h2>
+              <p className="p mt-2">How can I help you today?</p>
+            </div>
 
-        {showEscalation && (
-          <EscalationButton onEscalate={handleEscalate} />
-        )}
+            <QuickPrompts onPromptSelect={handleQuickPrompt} />
 
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <button
-              onClick={() => handleSendMessage()}
-              disabled={!inputValue.trim()}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
-            >
-              Send
-            </button>
+            <div className="h-96 overflow-y-auto p-4 space-y-4 bg-slate-50 rounded-xl mb-4">
+              {messages.length === 0 && (
+                <div className="text-center text-slate-500 py-8">
+                  <p>Start a conversation by typing a message or selecting a quick prompt above.</p>
+                </div>
+              )}
+              
+              {messages.map((message, index) => (
+                <MessageBubble
+                  key={index}
+                  message={message.text}
+                  isUser={message.isUser}
+                />
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {showEscalation && (
+              <EscalationButton 
+                onEscalate={handleEscalate} 
+                conversationHistory={messages.map(msg => ({
+                  role: msg.isUser ? 'user' : 'assistant',
+                  content: msg.text
+                }))}
+              />
+            )}
+
+            <div className="flex space-x-3">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type your message..."
+                className="input flex-1"
+              />
+              <button
+                onClick={() => handleSendMessage()}
+                disabled={!inputValue.trim()}
+                className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Send
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
