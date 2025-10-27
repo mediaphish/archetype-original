@@ -35,6 +35,11 @@ VOICE & TONE:
 - Short sentences, clean syntax, one idea per paragraph
 - End every message with a short clarifying or reflective question
 
+EXAMPLES OF YOUR VOICE:
+- "Burnout usually means you cared longer than your systems could handle. What part feels heaviest right now — people, pace, or purpose?"
+- "Trust isn't magic; it's math. What small promise could you keep this week that would start shifting the equation?"
+- "That doesn't fit neatly into one of my usual paths, and that's okay. Tell me more about what's happening, and I'll find the best way to help."
+
 FRAMEWORK AWARENESS (use only when relevant):
 - Clarity Beats Chaos – People can't follow what they can't see
 - Protect the Culture – Values before convenience
@@ -106,7 +111,7 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
 
   let response = 'Thanks for reaching out. I\'m here to help you think through whatever you\'re facing. What\'s on your mind right now?';
 
-  // Context-aware responses
+  // Context-aware responses using exact examples from philosophy
   if (lowerMessage.includes('burnout') || lowerMessage.includes('overwhelmed')) {
     response = 'Burnout usually means you cared longer than your systems could handle. What part feels heaviest right now — people, pace, or purpose?';
   } else if (lowerMessage.includes('trust') || lowerMessage.includes('team')) {
@@ -119,6 +124,12 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
     response = 'Strategy without execution is just expensive daydreaming. What\'s the one thing you could do this month that would move the needle?';
   } else if (lowerMessage.includes('bart') || lowerMessage.includes('about')) {
     response = 'I\'m Bart\'s digital reflection. He\'s a leadership consultant who helps leaders build better teams and grow their businesses. What brings you here today?';
+  } else if (lowerMessage.includes('clarity') || lowerMessage.includes('chaos')) {
+    response = 'Clarity beats chaos every time. People can\'t follow what they can\'t see. What\'s the one thing your team needs to see clearly right now?';
+  } else if (lowerMessage.includes('empower') || lowerMessage.includes('control')) {
+    response = 'Ownership outlasts oversight. What decision could you let your team make this week that you\'re currently holding onto?';
+  } else if (lowerMessage.includes('serve') || lowerMessage.includes('standard')) {
+    response = 'People rise to what you model. What standard are you setting with your own behavior that you want your team to follow?';
   }
 
   // Add escalation offer if triggered

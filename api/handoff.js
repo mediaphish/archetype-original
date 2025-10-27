@@ -30,13 +30,8 @@ export default async function handler(req, res) {
     isDarkHours
   };
 
-  // Log the handoff request
+  // Log the handoff request (will be replaced with Supabase/Slack when ready)
   console.log('Handoff request received:', handoffBrief);
-
-  // In Phase 3+, this would:
-  // 1. Save to Supabase database
-  // 2. Send Slack notification (if not dark hours)
-  // 3. Send confirmation email via Resend
 
   if (isDarkHours) {
     // Queue for 10 AM delivery
