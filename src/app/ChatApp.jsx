@@ -10,26 +10,12 @@ export default function ChatApp() {
   const [conversationState, setConversationState] = useState('greeting');
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [showGreeting, setShowGreeting] = useState(false);
-  const [showCursor, setShowCursor] = useState(false);
-  const [showDots, setShowDots] = useState(false);
   const [isAbusive, setIsAbusive] = useState(false);
 
   // Simple delayed greeting sequence
   useEffect(() => {
-    // Show flashing cursor after 1 second
-    const cursorTimer = setTimeout(() => {
-      setShowCursor(true);
-    }, 1000);
-
-    // Show dots after 2 seconds
-    const dotsTimer = setTimeout(() => {
-      setShowCursor(false);
-      setShowDots(true);
-    }, 2000);
-
-    // Show greeting after 3.5 seconds
+    // Show greeting after 2 seconds
     const greetingTimer = setTimeout(() => {
-      setShowDots(false);
       setShowGreeting(true);
       const greetingMessage = {
         text: "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.",
@@ -37,11 +23,9 @@ export default function ChatApp() {
         showButtons: false
       };
       setMessages([greetingMessage]);
-    }, 3500);
+    }, 2000);
 
     return () => {
-      clearTimeout(cursorTimer);
-      clearTimeout(dotsTimer);
       clearTimeout(greetingTimer);
     };
   }, []);
@@ -62,6 +46,42 @@ export default function ChatApp() {
   const detectRelevantTopics = (message) => {
     const relevantKeywords = ['building', 'company', 'business', 'leadership', 'team', 'management', 'startup', 'growth', 'strategy', 'culture', 'clarity', 'mentor', 'consulting', 'help', 'advice', 'guidance'];
     return relevantKeywords.some(keyword => message.toLowerCase().includes(keyword));
+  };
+
+  const detectJourneyStage = (message) => {
+    const messageLower = message.toLowerCase();
+    
+    // Check for specific journey indicators
+    if (messageLower.includes('stepping into leadership') || 
+        messageLower.includes('new leader') || 
+        messageLower.includes('emerging leader') ||
+        messageLower.includes('first leadership role')) {
+      return 'leading';
+    }
+    
+    if (messageLower.includes('building') || 
+        messageLower.includes('leading a company') || 
+        messageLower.includes('founder') ||
+        messageLower.includes('ceo') ||
+        messageLower.includes('executive')) {
+      return 'building';
+    }
+    
+    if (messageLower.includes('clarity') || 
+        messageLower.includes('transition') || 
+        messageLower.includes('purpose') ||
+        messageLower.includes('direction') ||
+        messageLower.includes('lost')) {
+      return 'clarity';
+    }
+    
+    if (messageLower.includes('learn about bart') || 
+        messageLower.includes('who is bart') || 
+        messageLower.includes('tell me about bart')) {
+      return 'learn';
+    }
+    
+    return null;
   };
 
   const handleSendMessage = async (messageText = inputValue) => {
@@ -114,20 +134,30 @@ export default function ChatApp() {
 
     // Check if this should trigger structured conversation
     if (detectRelevantTopics(messageText)) {
-      const pathMessage = {
-        text: "That sounds like something I can help with. Where are you in your journey right now?",
-        isUser: false,
-        showButtons: true,
-        buttonOptions: [
-          { text: "I'm building or leading a company", value: "building" },
-          { text: "I'm stepping into leadership", value: "leading" },
-          { text: "I want personal or professional clarity", value: "clarity" },
-          { text: "I just want to learn more about Bart", value: "learn" }
-        ]
-      };
-      setMessages(prev => [...prev, pathMessage]);
-      setConversationState('path_selection');
-      return;
+      // First check if they've already indicated their journey stage
+      const journeyStage = detectJourneyStage(messageText);
+      
+      if (journeyStage) {
+        // They've already told us their stage - respond directly
+        handleStructuredResponse(journeyStage);
+        return;
+      } else {
+        // They haven't indicated stage yet - ask for clarification
+        const pathMessage = {
+          text: "That sounds like something I can help with. Where are you in your journey right now?",
+          isUser: false,
+          showButtons: true,
+          buttonOptions: [
+            { text: "I'm building or leading a company", value: "building" },
+            { text: "I'm stepping into leadership", value: "leading" },
+            { text: "I want personal or professional clarity", value: "clarity" },
+            { text: "I just want to learn more about Bart", value: "learn" }
+          ]
+        };
+        setMessages(prev => [...prev, pathMessage]);
+        setConversationState('path_selection');
+        return;
+      }
     }
 
     // Default to AI conversation for other topics
@@ -340,30 +370,9 @@ export default function ChatApp() {
         <DarkHoursBanner />
 
         <div className="text-center mb-8">
-          {/* Loading Animation */}
-          {messages.length === 0 && !showGreeting && (
-            <div className="mb-8">
-              {showCursor && (
-                <div className="text-5xl text-black mb-4">
-                  <span className="animate-pulse">|</span>
-                </div>
-              )}
-              {showDots && (
-                <div className="text-5xl text-black mb-4">
-                  <span className="animate-pulse">...</span>
-                </div>
-              )}
-              {!showCursor && !showDots && (
-                <div className="text-5xl text-gray-400 mb-4">
-                  <span className="animate-pulse">...</span>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Messages */}
           {messages.length > 0 && (
-            <div className="space-y-6 max-w-2xl mx-auto">
+            <div className="space-y-6 max-w-2xl mx-auto max-h-96 overflow-y-auto">
               {messages.map((message, index) => (
                 <MessageBubble
                   key={index}
@@ -396,7 +405,7 @@ export default function ChatApp() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
+              placeholder="Tell me what's going on and let's see if I can help."
               className="flex-1 px-4 py-3 text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg"
             />
             <button
