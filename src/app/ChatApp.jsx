@@ -12,22 +12,15 @@ export default function ChatApp() {
   const [showGreeting, setShowGreeting] = useState(false);
   const [isAbusive, setIsAbusive] = useState(false);
 
-  // Simple delayed greeting sequence
+  // Show greeting immediately
   useEffect(() => {
-    // Show greeting after 2 seconds
-    const greetingTimer = setTimeout(() => {
-      setShowGreeting(true);
-      const greetingMessage = {
-        text: "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.",
-        isUser: false,
-        showButtons: false
-      };
-      setMessages([greetingMessage]);
-    }, 2000);
-
-    return () => {
-      clearTimeout(greetingTimer);
+    setShowGreeting(true);
+    const greetingMessage = {
+      text: "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.",
+      isUser: false,
+      showButtons: false
     };
+    setMessages([greetingMessage]);
   }, []);
 
   const detectAbuse = (message) => {
