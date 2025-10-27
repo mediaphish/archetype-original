@@ -2,9 +2,8 @@ import React from "react";
 
 export default function Hero() {
   return (
-    <header className="section">
-      <div className="container text-center">
-        <div className="badge mx-auto">Playbooks · Workshops · Speaking</div>
+    <header className="py-16">
+      <div className="container mx-auto px-4 text-center">
         <div className="mt-6 flex justify-center">
           <svg className="h-12 w-auto" viewBox="0 0 749.8 116.47" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -35,13 +34,6 @@ export default function Hero() {
             </g>
             <path className="cls-1" d="M25.8,116.47l33.09-49.17,33.09,49.17h25.8l-15.39-22.86c8.61-10.19,13.41-23.13,13.41-36.69C115.8,25.53,90.27,0,58.89,0S1.98,25.53,1.98,56.91c0,13.56,4.8,26.5,13.41,36.69L0,116.47h25.8ZM45.06,106.31l13.83-20.54,13.83,20.54h-27.65ZM58.89,21.4c19.58,0,35.51,15.93,35.51,35.51,0,6.32-1.67,12.42-4.76,17.76l-30.75-45.69-30.75,45.69c-3.08-5.33-4.76-11.44-4.76-17.76,0-19.58,15.93-35.51,35.51-35.51Z"/>
           </svg>
-        </div>
-        <p className="p mt-4 max-w-2xl mx-auto">
-          Build leaders worth following. Servant-led systems for clarity, culture, and compounding performance.
-        </p>
-        <div className="mt-8 flex items-center justify-center gap-3">
-          <a href="#playbooks" className="btn btn-primary">See Playbooks</a>
-          <a href="#contact" className="btn">Book Bart</a>
         </div>
       </div>
     </header>
