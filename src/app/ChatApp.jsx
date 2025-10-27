@@ -30,12 +30,28 @@ export default function ChatApp() {
     const greetingTimer = setTimeout(() => {
       setShowDots(false);
       setShowGreeting(true);
-      const greetingMessage = {
-        text: "Hi, I'm Archy.",
-        isUser: false,
-        showButtons: false
-      };
-      setMessages([greetingMessage]);
+      const greetingMessages = [
+        {
+          text: "Hi, I'm Archy.",
+          isUser: false,
+          showButtons: false
+        },
+        {
+          text: "I represent the work, philosophy, and experience of Bart Paden — a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure.\n\nThis isn't a coaching platform or corporate agency. It's the continuation of a real career — one built from the ground up through startups, software, fitness, and leadership teams that learned to thrive under pressure.\n\nBart calls it Archetype Original — because it's about rediscovering what's proven and building something new from it.",
+          isUser: false,
+          showButtons: false
+        },
+        {
+          text: "How would you like to explore this?",
+          isUser: false,
+          showButtons: true,
+          buttonOptions: [
+            { text: "Continue with AI conversation", value: "continue_ai" },
+            { text: "Go Analog - Browse traditional site", value: "go_analog" }
+          ]
+        }
+      ];
+      setMessages(greetingMessages);
     }, 3500);
 
     return () => {
@@ -482,7 +498,44 @@ export default function ChatApp() {
   };
 
   const handleButtonClick = (value) => {
-    if (value.startsWith('calendly_')) {
+    if (value === 'continue_ai') {
+      // Continue with AI conversation - show path selection
+      const userMessage = { text: "Continue with AI conversation", isUser: true };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const response = {
+        text: "Where are you in your own journey right now?",
+        isUser: false,
+        showButtons: true,
+        buttonOptions: [
+          { text: "I'm building or leading a company", value: "building" },
+          { text: "I'm stepping into leadership", value: "leading" },
+          { text: "I want personal or professional clarity", value: "clarity" },
+          { text: "I just want to learn more about Bart", value: "learn" }
+        ]
+      };
+      setMessages(prev => [...prev, response]);
+      setConversationState('path_selection');
+    } else if (value === 'go_analog') {
+      // Go Analog - scroll to traditional site sections
+      const userMessage = { text: "Go Analog - Browse traditional site", isUser: true };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const response = {
+        text: "Perfect! I'll scroll you down to explore the traditional site structure. You can always come back here to chat with me anytime.",
+        isUser: false,
+        showButtons: false
+      };
+      setMessages(prev => [...prev, response]);
+      
+      // Scroll to About section
+      setTimeout(() => {
+        const aboutSection = document.getElementById('about');
+        if (aboutSection) {
+          aboutSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 1000);
+    } else if (value.startsWith('calendly_')) {
       // Handle Calendly links
       const calendlyType = value.replace('calendly_', '');
       const calendlyUrl = process.env.REACT_APP_CALENDLY_URL || 'https://calendly.com/bartpaden';
@@ -583,48 +636,49 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="fixed inset-0 bg-white z-40 overflow-hidden">
-      <DarkHoursBanner />
+    <div className="py-16 bg-white">
+      <div className="max-w-4xl mx-auto px-4">
+        <DarkHoursBanner />
 
-      <div className="h-full flex flex-col">
-        {/* Chat Messages Area */}
-        <div className="flex-1 overflow-y-auto px-6 py-8 space-y-6" style={{scrollbarWidth: 'thin', scrollbarColor: '#000 #fff'}}>
+        <div className="text-center mb-8">
           {messages.length === 0 && !showGreeting && (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                {showCursor && (
-                  <div className="text-2xl text-black">
-                    <span className="animate-pulse">|</span>
-                  </div>
-                )}
-                {showDots && (
-                  <div className="text-2xl text-black">
-                    <span className="animate-pulse">...</span>
-                  </div>
-                )}
-                {!showCursor && !showDots && (
-                  <div className="text-2xl text-gray-400">
-                    <span className="animate-pulse">...</span>
-                  </div>
-                )}
-              </div>
+            <div className="mb-8">
+              {showCursor && (
+                <div className="text-4xl text-black mb-4">
+                  <span className="animate-pulse">|</span>
+                </div>
+              )}
+              {showDots && (
+                <div className="text-4xl text-black mb-4">
+                  <span className="animate-pulse">...</span>
+                </div>
+              )}
+              {!showCursor && !showDots && (
+                <div className="text-4xl text-gray-400 mb-4">
+                  <span className="animate-pulse">...</span>
+                </div>
+              )}
             </div>
           )}
 
-          {messages.map((message, index) => (
-            <MessageBubble
-              key={index}
-              message={message.text}
-              isUser={message.isUser}
-              showButtons={message.showButtons}
-              buttonOptions={message.buttonOptions}
-              onButtonClick={handleButtonClick}
-            />
-          ))}
+          {messages.length > 0 && (
+            <div className="space-y-6 max-w-2xl mx-auto">
+              {messages.map((message, index) => (
+                <MessageBubble
+                  key={index}
+                  message={message.text}
+                  isUser={message.isUser}
+                  showButtons={message.showButtons}
+                  buttonOptions={message.buttonOptions}
+                  onButtonClick={handleButtonClick}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-black bg-white px-6 py-4">
+        <div className="max-w-2xl mx-auto">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
@@ -642,7 +696,7 @@ export default function ChatApp() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              className="flex-1 px-4 py-3 border border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-400"
+              className="flex-1 px-4 py-3 border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-400"
             />
             <button
               onClick={() => handleSendMessage()}
