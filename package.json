@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 5173"
+    "preview": "vite preview --port 5173",
+    "build:index": "node scripts/build-index.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "gray-matter": "^4.0.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "resend": "3.4.0",
-    "@supabase/supabase-js": "^2.45.4"
+    "resend": "3.4.0"
   },
   "devDependencies": {
     "autoprefixer": "10.4.20",
