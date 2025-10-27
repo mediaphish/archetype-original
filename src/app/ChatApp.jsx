@@ -368,7 +368,7 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4">
         <DarkHoursBanner />
 
