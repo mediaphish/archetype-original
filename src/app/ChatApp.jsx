@@ -478,65 +478,60 @@ export default function ChatApp() {
   };
 
   return (
-    <section className="section bg-slate-50">
-      <div className="container">
-        <div className="card max-w-4xl mx-auto">
-          <DarkHoursBanner />
-          
-          <div className="p-6">
-            <div className="text-center mb-6">
-              <h2 className="h2">Let's Talk</h2>
-              <p className="p mt-2">How can I help you today?</p>
+    <section className="py-16 bg-white">
+      <div className="max-w-4xl mx-auto px-4">
+        <DarkHoursBanner />
+
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-black mb-2">Let's Talk</h2>
+          <p className="text-lg text-black">How can I help you today?</p>
+        </div>
+
+        <div className="h-96 overflow-y-auto space-y-6 mb-6" style={{scrollbarWidth: 'thin', scrollbarColor: '#000 #fff'}}>
+          {messages.length === 0 && (
+            <div className="text-center text-gray-500 py-8">
+              <p>Start a conversation by typing a message or selecting a quick prompt above.</p>
             </div>
+          )}
 
+          {messages.map((message, index) => (
+            <MessageBubble
+              key={index}
+              message={message.text}
+              isUser={message.isUser}
+              showButtons={message.showButtons}
+              buttonOptions={message.buttonOptions}
+              onButtonClick={handleButtonClick}
+            />
+          ))}
+        </div>
 
-            <div className="h-96 overflow-y-auto p-4 space-y-4 bg-slate-50 rounded-xl mb-4">
-              {messages.length === 0 && (
-                <div className="text-center text-slate-500 py-8">
-                  <p>Start a conversation by typing a message or selecting a quick prompt above.</p>
-                </div>
-              )}
-              
-              {messages.map((message, index) => (
-                <MessageBubble
-                  key={index}
-                  message={message.text}
-                  isUser={message.isUser}
-                  showButtons={message.showButtons}
-                  buttonOptions={message.buttonOptions}
-                  onButtonClick={handleButtonClick}
-                />
-              ))}
-            </div>
+        {showEscalation && (
+          <EscalationButton 
+            onEscalate={handleEscalate} 
+            conversationHistory={messages.map(msg => ({
+              role: msg.isUser ? 'user' : 'assistant',
+              content: msg.text
+            }))}
+          />
+        )}
 
-            {showEscalation && (
-              <EscalationButton 
-                onEscalate={handleEscalate} 
-                conversationHistory={messages.map(msg => ({
-                  role: msg.isUser ? 'user' : 'assistant',
-                  content: msg.text
-                }))}
-              />
-            )}
-
-            <div className="flex space-x-3">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
-                className="input flex-1"
-              />
-              <button
-                onClick={() => handleSendMessage()}
-                disabled={!inputValue.trim()}
-                className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Send
-              </button>
-            </div>
-          </div>
+        <div className="flex space-x-3">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message..."
+            className="flex-1 px-4 py-3 border border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-400"
+          />
+          <button
+            onClick={() => handleSendMessage()}
+            disabled={!inputValue.trim()}
+            className="bg-black text-white px-6 py-3 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Send
+          </button>
         </div>
       </div>
     </section>
