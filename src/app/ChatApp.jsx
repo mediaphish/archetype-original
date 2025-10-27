@@ -369,31 +369,33 @@ export default function ChatApp() {
 
   return (
     <div className="h-screen flex flex-col bg-white">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4 w-full">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4">
         <DarkHoursBanner />
 
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Messages Area - Scrollable when needed */}
+        <div className="flex-1 flex flex-col justify-center">
           {messages.length > 0 && (
-            <div className="space-y-6 max-w-2xl mx-auto py-8">
-              {messages.map((message, index) => (
-                <MessageBubble
-                  key={index}
-                  message={message.text}
-                  isUser={message.isUser}
-                  showButtons={message.showButtons}
-                  buttonOptions={message.buttonOptions}
-                  onButtonClick={handleButtonClick}
-                />
-              ))}
-              {/* Scroll target for auto-scroll */}
-              <div ref={messagesEndRef} />
+            <div className="max-h-full overflow-y-auto">
+              <div className="space-y-6 max-w-2xl mx-auto py-8">
+                {messages.map((message, index) => (
+                  <MessageBubble
+                    key={index}
+                    message={message.text}
+                    isUser={message.isUser}
+                    showButtons={message.showButtons}
+                    buttonOptions={message.buttonOptions}
+                    onButtonClick={handleButtonClick}
+                  />
+                ))}
+                {/* Scroll target for auto-scroll */}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
           )}
         </div>
 
-        {/* Input Area */}
-        <div className="max-w-2xl mx-auto w-full p-4 bg-white border-t border-gray-200">
+        {/* Input Area - Always visible above the fold */}
+        <div className="max-w-2xl mx-auto pb-8">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
