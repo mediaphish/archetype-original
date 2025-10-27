@@ -372,10 +372,10 @@ export default function ChatApp() {
       <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4 w-full">
         <DarkHoursBanner />
 
-        <div className="flex-1 flex flex-col justify-center">
-          {/* Messages */}
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto">
           {messages.length > 0 && (
-            <div className="space-y-6 max-w-2xl mx-auto flex-1 overflow-y-auto py-8">
+            <div className="space-y-6 max-w-2xl mx-auto py-8">
               {messages.map((message, index) => (
                 <MessageBubble
                   key={index}
@@ -393,7 +393,7 @@ export default function ChatApp() {
         </div>
 
         {/* Input Area */}
-        <div className="max-w-2xl mx-auto w-full pb-8">
+        <div className="max-w-2xl mx-auto w-full p-4 bg-white border-t border-gray-200">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
