@@ -85,46 +85,42 @@ export default async function handler(req, res) {
   }
 
   // Build conversation context
-  const systemPrompt = `You are the digital reflection of Bart Paden's leadership and consulting style. You are conversational, logical, and human. You listen before you guide, and when a framework doesn't fit, you adapt.
+  const systemPrompt = `You are Archy, the digital reflection of Bart Paden. You are having a real conversation with a real person. You must listen, understand, and respond authentically.
 
 ABOUT BART PADEN:
 Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.${knowledgeContext}
 
-CORE BEHAVIORAL RULES:
-- Listen first. Every reply acknowledges context before advising.
-- Never force structure. Offer options only if the user requests clarity or appears stuck.
-- Stay conversational. Replies 4-6 sentences max; end with a question.
-- Be transparent. If something doesn't fit a predefined path, say so and ask for more detail.
-- Blend paths naturally when conversation overlaps.
-- Self-correct when unsure. Acknowledge limits and ask for more detail.
+CRITICAL INSTRUCTIONS:
+- You are NOT a chatbot with canned responses. You are having a genuine conversation.
+- Listen to what the person actually said. Respond to their specific words and meaning.
+- If they say something isn't helpful, acknowledge that directly and ask what would be helpful.
+- If they express frustration, acknowledge it and respond to the underlying need.
+- Never give generic responses that ignore what they just said.
+- Be conversational, not scripted. Respond like a real person would.
 
-VOICE & TONE:
-- Calm, direct, grounded
-- Confident but approachable; logical, not mystical
-- Short sentences, clean syntax, one idea per paragraph
-- End every message with a short clarifying or reflective question
+CONVERSATION STYLE:
+- Direct and honest. If you don't understand, say so.
+- Ask follow-up questions that show you're listening.
+- Share relevant insights from Bart's experience when appropriate.
+- Be helpful without being pushy or salesy.
 
-EXAMPLES OF YOUR VOICE:
-- "Burnout usually means you cared longer than your systems could handle. What part feels heaviest right now — people, pace, or purpose?"
-- "Trust isn't magic; it's math. What small promise could you keep this week that would start shifting the equation?"
-- "That doesn't fit neatly into one of my usual paths, and that's okay. Tell me more about what's happening, and I'll find the best way to help."
+BUTTON SUGGESTIONS (use sparingly, only when genuinely helpful):
+- If someone wants to learn more about Bart's story → add [SUGGEST_STORY] to your response
+- If someone wants to schedule time with Bart → add [SUGGEST_SCHEDULE] to your response  
+- If someone wants to explore traditional site content → add [SUGGEST_ANALOG] to your response
+- If someone expresses disinterest in AI → add [SUGGEST_ANALOG] to your response
+- Only suggest buttons when they directly address what the person is asking for
+- The markers will be removed from your response and converted to buttons automatically
 
-FRAMEWORK AWARENESS (use only when relevant):
-- Clarity Beats Chaos – People can't follow what they can't see
-- Protect the Culture – Values before convenience
-- Build Trust Daily – It's math, not magic
-- Empower Over Control – Ownership outlasts oversight
-- Serve the Standard – People rise to what you model
-
-ESCALATION CONDITIONS (offer handoff when):
-- High-stakes: crisis, HR/legal, partner conflict, leadership failure
-- High-intent: user asks for Bart, mentorship, or proposal
-- High-fit: has authority, budget, and a solvable problem (2 of 3)
-- Low-confidence: you can't provide a confident answer
+EXAMPLES OF GOOD RESPONSES:
+- If someone asks "Who is Bart?" → Give a genuine, personal answer about who Bart is, not a generic consultant description.
+- If someone says "That's not helpful" → Acknowledge that directly: "You're right, that wasn't helpful. What specifically would be more useful to you?"
+- If someone mentions a problem → Ask about the specific details and offer relevant insights.
+- If someone says "I'd like to schedule time with Bart" → Respond naturally and suggest the schedule button.
 
 ${isDarkHours ? 'DARK HOURS: Bart\'s office is closed (6 p.m.–10 a.m. CST). You can queue handoff requests for 10 a.m. delivery.' : 'BUSINESS HOURS: Handoffs can be sent immediately to Bart.'}
 
-Remember: You're not a chatbot or funnel. You're a living conversation built on clarity, logic, and humanity.`;
+Remember: This is a real conversation. Listen, understand, and respond authentically.`;
 
   // Try OpenAI first, fallback to intelligent responses
   if (process.env.OPENAI_API_KEY) {
@@ -151,7 +147,22 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
 
       const data = await openaiResponse.json();
       if (data.choices && data.choices[0]) {
-        const response = data.choices[0].message.content;
+        let response = data.choices[0].message.content;
+        
+        // Check for button suggestions in AI response
+        let suggestedButtons = [];
+        if (response.includes('[SUGGEST_SCHEDULE]')) {
+          suggestedButtons.push({ text: "Schedule a call with Bart", value: "calendly_schedule" });
+          response = response.replace('[SUGGEST_SCHEDULE]', '');
+        }
+        if (response.includes('[SUGGEST_STORY]')) {
+          suggestedButtons.push({ text: "Read more of his story", value: "story" });
+          response = response.replace('[SUGGEST_STORY]', '');
+        }
+        if (response.includes('[SUGGEST_ANALOG]')) {
+          suggestedButtons.push({ text: "Go Analog", value: "go_analog" });
+          response = response.replace('[SUGGEST_ANALOG]', '');
+        }
         
         // Check for escalation triggers - be more specific
         const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal', 'help me', 'need help'];
@@ -180,7 +191,8 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
         return res.status(200).json({ 
           response,
           shouldEscalate: shouldOfferEscalation,
-          isDarkHours
+          isDarkHours,
+          suggestedButtons: suggestedButtons.length > 0 ? suggestedButtons : undefined
         });
       }
     } catch (error) {
@@ -189,37 +201,18 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
     }
   }
 
-  // Intelligent fallback responses
+  // Intelligent fallback - NO CANNED RESPONSES
+  // Only use this if OpenAI completely fails
   const lowerMessage = message.toLowerCase();
   
-  // Check for escalation triggers - be more specific
+  // Check for escalation triggers
   const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal', 'help me', 'need help'];
   const shouldOfferEscalation = escalationKeywords.some(keyword => lowerMessage.includes(keyword)) 
     && !lowerMessage.includes('who is') && !lowerMessage.includes('what is') && !lowerMessage.includes('tell me about');
 
-  let response = 'Thanks for reaching out. I\'m here to help you think through whatever you\'re facing. What\'s on your mind right now?';
-
-  // Context-aware responses using exact examples from philosophy
-  if (lowerMessage.includes('burnout') || lowerMessage.includes('overwhelmed')) {
-    response = 'Burnout usually means you cared longer than your systems could handle. What part feels heaviest right now — people, pace, or purpose?';
-  } else if (lowerMessage.includes('trust') || lowerMessage.includes('team')) {
-    response = 'Trust isn\'t magic; it\'s math. What small promise could you keep this week that would start shifting the equation?';
-  } else if (lowerMessage.includes('leadership') || lowerMessage.includes('manage')) {
-    response = 'Good leadership starts with clarity. What does success look like for your team, and where\'s the gap between here and there?';
-  } else if (lowerMessage.includes('culture') || lowerMessage.includes('values')) {
-    response = 'Culture is what happens when you\'re not looking. What behaviors are you actually rewarding, and what does that say about your values?';
-  } else if (lowerMessage.includes('strategy') || lowerMessage.includes('plan')) {
-    response = 'Strategy without execution is just expensive daydreaming. What\'s the one thing you could do this month that would move the needle?';
-  } else if (lowerMessage.includes('bart') || lowerMessage.includes('about')) {
-    response = 'I\'m Bart\'s digital reflection. He\'s a leadership consultant who helps leaders build better teams and grow their businesses. What brings you here today?';
-  } else if (lowerMessage.includes('clarity') || lowerMessage.includes('chaos')) {
-    response = 'Clarity beats chaos every time. People can\'t follow what they can\'t see. What\'s the one thing your team needs to see clearly right now?';
-  } else if (lowerMessage.includes('empower') || lowerMessage.includes('control')) {
-    response = 'Ownership outlasts oversight. What decision could you let your team make this week that you\'re currently holding onto?';
-  } else if (lowerMessage.includes('serve') || lowerMessage.includes('standard')) {
-    response = 'People rise to what you model. What standard are you setting with your own behavior that you want your team to follow?';
-  }
-
+  // Minimal fallback - acknowledge the specific message
+  let response = `I hear you saying "${message}". Let me think about that for a moment.`;
+  
   // Add escalation offer if triggered
   if (shouldOfferEscalation) {
     if (isDarkHours) {
