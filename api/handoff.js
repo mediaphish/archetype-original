@@ -1,4 +1,6 @@
 // api/handoff.js
+import { supabase } from '../../lib/supabase.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -8,7 +10,8 @@ export default async function handler(req, res) {
     message, 
     timestamp, 
     conversationHistory = [],
-    triageAnswers = {}
+    triageAnswers = {},
+    sessionId
   } = req.body;
 
   // Check if we're in dark hours
@@ -30,8 +33,32 @@ export default async function handler(req, res) {
     isDarkHours
   };
 
-  // Log the handoff request (will be replaced with Supabase/Slack when ready)
-  console.log('Handoff request received:', handoffBrief);
+  // Store handoff in Supabase
+  try {
+    const { data: handoffData, error } = await supabase
+      .from('handoffs')
+      .insert([
+        {
+          session_id: sessionId,
+          message: message,
+          conversation_history: conversationHistory,
+          triage_answers: triageAnswers,
+          status: handoffBrief.status,
+          is_dark_hours: handoffBrief.isDarkHours,
+          created_at: new Date().toISOString()
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error storing handoff:', error);
+    } else {
+      console.log('Handoff stored:', handoffData);
+    }
+  } catch (error) {
+    console.error('Supabase error:', error);
+  }
 
   if (isDarkHours) {
     // Queue for 10 AM delivery
