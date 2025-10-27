@@ -214,14 +214,16 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
   
   if (lowerMessage.includes('who is bart') || lowerMessage.includes('who is bart?')) {
     response = `Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.`;
+  } else if (lowerMessage.includes('can he help') && lowerMessage.includes('leader')) {
+    response = `Absolutely. Bart has spent over 32 years building leaders and teams. He mentors emerging leaders, helping them build clarity, confidence, and the habits that make leadership sustainable. His approach is practical - no jargon, no theory, just the logic of how leadership actually works. He focuses on five fundamentals: clarity beats chaos, protect the culture, build trust daily, empower over control, and serve the standard. What specific leadership challenge are you facing?`;
+  } else if (lowerMessage.includes('leadership') || lowerMessage.includes('leader') || lowerMessage.includes('manage')) {
+    response = `Bart's leadership philosophy centers on five fundamentals: clarity beats chaos (people can't follow what they can't see), protect the culture (values before convenience), build trust daily (it's math, not magic), empower over control (ownership outlasts oversight), and serve the standard (people rise to what you model). He's helped hundreds of leaders grow through practical, no-nonsense guidance. What aspect of leadership are you working on?`;
+  } else if (lowerMessage.includes('help') || lowerMessage.includes('advice')) {
+    response = `Bart helps with three main areas: building and leading companies (structure, alignment, systems), emerging leadership (clarity, confidence, sustainable habits), and personal/professional clarity (purpose, direction, better decisions). What specific challenge are you facing?`;
+  } else if (lowerMessage.includes('business') || lowerMessage.includes('company')) {
+    response = `Bart has built companies from nothing and helped organizations grow without losing their soul. He consults founders and operators who need structure, alignment, and systems that hold when things get hard. His experience spans startups, software, fitness, and leadership teams. What's your biggest business challenge right now?`;
   } else if (lowerMessage.includes('what is') || lowerMessage.includes('tell me about')) {
     response = `I'd be happy to help explain that. Could you be more specific about what you'd like to know?`;
-  } else if (lowerMessage.includes('help') || lowerMessage.includes('advice')) {
-    response = `I'm here to help. What specific challenge are you facing right now?`;
-  } else if (lowerMessage.includes('leadership') || lowerMessage.includes('manage')) {
-    response = `Leadership is about clarity, trust, and serving others. What aspect of leadership are you working on?`;
-  } else if (lowerMessage.includes('business') || lowerMessage.includes('company')) {
-    response = `Building a business is about creating something that lasts. What's your biggest challenge right now?`;
   } else {
     response = `I understand you're asking about "${message}". Let me help you with that. Could you tell me more about what you're looking for?`;
   }
