@@ -271,7 +271,8 @@ export default function ChatApp() {
           message: 'User requested live handoff',
           timestamp: new Date().toISOString(),
           conversationHistory,
-          triageAnswers
+          triageAnswers,
+          sessionId
         }),
       });
 
