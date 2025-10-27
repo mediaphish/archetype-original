@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DarkHoursBanner from './components/DarkHoursBanner.jsx';
 import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
@@ -11,6 +11,16 @@ export default function ChatApp() {
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [showGreeting, setShowGreeting] = useState(false);
   const [isAbusive, setIsAbusive] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  // Auto-scroll to bottom when messages change
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   // Show greeting immediately
   useEffect(() => {
@@ -358,14 +368,14 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="py-8 bg-white">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="h-screen flex flex-col bg-white">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4 w-full">
         <DarkHoursBanner />
 
-        <div className="text-center mb-8">
+        <div className="flex-1 flex flex-col justify-center">
           {/* Messages */}
           {messages.length > 0 && (
-            <div className="space-y-6 max-w-2xl mx-auto max-h-96 overflow-y-auto">
+            <div className="space-y-6 max-w-2xl mx-auto flex-1 overflow-y-auto py-8">
               {messages.map((message, index) => (
                 <MessageBubble
                   key={index}
@@ -376,12 +386,14 @@ export default function ChatApp() {
                   onButtonClick={handleButtonClick}
                 />
               ))}
+              {/* Scroll target for auto-scroll */}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
 
         {/* Input Area */}
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto w-full pb-8">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
