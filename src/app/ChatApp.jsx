@@ -368,12 +368,12 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="h-[calc(100vh-200px)] flex flex-col bg-white">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4">
         <DarkHoursBanner />
 
-        {/* Messages Area - Takes remaining space */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Messages Area - Scrollable container */}
+        <div className="flex-1 overflow-y-auto min-h-0">
           {messages.length > 0 && (
             <div className="space-y-6 max-w-2xl mx-auto py-8">
               {messages.map((message, index) => (
@@ -392,7 +392,7 @@ export default function ChatApp() {
           )}
         </div>
 
-        {/* Input Area - Fixed height at bottom */}
+        {/* Input Area - Fixed at bottom */}
         <div className="flex-shrink-0 max-w-2xl mx-auto w-full p-4 bg-white border-t border-gray-200">
           {showEscalation && (
             <EscalationButton 
