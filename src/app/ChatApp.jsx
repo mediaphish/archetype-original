@@ -372,30 +372,28 @@ export default function ChatApp() {
       <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4">
         <DarkHoursBanner />
 
-        {/* Messages Area - Scrollable when needed */}
-        <div className="flex-1 flex flex-col justify-center">
+        {/* Messages Area - Takes remaining space */}
+        <div className="flex-1 overflow-y-auto">
           {messages.length > 0 && (
-            <div className="max-h-full overflow-y-auto">
-              <div className="space-y-6 max-w-2xl mx-auto py-8">
-                {messages.map((message, index) => (
-                  <MessageBubble
-                    key={index}
-                    message={message.text}
-                    isUser={message.isUser}
-                    showButtons={message.showButtons}
-                    buttonOptions={message.buttonOptions}
-                    onButtonClick={handleButtonClick}
-                  />
-                ))}
-                {/* Scroll target for auto-scroll */}
-                <div ref={messagesEndRef} />
-              </div>
+            <div className="space-y-6 max-w-2xl mx-auto py-8">
+              {messages.map((message, index) => (
+                <MessageBubble
+                  key={index}
+                  message={message.text}
+                  isUser={message.isUser}
+                  showButtons={message.showButtons}
+                  buttonOptions={message.buttonOptions}
+                  onButtonClick={handleButtonClick}
+                />
+              ))}
+              {/* Scroll target for auto-scroll */}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
 
-        {/* Input Area - Always visible above the fold */}
-        <div className="max-w-2xl mx-auto pb-8">
+        {/* Input Area - Fixed height at bottom */}
+        <div className="flex-shrink-0 max-w-2xl mx-auto w-full p-4 bg-white border-t border-gray-200">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
