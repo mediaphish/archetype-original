@@ -138,33 +138,8 @@ export default function ChatApp() {
       return;
     }
 
-    // Check if this should trigger structured conversation
-    if (detectRelevantTopics(messageText)) {
-      // First check if they've already indicated their journey stage
-      const journeyStage = detectJourneyStage(messageText);
-      
-      if (journeyStage) {
-        // They've already told us their stage - respond directly
-        handleStructuredResponse(journeyStage);
-        return;
-      } else {
-        // They haven't indicated stage yet - ask for clarification
-        const pathMessage = {
-          text: "That sounds like something I can help with. Where are you in your journey right now?",
-          isUser: false,
-          showButtons: true,
-          buttonOptions: [
-            { text: "I'm building or leading a company", value: "building" },
-            { text: "I'm stepping into leadership", value: "leading" },
-            { text: "I want personal or professional clarity", value: "clarity" },
-            { text: "I just want to learn more about Bart", value: "learn" }
-          ]
-        };
-        setMessages(prev => [...prev, pathMessage]);
-        setConversationState('path_selection');
-        return;
-      }
-    }
+    // Always go to AI conversation - no structured paths
+    // Let the AI handle everything naturally
 
     // Default to AI conversation for other topics
     try {
@@ -190,7 +165,12 @@ export default function ChatApp() {
       }
 
       const data = await response.json();
-      const assistantMessage = { text: data.response, isUser: false };
+      const assistantMessage = { 
+        text: data.response, 
+        isUser: false,
+        showButtons: data.suggestedButtons ? true : false,
+        buttonOptions: data.suggestedButtons || undefined
+      };
       setMessages(prev => [...prev, assistantMessage]);
 
       if (data.shouldEscalate) {
@@ -413,6 +393,7 @@ export default function ChatApp() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
+              onFocus={(e) => e.preventDefault()}
               placeholder="Tell me what's going on."
               className="flex-1 px-4 py-3 text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg"
             />
