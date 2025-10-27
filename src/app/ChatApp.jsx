@@ -189,6 +189,54 @@ export default function ChatApp() {
   };
 
   const handleStructuredResponse = (messageText) => {
+    // Check if this should be handled by AI instead of structured flow
+    const aiKeywords = ['bart', 'who', 'what', 'how', 'why', 'when', 'where', 'tell me', 'explain', 'about'];
+    const shouldUseAI = aiKeywords.some(keyword => 
+      messageText.toLowerCase().includes(keyword)
+    );
+
+    if (shouldUseAI) {
+      // Switch to AI mode for this response
+      setConversationState('freeform');
+      
+      // Send to AI API
+      const conversationHistory = messages.map(msg => ({
+        role: msg.isUser ? 'user' : 'assistant',
+        content: msg.text
+      }));
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          message: messageText,
+          conversationHistory,
+          sessionId
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        const assistantMessage = { text: data.response, isUser: false };
+        setMessages(prev => [...prev, assistantMessage]);
+
+        if (data.shouldEscalate) {
+          setShowEscalation(true);
+        }
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+        const errorMessage = { 
+          text: 'Sorry, I encountered an error. Please try again.', 
+          isUser: false 
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      });
+      
+      return;
+    }
+
     // Handle deep conversation paths
     let response;
     let nextState = conversationState;
