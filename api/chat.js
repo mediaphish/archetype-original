@@ -201,8 +201,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
     }
   }
 
-  // Intelligent fallback - NO CANNED RESPONSES
-  // Only use this if OpenAI completely fails
+  // Intelligent fallback - provide real answers when OpenAI fails
   const lowerMessage = message.toLowerCase();
   
   // Check for escalation triggers
@@ -210,8 +209,22 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
   const shouldOfferEscalation = escalationKeywords.some(keyword => lowerMessage.includes(keyword)) 
     && !lowerMessage.includes('who is') && !lowerMessage.includes('what is') && !lowerMessage.includes('tell me about');
 
-  // Minimal fallback - acknowledge the specific message
-  let response = `I hear you saying "${message}". Let me think about that for a moment.`;
+  // Provide real answers based on the question
+  let response = '';
+  
+  if (lowerMessage.includes('who is bart') || lowerMessage.includes('who is bart?')) {
+    response = `Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.`;
+  } else if (lowerMessage.includes('what is') || lowerMessage.includes('tell me about')) {
+    response = `I'd be happy to help explain that. Could you be more specific about what you'd like to know?`;
+  } else if (lowerMessage.includes('help') || lowerMessage.includes('advice')) {
+    response = `I'm here to help. What specific challenge are you facing right now?`;
+  } else if (lowerMessage.includes('leadership') || lowerMessage.includes('manage')) {
+    response = `Leadership is about clarity, trust, and serving others. What aspect of leadership are you working on?`;
+  } else if (lowerMessage.includes('business') || lowerMessage.includes('company')) {
+    response = `Building a business is about creating something that lasts. What's your biggest challenge right now?`;
+  } else {
+    response = `I understand you're asking about "${message}". Let me help you with that. Could you tell me more about what you're looking for?`;
+  }
   
   // Add escalation offer if triggered
   if (shouldOfferEscalation) {
