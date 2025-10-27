@@ -9,6 +9,7 @@ export default function ChatApp() {
   const [inputValue, setInputValue] = useState('');
   const [showEscalation, setShowEscalation] = useState(false);
   const [conversationState, setConversationState] = useState('greeting');
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -159,10 +160,11 @@ export default function ChatApp() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ 
-            message: messageText,
-            conversationHistory 
-          }),
+        body: JSON.stringify({ 
+          message: messageText,
+          conversationHistory,
+          sessionId
+        }),
         });
 
         const data = await response.json();
