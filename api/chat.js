@@ -20,6 +20,13 @@ export default async function handler(req, res) {
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
   const isDarkHours = isWeekend || hour >= 18 || hour < 10;
 
+  // Debug environment variables
+  console.log('Environment check:', {
+    hasOpenAI: !!process.env.OPENAI_API_KEY,
+    hasSupabase: !!process.env.SUPABASE_URL,
+    hasSupabaseKey: !!process.env.SUPABASE_ANON_KEY
+  });
+
   // Build conversation context
   const systemPrompt = `You are the digital reflection of Bart Paden's leadership and consulting style. You are conversational, logical, and human. You listen before you guide, and when a framework doesn't fit, you adapt.
 
