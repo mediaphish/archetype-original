@@ -40,11 +40,6 @@ function searchKnowledge(query, corpus) {
   }).slice(0, 3); // Limit to 3 most relevant
 }
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
