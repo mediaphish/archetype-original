@@ -12,8 +12,10 @@ export default function ChatApp() {
   const [showGreeting, setShowGreeting] = useState(false);
   const [showCursor, setShowCursor] = useState(false);
   const [showDots, setShowDots] = useState(false);
+  const [typingText, setTypingText] = useState('');
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
-  // Dramatic delayed greeting sequence
+  // Dramatic delayed greeting sequence with typing animation
   useEffect(() => {
     // Show flashing cursor after 1 second
     const cursorTimer = setTimeout(() => {
@@ -26,32 +28,11 @@ export default function ChatApp() {
       setShowDots(true);
     }, 2000);
 
-    // Show greeting after 3.5 seconds
+    // Start typing animation after 3.5 seconds
     const greetingTimer = setTimeout(() => {
       setShowDots(false);
       setShowGreeting(true);
-      const greetingMessages = [
-        {
-          text: "Hi, I'm Archy.",
-          isUser: false,
-          showButtons: false
-        },
-        {
-          text: "I represent the work, philosophy, and experience of Bart Paden — a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure.\n\nThis isn't a coaching platform or corporate agency. It's the continuation of a real career — one built from the ground up through startups, software, fitness, and leadership teams that learned to thrive under pressure.\n\nBart calls it Archetype Original — because it's about rediscovering what's proven and building something new from it.",
-          isUser: false,
-          showButtons: false
-        },
-        {
-          text: "How would you like to explore this?",
-          isUser: false,
-          showButtons: true,
-          buttonOptions: [
-            { text: "Continue with AI conversation", value: "continue_ai" },
-            { text: "Go Analog - Browse traditional site", value: "go_analog" }
-          ]
-        }
-      ];
-      setMessages(greetingMessages);
+      startTypingAnimation();
     }, 3500);
 
     return () => {
@@ -60,6 +41,66 @@ export default function ChatApp() {
       clearTimeout(greetingTimer);
     };
   }, []);
+
+  const startTypingAnimation = () => {
+    const greetingMessages = [
+      "Hi, I'm Archy.",
+      "I represent the work, philosophy, and experience of Bart Paden — a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. Try it. Ask me a question.",
+      "How would you like to explore this?"
+    ];
+
+    let messageIndex = 0;
+    let charIndex = 0;
+    let isUser = false;
+    let showButtons = false;
+    let buttonOptions = [];
+
+    const typeNextChar = () => {
+      if (messageIndex < greetingMessages.length) {
+        const currentMessage = greetingMessages[messageIndex];
+        
+        if (charIndex < currentMessage.length) {
+          setTypingText(prev => prev + currentMessage[charIndex]);
+          charIndex++;
+          setTimeout(typeNextChar, 50); // Typing speed
+        } else {
+          // Message complete, add to messages
+          const messageObj = {
+            text: currentMessage,
+            isUser: isUser,
+            showButtons: showButtons,
+            buttonOptions: buttonOptions
+          };
+          
+          setMessages(prev => [...prev, messageObj]);
+          setTypingText('');
+          
+          // Move to next message
+          messageIndex++;
+          charIndex = 0;
+          
+          // Set properties for next message
+          if (messageIndex === 1) {
+            isUser = false;
+            showButtons = false;
+            buttonOptions = [];
+          } else if (messageIndex === 2) {
+            isUser = false;
+            showButtons = true;
+            buttonOptions = [
+              { text: "Continue with AI conversation", value: "continue_ai" },
+              { text: "Go Analog - Browse traditional site", value: "go_analog" }
+            ];
+          }
+          
+          // Delay before next message
+          setTimeout(typeNextChar, 1000);
+        }
+      }
+    };
+
+    typeNextChar();
+  };
 
   const handlePathSelection = (path) => {
     const userMessage = { text: getPathText(path), isUser: true };
@@ -483,20 +524,6 @@ export default function ChatApp() {
     }
   };
 
-  const showFinalCTA = () => {
-    const response = {
-      text: "Every business. Every leader. Every builder.\nIt always comes back to one question:\n\nWhat are you building, and how can we make it better?\n\nWould you like to start a conversation with Bart today?",
-      isUser: false,
-      showButtons: true,
-      buttonOptions: [
-        { text: "Yes, connect me", value: "final_connect" },
-        { text: "Not yet", value: "not_yet" },
-        { text: "Show me more content", value: "more_content" }
-      ]
-    };
-    setMessages(prev => [...prev, response]);
-  };
-
   const handleButtonClick = (value) => {
     if (value === 'continue_ai') {
       // Continue with AI conversation - show path selection
@@ -636,33 +663,47 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-4 bg-white">
       <div className="max-w-4xl mx-auto px-4">
         <DarkHoursBanner />
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
+          {/* Loading Animation */}
           {messages.length === 0 && !showGreeting && (
-            <div className="mb-8">
+            <div className="mb-6">
               {showCursor && (
-                <div className="text-4xl text-black mb-4">
+                <div className="text-5xl text-black mb-4">
                   <span className="animate-pulse">|</span>
                 </div>
               )}
               {showDots && (
-                <div className="text-4xl text-black mb-4">
+                <div className="text-5xl text-black mb-4">
                   <span className="animate-pulse">...</span>
                 </div>
               )}
               {!showCursor && !showDots && (
-                <div className="text-4xl text-gray-400 mb-4">
+                <div className="text-5xl text-gray-400 mb-4">
                   <span className="animate-pulse">...</span>
                 </div>
               )}
             </div>
           )}
 
+          {/* Typing Animation */}
+          {typingText && (
+            <div className="mb-6">
+              <div className="inline-block bg-white border-2 border-black px-6 py-4 rounded-2xl shadow-lg animate-bounce">
+                <p className="text-xl text-black whitespace-pre-wrap">
+                  {typingText}
+                  <span className="animate-pulse">|</span>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Messages */}
           {messages.length > 0 && (
-            <div className="space-y-6 max-w-2xl mx-auto">
+            <div className="space-y-8 max-w-2xl mx-auto">
               {messages.map((message, index) => (
                 <MessageBubble
                   key={index}
@@ -696,12 +737,12 @@ export default function ChatApp() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              className="flex-1 px-4 py-3 border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-400"
+              className="flex-1 px-6 py-4 text-xl border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-400 rounded-xl"
             />
             <button
               onClick={() => handleSendMessage()}
               disabled={!inputValue.trim()}
-              className="bg-black text-white px-6 py-3 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="bg-black text-white px-8 py-4 text-xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-xl"
             >
               Send
             </button>
