@@ -68,16 +68,16 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
     const question = TRIAGE_QUESTIONS[currentQuestion];
     
     return (
-      <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
-        <h4 className="font-medium text-green-800 mb-3">
+      <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
+        <h4 className="text-lg font-medium text-gray-800 mb-3">
           Question {currentQuestion + 1} of {TRIAGE_QUESTIONS.length}
         </h4>
-        <p className="text-sm text-green-700 mb-3">{question.question}</p>
+        <p className="text-base text-gray-700 mb-3">{question.question}</p>
         <div className="space-y-2">
           <input
             type="text"
             placeholder={question.placeholder}
-            className="input w-full"
+            className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
             onKeyPress={(e) => {
               if (e.key === 'Enter' && e.target.value.trim()) {
                 handleTriageAnswer(e.target.value);
@@ -93,7 +93,7 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
                 input.value = '';
               }
             }}
-            className="btn btn-primary bg-green-600 hover:bg-green-700"
+            className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 transition-colors rounded-lg"
           >
             {currentQuestion === TRIAGE_QUESTIONS.length - 1 ? 'Submit Handoff' : 'Next'}
           </button>
@@ -103,11 +103,11 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
   }
 
   return (
-    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+    <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
       <button
         onClick={handleStartTriage}
         disabled={isLoading}
-        className="w-full btn btn-primary bg-green-600 hover:bg-green-700 disabled:bg-green-400"
+        className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 disabled:bg-gray-400 transition-colors rounded-lg"
       >
         {isLoading ? 'Processing...' : 'Request Live Handoff'}
       </button>
