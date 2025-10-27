@@ -216,7 +216,12 @@ export default function ChatApp() {
           sessionId
         }),
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         const assistantMessage = { text: data.response, isUser: false };
         setMessages(prev => [...prev, assistantMessage]);
