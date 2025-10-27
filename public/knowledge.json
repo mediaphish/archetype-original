@@ -1,0 +1,342 @@
+{
+  "generated_at": "2025-01-27T20:00:00.000Z",
+  "count": 12,
+  "docs": [
+    {
+      "title": "Intrinsic vs Extrinsic Motivation (Deci & Ryan)",
+      "slug": "intrinsic-motivation-deci-ryan",
+      "type": "behavioral-research",
+      "tags": ["scoreboard-leadership", "psychology", "motivation"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Self-Determination Theory shows autonomy, competence, and relatedness drive sustained performance. Scoreboard Leadership relies on extrinsic controls that undermine these needs.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": ["deci-ryan-2000"],
+        "url": "https://doi.org/10.1207/S15327965PLI1104_01"
+      },
+      "takeaways": [
+        "Intrinsic drivers beat reward-punishment systems over time.",
+        "Agency and mastery correlate with durable engagement."
+      ],
+      "quotes": [
+        "People have an inherent tendency to seek out novelty and challenges... — Deci & Ryan (2000)"
+      ],
+      "implications": [
+        "Replace scoreboard control with standard-based mastery measures."
+      ],
+      "applications": [
+        "Design roles for autonomy and competency growth."
+      ],
+      "body": "## Notes\n- Metrics can remain, but as mirrors—not levers of control."
+    },
+    {
+      "title": "Psychological Safety (Amy Edmondson)",
+      "slug": "psychological-safety-edmondson",
+      "type": "behavioral-research",
+      "tags": ["scoreboard-leadership", "trust", "culture"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Fear-heavy environments suppress candor and learning. Scoreboard cultures push people to hide mistakes.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": ["edmondson-1999"],
+        "url": "https://doi.org/10.2307/2666999"
+      },
+      "takeaways": [
+        "Safety increases learning behaviors and innovation.",
+        "Fear kills ownership."
+      ],
+      "quotes": [
+        "A team climate characterized by interpersonal trust and mutual respect fosters learning behavior."
+      ],
+      "implications": [
+        "Normalize error-sharing and inquiry in reviews."
+      ],
+      "applications": [
+        "Add blameless retros and learning logs to ops cadence."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Transactional vs Transformational Leadership",
+      "slug": "transactional-vs-transformational",
+      "type": "comparative-models",
+      "tags": ["leadership", "scoreboard-leadership"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Transactional leadership enforces compliance; transformational leadership builds intrinsic commitment. Scoreboard is inherently transactional.",
+      "source": {
+        "kind": "book",
+        "citation_keys": ["bass-avolio-1994"],
+        "url": ""
+      },
+      "takeaways": [
+        "Transformational patterns overlap with Servant Leadership.",
+        "Transactional exchange erodes dignity."
+      ],
+      "quotes": [
+        "Transformational leaders move followers to transcend self-interest for the good of the group."
+      ],
+      "implications": [
+        "Shift reviews from output-only to growth + standards."
+      ],
+      "applications": [
+        "Tie recognition to behaviors, not just numbers."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Fear of Evaluation & Performance Anxiety",
+      "slug": "fear-of-evaluation",
+      "type": "behavioral-research",
+      "tags": ["scoreboard-leadership", "stress", "performance"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Overemphasis on comparison induces ego threat and \"choking\"—reducing creativity and reliability.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": ["baumeister-1984"],
+        "url": ""
+      },
+      "takeaways": [
+        "Pressure narrows attention and harms skilled execution.",
+        "Public rankings increase impression management."
+      ],
+      "quotes": [
+        "Choking occurs when people focus too much attention on processes that should run automatically."
+      ],
+      "implications": [
+        "Remove competitive leaderboards for creative teams."
+      ],
+      "applications": [
+        "Use private metrics + coaching; publicize standards."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Group Identity and Purpose (Sinek & Social Identity)",
+      "slug": "group-identity-purpose",
+      "type": "core-ideology",
+      "tags": ["scoreboard-leadership", "purpose", "identity"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Belonging to a meaningful mission sustains effort. Scoreboard frames identity around outcomes, not contribution.",
+      "source": {
+        "kind": "book",
+        "citation_keys": ["sinek-2009"],
+        "url": ""
+      },
+      "takeaways": [
+        "Purpose cohesion drives retention.",
+        "Outcome-identity creates fragility."
+      ],
+      "quotes": [
+        "People don't buy what you do; they buy why you do it."
+      ],
+      "implications": [
+        "Start reviews from purpose, not numbers."
+      ],
+      "applications": [
+        "Weekly mission moments; tie wins to purpose impact."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Trust as the Currency of Leadership",
+      "slug": "trust-as-currency",
+      "type": "core-ideology",
+      "tags": ["trust", "servant-leadership", "scoreboard-leadership"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Low-trust teams waste energy on self-protection. Scoreboard cultures weaponize metrics; servant leaders build credibility.",
+      "source": {
+        "kind": "book",
+        "citation_keys": ["covey-2006", "laub-1999"],
+        "url": ""
+      },
+      "takeaways": [
+        "Trust reduces friction and cost.",
+        "Credibility compounds performance."
+      ],
+      "quotes": [
+        "When trust goes up, speed goes up and cost goes down. — Covey"
+      ],
+      "implications": [
+        "Make trust a managed asset."
+      ],
+      "applications": [
+        "Quarterly trust pulse alongside revenue dashboards."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Stewardship vs Agency Theory",
+      "slug": "stewardship-vs-agency",
+      "type": "comparative-models",
+      "tags": ["leadership", "trust", "scoreboard-leadership"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Stewardship assumes intrinsic prosocial motivation; agency assumes self-interest needing control. Scoreboard is an agency reflex.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": ["davis-schoorman-donaldson-1997"],
+        "url": ""
+      },
+      "takeaways": [
+        "Trust-based norms outperform control-heavy systems for complex work."
+      ],
+      "quotes": [
+        "Stewards are motivated to act in the best interests of the principal."
+      ],
+      "implications": [
+        "Evaluate leaders on stewardship outcomes (trust, growth)."
+      ],
+      "applications": [
+        "Stewardship scorecards alongside KPIs."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Game Theory and Zero-Sum Thinking",
+      "slug": "game-theory-zero-sum",
+      "type": "behavioral-research",
+      "tags": ["cooperation", "scoreboard-leadership"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Non-zero-sum systems reward long-term cooperation; zero-sum scoreboards create adversarial behavior.",
+      "source": {
+        "kind": "book",
+        "citation_keys": ["axelrod-1984"],
+        "url": ""
+      },
+      "takeaways": [
+        "Cooperation beats exploitation over repeated games."
+      ],
+      "implications": [
+        "Reward cross-team wins, not intra-team ranking."
+      ],
+      "applications": [
+        "Shared OKRs that require collaboration."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Burnout & Chronic Performanceism",
+      "slug": "burnout-performanceism",
+      "type": "behavioral-research",
+      "tags": ["burnout", "scoreboard-leadership"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Continual measurement without meaning drives exhaustion and cynicism; servant systems restore humane pacing.",
+      "source": {
+        "kind": "book",
+        "citation_keys": ["maslach-leiter-2016"],
+        "url": ""
+      },
+      "takeaways": [
+        "Meaning + recovery beats grind metrics."
+      ],
+      "implications": [
+        "Measure health alongside output."
+      ],
+      "applications": [
+        "Enforce recovery rituals in ops cadence."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Faith & Moral Foundations of Servant Leadership",
+      "slug": "theology-stewardship",
+      "type": "core-ideology",
+      "tags": ["faith", "servant-leadership", "scoreboard-leadership"],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Stewardship reframes leadership as trust, not control. Scoreboard idolatry elevates outcomes over obedience and care.",
+      "source": {
+        "kind": "book",
+        "citation_keys": ["greenleaf-1970", "peterson-2018"],
+        "url": ""
+      },
+      "takeaways": [
+        "People over performance as a moral stance."
+      ],
+      "implications": [
+        "Success measured by faithfulness and formation, not just outcomes."
+      ],
+      "applications": [
+        "Stewardship reviews for leaders."
+      ],
+      "body": ""
+    },
+    {
+      "title": "A Note to the Reader",
+      "slug": "a-note-to-the-reader",
+      "type": "preface",
+      "tags": ["accidental-ceo", "introduction", "leadership-journey"],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "A candid introduction to the heart of Accidental CEO — not a manual, but a story-driven reflection on stumbling into leadership and learning through imperfection.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": ["accidental-ceo-preface"]
+      },
+      "takeaways": [
+        "Leadership isn't inherited; it's discovered through failure and growth.",
+        "Vulnerability builds connection faster than authority ever could."
+      ],
+      "body": "Hi there. Before we dive in, I want to let you in on something: this isn't your typical leadership manual.\n\nIn fact, calling me a \"leader\" back when I started would have been a stretch – and that's exactly why I'm writing this. I stumbled, fumbled, and basically tripped my way into becoming a CEO. Consider this book a personal, honest journey rather than a polished handbook. I'll share the good decisions, the bad ones, and the downright ridiculous ones.\n\nWhy? Because I wish someone had told me these stories when I was a few steps behind where I am now.\n\nIf you're looking for bullet-point perfection, you might be in the wrong place. But if you don't mind a little self-deprecating humor and some painfully honest moments, I think you'll find something valuable here. Whether you're running a company, leading a team, or just trying to figure out what's next—this book is about the messy, meaningful process of becoming someone worth following.\n\nLet's start at the beginning… or, at least, my beginning."
+    },
+    {
+      "title": "The Accidental Part",
+      "slug": "chapter-1-the-accidental-part",
+      "type": "chapter",
+      "tags": ["accidental-ceo", "leadership", "origin-story"],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "The beginning of the journey — how curiosity, risk, and a willingness to care more than most sparked a leadership path that was never planned.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": ["accidental-ceo-chapter-1"]
+      },
+      "takeaways": [
+        "Leadership often begins where certainty ends.",
+        "Sacrifice for others is the first real act of leadership.",
+        "Growth happens when you choose people over comfort."
+      ],
+      "body": "I didn't plan on becoming a CEO.\n\nThat might sound strange coming from someone writing a leadership book, but the truth is, this entire journey started with a little curiosity, a lot of uncertainty, and just enough desperation to say yes to things I had no idea how to do.\n\nIt all started in the late 1990s when I discovered the Internet. Not in a tech-guru, \"I'm going to change the world\" kind of way. More like, \"Wait, people can make websites from home and get paid for it?\" I was a broke college kid and figured I could probably learn enough HTML to fake it until I made it. So that's exactly what I did.\n\nThe first time I got paid to build a website, I thought, \"This is it. I'm rich.\" It was something like $200, but in 1998, that was gold to me. More importantly, it gave me a taste of something I hadn't felt in a long time—confidence.\n\nNow, I wasn't someone who struggled in school. Actually, I was a straight-A student and graduated near the top of my class in 1992. I was pretty smart—math and science made sense to me. I loved art and design, and I could write a solid research paper when I needed to. Looking back, I think I had leadership instincts even then—I just didn't know that's what they were. I thought I was just bossy or organized. Turns out, it was something deeper that would surface again later in life.\n\nAfter college, I landed a job with Precious Moments in Carthage, Missouri. Not because I had a stacked resume or a fancy degree—I didn't—but because Terri Heckmaster and Ted Easley saw something in me. They took a chance, and that chance changed everything.\n\nAs part of the interview process, I was asked to write a press release for an upcoming event. I didn't even know what a press release was. I stared at the assignment for a while, then decided to do something else entirely. I built a small website—three or four pages—announcing the event. It included event details, a few images, and contact information. No bells and whistles. Just a clean, clear presentation of what people needed to know. It wasn't what they asked for, but it showed what I could do. That bold little detour got me hired.\n\nI started in the Marketing Department and spent the next four and a half years figuring things out in real time. We didn't have a huge digital strategy back then—honestly, almost no one did—but I had enough curiosity and drive to learn what we needed as we went. By the time I left, I had helped grow their online sales from $20,000 a year to over $1.2 million. It wasn't about genius. It was about curiosity, effort, and actually caring about the outcome.\n\nBut things took a turn. Eventually, I was reassigned to the IT department. Suddenly, I was troubleshooting hardware, crawling under desks to run wires, and freezing in a server room that felt like a meat locker. It wasn't what I signed up for—and it wasn't where I was supposed to be.\n\nThat's when I knew it was time to go.\n\nI didn't quit in a blaze of glory. I negotiated a termination. Since the new responsibilities weren't part of my original job description, I qualified for unemployment benefits. That money—modest as it was—became the lifeline that gave my family just enough room to breathe while I figured out what was next.\n\nI tell people it felt like I jumped out of an airplane holding either a parachute or a lunchbox—I wasn't sure which. But I jumped anyway.\n\nThere was no business plan. No investors. No backup strategy. Just a beat-up laptop, a few freelance clients, and a deep determination not to go backward.\n\nSlowly, it grew.\n\nAt first, I was just trying to survive. But over time, I realized something bigger was happening. This wasn't just about websites and logos. It was about building trust. Helping people solve problems. Showing up. And eventually… leading.\n\nI didn't set out to be a leader, but leadership found me.\n\nAnd I remember the exact moment it started to take shape.\n\nThere was a young guy I knew—just about to get married. He was raw, still learning, but incredibly talented. Honestly, he was already a better designer than I was. I saw something in him and made a decision: I brought him on. Not because the business was booming, but because I believed in building something that could grow beyond just me. I even gave up part of my own income so he could have health insurance. That was my first real and significant leadership decision—the sacrificial kind. The kind where you put someone else's needs ahead of your own. That moment shifted how I viewed leadership. It wasn't about power or position—it was about responsibility.\n\nI still made mistakes, of course. I undercharged. I overpromised. I said yes to projects that made no sense just to keep the lights on. I was figuring it out one client at a time, learning how to build a business while also learning how to lead.\n\nBut that early decision—to invest in someone else at personal cost—became a kind of blueprint. It showed me what kind of leader I wanted to be. Not the boss barking orders from a corner office, but someone willing to go first. Willing to sacrifice. Willing to bet on people, even before they fully believed in themselves.\n\nAnd somewhere in that chaos, I started to understand what leadership really is.\n\nIt's not about being the smartest person in the room. It's about being the most grounded. It's not about telling people what to do. It's about listening, lifting, and walking alongside them. It's about seeing people—not just their output. It's about building something that lasts—not just for your own success, but for the success of others.\n\nThis book isn't here to show off the polished version of that journey. It's here to walk you through the raw parts, the funny parts, the broken parts—and the breakthroughs. Because I think leadership is less about the mountaintop moments and more about what happens in the climb.\n\nSo if you've ever felt like you're figuring it out as you go, welcome. You're not alone.\n\nThis is the story of how I accidentally became a CEO—and how I grew, over time, into someone worth following."
+    },
+    {
+      "title": "What He Gave Me",
+      "slug": "chapter-2-what-he-gave-me",
+      "type": "chapter",
+      "tags": ["accidental-ceo", "servant-leadership", "faith", "resilience"],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "From collapse came clarity. This chapter tells how pain, risk, and redemption formed the foundation of both a family and a leadership philosophy rooted in service and faith.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": ["accidental-ceo-chapter-2"]
+      },
+      "takeaways": [
+        "True leadership is born in struggle, not stability.",
+        "Pain can become purpose when met with faith and presence.",
+        "Servant leadership grows from the decision to show up when nothing feels secure."
+      ],
+      "body": "I think I realized, sometimes you have to take a risk and bet on yourself.\n\nBut for me, that risk didn't come from a place of confidence. It came from collapse. But sometimes that's where the most honest leadership begins.\n\nThe final stretch of my time at Precious Moments was unraveling at the same time my personal life was collapsing. I wasn't just going through a divorce—I was living through betrayal. The person I had committed my life to was having an affair with someone I considered a close friend. Not just any friend—a leader in our church small group. Someone I trusted. Someone I prayed with. The fallout wasn't just relational—it was spiritual. It felt like my entire foundation had been pulled out from under me.\n\nI stayed at work and tried to hold it together. But behind the scenes, I was in survival mode. I was dealing with lawyers, courtrooms, and a custody battle that felt endless. I didn't know how to make sense of it. I just knew I couldn't stay in that life anymore.\n\nThe divorce became final shortly after I negotiated my termination. The job had shifted far away from what I was hired to do, and I worked out a deal that allowed me to leave with unemployment benefits. That small bit of financial stability became the runway I needed—barely—to try something on my own.\n\nSo there I was. Unemployed. Alone. A dad fighting for time with his kids. No plan. No savings. No fallback.\n\nAll I had was a belief—just enough to move forward—that maybe I could build something from the rubble.\n\nI started taking on small freelance jobs. Web projects. Design work. Anything that paid. I put my name out there and hoped the next gig would come through. The risk was enormous. The weight was heavy. There was no guaranteed outcome—only the desperate kind of faith that shows up when your back is against the wall.\n\nAnd then something unexpected happened.\n\nIn November of 2003, I met Carie.\n\nShe came into my life during the most unstable season I'd ever known. I had nothing to offer her. No job title. No house. No real sense of direction. But somehow, she saw something in me. She didn't try to fix me—she simply walked beside me. She believed in a future I couldn't yet see.\n\nWe got married in March of 2004. That same year, I officially started the business.\n\nThe custody battle continued, and in September of 2004, tragedy struck when Jennifer, my ex-wife, was killed. The legal battle ended, but the emotional journey didn't. Carie didn't just embrace my boys—she became Mom, without us even asking. She stepped into their world with full-hearted love, grace, and intention.\n\nAnd our story didn't end there.\n\nWithin two years, I adopted Oakley—Carie's daughter—as my own. We didn't just blend families. We became one. One mom. One dad. Three amazing kids. One roof. One new beginning. God didn't just mend a broken path—He erased it, and He laid down new ground beneath our feet. Solid ground. Family-shaped ground. It was redemption in its most complete form.\n\nThe business was never about chasing success. It was about survival.\n\nIt was born in the fire—refined by the need to lead when life gave me no other choice.\n\nIt was about giving my family a future.\n\nIt was about building something that reflected the second chance I'd been given.\n\nAnd that's when I started learning what leadership really meant.\n\nIt wasn't about having all the answers. It wasn't about climbing a corporate ladder. It was about making intentional choices when nothing felt secure. It was about showing up, even when I didn't feel qualified. It was about aligning my words with my actions, and letting my values—not my fear—lead the way.\n\nThat's where servant leadership took root. Not because I read about it. But because I lived it. I didn't want to be the kind of leader who barked from the back—I wanted to be in the trenches. Shoulder to shoulder. Carrying the weight too.\n\nLooking back, I can see it now.\n\nGod gave me exactly what I needed—not what I would have asked for, and certainly not what I expected. But what He gave me was better.\n\nHe gave me pain that produced clarity.\n\nHe gave me people who reminded me I didn't have to do it alone.\n\nHe gave me purpose that outweighed the pressure.\n\nHe gave me a path.\n\nAnd all I had to do was walk it—even when I couldn't see more than a few steps ahead.\n\nThat's how leadership started for me—not at the summit, but on the shaky path out of ruin."
+    }
+  ]
+}
