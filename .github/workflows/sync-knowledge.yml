@@ -1,0 +1,46 @@
+name: Sync Knowledge from AO
+
+on:
+  workflow_dispatch: # Manual trigger
+  schedule:
+    - cron: '0 6 * * *' # Daily at 6 AM UTC
+  push:
+    branches: [ main ]
+
+jobs:
+  sync-knowledge:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Run knowledge sync script
+      run: |
+        node scripts/fetch-knowledge.mjs
+    
+    - name: Check for changes
+      id: check-changes
+      run: |
+        if git diff --quiet public/sl-knowledge.json; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Commit and push changes
+      if: steps.check-changes.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add public/sl-knowledge.json
+        git commit -m "Sync knowledge corpus from AO [skip ci]"
+        git push
