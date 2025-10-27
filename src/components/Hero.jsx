@@ -5,11 +5,28 @@ export default function Hero() {
     <header className="py-4">
       <div className="container mx-auto px-4 text-center">
         <div className="flex justify-center">
-          <a href="/" className="hover:opacity-80 transition-opacity">
-            <svg className="h-32 w-auto" viewBox="0 0 792 148.96" xmlns="http://www.w3.org/2000/svg">
+          <a href="/" className="group relative overflow-hidden rounded-lg transition-all duration-300 hover:scale-105">
+            <svg className="h-32 w-auto relative z-10" viewBox="0 0 792 148.96" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <style>
-                  {`.cls-1 { fill: #231f20; }`}
+                  {`
+                    .cls-1 { fill: #231f20; }
+                    .gradient-wave {
+                      background: linear-gradient(90deg, 
+                        transparent 0%, 
+                        rgba(255,255,255,0.1) 25%, 
+                        rgba(255,255,255,0.2) 50%, 
+                        rgba(255,255,255,0.1) 75%, 
+                        transparent 100%
+                      );
+                      animation: wave 3s ease-in-out infinite;
+                    }
+                    @keyframes wave {
+                      0% { transform: translateX(-100%); }
+                      50% { transform: translateX(100%); }
+                      100% { transform: translateX(-100%); }
+                    }
+                  `}
                 </style>
               </defs>
               <g>
@@ -35,6 +52,8 @@ export default function Hero() {
               </g>
               <path className="cls-1" d="M46.9,132.71l33.09-49.17,33.09,49.17h25.8l-15.39-22.86c8.61-10.19,13.41-23.13,13.41-36.69,0-31.38-25.53-56.91-56.91-56.91s-56.91,25.53-56.91,56.91c0,13.56,4.8,26.5,13.41,36.69l-15.39,22.86h25.8ZM66.16,122.55l13.83-20.54,13.83,20.54h-27.65ZM79.99,37.65c19.58,0,35.51,15.93,35.51,35.51,0,6.32-1.67,12.42-4.76,17.76l-30.75-45.69-30.75,45.69c-3.08-5.33-4.76-11.44-4.76-17.76,0-19.58,15.93-35.51,35.51-35.51Z"/>
             </svg>
+            {/* Gradient wave overlay */}
+            <div className="absolute inset-0 gradient-wave opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </a>
         </div>
       </div>
