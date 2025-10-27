@@ -413,7 +413,7 @@ export default function ChatApp() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Tell me what's going on and let's see if I can help."
+              placeholder="Tell me what's going on."
               className="flex-1 px-4 py-3 text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg"
             />
             <button
