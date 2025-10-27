@@ -13,17 +13,7 @@ export default function ChatApp() {
   const [isAbusive, setIsAbusive] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to bottom when messages change (but not on initial load)
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    // Only auto-scroll if there are more than 1 message (not just the initial greeting)
-    if (messages.length > 1) {
-      scrollToBottom();
-    }
-  }, [messages]);
+  // NO AUTO-SCROLL - let users control their own scrolling
 
   // Show greeting immediately
   useEffect(() => {
@@ -376,8 +366,6 @@ export default function ChatApp() {
                   onButtonClick={handleButtonClick}
                 />
               ))}
-              {/* Scroll target for auto-scroll */}
-              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
