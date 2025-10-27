@@ -1,10 +1,12 @@
 // api/chat.js
+import { supabase } from '../../lib/supabase.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { message, conversationHistory = [] } = req.body;
+  const { message, conversationHistory = [], sessionId } = req.body;
 
   if (!message) {
     return res.status(400).json({ error: 'Message is required' });
@@ -89,6 +91,24 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
         const shouldOfferEscalation = escalationKeywords.some(keyword => 
           message.toLowerCase().includes(keyword) || response.toLowerCase().includes('handoff')
         );
+
+        // Store conversation in Supabase
+        if (sessionId) {
+          try {
+            await supabase
+              .from('conversations')
+              .insert([
+                {
+                  session_id: sessionId,
+                  user_message: message,
+                  assistant_response: response,
+                  created_at: new Date().toISOString()
+                }
+              ]);
+          } catch (error) {
+            console.error('Error storing conversation:', error);
+          }
+        }
 
         return res.status(200).json({ 
           response,
