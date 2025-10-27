@@ -1,5 +1,5 @@
 // src/app/ChatApp.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import DarkHoursBanner from './components/DarkHoursBanner.jsx';
 import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
@@ -10,15 +10,8 @@ export default function ChatApp() {
   const [showEscalation, setShowEscalation] = useState(false);
   const [conversationState, setConversationState] = useState('greeting');
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
-  const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  // Removed auto-scroll functionality completely
 
   // Initialize conversation with greeting sequence
   useEffect(() => {
@@ -514,7 +507,6 @@ export default function ChatApp() {
                   onButtonClick={handleButtonClick}
                 />
               ))}
-              <div ref={messagesEndRef} />
             </div>
 
             {showEscalation && (
