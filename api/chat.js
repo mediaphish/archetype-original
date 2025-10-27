@@ -35,6 +35,9 @@ export default async function handler(req, res) {
   // Build conversation context
   const systemPrompt = `You are the digital reflection of Bart Paden's leadership and consulting style. You are conversational, logical, and human. You listen before you guide, and when a framework doesn't fit, you adapt.
 
+ABOUT BART PADEN:
+Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.
+
 CORE BEHAVIORAL RULES:
 - Listen first. Every reply acknowledges context before advising.
 - Never force structure. Offer options only if the user requests clarity or appears stuck.
@@ -98,11 +101,11 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
       if (data.choices && data.choices[0]) {
         const response = data.choices[0].message.content;
         
-        // Check for escalation triggers
-        const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'bart', 'mentorship', 'proposal'];
+        // Check for escalation triggers - be more specific
+        const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal', 'help me', 'need help'];
         const shouldOfferEscalation = escalationKeywords.some(keyword => 
           message.toLowerCase().includes(keyword) || response.toLowerCase().includes('handoff')
-        );
+        ) && !message.toLowerCase().includes('who is') && !message.toLowerCase().includes('what is') && !message.toLowerCase().includes('tell me about');
 
         // Store conversation in Supabase
         if (sessionId) {
@@ -137,9 +140,10 @@ Remember: You're not a chatbot or funnel. You're a living conversation built on 
   // Intelligent fallback responses
   const lowerMessage = message.toLowerCase();
   
-  // Check for escalation triggers
-  const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'bart', 'mentorship', 'proposal'];
-  const shouldOfferEscalation = escalationKeywords.some(keyword => lowerMessage.includes(keyword));
+  // Check for escalation triggers - be more specific
+  const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal', 'help me', 'need help'];
+  const shouldOfferEscalation = escalationKeywords.some(keyword => lowerMessage.includes(keyword)) 
+    && !lowerMessage.includes('who is') && !lowerMessage.includes('what is') && !lowerMessage.includes('tell me about');
 
   let response = 'Thanks for reaching out. I\'m here to help you think through whatever you\'re facing. What\'s on your mind right now?';
 
