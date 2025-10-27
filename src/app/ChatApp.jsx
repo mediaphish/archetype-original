@@ -371,12 +371,12 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col bg-white">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4">
+    <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4 h-full">
         <DarkHoursBanner />
 
-        {/* Messages Area - Scrollable container */}
-        <div className="flex-1 overflow-y-auto min-h-0">
+        {/* Messages Area - Scrollable container with fixed height */}
+        <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
           {messages.length > 0 && (
             <div className="space-y-6 max-w-2xl mx-auto py-8">
               {messages.map((message, index) => (
@@ -425,24 +425,24 @@ export default function ChatApp() {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Bouncing Down Arrow */}
-        <div className="fixed right-8 bottom-8 z-40">
-          <div 
-            className="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-colors animate-bounce"
-            onClick={() => {
-              const aboutSection = document.getElementById('about');
-              if (aboutSection) {
-                aboutSection.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">Analog stuff down here</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </div>
+      {/* Bouncing Down Arrow - Fixed position */}
+      <div className="fixed right-8 bottom-8 z-40">
+        <div 
+          className="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-colors animate-bounce"
+          onClick={() => {
+            const aboutSection = document.getElementById('about');
+            if (aboutSection) {
+              aboutSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+        >
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Analog stuff down here</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
           </div>
         </div>
       </div>
