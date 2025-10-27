@@ -1,5 +1,44 @@
 // api/chat.js
 import { createClient } from '@supabase/supabase-js';
+import fs from 'fs';
+import path from 'path';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
+
+// Load knowledge corpus
+function loadKnowledgeCorpus() {
+  try {
+    const knowledgePath = path.join(process.cwd(), 'public', 'knowledge.json');
+    if (fs.existsSync(knowledgePath)) {
+      const rawData = fs.readFileSync(knowledgePath, 'utf8');
+      return JSON.parse(rawData);
+    }
+  } catch (error) {
+    console.error('Error loading knowledge corpus:', error);
+  }
+  return { docs: [] };
+}
+
+// Search knowledge corpus for relevant content
+function searchKnowledge(query, corpus) {
+  if (!query || !corpus.docs) return [];
+  
+  const searchTerm = query.toLowerCase();
+  return corpus.docs.filter(doc => {
+    const title = (doc.title || '').toLowerCase();
+    const summary = (doc.summary || '').toLowerCase();
+    const body = (doc.body || '').toLowerCase();
+    const tags = (doc.tags || []).join(' ').toLowerCase();
+    
+    return title.includes(searchTerm) || 
+           summary.includes(searchTerm) || 
+           body.includes(searchTerm) ||
+           tags.includes(searchTerm);
+  }).slice(0, 3); // Limit to 3 most relevant
+}
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -17,6 +56,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Message is required' });
   }
 
+  // Load knowledge corpus
+  const knowledgeCorpus = loadKnowledgeCorpus();
+  const relevantKnowledge = searchKnowledge(message, knowledgeCorpus);
+
   // Check if we're in dark hours
   const now = new Date();
   const cstTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Chicago"}));
@@ -32,11 +75,25 @@ export default async function handler(req, res) {
     hasSupabaseKey: !!process.env.SUPABASE_ANON_KEY
   });
 
+  // Build knowledge context
+  let knowledgeContext = '';
+  if (relevantKnowledge.length > 0) {
+    knowledgeContext = '\n\nRELEVANT KNOWLEDGE BASE:\n';
+    relevantKnowledge.forEach((doc, index) => {
+      knowledgeContext += `${index + 1}. ${doc.title} (${doc.type})\n`;
+      knowledgeContext += `   Summary: ${doc.summary}\n`;
+      if (doc.tags && doc.tags.length > 0) {
+        knowledgeContext += `   Tags: ${doc.tags.join(', ')}\n`;
+      }
+      knowledgeContext += `   Key insights: ${doc.body.substring(0, 200)}...\n\n`;
+    });
+  }
+
   // Build conversation context
   const systemPrompt = `You are the digital reflection of Bart Paden's leadership and consulting style. You are conversational, logical, and human. You listen before you guide, and when a framework doesn't fit, you adapt.
 
 ABOUT BART PADEN:
-Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.
+Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.${knowledgeContext}
 
 CORE BEHAVIORAL RULES:
 - Listen first. Every reply acknowledges context before advising.
