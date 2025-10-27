@@ -164,11 +164,15 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
           response = response.replace('[SUGGEST_ANALOG]', '');
         }
         
-        // Check for escalation triggers - be more specific
-        const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal', 'help me', 'need help'];
+        // Check for escalation triggers - be much more specific and don't escalate basic questions
+        const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal'];
+        const basicQuestionWords = ['who is', 'what is', 'tell me about', 'can he help', 'how does', 'what are', 'explain'];
+        const isBasicQuestion = basicQuestionWords.some(word => message.toLowerCase().includes(word));
+        
+        // Only escalate for high-intent requests, not basic questions
         const shouldOfferEscalation = escalationKeywords.some(keyword => 
           message.toLowerCase().includes(keyword) || response.toLowerCase().includes('handoff')
-        ) && !message.toLowerCase().includes('who is') && !message.toLowerCase().includes('what is') && !message.toLowerCase().includes('tell me about');
+        ) && !isBasicQuestion && !isDarkHours;
 
         // Store conversation in Supabase
         if (sessionId) {
@@ -204,10 +208,15 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
   // Intelligent fallback - provide real answers when OpenAI fails
   const lowerMessage = message.toLowerCase();
   
-  // Check for escalation triggers
-  const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal', 'help me', 'need help'];
+  // Check for escalation triggers - be much more specific and don't escalate basic questions
+  const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal'];
+  const basicQuestionWords = ['who is', 'what is', 'tell me about', 'can he help', 'how does', 'what are', 'explain'];
+  const isBasicQuestion = basicQuestionWords.some(word => lowerMessage.includes(word));
+  
+  // Only escalate for high-intent requests, not basic questions
   const shouldOfferEscalation = escalationKeywords.some(keyword => lowerMessage.includes(keyword)) 
-    && !lowerMessage.includes('who is') && !lowerMessage.includes('what is') && !lowerMessage.includes('tell me about');
+    && !isBasicQuestion 
+    && !isDarkHours; // Don't escalate during dark hours
 
   // Provide real answers based on the question
   let response = '';
@@ -228,13 +237,9 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
     response = `I understand you're asking about "${message}". Let me help you with that. Could you tell me more about what you're looking for?`;
   }
   
-  // Add escalation offer if triggered
+  // Add escalation offer ONLY for high-intent requests (not basic questions)
   if (shouldOfferEscalation) {
-    if (isDarkHours) {
-      response += '\n\nParts of this deserve a human ear. Bart\'s office is closed right now, but I can queue your brief and deliver it at 10 a.m. He typically replies that afternoon. Want me to set that up?';
-    } else {
-      response += '\n\nParts of this deserve a human ear. With your OK, I\'ll send Bart a 90-second brief and he\'ll reply personally. Prefer an asynchronous chat or a brief call?';
-    }
+    response += '\n\nParts of this deserve a human ear. With your OK, I\'ll send Bart a 90-second brief and he\'ll reply personally. Prefer an asynchronous chat or a brief call?';
   }
 
   res.status(200).json({ 
