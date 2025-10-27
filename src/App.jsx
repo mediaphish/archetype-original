@@ -11,8 +11,21 @@ export default function App() {
       <Header />
       <Hero />
       <ChatApp />
-      <About />
-      <Contact />
+      <div id="about">
+        <About />
+      </div>
+      <div id="philosophy">
+        <About />
+      </div>
+      <div id="methods">
+        <About />
+      </div>
+      <div id="journal">
+        <About />
+      </div>
+      <div id="contact">
+        <Contact />
+      </div>
       <footer className="py-8 border-t border-black">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <p className="text-sm text-black">© 2025 Bart Paden · Archetype Original LLC</p>
