@@ -346,8 +346,15 @@ export default function ChatApp() {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      e.stopPropagation();
       handleSendMessage();
     }
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleSendMessage();
   };
 
   return (
@@ -387,7 +394,7 @@ export default function ChatApp() {
             />
           )}
 
-          <div className="flex space-x-3">
+          <form onSubmit={handleFormSubmit} className="flex space-x-3">
             <input
               type="text"
               value={inputValue}
@@ -398,13 +405,13 @@ export default function ChatApp() {
               className="flex-1 px-4 py-3 text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg"
             />
             <button
-              onClick={() => handleSendMessage()}
+              type="submit"
               disabled={!inputValue.trim()}
               className="bg-gray-800 text-white px-6 py-3 text-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg"
             >
               Send
             </button>
-          </div>
+          </form>
         </div>
       </div>
 
