@@ -1,16 +1,16 @@
-name: Update Journal Posts
+name: Update Knowledge Corpus
 
 on:
   push:
     paths:
-      - 'ao-knowledge-hq-kit/journal/**'
+      - 'ao-knowledge-hq-kit/**'
   schedule:
     # Run every hour to check for scheduled posts
     - cron: '0 * * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
-  update-journal:
+  update-knowledge:
     runs-on: ubuntu-latest
     
     steps:
@@ -26,13 +26,13 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
-    - name: Update knowledge corpus with journal posts
-      run: node scripts/manage-journal.mjs update
+    - name: Update knowledge corpus (includes journal posts)
+      run: node scripts/build-knowledge.mjs
       
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add public/knowledge.json
-        git diff --staged --quiet || git commit -m "Auto-update: Process journal posts [skip ci]"
+        git diff --staged --quiet || git commit -m "Auto-update: Process knowledge corpus and journal posts [skip ci]"
         git push
