@@ -10,17 +10,15 @@ const supabase = createClient(
 // Load knowledge corpus
 function loadKnowledgeCorpus() {
   try {
-    // Get current directory for ES modules
-    const currentDir = path.dirname(new URL(import.meta.url).pathname);
-    
     // Try multiple possible paths for Vercel serverless environment
     const possiblePaths = [
-      path.join(currentDir, 'knowledge.json'), // In same directory as API function
       path.join(process.cwd(), 'api', 'knowledge.json'),
       path.join(process.cwd(), 'public', 'knowledge.json'),
       path.join(process.cwd(), 'knowledge.json'),
-      path.join(currentDir, '..', 'public', 'knowledge.json'),
-      path.join(currentDir, '..', '..', 'public', 'knowledge.json')
+      '/var/task/api/knowledge.json',
+      '/var/task/public/knowledge.json',
+      './knowledge.json',
+      '../public/knowledge.json'
     ];
     
     for (const knowledgePath of possiblePaths) {
@@ -43,16 +41,26 @@ function searchKnowledge(query, corpus) {
   if (!query || !corpus.docs) return [];
   
   const searchTerm = query.toLowerCase();
+  const words = searchTerm.split(' ').filter(word => word.length > 2); // Filter out short words
+  
   return corpus.docs.filter(doc => {
     const title = (doc.title || '').toLowerCase();
     const summary = (doc.summary || '').toLowerCase();
     const body = (doc.body || '').toLowerCase();
     const tags = (doc.tags || []).join(' ').toLowerCase();
     
-    return title.includes(searchTerm) || 
-           summary.includes(searchTerm) || 
-           body.includes(searchTerm) ||
-           tags.includes(searchTerm);
+    // Check for exact phrase match
+    if (title.includes(searchTerm) || summary.includes(searchTerm) || body.includes(searchTerm) || tags.includes(searchTerm)) {
+      return true;
+    }
+    
+    // Check for individual word matches
+    return words.some(word => 
+      title.includes(word) || 
+      summary.includes(word) || 
+      body.includes(word) ||
+      tags.includes(word)
+    );
   }).slice(0, 5); // Get top 5 most relevant
 }
 
@@ -72,7 +80,11 @@ export default async function handler(req, res) {
   console.log('Knowledge corpus loaded:', knowledgeCorpus.docs ? knowledgeCorpus.docs.length : 0, 'documents');
   
   const relevantKnowledge = searchKnowledge(message, knowledgeCorpus);
+  console.log('Searching for:', message);
   console.log('Relevant knowledge found:', relevantKnowledge.length, 'documents');
+  if (relevantKnowledge.length > 0) {
+    console.log('Found documents:', relevantKnowledge.map(doc => doc.title));
+  }
 
   // Build knowledge context for AI
   let knowledgeContext = '';
@@ -88,9 +100,6 @@ export default async function handler(req, res) {
       }
       knowledgeContext += `Content: ${doc.body.substring(0, 500)}...\n\n`;
     });
-  } else {
-    // Fallback knowledge if corpus not found
-    knowledgeContext = '\n\nKNOWLEDGE BASE: Bart Paden is a lifelong builder with 32+ years of experience creating companies, growing people, and learning what makes both endure. He specializes in business strategy, operations, change management, leadership development, and personal clarity. His approach is practical, not theoretical, based on real experience building teams and companies.';
   }
 
   // Determine if it's dark hours (6 PM - 10 AM CST)
@@ -151,6 +160,7 @@ ${isDarkHours ? 'DARK HOURS: Bart\'s office is closed (6 p.m.–10 a.m. CST). Yo
 Remember: This is a real conversation. Listen, understand, and respond authentically.`;
 
   // Try OpenAI first, fallback to simple error if it fails
+  console.log('OpenAI API key present:', !!process.env.OPENAI_API_KEY);
   if (process.env.OPENAI_API_KEY) {
     try {
       const messages = [
@@ -239,6 +249,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
       }
     } catch (error) {
       console.error('OpenAI API error:', error);
+      console.error('OpenAI API error details:', error.message);
       // Fall through to simple error response
     }
   }
