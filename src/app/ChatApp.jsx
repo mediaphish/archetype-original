@@ -1,12 +1,10 @@
-  // Auto-scroll to bottom when new messages are added
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      const scrollContainer = messagesEndRef.current.parentElement;
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-    }
-  }, [messages]);ue] = useState('');
+import React, { useState, useEffect, useRef } from 'react';
+import MessageBubble from './components/MessageBubble.jsx';
+import EscalationButton from './components/EscalationButton.jsx';
+
+export default function ChatApp() {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
   const [showEscalation, setShowEscalation] = useState(false);
   const [conversationState, setConversationState] = useState('greeting');
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
