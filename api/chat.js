@@ -88,7 +88,16 @@ export default async function handler(req, res) {
   const systemPrompt = `You are Archy, the digital reflection of Bart Paden. You are having a real conversation with a real person. You must listen, understand, and respond authentically.
 
 ABOUT BART PADEN:
-Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.${knowledgeContext}
+Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. 
+
+Bart consults across multiple areas:
+- BUSINESS STRATEGY: Building companies, scaling operations, navigating growth challenges
+- OPERATIONS: Creating systems that work under pressure, improving efficiency, building structure
+- CHANGE MANAGEMENT: Leading transitions, restructures, pivots, crisis management without destroying culture
+- LEADERSHIP: Developing emerging leaders, strengthening existing leaders, building sustainable leadership habits
+- PERSONAL CLARITY: Purpose, direction, better decision-making
+
+Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.${knowledgeContext}
 
 CRITICAL INSTRUCTIONS:
 - You are NOT a chatbot with canned responses. You are having a genuine conversation.
@@ -107,6 +116,7 @@ CONVERSATION STYLE:
         BUTTON SUGGESTIONS (use sparingly, only when genuinely helpful):
         - If someone wants to learn more about Bart's story → add [SUGGEST_STORY] to your response
         - If someone wants to schedule time with Bart → add [SUGGEST_SCHEDULE] to your response  
+        - If someone wants business/operations/change consulting → add [SUGGEST_CONSULTING] to your response
         - If someone wants mentorship/leadership guidance → add [SUGGEST_MENTORSHIP] to your response
         - If someone wants to explore traditional site content → add [SUGGEST_ANALOG] to your response
         - If someone expresses disinterest in AI → add [SUGGEST_ANALOG] to your response
@@ -168,6 +178,10 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
           suggestedButtons.push({ text: "Get mentorship guidance", value: "mentorship" });
           response = response.replace('[SUGGEST_MENTORSHIP]', '');
         }
+        if (response.includes('[SUGGEST_CONSULTING]')) {
+          suggestedButtons.push({ text: "Get consulting help", value: "calendly_schedule" });
+          response = response.replace('[SUGGEST_CONSULTING]', '');
+        }
         
         // Check for escalation triggers - be much more specific and don't escalate basic questions
         const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal'];
@@ -223,10 +237,24 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
     && !isBasicQuestion 
     && !isDarkHours; // Don't escalate during dark hours
 
-  // Smart keyword detection for better responses
-  const isNewLeader = lowerMessage.includes('never led') || lowerMessage.includes('new leader') || lowerMessage.includes('first time') || lowerMessage.includes('stepping into leadership') || (lowerMessage.includes('want to learn') && lowerMessage.includes('lead'));
-  const isLeadershipQuestion = lowerMessage.includes('leadership') || lowerMessage.includes('leader') || lowerMessage.includes('manage') || lowerMessage.includes('team');
-  const isMentorshipRequest = lowerMessage.includes('mentor') || lowerMessage.includes('guidance') || lowerMessage.includes('learn') || lowerMessage.includes('help me');
+  // Smart keyword detection for better responses - covering all of Bart's consulting areas
+  const isNewLeader = lowerMessage.includes('never led') || lowerMessage.includes('new leader') || lowerMessage.includes('first time') || lowerMessage.includes('stepping into leadership') || lowerMessage.includes('never done that before') || lowerMessage.includes('never led people') || lowerMessage.includes('never managed') || lowerMessage.includes('never been a leader') || (lowerMessage.includes('want to learn') && lowerMessage.includes('lead'));
+  
+  // Business/Company challenges
+  const isBusinessChallenge = lowerMessage.includes('business') || lowerMessage.includes('company') || lowerMessage.includes('organization') || lowerMessage.includes('startup') || lowerMessage.includes('scaling') || lowerMessage.includes('growth') || lowerMessage.includes('revenue') || lowerMessage.includes('profit') || lowerMessage.includes('market') || lowerMessage.includes('competition');
+  
+  // Operations/Systems challenges  
+  const isOperationsChallenge = lowerMessage.includes('operations') || lowerMessage.includes('process') || lowerMessage.includes('systems') || lowerMessage.includes('efficiency') || lowerMessage.includes('workflow') || lowerMessage.includes('productivity') || lowerMessage.includes('structure') || lowerMessage.includes('organization') || lowerMessage.includes('management') || lowerMessage.includes('execution');
+  
+  // Change/Transformation challenges
+  const isChangeChallenge = lowerMessage.includes('change') || lowerMessage.includes('transformation') || lowerMessage.includes('transition') || lowerMessage.includes('restructure') || lowerMessage.includes('pivot') || lowerMessage.includes('shift') || lowerMessage.includes('evolve') || lowerMessage.includes('adapt') || lowerMessage.includes('navigate') || lowerMessage.includes('crisis');
+  
+  // Leadership challenges (existing leaders)
+  const isLeadershipChallenge = (lowerMessage.includes('leadership') || lowerMessage.includes('leader') || lowerMessage.includes('manage') || lowerMessage.includes('team') || lowerMessage.includes('culture') || lowerMessage.includes('people') || lowerMessage.includes('staff') || lowerMessage.includes('employee')) && !isNewLeader;
+  
+  // General help/consulting requests
+  const isConsultingRequest = lowerMessage.includes('consulting') || lowerMessage.includes('mentor') || lowerMessage.includes('guidance') || lowerMessage.includes('advice') || lowerMessage.includes('help') || lowerMessage.includes('coaching') || lowerMessage.includes('support');
+  
   const isSchedulingRequest = lowerMessage.includes('schedule') || lowerMessage.includes('call') || lowerMessage.includes('meeting') || lowerMessage.includes('appointment');
   
   // Check conversation context for leadership concerns
@@ -258,31 +286,35 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
       { text: "Schedule a call to discuss", value: "calendly_schedule" },
       { text: "Learn more about these fundamentals", value: "fundamentals" }
     ];
-  } else if (isNewLeader || (lowerMessage.includes('can he help') && lowerMessage.includes('leader'))) {
-    response = `Absolutely! Bart specializes in mentoring emerging leaders. He's helped hundreds of first-time leaders build the clarity, confidence, and habits that make leadership sustainable. His approach is practical - no jargon, no theory, just the logic of how leadership actually works.\n\nHe focuses on five fundamentals: clarity beats chaos (people can't follow what they can't see), protect the culture (values before convenience), build trust daily (it's math, not magic), empower over control (ownership outlasts oversight), and serve the standard (people rise to what you model).\n\nWhat's your biggest concern about stepping into leadership?`;
-    suggestedButtons = [
-      { text: "Schedule mentorship call", value: "calendly_schedule" },
-      { text: "Learn the fundamentals", value: "mentorship" }
-    ];
-  } else if (isLeadershipQuestion) {
-    response = `Bart's leadership philosophy centers on five fundamentals: clarity beats chaos (people can't follow what they can't see), protect the culture (values before convenience), build trust daily (it's math, not magic), empower over control (ownership outlasts oversight), and serve the standard (people rise to what you model). He's helped hundreds of leaders grow through practical, no-nonsense guidance.\n\nWhat specific leadership challenge are you facing right now?`;
-    if (isMentorshipRequest) {
-      suggestedButtons = [
-        { text: "Get personalized guidance", value: "calendly_schedule" },
-        { text: "Learn more about his approach", value: "mentorship" }
-      ];
-    }
-  } else if (isMentorshipRequest || lowerMessage.includes('help') || lowerMessage.includes('advice')) {
-    response = `Bart helps with three main areas: building and leading companies (structure, alignment, systems), emerging leadership (clarity, confidence, sustainable habits), and personal/professional clarity (purpose, direction, better decisions).\n\nHe's spent 32 years in the trenches - from startups to software to fitness to leadership teams. His guidance comes from real experience, not theory.\n\nWhat specific challenge are you facing?`;
-    suggestedButtons = [
-      { text: "Schedule a call with Bart", value: "calendly_schedule" },
-      { text: "Read his story", value: "story" }
-    ];
-  } else if (lowerMessage.includes('business') || lowerMessage.includes('company')) {
+  } else if (isBusinessChallenge) {
     response = `Bart has built companies from nothing and helped organizations grow without losing their soul. He consults founders and operators who need structure, alignment, and systems that hold when things get hard. His experience spans startups, software, fitness, and leadership teams.\n\nWhat's your biggest business challenge right now?`;
     suggestedButtons = [
       { text: "Get business consulting", value: "calendly_schedule" },
       { text: "Learn about his approach", value: "story" }
+    ];
+  } else if (isOperationsChallenge) {
+    response = `Bart specializes in building systems that work - not just on paper, but when the pressure's on. He's helped companies create structure, improve efficiency, and build processes that actually hold up under real-world conditions. His approach is practical, not theoretical.\n\nWhat operational challenge are you trying to solve?`;
+    suggestedButtons = [
+      { text: "Get operations consulting", value: "calendly_schedule" },
+      { text: "Learn about his approach", value: "story" }
+    ];
+  } else if (isChangeChallenge) {
+    response = `Change is hard, especially when it involves people and culture. Bart has navigated major transitions - company sales, restructures, pivots, and crisis management. He knows how to lead change without destroying what's working.\n\nWhat kind of change are you trying to navigate?`;
+    suggestedButtons = [
+      { text: "Get change consulting", value: "calendly_schedule" },
+      { text: "Learn about his approach", value: "story" }
+    ];
+  } else if (isLeadershipChallenge) {
+    response = `Bart's leadership philosophy centers on five fundamentals: clarity beats chaos (people can't follow what they can't see), protect the culture (values before convenience), build trust daily (it's math, not magic), empower over control (ownership outlasts oversight), and serve the standard (people rise to what you model). He's helped hundreds of leaders grow through practical, no-nonsense guidance.\n\nWhat specific leadership challenge are you facing right now?`;
+    suggestedButtons = [
+      { text: "Get leadership consulting", value: "calendly_schedule" },
+      { text: "Learn more about his approach", value: "mentorship" }
+    ];
+  } else if (isConsultingRequest) {
+    response = `Bart helps with a wide range of challenges: building and leading companies (structure, alignment, systems), operations and efficiency (processes that actually work), change and transformation (navigating transitions without destroying culture), and leadership development (clarity, confidence, sustainable habits).\n\nHe's spent 32 years in the trenches - from startups to software to fitness to leadership teams. His guidance comes from real experience, not theory.\n\nWhat specific challenge are you facing?`;
+    suggestedButtons = [
+      { text: "Schedule a call with Bart", value: "calendly_schedule" },
+      { text: "Read his story", value: "story" }
     ];
   } else if (isSchedulingRequest) {
     response = `I'd be happy to help you schedule time with Bart. He typically does 30-60 minute calls focused on your specific challenges.\n\nWhat's the main thing you'd like to discuss with him?`;
