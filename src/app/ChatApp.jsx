@@ -12,7 +12,12 @@ export default function ChatApp() {
   const [isAbusive, setIsAbusive] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // NO AUTO-SCROLL - let users control their own scrolling
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   // Show greeting immediately
   useEffect(() => {
@@ -392,11 +397,11 @@ export default function ChatApp() {
 
   return (
     <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative">
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4 h-full">
+      <div className="flex-1 flex flex-col w-[70vw] mx-auto px-4 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
           {messages.length > 0 && (
-            <div className="space-y-6 max-w-2xl mx-auto py-8">
+            <div className="py-8">
               {messages.map((message, index) => (
                 <MessageBubble
                   key={index}
@@ -407,12 +412,14 @@ export default function ChatApp() {
                   onButtonClick={handleButtonClick}
                 />
               ))}
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
 
         {/* Input Area - Fixed at bottom */}
-        <div className="flex-shrink-0 max-w-2xl mx-auto w-full p-4 bg-white border-t border-gray-200">
+        <div className="flex-shrink-0 w-full p-4 bg-white border-t border-gray-200">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
