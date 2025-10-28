@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import DarkHoursBanner from './components/DarkHoursBanner.jsx';
 import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
 
@@ -350,8 +349,6 @@ export default function ChatApp() {
   return (
     <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative">
       <div className="flex-1 flex flex-col max-w-4xl mx-auto px-4 h-full">
-        <DarkHoursBanner />
-
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
           {messages.length > 0 && (
