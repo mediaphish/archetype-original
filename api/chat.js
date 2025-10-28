@@ -104,13 +104,14 @@ CONVERSATION STYLE:
 - Share relevant insights from Bart's experience when appropriate.
 - Be helpful without being pushy or salesy.
 
-BUTTON SUGGESTIONS (use sparingly, only when genuinely helpful):
-- If someone wants to learn more about Bart's story → add [SUGGEST_STORY] to your response
-- If someone wants to schedule time with Bart → add [SUGGEST_SCHEDULE] to your response  
-- If someone wants to explore traditional site content → add [SUGGEST_ANALOG] to your response
-- If someone expresses disinterest in AI → add [SUGGEST_ANALOG] to your response
-- Only suggest buttons when they directly address what the person is asking for
-- The markers will be removed from your response and converted to buttons automatically
+        BUTTON SUGGESTIONS (use sparingly, only when genuinely helpful):
+        - If someone wants to learn more about Bart's story → add [SUGGEST_STORY] to your response
+        - If someone wants to schedule time with Bart → add [SUGGEST_SCHEDULE] to your response  
+        - If someone wants mentorship/leadership guidance → add [SUGGEST_MENTORSHIP] to your response
+        - If someone wants to explore traditional site content → add [SUGGEST_ANALOG] to your response
+        - If someone expresses disinterest in AI → add [SUGGEST_ANALOG] to your response
+        - Only suggest buttons when they directly address what the person is asking for
+        - The markers will be removed from your response and converted to buttons automatically
 
 EXAMPLES OF GOOD RESPONSES:
 - If someone asks "Who is Bart?" → Give a genuine, personal answer about who Bart is, not a generic consultant description.
@@ -162,6 +163,10 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         if (response.includes('[SUGGEST_ANALOG]')) {
           suggestedButtons.push({ text: "Go Analog", value: "go_analog" });
           response = response.replace('[SUGGEST_ANALOG]', '');
+        }
+        if (response.includes('[SUGGEST_MENTORSHIP]')) {
+          suggestedButtons.push({ text: "Get mentorship guidance", value: "mentorship" });
+          response = response.replace('[SUGGEST_MENTORSHIP]', '');
         }
         
         // Check for escalation triggers - be much more specific and don't escalate basic questions
@@ -218,23 +223,88 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
     && !isBasicQuestion 
     && !isDarkHours; // Don't escalate during dark hours
 
-  // Provide real answers based on the question
+  // Smart keyword detection for better responses
+  const isNewLeader = lowerMessage.includes('never led') || lowerMessage.includes('new leader') || lowerMessage.includes('first time') || lowerMessage.includes('stepping into leadership') || (lowerMessage.includes('want to learn') && lowerMessage.includes('lead'));
+  const isLeadershipQuestion = lowerMessage.includes('leadership') || lowerMessage.includes('leader') || lowerMessage.includes('manage') || lowerMessage.includes('team');
+  const isMentorshipRequest = lowerMessage.includes('mentor') || lowerMessage.includes('guidance') || lowerMessage.includes('learn') || lowerMessage.includes('help me');
+  const isSchedulingRequest = lowerMessage.includes('schedule') || lowerMessage.includes('call') || lowerMessage.includes('meeting') || lowerMessage.includes('appointment');
+  
+  // Check conversation context for leadership concerns
+  const lastAssistantMessage = conversationHistory.length > 0 ? conversationHistory[conversationHistory.length - 1]?.content?.toLowerCase() || '' : '';
+  const isLeadershipContext = lastAssistantMessage.includes('stepping into leadership') || lastAssistantMessage.includes('leadership challenge') || lastAssistantMessage.includes('biggest concern');
+  const isNewLeaderResponse = isLeadershipContext && (lowerMessage.includes('never') || lowerMessage.includes('first time') || lowerMessage.includes('don\'t know') || lowerMessage.includes('scared') || lowerMessage.includes('worried') || lowerMessage.includes('concerned'));
+  
+  // Check for confusion/overwhelm responses
+  const isConfusedResponse = lowerMessage.includes('don\'t know') || lowerMessage.includes('confused') || lowerMessage.includes('overwhelmed') || lowerMessage.includes('brand new') || lowerMessage.includes('all new') || lowerMessage.includes('no idea') || lowerMessage.includes('lost');
+  const isFundamentalsContext = lastAssistantMessage.includes('which of these feels most important') || lastAssistantMessage.includes('fundamentals') || lastAssistantMessage.includes('focus on first');
+
+  // Provide intelligent responses based on context
   let response = '';
+  let suggestedButtons = [];
   
   if (lowerMessage.includes('who is bart') || lowerMessage.includes('who is bart?')) {
     response = `Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.`;
-  } else if (lowerMessage.includes('can he help') && lowerMessage.includes('leader')) {
-    response = `Absolutely. Bart has spent over 32 years building leaders and teams. He mentors emerging leaders, helping them build clarity, confidence, and the habits that make leadership sustainable. His approach is practical - no jargon, no theory, just the logic of how leadership actually works. He focuses on five fundamentals: clarity beats chaos, protect the culture, build trust daily, empower over control, and serve the standard. What specific leadership challenge are you facing?`;
-  } else if (lowerMessage.includes('leadership') || lowerMessage.includes('leader') || lowerMessage.includes('manage')) {
-    response = `Bart's leadership philosophy centers on five fundamentals: clarity beats chaos (people can't follow what they can't see), protect the culture (values before convenience), build trust daily (it's math, not magic), empower over control (ownership outlasts oversight), and serve the standard (people rise to what you model). He's helped hundreds of leaders grow through practical, no-nonsense guidance. What aspect of leadership are you working on?`;
-  } else if (lowerMessage.includes('help') || lowerMessage.includes('advice')) {
-    response = `Bart helps with three main areas: building and leading companies (structure, alignment, systems), emerging leadership (clarity, confidence, sustainable habits), and personal/professional clarity (purpose, direction, better decisions). What specific challenge are you facing?`;
+  } else if (isConfusedResponse && isFundamentalsContext) {
+    // User is confused about fundamentals - lead to Bart
+    response = `I get it - this is all brand new and it can feel overwhelming. Sometimes the best way forward is to talk through it with someone who's been there.\n\nBart has mentored hundreds of first-time leaders, and he's really good at meeting people right where they are. He won't throw frameworks at you - he'll listen to your specific situation and help you figure out what matters most.\n\nSounds like you're looking for a conversation with Bart. Let me help get that scheduled.`;
+    suggestedButtons = [
+      { text: "Schedule a call with Bart", value: "calendly_schedule" },
+      { text: "Request live handoff", value: "handoff" }
+    ];
+  } else if (isNewLeaderResponse) {
+    // User is responding to leadership concern question with inexperience
+    response = `That's exactly where every great leader starts - at the beginning. Bart has mentored hundreds of first-time leaders, and he says the best ones are the ones who admit they don't know everything yet.\n\nHere's what he tells new leaders: leadership isn't about having all the answers. It's about asking the right questions, listening well, and making decisions with the information you have. The confidence comes from practice, not perfection.\n\nBart's five fundamentals give you a framework to build on:\n\n1. **Clarity beats chaos** - Start with clear expectations\n2. **Protect the culture** - Know what you stand for\n3. **Build trust daily** - Small consistent actions matter\n4. **Empower over control** - Give people room to succeed\n5. **Serve the standard** - Model what you want to see\n\nWhich of these feels most important to focus on first?`;
+    suggestedButtons = [
+      { text: "Schedule a call to discuss", value: "calendly_schedule" },
+      { text: "Learn more about these fundamentals", value: "fundamentals" }
+    ];
+  } else if (isNewLeader || (lowerMessage.includes('can he help') && lowerMessage.includes('leader'))) {
+    response = `Absolutely! Bart specializes in mentoring emerging leaders. He's helped hundreds of first-time leaders build the clarity, confidence, and habits that make leadership sustainable. His approach is practical - no jargon, no theory, just the logic of how leadership actually works.\n\nHe focuses on five fundamentals: clarity beats chaos (people can't follow what they can't see), protect the culture (values before convenience), build trust daily (it's math, not magic), empower over control (ownership outlasts oversight), and serve the standard (people rise to what you model).\n\nWhat's your biggest concern about stepping into leadership?`;
+    suggestedButtons = [
+      { text: "Schedule mentorship call", value: "calendly_schedule" },
+      { text: "Learn the fundamentals", value: "mentorship" }
+    ];
+  } else if (isLeadershipQuestion) {
+    response = `Bart's leadership philosophy centers on five fundamentals: clarity beats chaos (people can't follow what they can't see), protect the culture (values before convenience), build trust daily (it's math, not magic), empower over control (ownership outlasts oversight), and serve the standard (people rise to what you model). He's helped hundreds of leaders grow through practical, no-nonsense guidance.\n\nWhat specific leadership challenge are you facing right now?`;
+    if (isMentorshipRequest) {
+      suggestedButtons = [
+        { text: "Get personalized guidance", value: "calendly_schedule" },
+        { text: "Learn more about his approach", value: "mentorship" }
+      ];
+    }
+  } else if (isMentorshipRequest || lowerMessage.includes('help') || lowerMessage.includes('advice')) {
+    response = `Bart helps with three main areas: building and leading companies (structure, alignment, systems), emerging leadership (clarity, confidence, sustainable habits), and personal/professional clarity (purpose, direction, better decisions).\n\nHe's spent 32 years in the trenches - from startups to software to fitness to leadership teams. His guidance comes from real experience, not theory.\n\nWhat specific challenge are you facing?`;
+    suggestedButtons = [
+      { text: "Schedule a call with Bart", value: "calendly_schedule" },
+      { text: "Read his story", value: "story" }
+    ];
   } else if (lowerMessage.includes('business') || lowerMessage.includes('company')) {
-    response = `Bart has built companies from nothing and helped organizations grow without losing their soul. He consults founders and operators who need structure, alignment, and systems that hold when things get hard. His experience spans startups, software, fitness, and leadership teams. What's your biggest business challenge right now?`;
+    response = `Bart has built companies from nothing and helped organizations grow without losing their soul. He consults founders and operators who need structure, alignment, and systems that hold when things get hard. His experience spans startups, software, fitness, and leadership teams.\n\nWhat's your biggest business challenge right now?`;
+    suggestedButtons = [
+      { text: "Get business consulting", value: "calendly_schedule" },
+      { text: "Learn about his approach", value: "story" }
+    ];
+  } else if (isSchedulingRequest) {
+    response = `I'd be happy to help you schedule time with Bart. He typically does 30-60 minute calls focused on your specific challenges.\n\nWhat's the main thing you'd like to discuss with him?`;
+    suggestedButtons = [
+      { text: "Schedule a call", value: "calendly_schedule" }
+    ];
   } else if (lowerMessage.includes('what is') || lowerMessage.includes('tell me about')) {
     response = `I'd be happy to help explain that. Could you be more specific about what you'd like to know?`;
+  } else if (isConfusedResponse) {
+    // General confusion - lead to Bart
+    response = `I can tell this is important to you, but I'm not sure I can give you the specific guidance you need.\n\nBart is really good at meeting people where they are and helping them figure out what matters most. He's spent 32 years working with people in all kinds of situations.\n\nSounds like you're looking for a conversation with Bart. Let me help get that scheduled.`;
+    suggestedButtons = [
+      { text: "Schedule a call with Bart", value: "calendly_schedule" },
+      { text: "Request live handoff", value: "handoff" }
+    ];
   } else {
-    response = `I understand you're asking about "${message}". Let me help you with that. Could you tell me more about what you're looking for?`;
+    // Final fallback - always lead to Bart
+    response = `I want to make sure I'm giving you the best help possible, but I'm not sure I can fully address what you're looking for.\n\nBart has 32 years of experience helping people with leadership, business, and personal clarity challenges. He's really good at listening to your specific situation and providing practical guidance.\n\nSounds like you're looking for a conversation with Bart. Let me help get that scheduled.`;
+    suggestedButtons = [
+      { text: "Schedule a call with Bart", value: "calendly_schedule" },
+      { text: "Request live handoff", value: "handoff" }
+    ];
   }
   
   // Add escalation offer ONLY for high-intent requests (not basic questions)
@@ -245,6 +315,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
   res.status(200).json({ 
     response,
     shouldEscalate: shouldOfferEscalation,
-    isDarkHours
+    isDarkHours,
+    suggestedButtons: suggestedButtons.length > 0 ? suggestedButtons : undefined
   });
 }
