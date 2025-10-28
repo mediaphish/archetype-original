@@ -1,26 +1,8 @@
----
-title: "Do the Work"
-slug: chapter-12-do-the-work
-type: chapter
-tags: ["accidental-ceo", "fundamentals", "servant-leadership", "standards", "stewardship", "presence"]
-status: final
-created_at: 2025-10-28
-updated_at: 2025-10-28
-summary: >
-  Receipts over rhetoric. Credibility comes from visible, repeatable action—not announcements. Stories: MWI Cares & the Crying Couch, the 80/20 rule, financial pathways, and show-the-numbers transparency.
-source:
-  kind: internal
-  citation_keys: ["accidental-ceo-chapter-12"]
-takeaways: []
-applications: []
-related: []
----
+Chapter 12: Do the Work
 
-# Chapter 12: Do the Work
+Theology
 
-## Theology
-
-### Receipts Over Rhetoric
+Receipts Over Rhetoric
 
 Leadership breaks down when leaders rely on words without proof. I’ve sat in meetings where someone at the top looked the staff in the eye, smiled, and said, “Everything’s great. Keep up the good work.” But you could feel it in the room—people didn’t buy it. The numbers didn’t line up. The workload didn’t match. The story and the reality were at odds. People aren’t fools. They can smell spin a mile away.
 
@@ -36,13 +18,13 @@ The data tells the same story everywhere. Gallup’s 2024 global survey found th
 
 Those aren’t academic footnotes; they’re proof that credibility isn’t charisma—it’s math. You build it one finished task at a time until the room stops questioning whether you’ll follow through. When words and action start matching, people relax into the rhythm. They stop performing for approval and start producing from trust. That’s how momentum compounds—through hundreds of small, verifiable acts that tell everyone in the room, you can count on me.
 
-**Pocket rule: Credibility is earned in patterns, not posts.**
+Pocket rule: Credibility is earned in patterns, not posts.
 
 Employees aren’t fooled by spin. Gallup’s 2024 global report continues to show that only about a quarter of workers are truly engaged—which rises when managers pair words with visible proof. Credibility compounds when what you say is already in motion.
 
-## Stories
+Stories
 
-### MWI Cares & the Crying Couch
+MWI Cares & the Crying Couch
 
 At Midwestern Interactive, we spent a lot of time talking about how much we cared for our people. That wasn’t unusual—plenty of companies say they care. The difference was whether we could prove it. Talk only goes so far before people start looking around and asking, “Okay, but where’s the action?”
 
@@ -56,7 +38,7 @@ It sounds simple—but that simplicity is what gives it power. Employees didn’
 
 Clinical research backs why this works: dependable support and clear pathways reduce anxiety and increase performance. In plain terms—people do better work when they know where to go and that someone will meet them there.
 
-### The 80/20 Rule — Investing in Growth, Health, and Wellness
+The 80/20 Rule — Investing in Growth, Health, and Wellness
 
 Another way we made sure our words lined up with action was in how we structured the work itself. We often told our people that their growth mattered just as much as client production. But if all we did was repeat that line in meetings, it would have been nothing more than a hollow promise. To make it real, we built a system around it.
 
@@ -64,10 +46,10 @@ We set the expectation that 80% of a person’s week was for production—the cl
 
 What we found was remarkable. That 80% often turned into more than 100% of typical output. When people were healthy, engaged, and growing, their work flowed with more efficiency, creativity, and energy. Instead of draining people dry with a “perform or die” mentality, we aligned body, mind, and spirit—and the results were exponential.
 
-This wasn’t just an experiment in a software company. It became the heartbeat of how we later built Midwestern Built and continue to lead at Archetype Fitness Company.  
+This wasn’t just an experiment in a software company. It became the heartbeat of how we later built Midwestern Built and continue to lead at Archetype Fitness Company.
 McKinsey’s 2023 research on human-capital velocity confirmed what experience already shows: organizations with cultures centered on learning and mentorship deliver 47 percent higher five-year shareholder return than those that treat talent as replaceable. The heartbeat you built is measurable—it’s what turns a company into a legacy.
 
-**Pocket rule: People first isn’t soft—it’s scale.**
+Pocket rule: People first isn’t soft—it’s scale.
 
 In every arena, the same truth held: when you invest in the whole person, the returns for both the human and the business multiply.
 
@@ -75,7 +57,7 @@ Research backs this up. Google’s famous “20% Time” policy gave engineers o
 
 Our people didn’t need to read those reports to know it was true. They lived it. The 80/20 model wasn’t just a nice idea—it was proof that we backed our words with structures, time, and money that set them up to thrive.
 
-### Financial Pathways — Income and Investing
+Financial Pathways — Income and Investing
 
 One of the clearest ways leaders get exposed is when they talk about financial opportunity. I’ve heard plenty of leaders tell their people, “Stick with us, and you’ll be rewarded.” But unless there’s a visible path, it’s just talk. Hope without a plan is manipulation.
 
@@ -89,7 +71,7 @@ The best part was seeing the shift in mindset. Once people realized the company 
 
 It would have been easy to make financial promises and never follow through. Many companies do. But our culture demanded more. We backed our words with pathways people could walk. That’s what credibility looks like in the financial arena: not hype, not vague promises, but real numbers people can build their lives on.
 
-### Transparency — Showing the Numbers Before Talking
+Transparency — Showing the Numbers Before Talking
 
 Another way we earned credibility was through transparency. I never wanted to be the kind of leader who told the team, “Everything’s fine,” when the truth was anything but. People aren’t fooled by pep talks that don’t match reality. They see the long hours. They hear the frustrated clients. They notice when momentum slows.
 
@@ -101,7 +83,7 @@ I’ve learned over time that transparency doesn’t weaken a leader’s positio
 
 For us, this practice built stability. It reinforced that meetings weren’t just talk sessions—they were checkpoints where leadership connected words with evidence. And over time, that consistency built trust. People didn’t have to wait and see if leadership was serious. They already knew.
 
-## Takeaway — Everyday Proof Builds Trust
+Takeaway — Everyday Proof Builds Trust
 
 Looking back over more than three decades of leading, I can say this with certainty: leadership isn’t measured in slogans or speeches. It’s measured in receipts. Every meeting, every announcement, every promise is a chance to either prove your words with action or drain the trust account a little further.
 
@@ -114,4 +96,3 @@ And that’s the key: leadership is visible. It’s felt in the way a team works
 I tell small and mid-sized business leaders this all the time: your people aren’t waiting for you to give the perfect speech. They’re waiting to see if your words line up with what you do next. That’s why the first fundamental of servant leadership is so simple, but so demanding: do the work.
 
 Talk less. Prove more. Build credibility in receipts, not rhetoric. If you do, you’ll find that people don’t just listen to you—they follow you.
----
