@@ -38,30 +38,47 @@ function loadKnowledgeCorpus() {
 
 // Search knowledge corpus for relevant content
 function searchKnowledge(query, corpus) {
-  if (!query || !corpus.docs) return [];
+  if (!query || !corpus.docs) return corpus.docs.slice(0, 3); // Return first 3 docs if no query
   
   const searchTerm = query.toLowerCase();
-  const words = searchTerm.split(' ').filter(word => word.length > 2); // Filter out short words
+  const words = searchTerm.split(' ').filter(word => word.length > 2);
   
-  return corpus.docs.filter(doc => {
+  // If no meaningful words, return some general docs
+  if (words.length === 0) {
+    return corpus.docs.slice(0, 3);
+  }
+  
+  const scoredDocs = corpus.docs.map(doc => {
     const title = (doc.title || '').toLowerCase();
     const summary = (doc.summary || '').toLowerCase();
     const body = (doc.body || '').toLowerCase();
     const tags = (doc.tags || []).join(' ').toLowerCase();
     
-    // Check for exact phrase match
-    if (title.includes(searchTerm) || summary.includes(searchTerm) || body.includes(searchTerm) || tags.includes(searchTerm)) {
-      return true;
-    }
+    let score = 0;
     
-    // Check for individual word matches
-    return words.some(word => 
-      title.includes(word) || 
-      summary.includes(word) || 
-      body.includes(word) ||
-      tags.includes(word)
-    );
-  }).slice(0, 5); // Get top 5 most relevant
+    // Exact phrase match gets highest score
+    if (title.includes(searchTerm)) score += 10;
+    if (summary.includes(searchTerm)) score += 8;
+    if (body.includes(searchTerm)) score += 6;
+    if (tags.includes(searchTerm)) score += 5;
+    
+    // Individual word matches
+    words.forEach(word => {
+      if (title.includes(word)) score += 3;
+      if (summary.includes(word)) score += 2;
+      if (body.includes(word)) score += 1;
+      if (tags.includes(word)) score += 2;
+    });
+    
+    return { doc, score };
+  });
+  
+  // Sort by score and return top 5
+  return scoredDocs
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+    .map(item => item.doc);
 }
 
 export default async function handler(req, res) {
