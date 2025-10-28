@@ -1,0 +1,54 @@
+name: Update Knowledge Corpus
+
+on:
+  schedule:
+    # Run daily at 11 PM UTC (adjust timezone as needed)
+    - cron: '0 23 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-knowledge:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build knowledge corpus
+      run: npm run build-knowledge
+      
+    - name: Check for changes
+      id: changes
+      run: |
+        if git diff --quiet public/knowledge.json; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Commit and push changes
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add public/knowledge.json
+        git commit -m "Auto-update knowledge corpus [skip ci]"
+        git push
+        
+    - name: Deploy to Vercel
+      if: steps.changes.outputs.changed == 'true'
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        working-directory: ./
