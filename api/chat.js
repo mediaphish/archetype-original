@@ -10,11 +10,23 @@ const supabase = createClient(
 // Load knowledge corpus
 function loadKnowledgeCorpus() {
   try {
-    const knowledgePath = path.join(process.cwd(), 'public', 'knowledge.json');
-    if (fs.existsSync(knowledgePath)) {
-      const rawData = fs.readFileSync(knowledgePath, 'utf8');
-      return JSON.parse(rawData);
+    // Try multiple possible paths for Vercel serverless environment
+    const possiblePaths = [
+      path.join(process.cwd(), 'public', 'knowledge.json'),
+      path.join(process.cwd(), 'knowledge.json'),
+      path.join(__dirname, '..', 'public', 'knowledge.json'),
+      path.join(__dirname, '..', '..', 'public', 'knowledge.json')
+    ];
+    
+    for (const knowledgePath of possiblePaths) {
+      if (fs.existsSync(knowledgePath)) {
+        console.log('Found knowledge corpus at:', knowledgePath);
+        const rawData = fs.readFileSync(knowledgePath, 'utf8');
+        return JSON.parse(rawData);
+      }
     }
+    
+    console.log('Knowledge corpus not found. Tried paths:', possiblePaths);
   } catch (error) {
     console.error('Error loading knowledge corpus:', error);
   }
@@ -52,7 +64,10 @@ export default async function handler(req, res) {
 
   // Load and search knowledge corpus
   const knowledgeCorpus = loadKnowledgeCorpus();
+  console.log('Knowledge corpus loaded:', knowledgeCorpus.docs ? knowledgeCorpus.docs.length : 0, 'documents');
+  
   const relevantKnowledge = searchKnowledge(message, knowledgeCorpus);
+  console.log('Relevant knowledge found:', relevantKnowledge.length, 'documents');
 
   // Build knowledge context for AI
   let knowledgeContext = '';
@@ -151,6 +166,8 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
       });
 
       const data = await openaiResponse.json();
+      console.log('OpenAI response status:', openaiResponse.status);
+      
       if (data.choices && data.choices[0]) {
         let response = data.choices[0].message.content;
         
