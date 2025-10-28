@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 export default function Journal() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     // Load journal posts from the knowledge corpus
@@ -15,6 +17,13 @@ export default function Journal() {
           new Date(b.publish_date) - new Date(a.publish_date)
         );
         setPosts(sortedPosts);
+        
+        // Extract unique categories
+        const allCategories = [...new Set(
+          sortedPosts.flatMap(post => post.categories || [])
+        )];
+        setCategories(['all', ...allCategories]);
+        
         setLoading(false);
       })
       .catch(error => {
@@ -22,6 +31,10 @@ export default function Journal() {
         setLoading(false);
       });
   }, []);
+
+  const filteredPosts = selectedCategory === 'all' 
+    ? posts 
+    : posts.filter(post => post.categories && post.categories.includes(selectedCategory));
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -48,21 +61,47 @@ export default function Journal() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Journal</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Thoughts, insights, and lessons learned from 32+ years of building companies and growing people.
           </p>
         </div>
 
+        {/* Category Filter */}
+        {categories.length > 1 && (
+          <div className="mb-8">
+            <div className="flex flex-wrap justify-center gap-2">
+              {categories.map(category => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedCategory === category
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {category === 'all' ? 'All Posts' : category}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Posts */}
-        {posts.length === 0 ? (
+        {filteredPosts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">No journal posts yet. Check back soon!</p>
+            <p className="text-gray-600">
+              {selectedCategory === 'all' 
+                ? 'No journal posts yet. Check back soon!'
+                : `No posts found in "${selectedCategory}" category.`
+              }
+            </p>
           </div>
         ) : (
           <div className="space-y-8">
-            {posts.map((post) => (
+            {filteredPosts.map((post) => (
               <article key={post.slug} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
