@@ -10,17 +10,15 @@ const supabase = createClient(
 // Load knowledge corpus
 function loadKnowledgeCorpus() {
   try {
-    // Get current directory for ES modules
-    const currentDir = path.dirname(new URL(import.meta.url).pathname);
-    
     // Try multiple possible paths for Vercel serverless environment
     const possiblePaths = [
-      path.join(currentDir, 'knowledge.json'), // In same directory as API function
       path.join(process.cwd(), 'api', 'knowledge.json'),
       path.join(process.cwd(), 'public', 'knowledge.json'),
       path.join(process.cwd(), 'knowledge.json'),
-      path.join(currentDir, '..', 'public', 'knowledge.json'),
-      path.join(currentDir, '..', '..', 'public', 'knowledge.json')
+      '/var/task/api/knowledge.json',
+      '/var/task/public/knowledge.json',
+      './knowledge.json',
+      '../public/knowledge.json'
     ];
     
     for (const knowledgePath of possiblePaths) {
