@@ -199,8 +199,11 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         })
       });
 
-      const data = await openaiResponse.json();
       console.log('OpenAI response status:', openaiResponse.status);
+      console.log('OpenAI response headers:', Object.fromEntries(openaiResponse.headers.entries()));
+      
+      const data = await openaiResponse.json();
+      console.log('OpenAI response data:', data);
       
       if (data.choices && data.choices[0]) {
         let response = data.choices[0].message.content;
@@ -266,6 +269,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
     } catch (error) {
       console.error('OpenAI API error:', error);
       console.error('OpenAI API error details:', error.message);
+      console.error('OpenAI API error stack:', error.stack);
       // Fall through to simple error response
     }
   }
