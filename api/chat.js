@@ -238,7 +238,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
     && !isDarkHours; // Don't escalate during dark hours
 
   // Smart keyword detection for better responses - covering all of Bart's consulting areas
-  const isNewLeader = lowerMessage.includes('never led') || lowerMessage.includes('new leader') || lowerMessage.includes('first time') || lowerMessage.includes('stepping into leadership') || lowerMessage.includes('never done that before') || lowerMessage.includes('never led people') || lowerMessage.includes('never managed') || lowerMessage.includes('never been a leader') || (lowerMessage.includes('want to learn') && lowerMessage.includes('lead'));
+  const isNewLeader = lowerMessage.includes('never led') || lowerMessage.includes('new leader') || lowerMessage.includes('first time') || lowerMessage.includes('stepping into leadership') || lowerMessage.includes('never done that before') || lowerMessage.includes('never led people') || lowerMessage.includes('never managed') || lowerMessage.includes('never been a leader') || lowerMessage.includes('just got a job') || lowerMessage.includes('got a job') || lowerMessage.includes('new job') || lowerMessage.includes('help me figure out') || (lowerMessage.includes('want to learn') && lowerMessage.includes('lead'));
   
   // Business/Company challenges
   const isBusinessChallenge = lowerMessage.includes('business') || lowerMessage.includes('company') || lowerMessage.includes('organization') || lowerMessage.includes('startup') || lowerMessage.includes('scaling') || lowerMessage.includes('growth') || lowerMessage.includes('revenue') || lowerMessage.includes('profit') || lowerMessage.includes('market') || lowerMessage.includes('competition');
@@ -270,7 +270,14 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
   let response = '';
   let suggestedButtons = [];
   
-  if (lowerMessage.includes('who is bart') || lowerMessage.includes('who is bart?')) {
+  if (isNewLeader) {
+    // New leader - be direct and encouraging
+    response = `Congratulations! That's exactly what Bart does through Archetype Original. He mentors and consults with leaders who want to do better.\n\nBart has helped hundreds of first-time leaders build clarity, confidence, and the habits that make leadership sustainable. His approach is practical, not theoretical - based on 32 years of real experience.\n\nLet me set up a call or see if we can open up a live chat with Bart right now.`;
+    suggestedButtons = [
+      { text: "Schedule a call with Bart", value: "calendly_schedule" },
+      { text: "Request live handoff", value: "handoff" }
+    ];
+  } else if (lowerMessage.includes('who is bart') || lowerMessage.includes('who is bart?')) {
     response = `Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.`;
   } else if (isConfusedResponse && isFundamentalsContext) {
     // User is confused about fundamentals - lead to Bart
