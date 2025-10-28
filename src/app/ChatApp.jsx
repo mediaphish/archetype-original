@@ -10,6 +10,7 @@ export default function ChatApp() {
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [showGreeting, setShowGreeting] = useState(false);
   const [isAbusive, setIsAbusive] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom when new messages are added
@@ -88,11 +89,12 @@ export default function ChatApp() {
   };
 
   const handleSendMessage = async (messageText = inputValue) => {
-    if (!messageText.trim()) return;
+    if (!messageText.trim() || isLoading) return;
 
     const userMessage = { text: messageText, isUser: true };
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
+    setIsLoading(true);
 
     // Check for abuse first
     if (detectAbuse(messageText)) {
@@ -107,6 +109,7 @@ export default function ChatApp() {
           ]
         };
         setMessages(prev => [...prev, shutdownMessage]);
+        setIsLoading(false);
         return;
       } else {
         // First offense - warning
@@ -117,6 +120,7 @@ export default function ChatApp() {
           showButtons: false
         };
         setMessages(prev => [...prev, warningMessage]);
+        setIsLoading(false);
         return;
       }
     }
@@ -132,6 +136,7 @@ export default function ChatApp() {
         ]
       };
       setMessages(prev => [...prev, analogMessage]);
+      setIsLoading(false);
       return;
     }
 
@@ -180,6 +185,8 @@ export default function ChatApp() {
         isUser: false
       };
       setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -415,6 +422,21 @@ export default function ChatApp() {
                   onButtonClick={handleButtonClick}
                 />
               ))}
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className="flex justify-start mb-4">
+                  <div className="bg-gray-100 rounded-lg px-4 py-3 max-w-xs">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                      <span className="text-sm text-gray-600">Archy is thinking...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
               {/* Scroll anchor */}
               <div ref={messagesEndRef} />
             </div>
@@ -433,24 +455,25 @@ export default function ChatApp() {
             />
           )}
 
-          <form onSubmit={handleFormSubmit} className="flex space-x-3">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              onFocus={(e) => e.preventDefault()}
-              placeholder="Tell me what's going on."
-              className="flex-1 px-4 py-3 text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg"
-            />
-            <button
-              type="submit"
-              disabled={!inputValue.trim()}
-              className="bg-gray-800 text-white px-6 py-3 text-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg"
-            >
-              Send
-            </button>
-          </form>
+                  <form onSubmit={handleFormSubmit} className="flex space-x-3">
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      onFocus={(e) => e.preventDefault()}
+                      placeholder={isLoading ? "Archy is thinking..." : "Tell me what's going on."}
+                      disabled={isLoading}
+                      className="flex-1 px-4 py-3 text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!inputValue.trim() || isLoading}
+                      className="bg-gray-800 text-white px-6 py-3 text-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg"
+                    >
+                      {isLoading ? "..." : "Send"}
+                    </button>
+                  </form>
         </div>
       </div>
 
