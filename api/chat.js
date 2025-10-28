@@ -177,10 +177,11 @@ ${isDarkHours ? 'DARK HOURS: Bart\'s office is closed (6 p.m.–10 a.m. CST). Yo
 Remember: This is a real conversation. Listen, understand, and respond authentically.`;
 
   // Try OpenAI first, fallback to simple error if it fails
-  const openaiKey = process.env.OPEN_API_KEY || process.env.OPENAI_API_KEY;
-  console.log('OpenAI API key present:', !!openaiKey);
+  console.log('OPEN_API_KEY present:', !!process.env.OPEN_API_KEY);
+  console.log('OPENAI_API_KEY present:', !!process.env.OPENAI_API_KEY);
+  console.log('All env vars with OPEN:', Object.keys(process.env).filter(key => key.includes('OPEN')));
   
-  if (openaiKey) {
+  if (process.env.OPENAI_API_KEY) {
     try {
       const messages = [
         { role: 'system', content: systemPrompt },
@@ -192,7 +193,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openaiKey}`,
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
           },
         body: JSON.stringify({
           model: 'gpt-4',
