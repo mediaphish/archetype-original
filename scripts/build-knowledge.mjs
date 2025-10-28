@@ -7,6 +7,7 @@ import path from 'path';
 import matter from 'gray-matter';
 
 const KNOWLEDGE_DIR = 'ao-knowledge-hq-kit/knowledge';
+const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
 const OUTPUT_FILE = 'public/knowledge.json';
 
 // Recursively find all markdown files
@@ -86,6 +87,60 @@ async function buildKnowledgeCorpus() {
       processed++;
     } else {
       skipped++;
+    }
+  }
+  
+  // Process journal posts
+  if (fs.existsSync(JOURNAL_DIR)) {
+    const journalFiles = fs.readdirSync(JOURNAL_DIR)
+      .filter(file => file.endsWith('.md'))
+      .map(file => path.join(JOURNAL_DIR, file));
+      
+    console.log(`📝 Found ${journalFiles.length} journal posts`);
+    
+    for (const filePath of journalFiles) {
+      try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        const { data: frontmatter, content: body } = matter(content);
+        
+        // Check if post should be published
+        const publishDate = frontmatter.publish_date ? new Date(frontmatter.publish_date) : null;
+        const now = new Date();
+        
+        if (publishDate && publishDate > now) {
+          console.log(`⏰ Post "${frontmatter.title}" scheduled for ${publishDate.toISOString()}`);
+          continue; // Skip future posts
+        }
+        
+        const slug = frontmatter.slug || path.basename(filePath, '.md');
+        
+        const journalDoc = {
+          title: frontmatter.title || 'Untitled Journal Post',
+          slug: slug,
+          type: 'journal-post',
+          tags: ['journal', 'blog', ...(frontmatter.tags || [])],
+          categories: frontmatter.categories || ['general'],
+          status: 'published',
+          created_at: frontmatter.created_at || new Date().toISOString(),
+          updated_at: frontmatter.updated_at || new Date().toISOString(),
+          publish_date: frontmatter.publish_date || new Date().toISOString(),
+          summary: frontmatter.summary || body.substring(0, 200) + '...',
+          source: { 
+            kind: 'journal',
+            original_source: frontmatter.original_source || null,
+            original_url: frontmatter.original_url || null
+          },
+          takeaways: frontmatter.takeaways || [],
+          applications: frontmatter.applications || [],
+          related: frontmatter.related || [],
+          body: body.trim()
+        };
+        
+        docs.push(journalDoc);
+        console.log(`✅ Processed journal post: ${frontmatter.title}`);
+      } catch (error) {
+        console.error(`❌ Error processing journal ${filePath}:`, error.message);
+      }
     }
   }
   
