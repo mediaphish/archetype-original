@@ -177,11 +177,10 @@ ${isDarkHours ? 'DARK HOURS: Bart\'s office is closed (6 p.m.–10 a.m. CST). Yo
 Remember: This is a real conversation. Listen, understand, and respond authentically.`;
 
   // Try OpenAI first, fallback to simple error if it fails
-  console.log('OpenAI API key present:', !!process.env.OPENAI_API_KEY);
-  console.log('Environment variables with OPENAI:', Object.keys(process.env).filter(key => key.includes('OPENAI')));
-  console.log('All environment variables:', Object.keys(process.env).length);
+  const openaiKey = process.env.OPEN_API_KEY || process.env.OPENAI_API_KEY;
+  console.log('OpenAI API key present:', !!openaiKey);
   
-  if (process.env.OPENAI_API_KEY) {
+  if (openaiKey) {
     try {
       const messages = [
         { role: 'system', content: systemPrompt },
@@ -191,10 +190,10 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
 
       const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openaiKey}`,
+          },
         body: JSON.stringify({
           model: 'gpt-4',
           messages: messages,
