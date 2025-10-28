@@ -178,6 +178,9 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
 
   // Try OpenAI first, fallback to simple error if it fails
   console.log('OpenAI API key present:', !!process.env.OPENAI_API_KEY);
+  console.log('Environment variables with OPENAI:', Object.keys(process.env).filter(key => key.includes('OPENAI')));
+  console.log('All environment variables:', Object.keys(process.env).length);
+  
   if (process.env.OPENAI_API_KEY) {
     try {
       const messages = [
