@@ -1,6 +1,16 @@
 // src/app/components/EscalationButton.jsx
 import React, { useState } from 'react';
 
+// Check if we're in dark hours (6 PM - 10 AM CST, including weekends)
+const isDarkHours = () => {
+  const now = new Date();
+  const cstTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Chicago"}));
+  const hour = cstTime.getHours();
+  const dayOfWeek = cstTime.getDay();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  return isWeekend || hour >= 18 || hour < 10;
+};
+
 const TRIAGE_QUESTIONS = [
   {
     id: 'outcome',
@@ -66,6 +76,7 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
 
   if (showTriage) {
     const question = TRIAGE_QUESTIONS[currentQuestion];
+    const darkHours = isDarkHours();
     
     return (
       <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
@@ -95,21 +106,30 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
             }}
             className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 transition-colors rounded-lg"
           >
-            {currentQuestion === TRIAGE_QUESTIONS.length - 1 ? 'Submit Handoff' : 'Next'}
+            {currentQuestion === TRIAGE_QUESTIONS.length - 1 ? (darkHours ? 'Queue for Bart' : 'Submit Handoff') : 'Next'}
           </button>
         </div>
       </div>
     );
   }
 
+  const darkHours = isDarkHours();
+
   return (
     <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
+      {darkHours && (
+        <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800">
+            <strong>Bart's office is closed</strong> (6 PM - 10 AM CST). I'll queue your request for him to review when he's back.
+          </p>
+        </div>
+      )}
       <button
         onClick={handleStartTriage}
         disabled={isLoading}
         className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 disabled:bg-gray-400 transition-colors rounded-lg"
       >
-        {isLoading ? 'Processing...' : 'Request Live Handoff'}
+        {isLoading ? 'Processing...' : darkHours ? 'Queue for Bart' : 'Request Live Handoff'}
       </button>
     </div>
   );
