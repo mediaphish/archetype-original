@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build-knowledge": "node scripts/build-knowledge.mjs",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "build-knowledge": "node scripts/build-knowledge.mjs",
     "update-journal": "node scripts/manage-journal.mjs update",
     "list-journal": "node scripts/manage-journal.mjs list",
     "test": "jest"
