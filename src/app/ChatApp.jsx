@@ -209,6 +209,50 @@ export default function ChatApp() {
         showButtons: false
       };
       setMessages(prev => [...prev, response]);
+    } else if (value === 'mentorship') {
+      // Handle mentorship guidance
+      const userMessage = { text: "I want mentorship guidance", isUser: true };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const response = {
+        text: "Perfect! Bart's mentorship focuses on practical leadership development. He helps emerging leaders build clarity, confidence, and sustainable habits through his five fundamentals framework.\n\nHis approach is hands-on and based on 32 years of real experience. He typically works with leaders through 30-60 minute focused sessions.\n\nWhat specific leadership challenge would you like to work on?",
+        isUser: false,
+        showButtons: true,
+        buttonOptions: [
+          { text: "Schedule mentorship call", value: "calendly_schedule" },
+          { text: "Learn the five fundamentals", value: "fundamentals" }
+        ]
+      };
+      setMessages(prev => [...prev, response]);
+    } else if (value === 'fundamentals') {
+      // Handle five fundamentals explanation
+      const userMessage = { text: "Learn the five fundamentals", isUser: true };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const response = {
+        text: "Here are Bart's five leadership fundamentals:\n\n1. **Clarity beats chaos** - People can't follow what they can't see. Clear direction, clear expectations, clear outcomes.\n\n2. **Protect the culture** - Values before convenience. When pressure hits, culture is what holds.\n\n3. **Build trust daily** - It's math, not magic. Small consistent actions compound into unshakeable trust.\n\n4. **Empower over control** - Ownership outlasts oversight. Give people the tools and space to succeed.\n\n5. **Serve the standard** - People rise to what you model. Your behavior sets the bar.\n\nThese aren't theory - they're battle-tested principles from 32 years of building teams and companies. Which one resonates most with your current situation?",
+        isUser: false,
+        showButtons: true,
+        buttonOptions: [
+          { text: "Schedule a call to discuss", value: "calendly_schedule" },
+          { text: "Tell me more about my situation", value: "mentorship" }
+        ]
+      };
+      setMessages(prev => [...prev, response]);
+    } else if (value === 'handoff') {
+      // Handle live handoff request
+      const userMessage = { text: "Request live handoff", isUser: true };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const response = {
+        text: "Perfect! I'll set up a live handoff to Bart. He'll get a brief of our conversation and can jump in to help you directly.\n\nThis will send him a summary of what we've discussed so he can provide more personalized guidance.",
+        isUser: false,
+        showButtons: false
+      };
+      setMessages(prev => [...prev, response]);
+      
+      // Trigger escalation
+      setShowEscalation(true);
     } else {
       // Handle structured conversation paths
       handleStructuredResponse(value);
