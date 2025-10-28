@@ -1,19 +1,136 @@
-// src/app/components/DarkHoursBanner.jsx
-import React from 'react';
-import { isDarkHours, getNextAvailableTime } from '../utils/darkHours.js';
+// src/app/components/EscalationButton.jsx
+import React, { useState } from 'react';
 
-export default function DarkHoursBanner() {
-  const isDark = isDarkHours();
-  
-  if (!isDark) {
-    return null;
+// Check if we're in dark hours (6 PM - 10 AM CST, including weekends)
+const isDarkHours = () => {
+  const now = new Date();
+  const cstTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Chicago"}));
+  const hour = cstTime.getHours();
+  const dayOfWeek = cstTime.getDay();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  return isWeekend || hour >= 18 || hour < 10;
+};
+
+const TRIAGE_QUESTIONS = [
+  {
+    id: 'outcome',
+    question: 'What would success look like in 90 days?',
+    placeholder: 'e.g., "Team alignment on Q1 goals"'
+  },
+  {
+    id: 'blocker',
+    question: 'What\'s the biggest thing standing in your way?',
+    placeholder: 'e.g., "Communication breakdown between departments"'
+  },
+  {
+    id: 'roles',
+    question: 'Who else is involved in this situation?',
+    placeholder: 'e.g., "My direct reports, the board, our clients"'
+  },
+  {
+    id: 'good_looks_like',
+    question: 'What does "good" look like when this is resolved?',
+    placeholder: 'e.g., "Clear processes, motivated team, hitting targets"'
+  },
+  {
+    id: 'window_budget',
+    question: 'What\'s your timeline and budget for solving this?',
+    placeholder: 'e.g., "Need results by March, budget for consulting"'
   }
-  
+];
+
+export default function EscalationButton({ onEscalate, conversationHistory = [] }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showTriage, setShowTriage] = useState(false);
+  const [triageAnswers, setTriageAnswers] = useState({});
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+
+  const handleStartTriage = () => {
+    setShowTriage(true);
+    setCurrentQuestion(0);
+    setTriageAnswers({});
+  };
+
+  const handleTriageAnswer = (answer) => {
+    const questionId = TRIAGE_QUESTIONS[currentQuestion].id;
+    setTriageAnswers(prev => ({
+      ...prev,
+      [questionId]: answer
+    }));
+    
+    if (currentQuestion < TRIAGE_QUESTIONS.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
+    } else {
+      handleEscalate();
+    }
+  };
+
+  const handleEscalate = async () => {
+    setIsLoading(true);
+    try {
+      await onEscalate(triageAnswers, conversationHistory);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (showTriage) {
+    const question = TRIAGE_QUESTIONS[currentQuestion];
+    const darkHours = isDarkHours();
+    
+    return (
+      <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
+        <h4 className="text-lg font-medium text-gray-800 mb-3">
+          Question {currentQuestion + 1} of {TRIAGE_QUESTIONS.length}
+        </h4>
+        <p className="text-base text-gray-700 mb-3">{question.question}</p>
+        <div className="space-y-2">
+          <input
+            type="text"
+            placeholder={question.placeholder}
+            className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && e.target.value.trim()) {
+                handleTriageAnswer(e.target.value);
+                e.target.value = '';
+              }
+            }}
+          />
+          <button
+            onClick={() => {
+              const input = document.querySelector('input');
+              if (input.value.trim()) {
+                handleTriageAnswer(input.value);
+                input.value = '';
+              }
+            }}
+            className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 transition-colors rounded-lg"
+          >
+            {currentQuestion === TRIAGE_QUESTIONS.length - 1 ? (darkHours ? 'Queue for Bart' : 'Submit Handoff') : 'Next'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const darkHours = isDarkHours();
+
   return (
-    <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-3 text-center">
-      <p className="text-sm text-yellow-800">
-        <span className="font-medium">Heads up:</span> Live handoffs resume at 10:00 am CST.
-      </p>
+    <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
+      {darkHours && (
+        <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800">
+            <strong>Bart's office is closed</strong> (6 PM - 10 AM CST). I'll queue your request for him to review when he's back.
+          </p>
+        </div>
+      )}
+      <button
+        onClick={handleStartTriage}
+        disabled={isLoading}
+        className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 disabled:bg-gray-400 transition-colors rounded-lg"
+      >
+        {isLoading ? 'Processing...' : darkHours ? 'Queue for Bart' : 'Request Live Handoff'}
+      </button>
     </div>
   );
 }
