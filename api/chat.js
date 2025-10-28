@@ -10,12 +10,17 @@ const supabase = createClient(
 // Load knowledge corpus
 function loadKnowledgeCorpus() {
   try {
+    // Get current directory for ES modules
+    const currentDir = path.dirname(new URL(import.meta.url).pathname);
+    
     // Try multiple possible paths for Vercel serverless environment
     const possiblePaths = [
+      path.join(currentDir, 'knowledge.json'), // In same directory as API function
+      path.join(process.cwd(), 'api', 'knowledge.json'),
       path.join(process.cwd(), 'public', 'knowledge.json'),
       path.join(process.cwd(), 'knowledge.json'),
-      path.join(__dirname, '..', 'public', 'knowledge.json'),
-      path.join(__dirname, '..', '..', 'public', 'knowledge.json')
+      path.join(currentDir, '..', 'public', 'knowledge.json'),
+      path.join(currentDir, '..', '..', 'public', 'knowledge.json')
     ];
     
     for (const knowledgePath of possiblePaths) {
@@ -83,6 +88,9 @@ export default async function handler(req, res) {
       }
       knowledgeContext += `Content: ${doc.body.substring(0, 500)}...\n\n`;
     });
+  } else {
+    // Fallback knowledge if corpus not found
+    knowledgeContext = '\n\nKNOWLEDGE BASE: Bart Paden is a lifelong builder with 32+ years of experience creating companies, growing people, and learning what makes both endure. He specializes in business strategy, operations, change management, leadership development, and personal clarity. His approach is practical, not theoretical, based on real experience building teams and companies.';
   }
 
   // Determine if it's dark hours (6 PM - 10 AM CST)
