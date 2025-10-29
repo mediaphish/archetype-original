@@ -103,6 +103,15 @@ export default function Journal() {
           <div className="space-y-8">
             {filteredPosts.map((post) => (
               <article key={post.slug} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                {post.image && (
+                  <div className="aspect-w-16 aspect-h-9">
+                    <img 
+                      src={post.image} 
+                      alt={post.title}
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                )}
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <time className="text-sm text-gray-600">
