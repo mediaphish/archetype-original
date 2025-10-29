@@ -7,8 +7,8 @@ export default function WhatWeDo() {
         <h2 className="h2">What We Do</h2>
         <div className="grid md:grid-cols-3 gap-6 mt-8">
           <div className="card p-6">
-            <h3 className="font-semibold text-lg">Playbooks you can ship on Monday</h3>
-            <p className="p mt-2">Clear, repeatable systems that translate intent into outcomes—without heroics.</p>
+            <h3 className="font-semibold text-lg">Mentoring & Consulting</h3>
+            <p className="p mt-2">One-on-one guidance for individuals, leaders, teams, and entire companies looking to build better culture and leadership.</p>
           </div>
           <div className="card p-6">
             <h3 className="font-semibold text-lg">Workshops that align</h3>
