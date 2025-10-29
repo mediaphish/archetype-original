@@ -11,6 +11,7 @@ export default function ChatApp() {
   const [showGreeting, setShowGreeting] = useState(false);
   const [isAbusive, setIsAbusive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAnalogButton, setShowAnalogButton] = useState(true);
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom when new messages are added
@@ -22,6 +23,21 @@ export default function ChatApp() {
       }
     }
   }, [messages]);
+
+  // Hide analog button when user scrolls past chat area
+  useEffect(() => {
+    const handleScroll = () => {
+      const chatContainer = document.querySelector('.chat-container');
+      if (chatContainer) {
+        const rect = chatContainer.getBoundingClientRect();
+        // Hide button when chat container is above the viewport
+        setShowAnalogButton(rect.bottom > 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Show greeting immediately
   useEffect(() => {
@@ -406,7 +422,7 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative">
+    <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative chat-container">
       <div className="flex-1 flex flex-col w-full sm:w-[70vw] mx-auto px-4 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
@@ -477,25 +493,27 @@ export default function ChatApp() {
         </div>
       </div>
 
-      {/* Bouncing Down Arrow - Fixed position, hidden on mobile after chat */}
-      <div className="hidden sm:block fixed right-8 bottom-8 z-40">
-        <div 
-          className="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-colors animate-bounce"
-          onClick={() => {
-            const aboutSection = document.getElementById('about');
-            if (aboutSection) {
-              aboutSection.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-        >
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium">Analog stuff down here</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+      {/* Bouncing Down Arrow - Show initially, hide after scrolling past chat */}
+      {showAnalogButton && (
+        <div className="fixed right-4 sm:right-8 bottom-4 sm:bottom-8 z-40">
+          <div 
+            className="bg-gray-800 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-colors animate-bounce"
+            onClick={() => {
+              const aboutSection = document.getElementById('about');
+              if (aboutSection) {
+                aboutSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
+            <div className="flex items-center space-x-2">
+              <span className="text-xs sm:text-sm font-medium">Analog stuff down here</span>
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
