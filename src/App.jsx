@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import ChatApp from "./app/ChatApp.jsx";
@@ -6,6 +6,77 @@ import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
 
 export default function App() {
+  useEffect(() => {
+    // Load journal posts when component mounts
+    const loadJournalPosts = async () => {
+      try {
+        const response = await fetch('/api/knowledge?type=journal-post');
+        const data = await response.json();
+        
+        const journalContainer = document.getElementById('journal-posts');
+        if (journalContainer && data.docs) {
+          const posts = data.docs.sort((a, b) => new Date(b.publish_date) - new Date(a.publish_date));
+          
+          journalContainer.innerHTML = posts.map(post => `
+            <article class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
+              ${post.image ? `
+                <div class="aspect-w-16 aspect-h-9">
+                  <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover" />
+                </div>
+              ` : ''}
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <time class="text-sm text-gray-600">
+                    ${new Date(post.publish_date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </time>
+                  ${post.source?.original_source ? `
+                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                      Originally from ${post.source.original_source}
+                    </span>
+                  ` : ''}
+                </div>
+                
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">
+                  ${post.title}
+                </h3>
+                
+                <p class="text-gray-700 mb-4 line-clamp-3">
+                  ${post.summary}
+                </p>
+                
+                <div class="flex items-center justify-between">
+                  <div class="flex flex-wrap gap-2">
+                    ${post.tags ? post.tags.slice(0, 3).map(tag => `
+                      <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                        ${tag}
+                      </span>
+                    `).join('') : ''}
+                  </div>
+                  
+                  <button class="text-blue-600 hover:text-blue-800 font-medium" onclick="alert('Full post view coming soon!')">
+                    Read more →
+                  </button>
+                </div>
+              </div>
+            </article>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading journal posts:', error);
+        const journalContainer = document.getElementById('journal-posts');
+        if (journalContainer) {
+          journalContainer.innerHTML = '<p class="text-center text-red-600">Error loading journal posts. Please try again later.</p>';
+        }
+      }
+    };
+
+    loadJournalPosts();
+  }, []);
+
   return (
     <main className="bg-white text-black">
       <Header />
@@ -107,11 +178,8 @@ export default function App() {
             <p className="text-xl text-gray-700 mb-8">
               Insights, stories, and lessons from three decades of building companies and growing people.
             </p>
-            <div className="bg-gray-100 p-8 rounded-lg border-2 border-gray-300">
-              <p className="text-lg text-gray-600">
-                Journal content coming soon. For now, connect with Bart directly through the chat above 
-                or schedule a conversation to explore your specific challenges.
-              </p>
+            <div id="journal-posts" className="text-left">
+              <p className="text-center text-gray-600 mb-8">Loading journal posts...</p>
             </div>
           </div>
         </div>
