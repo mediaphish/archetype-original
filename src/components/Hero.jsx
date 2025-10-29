@@ -2,18 +2,35 @@ import React from "react";
 
 export default function Hero() {
   return (
-    <header className="py-8">
+    <header className="py-4">
       <div className="container mx-auto px-4 text-center">
         <div className="flex justify-center">
-          <a href="/" className="hover:opacity-80 transition-opacity">
-            <svg className="h-32 w-auto" viewBox="0 0 792 148.96" xmlns="http://www.w3.org/2000/svg">
+          <a href="/" className="group relative overflow-hidden rounded-lg transition-all duration-300 hover:scale-105">
+            <svg className="h-20 sm:h-32 w-auto relative z-10" viewBox="0 0 792 148.96" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <style>
-                  {`.cls-1 { fill: #231f20; }`}
+                  {`
+                    .cls-1 { fill: #231f20; }
+                    .gradient-wave {
+                      background: linear-gradient(90deg, 
+                        transparent 0%, 
+                        rgba(255,255,255,0.1) 25%, 
+                        rgba(255,255,255,0.2) 50%, 
+                        rgba(255,255,255,0.1) 75%, 
+                        transparent 100%
+                      );
+                      animation: wave 3s ease-in-out infinite;
+                    }
+                    @keyframes wave {
+                      0% { transform: translateX(-100%); }
+                      50% { transform: translateX(100%); }
+                      100% { transform: translateX(-100%); }
+                    }
+                  `}
                 </style>
               </defs>
               <g>
-                <path className="cls-1" d="M176.48,53.46l21.64,42.02h-10.48l-2.61-5.51h-17.1l-2.61,5.51h-10.28l21.44-42.02ZM171.56,82.31h9.87l-4.95-10.38-4.92,10.38Z"/>
+                <path className="cls-1" d="M174.38,53.46l23.74,42.02h-11.5l-2.87-5.51h-18.76l-2.87,5.51h-11.27l23.52-42.02ZM168.99,82.31h10.83l-5.43-10.38-5.4,10.38Z"/>
                 <path className="cls-1" d="M234.73,95.49h-11.95l-10.16-15.11h-2.04v15.11h-10.11v-42.06h13.89c10.31,0,16.39,5.87,16.39,13.58,0,5.36-3.01,9.7-8.27,11.89l12.25,16.59ZM210.58,62.25v10.16h3.73c4.24,0,6.18-2.25,6.18-5.05s-1.89-5.11-6.18-5.11h-3.73Z"/>
                 <path className="cls-1" d="M233.97,74.4c0-12.61,9.9-22.05,23.13-22.05,5.82,0,10.21,1.74,12.35,2.86v10.06c-3.32-1.94-7.61-3.78-12.56-3.78-7.45,0-12.51,5.05-12.51,12.91s5.05,13.02,12.51,13.02c5,0,9.24-1.84,12.56-3.78v10.06c-2.2,1.12-6.33,2.91-12.4,2.91-13.38,0-23.07-9.19-23.07-22.21Z"/>
                 <path className="cls-1" d="M274.71,95.49v-42.06h10.21v16.08h15.26v-16.08h10.21v42.06h-10.21v-16.9h-15.26v16.9h-10.21Z"/>
@@ -33,8 +50,10 @@ export default function Hero() {
                 <path className="cls-1" d="M723.96,53.59l20.49,41.23h-9.54l-2.52-6.03h-17.01l-2.52,6.03h-9.39l20.49-41.23ZM718.45,81.47h10.88l-5.44-12.95-5.44,12.95Z"/>
                 <path className="cls-1" d="M747.17,94.82v-40.74h8.55v33.02h15.18v7.71h-23.73Z"/>
               </g>
-              <path className="cls-1" d="M46.9,132.71l33.09-49.17,33.09,49.17h25.8l-15.39-22.86c8.61-10.19,13.41-23.13,13.41-36.69,0-31.38-25.53-56.91-56.91-56.91s-56.91,25.53-56.91,56.91c0,13.56,4.8,26.5,13.41,36.69l-15.39,22.86h25.8ZM66.16,122.55l13.83-20.54,13.83,20.54h-27.65ZM79.99,37.65c19.58,0,35.51,15.93,35.51,35.51,0,6.32-1.67,12.42-4.76,17.76l-30.75-45.69-30.75,45.69c-3.08-5.33-4.76-11.44-4.76-17.76,0-19.58,15.93-35.51,35.51-35.51Z"/>
+              <path className="cls-1" d="M46.9,132.71l33.09-49.17,33.09,49.17h25.8l-15.39-22.86c8.61-10.19,13.41-23.13,13.41-36.69,0-31.38-25.53-56.91-56.91-56.91s-56.91,25.53-56.91,56.91c0,13.56,4.8,26.5,13.41,36.69l-15.39,22.86h25.8ZM79.99,37.65c19.58,0,35.51,15.93,35.51,35.51,0,6.32-1.67,12.42-4.76,17.76l-30.75-45.69-30.75,45.69c-3.08-5.33-4.76-11.44-4.76-17.76,0-19.58,15.93-35.51,35.51-35.51Z"/>
             </svg>
+            {/* Gradient wave overlay */}
+            <div className="absolute inset-0 gradient-wave opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </a>
         </div>
       </div>
