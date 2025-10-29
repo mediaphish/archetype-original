@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 export default function Journal() {
   const [posts, setPosts] = useState([]);
@@ -125,12 +124,12 @@ export default function Journal() {
                   </div>
                   
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                    <Link 
-                      to={`/journal/${post.slug}`}
+                    <a 
+                      href={`/journal/${post.slug}`}
                       className="hover:text-blue-600 transition-colors"
                     >
                       {post.title}
-                    </Link>
+                    </a>
                   </h2>
                   
                   <p className="text-gray-700 mb-4 line-clamp-3">
@@ -146,12 +145,12 @@ export default function Journal() {
                       ))}
                     </div>
                     
-                    <Link 
-                      to={`/journal/${post.slug}`}
+                    <a 
+                      href={`/journal/${post.slug}`}
                       className="text-blue-600 hover:text-blue-800 font-medium"
                     >
                       Read more →
-                    </Link>
+                    </a>
                   </div>
                 </div>
               </article>
