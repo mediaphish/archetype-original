@@ -407,7 +407,7 @@ export default function ChatApp() {
 
   return (
     <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative">
-      <div className="flex-1 flex flex-col w-[70vw] mx-auto px-4 h-full">
+      <div className="flex-1 flex flex-col w-full sm:w-[70vw] mx-auto px-4 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
           {messages.length > 0 && (
@@ -444,7 +444,7 @@ export default function ChatApp() {
         </div>
 
         {/* Input Area - Fixed at bottom */}
-        <div className="flex-shrink-0 w-full p-4 bg-white border-t border-gray-200">
+        <div className="flex-shrink-0 w-full p-2 sm:p-4 bg-white border-t border-gray-200">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
@@ -455,30 +455,30 @@ export default function ChatApp() {
             />
           )}
 
-                  <form onSubmit={handleFormSubmit} className="flex space-x-3">
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      onFocus={(e) => e.preventDefault()}
-                      placeholder={isLoading ? "Archy is thinking..." : "Tell me what's going on."}
-                      disabled={isLoading}
-                      className="flex-1 px-4 py-3 text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                    />
-                    <button
-                      type="submit"
-                      disabled={!inputValue.trim() || isLoading}
-                      className="bg-gray-800 text-white px-6 py-3 text-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg"
-                    >
-                      {isLoading ? "..." : "Send"}
-                    </button>
-                  </form>
+          <form onSubmit={handleFormSubmit} className="flex space-x-2 sm:space-x-3">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              onFocus={(e) => e.preventDefault()}
+              placeholder={isLoading ? "Archy is thinking..." : "Tell me what's going on."}
+              disabled={isLoading}
+              className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-base sm:text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            />
+            <button
+              type="submit"
+              disabled={!inputValue.trim() || isLoading}
+              className="bg-gray-800 text-white px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg whitespace-nowrap"
+            >
+              {isLoading ? "..." : "Send"}
+            </button>
+          </form>
         </div>
       </div>
 
-      {/* Bouncing Down Arrow - Fixed position */}
-      <div className="fixed right-8 bottom-8 z-40">
+      {/* Bouncing Down Arrow - Fixed position, hidden on mobile after chat */}
+      <div className="hidden sm:block fixed right-8 bottom-8 z-40">
         <div 
           className="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-colors animate-bounce"
           onClick={() => {
