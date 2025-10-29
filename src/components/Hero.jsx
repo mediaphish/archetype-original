@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Hero() {
   return (
-    <header className="py-4 pt-20">
+    <header className="py-2">
       <div className="container mx-auto px-4 text-center">
         <div className="flex justify-center">
           <a href="/" className="group relative overflow-hidden rounded-lg transition-all duration-300 hover:scale-105">
