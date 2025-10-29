@@ -12,6 +12,17 @@ export default function JournalPost({ post }) {
 
   return (
     <article className="max-w-4xl mx-auto bg-white">
+      {/* Featured Image */}
+      {post.image && (
+        <div className="mb-8">
+          <img 
+            src={post.image} 
+            alt={post.title}
+            className="w-full h-64 sm:h-96 object-cover rounded-lg"
+          />
+        </div>
+      )}
+      
       {/* Header */}
       <header className="border-b border-gray-200 pb-6 mb-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">{post.title}</h1>
