@@ -6,7 +6,7 @@ export default function Hero() {
       <div className="container mx-auto px-4 text-center">
         <div className="flex justify-center">
           <a href="/" className="group relative overflow-hidden rounded-lg transition-all duration-300 hover:scale-105">
-            <svg className="h-32 w-auto relative z-10" viewBox="0 0 792 148.96" xmlns="http://www.w3.org/2000/svg">
+            <svg className="h-20 sm:h-32 w-auto relative z-10" viewBox="0 0 792 148.96" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <style>
                   {`
