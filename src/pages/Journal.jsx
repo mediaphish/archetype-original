@@ -139,11 +139,11 @@ export default function Journal() {
             {filteredPosts.map((post) => (
               <article key={post.slug} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 {post.image && (
-                  <div className="aspect-w-16 aspect-h-9">
+                  <div className="w-full">
                     <img 
                       src={post.image} 
                       alt={post.title}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-auto object-contain"
                     />
                   </div>
                 )}
