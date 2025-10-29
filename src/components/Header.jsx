@@ -42,7 +42,7 @@ export default function Header() {
             <a href="#about" className="text-black hover:text-gray-600 transition-colors text-sm">About</a>
             <a href="#philosophy" className="text-black hover:text-gray-600 transition-colors text-sm">Philosophy</a>
             <a href="#methods" className="text-black hover:text-gray-600 transition-colors text-sm">Methods</a>
-            <a href="/journal" className="text-black hover:text-gray-600 transition-colors text-sm">Journal</a>
+            <a href="#journal" className="text-black hover:text-gray-600 transition-colors text-sm">Journal</a>
             <a href="#contact" className="text-black hover:text-gray-600 transition-colors text-sm">Contact</a>
           </nav>
 
@@ -69,7 +69,7 @@ export default function Header() {
               <a href="#about" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>About</a>
               <a href="#philosophy" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Philosophy</a>
               <a href="#methods" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Methods</a>
-              <a href="/journal" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Journal</a>
+              <a href="#journal" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Journal</a>
               <a href="#contact" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
             </nav>
           </div>
