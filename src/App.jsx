@@ -73,21 +73,21 @@ export default function App() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold text-black mb-8">Methods</h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-lg border-2 border-black">
+              <div className="bg-white p-8 rounded-lg border border-gray-300 sm:border-2 sm:border-black">
                 <h3 className="text-2xl font-semibold text-black mb-4">Business Consulting</h3>
                 <p className="text-lg text-gray-700 mb-4">
                   Structure, alignment, and systems that hold when things get hard. 
                   We clarify direction, rebuild communication, and realign teams around shared goals.
                 </p>
               </div>
-              <div className="bg-white p-8 rounded-lg border-2 border-black">
+              <div className="bg-white p-8 rounded-lg border border-gray-300 sm:border-2 sm:border-black">
                 <h3 className="text-2xl font-semibold text-black mb-4">Leadership Mentorship</h3>
                 <p className="text-lg text-gray-700 mb-4">
                   Building clarity, confidence, and the habits that make leadership sustainable. 
                   No jargon. No theory. Just the logic of how leadership actually works.
                 </p>
               </div>
-              <div className="bg-white p-8 rounded-lg border-2 border-black">
+              <div className="bg-white p-8 rounded-lg border border-gray-300 sm:border-2 sm:border-black">
                 <h3 className="text-2xl font-semibold text-black mb-4">Clarity Sessions</h3>
                 <p className="text-lg text-gray-700 mb-4">
                   Rediscovering purpose, rebuilding confidence, and making better decisions 
@@ -122,7 +122,7 @@ export default function App() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold text-black mb-8">Contact</h2>
-            <div className="bg-white p-8 rounded-lg border-2 border-black">
+            <div className="bg-white p-8 rounded-lg border border-gray-300 sm:border-2 sm:border-black">
               <p className="text-xl text-black mb-6">
                 Ready to build something that lasts? Let's start a conversation.
               </p>
@@ -144,7 +144,7 @@ export default function App() {
         </div>
       </section>
 
-      <footer className="py-8 border-t border-black bg-white">
+      <footer className="py-8 border-t border-gray-300 sm:border-black bg-white">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <p className="text-sm text-black">© 2025 Bart Paden · Archetype Original LLC</p>
           <nav className="text-sm flex items-center gap-4">
