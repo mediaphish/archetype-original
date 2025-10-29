@@ -8,27 +8,57 @@ export default function Journal() {
 
   useEffect(() => {
     // Load journal posts from the knowledge corpus
-    fetch('/api/knowledge?type=journal-post')
-      .then(response => response.json())
-      .then(data => {
-        // Sort by publish date, newest first
-        const sortedPosts = data.docs.sort((a, b) => 
-          new Date(b.publish_date) - new Date(a.publish_date)
-        );
-        setPosts(sortedPosts);
+    const loadJournalPosts = async () => {
+      try {
+        const response = await fetch('/api/knowledge?type=journal-post');
         
-        // Extract unique categories
-        const allCategories = [...new Set(
-          sortedPosts.flatMap(post => post.categories || [])
-        )];
-        setCategories(['all', ...allCategories]);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
-        setLoading(false);
-      })
-      .catch(error => {
+        const data = await response.json();
+        console.log('Journal API response:', data); // Debug log
+        
+        if (data.docs && Array.isArray(data.docs)) {
+          // Sort by publish date, newest first
+          const sortedPosts = data.docs.sort((a, b) => 
+            new Date(b.publish_date) - new Date(a.publish_date)
+          );
+          setPosts(sortedPosts);
+          
+          // Extract unique categories
+          const allCategories = [...new Set(
+            sortedPosts.flatMap(post => post.categories || [])
+          )];
+          setCategories(['all', ...allCategories]);
+          
+          console.log('Loaded journal posts:', sortedPosts.length); // Debug log
+        } else {
+          console.warn('No journal posts found in API response');
+          setPosts([]);
+          setCategories(['all']);
+        }
+      } catch (error) {
         console.error('Error loading journal posts:', error);
+        // Fallback: try to load from static knowledge.json
+        try {
+          const fallbackResponse = await fetch('/knowledge.json');
+          const fallbackData = await fallbackResponse.json();
+          const journalPosts = fallbackData.docs.filter(doc => doc.type === 'journal-post');
+          setPosts(journalPosts);
+          setCategories(['all', ...new Set(journalPosts.flatMap(post => post.categories || []))]);
+          console.log('Loaded journal posts from fallback:', journalPosts.length);
+        } catch (fallbackError) {
+          console.error('Fallback loading also failed:', fallbackError);
+          setPosts([]);
+          setCategories(['all']);
+        }
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    loadJournalPosts();
   }, []);
 
   const filteredPosts = selectedCategory === 'all' 
@@ -93,10 +123,16 @@ export default function Journal() {
           <div className="text-center py-12">
             <p className="text-gray-600">
               {selectedCategory === 'all' 
-                ? 'No journal posts yet. Check back soon!'
-                : `No posts found in "${selectedCategory}" category.`
+                ? `No journal posts found. (Total posts: ${posts.length})`
+                : `No posts found in "${selectedCategory}" category. (Total posts: ${posts.length})`
               }
             </p>
+            {posts.length === 0 && (
+              <div className="mt-4 text-sm text-gray-500">
+                <p>Debug info: Check browser console for API response details.</p>
+                <p>If you see this message, the API call may have failed.</p>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-8">
