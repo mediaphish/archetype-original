@@ -4,7 +4,6 @@ import Hero from "./components/Hero.jsx";
 import ChatApp from "./app/ChatApp.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
-import Playbooks from "./components/Playbooks.jsx";
 import Speaking from "./components/Speaking.jsx";
 import WhatWeDo from "./components/WhatWeDo.jsx";
 import Journal from "./pages/Journal.jsx";
@@ -61,7 +60,6 @@ export default function App() {
       <ChatApp />
       <About />
       <WhatWeDo />
-      <Playbooks />
       <Speaking />
       <Contact />
     </main>
