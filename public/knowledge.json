@@ -1,0 +1,664 @@
+{
+  "generated_at": "2025-10-29T19:26:51.091Z",
+  "count": 22,
+  "docs": [
+    {
+      "title": "Intrinsic vs Extrinsic Motivation (Deci & Ryan)",
+      "slug": "intrinsic-motivation-deci-ryan",
+      "type": "behavioral-research",
+      "tags": [
+        "scoreboard-leadership",
+        "psychology",
+        "motivation"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Self-Determination Theory shows autonomy, competence, and relatedness drive sustained performance. Scoreboard Leadership relies on extrinsic controls that undermine these needs.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": [
+          "deci-ryan-2000"
+        ],
+        "url": "https://doi.org/10.1207/S15327965PLI1104_01"
+      },
+      "takeaways": [
+        "Intrinsic drivers beat reward-punishment systems over time.",
+        "Agency and mastery correlate with durable engagement."
+      ],
+      "quotes": [
+        "People have an inherent tendency to seek out novelty and challenges... — Deci & Ryan (2000)"
+      ],
+      "implications": [
+        "Replace scoreboard control with standard-based mastery measures."
+      ],
+      "applications": [
+        "Design roles for autonomy and competency growth."
+      ],
+      "body": "## Notes\n- Metrics can remain, but as mirrors—not levers of control."
+    },
+    {
+      "title": "Psychological Safety (Amy Edmondson)",
+      "slug": "psychological-safety-edmondson",
+      "type": "behavioral-research",
+      "tags": [
+        "scoreboard-leadership",
+        "trust",
+        "culture"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Fear-heavy environments suppress candor and learning. Scoreboard cultures push people to hide mistakes.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": [
+          "edmondson-1999"
+        ],
+        "url": "https://doi.org/10.2307/2666999"
+      },
+      "takeaways": [
+        "Safety increases learning behaviors and innovation.",
+        "Fear kills ownership."
+      ],
+      "quotes": [
+        "A team climate characterized by interpersonal trust and mutual respect fosters learning behavior."
+      ],
+      "implications": [
+        "Normalize error-sharing and inquiry in reviews."
+      ],
+      "applications": [
+        "Add blameless retros and learning logs to ops cadence."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Transactional vs Transformational Leadership",
+      "slug": "transactional-vs-transformational",
+      "type": "comparative-models",
+      "tags": [
+        "leadership",
+        "scoreboard-leadership"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Transactional leadership enforces compliance; transformational leadership builds intrinsic commitment. Scoreboard is inherently transactional.",
+      "source": {
+        "kind": "book",
+        "citation_keys": [
+          "bass-avolio-1994"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "Transformational patterns overlap with Servant Leadership.",
+        "Transactional exchange erodes dignity."
+      ],
+      "quotes": [
+        "Transformational leaders move followers to transcend self-interest for the good of the group."
+      ],
+      "implications": [
+        "Shift reviews from output-only to growth + standards."
+      ],
+      "applications": [
+        "Tie recognition to behaviors, not just numbers."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Fear of Evaluation & Performance Anxiety",
+      "slug": "fear-of-evaluation",
+      "type": "behavioral-research",
+      "tags": [
+        "scoreboard-leadership",
+        "stress",
+        "performance"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Overemphasis on comparison induces ego threat and \"choking\"—reducing creativity and reliability.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": [
+          "baumeister-1984"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "Pressure narrows attention and harms skilled execution.",
+        "Public rankings increase impression management."
+      ],
+      "quotes": [
+        "Choking occurs when people focus too much attention on processes that should run automatically."
+      ],
+      "implications": [
+        "Remove competitive leaderboards for creative teams."
+      ],
+      "applications": [
+        "Use private metrics + coaching; publicize standards."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Group Identity and Purpose (Sinek & Social Identity)",
+      "slug": "group-identity-purpose",
+      "type": "core-ideology",
+      "tags": [
+        "scoreboard-leadership",
+        "purpose",
+        "identity"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Belonging to a meaningful mission sustains effort. Scoreboard frames identity around outcomes, not contribution.",
+      "source": {
+        "kind": "book",
+        "citation_keys": [
+          "sinek-2009"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "Purpose cohesion drives retention.",
+        "Outcome-identity creates fragility."
+      ],
+      "quotes": [
+        "People don't buy what you do; they buy why you do it."
+      ],
+      "implications": [
+        "Start reviews from purpose, not numbers."
+      ],
+      "applications": [
+        "Weekly mission moments; tie wins to purpose impact."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Trust as the Currency of Leadership",
+      "slug": "trust-as-currency",
+      "type": "core-ideology",
+      "tags": [
+        "trust",
+        "servant-leadership",
+        "scoreboard-leadership"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Low-trust teams waste energy on self-protection. Scoreboard cultures weaponize metrics; servant leaders build credibility.",
+      "source": {
+        "kind": "book",
+        "citation_keys": [
+          "covey-2006",
+          "laub-1999"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "Trust reduces friction and cost.",
+        "Credibility compounds performance."
+      ],
+      "quotes": [
+        "When trust goes up, speed goes up and cost goes down. — Covey"
+      ],
+      "implications": [
+        "Make trust a managed asset."
+      ],
+      "applications": [
+        "Quarterly trust pulse alongside revenue dashboards."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Stewardship vs Agency Theory",
+      "slug": "stewardship-vs-agency",
+      "type": "comparative-models",
+      "tags": [
+        "leadership",
+        "trust",
+        "scoreboard-leadership"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Stewardship assumes intrinsic prosocial motivation; agency assumes self-interest needing control. Scoreboard is an agency reflex.",
+      "source": {
+        "kind": "paper",
+        "citation_keys": [
+          "davis-schoorman-donaldson-1997"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "Trust-based norms outperform control-heavy systems for complex work."
+      ],
+      "quotes": [
+        "Stewards are motivated to act in the best interests of the principal."
+      ],
+      "implications": [
+        "Evaluate leaders on stewardship outcomes (trust, growth)."
+      ],
+      "applications": [
+        "Stewardship scorecards alongside KPIs."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Game Theory and Zero-Sum Thinking",
+      "slug": "game-theory-zero-sum",
+      "type": "behavioral-research",
+      "tags": [
+        "cooperation",
+        "scoreboard-leadership"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Non-zero-sum systems reward long-term cooperation; zero-sum scoreboards create adversarial behavior.",
+      "source": {
+        "kind": "book",
+        "citation_keys": [
+          "axelrod-1984"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "Cooperation beats exploitation over repeated games."
+      ],
+      "implications": [
+        "Reward cross-team wins, not intra-team ranking."
+      ],
+      "applications": [
+        "Shared OKRs that require collaboration."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Burnout & Chronic Performanceism",
+      "slug": "burnout-performanceism",
+      "type": "behavioral-research",
+      "tags": [
+        "burnout",
+        "scoreboard-leadership"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Continual measurement without meaning drives exhaustion and cynicism; servant systems restore humane pacing.",
+      "source": {
+        "kind": "book",
+        "citation_keys": [
+          "maslach-leiter-2016"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "Meaning + recovery beats grind metrics."
+      ],
+      "implications": [
+        "Measure health alongside output."
+      ],
+      "applications": [
+        "Enforce recovery rituals in ops cadence."
+      ],
+      "body": ""
+    },
+    {
+      "title": "Faith & Moral Foundations of Servant Leadership",
+      "slug": "theology-stewardship",
+      "type": "core-ideology",
+      "tags": [
+        "faith",
+        "servant-leadership",
+        "scoreboard-leadership"
+      ],
+      "status": "draft",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "Stewardship reframes leadership as trust, not control. Scoreboard idolatry elevates outcomes over obedience and care.",
+      "source": {
+        "kind": "book",
+        "citation_keys": [
+          "greenleaf-1970",
+          "peterson-2018"
+        ],
+        "url": ""
+      },
+      "takeaways": [
+        "People over performance as a moral stance."
+      ],
+      "implications": [
+        "Success measured by faithfulness and formation, not just outcomes."
+      ],
+      "applications": [
+        "Stewardship reviews for leaders."
+      ],
+      "body": ""
+    },
+    {
+      "title": "A Note to the Reader",
+      "slug": "a-note-to-the-reader",
+      "type": "preface",
+      "tags": [
+        "accidental-ceo",
+        "introduction",
+        "leadership-journey"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "A candid introduction to the heart of Accidental CEO — not a manual, but a story-driven reflection on stumbling into leadership and learning through imperfection.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-preface"
+        ]
+      },
+      "takeaways": [
+        "Leadership isn't inherited; it's discovered through failure and growth.",
+        "Vulnerability builds connection faster than authority ever could."
+      ],
+      "body": "Hi there. Before we dive in, I want to let you in on something: this isn't your typical leadership manual.\n\nIn fact, calling me a \"leader\" back when I started would have been a stretch – and that's exactly why I'm writing this. I stumbled, fumbled, and basically tripped my way into becoming a CEO. Consider this book a personal, honest journey rather than a polished handbook. I'll share the good decisions, the bad ones, and the downright ridiculous ones.\n\nWhy? Because I wish someone had told me these stories when I was a few steps behind where I am now.\n\nIf you're looking for bullet-point perfection, you might be in the wrong place. But if you don't mind a little self-deprecating humor and some painfully honest moments, I think you'll find something valuable here. Whether you're running a company, leading a team, or just trying to figure out what's next—this book is about the messy, meaningful process of becoming someone worth following.\n\nLet's start at the beginning… or, at least, my beginning."
+    },
+    {
+      "title": "The Accidental Part",
+      "slug": "chapter-1-the-accidental-part",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "leadership",
+        "origin-story"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "The beginning of the journey — how curiosity, risk, and a willingness to care more than most sparked a leadership path that was never planned.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-1"
+        ]
+      },
+      "takeaways": [
+        "Leadership often begins where certainty ends.",
+        "Sacrifice for others is the first real act of leadership.",
+        "Growth happens when you choose people over comfort."
+      ],
+      "body": "I didn't plan on becoming a CEO.\n\nThat might sound strange coming from someone writing a leadership book, but the truth is, this entire journey started with a little curiosity, a lot of uncertainty, and just enough desperation to say yes to things I had no idea how to do.\n\nIt all started in the late 1990s when I discovered the Internet. Not in a tech-guru, \"I'm going to change the world\" kind of way. More like, \"Wait, people can make websites from home and get paid for it?\" I was a broke college kid and figured I could probably learn enough HTML to fake it until I made it. So that's exactly what I did.\n\nThe first time I got paid to build a website, I thought, \"This is it. I'm rich.\" It was something like $200, but in 1998, that was gold to me. More importantly, it gave me a taste of something I hadn't felt in a long time—confidence.\n\nNow, I wasn't someone who struggled in school. Actually, I was a straight-A student and graduated near the top of my class in 1992. I was pretty smart—math and science made sense to me. I loved art and design, and I could write a solid research paper when I needed to. Looking back, I think I had leadership instincts even then—I just didn't know that's what they were. I thought I was just bossy or organized. Turns out, it was something deeper that would surface again later in life.\n\nAfter college, I landed a job with Precious Moments in Carthage, Missouri. Not because I had a stacked resume or a fancy degree—I didn't—but because Terri Heckmaster and Ted Easley saw something in me. They took a chance, and that chance changed everything.\n\nAs part of the interview process, I was asked to write a press release for an upcoming event. I didn't even know what a press release was. I stared at the assignment for a while, then decided to do something else entirely. I built a small website—three or four pages—announcing the event. It included event details, a few images, and contact information. No bells and whistles. Just a clean, clear presentation of what people needed to know. It wasn't what they asked for, but it showed what I could do. That bold little detour got me hired.\n\nI started in the Marketing Department and spent the next four and a half years figuring things out in real time. We didn't have a huge digital strategy back then—honestly, almost no one did—but I had enough curiosity and drive to learn what we needed as we went. By the time I left, I had helped grow their online sales from $20,000 a year to over $1.2 million. It wasn't about genius. It was about curiosity, effort, and actually caring about the outcome.\n\nBut things took a turn. Eventually, I was reassigned to the IT department. Suddenly, I was troubleshooting hardware, crawling under desks to run wires, and freezing in a server room that felt like a meat locker. It wasn't what I signed up for—and it wasn't where I was supposed to be.\n\nThat's when I knew it was time to go.\n\nI didn't quit in a blaze of glory. I negotiated a termination. Since the new responsibilities weren't part of my original job description, I qualified for unemployment benefits. That money—modest as it was—became the lifeline that gave my family just enough room to breathe while I figured out what was next.\n\nI tell people it felt like I jumped out of an airplane holding either a parachute or a lunchbox—I wasn't sure which. But I jumped anyway.\n\nThere was no business plan. No investors. No backup strategy. Just a beat-up laptop, a few freelance clients, and a deep determination not to go backward.\n\nSlowly, it grew.\n\nAt first, I was just trying to survive. But over time, I realized something bigger was happening. This wasn't just about websites and logos. It was about building trust. Helping people solve problems. Showing up. And eventually… leading.\n\nI didn't set out to be a leader, but leadership found me.\n\nAnd I remember the exact moment it started to take shape.\n\nThere was a young guy I knew—just about to get married. He was raw, still learning, but incredibly talented. Honestly, he was already a better designer than I was. I saw something in him and made a decision: I brought him on. Not because the business was booming, but because I believed in building something that could grow beyond just me. I even gave up part of my own income so he could have health insurance. That was my first real and significant leadership decision—the sacrificial kind. The kind where you put someone else's needs ahead of your own. That moment shifted how I viewed leadership. It wasn't about power or position—it was about responsibility.\n\nI still made mistakes, of course. I undercharged. I overpromised. I said yes to projects that made no sense just to keep the lights on. I was figuring it out one client at a time, learning how to build a business while also learning how to lead.\n\nBut that early decision—to invest in someone else at personal cost—became a kind of blueprint. It showed me what kind of leader I wanted to be. Not the boss barking orders from a corner office, but someone willing to go first. Willing to sacrifice. Willing to bet on people, even before they fully believed in themselves.\n\nAnd somewhere in that chaos, I started to understand what leadership really is.\n\nIt's not about being the smartest person in the room. It's about being the most grounded. It's not about telling people what to do. It's about listening, lifting, and walking alongside them. It's about seeing people—not just their output. It's about building something that lasts—not just for your own success, but for the success of others.\n\nThis book isn't here to show off the polished version of that journey. It's here to walk you through the raw parts, the funny parts, the broken parts—and the breakthroughs. Because I think leadership is less about the mountaintop moments and more about what happens in the climb.\n\nSo if you've ever felt like you're figuring it out as you go, welcome. You're not alone.\n\nThis is the story of how I accidentally became a CEO—and how I grew, over time, into someone worth following."
+    },
+    {
+      "title": "What He Gave Me",
+      "slug": "chapter-2-what-he-gave-me",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "servant-leadership",
+        "faith",
+        "resilience"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "From collapse came clarity. This chapter tells how pain, risk, and redemption formed the foundation of both a family and a leadership philosophy rooted in service and faith.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-2"
+        ]
+      },
+      "takeaways": [
+        "True leadership is born in struggle, not stability.",
+        "Pain can become purpose when met with faith and presence.",
+        "Servant leadership grows from the decision to show up when nothing feels secure."
+      ],
+      "body": "I think I realized, sometimes you have to take a risk and bet on yourself.\n\nBut for me, that risk didn't come from a place of confidence. It came from collapse. But sometimes that's where the most honest leadership begins.\n\nThe final stretch of my time at Precious Moments was unraveling at the same time my personal life was collapsing. I wasn't just going through a divorce—I was living through betrayal. The person I had committed my life to was having an affair with someone I considered a close friend. Not just any friend—a leader in our church small group. Someone I trusted. Someone I prayed with. The fallout wasn't just relational—it was spiritual. It felt like my entire foundation had been pulled out from under me.\n\nI stayed at work and tried to hold it together. But behind the scenes, I was in survival mode. I was dealing with lawyers, courtrooms, and a custody battle that felt endless. I didn't know how to make sense of it. I just knew I couldn't stay in that life anymore.\n\nThe divorce became final shortly after I negotiated my termination. The job had shifted far away from what I was hired to do, and I worked out a deal that allowed me to leave with unemployment benefits. That small bit of financial stability became the runway I needed—barely—to try something on my own.\n\nSo there I was. Unemployed. Alone. A dad fighting for time with his kids. No plan. No savings. No fallback.\n\nAll I had was a belief—just enough to move forward—that maybe I could build something from the rubble.\n\nI started taking on small freelance jobs. Web projects. Design work. Anything that paid. I put my name out there and hoped the next gig would come through. The risk was enormous. The weight was heavy. There was no guaranteed outcome—only the desperate kind of faith that shows up when your back is against the wall.\n\nAnd then something unexpected happened.\n\nIn November of 2003, I met Carie.\n\nShe came into my life during the most unstable season I'd ever known. I had nothing to offer her. No job title. No house. No real sense of direction. But somehow, she saw something in me. She didn't try to fix me—she simply walked beside me. She believed in a future I couldn't yet see.\n\nWe got married in March of 2004. That same year, I officially started the business.\n\nThe custody battle continued, and in September of 2004, tragedy struck when Jennifer, my ex-wife, was killed. The legal battle ended, but the emotional journey didn't. Carie didn't just embrace my boys—she became Mom, without us even asking. She stepped into their world with full-hearted love, grace, and intention.\n\nAnd our story didn't end there.\n\nWithin two years, I adopted Oakley—Carie's daughter—as my own. We didn't just blend families. We became one. One mom. One dad. Three amazing kids. One roof. One new beginning. God didn't just mend a broken path—He erased it, and He laid down new ground beneath our feet. Solid ground. Family-shaped ground. It was redemption in its most complete form.\n\nThe business was never about chasing success. It was about survival.\n\nIt was born in the fire—refined by the need to lead when life gave me no other choice.\n\nIt was about giving my family a future.\n\nIt was about building something that reflected the second chance I'd been given.\n\nAnd that's when I started learning what leadership really meant.\n\nIt wasn't about having all the answers. It wasn't about climbing a corporate ladder. It was about making intentional choices when nothing felt secure. It was about showing up, even when I didn't feel qualified. It was about aligning my words with my actions, and letting my values—not my fear—lead the way.\n\nThat's where servant leadership took root. Not because I read about it. But because I lived it. I didn't want to be the kind of leader who barked from the back—I wanted to be in the trenches. Shoulder to shoulder. Carrying the weight too.\n\nLooking back, I can see it now.\n\nGod gave me exactly what I needed—not what I would have asked for, and certainly not what I expected. But what He gave me was better.\n\nHe gave me pain that produced clarity.\n\nHe gave me people who reminded me I didn't have to do it alone.\n\nHe gave me purpose that outweighed the pressure.\n\nHe gave me a path.\n\nAnd all I had to do was walk it—even when I couldn't see more than a few steps ahead.\n\nThat's how leadership started for me—not at the summit, but on the shaky path out of ruin."
+    },
+    {
+      "title": "The Long Road Alone",
+      "slug": "chapter-3-the-long-road-alone",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "grind",
+        "faith",
+        "discipline",
+        "humility"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "The years between 2004 and 2010 defined the grind that forged discipline, humility, and faith. Through exhaustion, precision, and dependence on God's provision, the foundation for servant leadership began to take shape.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-3"
+        ]
+      },
+      "takeaways": [
+        "Endurance refines purpose more than ease ever will.",
+        "The smallest disciplines prepare leaders for the greatest responsibilities.",
+        "Leadership begins with service—and the humility to be second."
+      ],
+      "body": "Grinding Through the Years\n\nThose years between 2004 and 2010 were defined by one word: grind. My days started at seven in the morning, getting the kids to school, and from there I was immediately on the clock. I would design and code all day, managing projects and communicating with team members scattered across the world until the kids came home. Then I shifted into the roles of husband, father, and coach until bedtime. Once the house quieted, I went right back to work, often until two or three in the morning. Then I'd sleep for a handful of hours, get up, and do it again. Wash, rinse, repeat.\n\nI was exhausted all the time, but I didn't let it stop me. In truth, I didn't know how to stop. Sleep never came easy anyway. It wasn't until 2024 that I was diagnosed with sleep apnea, but looking back, I believe it had been with me all along. That hidden condition explained a lot about why rest never felt restorative and why I believed I could simply power through without consequence. In those days, the ability to work twenty hours straight felt like a strength. Only later would I learn it came with a price tag that would show up in my health years down the road.\n\nThe work itself wasn't light. One of my earliest contracts was with Motive Movie Marketing, where I built projects for Disney, Icon Films, and a handful of music labels. I was a tiny fish in a very big pond — building websites for Hollywood studios from a bedroom office in flyover country. The pressure was enormous, but it was also refining. I specifically worked on campaigns for The Chronicles of Narnia from Disney and The Passion of the Christ for Icon Films. With the latter, our team took Mel Gibson's $25 million investment in distribution and multiplied it tenfold, driving $250 million in value through targeted group marketing. It still amazes me that I got to be part of that effort from my small corner of the world.\n\nThe expectations were extreme. Today, design and code are fluid, with flexible layouts and responsive systems. Back then, everything was inline. CSS wasn't even a thing yet. I was handed finished studio designs and expected to translate them perfectly into web pages. And when I say \"perfectly,\" I mean it. Studio art directors would send notes asking me to move a graphic two pixels in one direction or another. Two dots on the screen. That was the level of precision they demanded.\n\nAt first, it was maddening. But over time, that discipline became training. I learned to find satisfaction in the tedium — to see those tiny corrections not as insults but as tools sharpening me. That season taught me to respect detail and to build systems that could handle exacting standards. It was the same discipline I would later expect from my team. Those two-pixel adjustments were preparing me for the next twelve to fifteen years, shaping how I would lead people whose skills far exceeded my own.\n\nCarrying the Weight Together\n\nBefore the daycare years, our roles were actually flipped. Carie spent years selling cutting tools to machine shops while I was a \"designer.\" She was the one walking shop floors; I was the one pushing pixels. Later, when we leaned fully into being self-employed, she opened a daycare downstairs and I worked upstairs building the first iteration of what became Midwestern Interactive. It wasn't typical by most people's expectations, but it worked because we were aligned.\n\nMidwestern Interactive (MWI) was the software firm I co-founded in 2012, but had been building since 2005. What started as a solo operator in a home office turned into more than 100 diverse humans in multiple locations, testing everything I believed about leadership and culture.\n\nWe were both tapped all the time. Three kids, a home, cars, bills, and the weight of building something new pressed on us constantly. There were days, weeks, and months where I couldn't explain how we made it through. The pressure was relentless, but the provision was just as steady. We never went without. We never lacked what we needed.\n\nThe only explanation I have is God's hand. I can't take ownership of any part of the story that carried us through those years. Looking back over the whole thirty-two-year timeline, it's clear: God did it all. It was His path for me and for my family. That conviction didn't make the grind easier, but it made it worth it.\n\nLearning to Be Second\n\nThose years also taught me a truth I've never let go of: I'm not special because I own something or lead something. No one is. The grind of working alone, the exhaustion, the constant dependence on God's provision — all of it birthed the conviction I've lived by ever since: I am second.\n\nI could never look back at those years and pretend I had done it all myself. God was carrying me and my family the whole way. That reality put me in a posture of service. Leadership was never about power, ego, or even financial gain. It was about building something greater than myself — not just a company, but a culture.\n\nTo this day, when I see someone achieve a dream, win a championship, or even notch a small victory in life, I celebrate it. Even if they beat me, good for them. That posture — choosing to celebrate others instead of centering myself — became the reason I existed as a leader. And I believe it's also why I found so much success in what some would call a short timeline."
+    },
+    {
+      "title": "From the Beginning",
+      "slug": "chapter-4-from-the-beginning",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "servant-leadership",
+        "culture",
+        "accountability",
+        "protection",
+        "community"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "The early years that defined culture and servant leadership—through disaster response, protection, and accountability. These stories mark where leadership shifted from theory to lived conviction.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-4"
+        ]
+      },
+      "takeaways": [
+        "Servant leadership is proven through presence and accountability, not intention.",
+        "Protecting people, facing truth, and serving the community reveal real culture.",
+        "Leadership is stewardship; responsibility for others is the foundation of trust."
+      ],
+      "body": "When I look back at the early years, I can see a clear dividing line. For a long time, I was just doing the work — building websites from a home office, keeping clients happy, and trying to survive. But the moment I began to gather a team around me, the weight shifted. I wasn't only responsible for outcomes anymore. I was responsible for people.\n\nFrom the beginning, my goal wasn't to build a company for its own sake. Plenty of people start businesses with growth or profit as the target. That was never enough for me. My goal was to live out servant leadership through the culture we created. Accountability and service weren't strategies I added later — they were in my DNA, and they shaped everything that followed.\n\nI knew a company's culture doesn't appear by accident. It forms in the early decisions, in the way leaders respond to pressure, and in the values that get reinforced when things go wrong. These were the moments when my posture as a servant leader either took root or withered. Looking back now, I can see the fingerprints of those decisions everywhere.\n\nThis chapter is about those first defining stories. They weren't glamorous. They didn't make headlines. But they show what was at the core of the company from the very beginning: service, protection, and accountability.\n\nWhen the tornado hit Joplin in May of 2011, our community was put in a blender. It wasn't just destruction — it was disorientation. People didn't know where to go, what resources existed, or how to connect their needs to the flood of help pouring in.\n\nThe call came from a friend, the director of a local non-profit. Their mission was already to serve the community, and when the tornado hit, their focus shifted overnight. They asked if I could drop everything and build a system to connect needs to resources. I said yes, and my team followed my lead.\n\nFor me, that decision wasn't some bold, heroic moment. It was simple: this is what we do when our community needs help. Servant leadership doesn't posture. It turns effort outward.\n\nThe pace inside our office those three days was electric. We felt the weight of the darkness pressing in from outside, but we stayed locked on the goal. High energy, high pressure, no slack. That's normal in software — but here, the stakes were human. If we shipped this system, people might actually get help faster. If we failed, the cracks in the relief effort would swallow real families.\n\nFor 72 hours we ran 24x7. We stretched our pace, our skills, and our endurance further than ever before. The platform launched, and I had to step outside just to catch my breath. We had accomplished the mission. People had a better chance at getting what they needed in the most dire situation any of us had ever known.\n\nI wasn't proud of myself. I was proud of my team. Not one of them had lost a home. Not one of them had a personal stake in the recovery. They gave everything they had because that's what servant leaders do: they give until they're empty. And I did the same. Every last ounce.\n\nOn Monday, I led us back into client work. No celebration. No victory lap. That's what we do.\n\nLooking back, I see now what Robert Greenleaf meant by stewardship. A servant leader isn't chasing recognition — they take responsibility for the people and communities around them, even when no one's asking. Larry Spears later described this posture as \"community building,\" one of the core pillars of servant leadership. That's what this was. We didn't just build a website. We built a lifeline.\n\nThe cost was real. Three days of exhaustion. A year of follow-up improvements and support while balancing our workload. Potentially strained client timelines. But the payoff was beyond measure: a community that had a fighting chance and a team that learned, firsthand, what it meant to pour out everything in service of others.\n\nServant leadership shows itself in the small cracks most people overlook. Big institutions stepped in after the tornado, but their help took time. Insurance checks didn't show up overnight, and families were left waiting. In the meantime, real needs went unmet — a window to keep the rain out, a set of tires so someone could get to work.\n\nThat gap became the heart of Restore Joplin. A simple logo — a heart with a bandage — gave people a way to rally. We raised $250,000, and every dollar went to those in-between needs. Nothing glamorous. Nothing headline-worthy. Just the kind of ordinary faithfulness that keeps people moving one step forward.\n\nThis is the part of servant leadership that rarely gets attention. It isn't about standing out or being called a hero. It's about elevating others quietly, often anonymously, and meeting them right where they are. The power isn't in the size of the gift but in the posture behind it: what can I do, with what I have, to lift someone else?\n\nThat same posture played out inside the company, too. Servant leadership wasn't just for disaster response. It was how I chose to lead every day.\n\nPappa Bart\n\nRyan was one of our engineers — smart, committed, steady. He was working on a project for a client when things suddenly turned volatile. The owner, who had been mostly detached, inserted himself into the situation. He brought along his girlfriend, who also served as the office manager. Neither of them had been involved in the work, but they came in swinging. On a call, they made claims that were flat-out fabrications and laced their accusations with thinly veiled threats.\n\nYou just don't talk to my people that way.\n\nI stopped the call. Cleared everyone else out until it was just me and the owner. I told him plainly that a line had been crossed, and it would not be crossed again. There wasn't yelling or posturing, but there was no mistaking the seriousness. He heard me. He apologized. And from that moment forward, the project returned to the work it was meant to be.\n\nThat moment wasn't about me proving strength. It was about Ryan knowing he was safe, that someone would step in when things turned unjust. Servant leadership isn't only about serving the client—it's about protecting your people when they're in the right. Dignity has to be shielded. Without it, trust collapses.\n\nA transactional leader might have handled that call differently. They might have absorbed the false accusations, turned on their own employee, or sacrificed dignity in order to keep the client happy. It's a short-term play: save the account at the cost of the team. But that's not leadership, that's fear. Servant leadership takes a different posture. It protects the people doing the work. It creates a climate of justice where trust can grow.\n\nThat day, Ryan walked away knowing I had his back. He started calling me \"Pappa Bart\". And I believe that shaped him just as much as it shaped me. Years later, at the end of my time at MWI, he pulled me aside. He said, \"I want to continue to carry the torch for you.\" That said everything. He didn't just want to do good work—he wanted to carry forward the kind of leadership he had experienced.\n\nAccountability – A Two Way Street\n\nKevin was a client you couldn't forget. He was six-foot-four, with a cowboy hat and a booming voice that could fill the building. When he came to see us, you knew it. He believed in us, but he expected results, and he didn't shy away from saying so.\n\nOne project started to slip, and the mistakes were on Mike, one of our engineers. He was talented but young, and at that point his ego was outpacing his execution. He had dropped several balls, and this time Kevin noticed.\n\nI wasn't in the building that day, but I didn't need to be. Kevin's voice carried, and the story of that meeting made the rounds quickly. He called out the failure directly, laying it plain with the kind of authority only a man like him could bring. Mike had no excuse, and I didn't give him one. He faced Kevin himself, absorbed the weight of the accountability, and promised to fix it.\n\nAt the time, the truth was Mike wasn't open to being led. Pride and ego were getting in his way, and it created separation between him and the culture I was trying to build. Sometimes servant leadership means protecting, like I did with Ryan. Other times it means stepping back and letting someone face the weight of their own decisions. Shielding Mike would have spared him in the moment, but it wouldn't have helped him grow.\n\nAs soon as I heard what had taken place, I called Kevin myself. I didn't try to downplay it or make excuses. I thanked him for speaking up. We deserved to hear everything he told us. He was right to expect better, and I wanted him to know his voice mattered. That honesty only strengthened the relationship. Kevin didn't lose respect for us because of the mistake—he gained more because we owned it.\n\nYears later, Mike approached me and apologized. It had taken time, but he eventually recognized the arrogance and damage of those years. He did his best to reconcile. That moment didn't erase the cost of his choices, but it did remind me that accountability, paired with truth, can still plant seeds that bear fruit—sometimes much later than we expect.\n\nThe culture I was shaping wasn't defined by one big moment. It was formed by dozens of decisions like these. Protecting when it was right. Exposing when it was needed. Stepping into the gaps, whether for a community shattered by disaster or an employee who needed the weight of accountability.\n\nThat is the essence of servant leadership. Not theory. Not slogans. Just a steady posture of service, justice, truth, and care — lived out in real moments with real people."
+    },
+    {
+      "title": "Building Culture",
+      "slug": "chapter-5-building-culture",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "servant-leadership",
+        "culture",
+        "rhythms",
+        "transparency",
+        "health"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "How culture moved from values-on-paper to lived practice: rhythms, ceremonies, MWI Cares, the 80/20 rule, health and wellness, and transparency that built trust strong enough to hold in harder seasons.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-5"
+        ]
+      },
+      "takeaways": [],
+      "body": "Values on paper don't make a culture. You can write them down, put them on the wall, or rehearse them in meetings, but until they are lived, they're just words. After the DNA of servant leadership was set—service, protection, accountability—the next test was whether we could make those values real.\n\nWhen I say we in this chapter, I mean the team. They were the ones who carried these rhythms and lived them out every day. My role was to set the DNA and lead with conviction, but the culture was theirs as much as it was mine.\n\nThis was the season where culture took shape. Not as theory, but as practice. The systems, the ceremonies, the boundaries, and the investments were all ways of telling people they mattered. From the outside, some of it looked ordinary—huddles, celebrations, transparency—but inside, it was the difference between survival and trust. It was what made us strong enough to carry one another when the weight got heavy.\n\nRhythms & Ceremonies\n\nCulture is built on what you repeat, not what you announce. For our team, the heartbeat of that repetition was communication.\n\nWe held daily stand-ups and huddles because the work demanded it. In a business as complex as ours, there were always dozens of moving parts—and just as many opportunities to let something slip. I used to say all the time, \"Don't drop the ball.\" Those meetings were how we made sure of it. They gave everyone clarity on priorities, surfaced issues before they became problems, and kept people from being left on islands. Most companies leave people guessing. We didn't.\n\nLooking back, the systems we had in place looked a lot like SCRUM or other Agile project-management ceremonies. Daily stand-ups, backlog grooming, sprint reviews—all of that eventually became part of our formal playbook once we installed a project-management team. But long before we had names for them, we had the instincts. We knew we needed to communicate daily, to make priorities visible, and to create space for constant course correction. Servant leadership demanded it.\n\nBut here's the real reason we did it: I knew the human behind the task mattered more than the task itself. The policies, the systems, the procedures—even the celebrations—weren't about efficiency alone. They were about dignity. They were about telling every person on the team, \"You matter.\" Yes, the work had to get done, but the greater work was showing people they weren't just cogs in a process. They were seen, valued, and part of something bigger.\n\nThe celebrations layered on top of that backbone. Friday brunch, birthdays, new houses, anniversaries, even Beer:30—all of it mattered, but it was secondary. The celebrations reinforced belonging. The rhythms created trust.\n\nAnd that consistency is what made the culture solid. People didn't have to wonder if they were seen, if their voice mattered, or if someone else knew what they were carrying. The rhythms made sure no one was left behind, and the ceremonies reminded them they were more than just their work.\n\nMWI Cares\n\nAs the team grew, I realized two things were true. First, people don't always like talking with the boss about their problems—especially personal ones. Even though I worked hard to foster openness, there were still barriers. Second, I wasn't equipped to carry everything myself. I wasn't a woman, and as our team grew to include incredible women, I knew they needed safe spaces I couldn't fully provide.\n\nThat's where MWI Cares came from. It wasn't just another HR program. It was an intentional structure that created safe, trusted channels for people to get help. In an industry like tech—where studies consistently show women face higher rates of burnout, attrition, and exclusion—it mattered even more to build something that said, \"You belong here, and your needs matter.\"\n\nMWI Cares created space for all of it. Sometimes that meant covering significant medical expenses. Sometimes it meant paying for counseling. Sometimes it was smaller, quieter needs that never made headlines but made all the difference in someone's life. The point wasn't the size of the expense. The point was that no one had to carry their burdens alone.\n\nThe clearest picture of this was what came to be known as the crying couch. One of our designers hit a breaking point. The details aren't mine to share, but what mattered was that they weren't left to fall apart in isolation. Work stopped, and presence took priority. I sat with them, listened, and carried what I could. No fixing, no rushing—just being there.\n\nThat's what servant leadership looks like. Not rushing past pain, but giving it space. Not treating people like a task to be managed, but like a human to be honored. The crying couch was never part of an employee manual, but it defined us more than any policy ever could.\n\nMWI Cares wasn't about fixing everything. It was about making sure every person knew there was a path to care. It told the team: You are more than the code you write or the designs you ship. You are human, and you matter.\n\nThe 80/20 Rule\n\nOne of the most important decisions I made as a leader was to build margin into the way we worked. For us, it became the 80/20 rule.\n\nThe idea was simple: if 100% of your effort goes into production, you leave no time for progress. People burn out. Growth stalls. Creativity disappears. That wasn't the kind of culture I wanted to build.\n\nThe 80/20 rule gave the team permission—and accountability—to keep moving forward in both work and life. It meant space for learning, refining, and building better systems. It meant they weren't chained to the urgent at the expense of the important. Paradoxically, when we pulled back from chasing productivity at all costs, productivity actually increased—dramatically.\n\nIt also created space for leadership itself. Some business leaders today have lost sight of this. They believe if you're not producing, you're nothing. But that isn't true. Teams need leaders. Teams even need managers. Those roles may not be billable from a revenue perspective, but they are productive in the truest sense. They foster progress by growing the people around them.\n\nThis wasn't a one-time idea. It was daily. I used these rhythms to keep my hand on the pulse of the team. Were they making progress? Were they thriving? Were they carrying weight in a sustainable way? The 80/20 rule gave me the framework to check in and make adjustments before cracks formed.\n\nAnd the result was unmistakable. When you do more than tell people they matter—when you actually structure their time to prove it—it leaves a mark. People feel safer. They feel freer to be creative. They burn out less. That was the whole point.\n\nGrowth, Health, and Wellness\n\nWe didn't want to build workers. We wanted to build people. That meant investing in their growth, health, and wellness as much as their output.\n\nWhen growth required it, we invested. That meant covering certifications, training, and other opportunities that helped people move forward. These weren't blank checks for personal whims—there had to be a foundation of skill already in place, and the growth had to matter. If development was necessary for their advancement and for the health of the team, we funded it. Our aim was simple: keep people advancing, not stagnating.\n\nHealth was just as important. A lot of it was woven into the events we already loved. Fitness is hard, but it gets easier when you do it side by side with others. We encouraged ten-minute walks every hour. Most of the time those walks weren't just about steps on a counter—they became opportunities for conversations, relationships, and problem-solving. Some of the best ideas came while moving.\n\nWe even created themes to keep this front and center. Every May we had \"Be Kind To Your Mind\" month. During that season, the emphasis shifted to mental health. We built in educational sessions, trainings, and conversations that had little to do with client work but everything to do with growing as whole humans.\n\nThe conviction behind it was simple. People matter more than the task. They definitely matter more than profits. Trading a little cash for a healthier, stronger, more whole human is always the right decision. Trading a human's well-being for profit is always wrong.\n\nTransparency\n\nFor me, transparency was never about rare moments of revelation. It was about consistency. I didn't wait for a crisis to pull people in. I shared as often as I could—finances, strategy, opportunities, struggles. If a decision was going to affect the team, they deserved to know about it.\n\nWhat is there really to hide in business? Every choice a leader makes lands on the people doing the work. Pretending otherwise doesn't protect them, it just blindsides them. I wanted the team to know the reality they were living in—good, bad, or uncertain.\n\nThat consistency built trust that has lasted far beyond the years we worked together. Many of the relationships I still have with former staff trace back to this posture. They trusted me then, and they still trust me now, because they never had to wonder what was happening behind closed doors.\n\nTransparency wasn't a tactic. It was a way of leading. It said, \"You are part of this story. You're not just here to execute decisions. You deserve to see them, understand them, and carry them with me.\"\n\nClosing — Why Culture Held\n\nLooking back, I don't see these decisions as extras. They were the culture. Daily rhythms that kept us aligned. MWI Cares that reminded people they weren't alone. The 80/20 rule that gave margin for growth. Health and wellness that valued the whole person. Transparency that left no doubt about trust.\n\nNone of these practices were glamorous. They didn't make headlines. But they became the strength of our team. They made it possible for people to thrive, not just produce. They created a foundation we would need when the harder seasons came.\n\nCulture isn't built in crisis. It's revealed there. And because we built it here, when the weight showed up later—in moments of grief, conflict, and strain—we weren't crushed by it. The culture held."
+    },
+    {
+      "title": "The Cost of the Climb",
+      "slug": "chapter-6-the-cost-of-the-climb",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "culture-drift",
+        "stewardship",
+        "burnout",
+        "pocket-rules"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "2019–2021: wins on paper, fractures underneath. A shift toward revenue over care, the weight of culture drift, and the personal toll that followed.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-6"
+        ]
+      },
+      "takeaways": [],
+      "body": "The Drift Beneath the Wins\n\n2019 through 2021 should have been the years of steady ascent. We were winning business, doing good work, and the world's reliance on technology only deepened during the pandemic. For most companies like ours, it was the perfect storm of demand. But while the charts and numbers looked right, something underneath began to fracture.\n\nOur town never really saw the pandemic the way the news made it sound. Life kept moving, but fear still ruled the day. Everywhere you turned, people were uncertain if their businesses or jobs would survive. Years of fear-based messaging trained people to look inward and protect their own. That crevasse we now see between employees and \"the man\" widened quickly during this season. The data backs it up: surveys from 2020–2021 showed steep declines in employee trust of leadership and a surge in expectations that companies should prove they cared about people, not just profits. The \"self-first\" mindset had momentum, and it created chaos inside and outside the business.\n\nI noticed the cracks most clearly in myself. I had always been deeply connected to the rhythms of our work — from client meetings to team culture to how we showed up in the community. I knew the beat of our company like a musician knows the tempo of a song. But during those years, my role in the forward-facing side of the business shrank almost overnight.\n\nOne moment stands out. We had delivered strong work for a client for years. When their own team created a mess, I called it out directly and fairly. Their leader didn't like that. He pulled us into a meeting, forcing us to drive forty minutes each way without an agenda, and blamed me for their mistakes before firing us in a very disrespectful way. I didn't mind being fired — I knew the work had been excellent. What bothered me was the absence of care. I expected someone to stand shoulder to shoulder with me in that moment. Instead, silence. It took days before I heard a word. Something broke then. It wasn't just about losing a client. It was the beginning of a larger shift — a tilt away from care toward revenue.\n\nThat fracture left me less visible on the outside, but it pushed me deeper into what I loved most: serving my people. I poured myself into the team. My energy went toward creating stability in a season when fear and division were everywhere. In a way, that shift planted the seed for this book. After the sale, I would go from leading everything to leading very little. But here, I was still in the fight — still protecting what mattered.\n\nCracks in the Foundation\n\nNot every loss was abstract. Some cut deep. I remember a meeting where we debated new maternity and paternity leave policies. The conversation turned toward replacing the words \"mother\" and \"father\" with \"birthing person.\" I couldn't go there. For me, that debate wasn't about policy; it was about a growing distance between the values I held and the values being prioritized.\n\nAnother wound came when my marketing team was reassigned. I had handpicked them — sharp, teachable, passionate young women who gave everything and more. Watching them thrive was one of my greatest joys. Losing them to someone with talent but little ability to lead was a gut punch. They weren't just colleagues; they were an extension of me.\n\nLooking back, the cracks weren't dramatic explosions. They were quiet shifts — in language, in decisions, in how people were treated. But leadership is sensitive to the subtle. A song only needs to lose tempo by a beat or two before the whole band feels off.\n\nPocket rule: Revenue without relationship is erosion.\n\nLineage callout: This was Sinek's truth in motion — profit is a result, not a purpose.\n\nThe cracks that started beneath the surface didn't stay hidden for long. They grew into patterns I couldn't ignore. What had once been a culture built on care and trust began leaning toward numbers, transactions, and efficiency. On paper it looked like maturity — bigger projects, more revenue, new policies. But underneath, it felt hollow.\n\nCulture rarely changes with one big decision. It shifts in the small things: a word chosen in a meeting, a policy written without heart, a client prioritized because of their budget instead of their fit. One by one, those decisions stacked until the tone of the business was different.\n\nI had always believed that growth and care could coexist. In fact, that was the foundation of servant leadership. But I started to see that the two don't live in balance by accident. If you don't fight for care, growth will smother it. Fear accelerates the drift. With the world shouting about survival, our culture bent toward revenue as if it were the only proof of life.\n\nI felt the weight of it most in the way people carried themselves. Conversations with staff that once felt open and energized now felt guarded. Huddles and rhythms that used to breathe life into the team started to feel like obligations. People still worked hard, but you could sense the atmosphere tightening. They were waiting to be measured, not cared for.\n\nThis is what Robert Greenleaf meant when he wrote about stewardship. Leaders aren't just responsible for producing results; they're responsible for how those results are achieved and what happens to people in the process. A company can win contracts and still lose its soul.\n\nPocket rule: Culture doesn't collapse overnight — it drifts degree by degree until no one recognizes the room they're in.\n\nThe business was still functioning. We weren't falling apart, but the pace was relentless. Decisions grew colder, the drive for revenue more obvious, and people were asked to give more than they had. They delivered, but you could see the wear setting in.\n\nSo I turned inward—back to what I could still protect.\n\nCarrying What's Left\n\nIn that climate, I found myself leaning harder into care. Not as a hero swooping in — just as a leader refusing to forget the human side when the current pulled the other way. I paid closer attention to how people were doing, not just what they were producing. I reminded them they weren't invisible. I tried to steady the room when the pressure around us kept rising.\n\nThis was the same season I was asked to investigate a struggling designer, with the quiet assumption that I'd return recommending termination. Instead, we ended up on the crying couch. What looked like performance issues turned out to be the weight of personal struggle. That conversation didn't just save a job; it reminded me why I leaned harder into care when everything else was growing cold.\n\nBut it took something out of me too. Years of leadership had already left their mark, and this was different. Carrying the weight of culture drift — of watching good people slowly get used up — left me drained. The fatigue wasn't only physical. It was emotional and spiritual, the kind that lingers long after you leave the office.\n\nLeadership at its best is about multiplying strength. Leadership at its costliest is about carrying tension that never seems to resolve. I was living in that space.\n\nThat space had limits I hadn't named yet.\n\nPocket rule: Care is clearest when everything else grows cold.\n\nThe Debt Comes Due\n\nEvery leader has a threshold, though most of us don't see it until we're already standing on the edge. For me, the years of 2019–2021 brought me to mine. The business was still moving, but inside I was wearing down.\n\nI could feel it in my body first. The pace wasn't slowing, and neither was the pressure. My health began to decline faster than I could recover. Fatigue became my constant companion. Nights stretched long with little sleep. Even the simplest decisions started carrying more weight than they should have.\n\nSpiritually, I was running on fumes. The joy that had carried me through the early years — the belief that servant leadership could transform not only a company but the people inside it — felt distant. I wasn't doubting the principle. I was doubting whether I had the capacity to keep living it in a culture that no longer made space for it.\n\nThe breaking point wasn't one dramatic moment. It was a slow recognition: if I kept going this way, something would give. Either my health would collapse, or I would lose myself trying to keep the team from being consumed by the climb.\n\nThat's when I realized survival isn't always about pushing through. Sometimes survival is about stepping back before the cost becomes too great.\n\nPocket rule: Culture debt always comes due. And leaders often pay it first.\n\nLooking back, the climb didn't break the company — it broke me. On the outside, we were still delivering, still growing, still telling the story of success. But on the inside, I was exhausted, running out of margin in every direction.\n\nThe cost wasn't measured in dollars. It was measured in health, in energy, in the joy that once came naturally. It was measured in late nights when my mind wouldn't shut off, and mornings when my body didn't want to get up. It was measured in the tension I carried home, where my family got only what was left of me.\n\nLeadership had always required sacrifice. I had accepted that from the beginning. But this was different. This was sacrifice without replenishment, giving without receiving, care without care in return. That imbalance made it unsustainable.\n\nWhat I lost in those years was not my belief in servant leadership. If anything, the opposite happened. I became more convinced than ever that people matter more than numbers, and that when values drift, leaders and teams pay the price. What I lost was my capacity to keep absorbing the strain inside a system that no longer aligned with who I was.\n\nCulture debt had come due, and I carried more of the bill than I could afford.\n\nPocket rule: Leadership isn't free. If you don't set the terms of the cost, it will set them for you.\n\nThat emptiness — that imbalance — would follow me into Midwestern Built (MWB). The same exhaustion that hollowed me out at MWI was waiting on the other side, only this time it wasn't a warning. It was a reality I couldn't escape. My life was closing in on me, and it would continue to do so for way too long.\n\nI helped found Midwestern Built as an investor in a friend's dream back in 2016. My part was capital, counsel, and guardrails—just as far as he'd let me. I wasn't the operator; I was the quiet partner financing and advising from the sidelines. For years it stayed in the background while I ran Midwestern Interactive, but that early partnership would later test everything I believed about stewardship and trust."
+    },
+    {
+      "title": "The Bridge",
+      "slug": "chapter-7-the-bridge",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "transition",
+        "grief",
+        "stewardship",
+        "pocket-rules"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "The sale of MWI promised margin and rest but became a crucible—silence, a hollow COO role, aftershocks, and the full weight of MWB—testing stewardship, dignity, and resolve.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-7"
+        ]
+      },
+      "takeaways": [],
+      "body": "The Sale\n\nJuly 1, 2022, was supposed to feel like a triumph. In many ways, it did.\n\nI had built something over the course of a thirty-year career that held enough value to give me a long, well-funded runway into whatever came next. For the first time in my life, I had margin. I could breathe financially. I was able to help my kids in ways that mattered — not just token gifts, but significant steps forward for their lives.\n\nI bought my mom a van. It was a thank-you for the life she and my father had given me when they adopted me as an infant. I gave generously to our church. I did the things I had always hoped success would let me do. On the outside, it looked like I was living my best life — and in many ways, I was.\n\nBut on the inside, I was crushed.\n\nSome of the people I had spent years in the trenches with — people who had shared boardrooms, deadlines, and vision-casting sessions with me — acted as if I was no longer welcome. Whether they hated me or not wasn't the point. The message was clear: I wasn't wanted anymore.\n\nThat dissonance nearly tore me in two. Outwardly, I was thriving. Inwardly, I was grieving.\n\nPocket rule: Wealth can widen your reach, but it can't fill the silence of being unwanted.\n\nThe Silence\n\nI had nine days.\n\nThat was it — nine days where I thought maybe, just maybe, this might work out. Nine days of waking up without the crushing schedule, without the endless crises, without the pressure to carry more than was human. Nine days of thinking there might finally be space for rest, for health, for something resembling balance.\n\nJuly 9, 2022, it was gone.\n\nNine days of breathing room turned into \"all in\" on the next mess. Screw being healthy. Screw resting. The bridge I thought might be space to recover became nothing more than a handoff into another battle.\n\nThat season taught me something about servant leadership I hadn't seen as clearly before: kindness is often misread as weakness. I had chosen the noble way out at MWI. I hadn't fought for scraps of authority. I had let go with dignity. But in the eyes of others, that restraint looked like permission. It was time to take advantage of me.\n\nPocket rule: Servant leadership is not submission — it is sacrifice with strength intact.\n\nI wasn't weak. I had always led by giving people the benefit of the doubt. That's the reflex of a servant leader. You assume the best. You extend grace. You trust first. But there comes a time when grace has to be paired with grit. When the role of a servant leader isn't to absorb, but to act.\n\nPocket rule: Sometimes the kindest thing a leader can do is draw a hard line.\n\nThe silence after MWI wasn't rest. It was the moment before another storm.\n\nThe Hollow Role\n\nI never needed power or authority. Ego wasn't what drove me. What mattered was having a voice, a seat at the table where culture was shaped and people were protected.\n\nWhen I sat down at my desk for the first time as COO in mid-August, I looked out my window and saw activity buzzing through the office. The company was moving forward — but without me. In just forty-five days, it hadn't only moved on, it had begun to reject my way of leading altogether.\n\nWithin just a couple weeks, that became clearest in one meeting I'll never forget. I didn't ask to be there. In fact, the only reason I was in the room was because other leaders didn't want to be. They avoided the confrontation, and it landed in my lap by default. It was token, patronizing — likely with the expectation that I'd do what I eventually did: walk away.\n\nThe conversation turned toward \"birthing people.\" Maybe that kind of ideology had been simmering just under the surface all along, but hearing it spoken as the new language of the company broke something in me. I watched as women and mothers — roles I believe carry a God-given significance in a healthy society — were reduced by sterile terminology. It wasn't just about words. Words were the doorway to action, and the goal was to strip dignity in both.\n\nSitting there, I realized that even if I had wanted to push back, my ability to lead had already been stripped of any real impact. To raise my voice would have meant war, and I no longer had the authority to fight one.\n\nPocket rule: When leaders avoid the hard things, they leave others to carry wounds they won't even claim.\n\nIt was a hurtful, empty place to sit — watching a culture I had poured my life into slide away, while knowing I no longer had the strength or the standing to call it back.\n\nAftershock\n\nBy October 2022, I had officially stepped away from MWI. I told myself it was the right thing to do — dignified, necessary, even healthy. But grief doesn't operate on a schedule.\n\nThe aftershock hit in November.\n\nI was sitting on a plane bound for Arizona, ready for a CrossFit competition, when my phone buzzed. On the other end came the news: three of my closest team members — the marketing team I had personally hired, mentored, and fought for — had been terminated without warning.\n\nThere was nowhere to go, nowhere to hide. My head hit my hands. The tears came. Right there in public, on that plane, I felt helpless.\n\nThe sting ran deeper because the shift hadn't been sudden. A year earlier, I had already seen that team handed off in a way that troubled me. They were placed under someone who, though skilled in design and fluent in marketing theory, lacked the experience to truly lead people. What mattered most in that moment wasn't protecting culture, but aligning with profit and direction. That choice spoke volumes about what kind of leadership was being elevated — and what kind was being left behind.\n\nSo when the call came, it wasn't just the shock of their departure. It was the final blow in a story I had already watched unfold in slow motion.\n\nBut my response afterward was the only kind I knew how to give: I helped them land on their feet. Carie and I threw our weight behind them. We worked our networks, opened doors, and celebrated each win. And one by one, they found jobs that fit them. Every single one landed well.\n\nPocket rule: If you can't protect people where they are, then you fight to send them somewhere they'll thrive.\n\nThe Weight I Carried\n\nBy December, the full weight of the gym had landed squarely on my shoulders. There was no cushion, no buffer, no team of executives to share the load. It was me.\n\nAnd the weight wasn't one-dimensional.\n\nOn one side was survival. The mortgage had to be paid. Payroll was non-negotiable. Equipment, utilities, insurance — the bills didn't care about culture, they demanded cash. From July of 2022 until March of 2025, we were losing between eight and ten thousand dollars every single month. I know that number because I wrote the check. Thirty-four months in a row. Each one carving away a little more of my margin, my reserves, my strength.\n\nIt wasn't just the math. It was the dysfunction piled on top of it — decisions that made no sense, energy wasted in conflict instead of building, constant fires that drained more than they produced. The weight wasn't only financial, it was cultural.\n\nAnd all of it was pressing down on me at a time when my own health was already in decline. My body had been sending warning signals for years, but now they were impossible to ignore. The pressure made every symptom worse. Some days it felt like leadership had turned into a deadly game, and I was the only one left at the table. Maybe that sounds like an overstatement. But it's not far from the truth I was living.\n\nOn the other side was something even more important to me: people. From the beginning, I had believed a gym should be more than a place to sweat. It should be a place where anyone — any age, gender, fitness level, or background — could find belonging and success. That vision wasn't optional. It was the soul of the place. And if it was going to survive, that soul had to be protected.\n\nSo I carried both sides — the spreadsheets and the spirit.\n\nSome days it felt like trying to lift with one arm strapped behind my back. Some days it felt like a fight I couldn't win. But I kept showing up, because the alternative was to let it all burn.\n\nPocket rule: Sometimes the heaviest weight a leader carries isn't the numbers, it's the people who will be crushed if the numbers win.\n\nThe bridge wasn't a pause. It wasn't a chance to rest. It was a crucible — a place where everything I had left was tested.\n\nLineage callout: This was Greenleaf's \"stewardship\" under fire — the test of whether I would protect both the mission and the people, even when it cost me everything."
+    },
+    {
+      "title": "The Fire After the Fall",
+      "slug": "chapter-8-the-fire-after-the-fall",
+      "type": "chapter",
+      "tags": [
+        "accidental-ceo",
+        "midwestern-built",
+        "stewardship",
+        "sacrifice",
+        "pocket-rules"
+      ],
+      "status": "final",
+      "created_at": "2025-10-27",
+      "updated_at": "2025-10-27",
+      "summary": "After MWI's sale, the fight shifted to saving Midwestern Built. Financial losses, cultural collapse, and personal decline forced a deeper test of stewardship, health, and strength.",
+      "source": {
+        "kind": "internal",
+        "citation_keys": [
+          "accidental-ceo-chapter-8"
+        ]
+      },
+      "takeaways": [],
+      "body": "The Turning Point\n\nDecember 2022 brought more loss.\n\nWithin six months, I had been forced to let go of one company I built and then found myself holding the full weight of another. First MWI slipped from my hands. Then MWB shifted entirely onto my shoulders.\n\nThe circumstances didn't matter as much as the reality: if Midwestern Built was going to survive, it was up to me. There was no backup plan, no one else to steady the load. The business was bleeding money, and the culture wasn't fragile — it was broken into a thousand pieces.\n\nSo I did what I had always done: I stepped in. I shouldered the weight no one else was willing to carry. Not because it was easy. Not because it made financial sense. But because there were members and coaches who deserved a place worth fighting for.\n\nThere is a moment in every crisis when you watch the exit door swing open and decide to stay anyway. For me, that moment didn't happen in a boardroom. It happened on an ordinary weekday, standing by the whiteboard as classes changed over. A mom who had been away for months walked back in, nervous and quiet. A retiree taped his wrist and smiled like he was home. A young guy asked for the bar with less knurling because his hands tore easily. No speeches. Just people choosing to keep going. I could leave. Or I could stand where I said I would.\n\nPocket rule: Servant leadership doesn't fixate on what's gone — it protects what remains.\n\nSurvival Mode\n\nThe math was brutal. From July of 2022 until March of 2025, we were losing between eight and ten thousand dollars every month. Thirty-four months in a row. I know because I wrote the check.\n\nThis wasn't an abstract number on a spreadsheet. It was money pulled directly from my personal reserves, poured into keeping the gym alive. Payroll. Mortgage. Utilities. Insurance. Every line item demanded cash, and there was no \"pause\" button. The gym had to run, even when the numbers screamed otherwise. When equipment failed, it wasn't a theoretical expense — it was an immediate decision between repair now or bigger problems later. When a vendor bill hit, it didn't care how tired I was. When insurance renewed, it didn't check our feelings about the last quarter.\n\nEvery month felt like stepping into a ring, knowing I'd get hit, hoping I'd still be standing when the bell rang. And then doing it all over again thirty-three more times. That isn't drama. It's arithmetic.\n\nCarie carried it with me. I worked the math with our accountant, bookkeeper, and investment advisor—line by line, month after month. The checks still came from us, but the decisions were made with counsel and data, not late-night panic. We cut what didn't serve the mission. We paid what protected people. We delayed what could wait without hurting members or staff. It was unglamorous stewardship — no ribbon-cuttings, no \"look at us\" posts. Just choices that kept the floor safe and the doors open.\n\nThere was also a necessary stop-gap I had to end. A monthly \"guaranteed payment\" had been baked into expectations. Maybe that made sense once. In a business running this far in the red, it made no sense at all. A company cannot guarantee distributions it cannot afford. Ending it wasn't aggression. It was owning the responsibility.\n\nPocket rule: A leader's sacrifice is invisible until the checks stop clearing.\n\nIt would have been easier to walk away, to let the business collapse under its own weight. But walking away would have meant more than losing money. It would have meant abandoning people. And that I could not do.\n\nCultural Defense\n\nFrom the beginning, my vision for Midwestern Built was never just about fitness. It was about people. It was about creating a place where anyone — any age, gender, fitness level, or background — could belong and succeed.\n\nThat vision was buried under the rubble of dysfunction. Conversations about the current state of the business were one-sided. It's easy to lose focus on the mission in times of testing; treat members as numbers, coaches as cogs, and culture as expendable. The conflict is without these things, there is no business to keep alive. Unfortunately, that's where we were living.\n\nI couldn't let that happen.\n\nSo I showed up every day, not just to pay the bills, but to protect the soul of the gym. I stood between dysfunction and the people it threatened to wound. I shielded coaches from decisions that would have crushed morale. I fought to preserve an environment where members didn't just come to work out, but to heal, grow, and belong.\n\nBasic things mattered again: classes starting on time; warm-ups that prepared people, not just filled minutes; whiteboard briefs that sounded like an invitation, not a test. It wasn't glamorous leadership. There were no press releases, no applause. It was daily defense. It was absorbing blows so others didn't have to.\n\nI also changed the way we communicated. Transparency hadn't been the norm. People learned in the dark and repeated what they didn't know. I flipped it. In those first months I wrote often — emails to members, notes on social channels — short and direct: what was changing, why it was changing, and what people could count on. I wasn't trying to win an argument. I was building trust. Questions went up at first, as they should. But the volume of rumor went down. Clarity does that.\n\nAnd I kept the center in view — the middle of the room where everyone lives. Progress was small and ordinary: people returning after setbacks, relearning movements, and showing up when life was heavy. No highlight reel—just steady work. That was the point.\n\nPocket rule: Protect the culture, even when it costs you personally.\n\nThe Personal Toll\n\nProtection came at a price.\n\nMy health had already been in decline during the last years at MWI. Stress, poor sleep, and constant sacrifice took their toll. By the time I stepped into MWB full-time, my tank was already empty. The weight of the financial bleed, the dysfunction, and the cultural defense pushed me even further. Nights grew shorter. Blood pressure climbed. My body protested in ways I couldn't ignore.\n\nLeadership at that point wasn't inspiring or energizing. It was survival. I showed up because I had to, not because I felt strong enough to. That kind of honesty isn't heroic. It's necessary. You can pretend your capacity is infinite, but your body will correct you.\n\nI started listening. The doctor told me to throttle back. The counselor handed me practical tools: slow the inputs; take walks before screens; lift four to six days a week; eat like you want to keep the body God gave you; write down what you're carrying so it doesn't own your head. None of that was performance. It was stewardship. Exhausted leaders make expensive mistakes.\n\nSo I acted like I believed it. Simple meals. Earlier nights. Scripture open before inboxes. Walks without a phone. Short workouts that didn't require adrenaline to count. Not dramatic. Sustainable. My resting heart rate started to drift down. The edges of my patience came back. I wasn't \"better.\" I was at least pointed in the right direction.\n\nThere's a difference between the kind of fire that refines and the kind that consumes. For much of my career, the fire had refined me. It had sharpened resilience, clarified convictions, and forged leadership. But here, the fire wanted to consume. The only way through was to lower the flames — not by quitting, but by refusing to feed them.\n\nPocket rule: Servant leadership doesn't guarantee health for the leader. Sometimes it demands it.\n\nFighting Back\n\nI've always led by giving people the benefit of the doubt. That reflex — assume the best, extend grace, trust first — didn't change. But inside the gym, that grace was misread as weakness.\n\nIn a meeting with several witnesses, I heard the statement, 'You got yours. Now I'm getting mine.' In that moment, I was no longer a friend or partner, I was reduced to a bank. I was already covering losses, already financing survival, and now I was expected to fund his climb to the next opportunity as well. That's the opposite of servant leadership. A servant leader doesn't take from the mission when it's bleeding; they protect the whole so the people inside it can survive. When the rest of the team gets theirs, ours follows.\n\nStaying servant-led didn't mean passivity. It meant stewardship with a spine: no guaranteed payouts while the business bled; no terms that put an individual ahead of the mission; no decisions that rewarded ego at the expense of the room. I gathered proofs, moved through process, and acted — not for ego or control, but for the people the gym existed to serve.\n\nThere were days it felt like I was wasting breath. Then a small signal would show up — a class that ran clean, a coach who felt backed even when we disagreed privately, a member who stayed after to say, \"this feels like it used to.\" Those were markers on the trail. Not victory laps. Directional signs.\n\nPocket rule: Servant leaders carry towels, not doormats.\n\nLineage callout: This was Greenleaf's stewardship in practice — protecting both mission and people, even when it cost me.\n\nThe Handoff\n\nBy October 2023, the other side had engaged counsel. I retained counsel I trusted, chose silence as discipline, and kept showing up. Stewardship, not spectacle. Negotiations surfaced priorities you can't see until process forces them into daylight. We would carry the fire only as long as it protected people — and then we would pass it with dignity.\n\nI didn't need to be the closer. I needed to be faithful. That meant finishing the part of the work that still belonged to me, and refusing to grab what didn't.\n\nThe months that followed were heavy but clear. The bridge had to be built before it could be crossed.\n\nThe next chapter tells how we crossed that bridge."
+    },
+    {
+      "title": "The Pendulum of Leadership: Efficiency vs. Empathy",
+      "slug": "the-pendulum-of-leadership-efficiency-vs-empathy",
+      "type": "journal-post",
+      "tags": [
+        "journal",
+        "social-migration",
+        "leadership",
+        "business"
+      ],
+      "categories": [
+        "leadership",
+        "business"
+      ],
+      "status": "published",
+      "created_at": "2025-05-05T00:00:00.000Z",
+      "updated_at": "2025-10-28T00:00:00.000Z",
+      "publish_date": "2025-05-05T00:00:00.000Z",
+      "summary": "This post explores the constant tension leaders face between efficiency and empathy, showing how real leadership lies in managing the balance between clarity and compassion.",
+      "image": "/images/the-pendulum-of-leadership-efficiency-vs-empathy.jpg",
+      "source": {
+        "kind": "journal",
+        "original_source": "Facebook",
+        "original_url": "https://www.facebook.com/share/p/17b1pWpDBK/"
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "body": "Every leader feels it.\n\nThe tension. The swing. The constant pull between two forces that rarely sit still: efficiency and empathy.\n\nOn one end of the pendulum is 100% efficiency.\n\nThis is where revenue rules.\n\nDecisions are made with spreadsheets, not stories.\n\nYou'll hear things like:\n • \"We don't have time for feelings.\"\n • \"Push harder.\"\n • \"If they can't keep up, we'll replace them.\"\n\nThe outcome?\n\nYes, things get done—fast.\n\nBut people burn out.\n\nMorale drops.\n\nTurnover rises.\n\nAnd over time, the culture becomes cold and transactional.\nYou hit the numbers… but you lose the team.\n\nNow swing the pendulum the other way—toward 100% empathy.\n\nHere, compassion guides every decision.\n\nYou hear:\n • \"They're just having a hard time.\"\n • \"Let's give them a little more grace.\"\n • \"They'll improve… eventually.\"\n\nThis feels kind and caring—and it is, to a point.\n\nBut unchecked, empathy without accountability creates a different kind of damage.\n • Standards slip.\n • Top performers carry the weight.\n • Deadlines get missed.\n • And culture erodes—not from pressure, but from passivity.\n\nIn time, your best people leave—not because you cared too much, but because you wouldn't lead with enough clarity.\n⸻\nHere's the part no one tells you:\n\nThe real job of a leader isn't picking a side.\n\nIt's learning how to balance the swing.\n\nThat means:\n • Catching the pendulum before it reaches the extremes.\n • Knowing when the pressure is breaking people instead of building them.\n • Recognizing when grace has become permission for mediocrity.\n • Holding both truth and care in the same hand—and refusing to let go of either.\n\nLeadership is managing the tension on purpose.\n\nIt's asking: \"What does the team need right now—clarity, or compassion?\"\n\nMost people don't quit because it's hard.\n\nThey quit because the swing went too far, and nobody pulled it back.\n⸻\nSo where does great leadership live?\n\nNot at the extremes.\n\nIt lives in the swing.\n\nGreat leaders know when to shift gears.\n\nThey know when to press and when to pause.\n\nWhen to say, \"This matters too much to miss,\" and when to say, \"You matter too much to push right now.\"\n\nIt's not either/or.\n\nIt's not soft or strong.\n\nIt's the discipline of both—and the wisdom to know when to lean in either direction.\n\nIf you're leading a team, managing a business, raising kids, or building culture anywhere at all…\n\nKeep an eye on the pendulum.\n\nDon't let efficiency cost you your people.\n\nAnd don't let empathy kill your standards.\n\nThe swing is where growth lives.\n\n*Originally published on Facebook on May 5, 2025*"
+    },
+    {
+      "title": "Stop Turning Your Team Into Opponents",
+      "slug": "stop-turning-your-team-into-opponents",
+      "type": "journal-post",
+      "tags": [
+        "journal",
+        "social-migration",
+        "leadership",
+        "business"
+      ],
+      "categories": [
+        "leadership",
+        "business"
+      ],
+      "status": "published",
+      "created_at": "2025-05-19T00:00:00.000Z",
+      "updated_at": "2025-10-28T00:00:00.000Z",
+      "publish_date": "2025-05-19T00:00:00.000Z",
+      "summary": "This post warns leaders against creating competition and scarcity inside their teams, reminding that true leadership builds trust, clarity, and shared success.",
+      "image": "/images/stop-turning-your-team-into-opponents.jpg",
+      "source": {
+        "kind": "journal",
+        "original_source": "Facebook",
+        "original_url": "https://www.facebook.com/share/p/1JTCe3XLJv/"
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "body": "Your team is not your opponent.\n\nThey're not the enemy.\n\nThey're not the problem you're trying to solve.\n\nThey're your greatest asset.\n\nWhen you lead with clarity and care, they become your greatest strength.\n\nStop turning them into opponents.\n\nStart turning them into partners.\n\n*Originally published on Facebook*"
+    },
+    {
+      "title": "The Pursuit of Power Corrupts",
+      "slug": "the-pursuit-of-power-corrupts",
+      "type": "journal-post",
+      "tags": [
+        "journal",
+        "social-migration",
+        "leadership",
+        "business"
+      ],
+      "categories": [
+        "leadership",
+        "business"
+      ],
+      "status": "published",
+      "created_at": "2025-05-05T00:00:00.000Z",
+      "updated_at": "2025-10-28T00:00:00.000Z",
+      "publish_date": "2025-05-05T00:00:00.000Z",
+      "summary": "A reflection on how the pursuit of power can corrupt even the best intentions, and what real leadership looks like instead.",
+      "image": "/images/the-pursuit-of-power-corrupts.jpg",
+      "source": {
+        "kind": "journal",
+        "original_source": "Facebook",
+        "original_url": "https://www.facebook.com/share/p/17b1pWpDBK/"
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "body": "The pursuit of power corrupts.\n\nNot because power is inherently evil.\n\nBut because the pursuit of it changes you.\n\nIt changes what you value.\n\nIt changes who you become.\n\nReal leadership isn't about power.\n\nIt's about service.\n\nIt's about making others better.\n\nIt's about building something that lasts.\n\n*Originally published on Facebook*"
+    }
+  ]
+}
