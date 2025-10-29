@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 export default function Header() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,14 +15,18 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-black transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo - Icon Only */}
+          {/* Logo - Responsive */}
           <div className="flex-shrink-0">
             <a href="/" className="hover:opacity-80 transition-opacity">
-              <svg className="h-8 w-auto" viewBox="0 0 440.3 480.05" xmlns="http://www.w3.org/2000/svg">
+              <svg className="h-6 w-auto sm:h-8" viewBox="0 0 440.3 480.05" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <style>
                     {`.cls-1 { fill: #231f20; }`}
@@ -32,15 +37,43 @@ export default function Header() {
             </a>
           </div>
 
-          {/* Navigation - floated right */}
-          <nav className="flex items-center space-x-6">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6">
             <a href="#about" className="text-black hover:text-gray-600 transition-colors text-sm">About</a>
             <a href="#philosophy" className="text-black hover:text-gray-600 transition-colors text-sm">Philosophy</a>
             <a href="#methods" className="text-black hover:text-gray-600 transition-colors text-sm">Methods</a>
             <a href="#journal" className="text-black hover:text-gray-600 transition-colors text-sm">Journal</a>
             <a href="#contact" className="text-black hover:text-gray-600 transition-colors text-sm">Contact</a>
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500"
+            aria-label="Toggle mobile menu"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+            <nav className="flex flex-col space-y-3 pt-4">
+              <a href="#about" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>About</a>
+              <a href="#philosophy" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Philosophy</a>
+              <a href="#methods" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Methods</a>
+              <a href="#journal" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Journal</a>
+              <a href="#contact" className="text-black hover:text-gray-600 transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
