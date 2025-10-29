@@ -422,7 +422,7 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative chat-container">
+    <div className="h-[calc(100vh-200px)] flex flex-col bg-gray-50 relative chat-container">
       <div className="flex-1 flex flex-col w-full sm:w-[70vw] mx-auto px-4 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
