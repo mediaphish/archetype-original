@@ -4,8 +4,27 @@ import React, { useState, useEffect } from 'react';
 export default function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isHomePage, setIsHomePage] = useState(true);
 
   useEffect(() => {
+    // Check if we're on the home page
+    const checkPage = () => {
+      const path = window.location.pathname;
+      setIsHomePage(path === '/' || path === '');
+    };
+
+    checkPage();
+    window.addEventListener('popstate', checkPage);
+    return () => window.removeEventListener('popstate', checkPage);
+  }, []);
+
+  useEffect(() => {
+    // Only hide/show on scroll for home page
+    if (!isHomePage) {
+      setIsVisible(true);
+      return;
+    }
+
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       setIsVisible(scrollTop > 50);
@@ -13,7 +32,7 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
