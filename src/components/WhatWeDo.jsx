@@ -6,18 +6,18 @@ export default function WhatWeDo() {
       <div className="container">
         <h2 className="h2">What We Do</h2>
         <div className="grid md:grid-cols-3 gap-6 mt-8">
-          <a href="/mentoring-consulting" className="card p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <h3 className="font-semibold text-lg">Mentoring & Consulting</h3>
-            <p className="p mt-2">Individual mentorships, executive leadership consulting, and business & team consulting. 32 years of knowledge in leadership, servant leadership, business culture, employee engagement, marketing strategies, startups, software development, AI, and more.</p>
-          </a>
-          <a href="/speaking-workshops" className="card p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <h3 className="font-semibold text-lg">Speaking & Workshops</h3>
-            <p className="p mt-2">Keynotes, class lectures, and group workshops on business and leadership. If it's business, I've had exposure and experience with it.</p>
-          </a>
-          <a href="/fractional-leadership" className="card p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <h3 className="font-semibold text-lg">Fractional Leadership</h3>
-            <p className="p mt-2">Contractual fractional roles in leadership, including C-Suite level positions for short and long-term business needs.</p>
-          </a>
+          <div className="card p-6">
+            <h3 className="font-semibold text-lg">Playbooks you can ship on Monday</h3>
+            <p className="p mt-2">Clear, repeatable systems that translate intent into outcomes—without heroics.</p>
+          </div>
+          <div className="card p-6">
+            <h3 className="font-semibold text-lg">Workshops that align</h3>
+            <p className="p mt-2">Get the room on the same page. Standards, roles, and rituals installed.</p>
+          </div>
+          <div className="card p-6">
+            <h3 className="font-semibold text-lg">Talks that reset culture</h3>
+            <p className="p mt-2">Stories + standards that replace noise with conviction and practical next steps.</p>
+          </div>
         </div>
 
         <div className="mt-8 p-4 border border-slate-200 rounded-xl bg-white">
