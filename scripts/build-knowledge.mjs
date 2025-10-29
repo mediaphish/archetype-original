@@ -114,6 +114,10 @@ async function buildKnowledgeCorpus() {
         
         const slug = frontmatter.slug || path.basename(filePath, '.md');
         
+        // Check for matching image
+        const imagePath = `/images/${slug}.jpg`;
+        const imageExists = fs.existsSync(path.join(process.cwd(), 'public', 'images', `${slug}.jpg`));
+        
         const journalDoc = {
           title: frontmatter.title || 'Untitled Journal Post',
           slug: slug,
@@ -125,6 +129,7 @@ async function buildKnowledgeCorpus() {
           updated_at: frontmatter.updated_at || new Date().toISOString(),
           publish_date: frontmatter.publish_date || new Date().toISOString(),
           summary: frontmatter.summary || body.substring(0, 200) + '...',
+          image: imageExists ? imagePath : null,
           source: { 
             kind: 'journal',
             original_source: frontmatter.original_source || null,
