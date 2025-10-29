@@ -5,6 +5,7 @@ import ChatApp from "./app/ChatApp.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
 import Journal from "./pages/Journal.jsx";
+import JournalPost from "./pages/JournalPost.jsx";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -15,6 +16,8 @@ export default function App() {
       const path = window.location.pathname;
       if (path === '/journal') {
         setCurrentPage('journal');
+      } else if (path.startsWith('/journal/')) {
+        setCurrentPage('journal-post');
       } else {
         setCurrentPage('home');
       }
@@ -26,6 +29,16 @@ export default function App() {
 
     return () => window.removeEventListener('popstate', handleRoute);
   }, []);
+
+  // Render Journal post page
+  if (currentPage === 'journal-post') {
+    return (
+      <main className="bg-white text-black">
+        <Header />
+        <JournalPost />
+      </main>
+    );
+  }
 
   // Render Journal page
   if (currentPage === 'journal') {
