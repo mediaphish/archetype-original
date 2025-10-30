@@ -93,7 +93,14 @@ async function buildKnowledgeCorpus() {
   // Process journal posts
   if (fs.existsSync(JOURNAL_DIR)) {
     const journalFiles = fs.readdirSync(JOURNAL_DIR)
-      .filter(file => file.endsWith('.md'))
+      .filter(file => {
+        // Only process .md files, exclude templates and malformed files
+        return file.endsWith('.md') && 
+               !file.includes('template') && 
+               file !== 'template.md' &&
+               !file.endsWith('.md.md') &&
+               !file.endsWith('.rtf');
+      })
       .map(file => path.join(JOURNAL_DIR, file));
       
     console.log(`📝 Found ${journalFiles.length} journal posts`);
@@ -104,7 +111,21 @@ async function buildKnowledgeCorpus() {
         const { data: frontmatter, content: body } = matter(content);
         
         // Check if post should be published
-        const publishDate = frontmatter.publish_date ? new Date(frontmatter.publish_date) : null;
+        let publishDate = null;
+        if (frontmatter.publish_date) {
+          try {
+            publishDate = new Date(frontmatter.publish_date);
+            // Validate date
+            if (isNaN(publishDate.getTime())) {
+              console.warn(`⚠️  Invalid publish_date for "${frontmatter.title}", using current date`);
+              publishDate = null;
+            }
+          } catch (e) {
+            console.warn(`⚠️  Error parsing publish_date for "${frontmatter.title}":`, e.message);
+            publishDate = null;
+          }
+        }
+        
         const now = new Date();
         
         if (publishDate && publishDate > now) {
