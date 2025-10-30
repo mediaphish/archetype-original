@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ChatApp from "./app/ChatApp";
 import About from "./components/About";
-import Philosophy from "./components/Philosophy";
+import Philosophy from "./components/Philosophy.jsx";
 import Methods from "./components/Methods";
 import Contact from "./components/Contact";
 import Journal from "./pages/Journal";
