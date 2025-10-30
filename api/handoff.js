@@ -6,6 +6,9 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
+const CALENDLY_SCHEDULING_URL = process.env.CALENDLY_SCHEDULING_URL; // e.g., https://calendly.com/your-handle/intro
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -35,7 +38,8 @@ export default async function handler(req, res) {
     conversationHistory,
     triageAnswers,
     status: isDarkHours ? 'queued' : 'pending',
-    isDarkHours
+    isDarkHours,
+    sessionId
   };
 
   // Store handoff in Supabase
@@ -65,19 +69,43 @@ export default async function handler(req, res) {
     console.error('Supabase error:', error);
   }
 
+  // Notify Slack (best-effort)
+  if (SLACK_WEBHOOK_URL) {
+    try {
+      const textLines = [
+        `New handoff: ${handoffBrief.id}`,
+        `Status: ${handoffBrief.status}${handoffBrief.isDarkHours ? ' (dark hours)' : ''}`,
+        `Message: ${message || '(no message)'}`,
+        `Session: ${sessionId || '(n/a)')}`,
+        `Triage: ${JSON.stringify(triageAnswers, null, 2)}`,
+        CALENDLY_SCHEDULING_URL ? `Calendly: ${CALENDLY_SCHEDULING_URL}` : null
+      ].filter(Boolean);
+
+      await fetch(SLACK_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textLines.join('\n') })
+      });
+    } catch (e) {
+      console.error('Slack webhook failed:', e);
+    }
+  }
+
+  const baseResponse = {
+    success: true,
+    queued: isDarkHours,
+    calendlyUrl: CALENDLY_SCHEDULING_URL || null
+  };
+
   if (isDarkHours) {
-    // Queue for 10 AM delivery
-    res.status(200).json({ 
-      message: 'Your handoff request has been queued! Bart\'s office is closed right now, but I\'ll deliver your brief at 10 AM CST. He typically replies that afternoon.',
-      success: true,
-      queued: true
-    });
-  } else {
-    // Send immediately
-    res.status(200).json({ 
-      message: 'Your handoff request has been submitted! Bart will review your brief and reply personally within a few hours.',
-      success: true,
-      queued: false
+    return res.status(200).json({ 
+      ...baseResponse,
+      message: `Your handoff request has been queued! Bart's office is closed right now, but I'll deliver your brief at 10 AM CST. He typically replies that afternoon.`
     });
   }
+
+  return res.status(200).json({ 
+    ...baseResponse,
+    message: 'Your handoff request has been submitted! Bart will review your brief and reply personally within a few hours.'
+  });
 }
