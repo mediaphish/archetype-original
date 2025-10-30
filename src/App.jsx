@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ChatApp from "./app/ChatApp";
 import About from "./components/About";
-import PhilosophySection from "./components/PhilosophySection";
+import Philosophy from "./components/Philosophy";
 import Methods from "./components/Methods";
 import Contact from "./components/Contact";
 import Journal from "./pages/Journal";
@@ -101,7 +101,7 @@ export default function App() {
         <Hero />
         <ChatApp />
         <About />
-        <PhilosophySection />
+        <Philosophy />
         <Methods />
         <Contact />
       </main>
