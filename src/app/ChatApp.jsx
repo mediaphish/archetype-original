@@ -391,11 +391,13 @@ export default function ChatApp() {
 
       const data = await response.json();
 
-      const handoffMessage = {
-        text: data.message || 'Your handoff request has been submitted. We\'ll be in touch soon!',
-        isUser: false
-      };
-      setMessages(prev => [...prev, handoffMessage]);
+      const blocks = [];
+      blocks.push({ text: data.message || 'Your handoff request has been submitted. We\'ll be in touch soon!', isUser: false });
+      if (data.calendlyUrl) {
+        blocks.push({ text: `You can also pick a time now: ${data.calendlyUrl}`, isUser: false });
+      }
+
+      setMessages(prev => [...prev, ...blocks]);
       setShowEscalation(false);
     } catch (error) {
       console.error('Error submitting handoff:', error);
