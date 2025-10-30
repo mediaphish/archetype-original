@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://archetypeoriginal.com/sitemap.xml
+
+Sitemap: https://www.archetypeoriginal.com/sitemap.xml
