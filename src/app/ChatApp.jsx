@@ -192,7 +192,17 @@ export default function ChatApp() {
       setMessages(prev => [...prev, assistantMessage]);
 
       if (data.shouldEscalate) {
-        setShowEscalation(true);
+        // Empathetic prompt with two clear options
+        const escalatePrompt = {
+          text: "Looks like you may need to talk with Bart directly. We can do that. Here are two options:",
+          isUser: false,
+          showButtons: true,
+          buttonOptions: [
+            { text: 'Send an Email', value: 'handoff_email' },
+            { text: 'Schedule a 1-on-1 meeting', value: 'handoff_schedule' }
+          ]
+        };
+        setMessages(prev => [...prev, escalatePrompt]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -229,6 +239,12 @@ export default function ChatApp() {
     } else if (value === 'contact_direct') {
       // Contact Bart directly
       window.open('https://calendly.com/bartpaden', '_blank');
+    } else if (value === 'handoff_email') {
+      // Start the handoff triage/contact flow in-app
+      setShowEscalation(true);
+    } else if (value === 'handoff_schedule') {
+      // Open Bart's Calendly directly (provided link)
+      window.open('https://calendly.com/bartpaden/1-on-1-mentorships', '_blank');
     } else if (value.startsWith('calendly_')) {
       // Handle Calendly links
       const calendlyUrl = process.env.REACT_APP_CALENDLY_URL || 'https://calendly.com/bartpaden';
@@ -394,7 +410,14 @@ export default function ChatApp() {
       const blocks = [];
       blocks.push({ text: data.message || 'Your handoff request has been submitted. We\'ll be in touch soon!', isUser: false });
       if (data.calendlyUrl) {
-        blocks.push({ text: `You can also pick a time now: ${data.calendlyUrl}`, isUser: false });
+        blocks.push({
+          text: 'You can also schedule time with Bart now:',
+          isUser: false,
+          showButtons: true,
+          buttonOptions: [
+            { text: 'Schedule a 1-on-1 meeting', value: 'handoff_schedule' }
+          ]
+        });
       }
 
       setMessages(prev => [...prev, ...blocks]);
