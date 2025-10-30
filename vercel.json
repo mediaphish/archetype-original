@@ -11,6 +11,7 @@
     { "src": "/api/contact", "dest": "/api/contact.js" },
     { "src": "/api/handoff", "dest": "/api/handoff.js" },
     { "src": "/api/knowledge", "dest": "/api/knowledge/index.js" },
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
