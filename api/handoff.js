@@ -76,7 +76,7 @@ export default async function handler(req, res) {
         `New handoff: ${handoffBrief.id}`,
         `Status: ${handoffBrief.status}${handoffBrief.isDarkHours ? ' (dark hours)' : ''}`,
         `Message: ${message || '(no message)'}`,
-        `Session: ${sessionId || '(n/a)')}`,
+        `Session: ${sessionId || '(n/a)'}`,
         `Triage: ${JSON.stringify(triageAnswers, null, 2)}`,
         CALENDLY_SCHEDULING_URL ? `Calendly: ${CALENDLY_SCHEDULING_URL}` : null
       ].filter(Boolean);
