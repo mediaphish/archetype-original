@@ -4,12 +4,12 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ChatApp from "./app/ChatApp";
 import About from "./components/About";
-import Philosophy from "./components/Philosophy";
+// import Philosophy from "./components/Philosophy";
 import Methods from "./components/Methods";
 import Contact from "./components/Contact";
 import Journal from "./pages/Journal";
 import AboutPage from "./pages/About";
-import PhilosophyPage from "./pages/Philosophy";
+// import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
 import WhatWeDoPage from "./pages/WhatWeDo";
 
@@ -24,8 +24,8 @@ export default function App() {
         setCurrentPage('journal');
       } else if (path === '/about') {
         setCurrentPage('about');
-      } else if (path === '/philosophy') {
-        setCurrentPage('philosophy');
+      // } else if (path === '/philosophy') {
+      //   setCurrentPage('philosophy');
       } else if (path === '/methods') {
         setCurrentPage('methods');
       } else if (path === '/what-we-do') {
@@ -53,14 +53,14 @@ export default function App() {
   }
 
   // Render Philosophy page
-  if (currentPage === 'philosophy') {
-    return (
-      <main className="bg-white text-black">
-        <Header />
-        <PhilosophyPage />
-      </main>
-    );
-  }
+  // if (currentPage === 'philosophy') {
+  //   return (
+  //     <main className="bg-white text-black">
+  //       <Header />
+  //       <PhilosophyPage />
+  //     </main>
+  //   );
+  // }
 
   // Render Methods page
   if (currentPage === 'methods') {
@@ -101,7 +101,7 @@ export default function App() {
         <Hero />
         <ChatApp />
         <About />
-        <Philosophy />
+        {/* <Philosophy /> */}
         <Methods />
         <Contact />
       </main>
