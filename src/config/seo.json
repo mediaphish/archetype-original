@@ -1,0 +1,38 @@
+{
+  "default": {
+    "siteName": "Archetype Original",
+    "siteUrl": "https://www.archetypeoriginal.com",
+    "titleTemplate": "%s | Archetype Original",
+    "defaultTitle": "Archetype Original — Servant Leadership for Modern Teams",
+    "description": "Archetype Original helps leaders build sustainable organizations through servant leadership, culture clarity, and proven systems for growth.",
+    "keywords": "servant leadership, leadership consulting, business culture, executive mentorship, fractional leadership, Bart Paden",
+    "image": "/og-default.jpg",
+    "twitterHandle": "@archetypeoriginal"
+  },
+  "pages": {
+    "about": {
+      "title": "About Bart | Archetype Original",
+      "description": "Learn about Bart Paden, founder of Archetype Original—mentor, consultant, and servant-leadership advocate helping leaders and teams grow without losing their soul.",
+      "keywords": "Bart Paden, servant leadership, executive mentor, leadership consulting, business culture, Archetype Original",
+      "image": "/og-about.jpg"
+    },
+    "philosophy": {
+      "title": "Philosophy | Archetype Original",
+      "description": "Archetype Original believes leadership is stewardship. Culture is built through servant-led standards that protect people and produce long-term trust.",
+      "keywords": "leadership philosophy, servant leadership, business culture, leadership principles, Archetype Original",
+      "image": "/og-philosophy.jpg"
+    },
+    "methods": {
+      "title": "Methods | Archetype Original",
+      "description": "Explore the Archetype Original methods—practical systems grounded in servant leadership and built on the Ten Fundamentals of sustainable, people-first leadership.",
+      "keywords": "leadership methods, servant leadership framework, leadership systems, company culture, Archetype Original",
+      "image": "/og-methods.jpg"
+    },
+    "what-we-do": {
+      "title": "What We Do | Archetype Original",
+      "description": "Archetype Original helps leaders and organizations thrive through mentorship, consulting, workshops, and fractional leadership—grounded in 32 years of real-world experience.",
+      "keywords": "leadership consulting, executive coaching, workshops, fractional leadership, business mentoring, Archetype Original",
+      "image": "/og-what-we-do.jpg"
+    }
+  }
+}
