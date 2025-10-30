@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import SEO from "./components/SEO.jsx";
-import Header from "./components/Header.jsx";
-import Hero from "./components/Hero.jsx";
-import ChatApp from "./app/ChatApp.jsx";
-import About from "./components/About.jsx";
-import Philosophy from "./components/Philosophy.jsx";
-import Methods from "./components/Methods.jsx";
-import Contact from "./components/Contact.jsx";
-import Journal from "./pages/Journal.jsx";
-import AboutPage from "./pages/About.jsx";
-import PhilosophyPage from "./pages/Philosophy.jsx";
-import MethodsPage from "./pages/Methods.jsx";
-import WhatWeDoPage from "./pages/WhatWeDo.jsx";
+import SEO from "./components/SEO";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import ChatApp from "./app/ChatApp";
+import About from "./components/About";
+import Philosophy from "./components/Philosophy";
+import Methods from "./components/Methods";
+import Contact from "./components/Contact";
+import Journal from "./pages/Journal";
+import AboutPage from "./pages/About";
+import PhilosophyPage from "./pages/Philosophy";
+import MethodsPage from "./pages/Methods";
+import WhatWeDoPage from "./pages/WhatWeDo";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
