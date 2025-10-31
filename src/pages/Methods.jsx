@@ -157,7 +157,6 @@ export default function Methods() {
               </svg>
               <span className="text-sm">Philosophy</span>
             </a>
-            <div></div>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
