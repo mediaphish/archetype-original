@@ -5,7 +5,7 @@ publish_date: "2025-10-08"
 created_at: "2025-10-08"
 updated_at: "2025-10-28"
 summary: "When leaders are forced to keep producing at full speed, their ability to actually lead withers. The Producer-Leader Paradox exposes how short-term output kills long-term growth."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["social-migration", "leadership", "business"]
 featured_image: "../images/the-producer-leader-paradox.jpg"
 takeaways: []
 applications: []
