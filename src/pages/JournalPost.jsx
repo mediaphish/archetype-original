@@ -146,26 +146,32 @@ export default function JournalPost() {
                   // Clean the body - remove title and duplicate image if they appear
                   let bodyText = post.body.trim();
                   
-                  // Aggressively remove title in all forms
+                  // Aggressively remove title in all forms (case-insensitive)
                   const escapedTitle = post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                   
                   // Remove title as heading with any number of # at start
-                  const headingTitleRegex = new RegExp(`^#+\\s*${escapedTitle}\\s*\\n*`, 'im');
+                  const headingTitleRegex = new RegExp(`^#+\\s*${escapedTitle}\\s*\\n+`, 'im');
                   bodyText = bodyText.replace(headingTitleRegex, '');
                   
                   // Remove title as standalone line at start (no #)
-                  const standaloneTitleRegex = new RegExp(`^${escapedTitle}\\s*\\n*`, 'im');
+                  const standaloneTitleRegex = new RegExp(`^${escapedTitle}\\s*\\n+`, 'im');
                   bodyText = bodyText.replace(standaloneTitleRegex, '');
                   
-                  // Remove title if it appears as a standalone line anywhere in the body
-                  const standaloneLineRegex = new RegExp(`^${escapedTitle}\\s*$`, 'im');
-                  bodyText = bodyText.split('\n').filter(line => {
-                    const trimmed = line.trim();
-                    return trimmed && !standaloneLineRegex.test(trimmed);
-                  }).join('\n');
+                  // Remove title if it appears as a standalone line anywhere (preserve paragraph structure)
+                  const lines = bodyText.split('\n');
+                  const filteredLines = [];
+                  for (let i = 0; i < lines.length; i++) {
+                    const trimmed = lines[i].trim();
+                    // Skip lines that are exactly the title (case-insensitive)
+                    if (trimmed && trimmed.toLowerCase() === post.title.toLowerCase()) {
+                      continue; // Skip this line entirely
+                    }
+                    filteredLines.push(lines[i]); // Keep original line with spacing
+                  }
+                  bodyText = filteredLines.join('\n');
                   
-                  // Clean up any double newlines that resulted from removals
-                  bodyText = bodyText.replace(/\n{3,}/g, '\n\n').trim();
+                  // Clean up any triple+ newlines, but keep double newlines (paragraph breaks)
+                  bodyText = bodyText.replace(/\n{4,}/g, '\n\n\n').trim();
                   
                   // Remove image markdown if it matches the post.image metadata
                   if (post.image) {
@@ -181,6 +187,9 @@ export default function JournalPost() {
                   let currentList = [];
                   let inBlockquote = false;
                   let inList = false;
+                  
+                  // Track if we've seen the title to prevent duplicate
+                  const titleLower = post.title.toLowerCase();
 
                   const flushParagraph = () => {
                     if (currentParagraph.length > 0) {
@@ -211,9 +220,10 @@ export default function JournalPost() {
                   };
 
                   for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
+                    const originalLine = lines[i];
+                    const line = originalLine.trim();
                     
-                    // Empty line
+                    // Empty line - this creates paragraph breaks
                     if (!line) {
                       flushParagraph();
                       flushBlockquote();
@@ -227,19 +237,32 @@ export default function JournalPost() {
                       flushParagraph();
                       flushBlockquote();
                       flushList();
-                      blocks.push({ type: 'h1', content: line.substring(2).trim() });
+                      const headingContent = line.substring(2).trim();
+                      // Skip if heading matches title (already shown at top)
+                      if (headingContent.toLowerCase() === titleLower) {
+                        continue;
+                      }
+                      blocks.push({ type: 'h1', content: headingContent });
                       continue;
                     } else if (line.startsWith('## ')) {
                       flushParagraph();
                       flushBlockquote();
                       flushList();
-                      blocks.push({ type: 'h2', content: line.substring(3).trim() });
+                      const headingContent = line.substring(3).trim();
+                      if (headingContent.toLowerCase() === titleLower) {
+                        continue;
+                      }
+                      blocks.push({ type: 'h2', content: headingContent });
                       continue;
                     } else if (line.startsWith('### ')) {
                       flushParagraph();
                       flushBlockquote();
                       flushList();
-                      blocks.push({ type: 'h3', content: line.substring(4).trim() });
+                      const headingContent = line.substring(4).trim();
+                      if (headingContent.toLowerCase() === titleLower) {
+                        continue;
+                      }
+                      blocks.push({ type: 'h3', content: headingContent });
                       continue;
                     }
 
@@ -321,8 +344,12 @@ export default function JournalPost() {
                       inList = false;
                     }
 
-                    // Regular paragraph
-                    currentParagraph.push(line);
+                    // Regular paragraph - skip if it's just the title
+                    if (line.toLowerCase() === titleLower) {
+                      continue; // Skip title lines
+                    }
+                    // Use original line to preserve spacing
+                    currentParagraph.push(originalLine.trim());
                   }
 
                   flushParagraph();
@@ -334,10 +361,11 @@ export default function JournalPost() {
                     switch (block.type) {
                       case 'h1':
                         // Skip if heading matches the title (already shown at top)
-                        if (block.content.trim().toLowerCase() === post.title.toLowerCase()) {
+                        const h1Content = block.content.trim();
+                        if (h1Content.toLowerCase() === post.title.toLowerCase()) {
                           return null;
                         }
-                        return <h1 key={index} className="h1 mb-4 mt-8">{block.content}</h1>;
+                        return <h1 key={index} className="h1 mb-4 mt-8">{h1Content}</h1>;
                       case 'h2':
                         return <h2 key={index} className="h2 mb-3 mt-6">{block.content}</h2>;
                       case 'h3':
@@ -374,12 +402,13 @@ export default function JournalPost() {
                         );
                       case 'paragraph':
                         // Skip if paragraph matches the title (case-insensitive)
-                        if (block.content.trim().toLowerCase() === post.title.toLowerCase()) {
+                        const paraContent = block.content.trim();
+                        if (paraContent.toLowerCase() === post.title.toLowerCase() || !paraContent) {
                           return null;
                         }
                         return (
                           <p key={index} className="p mb-6" style={{ lineHeight: '1.6' }}>
-                            {block.content}
+                            {paraContent}
                           </p>
                         );
                       default:
