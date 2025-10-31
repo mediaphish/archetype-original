@@ -13,6 +13,7 @@ import ProofBoxPsychology from "./components/ProofBoxPsychology";
 import JournalHighlights from "./components/JournalHighlights";
 import ClosingConfidence from "./components/ClosingConfidence";
 import Journal from "./pages/Journal";
+import JournalPost from "./pages/JournalPost";
 import AboutPage from "./pages/About";
 import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
@@ -27,6 +28,8 @@ export default function App() {
       const path = window.location.pathname;
       if (path === '/journal') {
         setCurrentPage('journal');
+      } else if (path.startsWith('/journal/')) {
+        setCurrentPage('journal-post');
       } else if (path === '/about') {
         setCurrentPage('about');
       } else if (path === '/philosophy') {
@@ -83,6 +86,16 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <WhatWeDoPage />
+      </main>
+    );
+  }
+
+  // Render Journal post page
+  if (currentPage === 'journal-post') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <JournalPost />
       </main>
     );
   }
