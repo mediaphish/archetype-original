@@ -49,38 +49,98 @@ const renderParagraph = (text, key) => {
 export default function About() {
   const [activeSection, setActiveSection] = useState('intro');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const sectionRefs = useRef({});
+  const clickedSectionRef = useRef(null);
 
+  // Intersection Observer for active section detection
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        const element = sectionRefs.current[section.id];
-        if (element && element.offsetTop <= scrollPosition) {
-          setActiveSection(section.id);
-          break;
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !clickedSectionRef.current) {
+          const sectionId = entry.target.id;
+          setActiveSection(sectionId);
         }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((section) => {
+      const element = sectionRefs.current[section.id];
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // Scroll direction tracking for nav visibility
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+
+          if (Math.abs(currentScrollY - lastScrollY) > 50) {
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+              setIsNavVisible(false);
+            } else if (currentScrollY < lastScrollY) {
+              setIsNavVisible(true);
+            }
+            setLastScrollY(currentScrollY);
+          }
+
+          ticking = false;
+        });
+
+        ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check on mount
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    setLastScrollY(window.scrollY);
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
-  const scrollToSection = (id) => {
+  const scrollToSection = (id, event) => {
+    clickedSectionRef.current = id;
+    
+    if (event && event.currentTarget) {
+      event.currentTarget.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        if (event.currentTarget) {
+          event.currentTarget.style.transform = '';
+        }
+      }, 150);
+    }
+
     const element = sectionRefs.current[id];
     if (element) {
-      const offset = 100; // Account for fixed header
+      const offset = 100;
       const elementPosition = element.offsetTop - offset;
       window.scrollTo({
         top: elementPosition,
         behavior: 'smooth'
       });
       setIsMobileMenuOpen(false);
+      
+      setTimeout(() => {
+        clickedSectionRef.current = null;
+      }, 1000);
     }
   };
 
@@ -138,7 +198,7 @@ export default function About() {
 
               {/* Navigation menu */}
               <nav 
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4`}
+                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4 transition-opacity duration-300 ${isNavVisible ? 'opacity-100' : 'lg:opacity-0 lg:pointer-events-none'}`}
                 aria-label="Page sections"
               >
                 <ul className="space-y-2">
@@ -148,11 +208,11 @@ export default function About() {
                         href={`#${section.id}`}
                         onClick={(e) => {
                           e.preventDefault();
-                          scrollToSection(section.id);
+                          scrollToSection(section.id, e);
                         }}
-                        className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber ${
+                        className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber active:scale-95 ${
                           activeSection === section.id
-                            ? 'bg-amber text-white font-semibold'
+                            ? 'bg-amber text-white font-semibold shadow-md'
                             : 'text-warm-charcoal hover:bg-warm-border hover:text-amber'
                         }`}
                       >
