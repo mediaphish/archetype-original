@@ -304,7 +304,7 @@ export default function WhatIDo() {
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
                   My role is to listen, clarify, and help translate values into daily operations that make sense to real people.
                 </p>
-                {renderParagraph('> I don't install complexity—I remove noise.', 'consulting-quote')}
+                {renderParagraph("> I don't install complexity—I remove noise.", 'consulting-quote')}
               </section>
 
               {/* Section 3 — Speaking & Workshops */}
