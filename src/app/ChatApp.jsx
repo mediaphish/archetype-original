@@ -447,7 +447,7 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative chat-container">
+    <div className="h-[calc(100vh-200px)] flex flex-col bg-warm-offWhite relative chat-container">
       <div className="flex-1 flex flex-col w-full sm:w-[70vw] mx-auto px-4 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
@@ -466,14 +466,14 @@ export default function ChatApp() {
               {/* Loading indicator */}
               {isLoading && (
                 <div className="flex justify-start mb-4">
-                  <div className="bg-gray-100 rounded-lg px-4 py-3 max-w-xs">
+                  <div className="bg-warm-offWhiteAlt rounded-lg px-4 py-3 max-w-xs border border-warm-border">
                     <div className="flex items-center space-x-2">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                       </div>
-                      <span className="text-sm text-gray-600">Archy is thinking...</span>
+                      <span className="text-sm text-warm-gray">Archy is thinking...</span>
                     </div>
                   </div>
                 </div>
@@ -485,7 +485,7 @@ export default function ChatApp() {
         </div>
 
         {/* Input Area - Fixed at bottom */}
-        <div className="flex-shrink-0 w-full p-2 sm:p-4 bg-white border-t border-gray-200">
+        <div className="flex-shrink-0 w-full p-2 sm:p-4 bg-warm-offWhite border-t border-warm-border">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
@@ -505,12 +505,13 @@ export default function ChatApp() {
               onFocus={(e) => e.preventDefault()}
               placeholder={isLoading ? "Archy is thinking..." : "Tell me what's going on."}
               disabled={isLoading}
-              className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-base sm:text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-base sm:text-lg border border-warm-border bg-warm-offWhite text-warm-charcoal placeholder-warm-gray focus:outline-none focus:border-amber focus:ring-2 focus:ring-amber/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || isLoading}
-              className="bg-gray-800 text-white px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg whitespace-nowrap"
+              className="bg-amber text-white px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg hover:bg-amber-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 rounded-lg whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px]"
+              aria-label="Send message"
             >
               {isLoading ? "..." : "Send"}
             </button>
@@ -522,11 +523,23 @@ export default function ChatApp() {
       {showAnalogButton && (
         <div className="fixed right-4 sm:right-8 bottom-4 sm:bottom-8 z-40">
           <div 
-            className="bg-gray-800 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-colors animate-bounce"
+            className="bg-amber text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg shadow-lg cursor-pointer hover:bg-amber-dark transition-all duration-300 animate-bounce focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px] flex items-center"
             onClick={() => {
               const aboutSection = document.getElementById('about');
               if (aboutSection) {
                 aboutSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label="Scroll to content below"
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const aboutSection = document.getElementById('about');
+                if (aboutSection) {
+                  aboutSection.scrollIntoView({ behavior: 'smooth' });
+                }
               }
             }}
           >
