@@ -26,7 +26,7 @@ export default function WhatWeDo() {
               <h1 className="text-4xl font-bold text-gray-900 mb-6">🧰 What We Do</h1>
               
               <div className="space-y-8">
-                <div>
+                <section id="mentorship">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Mentoring & Consulting</h2>
                   <p className="text-lg text-gray-700 mb-4">
                     Individual and executive mentorship designed for growth, resilience, and clarity.
@@ -37,9 +37,16 @@ export default function WhatWeDo() {
                   <p className="text-lg text-gray-700">
                     Thirty-two years of lived experience mean the lessons aren't theoretical—they've been proven under real pressure.
                   </p>
-                </div>
+                </section>
 
-                <div>
+                <section id="consulting">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Consulting</h2>
+                  <p className="text-lg text-gray-700 mb-4">
+                    Practical help for culture, org design, communication rhythms, and go-to-market alignment. Strategy that people can actually live with.
+                  </p>
+                </section>
+
+                <section id="speaking">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Speaking & Workshops</h2>
                   <p className="text-lg text-gray-700 mb-4">
                     Keynotes, classroom lectures, and team workshops that translate leadership theory into real-world systems.
@@ -50,9 +57,9 @@ export default function WhatWeDo() {
                   <p className="text-lg text-gray-700">
                     Every session is conversational, story-driven, and practical—built to shift perspective and spark progress.
                   </p>
-                </div>
+                </section>
 
-                <div>
+                <section id="fractional">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Fractional Leadership</h2>
                   <p className="text-lg text-gray-700 mb-4">
                     For organizations needing executive-level guidance without a full-time hire, we offer short- and long-term fractional C-suite leadership.
@@ -60,7 +67,7 @@ export default function WhatWeDo() {
                   <p className="text-lg text-gray-700">
                     From operational oversight to culture realignment, we help stabilize growth and set the stage for the next generation of leaders to rise.
                   </p>
-                </div>
+                </section>
               </div>
             </div>
           </article>
