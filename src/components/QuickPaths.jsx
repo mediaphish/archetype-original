@@ -43,6 +43,16 @@ export default function QuickPaths() {
             </a>
           ))}
         </div>
+        
+        {/* CTA at end of Services section */}
+        <div className="mt-12 text-center">
+          <a
+            href="/what-we-do"
+            className="btn-cta text-lg"
+          >
+            Ready to Transform Your Leadership?
+          </a>
+        </div>
       </div>
     </section>
   );
