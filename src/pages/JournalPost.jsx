@@ -143,19 +143,29 @@ export default function JournalPost() {
                 style={{ lineHeight: '1.6' }}
               >
                 {(() => {
-                  // Clean the body - remove title and duplicate image if they appear at the start
+                  // Clean the body - remove title and duplicate image if they appear
                   let bodyText = post.body.trim();
                   
-                  // Remove title if it appears as a heading at the start
-                  const titleRegex = new RegExp(`^#+\\s*${post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\n`, 'i');
-                  if (titleRegex.test(bodyText)) {
-                    bodyText = bodyText.replace(titleRegex, '');
-                  }
-                  // Also check if first line is just the title (without #)
-                  const firstLine = bodyText.split('\n')[0].trim();
-                  if (firstLine === post.title) {
-                    bodyText = bodyText.replace(new RegExp(`^${post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\n?`, 'i'), '');
-                  }
+                  // Aggressively remove title in all forms
+                  const escapedTitle = post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  
+                  // Remove title as heading with any number of # at start
+                  const headingTitleRegex = new RegExp(`^#+\\s*${escapedTitle}\\s*\\n*`, 'im');
+                  bodyText = bodyText.replace(headingTitleRegex, '');
+                  
+                  // Remove title as standalone line at start (no #)
+                  const standaloneTitleRegex = new RegExp(`^${escapedTitle}\\s*\\n*`, 'im');
+                  bodyText = bodyText.replace(standaloneTitleRegex, '');
+                  
+                  // Remove title if it appears as a standalone line anywhere in the body
+                  const standaloneLineRegex = new RegExp(`^${escapedTitle}\\s*$`, 'im');
+                  bodyText = bodyText.split('\n').filter(line => {
+                    const trimmed = line.trim();
+                    return trimmed && !standaloneLineRegex.test(trimmed);
+                  }).join('\n');
+                  
+                  // Clean up any double newlines that resulted from removals
+                  bodyText = bodyText.replace(/\n{3,}/g, '\n\n').trim();
                   
                   // Remove image markdown if it matches the post.image metadata
                   if (post.image) {
@@ -323,6 +333,10 @@ export default function JournalPost() {
                   return blocks.map((block, index) => {
                     switch (block.type) {
                       case 'h1':
+                        // Skip if heading matches the title (already shown at top)
+                        if (block.content.trim().toLowerCase() === post.title.toLowerCase()) {
+                          return null;
+                        }
                         return <h1 key={index} className="h1 mb-4 mt-8">{block.content}</h1>;
                       case 'h2':
                         return <h2 key={index} className="h2 mb-3 mt-6">{block.content}</h2>;
@@ -359,8 +373,8 @@ export default function JournalPost() {
                           </ul>
                         );
                       case 'paragraph':
-                        // Skip if paragraph matches the title
-                        if (block.content === post.title) {
+                        // Skip if paragraph matches the title (case-insensitive)
+                        if (block.content.trim().toLowerCase() === post.title.toLowerCase()) {
                           return null;
                         }
                         return (
