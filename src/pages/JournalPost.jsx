@@ -146,28 +146,56 @@ export default function JournalPost() {
                   // Clean the body - remove title and duplicate image if they appear
                   let bodyText = post.body.trim();
                   
-                  // Aggressively remove title in all forms (case-insensitive)
-                  const escapedTitle = post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  // Normalize title for comparison (trim, lowercase)
+                  const titleNormalized = post.title.trim().toLowerCase();
                   
-                  // Remove title as heading with any number of # at start
-                  const headingTitleRegex = new RegExp(`^#+\\s*${escapedTitle}\\s*\\n+`, 'im');
-                  bodyText = bodyText.replace(headingTitleRegex, '');
-                  
-                  // Remove title as standalone line at start (no #)
-                  const standaloneTitleRegex = new RegExp(`^${escapedTitle}\\s*\\n+`, 'im');
-                  bodyText = bodyText.replace(standaloneTitleRegex, '');
-                  
-                  // Remove title if it appears as a standalone line anywhere (preserve paragraph structure)
+                  // Split into lines for line-by-line processing
                   const lines = bodyText.split('\n');
                   const filteredLines = [];
+                  
                   for (let i = 0; i < lines.length; i++) {
-                    const trimmed = lines[i].trim();
-                    // Skip lines that are exactly the title (case-insensitive)
-                    if (trimmed && trimmed.toLowerCase() === post.title.toLowerCase()) {
-                      continue; // Skip this line entirely
+                    const originalLine = lines[i];
+                    const trimmedLine = originalLine.trim();
+                    
+                    // Skip empty lines (preserve them for paragraph structure)
+                    if (!trimmedLine) {
+                      filteredLines.push(originalLine);
+                      continue;
                     }
-                    filteredLines.push(lines[i]); // Keep original line with spacing
+                    
+                    // Remove title as heading with any number of # characters
+                    // Match patterns like: # Title, ## Title, ### Title, etc.
+                    const headingMatch = trimmedLine.match(/^(#+)\s*(.+)$/);
+                    if (headingMatch) {
+                      const headingContent = headingMatch[2].trim();
+                      // Normalize and compare (remove trailing punctuation for comparison)
+                      const headingNormalized = headingContent.toLowerCase();
+                      const titleNormalizedNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                      const headingNormalizedNoPunct = headingNormalized.replace(/[.,!?;:]$/, '').trim();
+                      
+                      // Skip if heading matches title (with or without trailing punctuation)
+                      if (headingNormalized === titleNormalized || 
+                          headingNormalizedNoPunct === titleNormalizedNoPunct) {
+                        continue; // Skip this heading line
+                      }
+                    }
+                    
+                    // Remove title as standalone line (no # prefix)
+                    // Normalize line content (remove trailing punctuation for comparison)
+                    const lineNormalized = trimmedLine.toLowerCase();
+                    const lineNormalizedNoPunct = lineNormalized.replace(/[.,!?;:]$/, '').trim();
+                    const titleNormalizedNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                    
+                    // Skip if line exactly matches title (with or without trailing punctuation)
+                    if (lineNormalized === titleNormalized || 
+                        lineNormalizedNoPunct === titleNormalizedNoPunct) {
+                      continue; // Skip this line
+                    }
+                    
+                    // Keep the line
+                    filteredLines.push(originalLine);
                   }
+                  
                   bodyText = filteredLines.join('\n');
                   
                   // Clean up any triple+ newlines, but keep double newlines (paragraph breaks)
@@ -181,7 +209,7 @@ export default function JournalPost() {
                   }
 
                   // Parse markdown into blocks
-                  const lines = bodyText.split('\n');
+                  const markdownLines = bodyText.split('\n');
                   const blocks = [];
                   let currentParagraph = [];
                   let currentList = [];
@@ -219,8 +247,8 @@ export default function JournalPost() {
                     }
                   };
 
-                  for (let i = 0; i < lines.length; i++) {
-                    const originalLine = lines[i];
+                  for (let i = 0; i < markdownLines.length; i++) {
+                    const originalLine = markdownLines[i];
                     const line = originalLine.trim();
                     
                     // Empty line - this creates paragraph breaks
@@ -232,37 +260,36 @@ export default function JournalPost() {
                       continue;
                     }
 
-                    // Heading
-                    if (line.startsWith('# ')) {
+                    // Heading - check for any heading level
+                    if (line.match(/^#+\s+/)) {
                       flushParagraph();
                       flushBlockquote();
                       flushList();
-                      const headingContent = line.substring(2).trim();
-                      // Skip if heading matches title (already shown at top)
-                      if (headingContent.toLowerCase() === titleLower) {
+                      const headingContent = line.replace(/^#+\s+/, '').trim();
+                      
+                      // Normalize for comparison (remove trailing punctuation)
+                      const headingNormalized = headingContent.toLowerCase();
+                      const titleNormalized = titleLower.trim();
+                      const headingNoPunct = headingNormalized.replace(/[.,!?;:]$/, '').trim();
+                      const titleNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                      
+                      // Skip if heading matches title (with or without trailing punctuation)
+                      if (headingNormalized === titleNormalized || 
+                          headingNoPunct === titleNoPunct) {
                         continue;
                       }
-                      blocks.push({ type: 'h1', content: headingContent });
-                      continue;
-                    } else if (line.startsWith('## ')) {
-                      flushParagraph();
-                      flushBlockquote();
-                      flushList();
-                      const headingContent = line.substring(3).trim();
-                      if (headingContent.toLowerCase() === titleLower) {
-                        continue;
+                      
+                      // Determine heading level
+                      const levelMatch = line.match(/^(#+)/);
+                      const level = levelMatch ? levelMatch[1].length : 1;
+                      
+                      if (level === 1) {
+                        blocks.push({ type: 'h1', content: headingContent });
+                      } else if (level === 2) {
+                        blocks.push({ type: 'h2', content: headingContent });
+                      } else {
+                        blocks.push({ type: 'h3', content: headingContent });
                       }
-                      blocks.push({ type: 'h2', content: headingContent });
-                      continue;
-                    } else if (line.startsWith('### ')) {
-                      flushParagraph();
-                      flushBlockquote();
-                      flushList();
-                      const headingContent = line.substring(4).trim();
-                      if (headingContent.toLowerCase() === titleLower) {
-                        continue;
-                      }
-                      blocks.push({ type: 'h3', content: headingContent });
                       continue;
                     }
 
@@ -345,7 +372,14 @@ export default function JournalPost() {
                     }
 
                     // Regular paragraph - skip if it's just the title
-                    if (line.toLowerCase() === titleLower) {
+                    const lineNormalized = line.toLowerCase().trim();
+                    const titleNormalized = titleLower.trim();
+                    const lineNoPunct = lineNormalized.replace(/[.,!?;:]$/, '').trim();
+                    const titleNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                    
+                    // Skip if line matches title (with or without trailing punctuation)
+                    if (lineNormalized === titleNormalized || 
+                        lineNoPunct === titleNoPunct) {
                       continue; // Skip title lines
                     }
                     // Use original line to preserve spacing
@@ -362,7 +396,14 @@ export default function JournalPost() {
                       case 'h1':
                         // Skip if heading matches the title (already shown at top)
                         const h1Content = block.content.trim();
-                        if (h1Content.toLowerCase() === post.title.toLowerCase()) {
+                        const h1Normalized = h1Content.toLowerCase();
+                        const titleNormalized = post.title.toLowerCase().trim();
+                        const h1NoPunct = h1Normalized.replace(/[.,!?;:]$/, '').trim();
+                        const titleNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                        
+                        // Skip if heading matches title (with or without trailing punctuation)
+                        if (h1Normalized === titleNormalized || 
+                            h1NoPunct === titleNoPunct) {
                           return null;
                         }
                         return <h1 key={index} className="h1 mb-4 mt-8">{h1Content}</h1>;
@@ -403,9 +444,21 @@ export default function JournalPost() {
                       case 'paragraph':
                         // Skip if paragraph matches the title (case-insensitive)
                         const paraContent = block.content.trim();
-                        if (paraContent.toLowerCase() === post.title.toLowerCase() || !paraContent) {
+                        if (!paraContent) {
                           return null;
                         }
+                        
+                        const paraNormalized = paraContent.toLowerCase();
+                        const paraTitleNormalized = post.title.toLowerCase().trim();
+                        const paraNoPunct = paraNormalized.replace(/[.,!?;:]$/, '').trim();
+                        const paraTitleNoPunct = paraTitleNormalized.replace(/[.,!?;:]$/, '').trim();
+                        
+                        // Skip if paragraph matches title (with or without trailing punctuation)
+                        if (paraNormalized === paraTitleNormalized || 
+                            paraNoPunct === paraTitleNoPunct) {
+                          return null;
+                        }
+                        
                         return (
                           <p key={index} className="p mb-6" style={{ lineHeight: '1.6' }}>
                             {paraContent}
