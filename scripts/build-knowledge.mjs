@@ -92,22 +92,74 @@ async function buildKnowledgeCorpus() {
   
   // Process journal posts
   if (fs.existsSync(JOURNAL_DIR)) {
-    const journalFiles = fs.readdirSync(JOURNAL_DIR)
-      .filter(file => {
-        // Only process .md files, exclude templates and malformed files
-        return file.endsWith('.md') && 
-               !file.includes('template') && 
-               file !== 'template.md' &&
-               !file.endsWith('.md.md') &&
-               !file.endsWith('.rtf');
-      })
-      .map(file => path.join(JOURNAL_DIR, file));
+    // Recursively find all markdown files in journal directory
+    const findAllJournalFiles = (dir) => {
+      const files = [];
+      const items = fs.readdirSync(dir);
       
-    console.log(`📝 Found ${journalFiles.length} journal posts`);
+      for (const item of items) {
+        const fullPath = path.join(dir, item);
+        const stat = fs.statSync(fullPath);
+        
+        if (stat.isDirectory()) {
+          // Recursively search subdirectories
+          files.push(...findAllJournalFiles(fullPath));
+        } else if (item.endsWith('.md')) {
+          files.push(fullPath);
+        }
+      }
+      
+      return files;
+    };
+    
+    const allJournalFiles = findAllJournalFiles(JOURNAL_DIR);
+    console.log(`📁 Found ${allJournalFiles.length} total markdown files in journal directory`);
+    
+    const journalFiles = allJournalFiles.filter(filePath => {
+      const fileName = path.basename(filePath);
+      
+      // Only process .md files, exclude templates and malformed files
+      const isTemplate = fileName.toLowerCase().includes('template') || fileName === 'template.md';
+      const isMalformed = fileName.endsWith('.md.md') || fileName.endsWith('.rtf');
+      const isHidden = fileName.startsWith('.');
+      
+      if (isTemplate) {
+        console.log(`⏭️  Skipping template file: ${fileName}`);
+        return false;
+      }
+      
+      if (isMalformed) {
+        console.log(`⏭️  Skipping malformed file: ${fileName}`);
+        return false;
+      }
+      
+      if (isHidden) {
+        console.log(`⏭️  Skipping hidden file: ${fileName}`);
+        return false;
+      }
+      
+      return true;
+    });
+      
+    console.log(`📝 Processing ${journalFiles.length} journal posts`);
+    
+    let processedCount = 0;
+    let skippedCount = 0;
+    let futurePosts = 0;
+    let draftPosts = 0;
+    let errorCount = 0;
     
     for (const filePath of journalFiles) {
       try {
         const content = fs.readFileSync(filePath, 'utf8');
+        
+        // Skip empty files
+        if (!content || !content.trim()) {
+          console.warn(`⚠️  Skipping empty file: ${path.basename(filePath)}`);
+          skippedCount++;
+          continue;
+        }
+        
         const { data: frontmatter, content: body } = matter(content);
         
         // Check if post should be published
@@ -117,27 +169,44 @@ async function buildKnowledgeCorpus() {
             publishDate = new Date(frontmatter.publish_date);
             // Validate date
             if (isNaN(publishDate.getTime())) {
-              console.warn(`⚠️  Invalid publish_date for "${frontmatter.title}", using current date`);
+              console.warn(`⚠️  Invalid publish_date for "${frontmatter.title || path.basename(filePath)}", using current date`);
               publishDate = null;
             }
           } catch (e) {
-            console.warn(`⚠️  Error parsing publish_date for "${frontmatter.title}":`, e.message);
+            console.warn(`⚠️  Error parsing publish_date for "${frontmatter.title || path.basename(filePath)}":`, e.message);
             publishDate = null;
           }
         }
         
         const now = new Date();
         
+        // Skip future posts
         if (publishDate && publishDate > now) {
-          console.log(`⏰ Post "${frontmatter.title}" scheduled for ${publishDate.toISOString()}`);
-          continue; // Skip future posts
+          console.log(`⏰ Skipping future post: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDate.toISOString()})`);
+          futurePosts++;
+          continue;
+        }
+        
+        // Check status - only skip if explicitly set to 'draft'
+        const status = frontmatter.status === 'draft' ? 'draft' : 'published';
+        if (status === 'draft') {
+          console.log(`📝 Skipping draft post: "${frontmatter.title || path.basename(filePath)}"`);
+          draftPosts++;
+          continue;
         }
         
         const slug = frontmatter.slug || path.basename(filePath, '.md');
         
-        // Check for matching image
-        const imagePath = `/images/${slug}.jpg`;
-        const imageExists = fs.existsSync(path.join(process.cwd(), 'public', 'images', `${slug}.jpg`));
+        // Check for matching image (try multiple formats)
+        let imagePath = null;
+        const imageFormats = ['jpg', 'jpeg', 'png', 'webp'];
+        for (const format of imageFormats) {
+          const imageFile = path.join(process.cwd(), 'public', 'images', `${slug}.${format}`);
+          if (fs.existsSync(imageFile)) {
+            imagePath = `/images/${slug}.${format}`;
+            break;
+          }
+        }
         
         const journalDoc = {
           title: frontmatter.title || 'Untitled Journal Post',
@@ -145,12 +214,12 @@ async function buildKnowledgeCorpus() {
           type: 'journal-post',
           tags: ['journal', 'blog', ...(frontmatter.tags || [])],
           categories: frontmatter.categories || ['general'],
-          status: frontmatter.status === 'draft' ? 'draft' : 'published', // Only mark as draft if explicitly set
+          status: status,
           created_at: frontmatter.created_at || new Date().toISOString(),
           updated_at: frontmatter.updated_at || new Date().toISOString(),
           publish_date: frontmatter.publish_date || new Date().toISOString(),
-          summary: frontmatter.summary || body.substring(0, 200) + '...',
-          image: imageExists ? imagePath : null,
+          summary: frontmatter.summary || (body ? body.substring(0, 200).trim() + '...' : ''),
+          image: imagePath,
           source: { 
             kind: 'journal',
             original_source: frontmatter.original_source || null,
@@ -159,15 +228,25 @@ async function buildKnowledgeCorpus() {
           takeaways: frontmatter.takeaways || [],
           applications: frontmatter.applications || [],
           related: frontmatter.related || [],
-          body: body.trim()
+          body: body ? body.trim() : ''
         };
         
         docs.push(journalDoc);
-        console.log(`✅ Processed journal post: ${frontmatter.title}`);
+        processedCount++;
+        console.log(`✅ Processed journal post: ${frontmatter.title || slug}`);
       } catch (error) {
-        console.error(`❌ Error processing journal ${filePath}:`, error.message);
+        errorCount++;
+        console.error(`❌ Error processing journal ${path.basename(filePath)}:`, error.message);
+        console.error(`   Full path: ${filePath}`);
       }
     }
+    
+    console.log(`📊 Journal Processing Summary:`);
+    console.log(`   ✅ Published: ${processedCount}`);
+    console.log(`   📝 Drafts: ${draftPosts}`);
+    console.log(`   ⏰ Future posts: ${futurePosts}`);
+    console.log(`   ⏭️  Skipped: ${skippedCount}`);
+    console.log(`   ❌ Errors: ${errorCount}`);
   }
   
   // Sort by updated_at (newest first)
