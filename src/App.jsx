@@ -105,6 +105,19 @@ export default function App() {
         <Header />
         <Hero />
         <ChatApp />
+        {/* Hero CTA Section */}
+        <section className="py-8 md:py-12 bg-warm-offWhite">
+          <div className="container">
+            <div className="text-center">
+              <a
+                href="/what-we-do"
+                className="btn-cta"
+              >
+                Explore Services
+              </a>
+            </div>
+          </div>
+        </section>
         <QuickPaths />
         <AboutTeaser />
         <ValueStatement />
