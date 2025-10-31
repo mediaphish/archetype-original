@@ -6,6 +6,7 @@ export default {
       colors: {
         warm: {
           offWhite: "#FAFAF9",
+          offWhiteAlt: "#F5F5F4",
           charcoal: "#1C1917",
           gray: "#78716C",
           border: "#E7E5E4",
