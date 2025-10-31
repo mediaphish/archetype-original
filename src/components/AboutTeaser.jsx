@@ -74,7 +74,7 @@ export default function AboutTeaser() {
           <div className="flex-1">
             {/* Opening Paragraph */}
             <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-              I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. Simple as that. Since then I've built teams, defended people when it mattered, led through collapse and rebuilds, and learned that influence starts with responsibility.
+              I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. Simple as that. Since then I've built teams, defended people when it mattered, led through collapse and rebuilds, and learned that influence starts with responsibility.
             </p>
             
             {/* Pull Quote */}
