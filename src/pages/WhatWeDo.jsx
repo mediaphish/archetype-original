@@ -23,7 +23,7 @@ export default function WhatWeDo() {
           {/* Page content */}
           <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-8">
-              <h1 className="text-4xl font-bold text-gray-900 mb-6">🧰 What We Do</h1>
+              <h1 className="text-4xl font-bold text-gray-900 mb-6">What We Do</h1>
               
               <div className="space-y-8">
                 <section id="mentorship">
