@@ -49,8 +49,7 @@ const renderParagraph = (text, key) => {
 export default function Methods() {
   const [activeSection, setActiveSection] = useState('intro');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isNavVisible, setIsNavVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isNavVisible] = useState(true);
   const sectionRefs = useRef({});
   const contentRef = useRef(null);
   const clickedSectionRef = useRef(null);
@@ -86,36 +85,12 @@ export default function Methods() {
     };
   }, []);
 
-  // Scroll direction tracking for nav visibility
+  // Scroll direction tracking for nav visibility (optional - can be removed if not desired)
+  // Disabled by default - navigation stays visible
   useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-
-          if (Math.abs(currentScrollY - lastScrollY) > 50) {
-            if (currentScrollY > lastScrollY && currentScrollY > 100) {
-              setIsNavVisible(false);
-            } else if (currentScrollY < lastScrollY) {
-              setIsNavVisible(true);
-            }
-            setLastScrollY(currentScrollY);
-          }
-
-          ticking = false;
-        });
-
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    setLastScrollY(window.scrollY);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    // Navigation stays visible - no hide/show behavior
+    setIsNavVisible(true);
+  }, []);
 
   const scrollToSection = (id, event) => {
     clickedSectionRef.current = id;
@@ -239,7 +214,7 @@ export default function Methods() {
 
               {/* Navigation menu */}
               <nav 
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4 transition-opacity duration-300 ${isNavVisible ? 'opacity-100' : 'lg:opacity-0 lg:pointer-events-none'}`}
+                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4`}
                 aria-label="Page sections"
               >
                 <ul className="space-y-2">
