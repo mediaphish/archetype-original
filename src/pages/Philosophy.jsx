@@ -136,37 +136,26 @@ export default function Philosophy() {
         <div className="max-w-7xl mx-auto px-4">
           {/* Sequential Navigation */}
           <div className="mb-8 flex items-center justify-between border-b border-warm-border pb-4 mt-8">
-            <a 
-              href="/" 
+            <a
+              href="/what-i-do"
               className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
+              aria-label="Previous page: What I Do"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              <span className="text-sm">Back to Home</span>
+              <span className="text-sm">What I Do</span>
             </a>
-            <div className="flex items-center gap-4">
-              <a
-                href="/what-i-do"
-                className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-                aria-label="Previous page: What I Do"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <span className="text-sm">What I Do</span>
-              </a>
-              <a
-                href="/methods"
-                className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-                aria-label="Next page: Methods"
-              >
-                <span className="text-sm">Methods</span>
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
-            </div>
+            <a
+              href="/methods"
+              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
+              aria-label="Next page: Methods"
+            >
+              <span className="text-sm">Methods</span>
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
