@@ -145,7 +145,7 @@ async function buildKnowledgeCorpus() {
           type: 'journal-post',
           tags: ['journal', 'blog', ...(frontmatter.tags || [])],
           categories: frontmatter.categories || ['general'],
-          status: 'published',
+          status: frontmatter.status === 'draft' ? 'draft' : 'published', // Only mark as draft if explicitly set
           created_at: frontmatter.created_at || new Date().toISOString(),
           updated_at: frontmatter.updated_at || new Date().toISOString(),
           publish_date: frontmatter.publish_date || new Date().toISOString(),
