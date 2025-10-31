@@ -161,16 +161,7 @@ export default function Methods() {
               </svg>
               <span className="text-sm">Philosophy</span>
             </a>
-            <a
-              href="/what-we-do"
-              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-              aria-label="Next page: What I Do"
-            >
-              <span className="text-sm">What I Do</span>
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
+            <div></div>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
@@ -428,7 +419,7 @@ export default function Methods() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#mentorship" className="text-amber hover:text-amber-dark transition-colors">Mentorship</a>
+                      <a href="/what-i-do#mentorship" className="text-amber hover:text-amber-dark transition-colors">Mentorship</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       One-to-one work with leaders at every level. We blend clarity, confidence, and personal growth into actionable leadership rhythms.
@@ -436,7 +427,7 @@ export default function Methods() {
                   </div>
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#consulting" className="text-amber hover:text-amber-dark transition-colors">Consulting</a>
+                      <a href="/what-i-do#consulting" className="text-amber hover:text-amber-dark transition-colors">Consulting</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       Business structure, cultural alignment, communication frameworks, and process clarity. Rooted in lived experience across industries.
@@ -444,7 +435,7 @@ export default function Methods() {
                   </div>
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#speaking" className="text-amber hover:text-amber-dark transition-colors">Speaking & Workshops</a>
+                      <a href="/what-i-do#speaking" className="text-amber hover:text-amber-dark transition-colors">Speaking & Workshops</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       Leadership talks and group sessions that bring these principles to teams in motion. Always practical, always personal.
@@ -452,7 +443,7 @@ export default function Methods() {
                   </div>
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#fractional" className="text-amber hover:text-amber-dark transition-colors">Fractional Leadership</a>
+                      <a href="/what-i-do#fractional" className="text-amber hover:text-amber-dark transition-colors">Fractional Leadership</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       Hands-on leadership during seasons of change or growth. Steadying the ship while helping new leaders rise.
@@ -565,16 +556,7 @@ export default function Methods() {
                   </svg>
                   <span className="text-sm">← Philosophy</span>
                 </a>
-                <a
-                  href="/what-we-do"
-                  className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-                  aria-label="Next page: What I Do"
-                >
-                  <span className="text-sm">What I Do →</span>
-                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
+                <div></div>
               </div>
             </article>
           </div>

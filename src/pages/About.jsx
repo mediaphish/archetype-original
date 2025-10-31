@@ -174,7 +174,7 @@ export default function About() {
                   I build leaders worth following.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. Simple as that. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
+                  I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
                   I mentor executives and founders, but I'm just as committed to emerging leaders and students. Strength and humility can live in the same sentence. That's the kind of leader I help build.
@@ -250,7 +250,7 @@ export default function About() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#mentorship" className="text-amber hover:text-amber-dark transition-colors">Mentorship</a>
+                      <a href="/what-i-do#mentorship" className="text-amber hover:text-amber-dark transition-colors">Mentorship</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       One-to-one guidance for executives, founders, emerging leaders, and students. We build clarity, confidence, and decision discipline without burnout.
@@ -258,7 +258,7 @@ export default function About() {
                   </div>
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#consulting" className="text-amber hover:text-amber-dark transition-colors">Consulting</a>
+                      <a href="/what-i-do#consulting" className="text-amber hover:text-amber-dark transition-colors">Consulting</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       Practical help for culture, organizational design, communication rhythms, and go-to-market alignment. Strategy that people can actually live with.
@@ -266,7 +266,7 @@ export default function About() {
                   </div>
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#speaking" className="text-amber hover:text-amber-dark transition-colors">Speaking & Workshops</a>
+                      <a href="/what-i-do#speaking" className="text-amber hover:text-amber-dark transition-colors">Speaking & Workshops</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       Keynotes, classroom talks, and team workshops that translate principles into practice.
@@ -274,7 +274,7 @@ export default function About() {
                   </div>
                   <div>
                     <h3 className="h3 mb-3">
-                      <a href="/what-we-do#fractional" className="text-amber hover:text-amber-dark transition-colors">Fractional Leadership</a>
+                      <a href="/what-i-do#fractional" className="text-amber hover:text-amber-dark transition-colors">Fractional Leadership</a>
                     </h3>
                     <p className="p" style={{ lineHeight: '1.6' }}>
                       Interim executive coverage to stabilize operations and lead through change—clear lanes, steady cadence, clean handoff.
