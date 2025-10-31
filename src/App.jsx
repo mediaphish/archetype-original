@@ -14,7 +14,7 @@ import JournalHighlights from "./components/JournalHighlights";
 import ClosingConfidence from "./components/ClosingConfidence";
 import Journal from "./pages/Journal";
 import AboutPage from "./pages/About";
-// import PhilosophyPage from "./pages/Philosophy";
+import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
 import WhatWeDoPage from "./pages/WhatWeDo";
 
@@ -29,8 +29,8 @@ export default function App() {
         setCurrentPage('journal');
       } else if (path === '/about') {
         setCurrentPage('about');
-      // } else if (path === '/philosophy') {
-      //   setCurrentPage('philosophy');
+      } else if (path === '/philosophy') {
+        setCurrentPage('philosophy');
       } else if (path === '/methods') {
         setCurrentPage('methods');
       } else if (path === '/what-we-do') {
@@ -58,14 +58,14 @@ export default function App() {
   }
 
   // Render Philosophy page
-  // if (currentPage === 'philosophy') {
-  //   return (
-  //     <main className="bg-white text-black">
-  //       <Header />
-  //       <PhilosophyPage />
-  //     </main>
-  //   );
-  // }
+  if (currentPage === 'philosophy') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <PhilosophyPage />
+      </main>
+    );
+  }
 
   // Render Methods page
   if (currentPage === 'methods') {
