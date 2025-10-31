@@ -7,6 +7,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write # Required to push changes
+
 jobs:
   sync-knowledge:
     runs-on: ubuntu-latest
@@ -16,6 +19,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -36,11 +40,18 @@ jobs:
           echo "changed=true" >> $GITHUB_OUTPUT
         fi
     
-    - name: Commit and push changes
+    - name: Commit changes
       if: steps.check-changes.outputs.changed == 'true'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add public/sl-knowledge.json
-        git commit -m "Sync knowledge corpus from AO [skip ci]"
-        git push
+        git diff --staged --quiet || git commit -m "Sync knowledge corpus from AO [skip ci]"
+    
+    - name: Push changes
+      if: steps.check-changes.outputs.changed == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main
+        force: false
