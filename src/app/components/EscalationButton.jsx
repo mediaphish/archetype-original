@@ -220,7 +220,7 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
                 input.value = '';
               }
             }}
-            className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 transition-colors rounded-lg"
+            className="w-full bg-amber text-white px-4 py-2 text-base hover:bg-amber-dark transition-all duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px]"
           >
             {currentQuestion === TRIAGE_QUESTIONS.length - 1 ? (darkHours ? 'Queue for Bart' : 'Submit Handoff') : 'Next'}
           </button>
@@ -243,7 +243,7 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
       <button
         onClick={handleStartTriage}
         disabled={isLoading}
-        className="w-full bg-amber text-white px-4 py-2 text-base hover:bg-amber-hover disabled:bg-warm-gray transition-colors rounded-lg"
+        className="w-full bg-amber text-white px-4 py-2 text-base hover:bg-amber-dark disabled:bg-warm-gray disabled:opacity-50 transition-all duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px]"
       >
         {isLoading ? 'Processing...' : darkHours ? 'Queue for Bart' : 'Request Live Handoff'}
       </button>
