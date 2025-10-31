@@ -5,14 +5,61 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Check if current page is a sub-page
+  const isSubPage = () => {
+    const path = window.location.pathname;
+    const subPages = ['/about', '/philosophy', '/methods', '/what-we-do', '/journal'];
+    return subPages.some(subPage => path === subPage || path.startsWith(subPage + '/'));
+  };
+
   useEffect(() => {
+    // Check initial page state
+    const checkInitialState = () => {
+      if (isSubPage()) {
+        // On sub-pages, always show header
+        setIsVisible(true);
+      } else {
+        // On home page, check scroll position
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        setIsVisible(scrollTop > 50);
+      }
+    };
+
+    checkInitialState();
+
+    // Scroll handler for home page only
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setIsVisible(scrollTop > 50);
+      if (!isSubPage()) {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        setIsVisible(scrollTop > 50);
+      }
+    };
+
+    // Route change handler
+    const handleRouteChange = () => {
+      if (isSubPage()) {
+        setIsVisible(true);
+      } else {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        setIsVisible(scrollTop > 50);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('popstate', handleRouteChange);
+    
+    // Also check on pushState changes (client-side navigation)
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function(...args) {
+      originalPushState.apply(window.history, args);
+      setTimeout(handleRouteChange, 0);
+    };
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('popstate', handleRouteChange);
+      window.history.pushState = originalPushState;
+    };
   }, []);
 
   const toggleMobileMenu = () => {
