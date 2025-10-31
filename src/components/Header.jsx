@@ -87,7 +87,7 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <a href="/about" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">About</a>
-            <a href="/what-we-do" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">What I Do</a>
+            <a href="/what-i-do" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">What I Do</a>
             <a href="/philosophy" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">Philosophy</a>
             <a href="/methods" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">Methods</a>
             <a href="/journal" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">Journal</a>
@@ -114,7 +114,7 @@ export default function Header() {
           <div className="md:hidden mt-4 pb-4 border-t border-warm-border">
             <nav className="flex flex-col space-y-3 pt-4">
               <a href="/about" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-              <a href="/what-we-do" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>What I Do</a>
+              <a href="/what-i-do" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>What I Do</a>
               <a href="/philosophy" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>Philosophy</a>
               <a href="/methods" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>Methods</a>
               <a href="/journal" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>Journal</a>

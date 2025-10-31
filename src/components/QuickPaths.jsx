@@ -5,7 +5,7 @@ export default function QuickPaths() {
     {
       title: "Mentorship",
       description: "One-to-one guidance for executives, founders, and emerging leaders. Find your voice, make clean decisions, and lead without burning out.",
-      link: "/what-we-do#mentorship",
+      link: "/what-i-do#mentorship",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -15,7 +15,7 @@ export default function QuickPaths() {
     {
       title: "Consulting",
       description: "Practical help for culture, org design, communication rhythms, and go-to-market alignment. Strategy that people can actually live with.",
-      link: "/what-we-do#consulting",
+      link: "/what-i-do#consulting",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -25,7 +25,7 @@ export default function QuickPaths() {
     {
       title: "Speaking & Workshops",
       description: "Keynotes, classroom talks, and team workshops that translate principles into practice—leadership, culture, team health, product & ops literacy.",
-      link: "/what-we-do#speaking",
+      link: "/what-i-do#speaking",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -35,7 +35,7 @@ export default function QuickPaths() {
     {
       title: "Fractional Leadership",
       description: "Temporary executive coverage to stabilize and scale—clear lanes, steady cadence, and a smooth handoff when you're strong again.",
-      link: "/what-we-do#fractional",
+      link: "/what-i-do#fractional",
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
@@ -90,7 +90,7 @@ export default function QuickPaths() {
         {/* CTA at end of Services section */}
         <div className="mt-16 text-center">
           <a
-            href="/what-we-do"
+            href="/what-i-do"
             className="btn-cta text-lg"
           >
             Ready to Transform Your Leadership?
