@@ -15,16 +15,16 @@
 }
 
 .h1 {
-  @apply text-6xl md:text-7xl font-extrabold tracking-tight;
+  @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight;
   line-height: 1.1;
   color: #F59E0B;
 }
 .h2 {
-  @apply text-4xl md:text-5xl font-bold tracking-normal;
+  @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-normal;
   line-height: 1.2;
 }
 .h3 {
-  @apply text-2xl md:text-3xl font-semibold tracking-normal;
+  @apply text-xl sm:text-2xl md:text-3xl font-semibold tracking-normal;
   line-height: 1.3;
 }
 .p {
@@ -42,13 +42,28 @@
   @apply bg-amber text-white border-amber hover:bg-amber-dark transition-colors;
 }
 .btn-cta {
-  @apply inline-flex items-center justify-center bg-amber text-white font-semibold px-8 py-4 rounded-lg hover:bg-amber-dark transition-colors focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2;
+  @apply inline-flex items-center justify-center bg-amber text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 min-h-[44px] rounded-lg hover:bg-amber-dark transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2;
 }
 .badge {
   @apply inline-flex items-center gap-2 text-sm font-medium rounded-full border px-3 py-1 bg-slate-50 border-slate-200;
 }
 .input, .textarea {
-  @apply w-full rounded-xl border border-warm-border focus:outline-none focus:ring-2 focus:ring-amber focus:border-amber transition bg-warm-offWhite;
+  @apply w-full rounded-xl border border-warm-border focus:outline-none focus:ring-2 focus:ring-amber focus:border-amber transition-all duration-300 bg-warm-offWhite;
+}
+
+/* Global link transitions */
+a:not(.btn):not(.btn-cta):not(.btn-primary) {
+  @apply transition-all duration-300;
+}
+
+/* Ensure sufficient contrast for amber text on white - use darker amber for better readability */
+.text-amber-contrast {
+  color: #B45309; /* amber-dark for better contrast on light backgrounds */
+}
+
+/* Smooth scroll offset for anchor links */
+html {
+  scroll-padding-top: 80px;
 }
 .input { @apply px-3 py-2; }
 .textarea { @apply px-3 py-2 min-h-[140px]; }
