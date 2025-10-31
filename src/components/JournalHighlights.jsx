@@ -68,7 +68,7 @@ export default function JournalHighlights() {
       
       <div className="container">
         <h2 className="h2">From the Journal</h2>
-        <p className="text-lg text-warm-gray mb-8">
+        <p className="p mb-8">
           Ongoing notes on leadership, culture, clarity, and the work of rebuilding.
         </p>
 
@@ -97,7 +97,7 @@ export default function JournalHighlights() {
                   className="bg-warm-offWhite border border-warm-border rounded-lg p-6 flex flex-col"
                   aria-label={`Journal post: ${post.title}`}
                 >
-                  <h3 className="text-lg font-semibold text-warm-charcoal mb-3">
+                  <h3 className="h3 mb-3">
                     <a 
                       href={`/journal/${post.slug}`}
                       className="hover:text-amber transition-colors focus:outline-none focus:ring-2 focus:ring-amber rounded"
@@ -105,7 +105,7 @@ export default function JournalHighlights() {
                       {post.title}
                     </a>
                   </h3>
-                  <p className="text-base text-warm-gray mb-4 flex-grow line-clamp-3">
+                  <p className="p mb-4 flex-grow line-clamp-3">
                     {post.summary || post.body?.substring(0, 140)}
                   </p>
                   <div className="flex items-center justify-between mt-auto">
