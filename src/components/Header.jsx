@@ -8,7 +8,7 @@ export default function Header() {
   // Check if current page is a sub-page
   const isSubPage = () => {
     const path = window.location.pathname;
-    const subPages = ['/about', '/philosophy', '/methods', '/what-we-do', '/journal'];
+    const subPages = ['/about', '/philosophy', '/methods', '/what-i-do', '/journal'];
     return subPages.some(subPage => path === subPage || path.startsWith(subPage + '/'));
   };
 
