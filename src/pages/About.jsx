@@ -23,14 +23,14 @@ export default function About() {
           {/* Page content */}
           <article className="bg-warm-offWhite rounded-lg shadow-sm border border-warm-border overflow-hidden">
             <div className="p-8">
-              <h1 className="text-4xl font-bold text-warm-charcoal mb-6">About Bart</h1>
+              <h1 className="h1 mb-6">About Bart</h1>
               
               <div className="prose prose-lg max-w-none">
-                <p className="text-xl text-warm-charcoal mb-8 font-semibold">
+                <p className="p mb-6 font-semibold text-warm-charcoal">
                   I build leaders worth following.
                 </p>
                 
-                <p className="text-lg text-warm-gray mb-6">
+                <p className="p mb-6">
                   For more than three decades, I've led teams through growth, collapse, and full-scale rebuilds across software, marketing, fitness, and leadership development. My career began in design and technology, evolved into executive leadership, and ultimately centered on one question—what kind of leader actually makes people better?
                 </p>
                 
