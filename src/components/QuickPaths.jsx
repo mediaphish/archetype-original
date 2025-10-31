@@ -49,7 +49,7 @@ export default function QuickPaths() {
       <div className="container">
         {/* Section Heading with Amber Accent */}
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="h2 mb-4">What We Do</h2>
+          <h2 className="h2 mb-4">What I Do</h2>
           <div className="w-24 h-1 bg-amber mx-auto rounded-full"></div>
         </div>
         
