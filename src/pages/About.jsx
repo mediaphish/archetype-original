@@ -174,7 +174,7 @@ export default function About() {
                   I build leaders worth following.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
+                  I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. Simple as that. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
                   I mentor executives and founders, but I'm just as committed to emerging leaders and students. Strength and humility can live in the same sentence. That's the kind of leader I help build.
