@@ -39,7 +39,10 @@
   @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold border border-warm-border hover:border-amber transition;
 }
 .btn-primary {
-  @apply bg-amber text-white border-amber hover:bg-amber-hover;
+  @apply bg-amber text-white border-amber hover:bg-amber-dark transition-colors;
+}
+.btn-cta {
+  @apply inline-flex items-center justify-center bg-amber text-white font-semibold px-8 py-4 rounded-lg hover:bg-amber-dark transition-colors focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2;
 }
 .badge {
   @apply inline-flex items-center gap-2 text-sm font-medium rounded-full border px-3 py-1 bg-slate-50 border-slate-200;
