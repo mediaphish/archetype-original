@@ -49,21 +49,12 @@ const renderParagraph = (text, key) => {
 export default function Philosophy() {
   const [activeSection, setActiveSection] = useState('intro');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const sectionRefs = useRef({});
   const contentRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 200;
-      
-      // Calculate scroll progress
-      if (contentRef.current) {
-        const contentHeight = contentRef.current.scrollHeight - window.innerHeight;
-        const scrollTop = window.scrollY;
-        const progress = Math.min((scrollTop / contentHeight) * 100, 100);
-        setScrollProgress(progress);
-      }
 
       // Update active section
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -130,6 +121,21 @@ export default function Philosophy() {
             </a>
           </div>
 
+          {/* Sequential Navigation */}
+          <div className="mb-8 flex items-center justify-between border-b border-warm-border pb-4">
+            <div></div>
+            <a
+              href="/methods"
+              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
+              aria-label="Next page: Methods"
+            >
+              <span className="text-sm">Methods</span>
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
             {/* Anchor Navigation Sidebar */}
             <aside className="lg:w-64 flex-shrink-0">
@@ -148,21 +154,6 @@ export default function Philosophy() {
                   )}
                 </svg>
               </button>
-
-              {/* Scroll Progress Indicator */}
-              <div className="hidden lg:block mb-4">
-                <div className="w-full h-2 bg-warm-border rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-amber transition-all duration-300"
-                    style={{ width: `${scrollProgress}%` }}
-                    role="progressbar"
-                    aria-valuenow={Math.round(scrollProgress)}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    aria-label="Reading progress"
-                  />
-                </div>
-              </div>
 
               {/* Navigation menu */}
               <nav 
