@@ -3,10 +3,15 @@ import SEO from "./components/SEO";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ChatApp from "./app/ChatApp";
-import About from "./components/About";
-import PhilosophySection from "./components/PhilosophySection.jsx";
-import Methods from "./components/Methods";
 import Contact from "./components/Contact";
+import ValueStatement from "./components/ValueStatement";
+import QuickPaths from "./components/QuickPaths";
+import AboutTeaser from "./components/AboutTeaser";
+import PhilosophyTeaser from "./components/PhilosophyTeaser";
+import MethodsTeaser from "./components/MethodsTeaser";
+import ProofBoxPsychology from "./components/ProofBoxPsychology";
+import JournalHighlights from "./components/JournalHighlights";
+import ClosingConfidence from "./components/ClosingConfidence";
 import Journal from "./pages/Journal";
 import AboutPage from "./pages/About";
 // import PhilosophyPage from "./pages/Philosophy";
@@ -100,9 +105,14 @@ export default function App() {
         <Header />
         <Hero />
         <ChatApp />
-        <About />
-        <PhilosophySection />
-        <Methods />
+        <ValueStatement />
+        <QuickPaths />
+        <AboutTeaser />
+        <PhilosophyTeaser />
+        <MethodsTeaser />
+        <ProofBoxPsychology />
+        <JournalHighlights />
+        <ClosingConfidence />
         <Contact />
       </main>
     </>
