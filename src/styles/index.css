@@ -11,7 +11,7 @@
 }
 
 .section {
-  @apply py-16 md:py-24;
+  @apply py-24 md:py-32;
 }
 
 .h1 {
