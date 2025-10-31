@@ -383,7 +383,7 @@ export default function WhatIDo() {
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
                   The goal is always to lead from inside until the right permanent leadership is ready—and then step away knowing they can carry it forward.
                 </p>
-                {renderParagraph('> Leadership isn't about holding power. It's about creating stability long enough for others to rise.', 'fractional-quote')}
+                {renderParagraph("> Leadership isn't about holding power. It's about creating stability long enough for others to rise.", 'fractional-quote')}
               </section>
 
               {/* Section 5 — The Difference */}
