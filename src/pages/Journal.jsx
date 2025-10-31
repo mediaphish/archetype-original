@@ -11,10 +11,15 @@ export default function Journal() {
     fetch('/api/knowledge?type=journal-post')
       .then(response => response.json())
       .then(data => {
-        // Sort by publish date, newest first
-        const sortedPosts = data.docs.sort((a, b) => 
-          new Date(b.publish_date) - new Date(a.publish_date)
+        // Filter to only published posts, then sort by publish date, newest first
+        const publishedPosts = data.docs.filter(post => 
+          post.status === 'published' || post.status === undefined
         );
+        const sortedPosts = publishedPosts.sort((a, b) => {
+          const dateA = new Date(a.publish_date || a.created_at || 0);
+          const dateB = new Date(b.publish_date || b.created_at || 0);
+          return dateB - dateA;
+        });
         setPosts(sortedPosts);
         
         // Extract unique categories
