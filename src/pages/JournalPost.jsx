@@ -104,16 +104,6 @@ export default function JournalPost() {
 
           {/* Post Content */}
           <article className="bg-warm-offWhite rounded-lg shadow-sm border border-warm-border overflow-hidden">
-            {post.image && (
-              <div className="w-full flex justify-center items-center py-6 bg-warm-offWhiteAlt">
-                <img 
-                  src={post.image} 
-                  alt={post.title}
-                  className="max-w-2xl w-full h-auto object-contain"
-                />
-              </div>
-            )}
-            
             <div className="p-6 md:p-8">
               <div className="flex items-center justify-between mb-6">
                 <time className="text-sm text-warm-gray">
@@ -136,14 +126,26 @@ export default function JournalPost() {
                 </div>
               )}
 
+              {/* Post image - show at top if exists */}
+              {post.image && (
+                <div className="mb-8 w-full flex justify-center items-center py-6 bg-warm-offWhiteAlt">
+                  <img 
+                    src={post.image} 
+                    alt={post.title}
+                    className="max-w-2xl w-full h-auto object-contain"
+                  />
+                </div>
+              )}
+
               {/* Post Body */}
               <div 
                 className="prose prose-lg max-w-none"
                 style={{ lineHeight: '1.6' }}
               >
                 {(() => {
-                  // Clean the body - remove title if it appears at the start
+                  // Clean the body - remove title and duplicate image if they appear at the start
                   let bodyText = post.body.trim();
+                  
                   // Remove title if it appears as a heading at the start
                   const titleRegex = new RegExp(`^#+\\s*${post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\n`, 'i');
                   if (titleRegex.test(bodyText)) {
@@ -153,6 +155,13 @@ export default function JournalPost() {
                   const firstLine = bodyText.split('\n')[0].trim();
                   if (firstLine === post.title) {
                     bodyText = bodyText.replace(new RegExp(`^${post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\n?`, 'i'), '');
+                  }
+                  
+                  // Remove image markdown if it matches the post.image metadata
+                  if (post.image) {
+                    const imageSlug = post.image.replace(/^\/images\//, '').replace(/\.(jpg|jpeg|png|webp)$/i, '');
+                    const imagePattern = new RegExp(`^!\\[([^\\]]*)\\]\\([^\\)]*${imageSlug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^\\)]*\\)\\s*\\n?`, 'im');
+                    bodyText = bodyText.replace(imagePattern, '');
                   }
 
                   // Parse markdown into blocks
@@ -260,6 +269,18 @@ export default function JournalPost() {
                         : imagePath.startsWith('images/')
                         ? `/${imagePath}`
                         : imagePath;
+                      
+                      // Skip if this image matches the post.image from metadata (avoid duplication)
+                      // Normalize both paths for comparison - extract just the filename/slug
+                      const extractSlug = (path) => {
+                        return path.split('/').pop().replace(/\.(jpg|jpeg|png|webp)$/i, '').toLowerCase();
+                      };
+                      const bodyImageSlug = extractSlug(fullImagePath);
+                      const postImageSlug = post.image ? extractSlug(post.image) : '';
+                      if (bodyImageSlug === postImageSlug && postImageSlug) {
+                        continue; // Skip this image, it's already shown at top
+                      }
+                      
                       blocks.push({ type: 'image', alt, src: fullImagePath });
                       continue;
                     }
@@ -319,7 +340,7 @@ export default function JournalPost() {
                         return <hr key={index} className="my-8 border-warm-border" />;
                       case 'image':
                         return (
-                          <div key={index} className="my-8 flex justify-center">
+                          <div key={index} className="my-8 flex justify-center py-6 bg-warm-offWhiteAlt">
                             <img 
                               src={block.src} 
                               alt={block.alt || post.title}
