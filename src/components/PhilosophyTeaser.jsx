@@ -12,7 +12,7 @@ export default function PhilosophyTeaser() {
           <div className="mt-6">
             <a 
               href="/philosophy" 
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+              className="inline-flex items-center text-amber hover:text-amber-dark font-medium focus:outline-none focus:ring-2 focus:ring-amber rounded"
             >
               Explore the philosophy →
             </a>

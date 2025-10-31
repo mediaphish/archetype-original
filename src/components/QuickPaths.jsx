@@ -33,11 +33,11 @@ export default function QuickPaths() {
             <a
               key={path.link}
               href={path.link}
-              className="block p-6 bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-shadow focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="block p-6 bg-warm-offWhite border border-warm-border rounded-lg hover:shadow-lg transition-shadow focus:outline-none focus:ring-2 focus:ring-amber hover:border-amber/30"
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">{path.title}</h3>
-              <p className="text-base text-gray-700 mb-4">{path.description}</p>
-              <span className="text-blue-600 hover:text-blue-800 font-medium text-sm">
+              <h3 className="text-lg font-semibold text-warm-charcoal mb-3">{path.title}</h3>
+              <p className="text-base text-warm-gray mb-4">{path.description}</p>
+              <span className="text-amber hover:text-amber-dark font-medium text-sm">
                 Learn more →
               </span>
             </a>

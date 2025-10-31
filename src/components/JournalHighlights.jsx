@@ -57,7 +57,7 @@ export default function JournalHighlights() {
   const jsonLd = generateJSONLD();
 
   return (
-    <section className="section bg-white">
+    <section className="section bg-warm-offWhite">
       {jsonLd && (
         <Helmet>
           <script type="application/ld+json">
@@ -68,21 +68,21 @@ export default function JournalHighlights() {
       
       <div className="container">
         <h2 className="h2">From the Journal</h2>
-        <p className="text-lg text-gray-600 mb-8">
+        <p className="text-lg text-warm-gray mb-8">
           Ongoing notes on leadership, culture, clarity, and the work of rebuilding.
         </p>
 
         {loading ? (
           <div className="text-center py-8">
-            <p className="text-gray-600">Loading journal posts...</p>
+            <p className="text-warm-gray">Loading journal posts...</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-600">More entries coming soon.</p>
+            <p className="text-warm-gray">More entries coming soon.</p>
             <div className="mt-6">
               <a 
                 href="/journal" 
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                className="inline-flex items-center text-amber hover:text-amber-dark font-medium focus:outline-none focus:ring-2 focus:ring-amber rounded"
               >
                 Read the Journal →
               </a>
@@ -94,27 +94,27 @@ export default function JournalHighlights() {
               {posts.map((post) => (
                 <article 
                   key={post.slug} 
-                  className="bg-gray-50 border border-gray-200 rounded-lg p-6 flex flex-col"
+                  className="bg-warm-offWhite border border-warm-border rounded-lg p-6 flex flex-col"
                   aria-label={`Journal post: ${post.title}`}
                 >
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  <h3 className="text-lg font-semibold text-warm-charcoal mb-3">
                     <a 
                       href={`/journal/${post.slug}`}
-                      className="hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                      className="hover:text-amber transition-colors focus:outline-none focus:ring-2 focus:ring-amber rounded"
                     >
                       {post.title}
                     </a>
                   </h3>
-                  <p className="text-base text-gray-700 mb-4 flex-grow line-clamp-3">
+                  <p className="text-base text-warm-gray mb-4 flex-grow line-clamp-3">
                     {post.summary || post.body?.substring(0, 140)}
                   </p>
                   <div className="flex items-center justify-between mt-auto">
-                    <time className="text-sm text-gray-600">
+                    <time className="text-sm text-warm-gray">
                       {formatDate(post.publish_date || post.updated_at)}
                     </time>
                     <a 
                       href={`/journal/${post.slug}`}
-                      className="text-blue-600 hover:text-blue-800 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                      className="text-amber hover:text-amber-dark font-medium text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded"
                     >
                       Read →
                     </a>
@@ -125,7 +125,7 @@ export default function JournalHighlights() {
             <div className="text-center">
               <a 
                 href="/journal" 
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                className="inline-flex items-center text-amber hover:text-amber-dark font-medium focus:outline-none focus:ring-2 focus:ring-amber rounded"
               >
                 Read the Journal →
               </a>

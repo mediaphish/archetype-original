@@ -3,15 +3,15 @@ import React from "react";
 export default function ProofBoxPsychology() {
   return (
     <aside 
-      className="section bg-blue-50 border-l-4 border-blue-600"
+      className="section bg-warm-offWhite border-l-4 border-amber"
       aria-label="Research insights"
     >
       <div className="container">
         <div className="max-w-3xl">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">
+          <h3 className="text-xl font-semibold text-warm-charcoal mb-4">
             The Psychology Behind Clarity, Care, and Leadership
           </h3>
-          <div className="prose prose-lg max-w-none text-gray-700 space-y-4">
+          <div className="prose prose-lg max-w-none text-warm-gray space-y-4">
             <p>
               Modern research has spent years validating something I've witnessed firsthand: when people feel heard and supported, their minds unlock. Psychological safety, trust, and empathy aren't soft skills—they're performance multipliers.
             </p>

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function MethodsTeaser() {
   return (
-    <section className="section bg-white">
+    <section className="section bg-warm-offWhite">
       <div className="container">
         <h2 className="h2 mb-6">Methods</h2>
         <div className="max-w-3xl">
@@ -12,7 +12,7 @@ export default function MethodsTeaser() {
           <div className="mt-6">
             <a 
               href="/methods" 
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+              className="inline-flex items-center text-amber hover:text-amber-dark font-medium focus:outline-none focus:ring-2 focus:ring-amber rounded"
             >
               See how I work →
             </a>
