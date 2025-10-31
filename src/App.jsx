@@ -112,6 +112,7 @@ export default function App() {
               <a
                 href="/what-we-do"
                 className="btn-cta"
+                aria-label="Explore our services"
               >
                 Explore Services
               </a>
