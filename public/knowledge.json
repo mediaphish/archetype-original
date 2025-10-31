@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-10-31T19:13:19.570Z",
+  "generated_at": "2025-10-31T20:20:20.233Z",
   "count": 44,
   "docs": [
     {
@@ -17,8 +17,8 @@
         "operations"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.555Z",
-      "updated_at": "2025-10-31T19:13:19.555Z",
+      "created_at": "2025-10-31T20:20:20.220Z",
+      "updated_at": "2025-10-31T20:20:20.220Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -40,8 +40,8 @@
         "stewardship"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.554Z",
-      "updated_at": "2025-10-31T19:13:19.554Z",
+      "created_at": "2025-10-31T20:20:20.219Z",
+      "updated_at": "2025-10-31T20:20:20.219Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -63,8 +63,8 @@
         "servant-leadership"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.554Z",
-      "updated_at": "2025-10-31T19:13:19.554Z",
+      "created_at": "2025-10-31T20:20:20.219Z",
+      "updated_at": "2025-10-31T20:20:20.219Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -87,8 +87,8 @@
         "leadership"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.554Z",
-      "updated_at": "2025-10-31T19:13:19.554Z",
+      "created_at": "2025-10-31T20:20:20.219Z",
+      "updated_at": "2025-10-31T20:20:20.219Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -109,8 +109,8 @@
         "systems"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.553Z",
-      "updated_at": "2025-10-31T19:13:19.553Z",
+      "created_at": "2025-10-31T20:20:20.218Z",
+      "updated_at": "2025-10-31T20:20:20.218Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -130,8 +130,8 @@
         "servant-leadership"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.552Z",
-      "updated_at": "2025-10-31T19:13:19.552Z",
+      "created_at": "2025-10-31T20:20:20.217Z",
+      "updated_at": "2025-10-31T20:20:20.217Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -151,8 +151,8 @@
         "servant-leadership"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.552Z",
-      "updated_at": "2025-10-31T19:13:19.552Z",
+      "created_at": "2025-10-31T20:20:20.217Z",
+      "updated_at": "2025-10-31T20:20:20.217Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -170,8 +170,8 @@
         "ownership"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.551Z",
-      "updated_at": "2025-10-31T19:13:19.551Z",
+      "created_at": "2025-10-31T20:20:20.216Z",
+      "updated_at": "2025-10-31T20:20:20.216Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -190,8 +190,8 @@
         "moral-authority"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.551Z",
-      "updated_at": "2025-10-31T19:13:19.551Z",
+      "created_at": "2025-10-31T20:20:20.216Z",
+      "updated_at": "2025-10-31T20:20:20.216Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -210,8 +210,8 @@
         "retention"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.551Z",
-      "updated_at": "2025-10-31T19:13:19.551Z",
+      "created_at": "2025-10-31T20:20:20.216Z",
+      "updated_at": "2025-10-31T20:20:20.216Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -230,8 +230,8 @@
         "decision-rights"
       ],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.550Z",
-      "updated_at": "2025-10-31T19:13:19.550Z",
+      "created_at": "2025-10-31T20:20:20.215Z",
+      "updated_at": "2025-10-31T20:20:20.215Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -245,8 +245,8 @@
       "type": "article",
       "tags": [],
       "status": "draft",
-      "created_at": "2025-10-31T19:13:19.544Z",
-      "updated_at": "2025-10-31T19:13:19.544Z",
+      "created_at": "2025-10-31T20:20:20.209Z",
+      "updated_at": "2025-10-31T20:20:20.209Z",
       "summary": "",
       "source": {
         "kind": "internal"
@@ -260,10 +260,7 @@
       "title": "The Cost of Calm",
       "slug": "the-cost-of-calm",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "social-migration",
         "leadership",
@@ -423,10 +420,7 @@
       "title": "I’ve spent some time purposely not writing.",
       "slug": "ive-spent-some-time-purposely-not-writing",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -453,10 +447,7 @@
       "title": "Leadership bottlenecks will choke the life out of a business.",
       "slug": "leadership-bottlenecks-will-choke-the-life-out-of-a-business",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -483,10 +474,7 @@
       "title": "Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 1)",
       "slug": "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-1",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -516,10 +504,7 @@
       "title": "Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 2)",
       "slug": "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -549,10 +534,7 @@
       "title": "Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 3)",
       "slug": "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -582,10 +564,7 @@
       "title": "Leadership isn’t a scoreboard.",
       "slug": "leadership-isnt-a-scoreboard",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "social-migration",
         "leadership",
@@ -611,10 +590,7 @@
       "title": "Leadership, Shoes, and Melted Feet",
       "slug": "leadership-shoes-and-melted-feet",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -641,10 +617,7 @@
       "title": "LONE WOLVES DIE YOUNG",
       "slug": "lone-wolves-die-young",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -671,10 +644,7 @@
       "title": "Most people hear. Few actually listen.",
       "slug": "most-people-hear-few-actually-listen",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -701,10 +671,7 @@
       "title": "Stop Turning Your Team Into Opponents",
       "slug": "stop-turning-your-team-into-opponents",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "social-migration",
         "leadership",
@@ -730,10 +697,7 @@
       "title": "Teams Are Not Wells",
       "slug": "teams-are-not-wells",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -761,8 +725,6 @@
       "slug": "the-pendulum-of-leadership-efficiency-vs-empathy",
       "type": "journal-post",
       "tags": [
-        "journal",
-        "blog",
         "social-migration",
         "leadership",
         "business"
@@ -791,10 +753,7 @@
       "title": "The Producer-Leader Paradox",
       "slug": "the-producer-leader-paradox",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "social-migration",
         "leadership",
@@ -820,10 +779,7 @@
       "title": "The Pursuit of Power Corrupts",
       "slug": "the-pursuit-of-power-corrupts",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "social-migration",
         "leadership",
@@ -849,10 +805,7 @@
       "title": "We’ve Lost the Plot on Leadership.",
       "slug": "weve-lost-the-plot-on-leadership",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
@@ -879,10 +832,7 @@
       "title": "What are your values as a business leader?",
       "slug": "what-are-your-values-as-a-business-leader",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "social-migration",
         "leadership",
@@ -908,10 +858,7 @@
       "title": "When Leaders Refuse to Change: The Enron Lesson",
       "slug": "when-leaders-refuse-to-change-the-enron-lesson",
       "type": "journal-post",
-      "tags": [
-        "journal",
-        "blog"
-      ],
+      "tags": [],
       "categories": [
         "journal",
         "social-migration",
