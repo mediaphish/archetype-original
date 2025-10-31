@@ -146,8 +146,19 @@ export default function JournalPost() {
                   // Clean the body - remove title and duplicate image if they appear
                   let bodyText = post.body.trim();
                   
-                  // Normalize title for comparison (trim, lowercase)
-                  const titleNormalized = post.title.trim().toLowerCase();
+                  // Helper function to normalize strings for comparison
+                  // Removes all punctuation, normalizes whitespace, converts to lowercase
+                  const normalizeForComparison = (str) => {
+                    return str
+                      .toLowerCase()
+                      .trim()
+                      .replace(/['"'"''""]/g, "'") // Normalize all quote types to standard apostrophe
+                      .replace(/[^\w\s]/g, '') // Remove all punctuation
+                      .replace(/\s+/g, ' ') // Normalize whitespace
+                      .trim();
+                  };
+                  
+                  const titleNormalized = normalizeForComparison(post.title);
                   
                   // Split into lines for line-by-line processing
                   const lines = bodyText.split('\n');
@@ -163,32 +174,21 @@ export default function JournalPost() {
                       continue;
                     }
                     
-                    // Remove title as heading with any number of # characters
-                    // Match patterns like: # Title, ## Title, ### Title, etc.
+                    // Check if this line is a heading that matches the title
                     const headingMatch = trimmedLine.match(/^(#+)\s*(.+)$/);
                     if (headingMatch) {
                       const headingContent = headingMatch[2].trim();
-                      // Normalize and compare (remove trailing punctuation for comparison)
-                      const headingNormalized = headingContent.toLowerCase();
-                      const titleNormalizedNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
-                      const headingNormalizedNoPunct = headingNormalized.replace(/[.,!?;:]$/, '').trim();
+                      const headingNormalized = normalizeForComparison(headingContent);
                       
-                      // Skip if heading matches title (with or without trailing punctuation)
-                      if (headingNormalized === titleNormalized || 
-                          headingNormalizedNoPunct === titleNormalizedNoPunct) {
+                      // Skip if heading matches title (normalized comparison)
+                      if (headingNormalized === titleNormalized) {
                         continue; // Skip this heading line
                       }
                     }
                     
-                    // Remove title as standalone line (no # prefix)
-                    // Normalize line content (remove trailing punctuation for comparison)
-                    const lineNormalized = trimmedLine.toLowerCase();
-                    const lineNormalizedNoPunct = lineNormalized.replace(/[.,!?;:]$/, '').trim();
-                    const titleNormalizedNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
-                    
-                    // Skip if line exactly matches title (with or without trailing punctuation)
-                    if (lineNormalized === titleNormalized || 
-                        lineNormalizedNoPunct === titleNormalizedNoPunct) {
+                    // Check if this is a standalone line that matches the title
+                    const lineNormalized = normalizeForComparison(trimmedLine);
+                    if (lineNormalized === titleNormalized) {
                       continue; // Skip this line
                     }
                     
@@ -216,8 +216,8 @@ export default function JournalPost() {
                   let inBlockquote = false;
                   let inList = false;
                   
-                  // Track if we've seen the title to prevent duplicate
-                  const titleLower = post.title.toLowerCase();
+                  // Reuse the same normalization function for consistency
+                  const titleNormalizedForParsing = normalizeForComparison(post.title);
 
                   const flushParagraph = () => {
                     if (currentParagraph.length > 0) {
@@ -267,15 +267,11 @@ export default function JournalPost() {
                       flushList();
                       const headingContent = line.replace(/^#+\s+/, '').trim();
                       
-                      // Normalize for comparison (remove trailing punctuation)
-                      const headingNormalized = headingContent.toLowerCase();
-                      const titleNormalized = titleLower.trim();
-                      const headingNoPunct = headingNormalized.replace(/[.,!?;:]$/, '').trim();
-                      const titleNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                      // Use the same normalization for comparison
+                      const headingNormalized = normalizeForComparison(headingContent);
                       
-                      // Skip if heading matches title (with or without trailing punctuation)
-                      if (headingNormalized === titleNormalized || 
-                          headingNoPunct === titleNoPunct) {
+                      // Skip if heading matches title
+                      if (headingNormalized === titleNormalizedForParsing) {
                         continue;
                       }
                       
@@ -372,14 +368,10 @@ export default function JournalPost() {
                     }
 
                     // Regular paragraph - skip if it's just the title
-                    const lineNormalized = line.toLowerCase().trim();
-                    const titleNormalized = titleLower.trim();
-                    const lineNoPunct = lineNormalized.replace(/[.,!?;:]$/, '').trim();
-                    const titleNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                    const lineNormalized = normalizeForComparison(line);
                     
-                    // Skip if line matches title (with or without trailing punctuation)
-                    if (lineNormalized === titleNormalized || 
-                        lineNoPunct === titleNoPunct) {
+                    // Skip if line matches title
+                    if (lineNormalized === titleNormalizedForParsing) {
                       continue; // Skip title lines
                     }
                     // Use original line to preserve spacing
@@ -396,14 +388,10 @@ export default function JournalPost() {
                       case 'h1':
                         // Skip if heading matches the title (already shown at top)
                         const h1Content = block.content.trim();
-                        const h1Normalized = h1Content.toLowerCase();
-                        const titleNormalized = post.title.toLowerCase().trim();
-                        const h1NoPunct = h1Normalized.replace(/[.,!?;:]$/, '').trim();
-                        const titleNoPunct = titleNormalized.replace(/[.,!?;:]$/, '').trim();
+                        const h1Normalized = normalizeForComparison(h1Content);
                         
-                        // Skip if heading matches title (with or without trailing punctuation)
-                        if (h1Normalized === titleNormalized || 
-                            h1NoPunct === titleNoPunct) {
+                        // Skip if heading matches title
+                        if (h1Normalized === titleNormalizedForParsing) {
                           return null;
                         }
                         return <h1 key={index} className="h1 mb-4 mt-8">{h1Content}</h1>;
@@ -448,14 +436,10 @@ export default function JournalPost() {
                           return null;
                         }
                         
-                        const paraNormalized = paraContent.toLowerCase();
-                        const paraTitleNormalized = post.title.toLowerCase().trim();
-                        const paraNoPunct = paraNormalized.replace(/[.,!?;:]$/, '').trim();
-                        const paraTitleNoPunct = paraTitleNormalized.replace(/[.,!?;:]$/, '').trim();
+                        const paraNormalized = normalizeForComparison(paraContent);
                         
-                        // Skip if paragraph matches title (with or without trailing punctuation)
-                        if (paraNormalized === paraTitleNormalized || 
-                            paraNoPunct === paraTitleNoPunct) {
+                        // Skip if paragraph matches title
+                        if (paraNormalized === titleNormalizedForParsing) {
                           return null;
                         }
                         
