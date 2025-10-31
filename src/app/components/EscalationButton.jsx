@@ -109,52 +109,52 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
     // Contact capture screen
     if (collectContact) {
       return (
-        <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
-          <h4 className="text-lg font-medium text-gray-800 mb-3">How can Bart reach you?</h4>
+        <div className="mt-4 p-4 bg-warm-offWhite border border-warm-border rounded-lg">
+          <h4 className="text-lg font-medium text-warm-charcoal mb-3">How can Bart reach you?</h4>
 
           <div className="space-y-3">
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Name *</label>
+              <label className="block text-sm text-warm-gray mb-1">Name *</label>
               <input
                 type="text"
                 value={contact.name}
                 onChange={(e) => setContact(prev => ({ ...prev, name: e.target.value }))}
-                className={`w-full px-3 py-2 text-base border ${contactErrors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:border-gray-500`}
+                className={`w-full px-3 py-2 text-base border ${contactErrors.name ? 'border-red-500' : 'border-warm-border'} rounded-lg focus:outline-none focus:border-amber`}
                 placeholder="Your full name"
               />
               {contactErrors.name && <p className="text-sm text-red-600 mt-1">{contactErrors.name}</p>}
             </div>
 
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Email *</label>
+              <label className="block text-sm text-warm-gray mb-1">Email *</label>
               <input
                 type="email"
                 value={contact.email}
                 onChange={(e) => setContact(prev => ({ ...prev, email: e.target.value }))}
-                className={`w-full px-3 py-2 text-base border ${contactErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:border-gray-500`}
+                className={`w-full px-3 py-2 text-base border ${contactErrors.email ? 'border-red-500' : 'border-warm-border'} rounded-lg focus:outline-none focus:border-amber`}
                 placeholder="you@example.com"
               />
               {contactErrors.email && <p className="text-sm text-red-600 mt-1">{contactErrors.email}</p>}
             </div>
 
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Phone (optional)</label>
+              <label className="block text-sm text-warm-gray mb-1">Phone (optional)</label>
               <input
                 type="tel"
                 value={contact.phone}
                 onChange={(e) => setContact(prev => ({ ...prev, phone: e.target.value }))}
-                className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
+                className="w-full px-3 py-2 text-base border border-warm-border rounded-lg focus:outline-none focus:border-amber"
                 placeholder="(555) 555-5555"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm text-gray-700 mb-1">Preferred contact</label>
+                <label className="block text-sm text-warm-gray mb-1">Preferred contact</label>
                 <select
                   value={contact.preferred_contact}
                   onChange={(e) => setContact(prev => ({ ...prev, preferred_contact: e.target.value }))}
-                  className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
+                  className="w-full px-3 py-2 text-base border border-warm-border rounded-lg focus:outline-none focus:border-amber"
                 >
                   <option value="">No preference</option>
                   <option value="email">Email</option>
@@ -162,12 +162,12 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
                 </select>
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-1">Preferred time</label>
+                <label className="block text-sm text-warm-gray mb-1">Preferred time</label>
                 <input
                   type="text"
                   value={contact.preferred_time}
                   onChange={(e) => setContact(prev => ({ ...prev, preferred_time: e.target.value }))}
-                  className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
+                  className="w-full px-3 py-2 text-base border border-warm-border rounded-lg focus:outline-none focus:border-amber"
                   placeholder="e.g., Afternoons, CST"
                 />
               </div>
@@ -183,7 +183,7 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
 
             <button
               onClick={handleContactContinue}
-              className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 transition-colors rounded-lg"
+              className="w-full bg-amber text-white px-4 py-2 text-base hover:bg-amber-hover transition-colors rounded-lg"
             >
               Continue
             </button>
@@ -195,16 +195,16 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
     // Triage Q&A screen
     const question = TRIAGE_QUESTIONS[currentQuestion];
     return (
-      <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
-        <h4 className="text-lg font-medium text-gray-800 mb-3">
+      <div className="mt-4 p-4 bg-warm-offWhite border border-warm-border rounded-lg">
+        <h4 className="text-lg font-medium text-warm-charcoal mb-3">
           Question {currentQuestion + 1} of {TRIAGE_QUESTIONS.length}
         </h4>
-        <p className="text-base text-gray-700 mb-3">{question.question}</p>
+        <p className="text-base text-warm-gray mb-3">{question.question}</p>
         <div className="space-y-2">
           <input
             type="text"
             placeholder={question.placeholder}
-            className="w-full px-3 py-2 text-base border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
+            className="w-full px-3 py-2 text-base border border-warm-border rounded-lg focus:outline-none focus:border-amber"
             onKeyPress={(e) => {
               if (e.key === 'Enter' && e.target.value.trim()) {
                 handleTriageAnswer(e.target.value);
@@ -232,7 +232,7 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
   const darkHours = isDarkHours();
 
   return (
-    <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-lg">
+    <div className="mt-4 p-4 bg-warm-offWhite border border-warm-border rounded-lg">
       {darkHours && (
         <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">
@@ -243,7 +243,7 @@ export default function EscalationButton({ onEscalate, conversationHistory = [] 
       <button
         onClick={handleStartTriage}
         disabled={isLoading}
-        className="w-full bg-gray-700 text-white px-4 py-2 text-base hover:bg-gray-800 disabled:bg-gray-400 transition-colors rounded-lg"
+        className="w-full bg-amber text-white px-4 py-2 text-base hover:bg-amber-hover disabled:bg-warm-gray transition-colors rounded-lg"
       >
         {isLoading ? 'Processing...' : darkHours ? 'Queue for Bart' : 'Request Live Handoff'}
       </button>
