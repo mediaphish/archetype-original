@@ -17,7 +17,7 @@ import JournalPost from "./pages/JournalPost";
 import AboutPage from "./pages/About";
 import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
-import WhatIDoPage from "./pages/WhatIDo";
+import WhatIDoPage from "./pages/WhatIDo.jsx";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
