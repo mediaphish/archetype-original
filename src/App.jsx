@@ -17,7 +17,7 @@ import JournalPost from "./pages/JournalPost";
 import AboutPage from "./pages/About";
 import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
-import WhatWeDoPage from "./pages/WhatWeDo";
+import WhatIDoPage from "./pages/WhatIDo";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -36,8 +36,8 @@ export default function App() {
         setCurrentPage('philosophy');
       } else if (path === '/methods') {
         setCurrentPage('methods');
-      } else if (path === '/what-we-do') {
-        setCurrentPage('what-we-do');
+      } else if (path === '/what-i-do') {
+        setCurrentPage('what-i-do');
       } else {
         setCurrentPage('home');
       }
@@ -80,12 +80,12 @@ export default function App() {
     );
   }
 
-  // Render What We Do page
-  if (currentPage === 'what-we-do') {
+  // Render What I Do page
+  if (currentPage === 'what-i-do') {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
-        <WhatWeDoPage />
+        <WhatIDoPage />
       </main>
     );
   }
@@ -123,7 +123,7 @@ export default function App() {
           <div className="container">
             <div className="text-center">
               <a
-                href="/what-we-do"
+                href="/what-i-do"
                 className="btn-cta"
                 aria-label="Explore our services"
               >
