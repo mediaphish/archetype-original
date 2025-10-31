@@ -27,7 +27,7 @@ export default function QuickPaths() {
   return (
     <section className="section bg-gray-50">
       <div className="container">
-        <h2 className="sr-only">How We Help</h2>
+        <h2 className="h2 mb-8">What We Do</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {paths.map((path) => (
             <a

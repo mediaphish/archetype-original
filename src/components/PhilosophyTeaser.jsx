@@ -4,7 +4,7 @@ export default function PhilosophyTeaser() {
   return (
     <section className="section bg-gray-50">
       <div className="container">
-        <h2 className="sr-only">Our Philosophy</h2>
+        <h2 className="h2 mb-6">Philosophy</h2>
         <div className="max-w-3xl">
           <p className="p text-lg leading-relaxed">
             Leadership is stewardship. Strategy has to meet character, and culture has to be built with the same intentionality as profit. I help leaders translate values into visible behaviors: clarity over chaos, trust over fear, standards over slogans.
