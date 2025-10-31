@@ -141,50 +141,256 @@ export default function JournalPost() {
                 className="prose prose-lg max-w-none"
                 style={{ lineHeight: '1.6' }}
               >
-                {post.body.split('\n').map((paragraph, index) => {
-                  if (!paragraph.trim()) {
-                    return <br key={index} />;
+                {(() => {
+                  // Clean the body - remove title if it appears at the start
+                  let bodyText = post.body.trim();
+                  // Remove title if it appears as a heading at the start
+                  const titleRegex = new RegExp(`^#+\\s*${post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\n`, 'i');
+                  if (titleRegex.test(bodyText)) {
+                    bodyText = bodyText.replace(titleRegex, '');
                   }
-                  // Check if it's a heading
-                  if (paragraph.startsWith('# ')) {
-                    return <h1 key={index} className="h1 mb-4 mt-6">{paragraph.substring(2)}</h1>;
-                  } else if (paragraph.startsWith('## ')) {
-                    return <h2 key={index} className="h2 mb-3 mt-6">{paragraph.substring(3)}</h2>;
-                  } else if (paragraph.startsWith('### ')) {
-                    return <h3 key={index} className="h3 mb-2 mt-4">{paragraph.substring(4)}</h3>;
-                  } else if (paragraph.startsWith('- ') || paragraph.startsWith('* ')) {
-                    return <li key={index} className="p ml-4" style={{ lineHeight: '1.6' }}>{paragraph.substring(2)}</li>;
+                  // Also check if first line is just the title (without #)
+                  const firstLine = bodyText.split('\n')[0].trim();
+                  if (firstLine === post.title) {
+                    bodyText = bodyText.replace(new RegExp(`^${post.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\n?`, 'i'), '');
                   }
-                  return (
-                    <p key={index} className="p mb-6" style={{ lineHeight: '1.6' }}>
-                      {paragraph}
-                    </p>
-                  );
-                })}
+
+                  // Parse markdown into blocks
+                  const lines = bodyText.split('\n');
+                  const blocks = [];
+                  let currentParagraph = [];
+                  let currentList = [];
+                  let inBlockquote = false;
+                  let inList = false;
+
+                  const flushParagraph = () => {
+                    if (currentParagraph.length > 0) {
+                      const text = currentParagraph.join(' ').trim();
+                      if (text) {
+                        blocks.push({ type: 'paragraph', content: text });
+                      }
+                      currentParagraph = [];
+                    }
+                  };
+
+                  const flushBlockquote = () => {
+                    if (inBlockquote && currentParagraph.length > 0) {
+                      const text = currentParagraph.join(' ').trim();
+                      if (text) {
+                        blocks.push({ type: 'blockquote', content: text });
+                      }
+                      currentParagraph = [];
+                      inBlockquote = false;
+                    }
+                  };
+
+                  const flushList = () => {
+                    if (currentList.length > 0) {
+                      blocks.push({ type: 'ul', items: [...currentList] });
+                      currentList = [];
+                    }
+                  };
+
+                  for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    
+                    // Empty line
+                    if (!line) {
+                      flushParagraph();
+                      flushBlockquote();
+                      flushList();
+                      inList = false;
+                      continue;
+                    }
+
+                    // Heading
+                    if (line.startsWith('# ')) {
+                      flushParagraph();
+                      flushBlockquote();
+                      flushList();
+                      blocks.push({ type: 'h1', content: line.substring(2).trim() });
+                      continue;
+                    } else if (line.startsWith('## ')) {
+                      flushParagraph();
+                      flushBlockquote();
+                      flushList();
+                      blocks.push({ type: 'h2', content: line.substring(3).trim() });
+                      continue;
+                    } else if (line.startsWith('### ')) {
+                      flushParagraph();
+                      flushBlockquote();
+                      flushList();
+                      blocks.push({ type: 'h3', content: line.substring(4).trim() });
+                      continue;
+                    }
+
+                    // Blockquote
+                    if (line.startsWith('> ')) {
+                      flushParagraph();
+                      flushList();
+                      if (!inBlockquote) {
+                        flushBlockquote();
+                        inBlockquote = true;
+                      }
+                      currentParagraph.push(line.substring(2).trim());
+                      continue;
+                    } else if (inBlockquote) {
+                      flushBlockquote();
+                    }
+
+                    // Horizontal rule
+                    if (line === '---' || line === '***') {
+                      flushParagraph();
+                      flushBlockquote();
+                      flushList();
+                      blocks.push({ type: 'hr' });
+                      continue;
+                    }
+
+                    // Image markdown: ![alt](path)
+                    const imageMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+                    if (imageMatch) {
+                      flushParagraph();
+                      flushBlockquote();
+                      flushList();
+                      const [, alt, imagePath] = imageMatch;
+                      // Convert relative paths to absolute
+                      const fullImagePath = imagePath.startsWith('../images/') 
+                        ? imagePath.replace('../images/', '/images/')
+                        : imagePath.startsWith('images/')
+                        ? `/${imagePath}`
+                        : imagePath;
+                      blocks.push({ type: 'image', alt, src: fullImagePath });
+                      continue;
+                    }
+
+                    // List item
+                    if (line.match(/^[-*]\s+/)) {
+                      flushParagraph();
+                      flushBlockquote();
+                      if (!inList) {
+                        flushList();
+                        inList = true;
+                      }
+                      const content = line.replace(/^[-*]\s+/, '');
+                      currentList.push(content);
+                      continue;
+                    } else if (line.match(/^\d+\.\s+/)) {
+                      flushParagraph();
+                      flushBlockquote();
+                      if (!inList) {
+                        flushList();
+                        inList = true;
+                      }
+                      const content = line.replace(/^\d+\.\s+/, '');
+                      currentList.push(content);
+                      continue;
+                    } else if (inList) {
+                      flushList();
+                      inList = false;
+                    }
+
+                    // Regular paragraph
+                    currentParagraph.push(line);
+                  }
+
+                  flushParagraph();
+                  flushBlockquote();
+                  flushList();
+
+                  // Render blocks
+                  return blocks.map((block, index) => {
+                    switch (block.type) {
+                      case 'h1':
+                        return <h1 key={index} className="h1 mb-4 mt-8">{block.content}</h1>;
+                      case 'h2':
+                        return <h2 key={index} className="h2 mb-3 mt-6">{block.content}</h2>;
+                      case 'h3':
+                        return <h3 key={index} className="h3 mb-2 mt-4">{block.content}</h3>;
+                      case 'blockquote':
+                        return (
+                          <blockquote key={index} className="border-l-4 border-amber pl-6 py-4 my-6 bg-warm-offWhiteAlt rounded-r-lg">
+                            <p className="text-xl md:text-2xl font-semibold text-amber italic" style={{ lineHeight: '1.6' }}>
+                              "{block.content}"
+                            </p>
+                          </blockquote>
+                        );
+                      case 'hr':
+                        return <hr key={index} className="my-8 border-warm-border" />;
+                      case 'image':
+                        return (
+                          <div key={index} className="my-8 flex justify-center">
+                            <img 
+                              src={block.src} 
+                              alt={block.alt || post.title}
+                              className="max-w-2xl w-full h-auto object-contain"
+                            />
+                          </div>
+                        );
+                      case 'ul':
+                        return (
+                          <ul key={index} className="list-disc ml-6 mb-6 space-y-2">
+                            {block.items.map((item, itemIndex) => (
+                              <li key={itemIndex} className="p" style={{ lineHeight: '1.6' }}>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        );
+                      case 'paragraph':
+                        // Skip if paragraph matches the title
+                        if (block.content === post.title) {
+                          return null;
+                        }
+                        return (
+                          <p key={index} className="p mb-6" style={{ lineHeight: '1.6' }}>
+                            {block.content}
+                          </p>
+                        );
+                      default:
+                        return null;
+                    }
+                  }).filter(Boolean);
+                })()}
               </div>
 
-              {/* Tags */}
-              {post.tags && post.tags.length > 0 && (
+              {/* Tags - only show if they exist and filter out generic ones */}
+              {post.tags && post.tags.filter(tag => 
+                tag.toLowerCase() !== 'journal' && 
+                tag.toLowerCase() !== 'blog'
+              ).length > 0 && (
                 <div className="mt-8 pt-8 border-t border-warm-border">
                   <div className="flex flex-wrap gap-2">
-                    {post.tags.map(tag => (
-                      <span key={tag} className="px-3 py-1 bg-amber/20 text-amber-dark text-sm rounded-full">
-                        {tag}
-                      </span>
-                    ))}
+                    {post.tags
+                      .filter(tag => tag.toLowerCase() !== 'journal' && tag.toLowerCase() !== 'blog')
+                      .map(tag => (
+                        <span key={tag} className="px-3 py-1 bg-amber/20 text-amber-dark text-sm rounded-full">
+                          {tag}
+                        </span>
+                      ))}
                   </div>
                 </div>
               )}
 
-              {/* Categories */}
-              {post.categories && post.categories.length > 0 && (
+              {/* Categories - only show if they exist and filter out generic ones */}
+              {post.categories && post.categories.filter(category => 
+                category.toLowerCase() !== 'general' &&
+                category.toLowerCase() !== 'journal' &&
+                category.toLowerCase() !== 'blog'
+              ).length > 0 && (
                 <div className="mt-4">
                   <div className="flex flex-wrap gap-2">
-                    {post.categories.map(category => (
-                      <span key={category} className="px-3 py-1 bg-warm-border text-warm-gray text-sm rounded-full">
-                        {category}
-                      </span>
-                    ))}
+                    {post.categories
+                      .filter(category => 
+                        category.toLowerCase() !== 'general' &&
+                        category.toLowerCase() !== 'journal' &&
+                        category.toLowerCase() !== 'blog'
+                      )
+                      .map(category => (
+                        <span key={category} className="px-3 py-1 bg-warm-border text-warm-gray text-sm rounded-full">
+                          {category}
+                        </span>
+                      ))}
                   </div>
                 </div>
               )}
