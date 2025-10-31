@@ -521,9 +521,9 @@ export default function ChatApp() {
 
       {/* Bouncing Down Arrow - Show initially, hide after scrolling past chat */}
       {showAnalogButton && (
-        <div className="fixed right-4 sm:right-8 bottom-4 sm:bottom-8 z-40">
+        <div className="fixed left-4 bottom-20 sm:left-auto sm:right-8 sm:bottom-8 z-40">
           <div 
-            className="bg-amber text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg shadow-lg cursor-pointer hover:bg-amber-dark transition-all duration-300 animate-bounce focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px] flex items-center"
+            className="bg-amber text-white px-2 py-2 sm:px-4 sm:py-2 rounded-lg shadow-lg cursor-pointer hover:bg-amber-dark transition-all duration-300 animate-bounce focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px] flex items-center"
             onClick={() => {
               const aboutSection = document.getElementById('about');
               if (aboutSection) {
@@ -543,9 +543,10 @@ export default function ChatApp() {
               }
             }}
           >
-            <div className="flex items-center space-x-2">
-              <span className="text-xs sm:text-sm font-medium">Analog stuff down here</span>
-              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center space-x-1 sm:space-x-2">
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">Analog stuff down here</span>
+              <span className="text-xs sm:text-sm font-medium sm:hidden">Scroll down</span>
+              <svg className="w-4 h-4 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
             </div>
