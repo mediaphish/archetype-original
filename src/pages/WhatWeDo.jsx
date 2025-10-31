@@ -1,3 +1,13 @@
+/**
+ * Voice Guideline:
+ * {
+ *   "voice_guideline": {
+ *     "default": "first-person singular",
+ *     "exceptions": ["collaboration", "Archetype philosophy"],
+ *     "owner": "Bart Paden"
+ *   }
+ * }
+ */
 import React from 'react';
 import SEO from '../components/SEO';
 
@@ -23,7 +33,7 @@ export default function WhatWeDo() {
           {/* Page content */}
           <article className="bg-warm-offWhite rounded-lg shadow-sm border border-warm-border overflow-hidden">
             <div className="p-8">
-              <h1 className="h1 mb-6">What We Do</h1>
+              <h1 className="h1 mb-6">What I Do</h1>
               
               <div className="space-y-8">
                 <section id="mentorship">
@@ -32,7 +42,7 @@ export default function WhatWeDo() {
                     Individual and executive mentorship designed for growth, resilience, and clarity.
                   </p>
                   <p className="text-lg text-warm-gray mb-4">
-                    We help leaders and teams align purpose with practice across leadership, culture, marketing strategy, startups, software development, AI, and more.
+                    I help leaders and teams align purpose with practice across leadership, culture, marketing strategy, startups, software development, AI, and more.
                   </p>
                   <p className="text-lg text-warm-gray">
                     Thirty-two years of lived experience mean the lessons aren't theoretical—they've been proven under real pressure.
@@ -62,10 +72,10 @@ export default function WhatWeDo() {
                 <section id="fractional">
                   <h2 className="h2 mb-4">Fractional Leadership</h2>
                   <p className="p mb-4">
-                    For organizations needing executive-level guidance without a full-time hire, we offer short- and long-term fractional C-suite leadership.
+                    For organizations needing executive-level guidance without a full-time hire, I offer short- and long-term fractional C-suite leadership.
                   </p>
                   <p className="p">
-                    From operational oversight to culture realignment, we help stabilize growth and set the stage for the next generation of leaders to rise.
+                    From operational oversight to culture realignment, I help stabilize growth and set the stage for the next generation of leaders to rise.
                   </p>
                 </section>
               </div>

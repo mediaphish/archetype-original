@@ -1,3 +1,13 @@
+/**
+ * Voice Guideline:
+ * {
+ *   "voice_guideline": {
+ *     "default": "first-person singular",
+ *     "exceptions": ["collaboration", "Archetype philosophy"],
+ *     "owner": "Bart Paden"
+ *   }
+ * }
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
@@ -164,7 +174,7 @@ export default function About() {
                   I build leaders worth following.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. We didn't have the revenue, so I used my own income to make it work. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
+                  I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
                 </p>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
                   I mentor executives and founders, but I'm just as committed to emerging leaders and students. Strength and humility can live in the same sentence. That's the kind of leader I help build.
@@ -207,7 +217,7 @@ export default function About() {
               <section id="service-before-spotlight" ref={(el) => (sectionRefs.current['service-before-spotlight'] = el)} className="mb-16 scroll-mt-24">
                 <h2 className="h2 mb-6">Community as Culture</h2>
                 <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  At a pivotal moment, we paused billable work to serve our community at scale. That choice didn't polish a brand; it clarified an identity. Leadership isn't a speech—it's a decision you make when no one owes you applause. The lesson stuck: culture is built by what you sacrifice for.
+                  At a pivotal moment, I paused billable work to serve my community at scale. That choice didn't polish a brand; it clarified an identity. Leadership isn't a speech—it's a decision you make when no one owes you applause. The lesson stuck: culture is built by what you sacrifice for.
                 </p>
                 {renderParagraph('> The fastest way to define culture is to choose service when it costs you.', 'service-quote')}
               </section>
@@ -283,7 +293,7 @@ export default function About() {
                   </li>
                   <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
                     <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span><strong className="text-warm-charcoal">Human first.</strong> We treat people the way we want to be treated—especially under pressure.</span>
+                    <span><strong className="text-warm-charcoal">Human first.</strong> I treat people the way I want to be treated—especially under pressure.</span>
                   </li>
                   <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
                     <span className="text-amber mr-3 mt-1 font-bold">•</span>
