@@ -50,7 +50,7 @@ export default function App() {
   // Render About page
   if (currentPage === 'about') {
     return (
-      <main className="bg-white text-black">
+      <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <AboutPage />
       </main>
@@ -70,7 +70,7 @@ export default function App() {
   // Render Methods page
   if (currentPage === 'methods') {
     return (
-      <main className="bg-white text-black">
+      <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <MethodsPage />
       </main>
@@ -80,7 +80,7 @@ export default function App() {
   // Render What We Do page
   if (currentPage === 'what-we-do') {
     return (
-      <main className="bg-white text-black">
+      <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <WhatWeDoPage />
       </main>
@@ -90,7 +90,7 @@ export default function App() {
   // Render Journal page
   if (currentPage === 'journal') {
     return (
-      <main className="bg-white text-black">
+      <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Journal />
       </main>
@@ -101,13 +101,13 @@ export default function App() {
   return (
     <>
       <SEO pageKey="default" />
-      <main className="bg-white text-black">
+      <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Hero />
         <ChatApp />
-        <ValueStatement />
         <QuickPaths />
         <AboutTeaser />
+        <ValueStatement />
         <PhilosophyTeaser />
         <MethodsTeaser />
         <ProofBoxPsychology />
