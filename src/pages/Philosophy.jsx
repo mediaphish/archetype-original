@@ -106,10 +106,10 @@ export default function Philosophy() {
         </script>
       </Helmet>
       
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-20">
+      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
         <div className="max-w-7xl mx-auto px-4">
           {/* Sequential Navigation */}
-          <div className="mb-8 flex items-center justify-between border-b border-warm-border pb-4">
+          <div className="mb-8 flex items-center justify-between border-b border-warm-border pb-4 mt-8">
             <a 
               href="/" 
               className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"

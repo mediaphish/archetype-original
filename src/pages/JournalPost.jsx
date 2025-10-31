@@ -87,10 +87,10 @@ export default function JournalPost() {
         <meta name="description" content={post.summary || post.title} />
       </Helmet>
       
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-20">
+      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
         <div className="max-w-4xl mx-auto px-4">
           {/* Back button */}
-          <div className="mb-8">
+          <div className="mb-8 mt-8">
             <a 
               href="/journal" 
               className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
