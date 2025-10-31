@@ -4,6 +4,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        warm: {
+          offWhite: "#FAFAF9",
+          charcoal: "#1C1917",
+          gray: "#78716C",
+          border: "#E7E5E4",
+          dark: "#292524"
+        },
+        amber: {
+          DEFAULT: "#F59E0B",
+          hover: "#FCD34D",
+          dark: "#B45309"
+        },
         brand: {
           900: "#0C1117",
           800: "#111827",
@@ -16,7 +28,7 @@ export default {
           100: "#E2E8F0"
         },
         accent: {
-          500: "#0EA5E9"
+          500: "#F59E0B"
         }
       },
       boxShadow: {
