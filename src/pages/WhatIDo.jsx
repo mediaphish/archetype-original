@@ -44,7 +44,6 @@ const renderParagraph = (text, key) => {
 export default function WhatIDo() {
   const [activeSection, setActiveSection] = useState('intro');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isNavVisible] = useState(true);
   const sectionRefs = useRef({});
   const clickedSectionRef = useRef(null);
 
@@ -78,13 +77,6 @@ export default function WhatIDo() {
     return () => {
       observer.disconnect();
     };
-  }, []);
-
-  // Scroll direction tracking for nav visibility (optional - can be removed if not desired)
-  // Disabled by default - navigation stays visible
-  useEffect(() => {
-    // Navigation stays visible - no hide/show behavior
-    setIsNavVisible(true);
   }, []);
 
   const scrollToSection = (id, event) => {
