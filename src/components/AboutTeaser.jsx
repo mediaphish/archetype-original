@@ -118,13 +118,15 @@ export default function AboutTeaser() {
             <div className="flex flex-col sm:flex-row gap-4 mt-8">
               <a 
                 href="/about" 
-                className="inline-flex items-center justify-center px-6 py-3 text-amber hover:text-amber-dark font-medium border-2 border-amber rounded-lg focus:outline-none focus:ring-2 focus:ring-amber transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 min-h-[44px] text-amber hover:text-amber-dark font-medium border-2 border-amber rounded-lg focus:outline-none focus:ring-2 focus:ring-amber transition-all duration-300"
+                aria-label="Read Bart's full story"
               >
                 Read the full story →
               </a>
               <a
                 href="#contact"
                 className="btn-cta text-center"
+                aria-label="Start a conversation with Bart"
               >
                 Start a Conversation
               </a>

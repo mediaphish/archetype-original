@@ -82,7 +82,8 @@ export default function JournalHighlights() {
             <div className="mt-6">
               <a 
                 href="/journal" 
-                className="inline-flex items-center text-amber hover:text-amber-dark font-medium focus:outline-none focus:ring-2 focus:ring-amber rounded"
+                className="inline-flex items-center text-amber hover:text-amber-dark font-medium min-h-[44px] px-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded"
+                aria-label="View all journal posts"
               >
                 Read the Journal →
               </a>
@@ -100,7 +101,8 @@ export default function JournalHighlights() {
                   <h3 className="h3 mb-3">
                     <a 
                       href={`/journal/${post.slug}`}
-                      className="hover:text-amber transition-colors focus:outline-none focus:ring-2 focus:ring-amber rounded"
+                      className="hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded"
+                      aria-label={`Read journal post: ${post.title}`}
                     >
                       {post.title}
                     </a>
@@ -112,9 +114,10 @@ export default function JournalHighlights() {
                     <time className="text-sm text-warm-gray">
                       {formatDate(post.publish_date || post.updated_at)}
                     </time>
-                    <a 
+                    <a
                       href={`/journal/${post.slug}`}
-                      className="text-amber hover:text-amber-dark font-medium text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded"
+                      className="text-amber hover:text-amber-dark font-medium text-sm min-h-[44px] flex items-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2"
+                      aria-label={`Read full article: ${post.title}`}
                     >
                       Read →
                     </a>
@@ -125,7 +128,8 @@ export default function JournalHighlights() {
             <div className="text-center">
               <a 
                 href="/journal" 
-                className="inline-flex items-center text-amber hover:text-amber-dark font-medium focus:outline-none focus:ring-2 focus:ring-amber rounded"
+                className="inline-flex items-center text-amber hover:text-amber-dark font-medium min-h-[44px] px-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded"
+                aria-label="View all journal posts"
               >
                 Read the Journal →
               </a>

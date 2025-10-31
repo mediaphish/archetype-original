@@ -25,7 +25,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo - Responsive */}
           <div className="flex-shrink-0">
-            <a href="/" className="hover:opacity-80 transition-opacity">
+            <a href="/" className="hover:opacity-80 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded p-1" aria-label="Archetype Original Home">
               <svg className="h-6 w-auto sm:h-8" viewBox="0 0 440.3 480.05" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <style>
@@ -39,11 +39,11 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <a href="/about" className="text-warm-charcoal hover:text-amber transition-colors text-sm">About</a>
-            <a href="/what-we-do" className="text-warm-charcoal hover:text-amber transition-colors text-sm">What We Do</a>
-            <a href="/philosophy" className="text-warm-charcoal hover:text-amber transition-colors text-sm">Philosophy</a>
-            <a href="/methods" className="text-warm-charcoal hover:text-amber transition-colors text-sm">Methods</a>
-            <a href="/journal" className="text-warm-charcoal hover:text-amber transition-colors text-sm">Journal</a>
+            <a href="/about" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">About</a>
+            <a href="/what-we-do" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">What We Do</a>
+            <a href="/philosophy" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">Philosophy</a>
+            <a href="/methods" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">Methods</a>
+            <a href="/journal" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1">Journal</a>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -66,11 +66,11 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-warm-border">
             <nav className="flex flex-col space-y-3 pt-4">
-              <a href="/about" className="text-warm-charcoal hover:text-amber transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-              <a href="/what-we-do" className="text-warm-charcoal hover:text-amber transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>What We Do</a>
-              <a href="/philosophy" className="text-warm-charcoal hover:text-amber transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Philosophy</a>
-              <a href="/methods" className="text-warm-charcoal hover:text-amber transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Methods</a>
-              <a href="/journal" className="text-warm-charcoal hover:text-amber transition-colors text-sm py-2" onClick={() => setIsMobileMenuOpen(false)}>Journal</a>
+              <a href="/about" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>About</a>
+              <a href="/what-we-do" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>What We Do</a>
+              <a href="/philosophy" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>Philosophy</a>
+              <a href="/methods" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>Methods</a>
+              <a href="/journal" className="text-warm-charcoal hover:text-amber transition-all duration-300 text-sm py-3 min-h-[44px] flex items-center focus:outline-none focus:ring-2 focus:ring-amber rounded px-2" onClick={() => setIsMobileMenuOpen(false)}>Journal</a>
             </nav>
           </div>
         )}

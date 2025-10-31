@@ -43,7 +43,12 @@ export default function Contact() {
               onChange={(e) => setState(s => ({ ...s, message: e.target.value }))}></textarea>
           </div>
           <div className="flex items-center gap-3">
-            <button disabled={status.loading} className="btn btn-primary" type="submit">
+            <button 
+              disabled={status.loading} 
+              className="btn btn-primary min-h-[44px] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2" 
+              type="submit"
+              aria-label={status.loading ? "Sending message" : "Send message"}
+            >
               {status.loading ? "Sending…" : "Send"}
             </button>
             {status.ok === true && <span className="text-green-600 text-sm">{status.msg}</span>}
