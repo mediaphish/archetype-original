@@ -21,23 +21,23 @@
   @apply text-2xl md:text-3xl font-semibold tracking-tight;
 }
 .p {
-  @apply text-base md:text-lg text-slate-600 leading-relaxed;
+  @apply text-base md:text-lg text-warm-gray leading-relaxed;
 }
 
 .card {
-  @apply rounded-2xl shadow-soft bg-white border border-slate-200;
+  @apply rounded-2xl shadow-soft bg-warm-offWhite border border-warm-border;
 }
 .btn {
-  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold border border-slate-300 hover:border-slate-400 transition;
+  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold border border-warm-border hover:border-amber transition;
 }
 .btn-primary {
-  @apply bg-black text-white border-black hover:opacity-90;
+  @apply bg-amber text-white border-amber hover:bg-amber-hover;
 }
 .badge {
   @apply inline-flex items-center gap-2 text-sm font-medium rounded-full border px-3 py-1 bg-slate-50 border-slate-200;
 }
 .input, .textarea {
-  @apply w-full rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition bg-white;
+  @apply w-full rounded-xl border border-warm-border focus:outline-none focus:ring-2 focus:ring-amber focus:border-amber transition bg-warm-offWhite;
 }
 .input { @apply px-3 py-2; }
 .textarea { @apply px-3 py-2 min-h-[140px]; }
