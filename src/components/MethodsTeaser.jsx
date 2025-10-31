@@ -2,7 +2,7 @@ import React from "react";
 
 export default function MethodsTeaser() {
   return (
-    <section className="section bg-warm-offWhite">
+    <section className="section bg-warm-offWhiteAlt">
       <div className="container">
         <h2 className="h2 mb-6">Methods</h2>
         <div className="max-w-3xl">

@@ -23,7 +23,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="section bg-slate-50">
+    <section id="contact" className="section bg-warm-offWhiteAlt">
       <div className="container">
         <h2 className="h2">Contact</h2>
         <form onSubmit={submit} className="card p-6 mt-6 grid gap-4 max-w-2xl">

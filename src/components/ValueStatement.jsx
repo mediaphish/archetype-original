@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ValueStatement() {
   return (
-    <section className="section bg-warm-offWhite">
+    <section className="section bg-warm-offWhiteAlt">
       <div className="container">
         <h2 className="h2">Help for leaders who need real clarity, not another program.</h2>
         <div className="max-w-3xl">

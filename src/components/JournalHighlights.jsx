@@ -57,7 +57,7 @@ export default function JournalHighlights() {
   const jsonLd = generateJSONLD();
 
   return (
-    <section className="section bg-warm-offWhite">
+    <section className="section bg-warm-offWhiteAlt">
       {jsonLd && (
         <Helmet>
           <script type="application/ld+json">

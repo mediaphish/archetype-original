@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ClosingConfidence() {
   return (
-    <section className="section bg-gray-50">
+    <section className="section bg-warm-offWhiteAlt">
       <div className="container">
         <div className="max-w-3xl">
           <h2 className="h2 mb-4">

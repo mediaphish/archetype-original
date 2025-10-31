@@ -2,7 +2,7 @@ import React from "react";
 
 export default function PhilosophyTeaser() {
   return (
-    <section className="section bg-gray-50">
+    <section className="section bg-warm-offWhite">
       <div className="container">
         <h2 className="h2 mb-6">Philosophy</h2>
         <div className="max-w-3xl">
