@@ -132,6 +132,11 @@ export default function Journal() {
                     <a 
                       href={`/journal/${post.slug}`}
                       className="hover:text-amber transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.history.pushState({}, '', `/journal/${post.slug}`);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
                     >
                       {post.title}
                     </a>
@@ -153,6 +158,11 @@ export default function Journal() {
                     <a 
                       href={`/journal/${post.slug}`}
                       className="text-amber hover:text-amber-dark font-medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.history.pushState({}, '', `/journal/${post.slug}`);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
                     >
                       Read more →
                     </a>
