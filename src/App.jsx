@@ -6,7 +6,6 @@ import ChatApp from "./app/ChatApp";
 import Contact from "./components/Contact";
 import ValueStatement from "./components/ValueStatement";
 import QuickPaths from "./components/QuickPaths";
-import ALIHeroBox from "./components/ALIHeroBox";
 import AboutTeaser from "./components/AboutTeaser";
 import PhilosophyTeaser from "./components/PhilosophyTeaser";
 import MethodsTeaser from "./components/MethodsTeaser";
@@ -158,7 +157,20 @@ export default function App() {
         <Header />
         <Hero />
         <ChatApp />
-        <ALIHeroBox />
+        {/* Hero CTA Section */}
+        <section className="py-8 md:py-12 bg-warm-offWhite">
+          <div className="container">
+            <div className="text-center">
+              <a
+                href="/what-i-do"
+                className="btn-cta"
+                aria-label="Explore our services"
+              >
+                Explore Services
+              </a>
+            </div>
+          </div>
+        </section>
         <QuickPaths />
         <AboutTeaser />
         <ValueStatement />
