@@ -18,6 +18,9 @@ import AboutPage from "./pages/About";
 import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
+import ALI from "./pages/ALI";
+import ALIApply from "./pages/ALIApply";
+import ALIThanks from "./pages/ALIThanks";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -38,6 +41,12 @@ export default function App() {
         setCurrentPage('methods');
       } else if (path === '/what-i-do') {
         setCurrentPage('what-i-do');
+      } else if (path === '/ali') {
+        setCurrentPage('ali');
+      } else if (path === '/ali/apply') {
+        setCurrentPage('ali-apply');
+      } else if (path === '/ali/thanks') {
+        setCurrentPage('ali-thanks');
       } else {
         setCurrentPage('home');
       }
@@ -106,6 +115,36 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Journal />
+      </main>
+    );
+  }
+
+  // Render ALI landing page
+  if (currentPage === 'ali') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ALI />
+      </main>
+    );
+  }
+
+  // Render ALI apply page
+  if (currentPage === 'ali-apply') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ALIApply />
+      </main>
+    );
+  }
+
+  // Render ALI thanks page
+  if (currentPage === 'ali-thanks') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ALIThanks />
       </main>
     );
   }
