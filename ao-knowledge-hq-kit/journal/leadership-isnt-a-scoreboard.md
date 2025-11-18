@@ -5,7 +5,7 @@ publish_date: "2025-05-29"
 created_at: "2025-05-29"
 updated_at: "2025-10-28"
 summary: "This post reminds leaders that their team's success is not competition but confirmation of great leadership—celebrating growth, shared wins, and lasting culture."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["social-migration", "leadership", "business"]
 featured_image: "../images/leadership-isnt-a-scoreboard.jpg"
 takeaways: []
 applications: []

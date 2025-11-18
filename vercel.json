@@ -4,13 +4,16 @@
     { "src": "api/chat.js", "use": "@vercel/node" },
     { "src": "api/contact.js", "use": "@vercel/node" },
     { "src": "api/handoff.js", "use": "@vercel/node" },
-    { "src": "api/knowledge/index.js", "use": "@vercel/node" }
+    { "src": "api/knowledge/index.js", "use": "@vercel/node" },
+    { "src": "api/ali/apply.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/api/contact", "dest": "/api/contact.js" },
     { "src": "/api/handoff", "dest": "/api/handoff.js" },
     { "src": "/api/knowledge", "dest": "/api/knowledge/index.js" },
+    { "src": "/api/ali/apply", "dest": "/api/ali/apply.js" },
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

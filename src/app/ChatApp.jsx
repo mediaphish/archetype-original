@@ -192,7 +192,17 @@ export default function ChatApp() {
       setMessages(prev => [...prev, assistantMessage]);
 
       if (data.shouldEscalate) {
-        setShowEscalation(true);
+        // Empathetic prompt with two clear options
+        const escalatePrompt = {
+          text: "Looks like you may need to talk with Bart directly. We can do that. Here are two options:",
+          isUser: false,
+          showButtons: true,
+          buttonOptions: [
+            { text: 'Send an Email', value: 'handoff_email' },
+            { text: 'Schedule a 1-on-1 meeting', value: 'handoff_schedule' }
+          ]
+        };
+        setMessages(prev => [...prev, escalatePrompt]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -229,6 +239,12 @@ export default function ChatApp() {
     } else if (value === 'contact_direct') {
       // Contact Bart directly
       window.open('https://calendly.com/bartpaden', '_blank');
+    } else if (value === 'handoff_email') {
+      // Start the handoff triage/contact flow in-app
+      setShowEscalation(true);
+    } else if (value === 'handoff_schedule') {
+      // Open Bart's Calendly directly (provided link)
+      window.open('https://calendly.com/bartpaden/1-on-1-mentorships', '_blank');
     } else if (value.startsWith('calendly_')) {
       // Handle Calendly links
       const calendlyUrl = process.env.REACT_APP_CALENDLY_URL || 'https://calendly.com/bartpaden';
@@ -391,11 +407,20 @@ export default function ChatApp() {
 
       const data = await response.json();
 
-      const handoffMessage = {
-        text: data.message || 'Your handoff request has been submitted. We\'ll be in touch soon!',
-        isUser: false
-      };
-      setMessages(prev => [...prev, handoffMessage]);
+      const blocks = [];
+      blocks.push({ text: data.message || 'Your handoff request has been submitted. We\'ll be in touch soon!', isUser: false });
+      if (data.calendlyUrl) {
+        blocks.push({
+          text: 'You can also schedule time with Bart now:',
+          isUser: false,
+          showButtons: true,
+          buttonOptions: [
+            { text: 'Schedule a 1-on-1 meeting', value: 'handoff_schedule' }
+          ]
+        });
+      }
+
+      setMessages(prev => [...prev, ...blocks]);
       setShowEscalation(false);
     } catch (error) {
       console.error('Error submitting handoff:', error);
@@ -422,7 +447,7 @@ export default function ChatApp() {
   };
 
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col bg-white relative chat-container">
+    <div className="h-[calc(100vh-200px)] flex flex-col bg-warm-offWhite relative chat-container">
       <div className="flex-1 flex flex-col w-full sm:w-[70vw] mx-auto px-4 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
@@ -441,14 +466,14 @@ export default function ChatApp() {
               {/* Loading indicator */}
               {isLoading && (
                 <div className="flex justify-start mb-4">
-                  <div className="bg-gray-100 rounded-lg px-4 py-3 max-w-xs">
+                  <div className="bg-warm-offWhiteAlt rounded-lg px-4 py-3 max-w-xs border border-warm-border">
                     <div className="flex items-center space-x-2">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                       </div>
-                      <span className="text-sm text-gray-600">Archy is thinking...</span>
+                      <span className="text-sm text-warm-gray">Archy is thinking...</span>
                     </div>
                   </div>
                 </div>
@@ -460,7 +485,7 @@ export default function ChatApp() {
         </div>
 
         {/* Input Area - Fixed at bottom */}
-        <div className="flex-shrink-0 w-full p-2 sm:p-4 bg-white border-t border-gray-200">
+        <div className="flex-shrink-0 w-full p-2 sm:p-4 bg-warm-offWhite border-t border-warm-border">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
@@ -480,40 +505,65 @@ export default function ChatApp() {
               onFocus={(e) => e.preventDefault()}
               placeholder={isLoading ? "Archy is thinking..." : "Tell me what's going on."}
               disabled={isLoading}
-              className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-base sm:text-lg border border-gray-300 bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-500 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-base sm:text-lg border border-warm-border bg-warm-offWhite text-warm-charcoal placeholder-warm-gray focus:outline-none focus:border-amber focus:ring-2 focus:ring-amber/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || isLoading}
-              className="bg-gray-800 text-white px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg whitespace-nowrap"
+              className="bg-amber text-white px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg hover:bg-amber-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 rounded-lg whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px]"
+              aria-label="Send message"
             >
               {isLoading ? "..." : "Send"}
             </button>
           </form>
         </div>
-      </div>
 
-      {/* Bouncing Down Arrow - Show initially, hide after scrolling past chat */}
-      {showAnalogButton && (
-        <div className="fixed right-4 sm:right-8 bottom-4 sm:bottom-8 z-40">
-          <div 
-            className="bg-gray-800 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-colors animate-bounce"
-            onClick={() => {
-              const aboutSection = document.getElementById('about');
-              if (aboutSection) {
-                aboutSection.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-xs sm:text-sm font-medium">Analog stuff down here</span>
-              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </div>
+        {/* Scroll Down Button - Positioned below chat box */}
+        {showAnalogButton && (
+          <div className="flex-shrink-0 w-full flex justify-center py-3 sm:py-4">
+            <button
+              onClick={() => {
+                const aboutSection = document.getElementById('about');
+                if (aboutSection) {
+                  aboutSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label="Scroll to content below"
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  const aboutSection = document.getElementById('about');
+                  if (aboutSection) {
+                    aboutSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }
+              }}
+              className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 rounded-lg transition-all duration-300 hover:opacity-80"
+            >
+              {/* Mobile: Just bouncing arrow */}
+              <div className="md:hidden">
+                <svg 
+                  className="w-6 h-6 text-amber animate-bounce" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </div>
+              {/* Desktop: Text with arrow */}
+              <div className="hidden md:flex items-center space-x-2 bg-amber text-white px-4 py-2 rounded-lg shadow-lg hover:bg-amber-dark transition-all duration-300">
+                <span className="text-sm font-medium">Analog stuff down here</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </div>
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

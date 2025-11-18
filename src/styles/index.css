@@ -4,6 +4,15 @@
 
 :root {
   color-scheme: light;
+  /* Terracotta color system */
+  --terracotta: #C87B5A;
+  --terracotta-dark: #A85F43;
+  --terracotta-hover: #B4694E;
+  /* Terracotta accent colors */
+  --sienna: #8B4513;
+  --burnt-orange: #CC5500;
+  /* Warm neutrals */
+  --warm-cream: #FFF8F0;
 }
 
 .container {
@@ -11,33 +20,59 @@
 }
 
 .section {
-  @apply py-16 md:py-24;
+  @apply py-24 md:py-32;
 }
 
 .h1 {
-  @apply text-4xl md:text-6xl font-semibold tracking-tight;
+  @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight;
+  line-height: 1.1;
+  color: var(--terracotta);
 }
 .h2 {
-  @apply text-2xl md:text-3xl font-semibold tracking-tight;
+  @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-normal;
+  line-height: 1.2;
+}
+.h3 {
+  @apply text-xl sm:text-2xl md:text-3xl font-semibold tracking-normal;
+  line-height: 1.3;
 }
 .p {
-  @apply text-base md:text-lg text-slate-600 leading-relaxed;
+  @apply text-base md:text-lg text-warm-gray leading-relaxed font-normal;
+  line-height: 1.6;
 }
 
 .card {
-  @apply rounded-2xl shadow-soft bg-white border border-slate-200;
+  @apply rounded-2xl shadow-soft bg-warm-offWhite border border-warm-border;
 }
 .btn {
-  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold border border-slate-300 hover:border-slate-400 transition;
+  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold border border-warm-border hover:border-terracotta transition;
 }
 .btn-primary {
-  @apply bg-black text-white border-black hover:opacity-90;
+  @apply bg-terracotta text-white border-terracotta hover:bg-terracotta-dark transition-colors;
+}
+.btn-cta {
+  @apply inline-flex items-center justify-center bg-terracotta text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 min-h-[44px] rounded-lg hover:bg-terracotta-dark transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terracotta focus:ring-offset-2;
 }
 .badge {
   @apply inline-flex items-center gap-2 text-sm font-medium rounded-full border px-3 py-1 bg-slate-50 border-slate-200;
 }
 .input, .textarea {
-  @apply w-full rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition bg-white;
+  @apply w-full rounded-xl border border-warm-border focus:outline-none focus:ring-2 focus:ring-terracotta focus:border-terracotta transition-all duration-300 bg-warm-offWhite;
+}
+
+/* Global link transitions */
+a:not(.btn):not(.btn-cta):not(.btn-primary) {
+  @apply transition-all duration-300;
+}
+
+/* Ensure sufficient contrast for terracotta text on white - use darker terracotta for better readability */
+.text-terracotta-contrast {
+  color: var(--terracotta-dark); /* terracotta-dark for better contrast on light backgrounds */
+}
+
+/* Smooth scroll offset for anchor links */
+html {
+  scroll-padding-top: 80px;
 }
 .input { @apply px-3 py-2; }
 .textarea { @apply px-3 py-2 min-h-[140px]; }

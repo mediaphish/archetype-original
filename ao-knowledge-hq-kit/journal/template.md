@@ -1,29 +1,64 @@
 ---
-title: "Your Journal Post Title"
-slug: "your-journal-post-slug"
-publish_date: "2025-01-28T00:00:00.000Z"  # Set to future date to schedule
-created_at: "2025-01-27T20:00:00.000Z"
-updated_at: "2025-01-27T20:00:00.000Z"
-summary: "Brief summary of your journal post that will appear in search results"
-categories: ["leadership", "business"]  # Used for filtering on journal page
-tags: ["journal", "leadership", "business", "personal"]
+title: "Post Title Here"
+slug: "post-title-here"
+publish_date: "YYYY-MM-DD"
+created_at: "YYYY-MM-DD"
+updated_at: "YYYY-MM-DD"
+summary: "1–2 sentence summary for social/SEO. Should describe the post’s core idea or hook."
+categories: ["leadership", "business"]
+featured_image: "../images/post-title-here.jpg"
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"  # Optional: where this was originally posted
-original_url: "https://facebook.com/your-post"  # Optional: original URL
+original_source: "Facebook"
+original_url: "https://www.facebook.com/share/p/__________/"
 ---
 
-# Your Journal Post Title
+# Post Title Here
 
-Write your journal post content here. This will be automatically included in the knowledge corpus and made available to Archy.
+![Post Title Here](../images/post-title-here.jpg)
 
-## Key Points
+> Optional quote or epigraph here  
+> — Author / Source
 
-- Point 1
-- Point 2
-- Point 3
+**Intro Paragraph**  
+Set up the topic or tension. Use story, data, or personal insight to draw readers in.
 
-## Conclusion
+---
 
-Wrap up your thoughts here.
+### Section 1 Header
+
+Main idea or story point.  
+Break content into short paragraphs for readability.
+
+---
+
+### Section 2 Header
+
+Further insight, story continuation, or principle development.  
+Use clean transitions between sections.
+
+---
+
+### Section 3 Header (if needed)
+
+Use subheads sparingly — typically 2–5 per article max.  
+They should summarize the idea that follows.
+
+---
+
+**Closing Paragraph**  
+Bring it home. Emphasize the takeaway, insight, or call to action. Keep it human, not promotional.
+
+---
+
+**Optional: Data Reference Block**
+
+1. Source Name (Year). *Report or Study Title.* Publisher.  
+ — Summary of key finding or statistic.
+2. Source Name (Year). *Article Title.* Publisher.  
+ — Brief context or insight.
+
+---
+
+*Originally published on Facebook on [Month Day, Year].*

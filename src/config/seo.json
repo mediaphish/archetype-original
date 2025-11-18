@@ -1,0 +1,38 @@
+{
+  "default": {
+    "siteName": "Archetype Original",
+    "siteUrl": "https://www.archetypeoriginal.com",
+    "titleTemplate": "%s | Archetype Original",
+    "defaultTitle": "Archetype Original — Servant Leadership for Modern Teams",
+    "description": "Archetype Original helps leaders build sustainable organizations through servant leadership, culture clarity, and proven systems for growth.",
+    "keywords": "servant leadership, leadership consulting, business culture, executive mentorship, fractional leadership, Bart Paden",
+    "image": "/og-default.jpg",
+    "twitterHandle": "@archetypeoriginal"
+  },
+  "pages": {
+    "about": {
+      "title": "About Bart | Archetype Original",
+      "description": "Bart Paden mentors executives, founders, emerging leaders, and students—helping them rebuild clarity and culture without dependency.",
+      "keywords": "Bart Paden, servant leadership, executive mentor, leadership consulting, business culture, Archetype Original",
+      "image": "/og-about.jpg"
+    },
+    "philosophy": {
+      "title": "Philosophy | Archetype Original",
+      "description": "The leadership and business philosophy behind Archetype Original: servant leadership, clarity, trust, and stewardship in practice.",
+      "keywords": "leadership philosophy, servant leadership, business culture, leadership principles, Archetype Original",
+      "image": "/og-philosophy.jpg"
+    },
+    "methods": {
+      "title": "Methods | Archetype Original",
+      "description": "How Bart Paden mentors and consults: real conversations, actionable clarity, and leadership growth without dependence.",
+      "keywords": "leadership methods, servant leadership framework, leadership systems, company culture, Archetype Original",
+      "image": "/og-methods.jpg"
+    },
+    "what-i-do": {
+      "title": "What I Do | Archetype Original",
+      "description": "Mentorship, consulting, speaking, and fractional leadership by Bart Paden—real conversations that build clarity and lasting growth.",
+      "keywords": "leadership consulting, executive coaching, workshops, fractional leadership, business mentoring, mentorship, Bart Paden, Archetype Original",
+      "image": "/og-what-i-do.jpg"
+    }
+  }
+}
