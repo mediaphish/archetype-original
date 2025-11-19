@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function ArchetypeFitness() {
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-br from-[#F5E6D3] to-white">
+    <section className="py-32 bg-gradient-to-br from-[#F5E6D3] to-white">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}

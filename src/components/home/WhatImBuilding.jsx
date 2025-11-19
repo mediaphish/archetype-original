@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function WhatImBuilding() {
   return (
-    <section className="py-20 md:py-32 bg-[#F5F5F5]">
+    <section className="py-32 bg-[#F5F5F5]">
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-4">

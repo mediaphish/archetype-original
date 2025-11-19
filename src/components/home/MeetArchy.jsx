@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function MeetArchy() {
   return (
-    <section className="py-20 md:py-32 bg-white">
+    <section className="py-32 bg-white">
       <div className="container mx-auto px-6 md:px-12 max-w-6xl">
         <div className="text-center mb-12">
           <div className="inline-block bg-[#F5E6D3] px-4 py-2 rounded-full mb-6">
