@@ -1,12 +1,7 @@
 /**
  * What I'm Building Section
  * 
- * Purpose: Showcase 3 pillars of work
- * Content: Placeholder text - Bart will fill in real content
- * 
- * Props:
- * - heading: Section heading
- * - introText: Section intro text
+ * v0 Design: Light grey background, white cards in grid
  */
 import React from 'react';
 import PillarCard from './PillarCard';
@@ -38,19 +33,23 @@ export default function WhatImBuilding({
       primaryCtaLabel: "Read Journal",
       primaryCtaHref: "/journal",
       optionalSecondaryLinkLabel: "View Playbooks",
-      optionalSecondaryLinkHref: "/journal"
+      optionalSecondaryLinkHref: "/playbooks"
     }
   ];
 
   return (
-    <section className="section bg-warm-offWhite">
-      <div className="container">
-        <div className="text-center mb-12">
-          <h2 className="h2 mb-6">{heading}</h2>
-          <p className="p text-lg max-w-3xl mx-auto">{introText}</p>
+    <section className="py-20 md:py-32 bg-light-grey">
+      <div className="container max-w-7xl mx-auto px-4">
+        <div className="text-center mb-12 md:mb-20">
+          <h2 className="text-4xl font-bold text-charcoal mb-6">
+            {heading}
+          </h2>
+          <p className="text-lg text-warm-grey leading-relaxed max-w-3xl mx-auto">
+            {introText}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {pillars.map((pillar, index) => (
             <PillarCard
               key={index}
@@ -67,4 +66,3 @@ export default function WhatImBuilding({
     </section>
   );
 }
-

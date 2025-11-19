@@ -4,21 +4,32 @@ export default {
   theme: {
     extend: {
       colors: {
+        // v0 Design System - Archy Orange
+        "archy-orange": "#C85A3C",
         terracotta: {
-          DEFAULT: "#C87B5A",
-          dark: "#A85F43",
-          hover: "#B4694E",
+          DEFAULT: "#C85A3C", // Updated to match v0
+          dark: "#B54A32",
+          hover: "#B54A32",
           sienna: "#8B4513",
           "burnt-orange": "#CC5500"
         },
+        // v0 Design System - Warm Greys
+        charcoal: "#2B2D2F",
+        "warm-grey": "#6B6B6B",
+        "light-grey": "#F5F5F5",
+        cream: {
+          DEFAULT: "#F5E6D3",
+          100: "#F5E6D3",
+          50: "#FAF5F0"
+        },
         warm: {
-          offWhite: "#FAFAF9",
-          offWhiteAlt: "#F5F5F4",
-          charcoal: "#1C1917",
-          gray: "#78716C",
+          offWhite: "#F5F5F5", // Updated to light-grey
+          offWhiteAlt: "#F5E6D3", // Updated to cream
+          charcoal: "#2B2D2F", // Updated to match v0
+          gray: "#6B6B6B", // Updated to warm-grey
           border: "#E7E5E4",
-          dark: "#292524",
-          cream: "#FFF8F0"
+          dark: "#2B2D2F",
+          cream: "#F5E6D3"
         },
         // Legacy amber - keeping for backward compatibility during transition
         amber: {

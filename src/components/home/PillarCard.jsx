@@ -1,14 +1,7 @@
 /**
  * Pillar Card Component
  * 
- * Purpose: Reusable card for "What I'm Building" pillars
- * 
- * Props:
- * - title: Card title
- * - description: Card description
- * - primaryCtaLabel, primaryCtaHref: Primary CTA
- * - optionalSecondaryLinkLabel, optionalSecondaryLinkHref: Optional secondary link
- * - optionalIcon: Optional icon/illustration
+ * v0 Design: Modern card with shadow, hover effects, orange icons
  */
 import React from 'react';
 
@@ -22,18 +15,31 @@ export default function PillarCard({
   optionalIcon = null
 }) {
   return (
-    <div className="bg-warm-offWhiteAlt border border-warm-border rounded-xl p-8 hover:shadow-lg transition-shadow">
+    <div className="card-modern">
+      {/* Icon */}
       {optionalIcon && (
         <div className="mb-6">
-          {optionalIcon}
+          <div className="w-12 h-12 text-archy-orange">
+            {optionalIcon}
+          </div>
         </div>
       )}
-      <h3 className="h3 mb-4">{title}</h3>
-      <p className="p mb-6">{description}</p>
+      
+      {/* Title */}
+      <h3 className="text-2xl font-bold text-charcoal mb-4">
+        {title}
+      </h3>
+      
+      {/* Description */}
+      <p className="text-lg text-warm-grey leading-relaxed mb-6">
+        {description}
+      </p>
+      
+      {/* CTAs */}
       <div className="flex flex-col gap-3">
         <a
           href={primaryCtaHref}
-          className="btn-cta text-center"
+          className="btn-primary text-center"
           aria-label={primaryCtaLabel}
         >
           {primaryCtaLabel}
@@ -41,7 +47,7 @@ export default function PillarCard({
         {optionalSecondaryLinkLabel && optionalSecondaryLinkHref && (
           <a
             href={optionalSecondaryLinkHref}
-            className="text-terracotta hover:text-terracotta-dark text-sm font-medium text-center"
+            className="text-archy-orange hover:text-archy-orange-dark text-sm font-medium text-center transition-colors"
             aria-label={optionalSecondaryLinkLabel}
           >
             {optionalSecondaryLinkLabel} →
@@ -51,4 +57,3 @@ export default function PillarCard({
     </div>
   );
 }
-

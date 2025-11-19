@@ -1,15 +1,7 @@
 /**
  * Archetype Fitness Section
  * 
- * Purpose: Showcase Archetype Fitness story
- * Content: Placeholder text - Bart will fill in real content
- * 
- * Props:
- * - heading: Section heading
- * - paragraph: Body text
- * - imageSlot: Image component for gym/culture
- * - buttonLabel: CTA button label
- * - buttonHref: CTA button link (placeholder for now)
+ * v0 Design: Two-column layout with gradient accent
  */
 import React from 'react';
 
@@ -21,16 +13,20 @@ export default function ArchetypeFitness({
   buttonHref = "#"
 }) {
   return (
-    <section className="section bg-warm-offWhite">
-      <div className="container">
+    <section className="py-20 md:py-32 bg-gradient-to-br from-orange-50 to-cream-100">
+      <div className="container max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left: Text Content */}
-          <div>
-            <h2 className="h2 mb-6">{heading}</h2>
-            <p className="p mb-8">{paragraph}</p>
+          <div className="space-y-6">
+            <h2 className="text-4xl font-bold text-charcoal">
+              {heading}
+            </h2>
+            <p className="text-lg text-warm-grey leading-relaxed">
+              {paragraph}
+            </p>
             <a
               href={buttonHref}
-              className="btn-cta inline-block"
+              className="btn-primary inline-block mt-4"
               aria-label={buttonLabel}
             >
               {buttonLabel}
@@ -40,8 +36,8 @@ export default function ArchetypeFitness({
           {/* Right: Image */}
           <div>
             {imageSlot || (
-              <div className="w-full aspect-square bg-warm-border rounded-lg flex items-center justify-center">
-                <span className="text-warm-gray">Gym/Culture Image Placeholder</span>
+              <div className="w-full aspect-square bg-cream-100 rounded-2xl shadow-lg flex items-center justify-center">
+                <span className="text-warm-grey">Gym/Culture Image Placeholder</span>
               </div>
             )}
           </div>
@@ -50,4 +46,3 @@ export default function ArchetypeFitness({
     </section>
   );
 }
-

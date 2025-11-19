@@ -14,7 +14,7 @@ export default function Contact() {
         body: JSON.stringify(state),
       });
       const data = await res.json();
-      if (res.ok) setStatus({ loading: false, ok: true, msg: "Message sent. I’ll respond soon." });
+      if (res.ok) setStatus({ loading: false, ok: true, msg: "Message sent. I'll respond soon." });
       else setStatus({ loading: false, ok: false, msg: data?.error || "Something went wrong." });
       if (res.ok) setState({ name: "", email: "", message: "" });
     } catch (err) {
@@ -23,29 +23,45 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="section bg-warm-offWhiteAlt">
-      <div className="container">
-        <h2 className="h2">Contact</h2>
-        <form onSubmit={submit} className="card p-6 mt-6 grid gap-4 max-w-2xl">
+    <section id="contact" className="py-20 md:py-32 bg-light-grey">
+      <div className="container max-w-7xl mx-auto px-4">
+        <h2 className="text-4xl font-bold text-charcoal mb-12 text-center">Contact</h2>
+        <form onSubmit={submit} className="card-modern max-w-2xl mx-auto space-y-6">
           <div>
-            <label className="label" htmlFor="name">Name</label>
-            <input id="name" className="input" required value={state.name}
-              onChange={(e) => setState(s => ({ ...s, name: e.target.value }))} />
+            <label className="label text-charcoal" htmlFor="name">Name</label>
+            <input 
+              id="name" 
+              className="w-full rounded-lg border-2 border-gray-200 focus:border-archy-orange focus:outline-none px-4 py-3 transition-colors" 
+              required 
+              value={state.name}
+              onChange={(e) => setState(s => ({ ...s, name: e.target.value }))} 
+            />
           </div>
           <div>
-            <label className="label" htmlFor="email">Email</label>
-            <input id="email" type="email" className="input" required value={state.email}
-              onChange={(e) => setState(s => ({ ...s, email: e.target.value }))} />
+            <label className="label text-charcoal" htmlFor="email">Email</label>
+            <input 
+              id="email" 
+              type="email" 
+              className="w-full rounded-lg border-2 border-gray-200 focus:border-archy-orange focus:outline-none px-4 py-3 transition-colors" 
+              required 
+              value={state.email}
+              onChange={(e) => setState(s => ({ ...s, email: e.target.value }))} 
+            />
           </div>
           <div>
-            <label className="label" htmlFor="message">Message</label>
-            <textarea id="message" className="textarea" required value={state.message}
-              onChange={(e) => setState(s => ({ ...s, message: e.target.value }))}></textarea>
+            <label className="label text-charcoal" htmlFor="message">Message</label>
+            <textarea 
+              id="message" 
+              className="w-full rounded-lg border-2 border-gray-200 focus:border-archy-orange focus:outline-none px-4 py-3 min-h-[140px] transition-colors" 
+              required 
+              value={state.message}
+              onChange={(e) => setState(s => ({ ...s, message: e.target.value }))}
+            ></textarea>
           </div>
           <div className="flex items-center gap-3">
             <button 
               disabled={status.loading} 
-              className="btn btn-primary min-h-[44px] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2" 
+              className="btn-primary min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed" 
               type="submit"
               aria-label={status.loading ? "Sending message" : "Send message"}
             >

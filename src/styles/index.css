@@ -4,15 +4,19 @@
 
 :root {
   color-scheme: light;
-  /* Terracotta color system */
-  --terracotta: #C87B5A;
-  --terracotta-dark: #A85F43;
-  --terracotta-hover: #B4694E;
-  /* Terracotta accent colors */
+  /* v0 Design System Colors */
+  --color-charcoal: #2B2D2F;
+  --color-warm-grey: #6B6B6B;
+  --color-light-grey: #F5F5F5;
+  --color-archy-orange: #C85A3C;
+  --color-cream: #F5E6D3;
+  /* Legacy Terracotta (mapped to Archy Orange) */
+  --terracotta: #C85A3C;
+  --terracotta-dark: #B54A32;
+  --terracotta-hover: #B54A32;
   --sienna: #8B4513;
   --burnt-orange: #CC5500;
-  /* Warm neutrals */
-  --warm-cream: #FFF8F0;
+  --warm-cream: #F5E6D3;
 }
 
 .container {
@@ -77,3 +81,16 @@ html {
 .input { @apply px-3 py-2; }
 .textarea { @apply px-3 py-2 min-h-[140px]; }
 .label { @apply block text-sm font-medium mb-1; }
+
+/* v0 Design System Utility Classes */
+.card-modern {
+  @apply bg-white rounded-2xl shadow-lg p-8 md:p-10 hover:shadow-xl hover:scale-[1.02] transition-all duration-300;
+}
+
+.btn-primary {
+  @apply bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200;
+}
+
+.btn-secondary {
+  @apply bg-transparent text-[#C85A3C] px-6 py-3 rounded-lg font-semibold border-2 border-[#C85A3C] hover:bg-[#C85A3C] hover:text-white transition-all duration-200;
+}
