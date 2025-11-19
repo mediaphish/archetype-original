@@ -1,45 +1,36 @@
 /**
  * Archetype Fitness Section
- * 
- * v0 Design: Two-column layout with gradient accent
+ * v0 Design - EXACT IMPLEMENTATION
  */
 import React from 'react';
 
-export default function ArchetypeFitness({
-  heading = "Archetype Fitness",
-  paragraph = "Body text here",
-  imageSlot = null,
-  buttonLabel = "Learn More",
-  buttonHref = "#"
-}) {
+export default function ArchetypeFitness() {
   return (
-    <section className="py-20 md:py-32 bg-gradient-to-br from-orange-50 to-cream-100">
-      <div className="container max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Left: Text Content */}
-          <div className="space-y-6">
-            <h2 className="text-4xl font-bold text-charcoal">
-              {heading}
-            </h2>
-            <p className="text-lg text-warm-grey leading-relaxed">
-              {paragraph}
-            </p>
-            <a
-              href={buttonHref}
-              className="btn-primary inline-block mt-4"
-              aria-label={buttonLabel}
-            >
-              {buttonLabel}
-            </a>
-          </div>
-
-          {/* Right: Image */}
+    <section className="py-20 md:py-32 bg-gradient-to-br from-[#F5E6D3] to-white">
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
           <div>
-            {imageSlot || (
-              <div className="w-full aspect-square bg-cream-100 rounded-2xl shadow-lg flex items-center justify-center">
-                <span className="text-warm-grey">Gym/Culture Image Placeholder</span>
-              </div>
-            )}
+            <div className="inline-block bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md mb-6">
+              <span className="text-sm font-semibold text-[#C85A3C] uppercase tracking-wide">Physical Culture</span>
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-6">
+              Archetype Fitness
+            </h2>
+            
+            <p className="text-xl leading-relaxed text-[#6B6B6B] mb-8">
+              The gym story that changed everything. How physical culture and leadership culture are built the same way—one intentional choice at a time.
+            </p>
+            
+            <button className="bg-[#C85A3C] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
+              Read the Story
+            </button>
+          </div>
+          
+          {/* Right Image Placeholder */}
+          <div className="bg-[#6B6B6B]/10 rounded-2xl shadow-lg aspect-square flex items-center justify-center">
+            <span className="text-[#6B6B6B] text-lg">Gym/Culture Image Placeholder</span>
           </div>
         </div>
       </div>

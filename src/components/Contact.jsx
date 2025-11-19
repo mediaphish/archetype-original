@@ -1,3 +1,7 @@
+/**
+ * Contact Section
+ * v0 Design - EXACT IMPLEMENTATION
+ */
 import React, { useState } from "react";
 
 export default function Contact() {
@@ -23,54 +27,54 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-20 md:py-32 bg-light-grey">
-      <div className="container max-w-7xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-charcoal mb-12 text-center">Contact</h2>
-        <form onSubmit={submit} className="card-modern max-w-2xl mx-auto space-y-6">
-          <div>
-            <label className="label text-charcoal" htmlFor="name">Name</label>
-            <input 
-              id="name" 
-              className="w-full rounded-lg border-2 border-gray-200 focus:border-archy-orange focus:outline-none px-4 py-3 transition-colors" 
-              required 
-              value={state.name}
-              onChange={(e) => setState(s => ({ ...s, name: e.target.value }))} 
-            />
-          </div>
-          <div>
-            <label className="label text-charcoal" htmlFor="email">Email</label>
-            <input 
-              id="email" 
-              type="email" 
-              className="w-full rounded-lg border-2 border-gray-200 focus:border-archy-orange focus:outline-none px-4 py-3 transition-colors" 
-              required 
-              value={state.email}
-              onChange={(e) => setState(s => ({ ...s, email: e.target.value }))} 
-            />
-          </div>
-          <div>
-            <label className="label text-charcoal" htmlFor="message">Message</label>
-            <textarea 
-              id="message" 
-              className="w-full rounded-lg border-2 border-gray-200 focus:border-archy-orange focus:outline-none px-4 py-3 min-h-[140px] transition-colors" 
-              required 
-              value={state.message}
-              onChange={(e) => setState(s => ({ ...s, message: e.target.value }))}
-            ></textarea>
-          </div>
-          <div className="flex items-center gap-3">
+    <section className="py-20 md:py-32 bg-[#F5F5F5]">
+      <div className="container mx-auto px-6 md:px-12 max-w-2xl">
+        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-8 text-center">
+            Contact
+          </h2>
+          <form onSubmit={submit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-semibold text-[#2B2D2F] mb-2">Name</label>
+              <input 
+                type="text"
+                className="w-full rounded-lg border-2 border-[#E0E0E0] px-4 py-3 text-[#2B2D2F] focus:outline-none focus:border-[#C85A3C] transition-colors duration-200"
+                value={state.name}
+                onChange={(e) => setState(s => ({ ...s, name: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#2B2D2F] mb-2">Email</label>
+              <input 
+                type="email"
+                className="w-full rounded-lg border-2 border-[#E0E0E0] px-4 py-3 text-[#2B2D2F] focus:outline-none focus:border-[#C85A3C] transition-colors duration-200"
+                value={state.email}
+                onChange={(e) => setState(s => ({ ...s, email: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#2B2D2F] mb-2">Message</label>
+              <textarea 
+                rows={6}
+                className="w-full rounded-lg border-2 border-[#E0E0E0] px-4 py-3 text-[#2B2D2F] focus:outline-none focus:border-[#C85A3C] transition-colors duration-200 resize-none"
+                value={state.message}
+                onChange={(e) => setState(s => ({ ...s, message: e.target.value }))}
+                required
+              />
+            </div>
             <button 
-              disabled={status.loading} 
-              className="btn-primary min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed" 
               type="submit"
-              aria-label={status.loading ? "Sending message" : "Send message"}
+              disabled={status.loading}
+              className="w-full bg-[#C85A3C] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50"
             >
               {status.loading ? "Sending…" : "Send"}
             </button>
-            {status.ok === true && <span className="text-green-600 text-sm">{status.msg}</span>}
-            {status.ok === false && <span className="text-red-600 text-sm">{status.msg}</span>}
-          </div>
-        </form>
+            {status.ok === true && <p className="text-green-600 text-sm text-center">{status.msg}</p>}
+            {status.ok === false && <p className="text-red-600 text-sm text-center">{status.msg}</p>}
+          </form>
+        </div>
       </div>
     </section>
   );

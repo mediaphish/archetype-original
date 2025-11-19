@@ -426,11 +426,11 @@ export default function App() {
   return (
     <>
       <SEO pageKey="default" />
-      <main className="bg-light-grey text-charcoal">
+      <main>
         <Header />
         <Hero />
         <HomeHero />
-        <MeetArchy chatApp={<ChatApp />} />
+        <MeetArchy />
         <WhatImBuilding />
         <AntiProjects />
         <ArchetypeFitness />
