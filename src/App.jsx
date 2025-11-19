@@ -154,6 +154,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <AboutPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -164,6 +165,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <PhilosophyPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -174,6 +176,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <MethodsPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -184,6 +187,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <WhatIDoPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -194,6 +198,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <JournalPost />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -204,6 +209,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Journal />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -214,6 +220,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ALI />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -224,6 +231,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ALIApply />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -234,6 +242,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ALIThanks />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -244,6 +253,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ContactPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -254,6 +264,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <MentoringPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -262,6 +273,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Mentoring1on1 />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -270,6 +282,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <TeamCulture />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -278,6 +291,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Workshops />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -286,6 +300,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <SpeakingPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -294,6 +309,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Testimonials />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -302,6 +318,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Consulting />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -310,6 +327,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <SpeakingPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -318,6 +336,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Fractional />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -328,6 +347,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <CultureSciencePage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -336,6 +356,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <AntiProjectsPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -344,6 +365,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ScoreboardLeadership />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -352,6 +374,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <BadLeaderProject />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -360,6 +383,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <IndustryReports />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -368,6 +392,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Ethics />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -376,6 +401,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Research />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -386,6 +412,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ArchyPage />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -394,6 +421,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ArchyHowItWorks />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -402,6 +430,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ArchyCorpus />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -410,6 +439,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ArchyAsk />
+        <FloatingArchyButton />
       </main>
     );
   }
@@ -418,6 +448,7 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <Playbooks />
+        <FloatingArchyButton />
       </main>
     );
   }

@@ -3,11 +3,34 @@
  * 
  * Fixed bottom-right, opens chat overlay with context-aware messaging
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChatApp from '../app/ChatApp';
 
 export default function FloatingArchyButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [context, setContext] = useState('default');
+
+  // Detect current page context from URL
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path === '/' || path === '') {
+      setContext('home');
+    } else if (path.includes('/journal')) {
+      setContext('journal');
+    } else if (path.includes('/mentoring') || path.includes('/consulting') || path.includes('/speaking') || path.includes('/fractional')) {
+      setContext('mentoring');
+    } else if (path.includes('/culture-science') || path.includes('/ali')) {
+      setContext('culture-science');
+    } else if (path.includes('/archy')) {
+      setContext('archy');
+    } else if (path.includes('/philosophy')) {
+      setContext('philosophy');
+    } else if (path.includes('/about')) {
+      setContext('about');
+    } else {
+      setContext('default');
+    }
+  }, []);
 
   return (
     <>
@@ -65,9 +88,9 @@ export default function FloatingArchyButton() {
                 </button>
               </div>
               
-              {/* Chat App - Context-aware for home page */}
+              {/* Chat App - Context-aware based on current page */}
               <div className="flex-1 overflow-hidden">
-                <ChatApp context="home" />
+                <ChatApp context={context} />
               </div>
             </div>
           </div>

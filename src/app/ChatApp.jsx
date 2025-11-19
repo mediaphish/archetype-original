@@ -46,6 +46,18 @@ export default function ChatApp({ context = 'default' }) {
     
     if (context === 'home') {
       greetingText = "Hi, I'm Archy. I see you're exploring the homepage. I'm here to help you understand servant leadership, culture building, and how Bart's 32+ years of experience can help your business. What would you like to know about leadership, culture, or how we can work together?";
+    } else if (context === 'journal') {
+      greetingText = "Hi, I'm Archy. I see you're reading the journal. I can help you dive deeper into any of these leadership topics or answer questions about the ideas Bart shares. What would you like to explore?";
+    } else if (context === 'mentoring') {
+      greetingText = "Hi, I'm Archy. You're looking at our mentoring and consulting services. I can help you understand how Bart works with leaders and teams, what to expect, and whether this might be a good fit for you. What questions do you have?";
+    } else if (context === 'culture-science') {
+      greetingText = "Hi, I'm Archy. You're exploring Culture Science and ALI. I can help explain how we measure culture, what the research shows, and how ALI can help your organization. What would you like to know?";
+    } else if (context === 'archy') {
+      greetingText = "Hi, I'm Archy. You're learning about me! I'm here to help you understand how I work, what I know, and how I can assist you. Feel free to ask me anything about leadership, culture, or Bart's work.";
+    } else if (context === 'philosophy') {
+      greetingText = "Hi, I'm Archy. You're exploring Bart's philosophy on leadership. I can help you understand these principles more deeply and how they apply in practice. What would you like to discuss?";
+    } else if (context === 'about') {
+      greetingText = "Hi, I'm Archy. You're reading about Bart. I can help answer questions about his background, experience, and approach. What would you like to know?";
     } else {
       greetingText = "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.";
     }
