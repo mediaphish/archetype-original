@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
 
-export default function ChatApp() {
+export default function ChatApp({ context = 'default' }) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [showEscalation, setShowEscalation] = useState(false);
@@ -39,16 +39,24 @@ export default function ChatApp() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Show greeting immediately
+  // Show greeting immediately - context-aware
   useEffect(() => {
     setShowGreeting(true);
+    let greetingText;
+    
+    if (context === 'home') {
+      greetingText = "Hi, I'm Archy. I see you're exploring the homepage. I'm here to help you understand servant leadership, culture building, and how Bart's 32+ years of experience can help your business. What would you like to know about leadership, culture, or how we can work together?";
+    } else {
+      greetingText = "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.";
+    }
+    
     const greetingMessage = {
-      text: "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.",
+      text: greetingText,
       isUser: false,
       showButtons: false
     };
     setMessages([greetingMessage]);
-  }, []);
+  }, [context]);
 
   const detectAbuse = (message) => {
     const abusiveKeywords = ['fuck', 'shit', 'damn', 'bitch', 'asshole', 'idiot', 'stupid', 'hate', 'kill', 'die'];

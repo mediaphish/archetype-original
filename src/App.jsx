@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ChatApp from "./app/ChatApp";
 import Contact from "./components/Contact";
+import FloatingArchyButton from "./components/FloatingArchyButton";
 import HomeHero from "./components/home/HomeHero";
 import MeetArchy from "./components/home/MeetArchy";
 import WhatImBuilding from "./components/home/WhatImBuilding";
@@ -433,6 +434,7 @@ export default function App() {
         <AntiProjects />
         <ArchetypeFitness />
         <Contact />
+        <FloatingArchyButton />
       </main>
     </>
   );
