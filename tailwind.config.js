@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Playfair Display', 'serif'],
+        serif: ['Georgia', 'serif'],
       },
       colors: {
         // v0 Design System - Archy Orange
