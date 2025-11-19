@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function HomeHero() {
   return (
-    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-[#F5E6D3] to-white pt-20 pb-32">
+    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-orange-50/50 via-[#F5E6D3] to-white pt-20 pb-32">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
@@ -15,7 +15,7 @@ export default function HomeHero() {
               <span className="text-sm font-semibold text-[#C85A3C]">32+ Years Building Leaders</span>
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-[#2B2D2F] mb-6">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-[#2B2D2F] mb-6 font-serif">
               Leadership That Actually Lasts
             </h1>
             
@@ -24,10 +24,10 @@ export default function HomeHero() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-[#C85A3C] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
+              <button className="bg-[#C85A3C] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
                 Work With Me
               </button>
-              <button className="bg-transparent text-[#C85A3C] px-8 py-4 rounded-lg font-semibold text-lg border-2 border-[#C85A3C] hover:bg-[#C85A3C] hover:text-white transition-all duration-200">
+              <button className="bg-transparent text-[#C85A3C] px-8 py-4 rounded-full font-semibold text-lg border-2 border-[#C85A3C] hover:bg-[#C85A3C] hover:text-white transition-all duration-200">
                 Meet Archy →
               </button>
             </div>

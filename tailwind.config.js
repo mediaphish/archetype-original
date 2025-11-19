@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        serif: ['Playfair Display', 'serif'],
+      },
       colors: {
         // v0 Design System - Archy Orange
         "archy-orange": "#C85A3C",

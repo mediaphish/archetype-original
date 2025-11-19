@@ -428,7 +428,6 @@ export default function App() {
       <SEO pageKey="default" />
       <main>
         <Header />
-        <Hero />
         <HomeHero />
         <MeetArchy />
         <WhatImBuilding />

@@ -6,10 +6,10 @@ import React from 'react';
 
 export default function WhatImBuilding() {
   return (
-    <section className="py-32 bg-[#F5F5F5]">
+    <section className="py-32 bg-gradient-to-b from-orange-50 to-[#F5F5F5]">
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-4 font-serif">
             What I'm Building
           </h2>
           <p className="text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed">
