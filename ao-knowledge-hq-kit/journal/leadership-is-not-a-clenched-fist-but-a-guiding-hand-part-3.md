@@ -5,7 +5,7 @@ publish_date: "2025-09-15"
 created_at: "2025-09-15"
 updated_at: "2025-10-28"
 summary: "Part three reveals the real cost and long-term return of leading with a guiding hand—time, patience, and sacrifice traded for trust, growth, and legacy that lasts."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["power-control", "servant-leadership", "legacy"]
 featured_image: "../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3.jpg"
 takeaways: []
 applications: []

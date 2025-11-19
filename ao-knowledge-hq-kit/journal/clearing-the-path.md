@@ -5,7 +5,7 @@ publish_date: "2025-11-05"
 created_at: "2025-11-03"
 updated_at: "2025-11-03"
 summary: "Servant leadership isn’t about getting people to make your job easier. It’s about making their path clear so they can do the work they were built to do."
-categories: ["leadership", "business"]
+categories: ["servant-leadership", "team-building"]
 featured_image: "../images/clearing-the-path.jpg"
 takeaways: []
 applications: []
@@ -18,10 +18,9 @@ original_url: "https://www.facebook.com/share/p/__________/"
 
 ![Clearing the Path](../images/clearing-the-path.jpg)
 
-> “I don’t push people forward. I clear what’s in their way.”  
+> “I don't push people forward. I clear what's in their way.”  
 > — Archetype Original Journal
 
-**Intro Paragraph**  
 Someone once asked me what kind of leader I try to be.  
 I told them, “I don’t push people forward. I clear what’s in their way.”
 
@@ -56,8 +55,7 @@ They stop protecting themselves and start protecting the mission.
 
 ---
 
-**Closing Paragraph**  
-Leadership isn’t about getting others to build your vision faster.  
+Leadership isn't about getting others to build your vision faster.  
 It’s about building an environment where others can see themselves as part of it.  
 
 That’s what it means to clear the path — not to lead from above, but to walk ahead and make it safe for others to rise.

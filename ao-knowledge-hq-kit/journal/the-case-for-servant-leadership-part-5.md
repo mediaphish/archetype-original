@@ -5,7 +5,7 @@ publish_date: "2025-12-01T10:00:00-06:00"
 created_at: "2025-12-01T10:00:00-06:00"
 updated_at: "2025-10-30"
 summary: "Archetype Original: rebirth from realization—turning proven leadership logic into systems leaders can live out today."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["servant-leadership", "personal-reflection"]
 featured_image: "../images/the-case-for-servant-leadership-part-5.jpg"
 takeaways: []
 applications: []
@@ -16,9 +16,9 @@ original_url: ""
 
 # The Case for Servant Leadership
 
-**Part 5**
+## Part 5
 
-**The Archetype Reborn**
+### The Archetype Reborn
 
 When the research finally confirmed what I’d spent my life believing, it gave me peace—but it also gave me a choice.
 

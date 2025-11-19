@@ -5,7 +5,7 @@ publish_date: "2025-09-02"
 created_at: "2025-09-02"
 updated_at: "2025-10-28"
 summary: "Part two explores what real leadership looks like in action—listening before directing, protecting your people, teaching instead of telling, and leading with consistency through storms."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["power-control", "servant-leadership", "communication"]
 featured_image: "../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2.jpg"
 takeaways: []
 applications: []

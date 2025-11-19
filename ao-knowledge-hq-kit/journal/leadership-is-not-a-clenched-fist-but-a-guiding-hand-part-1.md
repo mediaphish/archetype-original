@@ -5,7 +5,7 @@ publish_date: "2025-09-01"
 created_at: "2025-09-01"
 updated_at: "2025-10-28"
 summary: "Part one introduces the metaphor of the clenched fist versus the guiding hand, contrasting control-based leadership with trust-based leadership rooted in strength, humility, and patience."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["power-control", "servant-leadership", "trust"]
 featured_image: "../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-1.jpg"
 takeaways: []
 applications: []

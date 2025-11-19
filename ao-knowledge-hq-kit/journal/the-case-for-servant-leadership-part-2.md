@@ -5,7 +5,7 @@ publish_date: "2025-11-10T10:00:00-06:00"
 created_at: "2025-11-10T10:00:00-06:00"
 updated_at: "2025-10-30"
 summary: "What the data actually says: neuroscience, engagement, and innovation studies confirm why servant leadership outperforms pressure-based models."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["servant-leadership", "neuroscience", "data-research"]
 featured_image: "../images/the-case-for-servant-leadership-part-2.jpg"
 takeaways: []
 applications: []
@@ -16,9 +16,9 @@ original_url: ""
 
 # The Case for Servant Leadership
 
-**Part 2**
+## Part 2
 
-**What the Data Actually Says**
+### What the Data Actually Says
 
 I used to throw around the phrase servant leadership without really knowing what it meant—beyond the logic you can pull from the words themselves. I led people by serving them. Simple enough.
 
@@ -50,9 +50,9 @@ Kinda ironic for someone who just finished the first draft of a leadership book,
 
 If you’re ready to build the kind of culture that science—and experience—both confirm works, that’s what I do now. I mentor leaders and consult with teams who want to replace pressure with purpose, and performance anxiety with trust that lasts.
 
-Because the data doesn’t lie. Servant leadership works. It’s not idealism. It’s intelligence.
+Because the data doesn't lie. Servant leadership works. It's not idealism. It's intelligence.
 
-**Data Reference Block**
+### Data Reference Block
 
 1. Gallup (2023). State of the Global Workplace Report. Gallup Press. — Teams with high trust + safety show 50% higher productivity, 76% greater engagement, 40% better retention.  
 2. MIT Sloan Management Review (2021). Collaboration and Innovation. — Collaborative organizations report ~30% increase in innovation output.  

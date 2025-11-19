@@ -5,7 +5,7 @@ publish_date: "2025-06-12"
 created_at: "2025-06-12"
 updated_at: "2025-10-28"
 summary: "A reflection on the difference between hearing and listening in leadership—seeing beyond surface reactions to understand the real needs behind behavior."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["communication", "empathy"]
 featured_image: "../images/most-people-hear-few-actually-listen.jpg"
 takeaways: []
 applications: []

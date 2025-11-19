@@ -5,7 +5,7 @@ publish_date: "2025-05-12"
 created_at: "2025-05-12"
 updated_at: "2025-10-28"
 summary: "A reflection on how the pursuit of power can erode trust and culture, contrasting power-hungry leadership with servant-hearted leadership that carries people, not control."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["power-control", "servant-leadership"]
 featured_image: "../images/the-pursuit-of-power-corrupts.jpg"
 takeaways: []
 applications: []

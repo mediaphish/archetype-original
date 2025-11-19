@@ -5,7 +5,7 @@ publish_date: "2025-06-24"
 created_at: "2025-06-24"
 updated_at: "2025-10-28"
 summary: "A humorous but insightful reflection on empathy in leadership—reminding both owners and employees to walk in each other's shoes to prevent misunderstanding and burnout."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["empathy", "communication", "team-building"]
 featured_image: "../images/leadership-shoes-and-melted-feet.jpg"
 takeaways: []
 applications: []

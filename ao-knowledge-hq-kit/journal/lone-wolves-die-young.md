@@ -5,7 +5,7 @@ publish_date: "2025-07-25"
 created_at: "2025-07-25"
 updated_at: "2025-10-28"
 summary: "A challenge to the myth of the 'lone wolf' leader—reminding that isolation weakens leadership while community, collaboration, and shared purpose sustain success."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["team-building", "collaboration"]
 featured_image: "../images/lone-wolves-die-young.jpg"
 takeaways: []
 applications: []

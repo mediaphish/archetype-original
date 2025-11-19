@@ -12,7 +12,7 @@ publish_date: "2025-07-22"\
 created_at: "2025-07-22"\
 updated_at: "2025-10-28"\
 summary: "A call for personal accountability in a blame-shifting culture\'97reminding leaders and teams that ownership, not excuses, drives real progress and trust."\
-categories: ["journal", "social-migration", "leadership", "business"]\
+categories: ["accountability", "culture"]\
 featured_image: "../images/we-live-in-a-not-my-fault-era.jpg"\
 takeaways: []\
 applications: []\

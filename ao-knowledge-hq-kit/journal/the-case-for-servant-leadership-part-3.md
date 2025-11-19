@@ -5,7 +5,7 @@ publish_date: "2025-11-17T10:00:00-06:00"
 created_at: "2025-11-17T10:00:00-06:00"
 updated_at: "2025-10-30"
 summary: "How fear sneaks into leadership, hijacks the brain, spreads through culture—then how service quiets fear and rebuilds trust."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["servant-leadership", "fear", "neuroscience"]
 featured_image: "../images/the-case-for-servant-leadership-part-3.jpg"
 takeaways: []
 applications: []
@@ -16,9 +16,9 @@ original_url: ""
 
 # The Case for Servant Leadership
 
-**Part 3**
+## Part 3
 
-**How Fear Sneaks In**
+### How Fear Sneaks In
 
 If the data explains what works, fear explains why so few leaders can actually live it out.
 
@@ -55,9 +55,9 @@ Fear still knocks sometimes. But now, when it does, I don’t let it drive. I li
 If fear has been steering your leadership lately, it doesn’t mean you’ve failed. It means you’re human. But if you’re ready to lead with trust instead of tension, I can help. I mentor leaders and consult with teams who are ready to rebuild calm, clarity, and confidence into their culture.
 
 Because the truth is simple: fear breaks things.
- Service builds them.
+ Service builds them.
 
-**Data Reference Block**
+### Data Reference Block
 
 1. NeuroLeadership Institute (2020). Leadership Under Threat: How Stress Alters Empathy and Decision-Making.  — Chronic stress decreases self-awareness and empathy; increases controlling behavior.  
 2. UCLA Center for Neurobehavioral Studies (2019). Emotional Contagion in Teams.  — Employee emotional states mirror leader tone within minutes of exposure.  
