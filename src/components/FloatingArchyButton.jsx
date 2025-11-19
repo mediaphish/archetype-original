@@ -45,14 +45,7 @@ export default function FloatingArchyButton() {
           src="/images/archy-avatar.png"
           alt="Archy"
           className="w-12 h-12 md:w-16 md:h-16 rounded-full relative z-10"
-          onError={(e) => {
-            e.target.style.display = 'none';
-          }}
         />
-        {/* Fallback if image doesn't load */}
-        <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-xl z-10">
-          A
-        </div>
         {/* Pulse animation ring */}
         <span className="absolute inset-0 rounded-full bg-[#C85A3C] opacity-75 animate-ping"></span>
       </button>
@@ -70,13 +63,7 @@ export default function FloatingArchyButton() {
                       src="/images/archy-avatar.png"
                       alt="Archy"
                       className="w-10 h-10 rounded-full"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#C85A3C] rounded-full text-white font-bold text-sm">
-                      A
-                    </div>
                   </div>
                   <span className="font-semibold text-[#2B2D2F]">Archy</span>
                 </div>
