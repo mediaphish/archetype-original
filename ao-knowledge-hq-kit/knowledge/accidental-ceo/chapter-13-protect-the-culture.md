@@ -1,23 +1,26 @@
 ---
-corpus_id: AO-Fundamentals
-doc_type: chapter
-book: "Accidental CEO"
-part: "Fundamentals"
-chapter_number: 13
-chapter_title: "Protect the Culture"
-slug: fundamentals-protect-the-culture
-author: "Bart Paden"
-source: "user-verbatim"
-content_locked: true
-version: "2025-10-28"
-tags: ["servant-leadership","culture","trust","social-capital"]
+title: "Protect the Culture"
+slug: chapter-13-protect-the-culture
+type: chapter
+tags: ["accidental-ceo", "fundamentals", "servant-leadership", "culture", "standards", "stewardship", "presence"]
+status: final
+created_at: 2025-10-28
+updated_at: 2025-10-28
+summary: >
+  Spend your social capital to defend standards and dignity. Culture beats compensation in predicting retention; protecting it requires visible, costly choices that earn trust.
+source:
+  kind: internal
+  citation_keys: ["accidental-ceo-chapter-13"]
+takeaways: []
+applications: []
+related: []
 ---
 
-Chapter 13: Protect the Culture
+# Chapter 13: Protect the Culture
 
-Theology
+## Theology
 
-Spend Your Social Capital
+### Spend Your Social Capital
 
 When I talk about protecting culture, I use the phrase “social capital.” It’s not something you can deposit in a bank or measure on a spreadsheet, but every leader knows it exists. It’s the trust, credibility, and goodwill you build with your people. You earn it over time by the way you show up, and you spend it every time you make a hard call.
 
@@ -47,9 +50,9 @@ Culture isn’t a vibe; it shows up in outcomes you can count. High-trust teams 
 
 That’s why I tell leaders this: if you’re not willing to spend social capital to protect the culture you say you value, then you don’t really have a culture. You have slogans. And slogans don’t hold when pressure hits.
 
-Stories
+## Stories
 
-The Twine Client Story
+### The Twine Client Story
 
 There’s one moment that stands out when I think about spending social capital to protect our culture, and it cost us both money and pride. We were working with a manufacturer and seller of twine—a company that trusted us with a project they needed done right. They weren’t a flashy client, but their business mattered, and we treated it like it mattered. At least, we were supposed to.
 
@@ -81,9 +84,9 @@ That one moment reinforced years of teaching: serve each other, serve our client
 
 Service recovery literature says honest resets create more loyalty than quiet cover-ups. Owning the miss—then making it right—protects culture and reputation at the same time.
 
-Takeaways
+## Takeaways
 
-The Ripple Effect
+### The Ripple Effect
 
 After the dust settled with the twine client, something happened that mattered more than the refund, more than the resignation, more than the immediate loss. The team exhaled. Not with surprise, but with relief. They had seen this pattern from me before, and now they saw it again.
 
@@ -107,6 +110,7 @@ Compromise once, and you teach your people that the values on the wall don’t m
 
 What you spend on protecting culture isn’t wasted—it’s invested. Every time you show your team that values matter more than short-term gain, you’re putting deposits back into the trust account.
 
-Pocket rule: If you won’t spend for culture when it hurts, you’re just renting your values.
+**Pocket rule: If you won’t spend for culture when it hurts, you’re just renting your values.**
 
 You’re proving that leadership isn’t just authority; it’s action. And in the long run, that’s what builds a company people want to follow, not just work for.
+---
