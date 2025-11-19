@@ -37,7 +37,8 @@ export default function FloatingArchyButton() {
       {/* Floating Button - Fixed position, stays visible while scrolling */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 right-8 z-50 w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#C85A3C] shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
+        className="fixed bottom-8 right-8 z-[9999] w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#C85A3C] shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
+        style={{ position: 'fixed' }}
         aria-label="Chat with Archy"
       >
         <img
