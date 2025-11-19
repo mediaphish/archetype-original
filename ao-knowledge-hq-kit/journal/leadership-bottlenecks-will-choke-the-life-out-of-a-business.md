@@ -5,7 +5,7 @@ publish_date: "2025-06-04"
 created_at: "2025-06-04"
 updated_at: "2025-10-28"
 summary: "An exploration of how leadership bottlenecks form when fear, insecurity, and control stifle innovation—and how trust, curiosity, and flexibility restore growth."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["trust", "culture", "innovation"]
 featured_image: "../images/leadership-bottlenecks-will-choke-the-life-out-of-a-business.jpg"
 takeaways: []
 applications: []

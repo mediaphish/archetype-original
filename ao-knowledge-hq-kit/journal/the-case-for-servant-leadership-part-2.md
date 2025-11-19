@@ -5,7 +5,7 @@ publish_date: "2025-11-10T10:00:00-06:00"
 created_at: "2025-11-10T10:00:00-06:00"
 updated_at: "2025-10-30"
 summary: "What the data actually says: neuroscience, engagement, and innovation studies confirm why servant leadership outperforms pressure-based models."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["servant-leadership", "neuroscience", "data-research"]
 featured_image: "../images/the-case-for-servant-leadership-part-2.jpg"
 takeaways: []
 applications: []

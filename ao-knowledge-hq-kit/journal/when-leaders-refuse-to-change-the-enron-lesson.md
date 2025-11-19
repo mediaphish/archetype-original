@@ -5,7 +5,7 @@ publish_date: "2025-08-21"
 created_at: "2025-08-21"
 updated_at: "2025-10-28"
 summary: "A deep leadership case study drawn from Enron’s collapse—exploring how ego, fear, and denial destroy organizations, and why humility and adaptability are essential for survival."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["case-studies", "power-control", "accountability", "culture"]
 featured_image: "../images/when-leaders-refuse-to-change-the-enron-lesson.jpg"
 takeaways: []
 applications: []

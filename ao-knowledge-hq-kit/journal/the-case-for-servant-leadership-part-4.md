@@ -5,7 +5,7 @@ publish_date: "2025-11-24T10:00:00-06:00"
 created_at: "2025-11-24T10:00:00-06:00"
 updated_at: "2025-10-30"
 summary: "The Logic of Leadership: five principles—Clarity, Protect the Culture, Build Trust Daily, Empower Over Control, Serve the Standard—validated by research and experience."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["servant-leadership", "leadership-principles", "systems"]
 featured_image: "../images/the-case-for-servant-leadership-part-4.jpg"
 takeaways: []
 applications: []

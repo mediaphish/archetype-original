@@ -5,7 +5,7 @@ publish_date: "2025-08-11"
 created_at: "2025-08-11"
 updated_at: "2025-10-28"
 summary: "A leadership reflection contrasting extractive management with investment-driven leadership—reminding that teams thrive when they’re nurtured, not drained."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["team-building", "leadership-development"]
 featured_image: "../images/wells-run-dry.jpg"
 takeaways: []
 applications: []

@@ -5,7 +5,7 @@ publish_date: "2025-11-17T10:00:00-06:00"
 created_at: "2025-11-17T10:00:00-06:00"
 updated_at: "2025-10-30"
 summary: "How fear sneaks into leadership, hijacks the brain, spreads through culture—then how service quiets fear and rebuilds trust."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["servant-leadership", "fear", "neuroscience"]
 featured_image: "../images/the-case-for-servant-leadership-part-3.jpg"
 takeaways: []
 applications: []

@@ -5,9 +5,8 @@ publish_date: "2025-05-05"
 created_at: "2025-05-05"
 updated_at: "2025-10-28"
 summary: "This post explores the constant tension leaders face between efficiency and empathy, showing how real leadership lies in managing the balance between clarity and compassion."
-categories: ["leadership", "business"]
+categories: ["balance", "empathy"]
 featured_image: "../images/the-pendulum-of-leadership-efficiency-vs-empathy.jpg"
-tags: ["journal", "social-migration", "leadership", "business"]
 takeaways: []
 applications: []
 related: []

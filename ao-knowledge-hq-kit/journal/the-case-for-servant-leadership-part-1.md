@@ -5,7 +5,7 @@ publish_date: "2025-11-03T10:00:00-06:00"
 created_at: "2025-11-03T10:00:00-06:00"
 updated_at: "2025-10-30"
 summary: "After a hard stop and deep reflection, the evidence and experience align: servant leadership is the only model that sustains both people and performance."
-categories: ["journal", "social-migration", "leadership", "business"]
+categories: ["servant-leadership", "trust", "neuroscience"]
 featured_image: "../images/the-case-for-servant-leadership-part-1.jpg"
 takeaways: []
 applications: []
