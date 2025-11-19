@@ -18,10 +18,9 @@ original_url: "https://www.facebook.com/share/p/__________/"
 
 ![Clearing the Path](../images/clearing-the-path.jpg)
 
-> “I don’t push people forward. I clear what’s in their way.”  
+> “I don't push people forward. I clear what's in their way.”  
 > — Archetype Original Journal
 
-**Intro Paragraph**  
 Someone once asked me what kind of leader I try to be.  
 I told them, “I don’t push people forward. I clear what’s in their way.”
 
@@ -56,7 +55,11 @@ They stop protecting themselves and start protecting the mission.
 
 ---
 
-Leadership isn’t about getting others to build your vision faster.  
+Leadership isn't about getting others to build your vision faster.  
 It’s about building an environment where others can see themselves as part of it.  
 
 That’s what it means to clear the path — not to lead from above, but to walk ahead and make it safe for others to rise.
+
+---
+
+*Originally published on Facebook on November 3, 2025.*

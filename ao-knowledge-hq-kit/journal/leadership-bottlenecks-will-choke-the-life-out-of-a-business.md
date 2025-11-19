@@ -58,23 +58,23 @@ That’s how you drive off a cliff in broad daylight — with a smiling team in 
 
 How do you fix it?  
 
-**Build real trust**  
-If you’ve hired good people, trust them to see things you might miss. Listen to their ideas.  
+### Build real trust  
+If you've hired good people, trust them to see things you might miss. Listen to their ideas.  
 
-**Stay curious — even about ideas that aren’t yours**  
-You’re not there to protect your ego. You’re there to move the mission forward.  
+### Stay curious — even about ideas that aren't yours  
+You're not there to protect your ego. You're there to move the mission forward.  
 
-**Set the vision, but give freedom on the path**  
-Leadership is about direction, not dictatorship. Set the “why” and “where,” but let your team have room to figure out the “how.”  
+### Set the vision, but give freedom on the path  
+Leadership is about direction, not dictatorship. Set the "why" and "where," but let your team have room to figure out the "how."  
 
-**Surround yourself with people who will tell you the truth**  
+### Surround yourself with people who will tell you the truth  
 Your leadership circle should not be a fan club. It should be a group that can say:  
 
-“Hey, I think this needs to change.”  
-“Here’s new data.”  
-“Here’s what our people are seeing.”  
+"Hey, I think this needs to change."  
+"Here's new data."  
+"Here's what our people are seeing."  
 
-**Final thought:**  
+### Final thought  
 A strong leader holds the wheel.  
 But a wise leader listens to the navigator when they say the road is out ahead.  
 

@@ -16,9 +16,9 @@ original_url: ""
 
 # The Case for Servant Leadership
 
-**Part 5**
+## Part 5
 
-**The Archetype Reborn**
+### The Archetype Reborn
 
 When the research finally confirmed what I’d spent my life believing, it gave me peace—but it also gave me a choice.
 

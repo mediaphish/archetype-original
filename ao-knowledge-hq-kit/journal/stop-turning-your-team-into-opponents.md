@@ -5,7 +5,7 @@ publish_date: "2025-05-19"
 created_at: "2025-05-19"
 updated_at: "2025-10-28"
 summary: "This post warns leaders against creating competition and scarcity inside their teams, reminding that true leadership builds trust, clarity, and shared success."
-categories: ["social-migration", "leadership", "business"]
+categories: ["journal", "social-migration", "leadership", "business"]
 featured_image: "../images/stop-turning-your-team-into-opponents.jpg"
 takeaways: []
 applications: []

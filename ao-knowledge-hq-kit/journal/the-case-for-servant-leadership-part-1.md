@@ -16,7 +16,7 @@ original_url: ""
 
 # The Case for Servant Leadership
 
-**Part 1**
+## Part 1
 
 “The best teams don’t compete with each other. They complete each other.”
 
@@ -38,9 +38,9 @@ And if you’ve been wondering whether the way you led mattered, or if you’re 
 
 That’s what I do now. I mentor leaders who want to build trust instead of tension. I consult with teams and organizations who need to realign their culture, rebuild confidence, and restore clarity. Some engagements last a few sessions, others a few months, depending on what’s needed. Either way, it’s real work that gets real results.
 
-If this resonates, and you’re ready to make the shift—from pressure to purpose, from fear to trust, from competition to completion—reach out. Let’s build something that lasts.
+If this resonates, and you're ready to make the shift—from pressure to purpose, from fear to trust, from competition to completion—reach out. Let's build something that lasts.
 
-**Data Reference Block**
+### Data Reference Block
 
 1. Gallup (2023). State of the Global Workplace Report. Gallup Press.  — High-trust, psychologically safe teams show 50 % higher productivity, 76 % greater engagement, 40 % better retention.  
 2. MIT Sloan Management Review (2021). Collaboration and Innovation.  — Collaborative cultures demonstrate ≈ 30 % higher innovation output than competitive ones.  
