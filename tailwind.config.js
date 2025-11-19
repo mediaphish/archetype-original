@@ -60,7 +60,8 @@ export default {
           oxblood: "#6A1B1A",
           sand: "#E8E2D0",
           offWhite: "#F8F7F3"
-        }
+        },
+        sand: "#E8E2D0"
       },
       boxShadow: {
         soft: "0 10px 30px rgba(2, 6, 23, 0.08)"
