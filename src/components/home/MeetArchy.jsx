@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function MeetArchy() {
   return (
-    <section className="pt-32 pb-0 bg-white">
+    <section className="py-32 bg-white mb-0">
       <div className="container mx-auto px-6 md:px-12 max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left Column: Text Content */}
