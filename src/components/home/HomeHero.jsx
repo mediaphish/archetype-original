@@ -6,15 +6,28 @@ import React, { useState, useEffect } from 'react';
 
 export default function HomeHero() {
   const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      if (!isMobile) {
+        setScrollY(window.scrollY);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, [isMobile]);
 
   return (
     <section className="pt-20 pb-16 md:pb-24" style={{background: 'linear-gradient(to bottom, #FFF7ED 0%, #F5E6D3 30%, white 60%, white 100%)'}}>
@@ -44,15 +57,15 @@ export default function HomeHero() {
             </div>
           </div>
           
-          {/* Right Image - Parallax Layers */}
-          <div className="relative" style={{ height: '1024px', width: '1024px', maxWidth: '100%' }}>
+          {/* Right Image - Parallax Layers (disabled on mobile) */}
+          <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1' }}>
             <div className="absolute inset-0 bg-gradient-to-br from-orange-200 to-orange-100 rounded-full blur-3xl opacity-30"></div>
             
-            {/* Layer 1: Archy - Moves UP as you scroll */}
+            {/* Layer 1: Archy - Moves UP as you scroll (desktop only) */}
             <div 
               className="absolute inset-0 z-10"
               style={{ 
-                transform: `translateY(${scrollY * -0.15}px)`,
+                transform: isMobile ? 'none' : `translateY(${scrollY * -0.15}px)`,
                 transition: 'transform 0.1s ease-out'
               }}
             >
@@ -60,15 +73,14 @@ export default function HomeHero() {
                 src="/images/hero-layer-1.png" 
                 alt="Archy" 
                 className="w-full h-full object-contain drop-shadow-2xl"
-                style={{ width: '1024px', height: '1024px' }}
               />
             </div>
             
-            {/* Layer 2: Speech Bubble - Moves DOWN as you scroll */}
+            {/* Layer 2: Speech Bubble - Moves DOWN as you scroll (desktop only) */}
             <div 
-              className="absolute top-0 left-0 z-20"
+              className="absolute inset-0 z-20"
               style={{ 
-                transform: `translateY(${scrollY * 0.03}px)`,
+                transform: isMobile ? 'none' : `translateY(${scrollY * 0.03}px)`,
                 transition: 'transform 0.1s ease-out'
               }}
             >
@@ -76,7 +88,6 @@ export default function HomeHero() {
                 src="/images/hero-layer-2.png" 
                 alt="Speech bubble" 
                 className="w-full h-full object-contain"
-                style={{ width: '1024px', height: '1024px' }}
               />
             </div>
           </div>
