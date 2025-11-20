@@ -14,6 +14,7 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSentInitialMessage, setHasSentInitialMessage] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom when new messages are added
@@ -152,7 +153,7 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   };
 
   const handleSendMessage = async (messageText = inputValue) => {
-    if (!messageText.trim() || isLoading) return;
+    if (!messageText.trim() || isLoading || isBlocked) return;
 
     const userMessage = { text: messageText, isUser: true };
     setMessages(prev => [...prev, userMessage]);
@@ -162,17 +163,34 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
     // Check for abuse first
     if (detectAbuse(messageText)) {
       if (isAbusive) {
-        // Second offense - shut down chat
+        // Second offense - block user completely
+        setIsBlocked(true);
+        setIsLoading(false);
+        
+        // Report threat to server for IP blocking
+        try {
+          await fetch('/api/chat/block-threat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sessionId,
+              message: messageText,
+              conversationHistory: messages.map(msg => ({
+                role: msg.isUser ? 'user' : 'assistant',
+                content: msg.text
+              }))
+            })
+          });
+        } catch (err) {
+          console.error('Error reporting threat:', err);
+        }
+        
         const shutdownMessage = {
-          text: "You crossed a line, so I'm taking my stuff and going home.",
+          text: "This conversation has been terminated due to inappropriate behavior. The chat is now closed.",
           isUser: false,
-          showButtons: true,
-          buttonOptions: [
-            { text: "Contact Bart directly", value: "contact_direct" }
-          ]
+          showButtons: false
         };
         setMessages(prev => [...prev, shutdownMessage]);
-        setIsLoading(false);
         return;
       } else {
         // First offense - warning
@@ -224,6 +242,22 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
           sessionId
         }),
       });
+
+      // Check if session is blocked
+      if (response.status === 403) {
+        const data = await response.json();
+        if (data.blocked) {
+          setIsBlocked(true);
+          const blockedMessage = {
+            text: "This session has been blocked due to inappropriate behavior. The chat is now closed.",
+            isUser: false,
+            showButtons: false
+          };
+          setMessages(prev => [...prev, blockedMessage]);
+          setIsLoading(false);
+          return;
+        }
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

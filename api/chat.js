@@ -81,15 +81,77 @@ function searchKnowledge(query, corpus) {
     .map(item => item.doc);
 }
 
+// Get client IP from Vercel headers
+function getClientIP(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  const realIP = req.headers['x-real-ip'];
+  
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  if (realIP) {
+    return realIP.trim();
+  }
+  return null;
+}
+
+// Check if session or IP is blocked
+async function checkBlocked(sessionId, clientIP) {
+  try {
+    // Check session block
+    if (sessionId) {
+      const { data: sessionBlock } = await supabase
+        .from('blocked_sessions')
+        .select('*')
+        .eq('session_id', sessionId)
+        .single();
+      
+      if (sessionBlock) {
+        return { blocked: true, reason: 'session_blocked' };
+      }
+    }
+
+    // Check IP block
+    if (clientIP) {
+      const { data: ipBlock } = await supabase
+        .from('blocked_ips')
+        .select('*')
+        .eq('ip_address', clientIP)
+        .single();
+      
+      if (ipBlock) {
+        return { blocked: true, reason: 'ip_blocked' };
+      }
+    }
+
+    return { blocked: false };
+  } catch (error) {
+    console.error('Error checking blocks:', error);
+    // Don't block on error - allow through
+    return { blocked: false };
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { message, conversationHistory = [], sessionId } = req.body;
+  const clientIP = getClientIP(req);
 
   if (!message) {
     return res.status(400).json({ error: 'Message is required' });
+  }
+
+  // Check if session or IP is blocked
+  const blockStatus = await checkBlocked(sessionId, clientIP);
+  if (blockStatus.blocked) {
+    return res.status(403).json({ 
+      error: 'Access denied',
+      blocked: true,
+      reason: blockStatus.reason
+    });
   }
 
   // Load and search knowledge corpus
