@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS blocked_sessions (
   session_id TEXT UNIQUE NOT NULL,
   client_ip TEXT,
   blocked_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ, -- NULL = permanent, timestamp = temporary (24-hour blocks)
   reason TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -16,6 +17,7 @@ CREATE TABLE IF NOT EXISTS blocked_ips (
   id BIGSERIAL PRIMARY KEY,
   ip_address TEXT UNIQUE NOT NULL,
   blocked_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ, -- NULL = permanent, timestamp = temporary
   reason TEXT,
   session_id TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -31,6 +33,8 @@ CREATE TABLE IF NOT EXISTS threats (
   threat_message TEXT NOT NULL,
   conversation_history JSONB,
   blocked BOOLEAN DEFAULT true,
+  block_type TEXT, -- 'permanent' or 'temporary'
+  assessment TEXT, -- AI assessment result
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

@@ -95,32 +95,50 @@ function getClientIP(req) {
   return null;
 }
 
-// Check if session or IP is blocked
+// Check if session or IP is blocked (including expiration checks)
 async function checkBlocked(sessionId, clientIP) {
   try {
-    // Check session block
+    const now = new Date().toISOString();
+    
+    // Check session block (including expiration)
     if (sessionId) {
-      const { data: sessionBlock } = await supabase
+      const { data: sessionBlocks } = await supabase
         .from('blocked_sessions')
         .select('*')
-        .eq('session_id', sessionId)
-        .single();
+        .eq('session_id', sessionId);
       
-      if (sessionBlock) {
-        return { blocked: true, reason: 'session_blocked' };
+      if (sessionBlocks && sessionBlocks.length > 0) {
+        const block = sessionBlocks[0];
+        // Check if block has expired
+        if (block.expires_at && new Date(block.expires_at) < new Date()) {
+          // Block expired - remove it
+          await supabase.from('blocked_sessions').delete().eq('session_id', sessionId);
+          return { blocked: false };
+        }
+        // Block is still active
+        return { blocked: true, reason: 'session_blocked', expiresAt: block.expires_at };
       }
     }
 
-    // Check IP block
+    // Check IP block (including expiration)
     if (clientIP) {
-      const { data: ipBlock } = await supabase
+      const { data: ipBlocks } = await supabase
         .from('blocked_ips')
         .select('*')
-        .eq('ip_address', clientIP)
-        .single();
+        .eq('ip_address', clientIP);
       
-      if (ipBlock) {
-        return { blocked: true, reason: 'ip_blocked' };
+      if (ipBlocks && ipBlocks.length > 0) {
+        const block = ipBlocks[0];
+        // Check if block has expired
+        if (block.expires_at && new Date(block.expires_at) < new Date()) {
+          // Block expired - remove it
+          await supabase.from('blocked_ips').delete().eq('ip_address', clientIP);
+          return { blocked: false };
+        }
+        // Block is still active (only if permanent - don't block IP for temporary session blocks)
+        if (!block.expires_at) {
+          return { blocked: true, reason: 'ip_blocked', expiresAt: null };
+        }
       }
     }
 

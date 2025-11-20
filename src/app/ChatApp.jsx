@@ -160,50 +160,13 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
     setInputValue('');
     setIsLoading(true);
 
-    // Check for abuse first
-    if (detectAbuse(messageText)) {
-      if (isAbusive) {
-        // Second offense - block user completely
-        setIsBlocked(true);
-        setIsLoading(false);
-        
-        // Report threat to server for IP blocking
-        try {
-          await fetch('/api/chat/block-threat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sessionId,
-              message: messageText,
-              conversationHistory: messages.map(msg => ({
-                role: msg.isUser ? 'user' : 'assistant',
-                content: msg.text
-              }))
-            })
-          });
-        } catch (err) {
-          console.error('Error reporting threat:', err);
-        }
-        
-        const shutdownMessage = {
-          text: "This conversation has been terminated due to inappropriate behavior. The chat is now closed.",
-          isUser: false,
-          showButtons: false
-        };
-        setMessages(prev => [...prev, shutdownMessage]);
-        return;
-      } else {
-        // First offense - warning
-        setIsAbusive(true);
-        const warningMessage = {
-          text: "I'm here to help with business and leadership questions. Let's get back on track - what's really going on that I can help with?",
-          isUser: false,
-          showButtons: false
-        };
-        setMessages(prev => [...prev, warningMessage]);
-        setIsLoading(false);
-        return;
-      }
+    // Check for obvious abuse patterns first (client-side quick check)
+    // But don't block - let server AI assess the real threat level
+    const hasObviousAbuse = detectAbuse(messageText);
+    
+    if (hasObviousAbuse) {
+      // Still send to server, but also assess with AI on server side
+      // Server will determine if it's a real threat or just casual language
     }
 
     // Check for disinterest
@@ -231,6 +194,52 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
         content: msg.text
       }));
 
+      // First, assess threat with AI if message seems problematic
+      if (hasObviousAbuse) {
+        try {
+          const threatAssessment = await fetch('/api/chat/assess-threat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sessionId,
+              message: messageText,
+              conversationHistory
+            })
+          });
+
+          const assessmentData = await threatAssessment.json();
+          
+          if (assessmentData.blocked) {
+            setIsBlocked(true);
+            setIsLoading(false);
+            
+            let blockMessage;
+            if (assessmentData.blockType === 'permanent') {
+              blockMessage = {
+                text: "This conversation has been terminated due to threatening behavior. The chat is now permanently closed.",
+                isUser: false,
+                showButtons: false
+              };
+            } else {
+              // Temporary 24-hour block
+              const expiresAt = new Date(assessmentData.expiresAt);
+              const hoursRemaining = Math.ceil((expiresAt - new Date()) / (1000 * 60 * 60));
+              blockMessage = {
+                text: `Due to repeated inappropriate behavior, this chat has been temporarily suspended. You can try again in ${hoursRemaining} hours.`,
+                isUser: false,
+                showButtons: false
+              };
+            }
+            
+            setMessages(prev => [...prev, blockMessage]);
+            return;
+          }
+        } catch (err) {
+          console.error('Error assessing threat:', err);
+          // Continue to normal chat flow if assessment fails
+        }
+      }
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -248,12 +257,23 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
         const data = await response.json();
         if (data.blocked) {
           setIsBlocked(true);
-          const blockedMessage = {
-            text: "This session has been blocked due to inappropriate behavior. The chat is now closed.",
-            isUser: false,
-            showButtons: false
-          };
-          setMessages(prev => [...prev, blockedMessage]);
+          let blockMessage;
+          if (data.expiresAt) {
+            const expiresAt = new Date(data.expiresAt);
+            const hoursRemaining = Math.ceil((expiresAt - new Date()) / (1000 * 60 * 60));
+            blockMessage = {
+              text: `This session has been temporarily blocked. You can try again in ${hoursRemaining} hours.`,
+              isUser: false,
+              showButtons: false
+            };
+          } else {
+            blockMessage = {
+              text: "This session has been permanently blocked due to inappropriate behavior. The chat is now closed.",
+              isUser: false,
+              showButtons: false
+            };
+          }
+          setMessages(prev => [...prev, blockMessage]);
           setIsLoading(false);
           return;
         }
