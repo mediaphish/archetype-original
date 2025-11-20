@@ -13,7 +13,7 @@ export default function AntiProjects() {
             Anti-Projects
           </h2>
           <p className="text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed">
-            Diagnostic tools that help you see what's actually broken—before it's too late.
+            These aren't offerings. They're contrast tools—clear pictures of what leadership looks like when it breaks down.
           </p>
         </div>
         
@@ -31,7 +31,7 @@ export default function AntiProjects() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              When leadership becomes a numbers game, people become expendable. This diagnostic helps you spot the patterns of transactional leadership before they destroy your culture.
+              When leadership becomes a numbers game, people become expendable. Scoreboard Leadership reveals the patterns of ego-driven decision-making that slowly destroy trust and culture from the inside out.
             </p>
             
             <button className="bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200">
@@ -52,7 +52,7 @@ export default function AntiProjects() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              A heat-map diagnostic for toxic leadership. See where the fire is burning—attention-seeking, control, blame, ego—before it spreads. Real talk about the leaders who break teams.
+              The heat-map of dysfunctional leadership across industries and regions. Anonymous insights, aggregated patterns, and clarity about where leadership is breaking down—so we can understand what healthy leadership really requires.
             </p>
             
             <button className="bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200">

@@ -20,7 +20,7 @@ export default function HomeHero() {
             </h1>
             
             <p className="text-xl md:text-2xl leading-relaxed text-[#6B6B6B] mb-8">
-              Human-first servant leadership for small and mid-sized businesses. Real culture change, not corporate theater.
+              I help small and mid-sized businesses build cultures where people thrive, leaders grow, and clarity becomes normal again. After three years of rebuilding my own life and leadership, I'm building something new—servant leadership at scale, built for real people in real companies.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">

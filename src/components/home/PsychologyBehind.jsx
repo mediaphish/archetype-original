@@ -1,5 +1,5 @@
 /**
- * The Psychology Behind Servant Leadership Section
+ * The Psychology Behind Clarity, Care, and Leadership Section
  */
 import React from 'react';
 
@@ -8,57 +8,66 @@ export default function PsychologyBehind() {
     <section className="py-32 bg-[#F5F5F5]">
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-16">
+          <div className="inline-block bg-[#F5E6D3] px-4 py-2 rounded-full mb-6">
+            <span className="text-sm font-semibold text-[#C85A3C] uppercase tracking-wide">Research Meets Reality</span>
+          </div>
+          
           <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-4 font-serif">
-            The Psychology Behind Servant Leadership
+            The Psychology Behind Clarity, Care, and Leadership
           </h2>
-          <p className="text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed">
-            This isn't soft leadership. It's grounded in research, decades of practice, and real human psychology.
+          <p className="text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed mb-8">
+            Modern research has validated something I've seen for decades: people perform best in environments built on trust, empathy, and clarity.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
-          {/* Card 1 - Self-Determination Theory */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto mb-12">
+          {/* Card 1 - Psychological Safety */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <h3 className="text-2xl md:text-3xl font-bold text-[#2B2D2F] mb-4">
-              Self-Determination Theory
+              Psychological Safety — Amy Edmondson
             </h3>
             <p className="text-lg leading-relaxed text-[#6B6B6B]">
-              People are motivated by autonomy, competence, and connection. Servant leadership creates the conditions for all three—without gimmicks or manipulation.
+              Teams that feel safe to speak up learn faster and adapt better.
             </p>
           </div>
 
-          {/* Card 2 - Psychological Safety */}
+          {/* Card 2 - Empathic Listening */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <h3 className="text-2xl md:text-3xl font-bold text-[#2B2D2F] mb-4">
-              Psychological Safety
+              Empathic Listening — Carl Rogers
             </h3>
             <p className="text-lg leading-relaxed text-[#6B6B6B]">
-              When people feel safe to speak up, take risks, and fail forward, teams thrive. Servant leadership builds that safety through humility, listening, and trust.
+              Listening to understand reduces reactivity and unlocks reasoning.
             </p>
           </div>
 
-          {/* Card 3 - Growth Mindset */}
+          {/* Card 3 - Neuroscience of Trust */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <h3 className="text-2xl md:text-3xl font-bold text-[#2B2D2F] mb-4">
-              Growth Mindset
+              Neuroscience of Trust — Paul Zak
             </h3>
             <p className="text-lg leading-relaxed text-[#6B6B6B]">
-              Fixed mindset leaders see talent as static. Growth mindset leaders see potential everywhere—and create cultures where people actually develop.
+              Trust changes brain chemistry—lower cortisol, higher performance.
             </p>
           </div>
 
-          {/* Card 4 - Relational Leadership */}
+          {/* Card 4 - Executive Isolation */}
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-10 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             <h3 className="text-2xl md:text-3xl font-bold text-[#2B2D2F] mb-4">
-              Relational Leadership
+              Executive Isolation — Gallup
             </h3>
             <p className="text-lg leading-relaxed text-[#6B6B6B]">
-              Leadership isn't transactional. It's relational. The best leaders don't just manage tasks—they invest in people, build trust, and create belonging.
+              Leaders without a safe place to process make poorer decisions.
             </p>
           </div>
+        </div>
+        
+        <div className="text-center max-w-3xl mx-auto">
+          <p className="text-xl leading-relaxed text-[#6B6B6B]">
+            Truth: Empathy restores access to reason. Trust unlocks performance. Clarity removes friction. When leaders get this right—teams stop surviving and start creating.
+          </p>
         </div>
       </div>
     </section>
   );
 }
-

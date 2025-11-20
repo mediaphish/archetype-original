@@ -13,7 +13,7 @@ export default function WhatImBuilding() {
             What I'm Building
           </h2>
           <p className="text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed">
-            Three interconnected pillars designed to help leaders build cultures where people actually want to work.
+            Three interconnected pillars designed to help leaders lead with strength and humility—and build cultures people actually want to be part of.
           </p>
         </div>
         
@@ -31,7 +31,10 @@ export default function WhatImBuilding() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              Whether you're rebuilding a team, navigating a tough transition, or just trying to lead better, I work 1:1 with leaders who want real transformation—not corporate theater. This is mentoring for people who are tired of buzzwords and ready to do the work.
+              1:1 mentoring, team clarity work, culture rebuilds, and practical frameworks leaders can actually live with.
+            </p>
+            <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
+              I work with executives, founders, emerging leaders, and students. We clear the fog, rebuild confidence, align teams, and make decisions cleanly. One conversation at a time.
             </p>
             
             <button className="w-full bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200 mb-3">
@@ -56,7 +59,10 @@ export default function WhatImBuilding() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              Culture isn't a vibe. It's measurable. I'm building tools that help you see where your culture actually stands—not where you hope it is. Evidence-based insights, not feel-good surveys.
+              Evidence-based culture measurement for small and mid-sized businesses.
+            </p>
+            <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
+              This is where the Archetype Leadership Index (ALI) lives—our first diagnostic for measuring how healthy leadership feels from the inside out. Culture Science will grow into research, industry comparisons, reports, and the early foundations of something bigger.
             </p>
             
             <button className="w-full bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200 mb-3">
@@ -81,7 +87,10 @@ export default function WhatImBuilding() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              Journal entries, frameworks, and real-world playbooks for servant leadership. No fluff. No motivational posters. Just practical wisdom for leaders who want to build others up.
+              Journal, playbooks, and resources to help leaders grow without losing what makes them human.
+            </p>
+            <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
+              I write constantly—long-form pieces, frameworks, research-backed insights, and real stories from my own leadership journey. Everything Archy teaches begins here.
             </p>
             
             <button className="w-full bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200 mb-3">

@@ -12,11 +12,15 @@ export default function LeadershipLegacy() {
         </h2>
         
         <p className="text-xl leading-relaxed text-[#6B6B6B] mb-8 max-w-3xl mx-auto">
-          Whether you're leading a small team or rebuilding an entire organization, I'm here to help. Let's talk about where you are, where you want to go, and how we get there—together.
+          When I'm with a client, I'm fully present. When I'm not, I'm writing, researching, and building this entire leadership universe so you have tools you can actually live with.
+        </p>
+        
+        <p className="text-xl leading-relaxed text-[#6B6B6B] mb-8 max-w-3xl mx-auto">
+          If you're ready to steady the ground under your feet, rebuild clarity, and lead with strength and humility—let's talk.
         </p>
         
         <button className="bg-[#C85A3C] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
-          Work With Me
+          Get Started
         </button>
       </div>
     </section>

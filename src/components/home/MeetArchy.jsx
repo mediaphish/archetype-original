@@ -20,11 +20,15 @@ export default function MeetArchy() {
             </h2>
             
             <p className="text-xl leading-relaxed text-[#6B6B6B] mb-4">
-              Archy is your personal guide to servant leadership. Ask questions, explore frameworks, and get practical advice grounded in 32+ years of real-world experience.
+              Archy is a digital version of how I think about people, culture, and leadership. He's built on the principles I've lived for thirty years—clarity, responsibility, humility, and strength held in the right way.
+            </p>
+            
+            <p className="text-xl leading-relaxed text-[#6B6B6B] mb-4">
+              Ask him anything: Leadership questions. Team conflict. Decision tension. Culture issues.
             </p>
             
             <p className="text-xl leading-relaxed text-[#6B6B6B] mb-8">
-              Think of Archy as your wise mentor who's always available—no scheduling, no small talk, just honest guidance when you need it.
+              He answers with the same values I teach in person. No noise. No ego. Just honest guidance when you need it.
             </p>
             
             <button className="bg-[#C85A3C] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
