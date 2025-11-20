@@ -6,13 +6,13 @@ import React from 'react';
 
 export default function AntiProjects() {
   return (
-    <section className="py-32 bg-white">
+    <section className="py-16 md:py-24 lg:py-32 bg-white">
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-4 font-serif">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2B2D2F] mb-4 font-serif">
             Anti-Projects
           </h2>
-          <p className="text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg lg:text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed">
             These aren't offerings. They're contrast tools—clear pictures of what leadership looks like when it breaks down.
           </p>
         </div>

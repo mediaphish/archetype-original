@@ -7,7 +7,7 @@ import ChatApp from '../../app/ChatApp';
 
 export default function MeetArchy() {
   return (
-    <section id="archy" className="pt-16 md:pt-24 pb-8 bg-white">
+    <section id="archy" className="pt-12 md:pt-16 lg:pt-24 pb-8 bg-white">
       <div className="container mx-auto px-6 md:px-12 max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left Column: Text Content */}
@@ -16,19 +16,19 @@ export default function MeetArchy() {
               <span className="text-sm font-semibold text-[#C85A3C] uppercase tracking-wide">Your AI Guide</span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-6 font-serif">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2B2D2F] mb-6 font-serif">
               Meet Archy
             </h2>
             
-            <p className="text-xl leading-relaxed text-[#6B6B6B] mb-4">
+            <p className="text-base md:text-lg lg:text-xl leading-relaxed text-[#6B6B6B] mb-4">
               Archy is a digital version of how I think about people, culture, and leadership. He's built on the principles I've lived for thirty years—clarity, responsibility, humility, and strength held in the right way.
             </p>
             
-            <p className="text-xl leading-relaxed text-[#6B6B6B] mb-4">
+            <p className="text-base md:text-lg lg:text-xl leading-relaxed text-[#6B6B6B] mb-4">
               Ask him anything: Leadership questions. Team conflict. Decision tension. Culture issues.
             </p>
             
-            <p className="text-xl leading-relaxed text-[#6B6B6B] mb-8">
+            <p className="text-base md:text-lg lg:text-xl leading-relaxed text-[#6B6B6B] mb-8">
               He answers with the same values I teach in person. No noise. No ego. Just honest guidance when you need it.
             </p>
             
@@ -39,8 +39,8 @@ export default function MeetArchy() {
           
           {/* Right Column: Functional Chat - EXACT V0 STYLING */}
           <div>
-            <div className="bg-gradient-to-br from-sand to-cream rounded-3xl p-8 shadow-xl">
-              <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ minHeight: '500px', maxHeight: '600px' }}>
+            <div className="bg-gradient-to-br from-sand to-cream rounded-3xl p-4 md:p-6 lg:p-8 shadow-xl">
+              <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ minHeight: '350px', maxHeight: '500px' }}>
                 <ChatApp context="home" />
               </div>
             </div>

@@ -27,10 +27,10 @@ export default function Contact() {
   }
 
   return (
-    <section className="py-32 bg-[#F5F5F5]">
+    <section className="py-16 md:py-24 lg:py-32 bg-[#F5F5F5]">
       <div className="container mx-auto px-6 md:px-12 max-w-2xl">
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-8 text-center">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2B2D2F] mb-8 text-center">
             Contact
           </h2>
           <form onSubmit={submit} className="space-y-6">

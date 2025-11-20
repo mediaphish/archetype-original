@@ -39,11 +39,11 @@ export default function HomeHero() {
               <span className="text-sm font-semibold text-[#C85A3C]">32+ Years Building Leaders</span>
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-[#2B2D2F] mb-6 font-serif">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-[#2B2D2F] mb-6 font-serif">
               Leadership That Actually Lasts
             </h1>
             
-            <p className="text-xl md:text-2xl leading-relaxed text-[#6B6B6B] mb-8">
+            <p className="text-lg md:text-xl lg:text-2xl leading-relaxed text-[#6B6B6B] mb-8">
               I help small and mid-sized businesses build cultures where people thrive, leaders grow, and clarity becomes normal again. After three years of rebuilding my own life and leadership, I'm building something new—servant leadership at scale, built for real people in real companies.
             </p>
             

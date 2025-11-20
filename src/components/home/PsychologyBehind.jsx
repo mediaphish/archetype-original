@@ -5,17 +5,17 @@ import React from 'react';
 
 export default function PsychologyBehind() {
   return (
-    <section className="py-32 bg-[#F5F5F5]">
+    <section className="py-16 md:py-24 lg:py-32 bg-[#F5F5F5]">
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-16">
           <div className="inline-block bg-[#F5E6D3] px-4 py-2 rounded-full mb-6">
             <span className="text-sm font-semibold text-[#C85A3C] uppercase tracking-wide">Research Meets Reality</span>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-4 font-serif">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2B2D2F] mb-4 font-serif">
             The Psychology Behind Clarity, Care, and Leadership
           </h2>
-          <p className="text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-base md:text-lg lg:text-xl text-[#6B6B6B] max-w-3xl mx-auto leading-relaxed mb-8">
             Modern research has validated something I've seen for decades: people perform best in environments built on trust, empathy, and clarity.
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function PsychologyBehind() {
         </div>
         
         <div className="text-center max-w-3xl mx-auto">
-          <p className="text-xl leading-relaxed text-[#6B6B6B]">
+          <p className="text-base md:text-lg lg:text-xl leading-relaxed text-[#6B6B6B]">
             Truth: Empathy restores access to reason. Trust unlocks performance. Clarity removes friction. When leaders get this right—teams stop surviving and start creating.
           </p>
         </div>

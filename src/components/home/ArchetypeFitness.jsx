@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function ArchetypeFitness() {
   return (
-    <section className="py-32 bg-gradient-to-br from-[#F5E6D3] to-white">
+    <section className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-[#F5E6D3] to-white">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
@@ -15,11 +15,11 @@ export default function ArchetypeFitness() {
               <span className="text-sm font-semibold text-[#C85A3C] uppercase tracking-wide">Physical Culture</span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-6 font-serif">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2B2D2F] mb-6 font-serif">
               Archetype Fitness
             </h2>
             
-            <p className="text-xl leading-relaxed text-[#6B6B6B] mb-8">
+            <p className="text-base md:text-lg lg:text-xl leading-relaxed text-[#6B6B6B] mb-8">
               The gym story that changed everything. How physical culture and leadership culture are built the same way—one intentional choice at a time.
             </p>
             
