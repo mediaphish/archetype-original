@@ -77,10 +77,18 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
       // Wait a moment for greeting to render, then send initial message
       const timer = setTimeout(() => {
         setHasSentInitialMessage(true);
-        handleSendMessage(initialMessage);
+        // Add user message and trigger send
+        const userMessage = { text: initialMessage, isUser: true };
+        setMessages(prev => [...prev, userMessage]);
+        setInputValue(initialMessage);
+        // Trigger the send by calling handleSendMessage after state updates
+        setTimeout(() => {
+          handleSendMessage(initialMessage);
+        }, 100);
       }, 500);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMessage, hasSentInitialMessage, messages.length]);
 
   const detectAbuse = (message) => {
