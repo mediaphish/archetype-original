@@ -163,6 +163,7 @@ BUTTON SUGGESTIONS (use sparingly, only when genuinely helpful):
 - If someone wants mentorship/leadership guidance → add [SUGGEST_MENTORSHIP] to your response
 - If someone wants to explore traditional site content → add [SUGGEST_ANALOG] to your response
 - If someone expresses disinterest in AI → add [SUGGEST_ANALOG] to your response
+- If someone asks for Bart's email or wants to contact Bart directly → add [SUGGEST_CONTACT] to your response
 - Only suggest buttons when they directly address what the person is asking for
 - The markers will be removed from your response and converted to buttons automatically
 
@@ -229,6 +230,10 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         if (response.includes('[SUGGEST_CONSULTING]')) {
           suggestedButtons.push({ text: "Get consulting help", value: "calendly_schedule" });
           response = response.replace('[SUGGEST_CONSULTING]', '');
+        }
+        if (response.includes('[SUGGEST_CONTACT]')) {
+          suggestedButtons.push({ text: "Contact Bart", value: "show_contact_form" });
+          response = response.replace('[SUGGEST_CONTACT]', '');
         }
         
         // Check for escalation triggers - be much more specific and don't escalate basic questions

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
+import InlineContactForm from './components/InlineContactForm.jsx';
 
 export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [messages, setMessages] = useState([]);
@@ -12,6 +13,7 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [isAbusive, setIsAbusive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSentInitialMessage, setHasSentInitialMessage] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom when new messages are added
@@ -269,6 +271,16 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
     } else if (value === 'handoff_email') {
       // Start the handoff triage/contact flow in-app
       setShowEscalation(true);
+    } else if (value === 'show_contact_form') {
+      // Show inline contact form
+      setShowContactForm(true);
+      const response = {
+        text: "I can't share Bart's email directly, but you can reach him through this contact form. He checks these messages regularly and will respond to you.",
+        isUser: false,
+        showButtons: false,
+        showContactForm: true
+      };
+      setMessages(prev => [...prev, response]);
     } else if (value === 'handoff_schedule') {
       // Open Bart's Calendly directly (provided link)
       window.open('https://calendly.com/bartpaden/1-on-1-mentorships', '_blank');

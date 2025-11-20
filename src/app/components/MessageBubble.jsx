@@ -1,6 +1,7 @@
 import React from 'react';
+import InlineContactForm from './InlineContactForm.jsx';
 
-export default function MessageBubble({ message, isUser = false, showButtons = false, buttonOptions = [], onButtonClick }) {
+export default function MessageBubble({ message, isUser = false, showButtons = false, buttonOptions = [], onButtonClick, showContactForm = false, onContactSuccess }) {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6 px-2`}>
       <div className={`max-w-[60%] ${isUser ? 'text-right' : 'text-left'}`}>
@@ -19,11 +20,17 @@ export default function MessageBubble({ message, isUser = false, showButtons = f
             ? 'bg-amber text-white rounded-br-md' 
             : 'bg-warm-offWhiteAlt text-warm-charcoal rounded-bl-md border border-warm-border'
           }`}>
-            <p className="text-base sm:text-lg whitespace-pre-wrap leading-relaxed" style={{ lineHeight: '1.6' }}>
-              {message}
-            </p>
-          </div>
+          <p className="text-base sm:text-lg whitespace-pre-wrap leading-relaxed" style={{ lineHeight: '1.6' }}>
+            {message}
+          </p>
         </div>
+        </div>
+        
+        {showContactForm && !isUser && (
+          <div className="mt-3">
+            <InlineContactForm onSuccess={onContactSuccess} />
+          </div>
+        )}
         
         {showButtons && buttonOptions && buttonOptions.length > 0 && (
           <div className={`mt-3 space-y-2 ${isUser ? 'text-right' : 'text-left'}`}>
