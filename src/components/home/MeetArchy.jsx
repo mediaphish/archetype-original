@@ -7,6 +7,17 @@ import ChatApp from '../../app/ChatApp';
 
 export default function MeetArchy() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [initialMessage, setInitialMessage] = useState('');
+  const [previewInput, setPreviewInput] = useState('');
+
+  const handlePreviewSubmit = (e) => {
+    e.preventDefault();
+    if (previewInput.trim()) {
+      setInitialMessage(previewInput.trim());
+      setIsChatOpen(true);
+      setPreviewInput('');
+    }
+  };
 
   return (
     <>
@@ -43,12 +54,9 @@ export default function MeetArchy() {
               </button>
             </div>
             
-            {/* Right Column: Static Chat Preview - Clickable to Open Full Chat */}
+            {/* Right Column: Functional Chat Preview - Input opens full chat on submit */}
             <div>
-              <div 
-                className="bg-gradient-to-br from-sand to-cream rounded-3xl p-8 shadow-xl cursor-pointer hover:shadow-2xl transition-shadow duration-300"
-                onClick={() => setIsChatOpen(true)}
-              >
+              <div className="bg-gradient-to-br from-sand to-cream rounded-3xl p-8 shadow-xl">
                 <div className="bg-white rounded-2xl p-6 shadow-sm">
                   <div className="flex items-start gap-3 mb-4">
                     <img 
@@ -67,13 +75,15 @@ export default function MeetArchy() {
                     </div>
                   </div>
                   <div className="border-t pt-4">
-                    <input 
-                      placeholder="Ask Archy anything..." 
-                      className="w-full px-4 py-3 bg-[#E8D5C4]/30 rounded-xl text-sm placeholder:text-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C]/20 cursor-pointer" 
-                      disabled 
-                      type="text"
-                      readOnly
-                    />
+                    <form onSubmit={handlePreviewSubmit}>
+                      <input 
+                        placeholder="Ask Archy anything..." 
+                        value={previewInput}
+                        onChange={(e) => setPreviewInput(e.target.value)}
+                        className="w-full px-4 py-3 bg-[#E8D5C4]/30 rounded-xl text-sm placeholder:text-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C]/20" 
+                        type="text"
+                      />
+                    </form>
                   </div>
                 </div>
               </div>
@@ -82,7 +92,7 @@ export default function MeetArchy() {
         </div>
       </section>
 
-      {/* Full Chat Modal - Opens when user clicks preview or button */}
+      {/* Full Chat Modal - Opens when user submits input */}
       {isChatOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setIsChatOpen(false)}>
           <div className="w-full max-w-md h-[85vh] max-h-[700px] flex flex-col" onClick={(e) => e.stopPropagation()}>
@@ -111,9 +121,9 @@ export default function MeetArchy() {
                 </button>
               </div>
 
-              {/* Chat App - Context-aware based on current page */}
+              {/* Chat App - Context-aware, with initial message if provided */}
               <div className="flex-1 overflow-hidden min-h-0">
-                <ChatApp context="home" />
+                <ChatApp context="home" initialMessage={initialMessage} />
               </div>
             </div>
           </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
 
-export default function ChatApp({ context = 'default' }) {
+export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [showEscalation, setShowEscalation] = useState(false);
@@ -12,6 +12,7 @@ export default function ChatApp({ context = 'default' }) {
   const [isAbusive, setIsAbusive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showAnalogButton, setShowAnalogButton] = useState(true);
+  const [hasSentInitialMessage, setHasSentInitialMessage] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom when new messages are added
@@ -69,6 +70,18 @@ export default function ChatApp({ context = 'default' }) {
     };
     setMessages([greetingMessage]);
   }, [context]);
+
+  // Auto-send initial message if provided (from preview input)
+  useEffect(() => {
+    if (initialMessage && !hasSentInitialMessage && messages.length > 0) {
+      // Wait a moment for greeting to render, then send initial message
+      const timer = setTimeout(() => {
+        setHasSentInitialMessage(true);
+        handleSendMessage(initialMessage);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [initialMessage, hasSentInitialMessage, messages.length]);
 
   const detectAbuse = (message) => {
     const abusiveKeywords = ['fuck', 'shit', 'damn', 'bitch', 'asshole', 'idiot', 'stupid', 'hate', 'kill', 'die'];
