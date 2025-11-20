@@ -80,11 +80,29 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   }, [initialMessage, hasSentInitialMessage]);
 
   const detectAbuse = (message) => {
-    const abusiveKeywords = ['fuck', 'shit', 'damn', 'bitch', 'asshole', 'idiot', 'stupid', 'hate', 'kill', 'die'];
-    const aggressivePatterns = /(you're|you are|you)\s+(an?\s+)?(idiot|stupid|dumb|worthless|useless)/i;
+    const messageLower = message.toLowerCase();
     
-    return abusiveKeywords.some(keyword => message.toLowerCase().includes(keyword)) || 
-           aggressivePatterns.test(message);
+    // Context-aware abuse detection - only flag actual threats/insults, not casual language
+    // Words that are ONLY abusive when directed at someone or used as threats
+    const directedInsults = [
+      /(you're|you are|you)\s+(an?\s+)?(idiot|stupid|dumb|worthless|useless|asshole|bitch)/i,
+      /(fuck|shit)\s+(you|off|yourself)/i,
+      /(go|get)\s+(fuck|die)/i
+    ];
+    
+    // Direct threats
+    const threats = [
+      /(kill|die|hurt|harm)\s+(you|yourself|your|me|myself)/i,
+      /(hope|wish)\s+(you|they|he|she)\s+(die|kill|hurt)/i
+    ];
+    
+    // Check for directed insults or threats
+    const hasDirectedInsult = directedInsults.some(pattern => pattern.test(message));
+    const hasThreat = threats.some(pattern => pattern.test(message));
+    
+    // Only flag if it's actually abusive (directed at someone or threatening)
+    // Allow casual language like "damn, that's awesome" or "this is shit" (describing a situation)
+    return hasDirectedInsult || hasThreat;
   };
 
   const detectDisinterest = (message) => {
