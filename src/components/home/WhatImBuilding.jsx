@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function WhatImBuilding() {
   return (
-    <section id="mentoring" className="pt-0 pb-32" style={{background: 'linear-gradient(to bottom, white 0%, white 30%, #F5F5F5 100%)'}}>
+    <section id="mentoring" className="py-32" style={{background: 'linear-gradient(to bottom, white 0%, white 30%, #F5F5F5 100%)'}}>
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-[#2B2D2F] mb-4 font-serif">
