@@ -470,7 +470,7 @@ export default function ChatApp({ context = 'default' }) {
     <div className="h-full flex flex-col bg-white relative chat-container">
       <div className="flex-1 flex flex-col w-full mx-auto px-4 md:px-6 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
-        <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
+        <div className="flex-1 overflow-y-auto min-h-0" style={{ maxHeight: 'calc(100% - 120px)' }}>
           {messages.length > 0 && (
             <div className="py-8">
               {messages.map((message, index) => (
@@ -505,7 +505,7 @@ export default function ChatApp({ context = 'default' }) {
         </div>
 
         {/* Input Area - Fixed at bottom */}
-        <div className="flex-shrink-0 w-full p-2 sm:p-4 bg-warm-offWhite border-t border-warm-border">
+        <div className="flex-shrink-0 w-full p-4 bg-white border-t border-gray-200">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
@@ -525,12 +525,12 @@ export default function ChatApp({ context = 'default' }) {
               onFocus={(e) => e.preventDefault()}
               placeholder={isLoading ? "Archy is thinking..." : "Tell me what's going on."}
               disabled={isLoading}
-              className="flex-1 px-3 py-2 sm:px-4 sm:py-3 text-base sm:text-lg border border-warm-border bg-warm-offWhite text-warm-charcoal placeholder-warm-gray focus:outline-none focus:border-amber focus:ring-2 focus:ring-amber/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className="flex-1 px-4 py-3 text-base border border-gray-300 bg-[#E8D5C4]/30 text-[#2B2D2F] placeholder-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] focus:ring-2 focus:ring-[#C85A3C]/20 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || isLoading}
-              className="bg-amber text-white px-4 py-2 sm:px-6 sm:py-3 text-base sm:text-lg hover:bg-amber-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 rounded-lg whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 min-h-[44px]"
+              className="bg-[#C85A3C] text-white px-6 py-3 text-base hover:bg-[#B54A32] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 rounded-xl whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-offset-2 min-h-[44px]"
               aria-label="Send message"
             >
               {isLoading ? "..." : "Send"}
