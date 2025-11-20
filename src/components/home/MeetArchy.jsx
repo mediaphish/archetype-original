@@ -2,10 +2,21 @@
  * Meet Archy Section
  * v0 Design - EXACT IMPLEMENTATION - Matches V0 UI perfectly
  */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ChatApp from '../../app/ChatApp';
 
 export default function MeetArchy() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section id="archy" className="pt-12 md:pt-16 lg:pt-24 pb-8 bg-white">
       <div className="container mx-auto px-6 md:px-12 max-w-6xl">
@@ -40,7 +51,7 @@ export default function MeetArchy() {
           {/* Right Column: Functional Chat - EXACT V0 STYLING */}
           <div>
             <div className="bg-gradient-to-br from-sand to-cream rounded-3xl p-4 md:p-6 lg:p-8 shadow-xl">
-              <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ minHeight: '350px', maxHeight: '500px' }}>
+              <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ minHeight: isMobile ? '350px' : '400px', maxHeight: isMobile ? '450px' : '600px' }}>
                 <ChatApp context="home" />
               </div>
             </div>
