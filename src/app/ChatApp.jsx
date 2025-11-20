@@ -40,8 +40,14 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Show greeting immediately - context-aware
+  // Show greeting immediately - context-aware (skip if initialMessage provided)
   useEffect(() => {
+    if (initialMessage) {
+      // Skip greeting if user already has a question
+      setMessages([]);
+      return;
+    }
+    
     setShowGreeting(true);
     let greetingText;
     
@@ -69,27 +75,22 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
       showButtons: false
     };
     setMessages([greetingMessage]);
-  }, [context]);
+  }, [context, initialMessage]);
 
   // Auto-send initial message if provided (from preview input)
   useEffect(() => {
-    if (initialMessage && !hasSentInitialMessage && messages.length > 0) {
-      // Wait a moment for greeting to render, then send initial message
+    if (initialMessage && !hasSentInitialMessage) {
+      // Wait a moment for component to mount, then send initial message
       const timer = setTimeout(() => {
         setHasSentInitialMessage(true);
-        // Add user message and trigger send
-        const userMessage = { text: initialMessage, isUser: true };
-        setMessages(prev => [...prev, userMessage]);
         setInputValue(initialMessage);
-        // Trigger the send by calling handleSendMessage after state updates
-        setTimeout(() => {
-          handleSendMessage(initialMessage);
-        }, 100);
-      }, 500);
+        // handleSendMessage will add the user message itself, so we don't add it here
+        handleSendMessage(initialMessage);
+      }, 300);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialMessage, hasSentInitialMessage, messages.length]);
+  }, [initialMessage, hasSentInitialMessage]);
 
   const detectAbuse = (message) => {
     const abusiveKeywords = ['fuck', 'shit', 'damn', 'bitch', 'asshole', 'idiot', 'stupid', 'hate', 'kill', 'die'];
