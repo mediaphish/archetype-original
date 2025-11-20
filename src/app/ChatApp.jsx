@@ -11,7 +11,6 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [showGreeting, setShowGreeting] = useState(false);
   const [isAbusive, setIsAbusive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showAnalogButton, setShowAnalogButton] = useState(true);
   const [hasSentInitialMessage, setHasSentInitialMessage] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -25,20 +24,6 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
     }
   }, [messages]);
 
-  // Hide analog button when user scrolls past chat area
-  useEffect(() => {
-    const handleScroll = () => {
-      const chatContainer = document.querySelector('.chat-container');
-      if (chatContainer) {
-        const rect = chatContainer.getBoundingClientRect();
-        // Hide button when chat container is above the viewport
-        setShowAnalogButton(rect.bottom > 0);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Show greeting immediately - context-aware (skip if initialMessage provided)
   useEffect(() => {
@@ -560,51 +545,6 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
           </form>
         </div>
 
-        {/* Scroll Down Button - Positioned below chat box */}
-        {showAnalogButton && (
-          <div className="flex-shrink-0 w-full flex justify-center py-3 sm:py-4">
-            <button
-              onClick={() => {
-                const aboutSection = document.getElementById('about');
-                if (aboutSection) {
-                  aboutSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              role="button"
-              tabIndex={0}
-              aria-label="Scroll to content below"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  const aboutSection = document.getElementById('about');
-                  if (aboutSection) {
-                    aboutSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }
-              }}
-              className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 rounded-lg transition-all duration-300 hover:opacity-80"
-            >
-              {/* Mobile: Just bouncing arrow */}
-              <div className="md:hidden">
-                <svg 
-                  className="w-6 h-6 text-amber animate-bounce" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </div>
-              {/* Desktop: Text with arrow */}
-              <div className="hidden md:flex items-center space-x-2 bg-amber text-white px-4 py-2 rounded-lg shadow-lg hover:bg-amber-dark transition-all duration-300">
-                <span className="text-sm font-medium">Analog stuff down here</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </div>
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
