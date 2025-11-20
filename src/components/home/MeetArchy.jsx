@@ -3,6 +3,7 @@
  * v0 Design - EXACT IMPLEMENTATION - Matches V0 UI perfectly
  */
 import React from 'react';
+import ChatApp from '../../app/ChatApp';
 
 export default function MeetArchy() {
   return (
@@ -36,34 +37,11 @@ export default function MeetArchy() {
             </button>
           </div>
           
-          {/* Right Column: Chat Preview - EXACT V0 STYLING */}
+          {/* Right Column: Functional Chat - EXACT V0 STYLING */}
           <div>
             <div className="bg-gradient-to-br from-sand to-cream rounded-3xl p-8 shadow-xl">
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <div className="flex items-start gap-3 mb-4">
-                  <img 
-                    alt="Archy avatar" 
-                    className="w-16 h-16 rounded-full flex-shrink-0 object-cover" 
-                    src="/images/archy-avatar.png"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-[#2B2D2F] mb-1">Archy</p>
-                    <p className="text-[#6B6B6B] text-sm leading-relaxed">
-                      "Leadership isn't about control—it's about creating space for others to grow. What's one thing holding your team back right now?"
-                    </p>
-                  </div>
-                </div>
-                <div className="border-t pt-4">
-                  <input 
-                    placeholder="Ask Archy anything..." 
-                    className="w-full px-4 py-3 bg-[#E8D5C4]/30 rounded-xl text-sm placeholder:text-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C]/20" 
-                    disabled 
-                    type="text"
-                  />
-                </div>
+              <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ minHeight: '500px', maxHeight: '600px' }}>
+                <ChatApp context="home" />
               </div>
             </div>
           </div>

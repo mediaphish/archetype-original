@@ -53,10 +53,10 @@ export default function FloatingArchyButton() {
       {/* Chat Overlay - Opens when button is clicked */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-end p-4 md:p-8 pointer-events-none">
-          <div className="w-full max-w-md h-[600px] pointer-events-auto">
-            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col">
+          <div className="w-full max-w-md h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
+            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
                     <img
@@ -69,7 +69,7 @@ export default function FloatingArchyButton() {
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors text-2xl leading-none"
+                  className="text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center"
                   aria-label="Close chat"
                 >
                   ×
@@ -77,7 +77,7 @@ export default function FloatingArchyButton() {
               </div>
               
               {/* Chat App - Context-aware based on current page */}
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 min-h-0 overflow-hidden">
                 <ChatApp context={context} />
               </div>
             </div>

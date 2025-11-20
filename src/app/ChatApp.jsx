@@ -467,8 +467,8 @@ export default function ChatApp({ context = 'default' }) {
   };
 
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col bg-warm-offWhite relative chat-container">
-      <div className="flex-1 flex flex-col w-full sm:w-[70vw] mx-auto px-4 h-full">
+    <div className="h-full flex flex-col bg-white relative chat-container">
+      <div className="flex-1 flex flex-col w-full mx-auto px-4 md:px-6 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
         <div className="flex-1 overflow-y-auto min-h-0 max-h-[calc(100vh-300px)]">
           {messages.length > 0 && (
