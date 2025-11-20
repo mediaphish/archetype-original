@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function HomeHero() {
   return (
-    <section className="min-h-screen bg-gradient-to-br from-orange-50 via-[#F5E6D3] to-white pt-20 pb-32">
+    <section className="min-h-screen pt-20 pb-32" style={{background: 'linear-gradient(to bottom, #FFF7ED 0%, #F5E6D3 40%, white 70%, white 100%)'}}>
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
