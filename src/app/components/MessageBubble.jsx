@@ -3,7 +3,17 @@ import React from 'react';
 export default function MessageBubble({ message, isUser = false, showButtons = false, buttonOptions = [], onButtonClick }) {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6 px-2`}>
-      <div className={`max-w-[60%] ${isUser ? 'text-right' : 'text-left'}`}>
+      <div className={`max-w-[60%] ${isUser ? 'text-right' : 'text-left'} flex ${isUser ? 'flex-row-reverse' : 'flex-row'} gap-3`}>
+        {!isUser && (
+          <img 
+            src="/images/archy-avatar.png" 
+            alt="Archy" 
+            className="w-10 h-10 rounded-full flex-shrink-0 object-cover"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        )}
         <div className={`px-4 py-3 rounded-2xl ${isUser 
           ? 'bg-amber text-white rounded-br-md' 
           : 'bg-warm-offWhiteAlt text-warm-charcoal rounded-bl-md border border-warm-border'

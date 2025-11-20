@@ -40,7 +40,7 @@ export default function MeetArchy() {
           {/* Right Column: Functional Chat - EXACT V0 STYLING */}
           <div>
             <div className="bg-gradient-to-br from-sand to-cream rounded-3xl p-8 shadow-xl">
-              <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ minHeight: '500px', maxHeight: '600px' }}>
+              <div className="bg-white rounded-2xl shadow-sm overflow-hidden" style={{ height: '600px' }}>
                 <ChatApp context="home" />
               </div>
             </div>
