@@ -31,7 +31,7 @@ export default function WhatImBuilding() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              1:1 mentoring, team rebuilds, and workshops. Real transformation, not corporate platitudes.
+              Whether you're rebuilding a team, navigating a tough transition, or just trying to lead better, I work 1:1 with leaders who want real transformation—not corporate theater. This is mentoring for people who are tired of buzzwords and ready to do the work.
             </p>
             
             <button className="w-full bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200 mb-3">
@@ -56,7 +56,7 @@ export default function WhatImBuilding() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              Evidence-based culture measurement. Know where you actually stand, not where you hope you are.
+              Culture isn't a vibe. It's measurable. I'm building tools that help you see where your culture actually stands—not where you hope it is. Evidence-based insights, not feel-good surveys.
             </p>
             
             <button className="w-full bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200 mb-3">
@@ -81,7 +81,7 @@ export default function WhatImBuilding() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              Journal, playbooks, and resources to develop servant leaders who build others up.
+              Journal entries, frameworks, and real-world playbooks for servant leadership. No fluff. No motivational posters. Just practical wisdom for leaders who want to build others up.
             </p>
             
             <button className="w-full bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200 mb-3">

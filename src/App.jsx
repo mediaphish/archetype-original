@@ -9,6 +9,9 @@ import HomeHero from "./components/home/HomeHero";
 import MeetArchy from "./components/home/MeetArchy";
 import WhatImBuilding from "./components/home/WhatImBuilding";
 import AntiProjects from "./components/home/AntiProjects";
+import WhyArchetypeOriginal from "./components/home/WhyArchetypeOriginal";
+import PsychologyBehind from "./components/home/PsychologyBehind";
+import LeadershipLegacy from "./components/home/LeadershipLegacy";
 import ArchetypeFitness from "./components/home/ArchetypeFitness";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
@@ -463,6 +466,9 @@ export default function App() {
         <MeetArchy />
         <WhatImBuilding />
         <AntiProjects />
+        <WhyArchetypeOriginal />
+        <PsychologyBehind />
+        <LeadershipLegacy />
         <ArchetypeFitness />
         <Contact />
         <FloatingArchyButton />

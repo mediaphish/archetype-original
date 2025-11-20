@@ -31,7 +31,7 @@ export default function AntiProjects() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              When leadership becomes a numbers game, people become expendable. Identify the patterns before they destroy your culture.
+              When leadership becomes a numbers game, people become expendable. This diagnostic helps you spot the patterns of transactional leadership before they destroy your culture.
             </p>
             
             <button className="bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200">
@@ -52,7 +52,7 @@ export default function AntiProjects() {
             </h3>
             
             <p className="text-lg leading-relaxed text-[#6B6B6B] mb-6">
-              The heat-map diagnostic for toxic leadership. See where the fire is burning before it spreads.
+              A heat-map diagnostic for toxic leadership. See where the fire is burning—attention-seeking, control, blame, ego—before it spreads. Real talk about the leaders who break teams.
             </p>
             
             <button className="bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200">
