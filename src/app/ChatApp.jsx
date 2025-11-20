@@ -594,13 +594,13 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               onFocus={(e) => e.preventDefault()}
-              placeholder={isLoading ? "Archy is thinking..." : "Tell me what's going on."}
-              disabled={isLoading}
+              placeholder={isBlocked ? "Chat is closed" : (isLoading ? "Archy is thinking..." : "Tell me what's going on.")}
+              disabled={isLoading || isBlocked}
               className="flex-1 px-4 py-3 text-base border border-gray-300 bg-[#E8D5C4]/30 text-[#2B2D2F] placeholder-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] focus:ring-2 focus:ring-[#C85A3C]/20 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             />
             <button
               type="submit"
-              disabled={!inputValue.trim() || isLoading}
+              disabled={!inputValue.trim() || isLoading || isBlocked}
               className="bg-[#C85A3C] text-white px-6 py-3 text-base hover:bg-[#B54A32] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 rounded-xl whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-offset-2 min-h-[44px]"
               aria-label="Send message"
             >
