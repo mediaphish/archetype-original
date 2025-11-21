@@ -4,13 +4,13 @@ import SEO from "../../components/SEO";
 export default function ALIApply() {
   const [formData, setFormData] = useState({
     fullName: "",
+    email: "",
     companyName: "",
     companySize: "",
-    email: "",
-    phone: "",
-    website: "",
     role: "",
-    whyInterested: "",
+    industry: "",
+    location: "",
+    challenge: "",
     consent: false
   });
 
@@ -40,12 +40,27 @@ export default function ALIApply() {
         break;
       case "companySize":
         if (!value) {
-          return "Please select your company size range";
+          return "Please select your company size";
+        }
+        break;
+      case "role":
+        if (!value || value.trim().length < 2) {
+          return "Please enter your role";
+        }
+        break;
+      case "industry":
+        if (!value || value.trim().length < 2) {
+          return "Please enter your industry";
+        }
+        break;
+      case "location":
+        if (!value || value.trim().length < 2) {
+          return "Please enter your location";
         }
         break;
       case "consent":
         if (!value) {
-          return "Please review and accept our privacy policy to continue";
+          return "Please accept the terms to continue";
         }
         break;
       default:
@@ -118,277 +133,220 @@ export default function ALIApply() {
   return (
     <>
       <SEO pageKey="ali-apply" />
-      <div className="min-h-screen py-16 md:py-24" style={{ backgroundColor: "#F8F7F3" }}>
-        <div className="container max-w-2xl mx-auto px-6">
-          <div className="bg-white rounded-xl shadow-lg p-8 md:p-12 border-2" style={{ borderColor: "#E8E2D0" }}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: "#1D1F21" }}>
-              Apply to Join the ALI Pilot
-            </h1>
-            <p className="text-lg mb-8" style={{ color: "#78716C" }}>
-              Help us build a tool that measures leadership that lasts.
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Full Name */}
-              <div>
-                <label htmlFor="fullName" className="label" style={{ color: "#1D1F21" }}>
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className={`input ${errors.fullName ? "border-red-500" : ""}`}
-                  style={{ 
-                    borderColor: errors.fullName ? "#DC2626" : "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                />
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>
-                  This will be your primary contact name for the pilot program
-                </p>
-                {errors.fullName && (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-red-500">⚠</span>
-                    <p className="text-sm text-red-600">{errors.fullName}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Email Address */}
-              <div>
-                <label htmlFor="email" className="label" style={{ color: "#1D1F21" }}>
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`input ${errors.email ? "border-red-500" : ""}`}
-                  style={{ 
-                    borderColor: errors.email ? "#DC2626" : "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                />
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>
-                  We'll send your survey links and pilot updates here
-                </p>
-                {errors.email && (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-red-500">⚠</span>
-                    <p className="text-sm text-red-600">{errors.email}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Phone Number (Optional) */}
-              <div>
-                <label htmlFor="phone" className="label" style={{ color: "#1D1F21" }}>
-                  Phone Number <span className="text-sm font-normal" style={{ color: "#78716C" }}>(Optional)</span>
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="input"
-                  style={{ 
-                    borderColor: "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                />
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>
-                  In case we need to reach you with time-sensitive information
-                </p>
-              </div>
-
-              {/* Company Name */}
-              <div>
-                <label htmlFor="companyName" className="label" style={{ color: "#1D1F21" }}>
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  id="companyName"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  className={`input ${errors.companyName ? "border-red-500" : ""}`}
-                  style={{ 
-                    borderColor: errors.companyName ? "#DC2626" : "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                />
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>
-                  The business name that will appear on your assessment dashboard
-                </p>
-                {errors.companyName && (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-red-500">⚠</span>
-                    <p className="text-sm text-red-600">{errors.companyName}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Company Size */}
-              <div>
-                <label htmlFor="companySize" className="label" style={{ color: "#1D1F21" }}>
-                  Company Size
-                </label>
-                <select
-                  id="companySize"
-                  name="companySize"
-                  value={formData.companySize}
-                  onChange={handleChange}
-                  className={`input ${errors.companySize ? "border-red-500" : ""}`}
-                  style={{ 
-                    borderColor: errors.companySize ? "#DC2626" : "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                >
-                  <option value="">Select a range</option>
-                  <option value="10-20">10-20 employees</option>
-                  <option value="21-50">21-50 employees</option>
-                  <option value="51-100">51-100 employees</option>
-                  <option value="101-250">101-250 employees</option>
-                </select>
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>
-                  Select the range that best represents your total employee count
-                </p>
-                {errors.companySize && (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-red-500">⚠</span>
-                    <p className="text-sm text-red-600">{errors.companySize}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Company Website (Optional) */}
-              <div>
-                <label htmlFor="website" className="label" style={{ color: "#1D1F21" }}>
-                  Company Website <span className="text-sm font-normal" style={{ color: "#78716C" }}>(Optional)</span>
-                </label>
-                <input
-                  type="text"
-                  id="website"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleChange}
-                  className="input"
-                  style={{ 
-                    borderColor: "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                />
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>
-                  Helps us understand your business context
-                </p>
-              </div>
-
-              {/* Role / Position */}
-              <div>
-                <label htmlFor="role" className="label" style={{ color: "#1D1F21" }}>
-                  Role / Position
-                </label>
-                <input
-                  type="text"
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  className="input"
-                  style={{ 
-                    borderColor: "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                />
-              </div>
-
-              {/* Why Interested (Optional) */}
-              <div>
-                <label htmlFor="whyInterested" className="label" style={{ color: "#1D1F21" }}>
-                  Why are you interested in the Archetype Leadership Index? <span className="text-sm font-normal" style={{ color: "#78716C" }}>(Optional)</span>
-                </label>
-                <textarea
-                  id="whyInterested"
-                  name="whyInterested"
-                  value={formData.whyInterested}
-                  onChange={handleChange}
-                  rows={4}
-                  className="textarea"
-                  style={{ 
-                    borderColor: "#E8E2D0",
-                    backgroundColor: "#F8F7F3"
-                  }}
-                />
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>
-                  Share what you hope to learn or improve through leadership measurement
-                </p>
-              </div>
-
-              {/* Consent Checkbox */}
-              <div>
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="consent"
-                    checked={formData.consent}
-                    onChange={handleChange}
-                    className="mt-1 w-5 h-5 rounded border-2"
-                    style={{ 
-                      borderColor: errors.consent ? "#DC2626" : "#E8E2D0",
-                      accentColor: "#6A1B1A"
-                    }}
-                  />
-                  <span className="text-sm" style={{ color: "#1D1F21" }}>
-                    I understand that all team assessments are anonymous, and individual responses will never be shared. I have reviewed the Privacy Policy.
-                  </span>
-                </label>
-                {errors.consent && (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-red-500">⚠</span>
-                    <p className="text-sm text-red-600">{errors.consent}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Submit Error */}
-              {submitError && (
-                <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
-                  <p className="text-sm text-red-600">{submitError}</p>
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 disabled:opacity-50"
-                style={{ backgroundColor: "#6A1B1A" }}
-                onMouseEnter={(e) => !isSubmitting && (e.target.style.backgroundColor = "#7A2B2A")}
-                onMouseLeave={(e) => !isSubmitting && (e.target.style.backgroundColor = "#6A1B1A")}
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="animate-spin">⏳</span>
-                    Submitting...
-                  </span>
-                ) : (
-                  "Submit Application"
-                )}
-              </button>
-            </form>
-
-            {/* Privacy Note */}
-            <div className="mt-8 pt-8 border-t-2" style={{ borderColor: "#E8E2D0" }}>
-              <p className="text-sm text-center" style={{ color: "#78716C" }}>
-                This form does not subscribe you to a list. Responses are kept private.
+      <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white border border-[#1A1A1A]/10 p-8 sm:p-10 md:p-12">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
+                Join the ALI Pilot
+              </h1>
+              
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-8 sm:mb-10 text-pretty">
+                Let's talk about where you are, what you're trying to build, and whether ALI is the right fit.
               </p>
+
+              <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+                {/* Full Name */}
+                <div>
+                  <label htmlFor="fullName" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Full Name <span className="text-[#C85A3C]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                      errors.fullName ? "border-red-500" : "border-[#1A1A1A]/10"
+                    }`}
+                  />
+                  {errors.fullName && (
+                    <p className="text-sm text-red-600 mt-2">{errors.fullName}</p>
+                  )}
+                </div>
+
+                {/* Email Address */}
+                <div>
+                  <label htmlFor="email" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Email Address <span className="text-[#C85A3C]">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                      errors.email ? "border-red-500" : "border-[#1A1A1A]/10"
+                    }`}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-600 mt-2">{errors.email}</p>
+                  )}
+                </div>
+
+                {/* Company Name */}
+                <div>
+                  <label htmlFor="companyName" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Company Name <span className="text-[#C85A3C]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="companyName"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                      errors.companyName ? "border-red-500" : "border-[#1A1A1A]/10"
+                    }`}
+                  />
+                  {errors.companyName && (
+                    <p className="text-sm text-red-600 mt-2">{errors.companyName}</p>
+                  )}
+                </div>
+
+                {/* Company Size */}
+                <div>
+                  <label htmlFor="companySize" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Company Size <span className="text-[#C85A3C]">*</span>
+                  </label>
+                  <select
+                    id="companySize"
+                    name="companySize"
+                    value={formData.companySize}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                      errors.companySize ? "border-red-500" : "border-[#1A1A1A]/10"
+                    }`}
+                  >
+                    <option value="">Select</option>
+                    <option value="10-25">10-25 employees</option>
+                    <option value="26-50">26-50 employees</option>
+                    <option value="51-100">51-100 employees</option>
+                    <option value="101-250">101-250 employees</option>
+                  </select>
+                  {errors.companySize && (
+                    <p className="text-sm text-red-600 mt-2">{errors.companySize}</p>
+                  )}
+                </div>
+
+                {/* Your Role */}
+                <div>
+                  <label htmlFor="role" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Your Role <span className="text-[#C85A3C]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="role"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    placeholder="e.g., Owner, CEO, Operations, HR"
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                      errors.role ? "border-red-500" : "border-[#1A1A1A]/10"
+                    }`}
+                  />
+                  {errors.role && (
+                    <p className="text-sm text-red-600 mt-2">{errors.role}</p>
+                  )}
+                </div>
+
+                {/* Industry */}
+                <div>
+                  <label htmlFor="industry" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Industry <span className="text-[#C85A3C]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="industry"
+                    name="industry"
+                    value={formData.industry}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                      errors.industry ? "border-red-500" : "border-[#1A1A1A]/10"
+                    }`}
+                  />
+                  {errors.industry && (
+                    <p className="text-sm text-red-600 mt-2">{errors.industry}</p>
+                  )}
+                </div>
+
+                {/* Location */}
+                <div>
+                  <label htmlFor="location" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Location <span className="text-[#C85A3C]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    placeholder="City, State/Region, Country"
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                      errors.location ? "border-red-500" : "border-[#1A1A1A]/10"
+                    }`}
+                  />
+                  {errors.location && (
+                    <p className="text-sm text-red-600 mt-2">{errors.location}</p>
+                  )}
+                </div>
+
+                {/* Challenge (Optional) */}
+                <div>
+                  <label htmlFor="challenge" className="block text-base font-medium text-[#1A1A1A] mb-2">
+                    Challenge <span className="text-sm font-normal text-[#6B6B6B]">(Optional)</span>
+                  </label>
+                  <textarea
+                    id="challenge"
+                    name="challenge"
+                    value={formData.challenge}
+                    onChange={handleChange}
+                    rows={4}
+                    placeholder="What's the biggest leadership or culture challenge you're facing right now? (Optional)"
+                    className="w-full px-4 py-3 border-2 border-[#1A1A1A]/10 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors resize-none"
+                  />
+                </div>
+
+                {/* Terms Checkbox */}
+                <div>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="consent"
+                      checked={formData.consent}
+                      onChange={handleChange}
+                      className={`mt-1 w-5 h-5 border-2 ${
+                        errors.consent ? "border-red-500" : "border-[#1A1A1A]/10"
+                      } focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-offset-2`}
+                      style={{ accentColor: "#C85A3C" }}
+                    />
+                    <span className="text-base text-[#1A1A1A]">
+                      I'm interested in being part of the ALI pilot and understand this is an early-stage research project. <span className="text-[#C85A3C]">*</span>
+                    </span>
+                  </label>
+                  {errors.consent && (
+                    <p className="text-sm text-red-600 mt-2 ml-8">{errors.consent}</p>
+                  )}
+                </div>
+
+                {/* Submit Error */}
+                {submitError && (
+                  <div className="bg-red-50 border-2 border-red-200 p-4">
+                    <p className="text-sm text-red-600">{submitError}</p>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Submitting..." : "Submit Application"}
+                </button>
+              </form>
             </div>
           </div>
         </div>
@@ -396,4 +354,3 @@ export default function ALIApply() {
     </>
   );
 }
-
