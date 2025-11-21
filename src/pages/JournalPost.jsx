@@ -88,11 +88,13 @@ export default function JournalPost() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-warm-offWhite py-12">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber mx-auto"></div>
-            <p className="mt-4 text-warm-gray">Loading post...</p>
+      <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
+              <p className="mt-4 text-[#6B6B6B]">Loading post...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -101,17 +103,23 @@ export default function JournalPost() {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-warm-offWhite py-12">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center py-12">
-            <h1 className="h1 mb-4">Post Not Found</h1>
-            <p className="p mb-8">{error || 'The post you\'re looking for doesn\'t exist.'}</p>
-            <a 
-              href="/journal" 
-              className="text-amber hover:text-amber-dark font-medium"
-            >
-              ← Back to Journal
-            </a>
+      <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center py-12">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
+                Post Not Found
+              </h1>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-8 text-pretty">
+                {error || 'The post you\'re looking for doesn\'t exist.'}
+              </p>
+              <a 
+                href="/journal" 
+                className="text-[#1A1A1A] hover:underline font-medium text-base sm:text-lg"
+              >
+                ← Back to Journal
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -126,47 +134,50 @@ export default function JournalPost() {
         <meta name="description" content={post.summary || post.title} />
       </Helmet>
       
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
-        <div className="max-w-4xl mx-auto px-4">
-          {/* Back button */}
-          <div className="mb-8 mt-8">
-            <a 
-              href="/journal" 
-              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Journal
-            </a>
-          </div>
+      <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12">
+          <div className="max-w-4xl mx-auto">
+            {/* Back button */}
+            <div className="mb-8 sm:mb-12">
+              <a 
+                href="/journal" 
+                className="inline-flex items-center text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors text-base sm:text-lg"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Journal
+              </a>
+            </div>
 
-          {/* Post Content */}
-          <article className="bg-warm-offWhite rounded-lg shadow-sm border border-warm-border overflow-hidden">
-            <div className="p-6 md:p-8">
-              <div className="flex items-center justify-between mb-6">
-                <time className="text-sm text-warm-gray">
-                  {formatDate(post.publish_date || post.created_at)}
-                </time>
-                {post.original_source && (
-                  <span className="px-2 py-1 bg-warm-border text-warm-gray text-xs rounded">
-                    Originally from {post.original_source}
-                  </span>
-                )}
-              </div>
+            {/* Post Content */}
+            <article className="bg-white border border-[#1A1A1A]/10">
+              <div className="p-6 sm:p-8 md:p-10">
+                <div className="flex items-center justify-between mb-6 sm:mb-8">
+                  <time className="text-sm text-[#6B6B6B]">
+                    {formatDate(post.publish_date || post.created_at)}
+                  </time>
+                  {post.original_source && (
+                    <span className="px-2 py-1 bg-[#FAFAF9] text-[#6B6B6B] text-xs">
+                      Originally from {post.original_source}
+                    </span>
+                  )}
+                </div>
 
-              <h1 className="h1 mb-6">{post.title}</h1>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
+                  {post.title}
+                </h1>
 
               {/* Social Sharing */}
               {post && (
-              <div className="mb-8 pb-6 border-b border-warm-border">
+              <div className="mb-8 sm:mb-10 pb-6 border-b border-[#1A1A1A]/10">
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="text-sm text-warm-gray font-medium">Share:</span>
+                  <span className="text-sm text-[#6B6B6B] font-medium">Share:</span>
                   
                   {/* Twitter */}
                   <button
                     onClick={() => handleSocialShare('twitter')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1DA1F2] text-white hover:bg-[#1a8cd8] transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] text-white hover:bg-[#1a8cd8] transition-colors text-sm font-medium"
                     aria-label="Share on Twitter"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -178,7 +189,7 @@ export default function JournalPost() {
                   {/* LinkedIn */}
                   <button
                     onClick={() => handleSocialShare('linkedin')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0077b5] text-white hover:bg-[#006399] transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#0077b5] text-white hover:bg-[#006399] transition-colors text-sm font-medium"
                     aria-label="Share on LinkedIn"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -190,7 +201,7 @@ export default function JournalPost() {
                   {/* Facebook */}
                   <button
                     onClick={() => handleSocialShare('facebook')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1877F2] text-white hover:bg-[#166fe5] transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#1877F2] text-white hover:bg-[#166fe5] transition-colors text-sm font-medium"
                     aria-label="Share on Facebook"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -202,7 +213,7 @@ export default function JournalPost() {
                   {/* Copy Link */}
                   <button
                     onClick={handleCopyLink}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-warm-border text-warm-charcoal hover:border-terracotta hover:text-terracotta transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 border border-[#1A1A1A]/10 text-[#1A1A1A] hover:border-[#C85A3C] hover:text-[#C85A3C] transition-colors text-sm font-medium"
                     aria-label="Copy link"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,8 +226,8 @@ export default function JournalPost() {
               )}
 
               {post.summary && (
-                <div className="mb-8 p-4 bg-warm-offWhiteAlt border-l-4 border-amber rounded-r-lg">
-                  <p className="p font-semibold text-warm-charcoal" style={{ lineHeight: '1.6' }}>
+                <div className="mb-8 sm:mb-10 p-4 sm:p-6 bg-[#FAFAF9] border-l-[6px] border-[#C85A3C]">
+                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] leading-relaxed">
                     {post.summary}
                   </p>
                 </div>
@@ -224,7 +235,7 @@ export default function JournalPost() {
 
               {/* Post image - show at top if exists */}
               {post.image && (
-                <div className="mb-8 w-full flex justify-center items-center py-6 bg-warm-offWhiteAlt">
+                <div className="mb-8 sm:mb-10 w-full flex justify-center items-center py-6 bg-[#FAFAF9]">
                   <img 
                     src={post.image} 
                     alt={post.title}
@@ -490,24 +501,24 @@ export default function JournalPost() {
                         if (h1Normalized === titleNormalizedForParsing) {
                           return null;
                         }
-                        return <h1 key={index} className="h1 mb-4 mt-8">{h1Content}</h1>;
+                        return <h1 key={index} className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-8 font-serif tracking-tight">{h1Content}</h1>;
                       case 'h2':
-                        return <h2 key={index} className="h2 mb-3 mt-6">{block.content}</h2>;
+                        return <h2 key={index} className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 mt-6 font-serif tracking-tight">{block.content}</h2>;
                       case 'h3':
-                        return <h3 key={index} className="h3 mb-2 mt-4">{block.content}</h3>;
+                        return <h3 key={index} className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-2 sm:mb-3 mt-4 font-serif tracking-tight">{block.content}</h3>;
                       case 'blockquote':
                         return (
-                          <blockquote key={index} className="border-l-4 border-amber pl-6 py-4 my-6 bg-warm-offWhiteAlt rounded-r-lg">
-                            <p className="text-xl md:text-2xl font-semibold text-amber italic" style={{ lineHeight: '1.6' }}>
+                          <blockquote key={index} className="border-l-[6px] border-[#C85A3C] pl-6 sm:pl-8 py-4 my-6 sm:my-8 bg-[#FAFAF9]">
+                            <p className="text-xl sm:text-2xl md:text-3xl italic text-[#1A1A1A] leading-tight font-serif">
                               "{block.content}"
                             </p>
                           </blockquote>
                         );
                       case 'hr':
-                        return <hr key={index} className="my-8 border-warm-border" />;
+                        return <hr key={index} className="my-8 sm:my-10 border-[#1A1A1A]/10" />;
                       case 'image':
                         return (
-                          <div key={index} className="my-8 flex justify-center py-6 bg-warm-offWhiteAlt">
+                          <div key={index} className="my-8 sm:my-10 flex justify-center py-6 bg-[#FAFAF9]">
                             <img 
                               src={block.src} 
                               alt={block.alt || post.title}
@@ -519,7 +530,7 @@ export default function JournalPost() {
                         return (
                           <ul key={index} className="list-disc ml-6 mb-6 space-y-2">
                             {block.items.map((item, itemIndex) => (
-                              <li key={itemIndex} className="p" style={{ lineHeight: '1.6' }}>
+                              <li key={itemIndex} className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
                                 {item}
                               </li>
                             ))}
@@ -540,7 +551,7 @@ export default function JournalPost() {
                         }
                         
                         return (
-                          <p key={index} className="p mb-6" style={{ lineHeight: '1.6' }}>
+                          <p key={index} className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6 text-pretty">
                             {paraContent}
                           </p>
                         );
@@ -556,12 +567,12 @@ export default function JournalPost() {
                 tag.toLowerCase() !== 'journal' && 
                 tag.toLowerCase() !== 'blog'
               ).length > 0 && (
-                <div className="mt-8 pt-8 border-t border-warm-border">
+                <div className="mt-8 sm:mt-10 pt-8 border-t border-[#1A1A1A]/10">
                   <div className="flex flex-wrap gap-2">
                     {post.tags
                       .filter(tag => tag.toLowerCase() !== 'journal' && tag.toLowerCase() !== 'blog')
                       .map(tag => (
-                        <span key={tag} className="px-3 py-1 bg-amber/20 text-amber-dark text-sm rounded-full">
+                        <span key={tag} className="px-3 py-1 bg-[#FAFAF9] text-[#6B6B6B] text-sm">
                           {tag}
                         </span>
                       ))}
@@ -584,7 +595,7 @@ export default function JournalPost() {
                         category.toLowerCase() !== 'blog'
                       )
                       .map(category => (
-                        <span key={category} className="px-3 py-1 bg-warm-border text-warm-gray text-sm rounded-full">
+                        <span key={category} className="px-3 py-1 bg-[#FAFAF9] text-[#6B6B6B] text-sm">
                           {category}
                         </span>
                       ))}

@@ -43,7 +43,7 @@ export default function JournalHighlights() {
 
   if (loading) {
     return (
-      <section className="py-16 sm:py-20 md:py-32 lg:py-40 bg-white">
+      <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
@@ -57,12 +57,16 @@ export default function JournalHighlights() {
   const otherPosts = posts.slice(1);
 
   return (
-    <section className="py-16 sm:py-20 md:py-32 lg:py-40 bg-white">
+    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-[48px] sm:text-[64px] md:text-[72px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-12 font-serif tracking-tight text-balance mb-16 sm:mb-20 md:mb-24">
-            Journal
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance mb-8 sm:mb-10 md:mb-12">
+            Latest From The Journal
           </h2>
+          
+          <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16 md:mb-20 text-pretty">
+            Long-form pieces, frameworks, research-backed insights, and real stories from my own leadership journey.
+          </p>
 
           {posts.length === 0 ? (
             <div className="text-center py-12">
@@ -96,12 +100,22 @@ export default function JournalHighlights() {
                       {formatDate(featuredPost.publish_date || featuredPost.created_at)}
                     </time>
                   </div>
-                  <h3 className="text-[32px] sm:text-[42px] md:text-[48px] lg:text-[64px] font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
                     {featuredPost.title}
                   </h3>
-                  <p className="text-base md:text-lg lg:text-xl leading-relaxed text-[#6B6B6B] text-pretty">
+                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 sm:mb-6 text-pretty">
                     {featuredPost.summary || featuredPost.body?.substring(0, 200) + '...'}
                   </p>
+                  <a 
+                    href={`/journal/${featuredPost.slug}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePostClick(featuredPost.slug);
+                    }}
+                    className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:underline"
+                  >
+                    Read Article →
+                  </a>
                 </article>
               )}
 
@@ -129,10 +143,10 @@ export default function JournalHighlights() {
                           {formatDate(post.publish_date || post.created_at)}
                         </time>
                       </div>
-                      <h3 className="text-[24px] sm:text-[32px] md:text-[40px] lg:text-[48px] font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif tracking-tight text-balance">
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif tracking-tight text-balance">
                         {post.title}
                       </h3>
-                      <p className="text-base md:text-lg leading-relaxed text-[#6B6B6B] line-clamp-3 text-pretty">
+                      <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] line-clamp-3 text-pretty">
                         {post.summary || post.body?.substring(0, 150) + '...'}
                       </p>
                     </article>
@@ -149,9 +163,9 @@ export default function JournalHighlights() {
                     window.history.pushState({}, '', '/journal');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
-                  className="inline-block text-[#1A1A1A] font-medium text-base md:text-lg hover:underline"
+                  className="inline-block bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
                 >
-                  View All Journal Entries →
+                  View all Journal Entries
                 </a>
               </div>
             </>

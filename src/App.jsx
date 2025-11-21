@@ -10,9 +10,8 @@ import MeetArchy from "./components/home/MeetArchy";
 import WhatImBuilding from "./components/home/WhatImBuilding";
 import AntiProjects from "./components/home/AntiProjects";
 import WhyArchetypeOriginal from "./components/home/WhyArchetypeOriginal";
-import PsychologyBehind from "./components/home/PsychologyBehind";
-import LeadershipLegacy from "./components/home/LeadershipLegacy";
 import JournalHighlights from "./components/home/JournalHighlights";
+import FinalCTA from "./components/home/FinalCTA";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
 import AboutPage from "./pages/About";
@@ -467,10 +466,8 @@ export default function App() {
         <WhatImBuilding />
         <AntiProjects />
         <WhyArchetypeOriginal />
-        <PsychologyBehind />
-        <LeadershipLegacy />
         <JournalHighlights />
-        <Contact />
+        <FinalCTA />
         <FloatingArchyButton />
       </main>
     </>
