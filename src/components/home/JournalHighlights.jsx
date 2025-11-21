@@ -57,7 +57,7 @@ export default function JournalHighlights() {
   const otherPosts = posts.slice(1);
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
+    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance mb-8 sm:mb-10 md:mb-12">
@@ -104,7 +104,18 @@ export default function JournalHighlights() {
                     {featuredPost.title}
                   </h3>
                   <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 sm:mb-6 text-pretty">
-                    {featuredPost.summary || featuredPost.body?.substring(0, 200) + '...'}
+                    {(() => {
+                      // Filter out RTF code from summary or body
+                      let text = featuredPost.summary || featuredPost.body || '';
+                      // Remove RTF code patterns
+                      text = text.replace(/\{\\rtf[^}]*\}/gi, '');
+                      text = text.replace(/\\[a-z]+\d*\s*/gi, '');
+                      text = text.replace(/\{[^}]*\}/g, '');
+                      // Clean up extra whitespace
+                      text = text.replace(/\s+/g, ' ').trim();
+                      // Get first 200 chars
+                      return text.length > 200 ? text.substring(0, 200) + '...' : text;
+                    })()}
                   </p>
                   <a 
                     href={`/journal/${featuredPost.slug}`}
@@ -112,7 +123,7 @@ export default function JournalHighlights() {
                       e.preventDefault();
                       handlePostClick(featuredPost.slug);
                     }}
-                    className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:underline"
+                    className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#C85A3C] transition-colors"
                   >
                     Read Article →
                   </a>
@@ -147,7 +158,18 @@ export default function JournalHighlights() {
                         {post.title}
                       </h3>
                       <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] line-clamp-3 text-pretty">
-                        {post.summary || post.body?.substring(0, 150) + '...'}
+                        {(() => {
+                          // Filter out RTF code from summary or body
+                          let text = post.summary || post.body || '';
+                          // Remove RTF code patterns
+                          text = text.replace(/\{\\rtf[^}]*\}/gi, '');
+                          text = text.replace(/\\[a-z]+\d*\s*/gi, '');
+                          text = text.replace(/\{[^}]*\}/g, '');
+                          // Clean up extra whitespace
+                          text = text.replace(/\s+/g, ' ').trim();
+                          // Get first 150 chars
+                          return text.length > 150 ? text.substring(0, 150) + '...' : text;
+                        })()}
                       </p>
                     </article>
                   ))}
@@ -156,17 +178,17 @@ export default function JournalHighlights() {
 
               {/* Link to Journal */}
               <div className="text-center">
-                <a 
-                  href="/journal"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.history.pushState({}, '', '/journal');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
-                  className="inline-block bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
-                >
-                  View all Journal Entries
-                </a>
+                  <a 
+                    href="/journal"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.history.pushState({}, '', '/journal');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="inline-block bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#C85A3C] transition-colors"
+                  >
+                    View all Journal Entries
+                  </a>
               </div>
             </>
           )}
