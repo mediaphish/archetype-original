@@ -4,19 +4,23 @@
 
 :root {
   color-scheme: light;
-  /* v0 Design System Colors */
-  --color-charcoal: #2B2D2F;
+  /* Editorial Minimal Design System Colors */
+  --color-charcoal: #1A1A1A;
   --color-warm-grey: #6B6B6B;
-  --color-light-grey: #F5F5F5;
+  --color-off-white: #FAFAF9;
+  --color-white: #FFFFFF;
+  --color-orange: #C85A3C;
+  --color-orange-dark: #B54A32;
+  /* Legacy mappings for backward compatibility */
   --color-archy-orange: #C85A3C;
-  --color-cream: #F5E6D3;
-  /* Legacy Terracotta (mapped to Archy Orange) */
   --terracotta: #C85A3C;
   --terracotta-dark: #B54A32;
   --terracotta-hover: #B54A32;
   --sienna: #8B4513;
   --burnt-orange: #CC5500;
   --warm-cream: #F5E6D3;
+  --color-cream: #F5E6D3;
+  --color-light-grey: #F5F5F5;
 }
 
 .container {

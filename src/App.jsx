@@ -12,7 +12,7 @@ import AntiProjects from "./components/home/AntiProjects";
 import WhyArchetypeOriginal from "./components/home/WhyArchetypeOriginal";
 import PsychologyBehind from "./components/home/PsychologyBehind";
 import LeadershipLegacy from "./components/home/LeadershipLegacy";
-import ArchetypeFitness from "./components/home/ArchetypeFitness";
+import JournalHighlights from "./components/home/JournalHighlights";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
 import AboutPage from "./pages/About";
@@ -469,7 +469,7 @@ export default function App() {
         <WhyArchetypeOriginal />
         <PsychologyBehind />
         <LeadershipLegacy />
-        <ArchetypeFitness />
+        <JournalHighlights />
         <Contact />
         <FloatingArchyButton />
       </main>

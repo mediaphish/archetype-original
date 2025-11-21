@@ -7,8 +7,14 @@ import React, { useState } from 'react';
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const handleNavigation = (path) => {
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white border-b border-[#1A1A1A]/10">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -49,20 +55,41 @@ export default function Header() {
           </a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="/#mentoring" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
+            <a href="/#mentoring" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
               Mentoring
             </a>
-            <a href="/#culture-science" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors">
+            <a href="/#culture-science" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
               Culture Science
             </a>
-            <a href="/journal" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors">
+            <a href="/journal" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
               Journal
             </a>
-            <a href="/#archy" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors">
+            <a 
+              href="/philosophy" 
+              onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
+              className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+            >
+              Philosophy
+            </a>
+            <a 
+              href="/methods" 
+              onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
+              className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+            >
+              Methods
+            </a>
+            <a 
+              href="/about" 
+              onClick={(e) => { e.preventDefault(); handleNavigation('/about'); }}
+              className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+            >
+              About
+            </a>
+            <a href="/#archy" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
               Meet Archy
             </a>
-            <a href="/contact" className="px-6 py-2.5 bg-[#C85A3C] text-white rounded-lg font-medium hover:bg-[#B54A32] transition-colors shadow-md">
+            <a href="/contact" className="px-8 py-3 bg-[#1A1A1A] text-white font-medium hover:bg-[#1A1A1A]/90 transition-colors">
               Contact
             </a>
           </div>
@@ -88,19 +115,40 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <a href="/#mentoring" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a href="/#mentoring" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Mentoring
               </a>
-              <a href="/#culture-science" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a href="/#culture-science" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Culture Science
               </a>
-              <a href="/journal" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a href="/journal" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Journal
               </a>
-              <a href="/#archy" className="text-sm font-medium text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <a 
+                href="/philosophy" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
+                className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+              >
+                Philosophy
+              </a>
+              <a 
+                href="/methods" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
+                className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+              >
+                Methods
+              </a>
+              <a 
+                href="/about" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/about'); }}
+                className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+              >
+                About
+              </a>
+              <a href="/#archy" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 Meet Archy
               </a>
-              <a href="/contact" className="px-6 py-2.5 bg-[#C85A3C] text-white rounded-lg font-medium hover:bg-[#B54A32] transition-colors text-center" onClick={() => setMobileMenuOpen(false)}>
+              <a href="/contact" className="px-8 py-3 bg-[#1A1A1A] text-white font-medium hover:bg-[#1A1A1A]/90 transition-colors text-center min-h-[44px] flex items-center justify-center" onClick={() => setMobileMenuOpen(false)}>
                 Contact
               </a>
             </div>

@@ -1,6 +1,6 @@
 /**
- * Contact Section
- * v0 Design - EXACT IMPLEMENTATION
+ * Contact Section / Final CTA
+ * Editorial Minimal Design - Orange Border Frame
  */
 import React, { useState } from "react";
 
@@ -27,53 +27,55 @@ export default function Contact() {
   }
 
   return (
-    <section className="py-16 md:py-24 lg:py-32 bg-[#F5F5F5]">
-      <div className="container mx-auto px-6 md:px-12 max-w-2xl">
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2B2D2F] mb-8 text-center">
-            Contact
-          </h2>
-          <form onSubmit={submit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-[#2B2D2F] mb-2">Name</label>
-              <input 
-                type="text"
-                className="w-full rounded-lg border-2 border-[#E0E0E0] px-4 py-3 text-[#2B2D2F] focus:outline-none focus:border-[#C85A3C] transition-colors duration-200"
-                value={state.name}
-                onChange={(e) => setState(s => ({ ...s, name: e.target.value }))}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#2B2D2F] mb-2">Email</label>
-              <input 
-                type="email"
-                className="w-full rounded-lg border-2 border-[#E0E0E0] px-4 py-3 text-[#2B2D2F] focus:outline-none focus:border-[#C85A3C] transition-colors duration-200"
-                value={state.email}
-                onChange={(e) => setState(s => ({ ...s, email: e.target.value }))}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#2B2D2F] mb-2">Message</label>
-              <textarea 
-                rows={6}
-                className="w-full rounded-lg border-2 border-[#E0E0E0] px-4 py-3 text-[#2B2D2F] focus:outline-none focus:border-[#C85A3C] transition-colors duration-200 resize-none"
-                value={state.message}
-                onChange={(e) => setState(s => ({ ...s, message: e.target.value }))}
-                required
-              />
-            </div>
-            <button 
-              type="submit"
-              disabled={status.loading}
-              className="w-full bg-[#C85A3C] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-50"
-            >
-              {status.loading ? "Sending…" : "Send"}
-            </button>
-            {status.ok === true && <p className="text-green-600 text-sm text-center">{status.msg}</p>}
-            {status.ok === false && <p className="text-red-600 text-sm text-center">{status.msg}</p>}
-          </form>
+    <section className="py-16 sm:py-20 md:py-32 lg:py-40 bg-[#FAFAF9]">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12">
+        <div className="max-w-2xl mx-auto">
+          <div className="border-[6px] border-[#C85A3C] p-8 sm:p-10 md:p-12">
+            <h2 className="text-[48px] sm:text-[64px] md:text-[72px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 font-serif tracking-tight text-balance text-center">
+              Contact
+            </h2>
+            <form onSubmit={submit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Name</label>
+                <input 
+                  type="text"
+                  className="w-full border border-[#1A1A1A]/10 px-4 py-3 text-[#1A1A1A] bg-white focus:outline-none focus:border-[#1A1A1A] transition-colors min-h-[44px]"
+                  value={state.name}
+                  onChange={(e) => setState(s => ({ ...s, name: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Email</label>
+                <input 
+                  type="email"
+                  className="w-full border border-[#1A1A1A]/10 px-4 py-3 text-[#1A1A1A] bg-white focus:outline-none focus:border-[#1A1A1A] transition-colors min-h-[44px]"
+                  value={state.email}
+                  onChange={(e) => setState(s => ({ ...s, email: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Message</label>
+                <textarea 
+                  rows={6}
+                  className="w-full border border-[#1A1A1A]/10 px-4 py-3 text-[#1A1A1A] bg-white focus:outline-none focus:border-[#1A1A1A] transition-colors resize-none min-h-[140px]"
+                  value={state.message}
+                  onChange={(e) => setState(s => ({ ...s, message: e.target.value }))}
+                  required
+                />
+              </div>
+              <button 
+                type="submit"
+                disabled={status.loading}
+                className="w-full bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 min-h-[44px]"
+              >
+                {status.loading ? "Sending…" : "Send"}
+              </button>
+              {status.ok === true && <p className="text-green-600 text-sm text-center">{status.msg}</p>}
+              {status.ok === false && <p className="text-red-600 text-sm text-center">{status.msg}</p>}
+            </form>
+          </div>
         </div>
       </div>
     </section>
