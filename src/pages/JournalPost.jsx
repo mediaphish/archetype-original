@@ -164,7 +164,7 @@ export default function JournalPost() {
                   )}
                 </div>
 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
                   {post.title}
                 </h1>
 
@@ -501,7 +501,7 @@ export default function JournalPost() {
                         if (h1Normalized === titleNormalizedForParsing) {
                           return null;
                         }
-                        return <h1 key={index} className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-8 font-serif tracking-tight">{h1Content}</h1>;
+                        return <h1 key={index} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-8 font-serif tracking-tight">{h1Content}</h1>;
                       case 'h2':
                         return <h2 key={index} className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 mt-6 font-serif tracking-tight">{block.content}</h2>;
                       case 'h3':
