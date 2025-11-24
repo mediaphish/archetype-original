@@ -603,6 +603,7 @@ export default function JournalPost() {
           </article>
         </div>
       </div>
+      </div>
     </>
   );
 }
