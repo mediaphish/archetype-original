@@ -151,7 +151,7 @@ async function buildKnowledgeCorpus() {
     
     for (const filePath of journalFiles) {
       try {
-        const content = fs.readFileSync(filePath, 'utf8');
+        let content = fs.readFileSync(filePath, 'utf8');
         
         // Skip empty files
         if (!content || !content.trim()) {
@@ -160,7 +160,39 @@ async function buildKnowledgeCorpus() {
           continue;
         }
         
-        const { data: frontmatter, content: body } = matter(content);
+        // Clean RTF code from content BEFORE parsing frontmatter
+        if (content.includes('\\rtf') || content.includes('{\\rtf')) {
+          // Remove RTF header block
+          content = content.replace(/\{\\rtf[^}]*\}/gi, '');
+          // Remove RTF control sequences
+          content = content.replace(/\\[a-z]+\d*\s*/gi, '');
+          // Remove RTF tables
+          content = content.replace(/\\fonttbl[^}]*\}\s*/gi, '');
+          content = content.replace(/\\colortbl[^}]*\}\s*/gi, '');
+          content = content.replace(/\\\*\\expandedcolortbl[^}]*\}\s*/gi, '');
+          content = content.replace(/\{[^}]*\}/g, '');
+          // Fix RTF escape sequences
+          content = content.replace(/\\'92/g, "'");
+          content = content.replace(/\\'97/g, "—");
+          content = content.replace(/\\'85/g, "…");
+          content = content.replace(/\\'/g, "'");
+          // Convert RTF line breaks to newlines
+          content = content.replace(/\\par\s*/gi, '\n');
+          content = content.replace(/\\\s*\n\s*/g, '\n');
+          // Remove remaining backslashes (but preserve markdown syntax)
+          content = content.replace(/\\(?![!*_`\[\]()#-])/g, '');
+          // Clean up whitespace
+          content = content.replace(/[ \t]+/g, ' ');
+          content = content.replace(/\n{3,}/g, '\n\n');
+          content = content.trim();
+        }
+        
+        // Now parse frontmatter from cleaned content
+        let { data: frontmatter, content: body } = matter(content);
+        
+        // Remove any frontmatter that might still be in body
+        body = body.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/gm, '');
+        body = body.trim();
         
         // Check if post should be published
         let publishDate = null;

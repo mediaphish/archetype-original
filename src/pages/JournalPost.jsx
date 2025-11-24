@@ -204,7 +204,16 @@ export default function JournalPost() {
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                  {post.title}
+                  {(() => {
+                    // If title is "Untitled Journal Post", try to extract from frontmatter in body
+                    if (post.title === 'Untitled Journal Post' && post.body) {
+                      const titleMatch = post.body.match(/title:\s*"([^"]+)"/);
+                      if (titleMatch) {
+                        return titleMatch[1];
+                      }
+                    }
+                    return post.title;
+                  })()}
                 </h1>
 
               {post.summary && (() => {
@@ -244,53 +253,56 @@ export default function JournalPost() {
                   // Clean the body - remove RTF code first, then remove title and duplicate image if they appear
                   let bodyText = post.body.trim();
                   
-                  // Remove frontmatter blocks first (lines starting with --- and everything between)
-                  bodyText = bodyText.replace(/^---[\s\S]*?^---\s*/gm, '');
-                  
-                  // Remove RTF header block if present (everything from {\rtf to first content)
+                  // Step 1: Remove entire RTF header block (everything from {\rtf to the first real content)
+                  // This handles the case where the entire file is RTF-encoded
                   bodyText = bodyText.replace(/\{\\rtf[^}]*\}/gi, '');
                   
-                  // Remove RTF control sequences (but preserve markdown syntax)
-                  // Remove common RTF control words
-                  const rtfControlWords = [
-                    'rtf', 'ansi', 'ansicpg', 'cocoartf', 'cocoatextscaling', 'cocoaplatform',
-                    'fonttbl', 'colortbl', 'expandedcolortbl', 'margl', 'margr', 'vieww', 'viewh', 'viewkind',
-                    'pard', 'tx', 'pardirnatural', 'partightenfactor', 'f', 'fs', 'cf', 'uc', 'u', 'par'
-                  ];
+                  // Step 2: Remove RTF control sequences comprehensively
+                  // Remove all RTF control words (patterns like \rtf1, \ansi, etc.)
+                  bodyText = bodyText.replace(/\\[a-z]+\d*\s*/gi, '');
                   
-                  // Remove RTF control words (but not if they're part of markdown)
-                  for (const word of rtfControlWords) {
-                    bodyText = bodyText.replace(new RegExp(`\\\\${word}\\d*\\s*`, 'gi'), '');
-                  }
-                  
-                  // Remove RTF font/color tables
+                  // Step 3: Remove RTF tables and formatting blocks
                   bodyText = bodyText.replace(/\\fonttbl[^}]*\}\s*/gi, '');
                   bodyText = bodyText.replace(/\\colortbl[^}]*\}\s*/gi, '');
                   bodyText = bodyText.replace(/\\\*\\expandedcolortbl[^}]*\}\s*/gi, '');
+                  bodyText = bodyText.replace(/\{[^}]*\}/g, '');
                   
-                  // Remove RTF paragraph formatting
-                  bodyText = bodyText.replace(/\\pard[^\\]*/gi, '');
-                  
-                  // Fix RTF escape sequences to proper characters (do this before removing other backslashes)
+                  // Step 4: Fix RTF escape sequences to proper characters
                   bodyText = bodyText.replace(/\\'92/g, "'"); // RTF right single quote (apostrophe)
                   bodyText = bodyText.replace(/\\'97/g, "—"); // RTF em dash
                   bodyText = bodyText.replace(/\\'85/g, "…"); // RTF ellipsis
                   bodyText = bodyText.replace(/\\'/g, "'"); // RTF apostrophe (generic)
                   
-                  // Remove RTF paragraph breaks (convert to newlines)
+                  // Step 5: Convert RTF line breaks to newlines
                   bodyText = bodyText.replace(/\\par\s*/gi, '\n');
+                  bodyText = bodyText.replace(/\\\s*\n\s*/g, '\n');
                   
-                  // Remove any remaining RTF braces
-                  bodyText = bodyText.replace(/\{[^}]*\}/g, '');
+                  // Step 6: Remove frontmatter blocks (handle both normal and RTF-escaped versions)
+                  // Normal frontmatter: --- ... --- (with proper newlines)
+                  bodyText = bodyText.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/gm, '');
+                  // Frontmatter without proper newlines (single line or escaped)
+                  bodyText = bodyText.replace(/^---[\s\S]*?^---\s*/gm, '');
+                  // RTF-escaped frontmatter: ---\ ... ---\
+                  bodyText = bodyText.replace(/---\\[\s\S]*?---\\/g, '');
+                  // Also handle frontmatter that might have escaped newlines or be on single lines
+                  bodyText = bodyText.replace(/---[\\\s]*title:[\s\S]*?---[\\\s]*/gi, '');
+                  // Remove any remaining frontmatter-like content at the start
+                  bodyText = bodyText.replace(/^---.*?---/s, '');
                   
-                  // Remove standalone backslashes that aren't part of markdown (be careful with markdown)
-                  // Only remove backslashes that are clearly RTF artifacts (not before markdown syntax)
-                  bodyText = bodyText.replace(/\\(?![!*_`\[\]()#-])/g, ''); // Keep backslashes before markdown syntax
+                  // Step 7: Remove any remaining standalone backslashes (but preserve markdown)
+                  // Only remove backslashes that aren't part of markdown syntax
+                  bodyText = bodyText.replace(/\\(?![!*_`\[\]()#-])/g, '');
                   
-                  // Clean up extra whitespace but preserve paragraph structure
-                  bodyText = bodyText.replace(/[ \t]+/g, ' '); // Collapse spaces/tabs
+                  // Step 8: Clean up whitespace while preserving paragraph structure
+                  bodyText = bodyText.replace(/[ \t]+/g, ' '); // Collapse spaces/tabs to single space
                   bodyText = bodyText.replace(/\n{3,}/g, '\n\n'); // Max 2 consecutive newlines
                   bodyText = bodyText.trim();
+                  
+                  // Step 9: If body still looks like it starts with frontmatter, extract and remove it
+                  const frontmatterMatch = bodyText.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
+                  if (frontmatterMatch) {
+                    bodyText = bodyText.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '');
+                  }
                   
                   // Helper function to normalize strings for comparison
                   // Removes all punctuation, normalizes whitespace, converts to lowercase
