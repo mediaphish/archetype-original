@@ -244,10 +244,52 @@ export default function JournalPost() {
                   // Clean the body - remove RTF code first, then remove title and duplicate image if they appear
                   let bodyText = post.body.trim();
                   
-                  // Remove RTF code patterns
+                  // Remove frontmatter blocks first (lines starting with --- and everything between)
+                  bodyText = bodyText.replace(/^---[\s\S]*?^---\s*/gm, '');
+                  
+                  // Remove RTF header block if present (everything from {\rtf to first content)
                   bodyText = bodyText.replace(/\{\\rtf[^}]*\}/gi, '');
-                  bodyText = bodyText.replace(/\\[a-z]+\d*\s*/gi, '');
+                  
+                  // Remove RTF control sequences (but preserve markdown syntax)
+                  // Remove common RTF control words
+                  const rtfControlWords = [
+                    'rtf', 'ansi', 'ansicpg', 'cocoartf', 'cocoatextscaling', 'cocoaplatform',
+                    'fonttbl', 'colortbl', 'expandedcolortbl', 'margl', 'margr', 'vieww', 'viewh', 'viewkind',
+                    'pard', 'tx', 'pardirnatural', 'partightenfactor', 'f', 'fs', 'cf', 'uc', 'u', 'par'
+                  ];
+                  
+                  // Remove RTF control words (but not if they're part of markdown)
+                  for (const word of rtfControlWords) {
+                    bodyText = bodyText.replace(new RegExp(`\\\\${word}\\d*\\s*`, 'gi'), '');
+                  }
+                  
+                  // Remove RTF font/color tables
+                  bodyText = bodyText.replace(/\\fonttbl[^}]*\}\s*/gi, '');
+                  bodyText = bodyText.replace(/\\colortbl[^}]*\}\s*/gi, '');
+                  bodyText = bodyText.replace(/\\\*\\expandedcolortbl[^}]*\}\s*/gi, '');
+                  
+                  // Remove RTF paragraph formatting
+                  bodyText = bodyText.replace(/\\pard[^\\]*/gi, '');
+                  
+                  // Fix RTF escape sequences to proper characters (do this before removing other backslashes)
+                  bodyText = bodyText.replace(/\\'92/g, "'"); // RTF right single quote (apostrophe)
+                  bodyText = bodyText.replace(/\\'97/g, "—"); // RTF em dash
+                  bodyText = bodyText.replace(/\\'85/g, "…"); // RTF ellipsis
+                  bodyText = bodyText.replace(/\\'/g, "'"); // RTF apostrophe (generic)
+                  
+                  // Remove RTF paragraph breaks (convert to newlines)
+                  bodyText = bodyText.replace(/\\par\s*/gi, '\n');
+                  
+                  // Remove any remaining RTF braces
                   bodyText = bodyText.replace(/\{[^}]*\}/g, '');
+                  
+                  // Remove standalone backslashes that aren't part of markdown (be careful with markdown)
+                  // Only remove backslashes that are clearly RTF artifacts (not before markdown syntax)
+                  bodyText = bodyText.replace(/\\(?![!*_`\[\]()#-])/g, ''); // Keep backslashes before markdown syntax
+                  
+                  // Clean up extra whitespace but preserve paragraph structure
+                  bodyText = bodyText.replace(/[ \t]+/g, ' '); // Collapse spaces/tabs
+                  bodyText = bodyText.replace(/\n{3,}/g, '\n\n'); // Max 2 consecutive newlines
                   bodyText = bodyText.trim();
                   
                   // Helper function to normalize strings for comparison
