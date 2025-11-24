@@ -40,7 +40,23 @@ export default function JournalPost() {
   }, []);
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    if (!dateString) return '';
+    // Handle YYYY-MM-DD format explicitly
+    let date;
+    if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      // Parse YYYY-MM-DD as UTC to avoid timezone issues
+      const [year, month, day] = dateString.split('-').map(Number);
+      date = new Date(Date.UTC(year, month - 1, day));
+    } else {
+      date = new Date(dateString);
+    }
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+    
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
