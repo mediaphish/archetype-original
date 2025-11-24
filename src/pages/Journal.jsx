@@ -5,12 +5,41 @@ export default function Journal() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Map actual categories to display categories
+  // Map actual categories to display categories (comprehensive mapping)
   const categoryMapping = {
-    'leadership': ['leadership-development', 'leadership-principles', 'servant-leadership', 'power-control', 'accountability', 'trust'],
-    'culture': ['culture', 'culture-values', 'team-building', 'collaboration', 'communication', 'systems'],
-    'growth': ['leadership-development', 'personal-reflection', 'innovation', 'balance', 'boundaries'],
-    'philosophy': ['servant-leadership', 'purpose', 'legacy', 'neuroscience', 'empathy', 'data-research']
+    'leadership': [
+      'leadership-development', 
+      'leadership-principles', 
+      'servant-leadership', 
+      'power-control', 
+      'accountability', 
+      'trust',
+      'case-studies' // Leadership case studies
+    ],
+    'culture': [
+      'culture', 
+      'culture-values', 
+      'team-building', 
+      'collaboration', 
+      'communication', 
+      'systems'
+    ],
+    'growth': [
+      'leadership-development', 
+      'personal-reflection', 
+      'innovation', 
+      'balance', 
+      'boundaries',
+      'fear' // Growth through facing fear
+    ],
+    'philosophy': [
+      'servant-leadership', 
+      'purpose', 
+      'legacy', 
+      'neuroscience', 
+      'empathy', 
+      'data-research'
+    ]
   };
 
   useEffect(() => {
@@ -107,15 +136,15 @@ export default function Journal() {
 
           {/* Category Filters */}
           <div className="mb-12 sm:mb-16 lg:mb-20">
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               {['all', 'leadership', 'culture', 'growth', 'philosophy'].map(category => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 text-sm font-medium border transition-colors ${
+                  className={`px-6 py-2.5 text-sm font-medium border transition-all duration-200 ${
                     selectedCategory === category
                       ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                      : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#1A1A1A]/30 hover:bg-[#FAFAF9]'
+                      : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C] hover:bg-[#FAFAF9]'
                   }`}
                 >
                   {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
