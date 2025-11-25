@@ -556,6 +556,82 @@ export default function JournalPost() {
                   flushBlockquote();
                   flushList();
 
+                  // Helper function to process inline markdown (bold, italic, links)
+                  const processInlineMarkdown = (text) => {
+                    // Handle links [text](url)
+                    let processedText = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, linkText, linkUrl) => {
+                      return `__LINK_START__${linkText}__LINK_URL__${linkUrl}__LINK_END__`;
+                    });
+                    
+                    // Handle bold (**text** or __text__)
+                    processedText = processedText.replace(/(\*\*|__)(.+?)\1/g, (match, marker, content) => {
+                      return `__BOLD_START__${content}__BOLD_END__`;
+                    });
+                    
+                    // Handle italic (single * or _)
+                    processedText = processedText.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, (match, content) => {
+                      return `__ITALIC_START__${content}__ITALIC_END__`;
+                    });
+                    processedText = processedText.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, (match, content) => {
+                      return `__ITALIC_START__${content}__ITALIC_END__`;
+                    });
+                    
+                    // Build React elements
+                    const elements = [];
+                    const segments = processedText.split(/(__BOLD_START__|__BOLD_END__|__ITALIC_START__|__ITALIC_END__|__LINK_START__|__LINK_END__|__LINK_URL__)/);
+                    
+                    let inBold = false;
+                    let inItalic = false;
+                    let linkText = null;
+                    let linkUrl = null;
+                    let inLink = false;
+                    
+                    segments.forEach((segment, segIndex) => {
+                      if (segment === '__BOLD_START__') {
+                        inBold = true;
+                      } else if (segment === '__BOLD_END__') {
+                        inBold = false;
+                      } else if (segment === '__ITALIC_START__') {
+                        inItalic = true;
+                      } else if (segment === '__ITALIC_END__') {
+                        inItalic = false;
+                      } else if (segment === '__LINK_START__') {
+                        inLink = true;
+                      } else if (segment === '__LINK_URL__') {
+                        // Next segment is the URL
+                      } else if (segment === '__LINK_END__') {
+                        if (linkText && linkUrl) {
+                          elements.push(
+                            <a key={`link-${segIndex}`} href={linkUrl} className="text-[#C85A3C] hover:text-[#B54A32] underline" target="_blank" rel="noopener noreferrer">
+                              {linkText}
+                            </a>
+                          );
+                          linkText = null;
+                          linkUrl = null;
+                        }
+                        inLink = false;
+                      } else if (segment) {
+                        if (inLink && !linkText) {
+                          linkText = segment;
+                        } else if (inLink && linkText && !linkUrl) {
+                          linkUrl = segment;
+                        } else {
+                          let content = segment;
+                          if (inBold && inItalic) {
+                            content = <strong key={`bold-italic-${segIndex}`}><em>{content}</em></strong>;
+                          } else if (inBold) {
+                            content = <strong key={`bold-${segIndex}`}>{content}</strong>;
+                          } else if (inItalic) {
+                            content = <em key={`italic-${segIndex}`}>{content}</em>;
+                          }
+                          elements.push(content);
+                        }
+                      }
+                    });
+                    
+                    return elements.length > 0 ? elements : text;
+                  };
+
                   // Render blocks
                   return blocks.map((block, index) => {
                     switch (block.type) {
@@ -596,16 +672,19 @@ export default function JournalPost() {
                       case 'ul':
                         return (
                           <ul key={index} className="list-disc ml-6 mb-6 space-y-2">
-                            {block.items.map((item, itemIndex) => (
-                              <li key={itemIndex} className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                                {item}
-                              </li>
-                            ))}
+                            {block.items.map((item, itemIndex) => {
+                              const processedItem = processInlineMarkdown(item);
+                              return (
+                                <li key={itemIndex} className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                                  {processedItem}
+                                </li>
+                              );
+                            })}
                           </ul>
                         );
                       case 'paragraph':
                         // Skip if paragraph matches the title (case-insensitive)
-                        const paraContent = block.content.trim();
+                        let paraContent = block.content.trim();
                         if (!paraContent) {
                           return null;
                         }
@@ -617,9 +696,11 @@ export default function JournalPost() {
                           return null;
                         }
                         
+                        const processedContent = processInlineMarkdown(paraContent);
+                        
                         return (
                           <p key={index} className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6 text-pretty">
-                            {paraContent}
+                            {processedContent}
                           </p>
                         );
                       default:
