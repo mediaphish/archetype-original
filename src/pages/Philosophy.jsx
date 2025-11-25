@@ -63,17 +63,21 @@ export default function Philosophy() {
     window.addEventListener('resize', checkMobile);
     
     const handleScroll = () => {
-      if (!isMobile) {
+      // Check mobile directly in handler to avoid stale closure
+      if (window.innerWidth >= 768) {
         setScrollY(window.scrollY);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // Initial scroll position
+    handleScroll();
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkMobile);
     };
-  }, [isMobile]);
+  }, []);
 
   // Intersection Observer for active section detection
   useEffect(() => {
@@ -179,8 +183,7 @@ export default function Philosophy() {
                     <div 
                       className="absolute inset-0 z-0"
                       style={{ 
-                        transform: `translateY(${scrollY * 0.03}px)`,
-                        transition: 'transform 0.1s ease-out'
+                        transform: `translateY(${scrollY * 0.05}px)`
                       }}
                     >
                       <img 
@@ -197,8 +200,7 @@ export default function Philosophy() {
                     <div 
                       className="absolute inset-0 z-10"
                       style={{ 
-                        transform: `translateX(${scrollY * 0.01}px)`,
-                        transition: 'transform 0.1s ease-out'
+                        transform: `translateX(${scrollY * 0.02}px)`
                       }}
                     >
                       <img 
@@ -215,8 +217,7 @@ export default function Philosophy() {
                     <div 
                       className="absolute inset-0 z-20"
                       style={{ 
-                        transform: `translateX(${scrollY * 0.015}px)`,
-                        transition: 'transform 0.1s ease-out'
+                        transform: `translateX(${scrollY * 0.03}px)`
                       }}
                     >
                       <img 
