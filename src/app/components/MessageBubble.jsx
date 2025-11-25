@@ -10,7 +10,7 @@ export default function MessageBubble({ message, isUser = false, showButtons = f
             <img 
               src="/images/archy-avatar.png" 
               alt="Archy" 
-              className="w-10 h-10 rounded-full flex-shrink-0 object-cover"
+              className="w-10 h-10 rounded-full flex-shrink-0 object-cover border-0"
               onError={(e) => {
                 e.target.style.display = 'none';
               }}

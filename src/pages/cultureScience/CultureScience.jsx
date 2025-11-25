@@ -96,7 +96,7 @@ export default function CultureScience() {
                       <img 
                         src="/images/archy-avatar.png" 
                         alt="Archy" 
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain border-0"
                         onError={(e) => {
                           e.target.style.display = 'none';
                         }}

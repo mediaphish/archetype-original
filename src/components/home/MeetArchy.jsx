@@ -64,7 +64,7 @@ export default function MeetArchy() {
                     <div className="flex items-start gap-3 mb-4">
                       <img 
                         alt="Archy avatar" 
-                        className="w-16 h-16 rounded-full flex-shrink-0 object-cover" 
+                        className="w-16 h-16 rounded-full flex-shrink-0 object-cover border-0" 
                         src="/images/archy-avatar.png"
                         onError={(e) => {
                           e.target.style.display = 'none';
@@ -108,7 +108,7 @@ export default function MeetArchy() {
                     <img
                       src="/images/archy-avatar.png"
                       alt="Archy"
-                      className="w-10 h-10 rounded-full"
+                      className="w-10 h-10 rounded-full border-0"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}

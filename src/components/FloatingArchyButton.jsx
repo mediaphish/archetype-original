@@ -44,7 +44,7 @@ export default function FloatingArchyButton() {
         <img
           src="/images/archy-avatar.png"
           alt="Archy"
-          className="w-12 h-12 md:w-16 md:h-16 rounded-full relative z-10"
+          className="w-12 h-12 md:w-16 md:h-16 rounded-full relative z-10 border-0"
         />
         {/* Pulse animation ring */}
         <span className="absolute inset-0 rounded-full bg-[#C85A3C] opacity-75 animate-ping"></span>
@@ -62,7 +62,7 @@ export default function FloatingArchyButton() {
                     <img
                       src="/images/archy-avatar.png"
                       alt="Archy"
-                      className="w-10 h-10 rounded-full"
+                      className="w-10 h-10 rounded-full border-0"
                     />
                   </div>
                   <span className="font-semibold text-[#2B2D2F]">Archy</span>
