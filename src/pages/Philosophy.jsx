@@ -122,15 +122,8 @@ export default function Philosophy() {
       
       <div className="min-h-screen bg-[#FAFAF9]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-12">
-          {/* Table of Contents */}
+          {/* Table of Contents - At the very top */}
           <div className="pt-16 sm:pt-24 md:pt-32 lg:pt-40 pb-8 sm:pb-12">
-            <div className="mb-8 sm:mb-12">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
-                Philosophy
-              </h1>
-            </div>
-            
-            {/* Table of Contents - Horizontal Cards */}
             <nav className="mb-12 sm:mb-16 lg:mb-20" aria-label="Table of contents">
               <div className="flex flex-wrap gap-2 sm:gap-3">
                 {sections.map((section) => (
@@ -152,6 +145,13 @@ export default function Philosophy() {
                 ))}
               </div>
             </nav>
+            
+            {/* Page Title */}
+            <div className="mb-8 sm:mb-12">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
+                Philosophy
+              </h1>
+            </div>
           </div>
 
           {/* Main Content */}
