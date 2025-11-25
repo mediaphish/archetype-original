@@ -37,7 +37,7 @@ export default function FloatingArchyButton() {
       {/* Floating Button - Fixed position, stays visible while scrolling */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 right-8 z-[9999] w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#F5A082] shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
+        className="fixed bottom-8 right-8 z-[9999] w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#ff801d] shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
         style={{ position: 'fixed' }}
         aria-label="Chat with Archy"
       >
@@ -47,7 +47,7 @@ export default function FloatingArchyButton() {
           className="w-12 h-12 md:w-16 md:h-16 rounded-full relative z-10 border-0"
         />
         {/* Pulse animation ring */}
-        <span className="absolute inset-0 rounded-full bg-[#F5A082] opacity-75 animate-ping"></span>
+        <span className="absolute inset-0 rounded-full bg-[#ff801d] opacity-75 animate-ping"></span>
       </button>
 
       {/* Chat Overlay - Opens when button is clicked */}
