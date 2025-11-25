@@ -719,12 +719,13 @@ export default function JournalPost() {
                         );
                       case 'ul':
                         return (
-                          <ul key={index} className="list-disc ml-6 mb-6 space-y-2">
+                          <ul key={index} className="list-none mb-6 space-y-4 sm:space-y-5">
                             {block.items.map((item, itemIndex) => {
                               const processedItem = processInlineMarkdown(item);
                               return (
-                                <li key={itemIndex} className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                                  {processedItem}
+                                <li key={itemIndex} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] pl-0">
+                                  <span className="text-[#C85A3C] mr-3 font-bold">•</span>
+                                  <span>{processedItem}</span>
                                 </li>
                               );
                             })}
