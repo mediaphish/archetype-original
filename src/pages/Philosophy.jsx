@@ -175,7 +175,7 @@ export default function Philosophy() {
                 {/* Right: 3-Layer Parallax Archy Scholar */}
                 {!isMobile && (
                   <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1', height: 'auto' }}>
-                    {/* Layer 1: Background - Moves down slowly (furthest back) */}
+                    {/* Layer 3: Background - Moves down slowly (furthest back) */}
                     <div 
                       className="absolute inset-0 z-0"
                       style={{ 
@@ -184,7 +184,7 @@ export default function Philosophy() {
                       }}
                     >
                       <img 
-                        src="/images/philosophy-layer-1.png" 
+                        src="/images/philosophy-layer-3.png" 
                         alt="Philosophy Background" 
                         className="w-full h-full object-contain"
                         onError={(e) => {
@@ -211,7 +211,7 @@ export default function Philosophy() {
                       />
                     </div>
                     
-                    {/* Layer 3: Archy - Foreground, moves horizontally only (no vertical movement) */}
+                    {/* Layer 1: Archy - Foreground, moves horizontally only (no vertical movement) */}
                     <div 
                       className="absolute inset-0 z-20"
                       style={{ 
@@ -220,7 +220,7 @@ export default function Philosophy() {
                       }}
                     >
                       <img 
-                        src="/images/philosophy-layer-3.png" 
+                        src="/images/philosophy-layer-1.png" 
                         alt="Archy" 
                         className="w-full h-full object-contain"
                         onError={(e) => {
@@ -234,14 +234,33 @@ export default function Philosophy() {
                 {/* Mobile: Static image */}
                 {isMobile && (
                   <div className="relative w-full max-w-lg mx-auto" style={{ aspectRatio: '1/1' }}>
-                    <img 
-                      src="/images/philosophy-layer-1.png" 
-                      alt="Archy" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
+                    {/* Stack all layers for mobile (no parallax) */}
+                    <div className="relative w-full h-full">
+                      <img 
+                        src="/images/philosophy-layer-3.png" 
+                        alt="Philosophy Background" 
+                        className="absolute inset-0 w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                      <img 
+                        src="/images/philosophy-layer-2.png" 
+                        alt="Philosophy Middle Layer" 
+                        className="absolute inset-0 w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                      <img 
+                        src="/images/philosophy-layer-1.png" 
+                        alt="Archy" 
+                        className="absolute inset-0 w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
