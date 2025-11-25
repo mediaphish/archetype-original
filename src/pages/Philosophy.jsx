@@ -15,7 +15,7 @@ import SEO from '../components/SEO';
 const sections = [
   { id: 'intro', label: 'Intro' },
   { id: 'foundation', label: 'The Foundation' },
-  { id: 'golden-rule', label: 'The Golden Rule' },
+  { id: 'golden-rule', label: 'The Human Lens' },
   { id: 'business-lens', label: 'Beyond Leadership' },
   { id: 'clarity-over-chaos', label: 'Clarity Over Chaos' },
   { id: 'trust-is-currency', label: 'Trust Is the Currency' },
@@ -32,15 +32,15 @@ const renderParagraph = (text, key) => {
   if (text.trim().startsWith('>')) {
     const quoteText = text.trim().substring(1).trim();
     return (
-      <blockquote key={key} className="border-l-4 border-amber pl-6 py-4 my-8 bg-warm-offWhiteAlt rounded-r-lg">
-        <p className="text-xl md:text-2xl font-semibold text-amber italic" style={{ lineHeight: '1.6' }}>
+      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 py-4 my-6 sm:my-8">
+        <p className="text-xl sm:text-2xl md:text-3xl italic font-serif text-[#1A1A1A] leading-relaxed">
           "{quoteText}"
         </p>
       </blockquote>
     );
   }
   return (
-    <p key={key} className="p mb-6" style={{ lineHeight: '1.6' }}>
+    <p key={key} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6">
       {text}
     </p>
   );
@@ -48,9 +48,7 @@ const renderParagraph = (text, key) => {
 
 export default function Philosophy() {
   const [activeSection, setActiveSection] = useState('intro');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sectionRefs = useRef({});
-  const contentRef = useRef(null);
   const clickedSectionRef = useRef(null);
 
   // Intersection Observer for active section detection
@@ -87,15 +85,6 @@ export default function Philosophy() {
   const scrollToSection = (id, event) => {
     clickedSectionRef.current = id;
     
-    if (event && event.currentTarget) {
-      event.currentTarget.style.transform = 'scale(0.95)';
-      setTimeout(() => {
-        if (event.currentTarget) {
-          event.currentTarget.style.transform = '';
-        }
-      }, 150);
-    }
-
     const element = sectionRefs.current[id];
     if (element) {
       const offset = 100;
@@ -104,7 +93,6 @@ export default function Philosophy() {
         top: elementPosition,
         behavior: 'smooth'
       });
-      setIsMobileMenuOpen(false);
       
       setTimeout(() => {
         clickedSectionRef.current = null;
@@ -132,370 +120,430 @@ export default function Philosophy() {
         </script>
       </Helmet>
       
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Sequential Navigation */}
-          <div className="mb-8 flex items-center justify-between border-b border-warm-border pb-4 mt-8">
-            <a
-              href="/what-i-do"
-              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-              aria-label="Previous page: What I Do"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-sm">What I Do</span>
-            </a>
-            <a
-              href="/methods"
-              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-              aria-label="Next page: Methods"
-            >
-              <span className="text-sm">Methods</span>
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
+      <div className="min-h-screen bg-[#FAFAF9]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-12">
+          {/* Table of Contents */}
+          <div className="pt-16 sm:pt-24 md:pt-32 lg:pt-40 pb-8 sm:pb-12">
+            <div className="mb-8 sm:mb-12">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
+                Philosophy
+              </h1>
+            </div>
+            
+            {/* Table of Contents - Horizontal Cards */}
+            <nav className="mb-12 sm:mb-16 lg:mb-20" aria-label="Table of contents">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-1 text-xs font-medium uppercase tracking-wider border transition-colors ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </nav>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Anchor Navigation Sidebar */}
-            <aside className="lg:w-64 flex-shrink-0">
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden w-full flex items-center justify-between p-4 bg-warm-offWhiteAlt border border-warm-border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-amber"
-                aria-label="Toggle navigation menu"
-              >
-                <span className="font-medium text-warm-charcoal">Navigation</span>
-                <svg className="w-5 h-5 text-warm-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
-
-              {/* Navigation menu */}
-              <nav 
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4`}
-                aria-label="Page sections"
-              >
-                <ul className="space-y-2">
-                  {sections.map((section) => (
-                    <li key={section.id}>
-                      <a
-                        href={`#${section.id}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToSection(section.id, e);
-                        }}
-                        className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber active:scale-95 ${
-                          activeSection === section.id
-                            ? 'bg-amber text-white font-semibold shadow-md'
-                            : 'text-warm-charcoal hover:bg-warm-border hover:text-amber'
-                        }`}
-                      >
-                        {section.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </aside>
-
-            {/* Main Content */}
-            <article ref={contentRef} className="flex-1 max-w-4xl">
-              <h1 className="h1 mb-12">Philosophy</h1>
-
-              {/* Intro */}
-              <section id="intro" ref={(el) => (sectionRefs.current.intro = el)} className="mb-16 scroll-mt-24">
-                <p className="p mb-6 font-semibold text-warm-charcoal text-xl" style={{ lineHeight: '1.6' }}>
+          {/* Main Content */}
+          <article>
+            {/* Intro */}
+            <section 
+              id="intro" 
+              ref={(el) => (sectionRefs.current.intro = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold text-xl sm:text-2xl">
                   Leadership is stewardship.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   It's not about holding power—it's about holding responsibility.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   I've spent over three decades watching companies rise and fall, teams thrive and fracture, and leaders find or lose their way. What separates the healthy from the broken isn't intelligence, charisma, or vision—it's alignment. When what you believe, say, and do line up, trust takes root. When they don't, people start protecting themselves instead of the mission.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Archetype Original exists to help leaders rebuild that alignment—to make clarity, character, and culture tangible again.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* The Foundation */}
-              <section id="foundation" ref={(el) => (sectionRefs.current.foundation = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">The Foundation — Servant Leadership</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* The Foundation */}
+            <section 
+              id="foundation" 
+              ref={(el) => (sectionRefs.current.foundation = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9] scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  The Foundation — Servant Leadership
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Servant leadership has been misunderstood for decades. It isn't weakness or endless sacrifice. It's strength under control. It's stewardship of people and purpose.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   At its core, servant leadership means this:
                 </p>
                 {renderParagraph("> The leader's role is to ensure the people in their care can thrive in theirs.", 'foundation-core')}
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   It's practical: accountability, clarity, empathy, and example. When leaders take responsibility for the wake they leave behind, organizations stabilize and teams begin to trust again. Servant leadership is the spine of everything I teach—but it's not the only vertebra.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* The Golden Rule */}
-              <section id="golden-rule" ref={(el) => (sectionRefs.current['golden-rule'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">The Human Lens</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* The Golden Rule */}
+            <section 
+              id="golden-rule" 
+              ref={(el) => (sectionRefs.current['golden-rule'] = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  The Human Lens
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Faith quietly shapes everything I do. The Golden Rule—treat people the way you want to be treated—has guided every decision I've made as a mentor, leader, and business owner. It's not just morality; it's mechanism.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   When you treat people with dignity, they respond with trust. When you build trust, they respond with effort.
                 </p>
                 {renderParagraph("> Simple. Timeless. Proven.", 'golden-rule-simple')}
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   It's also scalable. You can apply it to a boardroom, a start-up, or a student. Respect and empathy never expire.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* Business Lens */}
-              <section id="business-lens" ref={(el) => (sectionRefs.current['business-lens'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Beyond Leadership — The Business Lens</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Business Lens */}
+            <section 
+              id="business-lens" 
+              ref={(el) => (sectionRefs.current['business-lens'] = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9] scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  Beyond Leadership — The Business Lens
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Culture and clarity mean little without functional systems. Business has rules—cash flow, delivery, margins, accountability—and servant leadership doesn't ignore them. It humanizes them.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Leadership and business intersect in a single question:
                 </p>
                 {renderParagraph("> How do we build systems that serve both people and performance?", 'business-question')}
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   That's where I spend most of my time with clients—translating values into operational design. The goal isn't to make a company soft; it's to make it sustainable.
                 </p>
-                <p className="p mb-4" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   A healthy company:
                 </p>
                 <ul className="space-y-3 mb-6">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
+                  <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
+                    <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                     <span>Aligns purpose with structure.</span>
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
+                  <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
+                    <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                     <span>Measures success with both numbers and morale.</span>
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
+                  <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
+                    <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                     <span>Protects culture as deliberately as it protects profit.</span>
                   </li>
                 </ul>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   I help leaders close the gap between what they say they value and what their systems reward.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  <a href="/methods" className="text-amber hover:text-amber-dark transition-colors underline">Learn more about my methods →</a>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <a href="/methods" className="text-[#C85A3C] hover:text-[#B54A32] transition-colors underline">Learn more about my methods →</a>
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* Clarity Over Chaos */}
-              <section id="clarity-over-chaos" ref={(el) => (sectionRefs.current['clarity-over-chaos'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Clarity Over Chaos</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Clarity Over Chaos */}
+            <section 
+              id="clarity-over-chaos" 
+              ref={(el) => (sectionRefs.current['clarity-over-chaos'] = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  Clarity Over Chaos
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Chaos creeps in when communication and direction get tangled.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Leaders often mistake energy for clarity. They fill the air with excitement, but no one leaves the room knowing what to do next.
                 </p>
                 {renderParagraph("> Clarity is an act of service—it removes friction and frees people to move.", 'clarity-service')}
-                <p className="p mb-4" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   When I work with teams, we start by identifying where chaos hides:
                 </p>
                 <ul className="space-y-3 mb-6">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
+                  <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
+                    <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                     <span>Conflicting messages</span>
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
+                  <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
+                    <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                     <span>Undefined authority</span>
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
+                  <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
+                    <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                     <span>Overlapping roles</span>
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
+                  <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
+                    <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                     <span>Emotional noise</span>
                   </li>
                 </ul>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Once you can name chaos, you can dismantle it. Teams that see clearly, move clearly.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* Trust Is the Currency */}
-              <section id="trust-is-currency" ref={(el) => (sectionRefs.current['trust-is-currency'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Trust Is the Currency</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Trust Is the Currency */}
+            <section 
+              id="trust-is-currency" 
+              ref={(el) => (sectionRefs.current['trust-is-currency'] = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9] scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  Trust Is the Currency
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   You can have vision, but if your people don't trust you, everything else is noise.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Trust is built through small, repeated proof—consistency, follow-through, honesty when it costs you.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   It's broken by secrecy, ego, and spin.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   The neuroscience is undeniable: high-trust environments lower cortisol, boost oxytocin, and literally rewire the brain toward cooperation. But long before the data, experience proved it.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   When leaders are transparent and reliable, people breathe again. When they aren't, everyone starts holding their breath.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* Accountability */}
-              <section id="accountability" ref={(el) => (sectionRefs.current.accountability = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Accountability Without Ego</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Accountability */}
+            <section 
+              id="accountability" 
+              ref={(el) => (sectionRefs.current.accountability = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  Accountability Without Ego
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Accountability isn't control—it's care. It says, "I believe in you enough to expect more."
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Good leaders don't hide behind authority or policy. They make expectations clear, own their own mistakes, and give people space to rise.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Ego kills accountability. The moment leadership becomes about defending pride instead of protecting culture, progress stops.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   I've learned this the hard way—and I still practice it daily. Accountability is a mirror you hold up for yourself before anyone else.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* Simplicity */}
-              <section id="simplicity" ref={(el) => (sectionRefs.current.simplicity = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Simplicity Wins</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Simplicity */}
+            <section 
+              id="simplicity" 
+              ref={(el) => (sectionRefs.current.simplicity = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9] scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  Simplicity Wins
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Complexity feels impressive. Simplicity creates traction.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Whether it's communication, structure, or vision, I've learned to prune relentlessly.
                 </p>
                 {renderParagraph("> If something can't be explained clearly, it can't be executed consistently.", 'simplicity-clear')}
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Every engagement I lead focuses on distillation. We strip away noise until what's left is useful, repeatable, and teachable. That's the mark of a healthy organization: people can explain it without you in the room.
                 </p>
-              </section>
+              </div>
+            </section>
 
-              {/* Leadership Is Personal */}
-              <section id="leadership-is-personal" ref={(el) => (sectionRefs.current['leadership-is-personal'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Leadership Is Personal</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Leadership Is Personal */}
+            <section 
+              id="leadership-is-personal" 
+              ref={(el) => (sectionRefs.current['leadership-is-personal'] = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  Leadership Is Personal
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   The best systems in the world can't fix a leader who's lost themselves.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   That's why my philosophy always returns to the human being leading the humans.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Health, self-awareness, and honesty aren't luxuries—they're prerequisites.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   When the person at the top grows, everyone under them breathes easier.
                 </p>
                 {renderParagraph("> \"Your business can't be healthier than you are.\"", 'health-quote')}
-              </section>
+              </div>
+            </section>
 
-              {/* Why It Works */}
-              <section id="research" ref={(el) => (sectionRefs.current.research = el)} className="mb-16 scroll-mt-24">
-                <aside aria-label="Research insights" className="border-l-4 border-amber bg-warm-offWhiteAlt rounded-r-lg p-6 mb-8">
-                  <h2 className="h2 mb-6">Why It Works (research summary)</h2>
-                  <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Why It Works */}
+            <section 
+              id="research" 
+              ref={(el) => (sectionRefs.current.research = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9] scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <div className="border-2 border-[#C85A3C] p-8 sm:p-10 md:p-12 bg-white">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                    Why It Works (research summary)
+                  </h2>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6">
                     Modern research confirms what three decades of practice have made obvious: leaders who create safety, clarity, and consistency unlock their team's highest performance.
                   </p>
                   <div className="space-y-4 mb-6">
                     <div>
-                      <h3 className="h3 mb-2">Psychological Safety (Edmondson)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
+                        Psychological Safety (Edmondson)
+                      </h3>
+                      <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                         Open communication drives innovation.
                       </p>
                     </div>
                     <div>
-                      <h3 className="h3 mb-2">Empathic Listening (Rogers)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
+                        Empathic Listening (Rogers)
+                      </h3>
+                      <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                         Understanding reduces reactivity and restores reasoning.
                       </p>
                     </div>
                     <div>
-                      <h3 className="h3 mb-2">Neuroscience of Trust (Zak)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
+                        Neuroscience of Trust (Zak)
+                      </h3>
+                      <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                         Trust changes brain chemistry and productivity.
                       </p>
                     </div>
                     <div>
-                      <h3 className="h3 mb-2">Executive Isolation (Gallup)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
+                        Executive Isolation (Gallup)
+                      </h3>
+                      <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                         Mentorship and peer connection improve decision quality.
                       </p>
                     </div>
                   </div>
                   {renderParagraph("> The takeaway is simple: people don't perform for fear—they perform for trust.", 'research-takeaway')}
-                </aside>
-              </section>
+                </div>
+              </div>
+            </section>
 
-              {/* The Standard */}
-              <section id="standard" ref={(el) => (sectionRefs.current.standard = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">The Standard</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* The Standard */}
+            <section 
+              id="standard" 
+              ref={(el) => (sectionRefs.current.standard = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  The Standard
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Every leader leaves a wake.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   The goal isn't perfection—it's awareness.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   When I recognize the impact of my words, systems, and silence, I can steer differently.
                 </p>
                 {renderParagraph("> Leadership isn't about being in charge.", 'standard-quote1')}
                 {renderParagraph("> It's about being responsible for what your influence creates.", 'standard-quote2')}
-              </section>
+              </div>
+            </section>
 
-              {/* Closing */}
-              <section id="closing" ref={(el) => (sectionRefs.current.closing = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Closing</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+            {/* Closing */}
+            <section 
+              id="closing" 
+              ref={(el) => (sectionRefs.current.closing = el)} 
+              className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9] scroll-mt-24"
+            >
+              <div className="space-y-6 sm:space-y-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight leading-tight">
+                  Closing
+                </h2>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Servant leadership isn't a model; it's a mindset.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   It's what happens when responsibility meets compassion and execution meets humility.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   If that's the kind of leader you want to become—or rebuild to be—let's start the conversation.
                 </p>
-              </section>
-
-              {/* CTA Strip */}
-              <div className="mt-16 pt-12 border-t border-warm-border">
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="#contact"
-                    className="btn-cta text-center"
-                    aria-label="Start a conversation with Archy"
-                  >
-                    Start a Conversation
-                  </a>
-                  <a
-                    href="https://calendly.com/bartpaden/1-on-1-mentorships"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-cta text-center"
-                    aria-label="Book time with Bart on Calendly"
-                  >
-                    Book Time
-                  </a>
-                  <a
-                    href="#contact"
-                    className="btn-cta text-center"
-                    aria-label="Send an email to Bart"
-                  >
-                    Email
-                  </a>
-                </div>
               </div>
-            </article>
-          </div>
+            </section>
+
+            {/* CTA Strip */}
+            <div className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white border-t border-[#1A1A1A]/10">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="/contact"
+                  className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
+                  aria-label="Start a conversation"
+                >
+                  Start a Conversation
+                </a>
+                <a
+                  href="https://calendly.com/bartpaden/1-on-1-mentorships"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-transparent text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
+                  aria-label="Book time with Bart on Calendly"
+                >
+                  Book Time
+                </a>
+                <a
+                  href="/contact"
+                  className="bg-transparent text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
+                  aria-label="Send an email"
+                >
+                  Email
+                </a>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </>
