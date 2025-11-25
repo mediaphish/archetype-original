@@ -183,7 +183,7 @@ export default function Philosophy() {
                     <div 
                       className="absolute inset-0 z-0"
                       style={{ 
-                        transform: `translateY(${scrollY * 0.05}px)`
+                        transform: `translateY(${scrollY * 0.055}px)`
                       }}
                     >
                       <img 
@@ -200,7 +200,7 @@ export default function Philosophy() {
                     <div 
                       className="absolute inset-0 z-10"
                       style={{ 
-                        transform: `translateX(${scrollY * 0.02}px)`
+                        transform: `translateX(${scrollY * 0.022}px)`
                       }}
                     >
                       <img 
@@ -217,7 +217,7 @@ export default function Philosophy() {
                     <div 
                       className="absolute inset-0 z-20"
                       style={{ 
-                        transform: `translateX(${scrollY * 0.03}px)`
+                        transform: `translateX(${scrollY * 0.033}px)`
                       }}
                     >
                       <img 
