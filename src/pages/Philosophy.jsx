@@ -302,7 +302,7 @@ export default function Philosophy() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6 sm:space-y-8">
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif leading-tight">
                 Leadership is stewardship.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
