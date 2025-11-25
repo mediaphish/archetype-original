@@ -175,43 +175,7 @@ export default function Philosophy() {
                 {/* Right: 3-Layer Parallax Archy Scholar */}
                 {!isMobile && (
                   <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1', height: 'auto' }}>
-                    {/* Layer 1: Archy - Stays on ground (moves down slightly) */}
-                    <div 
-                      className="absolute inset-0 z-10"
-                      style={{ 
-                        transform: `translateY(${scrollY * 0.02}px)`,
-                        transition: 'transform 0.1s ease-out'
-                      }}
-                    >
-                      <img 
-                        src="/images/philosophy-layer-1.png" 
-                        alt="Archy" 
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                    
-                    {/* Layer 2: Middle layer - Moves right slowly */}
-                    <div 
-                      className="absolute inset-0 z-20"
-                      style={{ 
-                        transform: `translateX(${scrollY * 0.01}px)`,
-                        transition: 'transform 0.1s ease-out'
-                      }}
-                    >
-                      <img 
-                        src="/images/philosophy-layer-2.png" 
-                        alt="Philosophy Layer 2" 
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                    
-                    {/* Layer 3: Background - Moves down slowly */}
+                    {/* Layer 1: Background - Moves down slowly (furthest back) */}
                     <div 
                       className="absolute inset-0 z-0"
                       style={{ 
@@ -220,8 +184,44 @@ export default function Philosophy() {
                       }}
                     >
                       <img 
+                        src="/images/philosophy-layer-1.png" 
+                        alt="Philosophy Background" 
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Layer 2: Middle layer - Moves horizontally slowly */}
+                    <div 
+                      className="absolute inset-0 z-10"
+                      style={{ 
+                        transform: `translateX(${scrollY * 0.01}px)`,
+                        transition: 'transform 0.1s ease-out'
+                      }}
+                    >
+                      <img 
+                        src="/images/philosophy-layer-2.png" 
+                        alt="Philosophy Middle Layer" 
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Layer 3: Archy - Foreground, moves horizontally only (no vertical movement) */}
+                    <div 
+                      className="absolute inset-0 z-20"
+                      style={{ 
+                        transform: `translateX(${scrollY * 0.015}px)`,
+                        transition: 'transform 0.1s ease-out'
+                      }}
+                    >
+                      <img 
                         src="/images/philosophy-layer-3.png" 
-                        alt="Philosophy Layer 3" 
+                        alt="Archy" 
                         className="w-full h-full object-contain"
                         onError={(e) => {
                           e.target.style.display = 'none';
