@@ -557,79 +557,127 @@ export default function JournalPost() {
                   flushList();
 
                   // Helper function to process inline markdown (bold, italic, links)
+                  // Uses a simple recursive approach to handle nested markdown
                   const processInlineMarkdown = (text) => {
-                    // Handle links [text](url)
-                    let processedText = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, linkText, linkUrl) => {
-                      return `__LINK_START__${linkText}__LINK_URL__${linkUrl}__LINK_END__`;
-                    });
+                    if (!text || typeof text !== 'string') return text;
                     
-                    // Handle bold (**text** or __text__)
-                    processedText = processedText.replace(/(\*\*|__)(.+?)\1/g, (match, marker, content) => {
-                      return `__BOLD_START__${content}__BOLD_END__`;
-                    });
+                    // Simple regex-based replacement approach
+                    // Process links first (they can contain other markdown)
+                    let processed = text;
+                    const parts = [];
+                    let lastIndex = 0;
+                    let keyCounter = 0;
                     
-                    // Handle italic (single * or _)
-                    processedText = processedText.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, (match, content) => {
-                      return `__ITALIC_START__${content}__ITALIC_END__`;
-                    });
-                    processedText = processedText.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, (match, content) => {
-                      return `__ITALIC_START__${content}__ITALIC_END__`;
-                    });
+                    // Find all markdown patterns with their positions
+                    const patterns = [];
                     
-                    // Build React elements
-                    const elements = [];
-                    const segments = processedText.split(/(__BOLD_START__|__BOLD_END__|__ITALIC_START__|__ITALIC_END__|__LINK_START__|__LINK_END__|__LINK_URL__)/);
+                    // Find links [text](url)
+                    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+                    let linkMatch;
+                    while ((linkMatch = linkRegex.exec(text)) !== null) {
+                      patterns.push({
+                        type: 'link',
+                        start: linkMatch.index,
+                        end: linkMatch.index + linkMatch[0].length,
+                        text: linkMatch[1],
+                        url: linkMatch[2]
+                      });
+                    }
                     
-                    let inBold = false;
-                    let inItalic = false;
-                    let linkText = null;
-                    let linkUrl = null;
-                    let inLink = false;
+                    // Find bold **text** or __text__
+                    const boldRegex = /(\*\*|__)(.+?)\1/g;
+                    let boldMatch;
+                    while ((boldMatch = boldRegex.exec(text)) !== null) {
+                      // Skip if this bold is inside a link
+                      const isInsideLink = patterns.some(p => p.type === 'link' && boldMatch.index > p.start && boldMatch.index < p.end);
+                      if (!isInsideLink) {
+                        patterns.push({
+                          type: 'bold',
+                          start: boldMatch.index,
+                          end: boldMatch.index + boldMatch[0].length,
+                          content: boldMatch[2]
+                        });
+                      }
+                    }
                     
-                    segments.forEach((segment, segIndex) => {
-                      if (segment === '__BOLD_START__') {
-                        inBold = true;
-                      } else if (segment === '__BOLD_END__') {
-                        inBold = false;
-                      } else if (segment === '__ITALIC_START__') {
-                        inItalic = true;
-                      } else if (segment === '__ITALIC_END__') {
-                        inItalic = false;
-                      } else if (segment === '__LINK_START__') {
-                        inLink = true;
-                      } else if (segment === '__LINK_URL__') {
-                        // Next segment is the URL
-                      } else if (segment === '__LINK_END__') {
-                        if (linkText && linkUrl) {
-                          elements.push(
-                            <a key={`link-${segIndex}`} href={linkUrl} className="text-[#C85A3C] hover:text-[#B54A32] underline" target="_blank" rel="noopener noreferrer">
-                              {linkText}
-                            </a>
-                          );
-                          linkText = null;
-                          linkUrl = null;
-                        }
-                        inLink = false;
-                      } else if (segment) {
-                        if (inLink && !linkText) {
-                          linkText = segment;
-                        } else if (inLink && linkText && !linkUrl) {
-                          linkUrl = segment;
-                        } else {
-                          let content = segment;
-                          if (inBold && inItalic) {
-                            content = <strong key={`bold-italic-${segIndex}`}><em>{content}</em></strong>;
-                          } else if (inBold) {
-                            content = <strong key={`bold-${segIndex}`}>{content}</strong>;
-                          } else if (inItalic) {
-                            content = <em key={`italic-${segIndex}`}>{content}</em>;
-                          }
-                          elements.push(content);
+                    // Find italic *text* or _text_ (but not **text** or __text__)
+                    const italicRegex = /(?<!\*)\*(?!\*)([^*\n]+?)(?<!\*)\*(?!\*)|(?<!_)_(?!_)([^_\n]+?)(?<!_)_(?!_)/g;
+                    let italicMatch;
+                    while ((italicMatch = italicRegex.exec(text)) !== null) {
+                      // Skip if this italic is inside a link or bold
+                      const isInsideOther = patterns.some(p => italicMatch.index > p.start && italicMatch.index < p.end);
+                      if (!isInsideOther) {
+                        patterns.push({
+                          type: 'italic',
+                          start: italicMatch.index,
+                          end: italicMatch.index + italicMatch[0].length,
+                          content: italicMatch[1] || italicMatch[2]
+                        });
+                      }
+                    }
+                    
+                    // Sort patterns by start position
+                    patterns.sort((a, b) => a.start - b.start);
+                    
+                    // Remove overlapping patterns (keep the first one)
+                    const nonOverlapping = [];
+                    for (let i = 0; i < patterns.length; i++) {
+                      const current = patterns[i];
+                      const overlaps = nonOverlapping.some(p => 
+                        (current.start >= p.start && current.start < p.end) ||
+                        (current.end > p.start && current.end <= p.end) ||
+                        (current.start <= p.start && current.end >= p.end)
+                      );
+                      if (!overlaps) {
+                        nonOverlapping.push(current);
+                      }
+                    }
+                    
+                    // Build React elements from non-overlapping patterns
+                    const result = [];
+                    let currentIndex = 0;
+                    
+                    nonOverlapping.forEach((pattern, idx) => {
+                      // Add text before this pattern
+                      if (pattern.start > currentIndex) {
+                        const beforeText = text.substring(currentIndex, pattern.start);
+                        if (beforeText) {
+                          result.push(beforeText);
                         }
                       }
+                      
+                      // Add the pattern as a React element
+                      if (pattern.type === 'link') {
+                        result.push(
+                          <a key={`link-${keyCounter++}`} href={pattern.url} className="text-[#C85A3C] hover:text-[#B54A32] underline" target="_blank" rel="noopener noreferrer">
+                            {pattern.text}
+                          </a>
+                        );
+                      } else if (pattern.type === 'bold') {
+                        result.push(<strong key={`bold-${keyCounter++}`}>{pattern.content}</strong>);
+                      } else if (pattern.type === 'italic') {
+                        result.push(<em key={`italic-${keyCounter++}`}>{pattern.content}</em>);
+                      }
+                      
+                      currentIndex = pattern.end;
                     });
                     
-                    return elements.length > 0 ? elements : text;
+                    // Add remaining text
+                    if (currentIndex < text.length) {
+                      const remainingText = text.substring(currentIndex);
+                      if (remainingText) {
+                        result.push(remainingText);
+                      }
+                    }
+                    
+                    // Return single element if only one, array if multiple, or original text if none
+                    if (result.length === 0) {
+                      return text;
+                    } else if (result.length === 1) {
+                      return result[0];
+                    } else {
+                      return result;
+                    }
                   };
 
                   // Render blocks
