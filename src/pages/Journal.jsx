@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import JournalSubscription from '../components/JournalSubscription';
 
 export default function Journal() {
   const [posts, setPosts] = useState([]);
@@ -276,6 +277,11 @@ export default function Journal() {
               )}
             </>
           )}
+
+          {/* Email Subscription Section */}
+          <div className="mt-16 sm:mt-20 md:mt-24 lg:mt-32">
+            <JournalSubscription />
+          </div>
         </div>
       </div>
     </div>
