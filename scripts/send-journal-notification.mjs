@@ -2,8 +2,10 @@
 // scripts/send-journal-notification.mjs
 // Manual script to send email notifications for a specific journal post
 // Usage: node scripts/send-journal-notification.mjs <post-slug>
+// Requires Node.js 18+ (for built-in fetch) or install node-fetch
 
-import fetch from 'node-fetch';
+// Use global fetch (Node 18+) or fallback
+const fetch = globalThis.fetch || (await import('node-fetch')).default;
 
 const POST_SLUG = process.argv[2];
 const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
