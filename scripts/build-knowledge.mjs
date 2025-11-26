@@ -331,41 +331,9 @@ async function buildKnowledgeCorpus() {
   console.log(`   ⚠️  Skipped: ${skipped} files`);
   console.log(`   📁 Output: ${OUTPUT_FILE}`);
   console.log(`   🕐 Generated: ${knowledgeCorpus.generated_at}`);
-  
-  // Optional: Send email notifications for newly published journal posts
-  // This can be enabled by setting SEND_JOURNAL_NOTIFICATIONS=true
-  if (process.env.SEND_JOURNAL_NOTIFICATIONS === 'true') {
-    const journalPosts = docs.filter(doc => doc.type === 'journal-post' && doc.status === 'published');
-    const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
-    
-    for (const post of journalPosts) {
-      try {
-        // Check if this post was published today (to avoid sending duplicate notifications)
-        const publishDate = new Date(post.publish_date);
-        const today = new Date();
-        const isPublishedToday = publishDate.toDateString() === today.toDateString();
-        
-        if (isPublishedToday) {
-          console.log(`📧 Sending notifications for new post: ${post.title}`);
-          
-          const notifyResponse = await fetch(`${siteUrl}/api/journal/notify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ post })
-          });
-          
-          if (notifyResponse.ok) {
-            const result = await notifyResponse.json();
-            console.log(`   ✅ Notifications sent: ${result.sent || 0} subscribers`);
-          } else {
-            console.warn(`   ⚠️  Failed to send notifications: ${notifyResponse.status}`);
-          }
-        }
-      } catch (notifyError) {
-        console.warn(`   ⚠️  Error sending notifications for ${post.title}:`, notifyError.message);
-      }
-    }
-  }
+  console.log(`\n💡 To send email notifications for new posts, use:`);
+  console.log(`   node scripts/send-journal-notification.mjs <post-slug>`);
+  console.log(`   Or call POST /api/journal/notify with { postSlug: "<slug>" }`);
   
   return knowledgeCorpus;
 }
