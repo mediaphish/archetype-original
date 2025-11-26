@@ -240,6 +240,38 @@ async function buildKnowledgeCorpus() {
           }
         }
         
+        // Generate email-friendly summary
+        // Priority: frontmatter.summary > first paragraph > first 300 chars
+        let emailSummary = frontmatter.summary || '';
+        
+        if (!emailSummary && body) {
+          // Try to extract first paragraph (text between newlines)
+          const paragraphs = body.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+          if (paragraphs.length > 0) {
+            // Use first paragraph, but limit to 400 chars for email readability
+            const firstPara = paragraphs[0].trim();
+            emailSummary = firstPara.length > 400 
+              ? firstPara.substring(0, 397).trim() + '...'
+              : firstPara;
+          } else {
+            // Fallback: first 300 chars of body
+            emailSummary = body.length > 300 
+              ? body.substring(0, 297).trim() + '...'
+              : body.trim();
+          }
+        }
+        
+        // Clean up summary - remove markdown syntax for email readability
+        emailSummary = emailSummary
+          .replace(/\*\*(.+?)\*\*/g, '$1') // Remove bold
+          .replace(/\*(.+?)\*/g, '$1') // Remove italic
+          .replace(/\[(.+?)\]\(.+?\)/g, '$1') // Remove links, keep text
+          .replace(/#{1,6}\s+/g, '') // Remove heading markers
+          .replace(/>\s+/g, '') // Remove blockquote markers
+          .replace(/\n+/g, ' ') // Replace newlines with spaces
+          .replace(/\s+/g, ' ') // Collapse multiple spaces
+          .trim();
+
         const journalDoc = {
           title: frontmatter.title || 'Untitled Journal Post',
           slug: slug,
@@ -251,6 +283,7 @@ async function buildKnowledgeCorpus() {
           updated_at: frontmatter.updated_at || new Date().toISOString(),
           publish_date: frontmatter.publish_date || new Date().toISOString(),
           summary: frontmatter.summary || (body ? body.substring(0, 200).trim() + '...' : ''),
+          email_summary: emailSummary, // Email-specific summary (longer, cleaner)
           image: imagePath,
           source: { 
             kind: 'journal',
@@ -298,6 +331,41 @@ async function buildKnowledgeCorpus() {
   console.log(`   ⚠️  Skipped: ${skipped} files`);
   console.log(`   📁 Output: ${OUTPUT_FILE}`);
   console.log(`   🕐 Generated: ${knowledgeCorpus.generated_at}`);
+  
+  // Optional: Send email notifications for newly published journal posts
+  // This can be enabled by setting SEND_JOURNAL_NOTIFICATIONS=true
+  if (process.env.SEND_JOURNAL_NOTIFICATIONS === 'true') {
+    const journalPosts = docs.filter(doc => doc.type === 'journal-post' && doc.status === 'published');
+    const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
+    
+    for (const post of journalPosts) {
+      try {
+        // Check if this post was published today (to avoid sending duplicate notifications)
+        const publishDate = new Date(post.publish_date);
+        const today = new Date();
+        const isPublishedToday = publishDate.toDateString() === today.toDateString();
+        
+        if (isPublishedToday) {
+          console.log(`📧 Sending notifications for new post: ${post.title}`);
+          
+          const notifyResponse = await fetch(`${siteUrl}/api/journal/notify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ post })
+          });
+          
+          if (notifyResponse.ok) {
+            const result = await notifyResponse.json();
+            console.log(`   ✅ Notifications sent: ${result.sent || 0} subscribers`);
+          } else {
+            console.warn(`   ⚠️  Failed to send notifications: ${notifyResponse.status}`);
+          }
+        }
+      } catch (notifyError) {
+        console.warn(`   ⚠️  Error sending notifications for ${post.title}:`, notifyError.message);
+      }
+    }
+  }
   
   return knowledgeCorpus;
 }

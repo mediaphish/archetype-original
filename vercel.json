@@ -6,7 +6,8 @@
     { "src": "api/handoff.js", "use": "@vercel/node" },
     { "src": "api/knowledge/index.js", "use": "@vercel/node" },
     { "src": "api/ali/apply.js", "use": "@vercel/node" },
-    { "src": "api/journal/subscribe.js", "use": "@vercel/node" }
+    { "src": "api/journal/subscribe.js", "use": "@vercel/node" },
+    { "src": "api/journal/notify.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -15,6 +16,7 @@
     { "src": "/api/knowledge", "dest": "/api/knowledge/index.js" },
     { "src": "/api/ali/apply", "dest": "/api/ali/apply.js" },
     { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
+    { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
