@@ -1,115 +1,34 @@
-/**
- * Voice Guideline:
- * {
- *   "voice_guideline": {
- *     "default": "first-person singular",
- *     "exceptions": ["collaboration", "Archetype philosophy"],
- *     "owner": "Bart Paden"
- *   }
- * }
- */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 
-const sections = [
-  { id: 'intro', label: 'Intro' },
-  { id: 'origins', label: 'Origins' },
-  { id: 'builders-decade', label: 'The Builder\'s Decade' },
-  { id: 'service-before-spotlight', label: 'Service Before Spotlight' },
-  { id: 'cost-and-comeback', label: 'The Cost and the Comeback' },
-  { id: 'archetype-original', label: 'Back to Purpose' },
-  { id: 'how-i-engage', label: 'How I Engage' },
-  { id: 'rules-of-engagement', label: 'Rules of Engagement' },
-  { id: 'where-we-start', label: 'Where We Start' },
-  { id: 'why-this-works', label: 'Why This Works' },
-  { id: 'what-you-take-with-you', label: 'What You Take With You' },
-  { id: 'closing', label: 'Closing' }
-];
-
-// Helper to render pull quotes (paragraphs starting with >)
-const renderParagraph = (text, key) => {
-  if (text.trim().startsWith('>')) {
-    const quoteText = text.trim().substring(1).trim();
-    return (
-      <blockquote key={key} className="border-l-4 border-amber pl-6 py-4 my-8 bg-warm-offWhiteAlt rounded-r-lg">
-        <p className="text-xl md:text-2xl font-semibold text-amber italic" style={{ lineHeight: '1.6' }}>
-          "{quoteText}"
-        </p>
-      </blockquote>
-    );
-  }
-  return (
-    <p key={key} className="p mb-6" style={{ lineHeight: '1.6' }}>
-      {text}
-    </p>
-  );
-};
-
 export default function About() {
-  const [activeSection, setActiveSection] = useState('intro');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const sectionRefs = useRef({});
-  const clickedSectionRef = useRef(null);
+  const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Intersection Observer for active section detection
+  // Mobile detection and scroll tracking for parallax
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
     };
-
-    const observerCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !clickedSectionRef.current) {
-          const sectionId = entry.target.id;
-          setActiveSection(sectionId);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sections.forEach((section) => {
-      const element = sectionRefs.current[section.id];
-      if (element) {
-        observer.observe(element);
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    const handleScroll = () => {
+      if (window.innerWidth >= 768) {
+        setScrollY(window.scrollY);
       }
-    });
+    };
 
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
     return () => {
-      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
     };
   }, []);
-
-  const scrollToSection = (id, event) => {
-    clickedSectionRef.current = id;
-    
-    if (event && event.currentTarget) {
-      event.currentTarget.style.transform = 'scale(0.95)';
-      setTimeout(() => {
-        if (event.currentTarget) {
-          event.currentTarget.style.transform = '';
-        }
-      }, 150);
-    }
-
-    const element = sectionRefs.current[id];
-    if (element) {
-      const offset = 100;
-      const elementPosition = element.offsetTop - offset;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-      setIsMobileMenuOpen(false);
-      
-      setTimeout(() => {
-        clickedSectionRef.current = null;
-      }, 1000);
-    }
-  };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -129,328 +48,364 @@ export default function About() {
         </script>
       </Helmet>
       
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Back button */}
-          <div className="mb-8 mt-8">
-            <a 
-              href="/" 
-              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Home
-            </a>
+      <div className="min-h-screen bg-white">
+        {/* Hero Section with 3-Layer Parallax */}
+        <section className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 tracking-tight">
+                About Bart
+              </h1>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-sans font-normal text-[#1A1A1A] mb-8 sm:mb-12 leading-tight">
+                Thirty-two years building companies and growing people.
+              </h2>
+              
+              {/* 3-Layer Parallax */}
+              {!isMobile && (
+                <div className="relative w-full max-w-2xl mx-auto" style={{ aspectRatio: '16/9', height: 'auto', minHeight: '400px' }}>
+                  {/* Layer 3 (back) - Monitor - floats UP as you scroll */}
+                  <div 
+                    className="absolute inset-0 z-0"
+                    style={{ 
+                      transform: `translateY(${scrollY * -0.12}px)`
+                    }}
+                  >
+                    <img 
+                      src="/images/about-layer-3.png" 
+                      alt="Monitor with presentation" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 2 (middle) - Archy - slight movement */}
+                  <div 
+                    className="absolute inset-0 z-10"
+                    style={{ 
+                      transform: `translateY(${scrollY * 0.08}px)`
+                    }}
+                  >
+                    <img 
+                      src="/images/about-layer-2.png" 
+                      alt="Archy" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1 (front) - Cartoon Bart - moves slowest */}
+                  <div 
+                    className="absolute inset-0 z-20"
+                    style={{ 
+                      transform: `translateY(${scrollY * 0.05}px)`
+                    }}
+                  >
+                    <img 
+                      src="/images/about-layer-1.png" 
+                      alt="Bart" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+              
+              {/* Mobile: Static image */}
+              {isMobile && (
+                <div className="relative w-full max-w-2xl mx-auto" style={{ aspectRatio: '16/9', minHeight: '300px' }}>
+                  <img 
+                    src="/images/about-layer-1.png" 
+                    alt="Bart" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
+        </section>
 
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Anchor Navigation Sidebar */}
-            <aside className="lg:w-64 flex-shrink-0">
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden w-full flex items-center justify-between p-4 bg-warm-offWhiteAlt border border-warm-border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-amber"
-                aria-label="Toggle navigation menu"
-              >
-                <span className="font-medium text-warm-charcoal">Navigation</span>
-                <svg className="w-5 h-5 text-warm-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
-
-              {/* Navigation menu */}
-              <nav 
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4`}
-                aria-label="Page sections"
-              >
-                <ul className="space-y-2">
-                  {sections.map((section) => (
-                    <li key={section.id}>
-                      <a
-                        href={`#${section.id}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToSection(section.id, e);
-                        }}
-                        className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber active:scale-95 ${
-                          activeSection === section.id
-                            ? 'bg-amber text-white font-semibold shadow-md'
-                            : 'text-warm-charcoal hover:bg-warm-border hover:text-amber'
-                        }`}
-                      >
-                        {section.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </aside>
-
-            {/* Main Content */}
-            <article className="flex-1 max-w-4xl">
-              <h1 className="h1 mb-12">About Bart</h1>
-
-              {/* Intro */}
-              <section id="intro" ref={(el) => (sectionRefs.current.intro = el)} className="mb-16 scroll-mt-24">
-                <p className="p mb-6 font-semibold text-warm-charcoal text-xl" style={{ lineHeight: '1.6' }}>
+        {/* The Work Found Me */}
+        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12 items-start">
+              <div className="flex justify-center lg:justify-start">
+                <img
+                  src="/images/bart-headshot-002.jpg"
+                  alt="Bart"
+                  className="w-60 h-60 object-cover rounded-sm"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="space-y-4 sm:space-y-6">
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
                   I build leaders worth following.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   I mentor executives and founders, but I'm just as committed to emerging leaders and students. Strength and humility can live in the same sentence. That's the kind of leader I help build.
                 </p>
-              </section>
-
-              {/* Origins */}
-              <section id="origins" ref={(el) => (sectionRefs.current.origins = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">From Design to Direction</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   I started in creative work—design, web, and brand. The work taught me to solve real problems for real people and to translate vision into something tangible. Early opportunities stretched into responsibility. I learned quickly that you don't earn influence by talking about values—you earn it by living them when it costs you.
                 </p>
-                {renderParagraph('> Influence starts with responsibility, not position.', 'origins-quote')}
-              </section>
-
-              {/* The Builder's Decade */}
-              <section id="builders-decade" ref={(el) => (sectionRefs.current['builders-decade'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Team, Standards, and Service</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  As teams formed around the work, I discovered the weight and privilege of leadership. Hiring talented people required more than a budget—it required standards that protected them. I defended team members when it mattered, pushed for clarity when conversations got loud, and chose consistency over the "glory project" chase. Serving people well built momentum that marketing alone could never buy.
-                </p>
-                <h3 className="h3 mb-4 mt-8">What that looked like (themes, not stories)</h3>
-                <ul className="space-y-3 mb-6">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Hiring for character and fit, then teaching the craft and the system.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Protecting the team from toxic dynamics—even when it risked revenue.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Building simple rhythms so good people could do great work.</span>
-                  </li>
-                </ul>
-              </section>
-
-              {/* Service Before Spotlight */}
-              <section id="service-before-spotlight" ref={(el) => (sectionRefs.current['service-before-spotlight'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Community as Culture</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  At a pivotal moment, I paused billable work to serve my community at scale. That choice didn't polish a brand; it clarified an identity. Leadership isn't a speech—it's a decision you make when no one owes you applause. The lesson stuck: culture is built by what you sacrifice for.
-                </p>
-                {renderParagraph('> The fastest way to define culture is to choose service when it costs you.', 'service-quote')}
-              </section>
-
-              {/* The Cost and the Comeback */}
-              <section id="cost-and-comeback" ref={(el) => (sectionRefs.current['cost-and-comeback'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">The Cost and the Comeback</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Later, misalignment and pressure took a toll. I learned how quickly "high performance" becomes "over-performing under constant strain." Selling a company, rebuilding health, and regaining clarity wasn't an abstract principle—it was survival. That season gave me empathy for leaders who carry more than most people will ever see.
-                </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Today, my coaching often begins where leaders feel most alone: in the fog between exhaustion and expectation. We quiet the noise, tell the truth, and rebuild from the inside out.
-                </p>
-              </section>
-
-              {/* Archetype Original */}
-              <section id="archetype-original" ref={(el) => (sectionRefs.current['archetype-original'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Back to Purpose — Archetype Original</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Archetype Original exists to help leaders build organizations that hold—cultures protected by clear standards, operations aligned to purpose, and growth that doesn't cost your soul. I blend three decades across software, marketing, fitness, and leadership rooms into practical guidance leaders can live with.
-                </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  I mentor executives and founders; I also invest deeply in emerging leaders and students. The future depends on who they become—so I teach them early that competence without character can't carry weight for long.
-                </p>
-              </section>
-
-              {/* How I Engage */}
-              <section id="how-i-engage" ref={(el) => (sectionRefs.current['how-i-engage'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">How I Engage (today's work)</h2>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#mentorship" className="text-amber hover:text-amber-dark transition-colors">Mentorship</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      One-to-one guidance for executives, founders, emerging leaders, and students. We build clarity, confidence, and decision discipline without burnout.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#consulting" className="text-amber hover:text-amber-dark transition-colors">Consulting</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      Practical help for culture, organizational design, communication rhythms, and go-to-market alignment. Strategy that people can actually live with.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#speaking" className="text-amber hover:text-amber-dark transition-colors">Speaking & Workshops</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      Keynotes, classroom talks, and team workshops that translate principles into practice.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#fractional" className="text-amber hover:text-amber-dark transition-colors">Fractional Leadership</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      Interim executive coverage to stabilize operations and lead through change—clear lanes, steady cadence, clean handoff.
-                    </p>
-                  </div>
-                </div>
-              </section>
-
-              {/* Rules of Engagement */}
-              <section id="rules-of-engagement" ref={(el) => (sectionRefs.current['rules-of-engagement'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">What It's Like to Work Together (rules of engagement)</h2>
-                <ul className="space-y-4">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span><strong className="text-warm-charcoal">Honest by default.</strong> I won't be a "yes-man." We address the real issue, directly.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span><strong className="text-warm-charcoal">Human first.</strong> I treat people the way I want to be treated—especially under pressure.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span><strong className="text-warm-charcoal">No dependency.</strong> Success is when you don't need me anymore.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span><strong className="text-warm-charcoal">Shared accountability.</strong> Accountability is owned most by the person being accountable.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span><strong className="text-warm-charcoal">Conversation over program.</strong> Real situations. Real plans. Real execution. No subscriptions.</span>
-                  </li>
-                </ul>
-              </section>
-
-              {/* Where We Start */}
-              <section id="where-we-start" ref={(el) => (sectionRefs.current['where-we-start'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Where We Start (personal clarity first)</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  When trust has been broken or confidence shaken, the first clarity is personal. We name what's true about who you are, what you value, and what healthy leadership looks like for you. Then we rebuild structural and directional clarity around that center—roles, decision rights, communication cadence, priorities, and next steps.
-                </p>
-                <h3 className="h3 mb-4 mt-8">Signals we're on track</h3>
-                <ul className="space-y-3 mb-6">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Language becomes clearer; decisions stop looping.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Teams stop protecting themselves and start protecting the mission.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Energy returns without bravado.</span>
-                  </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>You feel strong and calm at the same time.</span>
-                  </li>
-                </ul>
-              </section>
-
-              {/* Why This Works */}
-              <section id="why-this-works" ref={(el) => (sectionRefs.current['why-this-works'] = el)} className="mb-16 scroll-mt-24">
-                <aside aria-label="Research insights" className="border-l-4 border-amber bg-warm-offWhiteAlt rounded-r-lg p-6 mb-8">
-                  <h2 className="h2 mb-6">Why This Works (research in plain language)</h2>
-                  <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                    Modern research keeps confirming what experience has already taught me. When people feel heard and supported, their minds unlock. Psychological safety, trust, and empathy aren't soft skills—they're performance multipliers.
+                <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
+                  <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
+                    "Influence starts with responsibility, not position."
                   </p>
-                  <div className="space-y-4 mb-6">
-                    <div>
-                      <h3 className="h3 mb-2">Psychological Safety (Edmondson)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        Teams that can tell the truth learn faster and perform better.
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="h3 mb-2">Empathic Listening (Rogers)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        Listening to understand reduces anxiety and restores cognitive clarity.
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="h3 mb-2">Neuroscience of Trust (Zak/HBR)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        High-trust environments lower stress chemistry and increase productivity and engagement.
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="h3 mb-2">Executive Isolation (Gallup)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        Many leaders lack a safe place to process; mentorship restores clarity and better decisions.
-                      </p>
-                    </div>
-                  </div>
-                  {renderParagraph('> Empathy restores access to reason. Trust unlocks performance.', 'research-quote')}
-                </aside>
-              </section>
-
-              {/* What You Take With You */}
-              <section id="what-you-take-with-you" ref={(el) => (sectionRefs.current['what-you-take-with-you'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">What I Hope You Take With You</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  I want you to reach a point where you don't need me. Not because I lost interest—but because you recovered your center, built systems that fit, and grew leaders who can carry the mission. I'll celebrate your independence every single time.
-                </p>
-              </section>
-
-              {/* Closing */}
-              <section id="closing" ref={(el) => (sectionRefs.current.closing = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Closing</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  When I'm with a client, I'm 100% theirs.
-                </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  When I'm not, I'm building this leadership universe—writing, researching, and refining tools you can use. If you're ready to steady the ground under your feet and lead with strength and humility, let's talk.
-                </p>
-              </section>
-
-              {/* CTA Strip */}
-              <div className="mt-16 pt-12 border-t border-warm-border">
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="#contact"
-                    className="btn-cta text-center"
-                    aria-label="Start a conversation with Archy"
-                  >
-                    Start a Conversation
-                  </a>
-                  <a
-                    href="https://calendly.com/bartpaden/1-on-1-mentorships"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-cta text-center"
-                    aria-label="Book time with Bart on Calendly"
-                  >
-                    Book Time
-                  </a>
-                  <a
-                    href="#contact"
-                    className="btn-cta text-center"
-                    aria-label="Send an email to Bart"
-                  >
-                    Email
-                  </a>
                 </div>
               </div>
-            </article>
+            </div>
           </div>
-        </div>
+        </section>
+
+        {/* Leadership in the Real World */}
+        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
+              Leadership in the Real World
+            </h2>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              As teams formed around the work, I discovered the weight and privilege of leadership. Hiring talented people required more than a budget—it required standards that protected them. I defended team members when it mattered, pushed for clarity when conversations got loud, and chose consistency over the "glory project" chase. Serving people well built momentum that marketing alone could never buy.
+            </p>
+            <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-8 sm:mt-10">
+              What that looked like (themes, not stories)
+            </h3>
+            <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
+                <span>Hiring for character and fit, then teaching the craft and the system.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
+                <span>Protecting the team from toxic dynamics—even when it risked revenue.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
+                <span>Building simple rhythms so good people could do great work.</span>
+              </li>
+            </ul>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              At a pivotal moment, I paused billable work to serve my community at scale. That choice didn't polish a brand; it clarified an identity. Leadership isn't a speech—it's a decision you make when no one owes you applause. The lesson stuck: culture is built by what you sacrifice for.
+            </p>
+            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
+              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
+                "The fastest way to define culture is to choose service when it costs you."
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* The Years That Tested Everything */}
+        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <div className="border-2 border-[#C85A3C] bg-white p-8 sm:p-10 md:p-12 space-y-4 sm:space-y-6">
+              <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A]">
+                The Years That Tested Everything
+              </h3>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Later, misalignment and pressure took a toll. I learned how quickly "high performance" becomes "over-performing under constant strain." Selling a company, rebuilding health, and regaining clarity wasn't an abstract principle—it was survival. That season gave me empathy for leaders who carry more than most people will ever see.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Today, my coaching often begins where leaders feel most alone: in the fog between exhaustion and expectation. We quiet the noise, tell the truth, and rebuild from the inside out.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* What Defines My Work */}
+        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
+              What Defines My Work
+            </h2>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              Archetype Original exists to help leaders build organizations that hold—cultures protected by clear standards, operations aligned to purpose, and growth that doesn't cost your soul. I blend three decades across software, marketing, fitness, and leadership rooms into practical guidance leaders can live with.
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              I mentor executives and founders; I also invest deeply in emerging leaders and students. The future depends on who they become—so I teach them early that competence without character can't carry weight for long.
+            </p>
+            <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-8 sm:mt-10">
+              What It's Like to Work Together (rules of engagement)
+            </h3>
+            <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1 font-bold">•</span>
+                <span><strong className="text-[#1A1A1A]">Honest by default.</strong> I won't be a "yes-man." We address the real issue, directly.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1 font-bold">•</span>
+                <span><strong className="text-[#1A1A1A]">Human first.</strong> I treat people the way I want to be treated—especially under pressure.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1 font-bold">•</span>
+                <span><strong className="text-[#1A1A1A]">No dependency.</strong> Success is when you don't need me anymore.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1 font-bold">•</span>
+                <span><strong className="text-[#1A1A1A]">Shared accountability.</strong> Accountability is owned most by the person being accountable.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1 font-bold">•</span>
+                <span><strong className="text-[#1A1A1A]">Conversation over program.</strong> Real situations. Real plans. Real execution. No subscriptions.</span>
+              </li>
+            </ul>
+            <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-8 sm:mt-10">
+              Where We Start (personal clarity first)
+            </h3>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              When trust has been broken or confidence shaken, the first clarity is personal. We name what's true about who you are, what you value, and what healthy leadership looks like for you. Then we rebuild structural and directional clarity around that center—roles, decision rights, communication cadence, priorities, and next steps.
+            </p>
+            <h4 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-6 sm:mt-8">
+              Signals we're on track
+            </h4>
+            <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
+                <span>Language becomes clearer; decisions stop looping.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
+                <span>Teams stop protecting themselves and start protecting the mission.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
+                <span>Energy returns without bravado.</span>
+              </li>
+              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
+                <span>You feel strong and calm at the same time.</span>
+              </li>
+            </ul>
+            <div className="border-2 border-[#C85A3C] bg-white p-8 sm:p-10 md:p-12 space-y-4 sm:space-y-6 mt-8 sm:mt-10">
+              <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
+                Why This Works (research in plain language)
+              </h3>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+                Modern research keeps confirming what experience has already taught me. When people feel heard and supported, their minds unlock. Psychological safety, trust, and empathy aren't soft skills—they're performance multipliers.
+              </p>
+              <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
+                <div>
+                  <h4 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-2 sm:mb-3">
+                    Psychological Safety (Edmondson)
+                  </h4>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    Teams that can tell the truth learn faster and perform better.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-2 sm:mb-3">
+                    Empathic Listening (Rogers)
+                  </h4>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    Listening to understand reduces anxiety and restores cognitive clarity.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-2 sm:mb-3">
+                    Neuroscience of Trust (Zak/HBR)
+                  </h4>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    High-trust environments lower stress chemistry and increase productivity and engagement.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-2 sm:mb-3">
+                    Executive Isolation (Gallup)
+                  </h4>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    Many leaders lack a safe place to process; mentorship restores clarity and better decisions.
+                  </p>
+                </div>
+              </div>
+              <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 mt-8 sm:mt-10">
+                <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
+                  "Empathy restores access to reason. Trust unlocks performance."
+                </p>
+              </div>
+            </div>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8 mt-8 sm:mt-10">
+              I want you to reach a point where you don't need me. Not because I lost interest—but because you recovered your center, built systems that fit, and grew leaders who can carry the mission. I'll celebrate your independence every single time.
+            </p>
+          </div>
+        </section>
+
+        {/* How I Show Up Today */}
+        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
+              How I Show Up Today
+            </h2>
+            <div className="space-y-8 sm:space-y-10">
+              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Mentorship</h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  One-to-one guidance for executives, founders, emerging leaders, and students. We build clarity, confidence, and decision discipline without burnout.
+                </p>
+              </div>
+              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Consulting</h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Practical help for culture, organizational design, communication rhythms, and go-to-market alignment. Strategy that people can actually live with.
+                </p>
+              </div>
+              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Speaking & Workshops</h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Keynotes, classroom talks, and team workshops that translate principles into practice.
+                </p>
+              </div>
+              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Fractional Leadership</h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Interim executive coverage to stabilize operations and lead through change—clear lanes, steady cadence, clean handoff.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Closing CTA */}
+        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
+              Closing
+            </h2>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              When I'm with a client, I'm 100% theirs.
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-8 sm:mb-10">
+              When I'm not, I'm building this leadership universe—writing, researching, and refining tools you can use. If you're ready to steady the ground under your feet and lead with strength and humility, let's talk.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <a 
+                href="/contact" 
+                className="px-8 sm:px-10 py-4 sm:py-5 bg-[#1A1A1A] text-white font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
+              >
+                Start a Conversation
+              </a>
+              <a 
+                href={import.meta.env.VITE_CALENDLY_SCHEDULING_URL || 'https://calendly.com/bartpaden/1-on-1-mentorships'} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 sm:px-10 py-4 sm:py-5 bg-transparent text-[#1A1A1A] font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors"
+              >
+                Book Time
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );
