@@ -52,17 +52,20 @@ export default function About() {
         {/* Hero Section with 3-Layer Parallax */}
         <section className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 tracking-tight">
-                About Bart
-              </h1>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-sans font-normal text-[#1A1A1A] mb-8 sm:mb-12 leading-tight">
-                Thirty-two years building companies and growing people.
-              </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+              {/* Left Content */}
+              <div>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
+                  About Bart
+                </h1>
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-sans font-normal text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
+                  Thirty-two years building companies and growing people.
+                </h2>
+              </div>
               
-              {/* 3-Layer Parallax */}
+              {/* Right: 3-Layer Parallax */}
               {!isMobile && (
-                <div className="relative w-full max-w-2xl mx-auto" style={{ aspectRatio: '16/9', height: 'auto', minHeight: '400px' }}>
+                <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1', height: 'auto' }}>
                   {/* Layer 3 (back) - Monitor - floats UP as you scroll */}
                   <div 
                     className="absolute inset-0 z-0"
@@ -118,7 +121,7 @@ export default function About() {
               
               {/* Mobile: Static image */}
               {isMobile && (
-                <div className="relative w-full max-w-2xl mx-auto" style={{ aspectRatio: '16/9', minHeight: '300px' }}>
+                <div className="relative w-full max-w-lg mx-auto" style={{ aspectRatio: '1/1' }}>
                   <img 
                     src="/images/about-layer-1.png" 
                     alt="Bart" 
@@ -141,16 +144,16 @@ export default function About() {
                 <img
                   src="/images/bart-headshot-002.jpg"
                   alt="Bart"
-                  className="w-60 h-60 object-cover rounded-sm"
+                  className="w-60 h-auto object-contain rounded-sm"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
                 />
               </div>
               <div className="space-y-4 sm:space-y-6">
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                   I build leaders worth following.
-                </p>
+                </h2>
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   I didn't set out to be a leader—leadership found me the day my first employee walked into the office and asked me for insurance. I didn't have the revenue, so I used my own income to make it work. That decision wasn't strategy; it was responsibility. Since then I've built teams, defended people when it mattered, led through seasons of growth and collapse, and rebuilt cultures when trust was thin. Those years forged what I now teach: leadership is personal, culture is fragile, and health begins at the top.
                 </p>
