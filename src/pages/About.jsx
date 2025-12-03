@@ -142,7 +142,7 @@ export default function About() {
             <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12 items-start">
               <div className="flex justify-center lg:justify-start">
                 <img
-                  src="/images/bart-headshot-002.jpg"
+                  src="/images/bart-paden.jpg"
                   alt="Bart"
                   className="w-60 h-auto object-contain rounded-sm"
                   onError={(e) => {
