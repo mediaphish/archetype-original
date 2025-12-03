@@ -66,7 +66,7 @@ export default function About() {
               {/* Right: 3-Layer Parallax */}
               {!isMobile && (
                 <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0 hidden lg:block" style={{ aspectRatio: '1/1', height: 'auto' }}>
-                  {/* Layer 3 (back) - Monitor - slowest movement */}
+                  {/* Layer 3 (back) - Monitor - can move vertically */}
                   <div 
                     className="absolute inset-0 z-10"
                     style={{ 
@@ -83,11 +83,11 @@ export default function About() {
                     />
                   </div>
                   
-                  {/* Layer 2 (middle) - Archy - moderate movement */}
+                  {/* Layer 2 (middle) - Archy - moves horizontally only (grounded) */}
                   <div 
                     className="absolute inset-0 z-20"
                     style={{ 
-                      transform: `translateY(${scrollY * 0.08}px)`
+                      transform: `translateX(${scrollY * 0.08}px)`
                     }}
                   >
                     <img 
@@ -100,11 +100,11 @@ export default function About() {
                     />
                   </div>
                   
-                  {/* Layer 1 (front) - Cartoon Bart - fastest movement (moves UP) */}
+                  {/* Layer 1 (front) - Cartoon Bart - moves horizontally only (grounded) */}
                   <div 
                     className="absolute inset-0 z-30"
                     style={{ 
-                      transform: `translateY(${scrollY * -0.12}px)`
+                      transform: `translateX(${scrollY * -0.12}px)`
                     }}
                   >
                     <img 
@@ -144,7 +144,7 @@ export default function About() {
                 <img
                   src="/images/bart-headshot-002.jpg"
                   alt="Bart"
-                  className="w-60 h-60 object-cover rounded-sm"
+                  className="w-60 h-60 object-contain rounded-sm"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -213,20 +213,18 @@ export default function About() {
             <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
               But I had a responsibility — to him.
             </p>
-            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-white leading-relaxed">
-                That was the moment instinct became intention.
-              </p>
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-white leading-relaxed mt-4">
-                Leadership wasn't a title.
-              </p>
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-white leading-relaxed mt-4">
-                It was service.
-              </p>
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-white leading-relaxed mt-4">
-                It was responsibility.
-              </p>
-            </div>
+            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+              That was the moment instinct became intention.
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+              Leadership wasn't a title.
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+              It was service.
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+              It was responsibility.
+            </p>
             <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
               I had been leading long before that day.
             </p>
@@ -290,11 +288,9 @@ export default function About() {
             <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
               So does watching someone rise.
             </p>
-            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
-                The real world taught me that leadership is present in every season — in the courage to face what's wrong, and in the gratitude to honor what's right.
-              </p>
-            </div>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              The real world taught me that leadership is present in every season — in the courage to face what's wrong, and in the gratitude to honor what's right.
+            </p>
             <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
               None of this was theory.
             </p>
@@ -368,14 +364,12 @@ export default function About() {
             <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
               They taught me restraint.
             </p>
-            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
-                And they taught me that people rarely remember what you protected for yourself—
-              </p>
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed mt-4">
-                but they always remember how you protected them.
-              </p>
-            </div>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              And they taught me that people rarely remember what you protected for yourself—
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              but they always remember how you protected them.
+            </p>
           </div>
         </section>
 
@@ -415,14 +409,12 @@ export default function About() {
                 <span>Was the way I led actually good?</span>
               </li>
             </ul>
-            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
-                These weren't professional questions.
-              </p>
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed mt-4">
-                They were spiritual ones.
-              </p>
-            </div>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              These weren't professional questions.
+            </p>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              They were spiritual ones.
+            </p>
             <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
               That season of reflection became the foundation of a long-form project I hope to publish in 2026: Accidental CEO.
             </p>
@@ -447,11 +439,9 @@ export default function About() {
             <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
               And: "I am second."
             </p>
-            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
-              <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
-                The Golden Rule is ancient — rooted in Scripture, echoed in philosophy, and found across cultures. It has endured because it names something universal: leadership begins with valuing the person in front of you as much as you value yourself.
-              </p>
-            </div>
+            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+              The Golden Rule is ancient — rooted in Scripture, echoed in philosophy, and found across cultures. It has endured because it names something universal: leadership begins with valuing the person in front of you as much as you value yourself.
+            </p>
             <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
               And I am second is how that belief becomes action.
             </p>
@@ -533,29 +523,25 @@ export default function About() {
             <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-8 sm:mb-10">
               Today, I work with leaders, teams, and organizations who want to build something healthy — something real, something sustainable, something worth belonging to.
             </p>
-            <div className="space-y-8 sm:space-y-10">
-              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Mentorship</h3>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  helping leaders at every level find clarity, courage, and confidence
+            <div className="space-y-6 sm:space-y-8">
+              <div>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                  <strong className="font-bold">Mentorship:</strong> helping leaders at every level find clarity, courage, and confidence
                 </p>
               </div>
-              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Consulting</h3>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  strengthening systems, communication, alignment, and culture
+              <div>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                  <strong className="font-bold">Consulting:</strong> strengthening systems, communication, alignment, and culture
                 </p>
               </div>
-              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Speaking & Workshops</h3>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  sharing lived leadership and research-backed insight
+              <div>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                  <strong className="font-bold">Speaking & Workshops:</strong> sharing lived leadership and research-backed insight
                 </p>
               </div>
-              <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A]">Fractional Leadership</h3>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  stepping in when teams need stability and direction during transitional seasons
+              <div>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                  <strong className="font-bold">Fractional Leadership:</strong> stepping in when teams need stability and direction during transitional seasons
                 </p>
               </div>
             </div>
