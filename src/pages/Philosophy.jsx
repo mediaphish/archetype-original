@@ -69,6 +69,12 @@ export default function Philosophy() {
       if (window.innerWidth >= 768) {
         setScrollY(window.scrollY);
       }
+      
+      // Show sticky nav after scrolling past hero
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
+        setShowStickyNav(window.scrollY > heroBottom - 100);
+      }
     };
 
     // Initial scroll position
@@ -152,7 +158,7 @@ export default function Philosophy() {
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section with 3-Layer Parallax */}
-        <section className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
+        <section ref={heroRef} className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
               {/* Left Content */}
