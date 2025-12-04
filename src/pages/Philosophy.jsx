@@ -58,7 +58,7 @@ export default function Philosophy() {
   // Mobile detection and scroll tracking for parallax
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint - disable parallax on mobile
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint - disable parallax on mobile
     };
     
     checkMobile();
@@ -66,7 +66,7 @@ export default function Philosophy() {
     
     const handleScroll = () => {
       // Check mobile directly in handler to avoid stale closure
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 1024) {
         setScrollY(window.scrollY);
       }
       
@@ -158,119 +158,76 @@ export default function Philosophy() {
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section with 3-Layer Parallax */}
-        <section ref={heroRef} className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
+        <section ref={heroRef} className="w-full bg-[#FAFAF9] py-20 sm:py-24 md:py-28 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
               {/* Left Content */}
               <div>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
                   Philosophy
                 </h1>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-light leading-snug text-[#1A1A1A]">
+                  Leadership is stewardship.
+                </p>
+              </div>
+              
+              {/* Right: 3-Layer Parallax (Desktop Only) */}
+              <div className="relative h-[500px] hidden lg:block">
+                {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
+                <div 
+                  className="absolute inset-0 z-10"
+                  style={{ 
+                    transform: `translateY(${scrollY * 0.05}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/philosophy-layer-3.png" 
+                    alt="Philosophy Background" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
                 
-                <div className="space-y-4 sm:space-y-5">
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] font-semibold">
-                    Leadership is stewardship.
-                  </p>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    It's not about holding power—it's about holding responsibility.
-                  </p>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    I've spent over three decades watching companies rise and fall, teams thrive and fracture, and leaders find or lose their way. What separates the healthy from the broken isn't intelligence, charisma, or vision—it's alignment. When what you believe, say, and do line up, trust takes root. When they don't, people start protecting themselves instead of the mission.
-                  </p>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    Archetype Original exists to help leaders rebuild that alignment—to make clarity, character, and culture tangible again.
-                  </p>
+                {/* Layer 2: Middle - Moves VERTICALLY (moderate) */}
+                <div 
+                  className="absolute inset-0 z-20"
+                  style={{ 
+                    transform: `translateY(${scrollY * 0.08}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/philosophy-layer-2.png" 
+                    alt="Philosophy Middle Layer" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                {/* Layer 1: Archy - Moves HORIZONTALLY ONLY (no vertical) */}
+                <div 
+                  className="absolute inset-0 z-30"
+                  style={{ 
+                    transform: `translateX(${scrollY * -0.15}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/philosophy-layer-1.png" 
+                    alt="Archy" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
                 </div>
               </div>
               
-              {/* Right: 3-Layer Parallax Archy Scholar */}
-              {!isMobile && (
-                <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1', height: 'auto' }}>
-                  {/* Layer 3: Background - Moves down slowly (furthest back) */}
-                  <div 
-                    className="absolute inset-0 z-0"
-                    style={{ 
-                      transform: `translateY(${scrollY * 0.055}px)`
-                    }}
-                  >
-                    <img 
-                      src="/images/philosophy-layer-3.png" 
-                      alt="Philosophy Background" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 2: Middle layer - Moves horizontally slowly */}
-                  <div 
-                    className="absolute inset-0 z-10"
-                    style={{ 
-                      transform: `translateX(${scrollY * 0.022}px)`
-                    }}
-                  >
-                    <img 
-                      src="/images/philosophy-layer-2.png" 
-                      alt="Philosophy Middle Layer" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1: Archy - Foreground, moves horizontally only (no vertical movement) */}
-                  <div 
-                    className="absolute inset-0 z-20"
-                    style={{ 
-                      transform: `translateX(${scrollY * 0.033}px)`
-                    }}
-                  >
-                    <img 
-                      src="/images/philosophy-layer-1.png" 
-                      alt="Archy" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-              
-              {/* Mobile: Static image */}
-              {isMobile && (
-                <div className="relative w-full max-w-lg mx-auto" style={{ aspectRatio: '1/1' }}>
-                  {/* Stack all layers for mobile (no parallax) */}
-                  <div className="relative w-full h-full">
-                    <img 
-                      src="/images/philosophy-layer-3.png" 
-                      alt="Philosophy Background" 
-                      className="absolute inset-0 w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                    <img 
-                      src="/images/philosophy-layer-2.png" 
-                      alt="Philosophy Middle Layer" 
-                      className="absolute inset-0 w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                    <img 
-                      src="/images/philosophy-layer-1.png" 
-                      alt="Archy" 
-                      className="absolute inset-0 w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </section>
@@ -358,396 +315,419 @@ export default function Philosophy() {
           </div>
         </section>
 
-        {/* The Foundation */}
+        {/* Section 2: The Foundation — Servant Leadership */}
         <section 
           id="foundation" 
           ref={(el) => (sectionRefs.current.foundation = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   The Foundation — Servant Leadership
-                  </h2>
+                </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Servant leadership has been misunderstood for decades. It isn't weakness or endless sacrifice. It's <strong>strength under control</strong>. It's <strong>stewardship of people and purpose</strong>.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Servant leadership has been mischaracterized for years. It isn't weakness, softness, or endless sacrifice. It is strength under control — strength for the good of others, not at the expense of them.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                At its core, servant leadership means this:
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                At its core, servant leadership is stewardship of people and purpose.
               </p>
-              {renderParagraph("> The leader's role is to ensure the people in their care can thrive in theirs.", 'foundation-core')}
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                It's practical: accountability, clarity, empathy, and example. When leaders take responsibility for the wake they leave behind, organizations stabilize and teams begin to trust again. Servant leadership is the spine of everything I teach—but it's not the only vertebra.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                The leader's role is to ensure the people in their care can thrive in theirs.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Practically, this means accountability, clarity, empathy, and example. It means recognizing the wake you leave behind and taking responsibility for it. When leaders lead like this, organizations stabilize, trust rebounds, and culture becomes a place people can grow inside of instead of survive.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Servant leadership is the spine of everything I teach — but it is not the whole skeleton. It is the foundation that the rest of the Archetype philosophy is built on.
               </p>
             </div>
           </div>
         </section>
 
-        {/* The Human Lens */}
+        {/* Section 3: The Human Lens */}
         <section 
           id="golden-rule" 
           ref={(el) => (sectionRefs.current['golden-rule'] = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                The Human Lens
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  The Human Lens
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Faith quietly shapes everything I do. The Golden Rule—treat people the way you want to be treated—has guided every decision I've made as a mentor, leader, and business owner. It's not just morality; it's mechanism.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Faith quietly shapes everything I do. The Golden Rule — treat people the way you want to be treated — isn't just morality; it's mechanism. It is one of the most reliable drivers of trust and performance I've seen in 32 years.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                When you treat people with dignity, they respond with trust. When you build trust, they respond with effort.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Alongside that sits a second principle that has shaped every season of my leadership:
               </p>
-              {renderParagraph("> Simple. Timeless. Proven.", 'golden-rule-simple')}
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                It's also scalable. You can apply it to a boardroom, a start-up, or a student. Respect and empathy never expire.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                I am second. Not smaller. Not weaker. Simply committed to serving the people I lead before serving my own comfort.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                It's a posture of strength under control — power used to protect, not to dominate. A leader who puts themselves first creates fear. A leader who puts others first creates trust, safety, and the conditions for people to rise.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                When you treat people with dignity, you create the conditions for trust. When you create trust, people contribute with energy, confidence, and ownership.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Simple. Timeless. Proven.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                This principle scales. It works with executives, managers, teams, and students. It works in moments of conflict and moments of growth. Empathy and respect don't become obsolete when the stakes rise — they become essential.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Beyond Leadership — The Business Lens */}
+        {/* Section 4: Beyond Leadership — The Business Lens */}
         <section 
           id="business-lens" 
           ref={(el) => (sectionRefs.current['business-lens'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Beyond Leadership — The Business Lens
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  Beyond Leadership — The Business Lens
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Culture and clarity mean little without functional systems. Business has rules—cash flow, delivery, margins, accountability—and servant leadership doesn't ignore them. It humanizes them.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Leadership alone isn't enough. Culture and clarity mean little without functional systems that support them.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Leadership and business intersect in a single question:
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Every organization has non-negotiables: cash flow, delivery, roles, accountability, sustainability. Servant leadership doesn't ignore those realities — it humanizes them.
               </p>
-              {renderParagraph("> How do we build systems that serve both people and performance?", 'business-question')}
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                That's where I spend most of my time with clients—translating values into operational design. The goal isn't to make a company soft; it's to make it sustainable.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Leadership and business meet in a single question:
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                How do we build systems that serve both people and performance?
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                That's where most of my work happens — turning beliefs into operational design.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 A healthy company:
               </p>
-              <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <ul className="list-disc space-y-3 pl-6 sm:pl-8">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
                   Aligns purpose with structure.
                 </li>
-                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
                   Measures success with both numbers and morale.
                 </li>
-                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
                   Protects culture as deliberately as it protects profit.
                 </li>
               </ul>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                I help leaders close the gap between what they say they value and what their systems reward.
-              </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                <a href="/methods" className="text-[#C85A3C] hover:text-[#B54A32] transition-colors underline">Learn more about my methods →</a>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                My role is to help leaders close the gap between what they say they value and what their systems actually produce.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Clarity Over Chaos */}
+        {/* Section 5: Clarity Over Chaos */}
         <section 
           id="clarity-over-chaos" 
           ref={(el) => (sectionRefs.current['clarity-over-chaos'] = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Clarity Over Chaos
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  Clarity Over Chaos
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Chaos creeps in when communication and direction get tangled.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Chaos rarely arrives loudly. It creeps in through vague communication, inconsistent standards, unclear authority, and emotional noise. Leaders often mistake charisma or momentum for clarity. But energy without direction leads nowhere.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Leaders often mistake energy for clarity. They fill the air with excitement, but no one leaves the room knowing what to do next.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Clarity is an act of service — it removes friction and frees people to move.
               </p>
-              {renderParagraph("> Clarity is an act of service—it removes friction and frees people to move.", 'clarity-service')}
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                When I work with teams, we start by identifying where chaos hides:
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                When I work with teams, we start by naming where chaos is hiding:
               </p>
-              <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <ul className="list-disc space-y-3 pl-6 sm:pl-8">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
                   Conflicting messages
                 </li>
-                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
                   Undefined authority
                 </li>
-                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
                   Overlapping roles
                 </li>
-                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
                   Emotional noise
                 </li>
               </ul>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Once you can name chaos, you can dismantle it. Teams that see clearly, move clearly.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Once you name chaos, you can dismantle it. Teams that see clearly, move clearly.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Trust Is the Currency */}
+        {/* Section 6: Trust Is the Currency */}
         <section 
           id="trust-is-currency" 
           ref={(el) => (sectionRefs.current['trust-is-currency'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Trust Is the Currency
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  Trust Is the Currency
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                You can have vision, but if your people don't trust you, everything else is noise.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                You can have vision, strategy, and ambition, but without trust, none of it sticks. Trust is earned through small, consistent proof — behaviors people can count on.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Trust is built through small, repeated proof—consistency, follow-through, honesty when it costs you. It's broken by secrecy, ego, and spin.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                It's built through honesty, reliability, and follow-through. It's broken by secrecy, ego, and spin.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                The neuroscience is undeniable: high-trust environments lower cortisol, boost oxytocin, and literally rewire the brain toward cooperation. But long before the data, experience proved it. When leaders are transparent and reliable, people breathe again. When they aren't, everyone starts holding their breath.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                High-trust environments reduce stress, increase collaboration, and free people to think instead of defend. But long before science named it, lived experience proved it.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                When leaders are transparent and consistent, people breathe again. When they're not, everyone holds their breath and waits for the next impact.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Trust is the multiplier behind performance.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Accountability Without Ego */}
+        {/* Section 7: Accountability Without Ego */}
         <section 
           id="accountability" 
           ref={(el) => (sectionRefs.current.accountability = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Accountability Without Ego
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  Accountability Without Ego
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Accountability isn't control—<strong>it's care</strong>. It says, "I believe in you enough to expect more." Good leaders don't hide behind authority or policy. They make expectations clear, own their own mistakes, and give people space to rise.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Accountability is not control. It is care. It communicates, "I believe in you enough to expect more."
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Ego kills accountability. The moment leadership becomes about defending pride instead of protecting culture, progress stops. I've learned this the hard way—and I still practice it daily. Accountability is a mirror you hold up for yourself before anyone else.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Good leaders don't hide behind authority or policy. They make expectations clear, own their mistakes, and set standards without humiliating the people they lead.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Ego destroys accountability. When leadership becomes about protecting pride instead of protecting culture, progress stops.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                I've learned this the hard way — and I practice it daily. Accountability is a mirror you hold up to yourself before you hold it up to anyone else.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Simplicity Wins */}
+        {/* Section 8: Simplicity Wins */}
         <section 
           id="simplicity" 
           ref={(el) => (sectionRefs.current.simplicity = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Simplicity Wins
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  Simplicity Wins
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Complexity feels impressive. <strong>Simplicity creates traction</strong>. Whether it's communication, structure, or vision, I've learned to prune relentlessly.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Complexity looks impressive. Simplicity creates traction.
               </p>
-              {renderParagraph("> If something can't be explained clearly, it can't be executed consistently.", 'simplicity-clear')}
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Every engagement I lead focuses on distillation. We strip away noise until what's left is useful, repeatable, and teachable. That's the mark of a healthy organization: people can explain it without you in the room.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Very few things in leadership fail because they weren't complex enough. Most failures come from systems, expectations, or communication that people can't understand or follow.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                If something can't be explained clearly, it can't be executed consistently.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Every engagement I lead focuses on distillation. We remove noise until what remains is useful, repeatable, and teachable.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                A healthy organization is one people can explain without you in the room.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Leadership Is Personal */}
+        {/* Section 9: Leadership Is Personal */}
         <section 
           id="leadership-is-personal" 
           ref={(el) => (sectionRefs.current['leadership-is-personal'] = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Leadership Is Personal
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  Leadership Is Personal
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                The best systems in the world can't fix a leader who's lost themselves.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                The best systems in the world can't fix a leader who has lost themselves.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                That's why my philosophy always returns to the human being leading the humans.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                That's why philosophy always returns to the person leading the humans. Health, self-awareness, emotional discipline, and integrity are not soft skills — they are prerequisites for sustainable leadership.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Health, self-awareness, and honesty aren't luxuries—they're prerequisites.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                When the leader grows, the culture grows. When the leader fractures, the culture fractures.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                When the person at the top grows, everyone under them breathes easier.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Your business can't be healthier than you are.
               </p>
-              {renderParagraph("> \"Your business can't be healthier than you are.\"", 'health-quote')}
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Leadership is personal long before it becomes public.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Why It Works (Research Summary) */}
+        {/* Section 10: Why It Works */}
         <section 
           id="research" 
           ref={(el) => (sectionRefs.current.research = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="border-2 border-[#C85A3C] p-8 sm:p-10 md:p-12 bg-white">
-              <div className="flex items-center mb-6 sm:mb-8">
-                <div className="w-1 h-8 sm:h-10 md:h-12 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+            <div className="space-y-6">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Why It Works (research summary)
+                  Why It Works
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Modern research confirms what three decades of practice have made obvious: leaders who create safety, clarity, and consistency unlock their team's highest performance.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Modern research across psychology, neuroscience, communication, behavioral economics, anthropology, and organizational behavior keeps confirming what decades of lived leadership have already shown: Leaders who create clarity, trust, and consistency unlock the best in their teams.
               </p>
-              <div className="space-y-4 mb-3 sm:mb-4">
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
-                    Psychological Safety (Edmondson)
-                  </h3>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    Open communication drives innovation.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
-                    Empathic Listening (Rogers)
-                  </h3>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    Understanding reduces reactivity and restores reasoning.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
-                    Neuroscience of Trust (Zak)
-                  </h3>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    Trust changes brain chemistry and productivity.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
-                    Executive Isolation (Gallup)
-                  </h3>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    Mentorship and peer connection improve decision quality.
-                  </p>
-                </div>
-              </div>
-              {renderParagraph("> The takeaway is simple: people don't perform for fear—they perform for trust.", 'research-takeaway')}
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Healthy cultures aren't an accident. They are the predictable result of:
+              </p>
+              <ul className="list-disc space-y-3 pl-6 sm:pl-8">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  psychological safety
+                </li>
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  clear expectations
+                </li>
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  stable leadership behavior
+                </li>
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  aligned systems
+                </li>
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  shared accountability
+                </li>
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  human-centered communication
+                </li>
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  emotional regulation
+                </li>
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                  meaningful work
+                </li>
+              </ul>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Across thousands of studies, one pattern repeats: people think more clearly, decide more effectively, and perform with greater energy when they feel safe, supported, and aligned.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                That research is what informs Culture Science — the discipline inside AO that synthesizes: human behavior, cultural dynamics, trust physiology, communication patterns, environmental psychology, leadership influence, team mechanics, and organizational clarity.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Culture Science doesn't chase single theories. It synthesizes the evidence into something leaders can actually use.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                The truth is simple: People don't perform at their best for pressure or fear — they perform at their best for trust, clarity, and consistent leadership.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* The Standard */}
+        {/* Section 11: The Standard */}
         <section 
           id="standard" 
           ref={(el) => (sectionRefs.current.standard = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                The Standard
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  The Standard
                 </h2>
               </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Every leader leaves a wake.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Every leader leaves a wake — good or bad, intentional or accidental. The goal isn't perfection; it's awareness.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                The goal isn't perfection—it's awareness.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                When I recognize the impact of my decisions, my words, my systems, and my silence, I can steer differently. I can lead differently. I can create the conditions where others can thrive.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                When I recognize the impact of my words, systems, and silence, I can steer differently.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Leadership isn't about being in charge. It's about being responsible for what your influence creates.
               </p>
-              {renderParagraph("> Leadership isn't about being in charge.", 'standard-quote1')}
-              {renderParagraph("> It's about being responsible for what your influence creates.", 'standard-quote2')}
             </div>
           </div>
         </section>
 
-        {/* Closing */}
+        {/* Section 12: Closing */}
         <section 
           id="closing" 
           ref={(el) => (sectionRefs.current.closing = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-4 sm:space-y-5">
-              <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                Closing
-                </h2>
-              </div>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Servant leadership isn't a model; it's a mindset.
+            <div className="space-y-6">
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Servant leadership isn't a model; it's a mindset. It's what happens when responsibility meets compassion and clarity meets courage.
               </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                It's what happens when responsibility meets compassion and execution meets humility.
-              </p>
-              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                If that's the kind of leader you want to become—or rebuild to be—let's start the conversation.
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                If that's the kind of leader you want to become — or rebuild yourself to be — let's start the conversation.
               </p>
             </div>
             
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 sm:mt-10">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
               <a
                 href="/contact"
-                className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
-                aria-label="Start a conversation"
+                className="px-10 py-5 bg-[#1A1A1A] text-white font-medium text-base hover:bg-[#1A1A1A]/90 transition-colors rounded-sm text-center"
               >
                 Start a Conversation
               </a>
               <a
-                href="https://calendly.com/bartpaden/1-on-1-mentorships"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-transparent text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
-                aria-label="Book time with Bart on Calendly"
+                href={process.env.NEXT_PUBLIC_CALENDLY_SCHEDULING_URL || import.meta.env.VITE_CALENDLY_SCHEDULING_URL || 'https://calendly.com/bartpaden/1-on-1-mentorships'}
+                className="px-10 py-5 bg-transparent text-[#1A1A1A] font-medium text-base border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors rounded-sm text-center"
               >
-                Book Time
-              </a>
-              <a
-                href="/contact"
-                className="bg-transparent text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
-                aria-label="Send an email"
-              >
-                Email
+                Explore Methods
               </a>
             </div>
           </div>
