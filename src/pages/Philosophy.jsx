@@ -50,8 +50,10 @@ export default function Philosophy() {
   const [activeSection, setActiveSection] = useState('intro');
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [showStickyNav, setShowStickyNav] = useState(false);
   const sectionRefs = useRef({});
   const clickedSectionRef = useRef(null);
+  const heroRef = useRef(null);
 
   // Mobile detection and scroll tracking for parallax
   useEffect(() => {
@@ -267,7 +269,7 @@ export default function Philosophy() {
           </div>
         </section>
 
-        {/* Table of Contents */}
+        {/* Table of Contents - Initial */}
         <section className="w-full bg-[#FAFAF9] py-8 sm:py-10">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <nav aria-label="Table of contents">
@@ -294,11 +296,43 @@ export default function Philosophy() {
           </div>
         </section>
 
+        {/* Sticky Navigation - Appears after scrolling past hero */}
+        <nav 
+          aria-label="Sticky table of contents"
+          className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
+            showStickyNav ? 'translate-y-0' : '-translate-y-full'
+          }`}
+        >
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-7xl mx-auto py-3 sm:py-4">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center items-center">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-all ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
+
         {/* Leadership is Stewardship Intro */}
         <section 
           id="intro" 
           ref={(el) => (sectionRefs.current.intro = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -322,7 +356,7 @@ export default function Philosophy() {
         <section 
           id="foundation" 
           ref={(el) => (sectionRefs.current.foundation = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -350,7 +384,7 @@ export default function Philosophy() {
         <section 
           id="golden-rule" 
           ref={(el) => (sectionRefs.current['golden-rule'] = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -378,7 +412,7 @@ export default function Philosophy() {
         <section 
           id="business-lens" 
           ref={(el) => (sectionRefs.current['business-lens'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -426,7 +460,7 @@ export default function Philosophy() {
         <section 
           id="clarity-over-chaos" 
           ref={(el) => (sectionRefs.current['clarity-over-chaos'] = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -471,7 +505,7 @@ export default function Philosophy() {
         <section 
           id="trust-is-currency" 
           ref={(el) => (sectionRefs.current['trust-is-currency'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -498,7 +532,7 @@ export default function Philosophy() {
         <section 
           id="accountability" 
           ref={(el) => (sectionRefs.current.accountability = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -522,7 +556,7 @@ export default function Philosophy() {
         <section 
           id="simplicity" 
           ref={(el) => (sectionRefs.current.simplicity = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -547,7 +581,7 @@ export default function Philosophy() {
         <section 
           id="leadership-is-personal" 
           ref={(el) => (sectionRefs.current['leadership-is-personal'] = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -578,7 +612,7 @@ export default function Philosophy() {
         <section 
           id="research" 
           ref={(el) => (sectionRefs.current.research = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="border-2 border-[#C85A3C] p-8 sm:p-10 md:p-12 bg-white">
@@ -634,7 +668,7 @@ export default function Philosophy() {
         <section 
           id="standard" 
           ref={(el) => (sectionRefs.current.standard = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -663,7 +697,7 @@ export default function Philosophy() {
         <section 
           id="closing" 
           ref={(el) => (sectionRefs.current.closing = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
