@@ -521,41 +521,58 @@ export default function About() {
               How I Show Up Today
             </h2>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Today, I work with leaders, teams, and organizations who want to build something healthy — something real, something sustainable, something worth belonging to.
+              Today, I work with leaders, teams, and organizations who want to build something healthy — something real, sustainable, and worth belonging to.
             </p>
             <div className="space-y-4 sm:space-y-5">
               <div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Mentorship:</strong> helping leaders at every level find clarity, courage, and confidence
+                  <strong className="font-bold">Mentorship:</strong>
+                </p>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
+                  Helping leaders at every level gain clarity, courage, and direction.
                 </p>
               </div>
               <div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Consulting:</strong> strengthening systems, communication, alignment, and culture
+                  <strong className="font-bold">Consulting:</strong>
+                </p>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
+                  Strengthening systems, communication, alignment, and culture so leaders can build what they actually intend.
                 </p>
               </div>
               <div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Speaking & Workshops:</strong> sharing lived leadership and research-backed insight
+                  <strong className="font-bold">Fractional Leadership:</strong>
+                </p>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
+                  Stepping in when teams need stability, clarity, or steady leadership through seasons of pressure or transition.
                 </p>
               </div>
               <div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Fractional Leadership:</strong> stepping in when teams need stability and direction during transitional seasons
+                  <strong className="font-bold">Speaking & Seminars:</strong>
+                </p>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
+                  Bringing lived leadership, cultural insight, and research-backed understanding into rooms that need clarity and language for what they're experiencing.
+                </p>
+              </div>
+              <div>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
+                  <strong className="font-bold">Training & Education:</strong>
+                </p>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
+                  Developing tools, frameworks, and curriculum that help people understand leadership, culture, and human behavior in ways they can immediately apply.
                 </p>
               </div>
             </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mt-6 sm:mt-8 mb-3 sm:mb-4">
-              I don't bring programs.
+              The work isn't programmatic or pre-packaged.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I don't bring scripts.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I don't bring quick fixes.
+              It adapts to the people, the season, and the reality leaders are navigating.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-              I bring presence, clarity, responsibility, and decades of real leadership lived with real people in real environments.
+              What I bring is presence, clarity, responsibility, and decades of lived leadership shaped by real environments, real pressure, and real people.
             </p>
           </div>
         </section>
