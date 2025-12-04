@@ -12,143 +12,198 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 
-const sections = [
-  { id: 'intro', label: 'Intro' },
-  { id: 'guiding-principle', label: 'The Guiding Principle' },
-  { id: 'step-one', label: 'Step One' },
-  { id: 'step-two', label: 'Step Two' },
-  { id: 'step-three', label: 'Step Three' },
-  { id: 'step-four', label: 'Step Four' },
-  { id: 'step-five', label: 'Step Five' },
-  { id: 'working-philosophy', label: 'Working Philosophy' },
-  { id: 'application', label: 'Application' },
-  { id: 'proof', label: 'The Proof' },
-  { id: 'goal', label: 'The Goal' },
-  { id: 'closing', label: 'Closing' }
+const services = [
+  {
+    id: 'mentorship',
+    number: '01',
+    title: 'Mentorship',
+    subtitle: 'Helping leaders at every level find clarity, courage, and confidence',
+    link: '/methods/mentorship',
+    nextService: 'Consulting',
+    content: (
+      <>
+        <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+          Mentorship isn't a program. It's a relationship built on clarity, trust, development, and the honesty it takes to grow as a leader. Some leaders come to mentorship because they're under pressure. Others come because they're ready to sharpen their skills, expand their capacity, or step into responsibility they've never held before. Both are valid. Both matter. Both are leadership.
+        </p>
+        <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+          I mentor leaders the same way real leadership works—adaptively. Some conversations require steadiness and presence. Others require direct truth. Some are about navigating conflict; others are about uncovering potential. Sometimes a leader needs someone to slow things down; other times they need someone to push them forward. The approach shifts with the moment because leadership does too.
+        </p>
+        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+          If you're ready to grow, change, or lead with more clarity than you have today, we can begin with a conversation.
+        </p>
+      </>
+    ),
+    benefits: [
+      'Regularly scheduled conversations focused on real challenges',
+      'Honest feedback rooted in experience, not theory',
+      'Strategic thinking for culture, communication, and leadership posture',
+      'Clarity when the path forward feels unclear',
+      'Support that meets you where you are, not where someone thinks you should be'
+    ]
+  },
+  {
+    id: 'consulting',
+    number: '02',
+    title: 'Consulting',
+    subtitle: 'Strengthening systems, communication, alignment, and culture',
+    link: '/methods/consulting',
+    nextService: 'Fractional Roles',
+    content: (
+      <>
+        <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+          Consulting, the way I practice it, isn't built on models, slide decks, or theories. It's built on reality—what's actually happening inside a team, a department, or an organization. People don't need a consultant who read three books and built a framework. They need someone who can walk in, see the truth, understand the pressure, and help them move forward with clarity.
+        </p>
+        <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+          Consulting can be about solving problems, strengthening what's already working, or helping build what comes next.
+        </p>
+        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+          If your organization needs clarity—whether to fix something, refine something, or build something—we can start with a conversation.
+        </p>
+      </>
+    ),
+    benefits: [
+      "Culture and leadership audits to surface what's not working",
+      'Communication systems that create clarity instead of confusion',
+      'Accountability structures that empower instead of control',
+      'Realignment of values, behaviors, and operational design',
+      'Strategic facilitation for teams navigating transition or conflict'
+    ]
+  },
+  {
+    id: 'fractional-roles',
+    number: '03',
+    title: 'Fractional Roles',
+    subtitle: 'Stepping in when teams need stability and direction during transitional seasons',
+    link: '/methods/fractional-roles',
+    nextService: 'Speaking & Seminars',
+    content: (
+      <>
+        <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+          Some seasons require more than guidance — they require leadership presence. Fractional Leadership brings an experienced leader into your organization for a defined period to provide clarity, steadiness, and alignment during transition, growth, or cultural pressure.
+        </p>
+        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+          Fractional Leadership can take different forms depending on the season — cultural stabilization, operational clarity, leadership alignment, or helping a team prepare for what comes next. The flagship role in this work is the Fractional Chief Culture Officer (CCO), a hands-on senior leader focused on culture, communication, and the environment people experience every day.
+        </p>
+      </>
+    ),
+    benefits: [
+      'Interim executive presence during transitions',
+      'Culture stabilization and team alignment',
+      'Strategic decision-making and priority-setting',
+      'Leadership coaching for emerging leaders',
+      'Operational guidance without long-term overhead'
+    ]
+  },
+  {
+    id: 'speaking-seminars',
+    number: '04',
+    title: 'Speaking & Seminars',
+    subtitle: 'Sharing lived leadership and research-backed insight',
+    link: '/methods/speaking-seminars',
+    nextService: 'Training & Education',
+    content: (
+      <>
+        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+          Speaking, the way I practice it, isn't performance — it's leadership in a room. These sessions bring clarity, language, and steadiness into environments where people are already carrying responsibility, pressure, or expectation. I speak from lived experience, research, and the posture of service that defines all of my work. Talks and seminars adapt to the room: sometimes calm strength, sometimes direct truth, sometimes a recalibration of what leadership actually is. The goal is always the same: clarity people can act on the next day.
+        </p>
+      </>
+    ),
+    benefits: [
+      'Servant leadership in practice',
+      'Building trust and psychological safety',
+      'The cost of scoreboard leadership',
+      'Culture as competitive advantage',
+      'Communication that creates clarity, not confusion',
+      'Leadership in seasons of pressure and transition'
+    ]
+  },
+  {
+    id: 'training-education',
+    number: '05',
+    title: 'Training & Education',
+    subtitle: 'Tools, Playbooks, and Curriculum designed to support and affect positive change in leadership',
+    link: '/methods/training-education',
+    nextService: null, // Last item, no next button
+    content: (
+      <>
+        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+          Training and education offerings deliver clarity, alignment, and leadership development in formats teams can absorb together. This section will expand into its own page.
+        </p>
+      </>
+    ),
+    benefits: [
+      'Custom leadership development programs',
+      'Team workshops on communication, trust, and accountability',
+      'Leadership playbooks tailored to your organization',
+      'Onboarding and culture integration for new leaders',
+      'Train-the-trainer programs to scale leadership development internally'
+    ]
+  }
 ];
 
-// Helper to render pull quotes (paragraphs starting with >)
-const renderParagraph = (text, key) => {
-  if (text.trim().startsWith('>')) {
-    const quoteText = text.trim().substring(1).trim();
-    return (
-      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
-        <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
-          "{quoteText}"
-        </p>
-      </blockquote>
-    );
-  }
-  return (
-    <p key={key} className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-      {text}
-    </p>
-  );
-};
-
 export default function Methods() {
-  const [activeSection, setActiveSection] = useState('intro');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const sectionRefs = useRef({});
-  const contentRef = useRef(null);
-  const clickedSectionRef = useRef(null);
+  const [openAccordion, setOpenAccordion] = useState(0); // First item (Mentorship) open by default
+  const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const heroRef = useRef(null);
 
-  // Intersection Observer for active section detection
+  // Mobile detection and scroll tracking for parallax
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
     };
-
-    const observerCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !clickedSectionRef.current) {
-          const sectionId = entry.target.id;
-          setActiveSection(sectionId);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sections.forEach((section) => {
-      const element = sectionRefs.current[section.id];
-      if (element) {
-        observer.observe(element);
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    const handleScroll = () => {
+      if (window.innerWidth >= 1024) {
+        setScrollY(window.scrollY);
       }
-    });
+    };
 
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
     return () => {
-      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
     };
   }, []);
 
-  const scrollToSection = (id, event) => {
-    clickedSectionRef.current = id;
-    
-    if (event && event.currentTarget) {
-      event.currentTarget.style.transform = 'scale(0.95)';
-      setTimeout(() => {
-        if (event.currentTarget) {
-          event.currentTarget.style.transform = '';
-        }
-      }, 150);
+  const toggleAccordion = (index) => {
+    if (openAccordion === index) {
+      setOpenAccordion(-1); // Close if already open
+    } else {
+      setOpenAccordion(index); // Open clicked item
     }
+  };
 
-    const element = sectionRefs.current[id];
-    if (element) {
-      const offset = 100;
-      const elementPosition = element.offsetTop - offset;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-      setIsMobileMenuOpen(false);
-      
+  const openNextAccordion = (currentIndex) => {
+    if (currentIndex < services.length - 1) {
+      setOpenAccordion(currentIndex + 1);
+      // Scroll to the next accordion item
       setTimeout(() => {
-        clickedSectionRef.current = null;
-      }, 1000);
+        const nextElement = document.getElementById(`accordion-${currentIndex + 1}`);
+        if (nextElement) {
+          nextElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 100);
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleAccordion(index);
     }
   };
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    "name": "Leadership Mentorship Method",
-    "description": "Five-step process for building leadership clarity and confidence",
-    "step": [
-      {
-        "@type": "HowToStep",
-        "position": 1,
-        "name": "Listening and Discovery",
-        "text": "Every engagement starts with listening. Before we talk about revenue, process, or structure, I want to understand what's actually happening. Where do you feel tension? What conversations keep looping? What's missing that used to be present?"
-      },
-      {
-        "@type": "HowToStep",
-        "position": 2,
-        "name": "Building Clarity",
-        "text": "Clarity isn't a mood—it's an outcome. It comes from asking the right questions until direction becomes obvious. We build clarity in three layers: Personal Clarity, Structural Clarity, and Directional Clarity."
-      },
-      {
-        "@type": "HowToStep",
-        "position": 3,
-        "name": "Execution and Ownership",
-        "text": "Together, we translate clarity into structure—communication rhythms, decision frameworks, accountability lanes, and operational patterns that fit your organization's scale. You own the system. I'll help you design it, test it, and refine it, but I never hold the keys."
-      },
-      {
-        "@type": "HowToStep",
-        "position": 4,
-        "name": "Accountability and Growth",
-        "text": "Accountability is the bridge between intention and outcome. It's not control—it's respect. We design rhythms of check-in that fit real life—not forced touchpoints, but honest follow-ups when they matter."
-      },
-      {
-        "@type": "HowToStep",
-        "position": 5,
-        "name": "Release",
-        "text": "When the person or team I'm serving no longer needs me, that's success. You'll know we've hit that point when you make clear decisions without hesitation, your systems support your standards, your people move with purpose, and you trust yourself again."
-      }
-    ]
+    "name": "Leadership Methods",
+    "description": "Adaptive leadership practice for leaders, teams, and organizations"
   };
 
   return (
@@ -160,418 +215,355 @@ export default function Methods() {
         </script>
       </Helmet>
       
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Sequential Navigation */}
-          <div className="mb-8 flex items-center justify-start border-b border-warm-border pb-4 mt-8">
-            <a
-              href="/philosophy"
-              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-              aria-label="Previous page: Philosophy"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-sm">Philosophy</span>
-            </a>
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Anchor Navigation Sidebar */}
-            <aside className="lg:w-64 flex-shrink-0">
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden w-full flex items-center justify-between p-4 bg-warm-offWhiteAlt border border-warm-border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-amber"
-                aria-label="Toggle navigation menu"
-              >
-                <span className="font-medium text-warm-charcoal">Table of Contents</span>
-                <svg className="w-5 h-5 text-warm-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
-
-              {/* Navigation menu */}
-              <nav 
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4`}
-                aria-label="Page sections"
-              >
-                <ul className="space-y-2">
-                  {sections.map((section) => (
-                    <li key={section.id}>
-                      <a
-                        href={`#${section.id}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToSection(section.id, e);
-                        }}
-                        className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber active:scale-95 ${
-                          activeSection === section.id
-                            ? 'bg-amber text-white font-semibold shadow-md'
-                            : 'text-warm-charcoal hover:bg-warm-border hover:text-amber'
-                        }`}
-                      >
-                        {section.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </aside>
-
-            {/* Main Content */}
-            <article ref={contentRef} className="flex-1 max-w-4xl">
-              <h1 className="h1 mb-12">Methods</h1>
-
-              {/* Intro */}
-              <section id="intro" ref={(el) => (sectionRefs.current.intro = el)} className="mb-16 scroll-mt-24">
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4 font-semibold">
-                  No programs. No subscriptions. No hidden systems.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Just real conversations that lead to real progress. Every engagement I take on—whether mentorship, consulting, or fractional leadership—begins with one priority: help the person in front of me build clarity and confidence they can sustain without me.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  There's no formula for that. The process shifts depending on who's sitting across the table. But the rhythm is consistent: listen deeply, tell the truth, build alignment, and walk it out together.
-                </p>
-              </section>
-
-              {/* The Guiding Principle */}
-              <section id="guiding-principle" ref={(el) => (sectionRefs.current['guiding-principle'] = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">The Guiding Principle</h2>
+      <div className="min-h-screen bg-[#FAFAF9]">
+        {/* Hero Section */}
+        <section ref={heroRef} className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+              {/* Left Column */}
+              <div>
+                <div className="inline-block mb-6 sm:mb-8">
+                  <span className="text-xs font-medium uppercase tracking-wider text-[#C85A3C] border border-[#C85A3C]/20 px-3 py-1">
+                    HOW I WORK
+                  </span>
                 </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Methods don't make leaders—discipline does. I've spent decades watching people chase frameworks and hacks hoping for quick transformation. They don't work. Frameworks are useful only if they meet you where you are and evolve as you grow. I don't start with a playbook; I start with a conversation.
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight leading-tight">
+                  Methods
+                </h1>
+                <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]">
+                  An adaptive leadership practice
                 </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  That conversation sets the tone for everything that follows: curiosity, honesty, and ownership.
-                </p>
-                {renderParagraph("> Systems don't change people—clarity does.", 'guiding-quote')}
-              </section>
-
-              {/* Step One */}
-              <section id="step-one" ref={(el) => (sectionRefs.current['step-one'] = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Step One — Listening and Discovery</h2>
-                </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Every engagement starts with listening. Before we talk about revenue, process, or structure, I want to understand what's actually happening.
-                </p>
-                <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    Where do you feel tension?
-                  </li>
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    What conversations keep looping?
-                  </li>
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    What's missing that used to be present?
-                  </li>
-                </ul>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  This is where trust begins. Leaders often arrive tired, frustrated, or overwhelmed. My job is to clear space for truth—to make it safe enough to say what's real without fear of judgment. When people feel heard, they start to think again. Once the noise quiets, patterns emerge. That's when we can name the real issue, not just the visible symptoms.
-                </p>
-              </section>
-
-              {/* Step Two */}
-              <section id="step-two" ref={(el) => (sectionRefs.current['step-two'] = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Step Two — Building Clarity</h2>
-                </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Clarity isn't a mood—it's an outcome. It comes from asking the right questions until direction becomes obvious.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  We build clarity in three layers:
-                </p>
-                <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    <strong className="font-bold">Personal Clarity</strong> — Who are you, what do you value, and how does that show up in your leadership?
-                  </li>
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    <strong className="font-bold">Structural Clarity</strong> — What systems, roles, and rhythms need to align around those values?
-                  </li>
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    <strong className="font-bold">Directional Clarity</strong> — Where are you going, and how do we measure progress without losing people along the way?
-                  </li>
-                </ul>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Once clarity appears, decision-making speeds up. Teams move with purpose. And leaders find calm again.
-                </p>
-              </section>
-
-              {/* Step Three */}
-              <section id="step-three" ref={(el) => (sectionRefs.current['step-three'] = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Step Three — Execution and Ownership</h2>
-                </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Insight means nothing without movement. Together, we translate clarity into structure—communication rhythms, decision frameworks, accountability lanes, and operational patterns that fit your organization's scale.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Here's the difference: you own the system. I'll help you design it, test it, and refine it, but I never hold the keys.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  This ensures you can sustain momentum long after my engagement ends.
-                </p>
-                {renderParagraph("> Ownership is the point of mentorship.", 'ownership-quote')}
-              </section>
-
-              {/* Step Four */}
-              <section id="step-four" ref={(el) => (sectionRefs.current['step-four'] = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Step Four — Accountability and Growth</h2>
-                </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Accountability is the bridge between intention and outcome. It's not control—it's respect. It says, "I believe you can deliver, and I'm here to make sure you do."
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  I don't hover. Accountability has to come from the person being accountable, not the one holding them accountable. We design rhythms of check-in that fit real life—not forced touchpoints, but honest follow-ups when they matter.
-                </p>
-                {renderParagraph("> The goal is simple: responsibility without dependence.", 'accountability-quote')}
-              </section>
-
-              {/* Step Five */}
-              <section id="step-five" ref={(el) => (sectionRefs.current['step-five'] = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Step Five — Release</h2>
-                </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  My method ends where yours begins. When the person or team I'm serving no longer needs me, that's success.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  You'll know we've hit that point when:
-                </p>
-                <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    You make clear decisions without hesitation.
-                  </li>
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    Your systems support your standards.
-                  </li>
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    Your people move with purpose, not pressure.
-                  </li>
-                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                    You trust yourself again.
-                  </li>
-                </ul>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  We'll celebrate that moment—because it means the work did what it was meant to do.
-                </p>
-              </section>
-
-              {/* Working Philosophy */}
-              <section id="working-philosophy" ref={(el) => (sectionRefs.current['working-philosophy'] = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Working Philosophy</h2>
-                </div>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="h3 mb-3">1. Real over performative.</h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      If we can't be honest, nothing else works. There's no script, no pretense, and no façade of improvement for optics.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">2. Presence over persistence.</h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      When I'm with a client, I'm all in. When I'm not, I'm building this leadership universe through writing, research, and reflection. There's no "drip campaign" to keep you dependent.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">3. Relationship over system.</h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      I don't sell programs. I build partnerships rooted in trust and truth. Systems serve people—not the other way around.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">4. Responsibility over revenue.</h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      My goal isn't to protect a pipeline—it's to protect people. Financial success follows authentic progress.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">5. Release over retention.</h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      Every great mentor works toward becoming unnecessary. Freedom, not dependence, is the ultimate metric of success.
-                    </p>
-                  </div>
-                </div>
-              </section>
-
-              {/* Application */}
-              <section id="application" ref={(el) => (sectionRefs.current.application = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Application — How This Plays Out</h2>
-                </div>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#mentorship" className="text-amber hover:text-amber-dark transition-colors">Mentorship</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      One-to-one work with leaders at every level. We blend clarity, confidence, and personal growth into actionable leadership rhythms.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#consulting" className="text-amber hover:text-amber-dark transition-colors">Consulting</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      Business structure, cultural alignment, communication frameworks, and process clarity. Rooted in lived experience across industries.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#speaking" className="text-amber hover:text-amber-dark transition-colors">Speaking & Workshops</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      Leadership talks and group sessions that bring these principles to teams in motion. Always practical, always personal.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="h3 mb-3">
-                      <a href="/what-i-do#fractional" className="text-amber hover:text-amber-dark transition-colors">Fractional Leadership</a>
-                    </h3>
-                    <p className="p" style={{ lineHeight: '1.6' }}>
-                      Hands-on leadership during seasons of change or growth. Steadying the ship while helping new leaders rise.
-                    </p>
-                  </div>
-                </div>
-                <p className="p mt-6" style={{ lineHeight: '1.6' }}>
-                  Each path connects back to the same center: serve people, clarify purpose, and build systems that last.
-                </p>
-              </section>
-
-              {/* The Proof */}
-              <section id="proof" ref={(el) => (sectionRefs.current.proof = el)} className="mb-16 scroll-mt-24">
-                <aside aria-label="Research insights" className="border-l-4 border-amber bg-warm-offWhiteAlt rounded-r-lg p-6 mb-8">
-                  <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">The Proof — Why This Works</h2>
-                  </div>
-                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                    Three decades of lived experience line up with what science has been saying all along:
-                  </p>
-                  <div className="space-y-4 mb-6">
-                    <div>
-                      <h3 className="h3 mb-2">Psychological Safety (Edmondson)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        Safety to speak equals speed to learn.
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="h3 mb-2">Neuroscience of Trust (Zak)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        Trust reduces stress and increases performance.
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="h3 mb-2">Cognitive Resilience (Seligman)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        Optimism and ownership turn setbacks into recovery faster.
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="h3 mb-2">Accountability Theory (Lerner)</h3>
-                      <p className="p" style={{ lineHeight: '1.6' }}>
-                        Shared responsibility increases motivation and results.
-                      </p>
-                    </div>
-                  </div>
-                  {renderParagraph("> Leaders don't need more tools—they need alignment between belief and behavior.", 'proof-quote')}
-                </aside>
-              </section>
-
-              {/* The Goal */}
-              <section id="goal" ref={(el) => (sectionRefs.current.goal = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">The Goal</h2>
-                </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  When this method works, you'll find clarity that feels like calm, teams that run without you hovering, and results that make sense again. You'll have structure without suffocation, standards without arrogance, and confidence without noise.
-                </p>
-                {renderParagraph("> That's what it means to lead from health instead of exhaustion.", 'goal-quote')}
-              </section>
-
-              {/* Closing */}
-              <section id="closing" ref={(el) => (sectionRefs.current.closing = el)} className="mb-16 scroll-mt-24">
-                <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
-                  <h2 className="h2">Closing</h2>
-                </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  Real leadership isn't a program.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  It's a process of rediscovering what's true and living it out with discipline.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                  If you're ready to rebuild clarity and lead from strength and humility—let's talk.
-                </p>
-              </section>
-
-              {/* CTA Strip */}
-              <div className="mt-16 pt-12 border-t border-warm-border">
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="#contact"
-                    className="btn-cta text-center"
-                    aria-label="Start a conversation with Archy"
-                  >
-                    Start a Conversation
-                  </a>
-                  <a
-                    href="https://calendly.com/bartpaden/1-on-1-mentorships"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-cta text-center"
-                    aria-label="Book time with Bart on Calendly"
-                  >
-                    Book Time
-                  </a>
-                  <a
-                    href="#contact"
-                    className="btn-cta text-center"
-                    aria-label="Send an email to Bart"
-                  >
-                    Email
-                  </a>
-                </div>
               </div>
-
-              {/* Sequential Navigation Footer */}
-              <div className="mt-12 pt-8 border-t border-warm-border flex items-center justify-between">
-                <a
-                  href="/philosophy"
-                  className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-                  aria-label="Previous page: Philosophy"
+              
+              {/* Right Column - Parallax (Desktop Only) */}
+              <div className="relative h-[500px] hidden lg:block">
+                {/* Layer 3: Back (slowest) */}
+                <div 
+                  className="absolute inset-0 z-10"
+                  style={{ 
+                    transform: `translateY(${scrollY * 0.05}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
                 >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span className="text-sm">← Philosophy</span>
-                </a>
-                <div></div>
+                  <img 
+                    src="/images/methods-layer-3.png" 
+                    alt="Methods Background Layer" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                {/* Layer 2: Middle */}
+                <div 
+                  className="absolute inset-0 z-20"
+                  style={{ 
+                    transform: `translateY(${scrollY * 0.08}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/methods-layer-2.png" 
+                    alt="Methods Middle Layer" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                {/* Layer 1: Front (fastest) */}
+                <div 
+                  className="absolute inset-0 z-30"
+                  style={{ 
+                    transform: `translateY(${scrollY * 0.12}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/methods-layer-1.png" 
+                    alt="Methods Foreground Layer" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
               </div>
-            </article>
+            </div>
           </div>
-        </div>
+        </section>
+
+        {/* Section I: Opening Frame */}
+        <section className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                Leadership doesn't happen in ideal conditions. It happens in motion—inside pressure, relationships, expectations, and the realities leaders are already navigating. Most programs and models break down at that point because they rely on steps, templates, or theory. This work doesn't. It adjusts to what is actually happening.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                This approach works because it brings clarity to the moment. Leaders can't make aligned decisions when the situation feels foggy or overwhelming. When we slow the moment down and name what's really going on—behaviorally, relationally, culturally—leaders regain their footing. Clarity creates steadiness, and steadiness changes everything.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                It also works because it addresses the whole picture, not just the symptoms. Pressure, communication, behavior, trust, expectations, and culture all affect each other. When one shifts, the rest move with it. An adaptive method sees those connections and responds accordingly.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                The years I've spent leading, serving clients, building companies, working across industries, writing, researching, and developing Culture Science and the Archetype Leadership Index (ALI) all support this work. They sharpen my ability to read what's happening early—before drift becomes damage.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                But at its core, this works because it stays human. Real conversations. Real awareness. Real decisions that move people and organizations forward with confidence.
+              </p>
+              
+              {/* Pull Quote */}
+              <blockquote className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 my-10 sm:my-12">
+                <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
+                  "When leaders see clearly, they lead clearly. That's why this approach changes things."
+                </p>
+              </blockquote>
+            </div>
+          </div>
+        </section>
+
+        {/* Section II: What I Offer (Accordion) */}
+        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-12 sm:mb-16 font-serif tracking-tight">
+                What I Offer
+              </h2>
+              
+              <div className="space-y-4">
+                {services.map((service, index) => (
+                  <div
+                    key={service.id}
+                    id={`accordion-${index}`}
+                    className="bg-white border border-gray-200 rounded-sm overflow-hidden"
+                  >
+                    {/* Accordion Header */}
+                    <button
+                      onClick={() => toggleAccordion(index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      className="w-full flex items-center justify-between p-6 sm:p-8 hover:bg-gray-50 transition-colors text-left"
+                      aria-expanded={openAccordion === index}
+                      aria-controls={`accordion-content-${index}`}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      <div className="flex items-center gap-4 sm:gap-6">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#C85A3C] flex items-center justify-center flex-shrink-0">
+                          <span className="text-base sm:text-lg font-bold font-serif text-white">
+                            {service.number}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl sm:text-2xl font-bold font-serif text-[#1A1A1A] mb-1">
+                            {service.title}
+                          </h3>
+                          <p className="text-base sm:text-lg text-[#6B6B6B] font-medium">
+                            {service.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                      <svg
+                        className={`w-6 h-6 text-[#1A1A1A] transition-transform duration-300 flex-shrink-0 ${
+                          openAccordion === index ? 'rotate-180' : ''
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    {/* Accordion Content */}
+                    <div
+                      id={`accordion-content-${index}`}
+                      className={`overflow-hidden transition-all duration-300 ${
+                        openAccordion === index ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div className="border-t border-gray-100 px-6 sm:px-8 pb-8 pt-4">
+                        <div className="space-y-4 mb-6">
+                          {service.content}
+                        </div>
+                        
+                        {/* Benefits List (if exists) */}
+                        {service.benefits && service.benefits.length > 0 && (
+                          <div className="mb-6">
+                            <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
+                              {index === 0 && 'What mentorship looks like:'}
+                              {index === 1 && 'What consulting engagements include:'}
+                              {index === 2 && 'What fractional leadership provides:'}
+                              {index === 3 && 'Speaking topics include:'}
+                              {index === 4 && 'What training and education includes:'}
+                            </p>
+                            <ul className="list-disc space-y-2 pl-6 sm:pl-8">
+                              {service.benefits.map((benefit, benefitIndex) => (
+                                <li key={benefitIndex} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                                  {benefit}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        
+                        {/* Buttons */}
+                        <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                          <a
+                            href={service.link}
+                            className="flex-1 bg-[#1A1A1A] text-white px-6 sm:px-10 py-3 sm:py-4 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors rounded-sm text-center"
+                          >
+                            Learn More
+                          </a>
+                          {service.nextService ? (
+                            <button
+                              onClick={() => openNextAccordion(index)}
+                              className="flex-1 bg-transparent text-[#1A1A1A] px-6 sm:px-10 py-3 sm:py-4 font-medium text-sm sm:text-base border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors rounded-sm"
+                            >
+                              Next: {service.nextService} →
+                            </button>
+                          ) : (
+                            <a
+                              href="/contact"
+                              className="flex-1 bg-transparent text-[#1A1A1A] px-6 sm:px-10 py-3 sm:py-4 font-medium text-sm sm:text-base border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors rounded-sm text-center"
+                            >
+                              Start a Conversation
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section III: How I Work */}
+        <section className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  How I Work with Leaders, Teams, and Organizations
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                When I work with a leader, a team, or an entire organization, the approach is always adaptive. Some situations require steadiness and presence. Some require direct truth. Some require pattern recognition and clarity. Others require building alignment that hasn't existed yet. The method shifts with the moment because leadership shifts with the moment.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                The guidance I bring into a conversation comes from the full weight of what I've lived—three decades leading teams, building companies, creating software platforms, serving clients across industries, and seeing how real people respond to leadership under pressure. It also comes from the research behind Culture Science and the ongoing development of the Archetype Leadership Index (ALI). These tools aren't installed inside organizations—they're used by me (and eventually my team) to help leaders understand the forces shaping their environment, and they will strengthen this work as they mature.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+                Most leaders don't need a program. They need clarity, perspective, and direction that makes sense of the moment they're in. That's what I bring.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Section IV: What Informs My Work */}
+        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  What Informs My Work
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                The foundation of this work isn't theoretical. It's lived. It comes from:
+              </p>
+              <ul className="space-y-4">
+                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  32 years across web, creative, software, client service, and operational leadership
+                </li>
+                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Leading teams, building companies, navigating collapse and recovery
+                </li>
+                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Pattern recognition from working across multiple industries
+                </li>
+                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Watching how culture responds to leadership behavior and vice versa
+                </li>
+                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Writing that forces clarity and accountability
+                </li>
+                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Research across leadership, psychology, communication, and organizational behavior
+                </li>
+                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Developing Culture Science and ALI as tools that support clarity—not systems to install
+                </li>
+              </ul>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+                What I do is grounded in experience but sharpened by study. The combination makes the work both intuitive and precise.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Section V: Why This Works */}
+        <section className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  Why This Works
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                Leadership doesn't happen in ideal conditions. It happens in motion—inside pressure, relationships, expectations, and the realities leaders are already navigating. Most programs and models break down at that point because they rely on steps, templates, or theory. This work doesn't. It adjusts to what is actually happening.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                This approach works because it brings clarity to the moment. Leaders can't make aligned decisions when the situation feels foggy or overwhelming. When we slow the moment down and name what's really going on—behaviorally, relationally, culturally—leaders regain their footing. Clarity creates steadiness, and steadiness changes everything.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                It also works because it addresses the whole picture, not just the symptoms. Pressure, communication, behavior, trust, expectations, and culture all affect each other. When one shifts, the rest move with it. An adaptive method sees those connections and responds accordingly.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+                The outcome of this work isn't a model. It's clarity leaders can act on. Clarity creates steadiness. Steadiness creates alignment. Alignment creates momentum.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+                That's why this works.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Closing CTA */}
+        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
+                Ready to Begin?
+              </h2>
+              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12">
+                Let's start with a conversation about what you're navigating and where clarity is needed most.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+                <a
+                  href="/contact"
+                  className="px-10 py-5 bg-[#1A1A1A] text-white font-medium text-base hover:bg-[#1A1A1A]/90 transition-colors rounded-sm"
+                >
+                  Start a Conversation
+                </a>
+                <a
+                  href={process.env.NEXT_PUBLIC_CALENDLY_SCHEDULING_URL || import.meta.env.VITE_CALENDLY_SCHEDULING_URL || 'https://calendly.com/bartpaden/1-on-1-mentorships'}
+                  className="px-10 py-5 bg-transparent text-[#1A1A1A] font-medium text-base border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors rounded-sm"
+                >
+                  Book Time
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );
