@@ -157,23 +157,14 @@ export default function About() {
                     The Work Found Me Before I Knew Its Name
                   </h2>
                 </div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   I stepped into the web and software world in 1993 — a college kid who loved solving problems and making things work. I wasn't chasing authority. I wasn't trying to "be a leader." I was the person people trusted when something was broken, confusing, or on fire.
                 </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                  I didn't think of myself as a leader.
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                  I didn't think of myself as a leader. I thought of myself as someone who helped. And when people consistently trust you to help them, <strong>that trust is a form of leadership</strong> long before anyone calls it that.
                 </p>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                  I thought of myself as someone who helped.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                  And when people consistently trust you to help them, <strong>that trust is a form of leadership</strong> long before anyone calls it that.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                  For years, quietly and without a title, I guided clients through uncertainty, supported teammates through complexity, and held responsibility because it was the right thing to do — not because it was written on a job description.
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                  But in 2010, everything became unmistakably clear.
+                  For years, quietly and without a title, I guided clients through uncertainty, supported teammates through complexity, and held responsibility because it was the right thing to do — not because it was written on a job description. But in 2010, everything became unmistakably clear.
                 </p>
               </div>
             </div>
@@ -190,49 +181,19 @@ export default function About() {
               My first full-time employee stood in my doorway and asked if I could provide insurance.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              He wasn't asking for a perk — he was asking for stability. And the truth was simple:
+              He wasn't asking for a perk — he was asking for stability. And the truth was simple: I didn't own the company. I led a division inside it. I couldn't snap my fingers and create benefits. If this was going to happen, I would have to absorb the cost.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              I didn't own the company.
+              So I went to the owner and negotiated to reduce my own income so his insurance could be covered. It wasn't a dramatic number, but things were tight at the time, and it mattered. It was a sacrifice — not for optics, not for strategy, but for the person who trusted me enough to ask.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              I led a division inside it. I couldn't snap my fingers and create benefits. If this was going to happen, I would have to absorb the cost.
+              I didn't have the margin. I didn't have the structure. But I had a responsibility — to him.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              So I went to the owner and negotiated to reduce my own income so his insurance could be covered.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              It wasn't a dramatic number, but things were tight at the time, and it mattered.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              It was a sacrifice — not for optics, not for strategy, but for the person who trusted me enough to ask.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              I didn't have the margin.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              I didn't have the structure.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              But I had a responsibility — to him.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              That was the moment <strong>instinct became intention</strong>.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              Leadership wasn't a title.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              <strong>It was service</strong>.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              It was responsibility.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              I had been leading long before that day.
+              That was the moment <strong>instinct became intention</strong>. Leadership wasn't a title. <strong>It was service</strong>. It was responsibility.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white">
-              But that day made it unmistakable.
+              I had been leading long before that day. But that day made it unmistakable.
             </p>
           </div>
         </section>
@@ -250,58 +211,19 @@ export default function About() {
               My leadership education didn't come from seminars or frameworks. It came from real people, real pressure, real opportunity, and real moments that changed lives.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I learned leadership in rooms where tension could be felt before a word was spoken.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I learned it when silence carried more weight than instruction.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I learned it in moments that required courage — and in moments that required restraint.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I learned it when people trusted me enough to ask for help… and when they trusted me enough to tell me truths I didn't want to hear.
+              I learned leadership in rooms where tension could be felt before a word was spoken. I learned it when silence carried more weight than instruction. I learned it in moments that required courage — and in moments that required restraint. I learned it when people trusted me enough to ask for help… and when they trusted me enough to tell me truths I didn't want to hear.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               But I also learned it in the good moments — the ones leaders often overlook.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I learned leadership in moments of unexpected success, when people realized they were capable of more than they believed.
+              I learned leadership in moments of unexpected success, when people realized they were capable of more than they believed. In the quiet pride of someone who completed work they once feared. In the excitement of a first home purchase, a new baby on the way, or a marriage announcement whispered with joy. In victories that didn't belong to me but were shared with me because trust was real.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              In the quiet pride of someone who completed work they once feared.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              In the excitement of a first home purchase, a new baby on the way, or a marriage announcement whispered with joy.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              In victories that didn't belong to me but were shared with me because trust was real.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Leadership isn't only forged in difficulty.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              It's revealed just as clearly in growth, joy, breakthrough, and becoming.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Pressure shapes leaders.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              But so does celebration.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              So does hope.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              So does watching someone rise.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              The real world taught me that <strong>leadership is present in every season</strong> — in the courage to face what's wrong, and in the gratitude to honor what's right.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              None of this was theory.
+              Leadership isn't only forged in difficulty. It's revealed just as clearly in growth, joy, breakthrough, and becoming. Pressure shapes leaders. But so does celebration. So does hope. So does watching someone rise.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-              It was lived.
+              The real world taught me that <strong>leadership is present in every season</strong> — in the courage to face what's wrong, and in the gratitude to honor what's right. None of this was theory. It was lived.
             </p>
           </div>
         </section>
@@ -325,16 +247,7 @@ export default function About() {
               And from 2012 to 2022, I co-led a software company through seasons of extreme growth, strain, compression, expansion, and transition — years that altered me in ways I couldn't have learned anywhere else.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Some days felt like momentum.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Some days felt like pushing a stalled engine uphill.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              I watched people grow into leaders they never expected to become.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              And I watched how misalignment and pressure, when left unnamed, can slowly tear everything apart.
+              Some days felt like momentum. Some days felt like pushing a stalled engine uphill. I watched people grow into leaders they never expected to become. And I watched how misalignment and pressure, when left unnamed, can slowly tear everything apart.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Those years taught me things I couldn't have learned any other way:
@@ -357,22 +270,10 @@ export default function About() {
               </li>
             </ul>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Those years stripped away every illusion I had about leadership.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              They taught me humility.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              They taught me courage.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              They taught me restraint.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              And they taught me that people rarely remember what you protected for yourself—
+              Those years stripped away every illusion I had about leadership. They taught me humility. They taught me courage. They taught me restraint.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-              but <strong>they always remember how you protected them</strong>.
+              And they taught me that people rarely remember what you protected for yourself— but <strong>they always remember how you protected them</strong>.
             </p>
           </div>
         </section>
@@ -387,16 +288,7 @@ export default function About() {
               </h2>
             </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Stepping away from the company I helped build forced a reckoning.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              There were mornings when the silence felt heavy.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Afternoons spent replaying decisions.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Nights asking questions I had avoided for years:
+              Stepping away from the company I helped build forced a reckoning. There were mornings when the silence felt heavy. Afternoons spent replaying decisions. Nights asking questions I had avoided for years:
             </p>
             <ul className="list-disc space-y-3 sm:space-y-4 mb-3 sm:mb-4 pl-6 sm:pl-8">
               <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
@@ -413,16 +305,10 @@ export default function About() {
               </li>
             </ul>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              These weren't professional questions.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              They were spiritual ones.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              That season of reflection became the foundation of a long-form project I hope to publish in 2026: Accidental CEO.
+              These weren't professional questions. They were spiritual ones.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-              If you want more of that story, Archy carries the full manuscript in his corpus — just ask him.
+              That season of reflection became the foundation of a long-form project I hope to publish in 2026: Accidental CEO. If you want more of that story, Archy carries the full manuscript in his corpus — just ask him.
             </p>
           </div>
         </section>
@@ -437,40 +323,19 @@ export default function About() {
               </h2>
             </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Two sentences have guided my leadership for decades:
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              The Golden Rule — "treat others the way you would want to be treated."
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              And: "I am second."
+              Two sentences have guided my leadership for decades: The Golden Rule — "treat others the way you would want to be treated." And: "I am second."
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               The Golden Rule is ancient — rooted in Scripture, echoed in philosophy, and found across cultures. It has endured because it names something universal: leadership begins with valuing the person in front of you as much as you value yourself.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              And <strong>"I am second"</strong> is how that belief becomes action.
+              And <strong>"I am second"</strong> is how that belief becomes action. It isn't about diminishing myself. It's about <strong>elevating the people who trust me</strong>.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              It isn't about diminishing myself.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              It's about <strong>elevating the people who trust me</strong>.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              It's strength under control — the posture that keeps leadership steady, agile, and deeply human.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              It's the opposite of scoreboard leadership, which chases wins at the expense of people.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Servant leaders build people first — and because of that, their teams outperform, endure, and grow.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              That posture has shaped every season of my career — in design, software, ownership, culture, and leadership.
+              It's strength under control — the posture that keeps leadership steady, agile, and deeply human. It's the opposite of scoreboard leadership, which chases wins at the expense of people. Servant leaders build people first — and because of that, their teams outperform, endure, and grow.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-              It's the thread that held steady even when everything else was shifting.
+              That posture has shaped every season of my career — in design, software, ownership, culture, and leadership. It's the thread that held steady even when everything else was shifting.
             </p>
           </div>
         </section>
@@ -485,40 +350,13 @@ export default function About() {
               </h2>
             </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              When the company was no longer mine to build, and the people I had developed were no longer mine to develop, the questions became unavoidable.
+              When the company was no longer mine to build, and the people I had developed were no longer mine to develop, the questions became unavoidable. Did any of it matter? Did people grow under my care? Was the way I led actually good?
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Did any of it matter?
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Did people grow under my care?
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Was the way I led actually good?
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Those questions sent me into years of research across psychology, communication, neuroscience, anthropology, organizational behavior, and cultural theory.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              What I found didn't just validate the work — it explained it.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              There were names for the instincts I followed.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              There was data behind the decisions I made.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              There were patterns behind the results I saw.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              That research became the book.
-            </p>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              The book became Archetype Original.
+              Those questions sent me into years of research across psychology, communication, neuroscience, anthropology, organizational behavior, and cultural theory. What I found didn't just validate the work — it explained it.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-              Archetype Original became my next act.
+              There were names for the instincts I followed. There was data behind the decisions I made. There were patterns behind the results I saw. That research became the book. The book became Archetype Original. Archetype Original became my next act.
             </p>
           </div>
         </section>
