@@ -18,6 +18,7 @@ import AboutPage from "./pages/About";
 import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
 import MentorshipPage from "./pages/methods/Mentorship";
+import ConsultingPage from "./pages/methods/Consulting";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
 import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
@@ -202,6 +203,17 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <MentorshipPage />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Methods Consulting page
+  if (currentPage === 'methods-consulting') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ConsultingPage />
         <FloatingArchyButton />
       </main>
     );
