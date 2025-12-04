@@ -17,6 +17,7 @@ import JournalPost from "./pages/JournalPost";
 import AboutPage from "./pages/About";
 import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
+import MentorshipPage from "./pages/methods/Mentorship";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
 import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
@@ -134,8 +135,20 @@ export default function App() {
         setCurrentPage('speaking');
       } else if (path === '/fractional') {
         setCurrentPage('fractional');
-      } else if (path === '/methods') {
-        setCurrentPage('methods');
+      } else if (path === '/methods' || path.startsWith('/methods/')) {
+        if (path === '/methods/mentorship') {
+          setCurrentPage('methods-mentorship');
+        } else if (path === '/methods/consulting') {
+          setCurrentPage('methods-consulting');
+        } else if (path === '/methods/fractional-roles') {
+          setCurrentPage('methods-fractional-roles');
+        } else if (path === '/methods/speaking-seminars') {
+          setCurrentPage('methods-speaking-seminars');
+        } else if (path === '/methods/training-education') {
+          setCurrentPage('methods-training-education');
+        } else {
+          setCurrentPage('methods');
+        }
       } else if (path === '/what-i-do') {
         setCurrentPage('what-i-do');
       } else {
@@ -178,6 +191,17 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <MethodsPage />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Methods Mentorship page
+  if (currentPage === 'methods-mentorship') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <MentorshipPage />
         <FloatingArchyButton />
       </main>
     );
