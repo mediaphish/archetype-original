@@ -22,6 +22,7 @@ import ConsultingPage from "./pages/methods/Consulting";
 import SpeakingSeminarsPage from "./pages/methods/SpeakingSeminars";
 import TrainingEducationPage from "./pages/methods/TrainingEducation";
 import FractionalRolesPage from "./pages/methods/FractionalRoles";
+import CCOPage from "./pages/methods/fractionalRoles/CCO";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
 import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
@@ -144,6 +145,8 @@ export default function App() {
           setCurrentPage('methods-mentorship');
         } else if (path === '/methods/consulting') {
           setCurrentPage('methods-consulting');
+        } else if (path === '/methods/fractional-roles/cco') {
+          setCurrentPage('methods-fractional-cco');
         } else if (path === '/methods/fractional-roles') {
           setCurrentPage('methods-fractional-roles');
         } else if (path === '/methods/speaking-seminars') {
@@ -250,6 +253,17 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <FractionalRolesPage />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Methods Fractional CCO page
+  if (currentPage === 'methods-fractional-cco') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <CCOPage />
         <FloatingArchyButton />
       </main>
     );
