@@ -150,26 +150,26 @@ export default function About() {
                   }}
                 />
               </div>
-              <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-3 sm:space-y-4">
                 <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                   The Work Found Me Before I Knew Its Name
                 </h2>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   I stepped into the web and software world in 1993 — a college kid who loved solving problems and making things work. I wasn't chasing authority. I wasn't trying to "be a leader." I was the person people trusted when something was broken, confusing, or on fire.
                 </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   I didn't think of myself as a leader.
                 </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   I thought of myself as someone who helped.
                 </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   And when people consistently trust you to help them, that trust is a form of leadership long before anyone calls it that.
                 </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   For years, quietly and without a title, I guided clients through uncertainty, supported teammates through complexity, and held responsibility because it was the right thing to do — not because it was written on a job description.
                 </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   But in 2010, everything became unmistakably clear.
                 </p>
               </div>
@@ -240,61 +240,61 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               Leadership in the Real World
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               My leadership education didn't come from seminars or frameworks. It came from real people, real pressure, real opportunity, and real moments that changed lives.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I learned leadership in rooms where tension could be felt before a word was spoken.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I learned it when silence carried more weight than instruction.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I learned it in moments that required courage — and in moments that required restraint.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I learned it when people trusted me enough to ask for help… and when they trusted me enough to tell me truths I didn't want to hear.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               But I also learned it in the good moments — the ones leaders often overlook.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I learned leadership in moments of unexpected success, when people realized they were capable of more than they believed.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               In the quiet pride of someone who completed work they once feared.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               In the excitement of a first home purchase, a new baby on the way, or a marriage announcement whispered with joy.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               In victories that didn't belong to me but were shared with me because trust was real.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Leadership isn't only forged in difficulty.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               It's revealed just as clearly in growth, joy, breakthrough, and becoming.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Pressure shapes leaders.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               But so does celebration.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               So does hope.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               So does watching someone rise.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               The real world taught me that leadership is present in every season — in the courage to face what's wrong, and in the gratitude to honor what's right.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               None of this was theory.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               It was lived.
             </p>
           </div>
@@ -306,68 +306,68 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               The Years That Tested Everything
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               From 2004 to 2010, I worked alone — wearing every hat, carrying every weight, building something piece by piece.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               From 2010 to 2012, the work grew, and so did the responsibility; I began hiring, shaping a team, and learning what it meant to lead people whose livelihoods touched mine.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               And from 2012 to 2022, I co-led a software company through seasons of extreme growth, strain, compression, expansion, and transition — years that altered me in ways I couldn't have learned anywhere else.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Some days felt like momentum.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Some days felt like pushing a stalled engine uphill.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I watched people grow into leaders they never expected to become.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               And I watched how misalignment and pressure, when left unnamed, can slowly tear everything apart.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Those years taught me things I couldn't have learned any other way:
             </p>
-            <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <ul className="space-y-3 sm:space-y-4 mb-3 sm:mb-4">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>What people consistently do matters far more than what they say.</span>
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>Clarity settles a room faster than authority ever will.</span>
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>Confusion spreads fast if the leader doesn't tell the truth.</span>
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>Pressure exposes whether culture is solid or fragile.</span>
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>And a single act of integrity can rebuild trust faster than a thousand speeches.</span>
               </li>
             </ul>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Those years stripped away every illusion I had about leadership.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               They taught me humility.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               They taught me courage.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               They taught me restraint.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               And they taught me that people rarely remember what you protected for yourself—
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               but they always remember how you protected them.
             </p>
           </div>
@@ -379,46 +379,46 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               The Questions That Followed
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Stepping away from the company I helped build forced a reckoning.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               There were mornings when the silence felt heavy.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Afternoons spent replaying decisions.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Nights asking questions I had avoided for years:
             </p>
-            <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <ul className="space-y-3 sm:space-y-4 mb-3 sm:mb-4">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>Did my leadership matter?</span>
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>Did I leave people better than I found them?</span>
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>Did the sacrifices mean anything?</span>
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
                 <span className="text-[#C85A3C] mr-3 mt-1">•</span>
                 <span>Was the way I led actually good?</span>
               </li>
             </ul>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               These weren't professional questions.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               They were spiritual ones.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               That season of reflection became the foundation of a long-form project I hope to publish in 2026: Accidental CEO.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               If you want more of that story, Archy carries the full manuscript in his corpus — just ask him.
             </p>
           </div>
@@ -430,40 +430,40 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               The Posture That Shapes My Leadership
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Two sentences have guided my leadership for decades:
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               The Golden Rule — "treat others the way you would want to be treated."
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               And: "I am second."
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               The Golden Rule is ancient — rooted in Scripture, echoed in philosophy, and found across cultures. It has endured because it names something universal: leadership begins with valuing the person in front of you as much as you value yourself.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               And I am second is how that belief becomes action.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               It isn't about diminishing myself.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               It's about elevating the people who trust me.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               It's strength under control — the posture that keeps leadership steady, agile, and deeply human.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               It's the opposite of scoreboard leadership, which chases wins at the expense of people.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Servant leaders build people first — and because of that, their teams outperform, endure, and grow.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               That posture has shaped every season of my career — in design, software, ownership, culture, and leadership.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               It's the thread that held steady even when everything else was shifting.
             </p>
           </div>
@@ -475,40 +475,40 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               The Research That Made It Clear
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               When the company was no longer mine to build, and the people I had developed were no longer mine to develop, the questions became unavoidable.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Did any of it matter?
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Did people grow under my care?
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Was the way I led actually good?
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Those questions sent me into years of research across psychology, communication, neuroscience, anthropology, organizational behavior, and cultural theory.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               What I found didn't just validate the work — it explained it.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               There were names for the instincts I followed.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               There was data behind the decisions I made.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               There were patterns behind the results I saw.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               That research became the book.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               The book became Archetype Original.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               Archetype Original became my next act.
             </p>
           </div>
@@ -520,41 +520,41 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               How I Show Up Today
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-8 sm:mb-10">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Today, I work with leaders, teams, and organizations who want to build something healthy — something real, something sustainable, something worth belonging to.
             </p>
-            <div className="space-y-6 sm:space-y-8">
+            <div className="space-y-4 sm:space-y-5">
               <div>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
                   <strong className="font-bold">Mentorship:</strong> helping leaders at every level find clarity, courage, and confidence
                 </p>
               </div>
               <div>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
                   <strong className="font-bold">Consulting:</strong> strengthening systems, communication, alignment, and culture
                 </p>
               </div>
               <div>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
                   <strong className="font-bold">Speaking & Workshops:</strong> sharing lived leadership and research-backed insight
                 </p>
               </div>
               <div>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-2">
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
                   <strong className="font-bold">Fractional Leadership:</strong> stepping in when teams need stability and direction during transitional seasons
                 </p>
               </div>
             </div>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-8 sm:mt-10 mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mt-6 sm:mt-8 mb-3 sm:mb-4">
               I don't bring programs.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I don't bring scripts.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               I don't bring quick fixes.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               I bring presence, clarity, responsibility, and decades of real leadership lived with real people in real environments.
             </p>
           </div>
@@ -566,10 +566,10 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               If You're Ready
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-8 sm:mb-10">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               If you're carrying leadership weight — or growing into it — you don't have to navigate it alone.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-8 sm:mb-10">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Let's talk.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
