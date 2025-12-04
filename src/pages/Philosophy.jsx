@@ -298,7 +298,7 @@ export default function Philosophy() {
         <section 
           id="intro" 
           ref={(el) => (sectionRefs.current.intro = el)} 
-          className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
+          className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-4 sm:space-y-5">
@@ -333,7 +333,7 @@ export default function Philosophy() {
                   </h2>
               </div>
               <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Servant leadership has been misunderstood for decades. It isn't weakness or endless sacrifice. It's strength under control. It's stewardship of people and purpose.
+                Servant leadership has been misunderstood for decades. It isn't weakness or endless sacrifice. It's <strong>strength under control</strong>. It's <strong>stewardship of people and purpose</strong>.
               </p>
               <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 At its core, servant leadership means this:
@@ -509,7 +509,7 @@ export default function Philosophy() {
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Accountability isn't control—it's care. It says, "I believe in you enough to expect more." Good leaders don't hide behind authority or policy. They make expectations clear, own their own mistakes, and give people space to rise.
+                Accountability isn't control—<strong>it's care</strong>. It says, "I believe in you enough to expect more." Good leaders don't hide behind authority or policy. They make expectations clear, own their own mistakes, and give people space to rise.
               </p>
               <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Ego kills accountability. The moment leadership becomes about defending pride instead of protecting culture, progress stops. I've learned this the hard way—and I still practice it daily. Accountability is a mirror you hold up for yourself before anyone else.
@@ -533,7 +533,7 @@ export default function Philosophy() {
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-                Complexity feels impressive. Simplicity creates traction. Whether it's communication, structure, or vision, I've learned to prune relentlessly.
+                Complexity feels impressive. <strong>Simplicity creates traction</strong>. Whether it's communication, structure, or vision, I've learned to prune relentlessly.
               </p>
               {renderParagraph("> If something can't be explained clearly, it can't be executed consistently.", 'simplicity-clear')}
               <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
