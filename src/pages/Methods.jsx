@@ -32,15 +32,15 @@ const renderParagraph = (text, key) => {
   if (text.trim().startsWith('>')) {
     const quoteText = text.trim().substring(1).trim();
     return (
-      <blockquote key={key} className="border-l-4 border-amber pl-6 py-4 my-8 bg-warm-offWhiteAlt rounded-r-lg">
-        <p className="text-xl md:text-2xl font-semibold text-amber italic" style={{ lineHeight: '1.6' }}>
+      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
+        <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
           "{quoteText}"
         </p>
       </blockquote>
     );
   }
   return (
-    <p key={key} className="p mb-6" style={{ lineHeight: '1.6' }}>
+    <p key={key} className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
       {text}
     </p>
   );
@@ -229,30 +229,27 @@ export default function Methods() {
 
               {/* Intro */}
               <section id="intro" ref={(el) => (sectionRefs.current.intro = el)} className="mb-16 scroll-mt-24">
-                <p className="p mb-6 font-semibold text-warm-charcoal text-xl" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4 font-semibold">
                   No programs. No subscriptions. No hidden systems.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Just real conversations that lead to real progress.
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                  Just real conversations that lead to real progress. Every engagement I take on—whether mentorship, consulting, or fractional leadership—begins with one priority: help the person in front of me build clarity and confidence they can sustain without me.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Every engagement I take on—whether mentorship, consulting, or fractional leadership—begins with one priority: help the person in front of me build clarity and confidence they can sustain without me.
-                </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   There's no formula for that. The process shifts depending on who's sitting across the table. But the rhythm is consistent: listen deeply, tell the truth, build alignment, and walk it out together.
                 </p>
               </section>
 
               {/* The Guiding Principle */}
               <section id="guiding-principle" ref={(el) => (sectionRefs.current['guiding-principle'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">The Guiding Principle</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Methods don't make leaders—discipline does.
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">The Guiding Principle</h2>
+                </div>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                  Methods don't make leaders—discipline does. I've spent decades watching people chase frameworks and hacks hoping for quick transformation. They don't work. Frameworks are useful only if they meet you where you are and evolve as you grow. I don't start with a playbook; I start with a conversation.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  I've spent decades watching people chase frameworks and hacks hoping for quick transformation. They don't work. Frameworks are useful only if they meet you where you are and evolve as you grow. I don't start with a playbook; I start with a conversation.
-                </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   That conversation sets the tone for everything that follows: curiosity, honesty, and ownership.
                 </p>
                 {renderParagraph("> Systems don't change people—clarity does.", 'guiding-quote')}
@@ -260,79 +257,67 @@ export default function Methods() {
 
               {/* Step One */}
               <section id="step-one" ref={(el) => (sectionRefs.current['step-one'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Step One — Listening and Discovery</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Every engagement starts with listening.
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Step One — Listening and Discovery</h2>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                  Every engagement starts with listening. Before we talk about revenue, process, or structure, I want to understand what's actually happening.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Before we talk about revenue, process, or structure, I want to understand what's actually happening.
-                </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span>Where do you feel tension?</span>
+                <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    Where do you feel tension?
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span>What conversations keep looping?</span>
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    What conversations keep looping?
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <span>What's missing that used to be present?</span>
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    What's missing that used to be present?
                   </li>
                 </ul>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  This is where trust begins. Leaders often arrive tired, frustrated, or overwhelmed. My job is to clear space for truth—to make it safe enough to say what's real without fear of judgment.
-                </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  When people feel heard, they start to think again. Once the noise quiets, patterns emerge. That's when we can name the real issue, not just the visible symptoms.
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                  This is where trust begins. Leaders often arrive tired, frustrated, or overwhelmed. My job is to clear space for truth—to make it safe enough to say what's real without fear of judgment. When people feel heard, they start to think again. Once the noise quiets, patterns emerge. That's when we can name the real issue, not just the visible symptoms.
                 </p>
               </section>
 
               {/* Step Two */}
               <section id="step-two" ref={(el) => (sectionRefs.current['step-two'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Step Two — Building Clarity</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Step Two — Building Clarity</h2>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Clarity isn't a mood—it's an outcome. It comes from asking the right questions until direction becomes obvious.
                 </p>
-                <p className="p mb-4" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   We build clarity in three layers:
                 </p>
-                <ul className="space-y-4 mb-6">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <div>
-                      <strong className="text-warm-charcoal">Personal Clarity</strong> — Who are you, what do you value, and how does that show up in your leadership?
-                    </div>
+                <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    <strong className="font-bold">Personal Clarity</strong> — Who are you, what do you value, and how does that show up in your leadership?
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <div>
-                      <strong className="text-warm-charcoal">Structural Clarity</strong> — What systems, roles, and rhythms need to align around those values?
-                    </div>
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    <strong className="font-bold">Structural Clarity</strong> — What systems, roles, and rhythms need to align around those values?
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1 font-bold">•</span>
-                    <div>
-                      <strong className="text-warm-charcoal">Directional Clarity</strong> — Where are you going, and how do we measure progress without losing people along the way?
-                    </div>
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    <strong className="font-bold">Directional Clarity</strong> — Where are you going, and how do we measure progress without losing people along the way?
                   </li>
                 </ul>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Once clarity appears, decision-making speeds up. Teams move with purpose. And leaders find calm again.
                 </p>
               </section>
 
               {/* Step Three */}
               <section id="step-three" ref={(el) => (sectionRefs.current['step-three'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Step Three — Execution and Ownership</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Step Three — Execution and Ownership</h2>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Insight means nothing without movement. Together, we translate clarity into structure—communication rhythms, decision frameworks, accountability lanes, and operational patterns that fit your organization's scale.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Here's the difference: you own the system. I'll help you design it, test it, and refine it, but I never hold the keys.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   This ensures you can sustain momentum long after my engagement ends.
                 </p>
                 {renderParagraph("> Ownership is the point of mentorship.", 'ownership-quote')}
@@ -340,14 +325,14 @@ export default function Methods() {
 
               {/* Step Four */}
               <section id="step-four" ref={(el) => (sectionRefs.current['step-four'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Step Four — Accountability and Growth</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  Accountability is the bridge between intention and outcome.
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Step Four — Accountability and Growth</h2>
+                </div>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                  Accountability is the bridge between intention and outcome. It's not control—it's respect. It says, "I believe you can deliver, and I'm here to make sure you do."
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  It's not control—it's respect. It says, "I believe you can deliver, and I'm here to make sure you do."
-                </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   I don't hover. Accountability has to come from the person being accountable, not the one holding them accountable. We design rhythms of check-in that fit real life—not forced touchpoints, but honest follow-ups when they matter.
                 </p>
                 {renderParagraph("> The goal is simple: responsibility without dependence.", 'accountability-quote')}
@@ -355,42 +340,40 @@ export default function Methods() {
 
               {/* Step Five */}
               <section id="step-five" ref={(el) => (sectionRefs.current['step-five'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Step Five — Release</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  My method ends where yours begins.
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Step Five — Release</h2>
+                </div>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                  My method ends where yours begins. When the person or team I'm serving no longer needs me, that's success.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
-                  When the person or team I'm serving no longer needs me, that's success.
-                </p>
-                <p className="p mb-4" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   You'll know we've hit that point when:
                 </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>You make clear decisions without hesitation.</span>
+                <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    You make clear decisions without hesitation.
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Your systems support your standards.</span>
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    Your systems support your standards.
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>Your people move with purpose, not pressure.</span>
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    Your people move with purpose, not pressure.
                   </li>
-                  <li className="p flex items-start" style={{ lineHeight: '1.6' }}>
-                    <span className="text-amber mr-3 mt-1">•</span>
-                    <span>You trust yourself again.</span>
+                  <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                    You trust yourself again.
                   </li>
                 </ul>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   We'll celebrate that moment—because it means the work did what it was meant to do.
                 </p>
               </section>
 
               {/* Working Philosophy */}
               <section id="working-philosophy" ref={(el) => (sectionRefs.current['working-philosophy'] = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Working Philosophy</h2>
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Working Philosophy</h2>
                 <div className="space-y-6">
                   <div>
                     <h3 className="h3 mb-3">1. Real over performative.</h3>
@@ -427,7 +410,10 @@ export default function Methods() {
 
               {/* Application */}
               <section id="application" ref={(el) => (sectionRefs.current.application = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Application — How This Plays Out</h2>
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Application — How This Plays Out</h2>
+                </div>
                 <div className="space-y-6">
                   <div>
                     <h3 className="h3 mb-3">
@@ -470,8 +456,11 @@ export default function Methods() {
               {/* The Proof */}
               <section id="proof" ref={(el) => (sectionRefs.current.proof = el)} className="mb-16 scroll-mt-24">
                 <aside aria-label="Research insights" className="border-l-4 border-amber bg-warm-offWhiteAlt rounded-r-lg p-6 mb-8">
-                  <h2 className="h2 mb-6">The Proof — Why This Works</h2>
-                  <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                  <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">The Proof — Why This Works</h2>
+                  </div>
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     Three decades of lived experience line up with what science has been saying all along:
                   </p>
                   <div className="space-y-4 mb-6">
@@ -506,8 +495,10 @@ export default function Methods() {
 
               {/* The Goal */}
               <section id="goal" ref={(el) => (sectionRefs.current.goal = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">The Goal</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">The Goal</h2>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   When this method works, you'll find clarity that feels like calm, teams that run without you hovering, and results that make sense again. You'll have structure without suffocation, standards without arrogance, and confidence without noise.
                 </p>
                 {renderParagraph("> That's what it means to lead from health instead of exhaustion.", 'goal-quote')}
@@ -515,14 +506,16 @@ export default function Methods() {
 
               {/* Closing */}
               <section id="closing" ref={(el) => (sectionRefs.current.closing = el)} className="mb-16 scroll-mt-24">
-                <h2 className="h2 mb-6">Closing</h2>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="h2">Closing</h2>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Real leadership isn't a program.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   It's a process of rediscovering what's true and living it out with discipline.
                 </p>
-                <p className="p mb-6" style={{ lineHeight: '1.6' }}>
+                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   If you're ready to rebuild clarity and lead from strength and humility—let's talk.
                 </p>
               </section>

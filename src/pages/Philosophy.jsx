@@ -32,15 +32,15 @@ const renderParagraph = (text, key) => {
   if (text.trim().startsWith('>')) {
     const quoteText = text.trim().substring(1).trim();
     return (
-      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-6 italic text-xl sm:text-2xl md:text-3xl my-8">
-        <p className="text-[#1A1A1A] leading-relaxed">
+      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
+        <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
           "{quoteText}"
         </p>
       </blockquote>
     );
   }
   return (
-    <p key={key} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+    <p key={key} className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
       {text}
     </p>
   );
@@ -159,17 +159,17 @@ export default function Philosophy() {
                   Philosophy
                 </h1>
                 
-                <div className="space-y-6 sm:space-y-8">
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
+                <div className="space-y-4 sm:space-y-5">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] font-semibold">
                     Leadership is stewardship.
                   </p>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     It's not about holding power—it's about holding responsibility.
                   </p>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     I've spent over three decades watching companies rise and fall, teams thrive and fracture, and leaders find or lose their way. What separates the healthy from the broken isn't intelligence, charisma, or vision—it's alignment. When what you believe, say, and do line up, trust takes root. When they don't, people start protecting themselves instead of the mission.
                   </p>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     Archetype Original exists to help leaders rebuild that alignment—to make clarity, character, and culture tangible again.
                   </p>
                 </div>
@@ -301,17 +301,17 @@ export default function Philosophy() {
           className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
+            <div className="space-y-4 sm:space-y-5">
               <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif leading-tight">
                 Leadership is stewardship.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 It's not about holding power—it's about holding responsibility.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 I've spent over three decades watching companies rise and fall, teams thrive and fracture, and leaders find or lose their way. What separates the healthy from the broken isn't intelligence, charisma, or vision—it's alignment. When what you believe, say, and do line up, trust takes root. When they don't, people start protecting themselves instead of the mission.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Archetype Original exists to help leaders rebuild that alignment—to make clarity, character, and culture tangible again.
               </p>
             </div>
@@ -325,18 +325,21 @@ export default function Philosophy() {
           className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
-                The Foundation — Servant Leadership
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
+                  The Foundation — Servant Leadership
+                  </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Servant leadership has been misunderstood for decades. It isn't weakness or endless sacrifice. It's strength under control. It's stewardship of people and purpose.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 At its core, servant leadership means this:
               </p>
               {renderParagraph("> The leader's role is to ensure the people in their care can thrive in theirs.", 'foundation-core')}
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 It's practical: accountability, clarity, empathy, and example. When leaders take responsibility for the wake they leave behind, organizations stabilize and teams begin to trust again. Servant leadership is the spine of everything I teach—but it's not the only vertebra.
               </p>
             </div>
@@ -350,18 +353,21 @@ export default function Philosophy() {
           className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 The Human Lens
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Faith quietly shapes everything I do. The Golden Rule—treat people the way you want to be treated—has guided every decision I've made as a mentor, leader, and business owner. It's not just morality; it's mechanism.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 When you treat people with dignity, they respond with trust. When you build trust, they respond with effort.
               </p>
               {renderParagraph("> Simple. Timeless. Proven.", 'golden-rule-simple')}
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 It's also scalable. You can apply it to a boardroom, a start-up, or a student. Respect and empathy never expire.
               </p>
             </div>
@@ -375,41 +381,41 @@ export default function Philosophy() {
           className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Beyond Leadership — The Business Lens
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Culture and clarity mean little without functional systems. Business has rules—cash flow, delivery, margins, accountability—and servant leadership doesn't ignore them. It humanizes them.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Leadership and business intersect in a single question:
               </p>
               {renderParagraph("> How do we build systems that serve both people and performance?", 'business-question')}
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 That's where I spend most of my time with clients—translating values into operational design. The goal isn't to make a company soft; it's to make it sustainable.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 A healthy company:
               </p>
-              <ul className="space-y-3 mb-6 sm:mb-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
-                  <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                  <span>Aligns purpose with structure.</span>
+              <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
+                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                  Aligns purpose with structure.
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
-                  <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                  <span>Measures success with both numbers and morale.</span>
+                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                  Measures success with both numbers and morale.
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
-                  <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                  <span>Protects culture as deliberately as it protects profit.</span>
+                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                  Protects culture as deliberately as it protects profit.
                 </li>
               </ul>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 I help leaders close the gap between what they say they value and what their systems reward.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 <a href="/methods" className="text-[#C85A3C] hover:text-[#B54A32] transition-colors underline">Learn more about my methods →</a>
               </p>
             </div>
@@ -423,39 +429,38 @@ export default function Philosophy() {
           className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Clarity Over Chaos
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Chaos creeps in when communication and direction get tangled.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Leaders often mistake energy for clarity. They fill the air with excitement, but no one leaves the room knowing what to do next.
               </p>
               {renderParagraph("> Clarity is an act of service—it removes friction and frees people to move.", 'clarity-service')}
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 When I work with teams, we start by identifying where chaos hides:
               </p>
-              <ul className="space-y-3 mb-6 sm:mb-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
-                  <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                  <span>Conflicting messages</span>
+              <ul className="list-disc space-y-3 mb-3 sm:mb-4 pl-6 sm:pl-8">
+                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                  Conflicting messages
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
-                  <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                  <span>Undefined authority</span>
+                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                  Undefined authority
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
-                  <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                  <span>Overlapping roles</span>
+                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                  Overlapping roles
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] flex items-start">
-                  <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                  <span>Emotional noise</span>
+                <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                  Emotional noise
                 </li>
               </ul>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Once you can name chaos, you can dismantle it. Teams that see clearly, move clearly.
               </p>
             </div>
@@ -469,24 +474,21 @@ export default function Philosophy() {
           className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Trust Is the Currency
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 You can have vision, but if your people don't trust you, everything else is noise.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Trust is built through small, repeated proof—consistency, follow-through, honesty when it costs you.
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                Trust is built through small, repeated proof—consistency, follow-through, honesty when it costs you. It's broken by secrecy, ego, and spin.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                It's broken by secrecy, ego, and spin.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                The neuroscience is undeniable: high-trust environments lower cortisol, boost oxytocin, and literally rewire the brain toward cooperation. But long before the data, experience proved it.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                When leaders are transparent and reliable, people breathe again. When they aren't, everyone starts holding their breath.
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                The neuroscience is undeniable: high-trust environments lower cortisol, boost oxytocin, and literally rewire the brain toward cooperation. But long before the data, experience proved it. When leaders are transparent and reliable, people breathe again. When they aren't, everyone starts holding their breath.
               </p>
             </div>
           </div>
@@ -499,21 +501,18 @@ export default function Philosophy() {
           className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Accountability Without Ego
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Accountability isn't control—it's care. It says, "I believe in you enough to expect more."
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                Accountability isn't control—it's care. It says, "I believe in you enough to expect more." Good leaders don't hide behind authority or policy. They make expectations clear, own their own mistakes, and give people space to rise.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Good leaders don't hide behind authority or policy. They make expectations clear, own their own mistakes, and give people space to rise.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Ego kills accountability. The moment leadership becomes about defending pride instead of protecting culture, progress stops.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                I've learned this the hard way—and I still practice it daily. Accountability is a mirror you hold up for yourself before anyone else.
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                Ego kills accountability. The moment leadership becomes about defending pride instead of protecting culture, progress stops. I've learned this the hard way—and I still practice it daily. Accountability is a mirror you hold up for yourself before anyone else.
               </p>
             </div>
           </div>
@@ -526,18 +525,18 @@ export default function Philosophy() {
           className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Simplicity Wins
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Complexity feels impressive. Simplicity creates traction.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Whether it's communication, structure, or vision, I've learned to prune relentlessly.
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+                Complexity feels impressive. Simplicity creates traction. Whether it's communication, structure, or vision, I've learned to prune relentlessly.
               </p>
               {renderParagraph("> If something can't be explained clearly, it can't be executed consistently.", 'simplicity-clear')}
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Every engagement I lead focuses on distillation. We strip away noise until what's left is useful, repeatable, and teachable. That's the mark of a healthy organization: people can explain it without you in the room.
               </p>
             </div>
@@ -551,20 +550,23 @@ export default function Philosophy() {
           className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Leadership Is Personal
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 The best systems in the world can't fix a leader who's lost themselves.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 That's why my philosophy always returns to the human being leading the humans.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Health, self-awareness, and honesty aren't luxuries—they're prerequisites.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 When the person at the top grows, everyone under them breathes easier.
               </p>
               {renderParagraph("> \"Your business can't be healthier than you are.\"", 'health-quote')}
@@ -580,18 +582,21 @@ export default function Philosophy() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="border-2 border-[#C85A3C] p-8 sm:p-10 md:p-12 bg-white">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight leading-tight">
+              <div className="flex items-center mb-6 sm:mb-8">
+                <div className="w-1 h-8 sm:h-10 md:h-12 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Why It Works (research summary)
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-6 sm:mb-8">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Modern research confirms what three decades of practice have made obvious: leaders who create safety, clarity, and consistency unlock their team's highest performance.
               </p>
-              <div className="space-y-4 mb-6 sm:mb-8">
+              <div className="space-y-4 mb-3 sm:mb-4">
                 <div>
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
                     Psychological Safety (Edmondson)
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     Open communication drives innovation.
                   </p>
                 </div>
@@ -599,7 +604,7 @@ export default function Philosophy() {
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
                     Empathic Listening (Rogers)
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     Understanding reduces reactivity and restores reasoning.
                   </p>
                 </div>
@@ -607,7 +612,7 @@ export default function Philosophy() {
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
                     Neuroscience of Trust (Zak)
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     Trust changes brain chemistry and productivity.
                   </p>
                 </div>
@@ -615,7 +620,7 @@ export default function Philosophy() {
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2 font-serif tracking-tight leading-tight">
                     Executive Isolation (Gallup)
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                     Mentorship and peer connection improve decision quality.
                   </p>
                 </div>
@@ -632,17 +637,20 @@ export default function Philosophy() {
           className="w-full bg-white py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 The Standard
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Every leader leaves a wake.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 The goal isn't perfection—it's awareness.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 When I recognize the impact of my words, systems, and silence, I can steer differently.
               </p>
               {renderParagraph("> Leadership isn't about being in charge.", 'standard-quote1')}
@@ -658,17 +666,20 @@ export default function Philosophy() {
           className="w-full bg-[#FAFAF9] py-16 sm:py-20 md:py-24 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <div className="space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 font-serif tracking-tight leading-tight">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex items-center mb-8 sm:mb-10">
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                 Closing
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                </h2>
+              </div>
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 Servant leadership isn't a model; it's a mindset.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 It's what happens when responsibility meets compassion and execution meets humility.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+              <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                 If that's the kind of leader you want to become—or rebuild to be—let's start the conversation.
               </p>
             </div>
