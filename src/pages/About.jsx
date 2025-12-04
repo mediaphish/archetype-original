@@ -183,52 +183,52 @@ export default function About() {
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 sm:mb-10 tracking-tight">
               The Insurance Moment
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               My first full-time employee stood in my doorway and asked if I could provide insurance.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               He wasn't asking for a perk — he was asking for stability. And the truth was simple:
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               I didn't own the company.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               I led a division inside it. I couldn't snap my fingers and create benefits. If this was going to happen, I would have to absorb the cost.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               So I went to the owner and negotiated to reduce my own income so his insurance could be covered.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               It wasn't a dramatic number, but things were tight at the time, and it mattered.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               It was a sacrifice — not for optics, not for strategy, but for the person who trusted me enough to ask.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               I didn't have the margin.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               I didn't have the structure.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               But I had a responsibility — to him.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               That was the moment instinct became intention.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               Leadership wasn't a title.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               It was service.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               It was responsibility.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white mb-6 sm:mb-8">
+            <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               I had been leading long before that day.
             </p>
-            <p className="text-base sm:text-lg leading-relaxed text-white">
+            <p className="text-base sm:text-lg leading-normal text-white">
               But that day made it unmistakable.
             </p>
           </div>
