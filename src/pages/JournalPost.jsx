@@ -126,7 +126,7 @@ export default function JournalPost() {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
                 Post Not Found
               </h1>
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-8 text-pretty">
+                    <p className="text-base sm:text-lg leading-normal text-[#6B6B6B] mb-3 sm:mb-4 text-pretty">
                 {error || 'The post you\'re looking for doesn\'t exist.'}
               </p>
               <a 
@@ -242,7 +242,7 @@ export default function JournalPost() {
                 
                 return summaryText ? (
                   <div className="mb-8 sm:mb-10 p-4 sm:p-6 bg-[#FAFAF9] border-l-[6px] border-[#C85A3C]">
-                    <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] leading-relaxed">
+                    <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] leading-normal">
                       {summaryText}
                     </p>
                   </div>
@@ -692,9 +692,19 @@ export default function JournalPost() {
                         if (h1Normalized === titleNormalizedForParsing) {
                           return null;
                         }
-                        return <h1 key={index} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 mt-8 font-serif tracking-tight">{h1Content}</h1>;
+                        return (
+                          <div key={index} className="flex items-center mb-4 sm:mb-6 mt-8">
+                            <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] font-serif tracking-tight">{h1Content}</h1>
+                          </div>
+                        );
                       case 'h2':
-                        return <h2 key={index} className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 mt-6 font-serif tracking-tight">{block.content}</h2>;
+                        return (
+                          <div key={index} className="flex items-center mb-3 sm:mb-4 mt-6">
+                            <div className="w-1 h-8 sm:h-10 md:h-12 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight">{block.content}</h2>
+                          </div>
+                        );
                       case 'h3':
                         return <h3 key={index} className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-2 sm:mb-3 mt-4 font-serif tracking-tight">{block.content}</h3>;
                       case 'blockquote':
@@ -719,11 +729,11 @@ export default function JournalPost() {
                         );
                       case 'ul':
                         return (
-                          <ul key={index} className="list-none mb-6 space-y-4 sm:space-y-5">
+                          <ul key={index} className="list-disc mb-3 sm:mb-4 space-y-3 pl-6 sm:pl-8 marker:text-[#C85A3C]">
                             {block.items.map((item, itemIndex) => {
                               const processedItem = processInlineMarkdown(item);
                               return (
-                                <li key={itemIndex} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] pl-0">
+                                <li key={itemIndex} className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
                                   <span className="text-[#C85A3C] mr-3 font-bold">•</span>
                                   <span>{processedItem}</span>
                                 </li>
@@ -748,7 +758,7 @@ export default function JournalPost() {
                         const processedContent = processInlineMarkdown(paraContent);
                         
                         return (
-                          <p key={index} className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6 text-pretty">
+                          <p key={index} className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4 text-pretty">
                             {processedContent}
                           </p>
                         );
