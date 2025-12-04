@@ -151,9 +151,12 @@ export default function About() {
                 />
               </div>
               <div className="space-y-3 sm:space-y-4">
-                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
-                  The Work Found Me Before I Knew Its Name
-                </h2>
+                <div className="flex items-center mb-8 sm:mb-10">
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
+                    The Work Found Me Before I Knew Its Name
+                  </h2>
+                </div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   I stepped into the web and software world in 1993 — a college kid who loved solving problems and making things work. I wasn't chasing authority. I wasn't trying to "be a leader." I was the person people trusted when something was broken, confusing, or on fire.
                 </p>
@@ -164,7 +167,7 @@ export default function About() {
                   I thought of myself as someone who helped.
                 </p>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                  And when people consistently trust you to help them, that trust is a form of leadership long before anyone calls it that.
+                  And when people consistently trust you to help them, <strong>that trust is a form of leadership</strong> long before anyone calls it that.
                 </p>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
                   For years, quietly and without a title, I guided clients through uncertainty, supported teammates through complexity, and held responsibility because it was the right thing to do — not because it was written on a job description.
@@ -214,13 +217,13 @@ export default function About() {
               But I had a responsibility — to him.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              That was the moment instinct became intention.
+              That was the moment <strong>instinct became intention</strong>.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               Leadership wasn't a title.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
-              It was service.
+              <strong>It was service</strong>.
             </p>
             <p className="text-base sm:text-lg leading-normal text-white mb-3 sm:mb-4">
               It was responsibility.
@@ -237,9 +240,12 @@ export default function About() {
         {/* Leadership in the Real World */}
         <section className="w-full bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
-              Leadership in the Real World
-            </h2>
+            <div className="flex items-center mb-8 sm:mb-10">
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
+                Leadership in the Real World
+              </h2>
+            </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               My leadership education didn't come from seminars or frameworks. It came from real people, real pressure, real opportunity, and real moments that changed lives.
             </p>
@@ -289,7 +295,7 @@ export default function About() {
               So does watching someone rise.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              The real world taught me that leadership is present in every season — in the courage to face what's wrong, and in the gratitude to honor what's right.
+              The real world taught me that <strong>leadership is present in every season</strong> — in the courage to face what's wrong, and in the gratitude to honor what's right.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               None of this was theory.
@@ -303,9 +309,12 @@ export default function About() {
         {/* The Years That Tested Everything */}
         <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
-              The Years That Tested Everything
-            </h2>
+            <div className="flex items-center mb-8 sm:mb-10">
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
+                The Years That Tested Everything
+              </h2>
+            </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               From 2004 to 2010, I worked alone — wearing every hat, carrying every weight, building something piece by piece.
             </p>
@@ -330,26 +339,21 @@ export default function About() {
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Those years taught me things I couldn't have learned any other way:
             </p>
-            <ul className="space-y-3 sm:space-y-4 mb-3 sm:mb-4">
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>What people consistently do matters far more than what they say.</span>
+            <ul className="list-disc space-y-3 sm:space-y-4 mb-3 sm:mb-4 pl-6 sm:pl-8">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                What people consistently do matters far more than what they say.
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>Clarity settles a room faster than authority ever will.</span>
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                Clarity settles a room faster than authority ever will.
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>Confusion spreads fast if the leader doesn't tell the truth.</span>
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                Confusion spreads fast if the leader doesn't tell the truth.
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>Pressure exposes whether culture is solid or fragile.</span>
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                Pressure exposes whether culture is solid or fragile.
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>And a single act of integrity can rebuild trust faster than a thousand speeches.</span>
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                And a single act of integrity can rebuild trust faster than a thousand speeches.
               </li>
             </ul>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
@@ -368,7 +372,7 @@ export default function About() {
               And they taught me that people rarely remember what you protected for yourself—
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
-              but they always remember how you protected them.
+              but <strong>they always remember how you protected them</strong>.
             </p>
           </div>
         </section>
@@ -376,9 +380,12 @@ export default function About() {
         {/* The Questions That Followed */}
         <section className="w-full bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
-              The Questions That Followed
-            </h2>
+            <div className="flex items-center mb-8 sm:mb-10">
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
+                The Questions That Followed
+              </h2>
+            </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Stepping away from the company I helped build forced a reckoning.
             </p>
@@ -391,22 +398,18 @@ export default function About() {
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Nights asking questions I had avoided for years:
             </p>
-            <ul className="space-y-3 sm:space-y-4 mb-3 sm:mb-4">
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>Did my leadership matter?</span>
+            <ul className="list-disc space-y-3 sm:space-y-4 mb-3 sm:mb-4 pl-6 sm:pl-8">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                Did my leadership matter?
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>Did I leave people better than I found them?</span>
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                Did I leave people better than I found them?
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>Did the sacrifices mean anything?</span>
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                Did the sacrifices mean anything?
               </li>
-              <li className="flex items-start text-base sm:text-lg leading-normal text-[#1A1A1A]">
-                <span className="text-[#C85A3C] mr-3 mt-1">•</span>
-                <span>Was the way I led actually good?</span>
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                Was the way I led actually good?
               </li>
             </ul>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
@@ -427,9 +430,12 @@ export default function About() {
         {/* The Posture That Shapes My Leadership */}
         <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
-              The Posture That Shapes My Leadership
-            </h2>
+            <div className="flex items-center mb-8 sm:mb-10">
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
+                The Posture That Shapes My Leadership
+              </h2>
+            </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Two sentences have guided my leadership for decades:
             </p>
@@ -443,13 +449,13 @@ export default function About() {
               The Golden Rule is ancient — rooted in Scripture, echoed in philosophy, and found across cultures. It has endured because it names something universal: leadership begins with valuing the person in front of you as much as you value yourself.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              And I am second is how that belief becomes action.
+              And <strong>"I am second"</strong> is how that belief becomes action.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               It isn't about diminishing myself.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              It's about elevating the people who trust me.
+              It's about <strong>elevating the people who trust me</strong>.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               It's strength under control — the posture that keeps leadership steady, agile, and deeply human.
@@ -472,9 +478,12 @@ export default function About() {
         {/* The Research That Made It Clear */}
         <section className="w-full bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
-              The Research That Made It Clear
-            </h2>
+            <div className="flex items-center mb-8 sm:mb-10">
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
+                The Research That Made It Clear
+              </h2>
+            </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               When the company was no longer mine to build, and the people I had developed were no longer mine to develop, the questions became unavoidable.
             </p>
@@ -517,9 +526,12 @@ export default function About() {
         {/* How I Show Up Today */}
         <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
-              How I Show Up Today
-            </h2>
+            <div className="flex items-center mb-8 sm:mb-10">
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
+                How I Show Up Today
+              </h2>
+            </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Today, I work with leaders, teams, and organizations who want to build something healthy — something real, sustainable, and worth belonging to.
             </p>
