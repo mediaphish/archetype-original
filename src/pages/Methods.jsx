@@ -260,6 +260,7 @@ export default function Methods() {
                 <div className="flex items-center mb-8 sm:mb-10">
                   <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
                   <h2 className="h2">Step One — Listening and Discovery</h2>
+                </div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Every engagement starts with listening. Before we talk about revenue, process, or structure, I want to understand what's actually happening.
                 </p>
@@ -284,6 +285,7 @@ export default function Methods() {
                 <div className="flex items-center mb-8 sm:mb-10">
                   <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
                   <h2 className="h2">Step Two — Building Clarity</h2>
+                </div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Clarity isn't a mood—it's an outcome. It comes from asking the right questions until direction becomes obvious.
                 </p>
@@ -311,6 +313,7 @@ export default function Methods() {
                 <div className="flex items-center mb-8 sm:mb-10">
                   <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
                   <h2 className="h2">Step Three — Execution and Ownership</h2>
+                </div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Insight means nothing without movement. Together, we translate clarity into structure—communication rhythms, decision frameworks, accountability lanes, and operational patterns that fit your organization's scale.
                 </p>
@@ -374,6 +377,7 @@ export default function Methods() {
                 <div className="flex items-center mb-8 sm:mb-10">
                   <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
                   <h2 className="h2">Working Philosophy</h2>
+                </div>
                 <div className="space-y-6">
                   <div>
                     <h3 className="h3 mb-3">1. Real over performative.</h3>
@@ -498,6 +502,7 @@ export default function Methods() {
                 <div className="flex items-center mb-8 sm:mb-10">
                   <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
                   <h2 className="h2">The Goal</h2>
+                </div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   When this method works, you'll find clarity that feels like calm, teams that run without you hovering, and results that make sense again. You'll have structure without suffocation, standards without arrogance, and confidence without noise.
                 </p>
@@ -509,6 +514,7 @@ export default function Methods() {
                 <div className="flex items-center mb-8 sm:mb-10">
                   <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
                   <h2 className="h2">Closing</h2>
+                </div>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
                   Real leadership isn't a program.
                 </p>
