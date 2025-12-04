@@ -19,6 +19,7 @@ import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
 import MentorshipPage from "./pages/methods/Mentorship";
 import ConsultingPage from "./pages/methods/Consulting";
+import SpeakingSeminarsPage from "./pages/methods/SpeakingSeminars";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
 import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
@@ -214,6 +215,17 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ConsultingPage />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Methods Speaking & Seminars page
+  if (currentPage === 'methods-speaking-seminars') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <SpeakingSeminarsPage />
         <FloatingArchyButton />
       </main>
     );
