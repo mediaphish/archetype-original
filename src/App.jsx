@@ -115,6 +115,8 @@ export default function App() {
           setCurrentPage('scoreboard-leadership');
         } else if (path === '/culture-science/scoreboard-leadership') {
           setCurrentPage('scoreboard-leadership');
+        } else if (path === '/culture-science/anti-projects/bad-leader-project') {
+          setCurrentPage('bad-leader-project');
         } else if (path === '/culture-science/bad-leader-project') {
           setCurrentPage('bad-leader-project');
         } else if (path === '/culture-science/research') {
