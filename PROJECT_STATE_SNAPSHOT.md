@@ -675,3 +675,4 @@ ls -la public/images/
 
 *This document should be updated whenever significant changes are made to the project structure, design system, or key features.*
 
+

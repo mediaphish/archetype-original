@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
 
@@ -289,6 +290,120 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
       if (data.choices && data.choices[0]) {
         let response = data.choices[0].message.content;
         
+        // Detect if Archy cannot answer the question
+        // Check for indicators that Archy is uncertain or doesn't have the answer
+        const cannotAnswerIndicators = [
+          /i (don't|do not) (know|have|understand)/i,
+          /i'm (not sure|uncertain|unable)/i,
+          /i (can't|cannot) (answer|help|provide)/i,
+          /(don't|do not) have (that|this) (information|answer|knowledge)/i,
+          /(not|outside) (in|of) (my|the) (knowledge|corpus|experience)/i,
+          /i (don't|do not) have (access|information) (to|about)/i,
+        ];
+        
+        const responseLower = response.toLowerCase();
+        const hasLowKnowledge = relevantKnowledge.length === 0 || 
+          (relevantKnowledge.length > 0 && relevantKnowledge.every(doc => {
+            const docText = (doc.title + ' ' + doc.summary + ' ' + doc.body).toLowerCase();
+            const messageWords = message.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+            return messageWords.every(word => !docText.includes(word));
+          }));
+        
+        const indicatesCannotAnswer = cannotAnswerIndicators.some(pattern => pattern.test(responseLower)) ||
+          responseLower.includes("i'm having trouble") ||
+          responseLower.includes("i'm not able to") ||
+          (hasLowKnowledge && responseLower.includes("don't have"));
+        
+        // Assess if the question is valuable (not spam, potentially a client, or adds to canon)
+        let isValuableQuestion = false;
+        if (indicatesCannotAnswer) {
+          // Check for spam/abuse patterns first
+          const spamPatterns = [
+            /(buy|sell|purchase|discount|deal|offer|promo|promotion|cheap|free money|get rich)/i,
+            /(click here|visit|sign up|register now|limited time)/i,
+            /(viagra|pills|pharmacy|medication|drug)/i,
+            /(casino|gambling|lottery|winner|prize)/i,
+            /(nigerian prince|inheritance|lottery winner)/i,
+            /(bitcoin|crypto|investment|trading|forex)/i,
+            /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i, // Just an email address
+            /^(http|https|www\.)/i, // Just a URL
+            /^[^\w\s]{10,}$/, // Mostly special characters
+          ];
+          
+          const isSpam = spamPatterns.some(pattern => pattern.test(message)) ||
+            message.length < 10 || // Too short to be meaningful
+            message.split(/\s+/).length < 3; // Less than 3 words
+          
+          if (!isSpam) {
+            // Use AI to assess if question is valuable (potential client or canon-worthy)
+            try {
+              const assessmentPrompt = `You are assessing a question that Archy (an AI assistant representing Bart Paden, a leadership consultant) couldn't answer.
+
+Question: "${message}"
+
+Assess if this question is:
+1. From a potential client (shows interest in services, has business/leadership context, asks about working together)
+2. Valuable for the knowledge corpus (adds new perspective, reveals gaps, is professionally relevant)
+3. Legitimate and not spam/abuse
+
+Respond with ONLY a JSON object:
+{
+  "isValuable": true/false,
+  "reason": "brief explanation",
+  "category": "potential_client" | "canon_worthy" | "neither"
+}`;
+
+              const assessmentResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${process.env.OPEN_API_KEY}`,
+                },
+                body: JSON.stringify({
+                  model: 'gpt-4',
+                  messages: [{ role: 'user', content: assessmentPrompt }],
+                  max_tokens: 150,
+                  temperature: 0.3
+                })
+              });
+
+              if (assessmentResponse.ok) {
+                const assessmentData = await assessmentResponse.json();
+                const assessmentText = assessmentData.choices?.[0]?.message?.content;
+                if (assessmentText) {
+                  try {
+                    const assessment = JSON.parse(assessmentText);
+                    isValuableQuestion = assessment.isValuable === true;
+                    console.log('Question assessment:', assessment);
+                  } catch (parseError) {
+                    console.error('Error parsing assessment:', parseError);
+                    // Fallback: check for keywords that suggest value
+                    const valuableKeywords = [
+                      'consulting', 'mentorship', 'leadership', 'team', 'company', 'business',
+                      'culture', 'organization', 'help', 'guidance', 'advice', 'work together',
+                      'services', 'pricing', 'how much', 'cost', 'schedule', 'meeting', 'call'
+                    ];
+                    isValuableQuestion = valuableKeywords.some(keyword => 
+                      message.toLowerCase().includes(keyword)
+                    );
+                  }
+                }
+              }
+            } catch (assessmentError) {
+              console.error('Error assessing question value:', assessmentError);
+              // Fallback: check for keywords that suggest value
+              const valuableKeywords = [
+                'consulting', 'mentorship', 'leadership', 'team', 'company', 'business',
+                'culture', 'organization', 'help', 'guidance', 'advice', 'work together',
+                'services', 'pricing', 'how much', 'cost', 'schedule', 'meeting', 'call'
+              ];
+              isValuableQuestion = valuableKeywords.some(keyword => 
+                message.toLowerCase().includes(keyword)
+              );
+            }
+          }
+        }
+        
         // Check for button suggestions in AI response
         let suggestedButtons = [];
         if (response.includes('[SUGGEST_SCHEDULE]')) {
@@ -314,6 +429,74 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         if (response.includes('[SUGGEST_CONTACT]')) {
           suggestedButtons.push({ text: "Contact Bart", value: "show_contact_form" });
           response = response.replace('[SUGGEST_CONTACT]', '');
+        }
+        
+        // If Archy cannot answer AND the question is valuable, modify response and flag it
+        let cannotAnswer = false;
+        if (indicatesCannotAnswer && isValuableQuestion) {
+          cannotAnswer = true;
+          // Update response to ask for contact info
+          response = "Hey, that's a great question, but I'm having trouble answering it. Can I get your contact information, so I can go talk to Bart and see what his thoughts are?";
+          
+          // Generate unique ID for this question notification
+          const questionId = `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const siteUrl = process.env.PUBLIC_SITE_URL || process.env.VERCEL_URL || 'https://www.archetypeoriginal.com';
+          const feedbackUrl = `${siteUrl}/api/chat/question-feedback`;
+          
+          // Store the question in Supabase for tracking
+          try {
+            await supabase
+              .from('unanswered_questions')
+              .insert([
+                {
+                  question_id: questionId,
+                  question: message,
+                  session_id: sessionId,
+                  created_at: new Date().toISOString(),
+                  feedback: null,
+                  is_valuable: null
+                }
+              ]);
+          } catch (dbError) {
+            console.error('Error storing question:', dbError);
+            // Continue even if DB insert fails
+          }
+          
+          // Send notification email immediately (even before user provides contact info)
+          try {
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            const bartEmail = process.env.BART_EMAIL || process.env.CONTACT_EMAIL || "bart@archetypeoriginal.com";
+            
+            await resend.emails.send({
+              from: "Archy <noreply@archetypeoriginal.com>",
+              to: bartEmail,
+              subject: `Archy Can't Answer: Valuable Question (No Contact Info Yet)`,
+              html: `
+                <p>Archy encountered a valuable question he couldn't answer. The user may or may not provide contact information.</p>
+                
+                <h3>Question:</h3>
+                <p>${message.replace(/\n/g, '<br>')}</p>
+                
+                <p><em>If the user provides contact info, you'll receive another email with their details. Consider adding this to the knowledge corpus if it's relevant.</em></p>
+                
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                
+                <p style="font-size: 12px; color: #666;">
+                  <strong>Help improve Archy:</strong> Was this question actually valuable?
+                  <br>
+                  <a href="${feedbackUrl}?id=${questionId}&feedback=valuable" style="color: #C85A3C; margin-right: 10px;">✓ Yes, valuable</a>
+                  <a href="${feedbackUrl}?id=${questionId}&feedback=not_valuable" style="color: #C85A3C;">✗ No, not valuable</a>
+                </p>
+              `,
+            });
+          } catch (emailError) {
+            console.error("Error sending cannot-answer notification:", emailError);
+            // Don't fail the request if email fails
+          }
+        } else if (indicatesCannotAnswer && !isValuableQuestion) {
+          // Still acknowledge we can't answer, but don't offer contact form or send notification
+          // Just give a helpful response without the escalation
+          console.log('Question detected as not valuable - no notification sent:', message.substring(0, 50));
         }
         
         // Check for escalation triggers - be much more specific and don't escalate basic questions
@@ -348,6 +531,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
           response,
           shouldEscalate: shouldOfferEscalation,
           isDarkHours,
+          cannotAnswer: cannotAnswer,
           suggestedButtons: suggestedButtons.length > 0 ? suggestedButtons : undefined
         });
       }

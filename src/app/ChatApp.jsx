@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
 import InlineContactForm from './components/InlineContactForm.jsx';
+import CannotAnswerContactForm from './components/CannotAnswerContactForm.jsx';
 
 export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [messages, setMessages] = useState([]);
@@ -291,6 +292,12 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
         buttonOptions: data.suggestedButtons || undefined
       };
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Handle cannot answer scenario
+      if (data.cannotAnswer) {
+        setCannotAnswerQuestion(messageText);
+        setShowCannotAnswerForm(true);
+      }
 
       if (data.shouldEscalate) {
         // Empathetic prompt with two clear options
@@ -591,6 +598,24 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
               )}
               {/* Scroll anchor */}
               <div ref={messagesEndRef} />
+              {/* Cannot Answer Contact Form */}
+              {showCannotAnswerForm && cannotAnswerQuestion && (
+                <div className="px-4 pb-4">
+                  <CannotAnswerContactForm
+                    question={cannotAnswerQuestion}
+                    onSuccess={() => {
+                      setShowCannotAnswerForm(false);
+                      setCannotAnswerQuestion(null);
+                    }}
+                    onSkip={() => {
+                      // Email was already sent when cannotAnswer was detected in chat.js
+                      // Just close the form and allow chat to continue
+                      setShowCannotAnswerForm(false);
+                      setCannotAnswerQuestion(null);
+                    }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
