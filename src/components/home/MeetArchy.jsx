@@ -62,7 +62,7 @@ export default function MeetArchy() {
                 <img 
                   src="/images/archy-avatar.png" 
                   alt="Archy" 
-                  className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 object-cover"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 object-cover"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
