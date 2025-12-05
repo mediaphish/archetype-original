@@ -1,77 +1,66 @@
 /**
- * Anti-Projects Section
- * Editorial Minimal Design - What This Is Not
+ * The Anti-Projects Section
+ * Editorial Minimal Design - Research that exposes patterns
  */
 import React from 'react';
 
 export default function AntiProjects() {
+  const handleLinkClick = (e, href) => {
+    e.preventDefault();
+    window.history.pushState({}, '', href);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-white">
+    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-center">
-            What This Is Not
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+            The Anti-Projects
           </h2>
           
-          <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16 text-center max-w-3xl mx-auto">
-            I don't chase attention, trends, or scale for its own sake. I work with people who want clarity, not performance. Here's what Archetype Original will never become:
+          {/* Subtitle */}
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-12 sm:mb-16">
+            Research that exposes the patterns destroying leadership and culture — so we can build something better.
           </p>
           
-          <div className="space-y-8 max-w-4xl mx-auto">
-            {/* 1. Corporate culture consulting */}
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif">
-                1. Corporate culture consulting that waters down truth for comfort
+          {/* Two Anti-Projects (vertical layout with thick orange left borders) */}
+          <div className="space-y-12 sm:space-y-16 md:space-y-20">
+            {/* ANTI-PROJECT 1: Scoreboard Leadership */}
+            <div className="border-l-[6px] border-[#C85A3C] pl-8 sm:pl-10 md:pl-12 py-4">
+              <h3 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+                Scoreboard Leadership
               </h3>
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                I won't repackage leadership principles into corporate-friendly language that removes accountability or pretends dysfunction is "just a communication issue." If culture is broken, I'll name it. If leadership behavior is the problem, we'll address it directly.
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+                When leadership becomes a metrics-first performance, people become expendable. Scoreboard Leadership names the patterns of ego-driven decision-making that erode trust, undermine culture, and quietly fracture teams from the inside out.
               </p>
+              <a
+                href="/culture-science/anti-projects"
+                onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects')}
+                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+              >
+                Explore Research →
+              </a>
             </div>
 
-            {/* 2. DEI training */}
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif">
-                2. DEI training that prioritizes identity over character
+            {/* ANTI-PROJECT 2: The Bad Leader Project */}
+            <div className="border-l-[6px] border-[#C85A3C] pl-8 sm:pl-10 md:pl-12 py-4">
+              <h3 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+                The Bad Leader Project
               </h3>
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                Diversity and inclusion matter — but not when they're built on identity categories instead of the behaviors and principles that actually build trust. I teach servant leadership, character, communication, and the dynamics that create healthy environments. That work serves everyone.
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+                A heat-map of dysfunctional leadership across industries. Anonymous stories, aggregated patterns, and research that reveals where leadership is breaking down — and what it will take to repair it. Launching Q1 2026.
               </p>
-            </div>
-
-            {/* 3. Performance coaching */}
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif">
-                3. Performance coaching that ignores the human cost of leadership
-              </h3>
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                Leadership success that costs your soul, your family, or your team's trust isn't success. I won't help leaders optimize productivity at the expense of people. If the goal is extraction, this isn't the place.
-              </p>
-            </div>
-
-            {/* 4. Motivational speaking */}
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif">
-                4. Motivational speaking designed to hype people up temporarily
-              </h3>
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                I don't do keynote theatrics that get applause and disappear by Monday. If I speak, it's to strengthen understanding, not to entertain. Education and clarity outlast inspiration every time.
-              </p>
-            </div>
-
-            {/* 5. Scaling into content machine */}
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif">
-                5. Scaling Archetype Original into a content machine or influencer brand
-              </h3>
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                This work is relational, not transactional. I'm not building a media empire, launching a course funnel, or hiring ghostwriters to scale my voice. Archetype Original grows through depth, not reach.
-              </p>
+              <a
+                href="/culture-science/anti-projects"
+                onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects')}
+                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+              >
+                Explore Research →
+              </a>
             </div>
           </div>
-          
-          <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold text-center max-w-3xl mx-auto mt-12 sm:mt-16">
-            This is steady work for people who want real leadership — not trends, not performance, not shortcuts.
-          </p>
         </div>
       </div>
     </section>

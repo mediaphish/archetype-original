@@ -1,74 +1,90 @@
 /**
- * Ask Archy Anything Section
- * Editorial Minimal Design - Embedded Chat Interface
+ * Meet Archy Section
+ * Editorial Minimal Design - 2-column layout with chat preview
  */
-import React, { useState } from 'react';
-import ChatApp from '../../app/ChatApp';
+import React from 'react';
 
 export default function MeetArchy() {
-  const [chatKey, setChatKey] = useState(0);
-  const [initialMessage, setInitialMessage] = useState('');
-
-  const handleStarterQuestion = (question) => {
-    setInitialMessage(question);
-    setChatKey(prev => prev + 1);
+  const handleLinkClick = (e, href) => {
+    e.preventDefault();
+    window.history.pushState({}, '', href);
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-[#FAFAF9]">
+    <section id="archy" className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-center">
-            Ask Archy Anything
+          {/* Badge */}
+          <div className="inline-block mb-6 sm:mb-8">
+            <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
+              Your AI Guide
+            </span>
+          </div>
+          
+          {/* Header */}
+          <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 leading-tight tracking-tight">
+            Meet Archy
           </h2>
           
-          <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16 text-center max-w-3xl mx-auto">
-            Archy is the AI assistant I've trained on 30+ years of leadership experience, research, and real-world culture work. Ask him about servant leadership, culture, decision-making, or what might fit your situation. If he can't answer, he'll point you toward someone who can.
-          </p>
-          
-          {/* Embedded Archy Chat Interface */}
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8 md:p-10 shadow-sm">
-              <div className="h-[500px] flex flex-col overflow-hidden relative">
-                <ChatApp key={chatKey} context="home" initialMessage={initialMessage} />
+          {/* 2-column grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 md:gap-20 lg:gap-24 items-start">
+            {/* Left Column: Content */}
+            <div>
+              <div className="space-y-6 mb-8 sm:mb-10 md:mb-12">
+                <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70">
+                  Archy is a digital extension of how I think about people, culture, and leadership. He's grounded in lived experience, sharpened by research, and aligned with the core philosophy that shaped Archetype Original: clarity, responsibility, humility, and strength used in the right way.
+                </p>
+                
+                <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70">
+                  Ask him anything — leadership tension, culture drift, team conflict, communication challenges, decision pressure. He answers with the same values I bring into the room.
+                </p>
+                
+                <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70">
+                  No noise. No ego. Just real guidance when you need it.
+                </p>
               </div>
               
-              {/* Starter Questions */}
-              <div className="mt-6 flex flex-wrap gap-2 justify-center">
-                <button
-                  onClick={() => handleStarterQuestion('What is servant leadership?')}
-                  className="text-xs px-3 py-1.5 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
-                >
-                  What is servant leadership?
-                </button>
-                <button
-                  onClick={() => handleStarterQuestion('How do I know if my culture is healthy?')}
-                  className="text-xs px-3 py-1.5 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
-                >
-                  How do I know if my culture is healthy?
-                </button>
-                <button
-                  onClick={() => handleStarterQuestion('What offering might fit my situation?')}
-                  className="text-xs px-3 py-1.5 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
-                >
-                  What offering might fit my situation?
-                </button>
-              </div>
-            </div>
-            
-            {/* CTA below chat */}
-            <div className="mt-6 text-center">
+              {/* CTA Button */}
               <a
                 href="/contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.pushState({}, '', '/contact');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="text-sm text-[#6B6B6B] hover:underline"
+                onClick={(e) => handleLinkClick(e, '/contact')}
+                className="mt-8 sm:mt-10 md:mt-12 inline-block bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
               >
-                Want to talk to Bart directly?
+                Start a Conversation →
               </a>
+            </div>
+            
+            {/* Right Column: Archy Chat Preview Box */}
+            <div className="border border-[#1A1A1A]/10 p-6 sm:p-8 md:p-10 lg:p-12">
+              {/* Archy Message */}
+              <div className="flex items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <img 
+                  src="/images/archy-avatar.png" 
+                  alt="Archy" 
+                  className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+                <div>
+                  <div className="font-semibold text-base sm:text-lg text-[#1A1A1A] mb-2">Archy</div>
+                  <p className="text-[#1A1A1A]/70 leading-relaxed text-base sm:text-lg">
+                    Leadership isn't about control — it's about creating the conditions where people can thrive. What's holding your team back right now?
+                  </p>
+                </div>
+              </div>
+              
+              {/* Divider */}
+              <div className="h-px bg-[#1A1A1A]/10 mb-6 sm:mb-8"></div>
+              
+              {/* Input field */}
+              <input
+                type="text"
+                placeholder="Ask Archy anything..."
+                className="w-full bg-[#FAFAF9] border border-[#1A1A1A]/10 px-4 sm:px-6 py-3 sm:py-4 text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]/30 transition-colors text-sm sm:text-base"
+                readOnly
+              />
             </div>
           </div>
         </div>

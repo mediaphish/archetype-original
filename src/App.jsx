@@ -592,10 +592,12 @@ export default function App() {
       <main>
         <Header />
         <HomeHero />
+        <MeetArchy />
         <MeetBart />
         <WhatImBuilding />
         <AntiProjects />
-        <MeetArchy />
+        <WhyArchetypeOriginal />
+        <JournalHighlights />
         <FinalCTA />
         <Footer />
         <FloatingArchyButton />

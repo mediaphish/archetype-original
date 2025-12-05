@@ -1,6 +1,6 @@
 /**
  * What I'm Building Section
- * Editorial Minimal Design - 5 Pillars in Card Grid
+ * Editorial Minimal Design - 5 Pillars in Vertical Layout with Orange Borders
  */
 import React from 'react';
 
@@ -12,123 +12,106 @@ export default function WhatImBuilding() {
   };
 
   return (
-    <section id="what-im-building" className="py-16 sm:py-24 md:py-32 bg-[#FAFAF9]">
+    <section id="what-im-building" className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-center">
+          <h2 className="text-[48px] sm:text-[64px] md:text-[80px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9]">
             What I'm Building
           </h2>
           
           {/* Intro paragraph */}
-          <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-12 sm:mb-16 text-center max-w-3xl mx-auto">
-            Everything here is grounded in lived experience and refined through research. These are the tools, methods, and systems I use to help leaders create environments where people can thrive.
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-12 sm:mb-16 text-center max-w-4xl mx-auto">
+            Five interconnected disciplines designed to help leaders lead with clarity, steward culture with intention, and build organizations people trust enough to belong to.
           </p>
           
-          {/* Five pillars grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* PILLAR 1: Culture Science */}
-            <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8 relative">
-              {/* Badge */}
-              <div className="absolute top-8 right-8">
-                <span className="text-xs bg-[#C85A3C]/10 text-[#C85A3C] px-3 py-1 rounded-full">
-                  In Development
-                </span>
-              </div>
-              
-              <h3 className="font-serif font-bold text-xl text-[#1A1A1A] mb-4">
+          {/* Five Pillars (vertical layout with orange left borders) */}
+          <div className="max-w-7xl mx-auto space-y-16 sm:space-y-20 md:space-y-24">
+            {/* PILLAR 01: Culture Science */}
+            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
+              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">01</div>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
                 Culture Science
               </h3>
-              
-              <div className="space-y-4 mb-6">
-                <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                  A research-backed framework for understanding how culture forms, shifts, and strengthens. Culture Science examines the behaviors, communication patterns, and leadership dynamics that create the environments people experience every day.
-                </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                  It's not theory. It's observable, repeatable, and grounded in decades of real-world leadership.
-                </p>
-              </div>
-              
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+                The research engine behind Archetype Original. Culture Science brings together psychology, behavior, communication, trust physiology, organizational clarity, and environmental patterns into a usable discipline. This is where the Archetype Leadership Index (ALI), Scoreboard Leadership, and The Bad Leader Project live.
+              </p>
               <a
                 href="/culture-science"
                 onClick={(e) => handleLinkClick(e, '/culture-science')}
-                className="text-[#C85A3C] hover:underline inline-block"
+                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
               >
                 Explore Culture Science →
               </a>
             </div>
 
-            {/* PILLAR 2: Mentorship */}
-            <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8">
-              <h3 className="font-serif font-bold text-xl text-[#1A1A1A] mb-4">
+            {/* PILLAR 02: Mentorship */}
+            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
+              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">02</div>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
                 Mentorship
               </h3>
-              
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6">
-                Long-term, relational leadership coaching for leaders navigating weight, transition, or the gap between where they are and where they want to be. Mentorship is not advice — it's clarity, accountability, and steady presence.
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+                Clarity, courage, responsibility, and adaptive support for leaders at every stage — from rising leaders to seasoned executives. This is real-time leadership development grounded in lived experience, not programs or scripts.
               </p>
-              
               <a
                 href="/methods/mentorship"
                 onClick={(e) => handleLinkClick(e, '/methods/mentorship')}
-                className="text-[#C85A3C] hover:underline inline-block"
+                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
               >
                 Explore Mentorship →
               </a>
             </div>
 
-            {/* PILLAR 3: Consulting */}
-            <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8">
-              <h3 className="font-serif font-bold text-xl text-[#1A1A1A] mb-4">
+            {/* PILLAR 03: Consulting */}
+            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
+              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">03</div>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
                 Consulting
               </h3>
-              
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6">
-                Short-term, high-clarity engagements for organizations facing cultural misalignment, leadership gaps, or strategic drift. Consulting brings diagnostic precision and actionable direction to the situations that feel stuck.
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+                Clarity for teams. Alignment for organizations. Cultural repair, operational steadiness, communication systems, and leadership behavior calibrated to support real growth. When clarity is missing, consulting brings it back.
               </p>
-              
               <a
                 href="/methods/consulting"
                 onClick={(e) => handleLinkClick(e, '/methods/consulting')}
-                className="text-[#C85A3C] hover:underline inline-block"
+                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
               >
                 Explore Consulting →
               </a>
             </div>
 
-            {/* PILLAR 4: Training & Education */}
-            <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8">
-              <h3 className="font-serif font-bold text-xl text-[#1A1A1A] mb-4">
+            {/* PILLAR 04: Training & Education */}
+            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
+              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">04</div>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
                 Training & Education
               </h3>
-              
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6">
-                Workshops, seminars, and custom training programs for leaders, teams, and students. Education here is grounded in real-world experience, behavioral clarity, and the conviction that people deserve to work in environments that build them.
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+                Workshops, playbooks, and leadership curriculum rooted in experience and backed by research. For leaders, teams, and emerging talent who need clarity they can actually apply the next day.
               </p>
-              
               <a
                 href="/methods/training-education"
                 onClick={(e) => handleLinkClick(e, '/methods/training-education')}
-                className="text-[#C85A3C] hover:underline inline-block"
+                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
               >
                 Explore Training & Education →
               </a>
             </div>
 
-            {/* PILLAR 5: Speaking & Seminars */}
-            <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8">
-              <h3 className="font-serif font-bold text-xl text-[#1A1A1A] mb-4">
+            {/* PILLAR 05: Speaking & Seminars */}
+            <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
+              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">05</div>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
                 Speaking & Seminars
               </h3>
-              
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6">
-                Keynotes, workshops, and educational sessions that strengthen understanding rather than hype people up temporarily. Speaking engagements focus on servant leadership, culture science, and the behaviors that build trust and lasting change.
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+                Leadership in the room — not a performance on a stage. Talks, seminars, workshops, and intensives built around clarity, steadiness, and lived truth instead of hype or theatrics.
               </p>
-              
               <a
                 href="/methods/speaking-seminars"
                 onClick={(e) => handleLinkClick(e, '/methods/speaking-seminars')}
-                className="text-[#C85A3C] hover:underline inline-block"
+                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
               >
                 Explore Speaking & Seminars →
               </a>

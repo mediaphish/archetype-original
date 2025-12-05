@@ -45,8 +45,10 @@ export default function JournalHighlights() {
     return (
       <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -57,14 +59,14 @@ export default function JournalHighlights() {
   const otherPosts = posts.slice(1);
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
+    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance mb-8 sm:mb-10 md:mb-12">
+          <h2 className="text-[48px] sm:text-[64px] md:text-[80px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9]">
             Latest From The Journal
           </h2>
           
-          <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16 md:mb-20 text-pretty">
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-12 sm:mb-16">
             Long-form pieces, frameworks, research-backed insights, and real stories from my own leadership journey.
           </p>
 
@@ -77,118 +79,123 @@ export default function JournalHighlights() {
               {/* Featured Article */}
               {featuredPost && (
                 <article 
-                  className="mb-16 sm:mb-20 md:mb-24 cursor-pointer"
+                  className="mb-16 sm:mb-20 md:mb-24 group cursor-pointer"
                   onClick={() => handlePostClick(featuredPost.slug)}
                 >
-                  <div className="mb-4">
-                    <span className="inline-block px-3 py-1 bg-[#1A1A1A] text-white text-xs font-medium uppercase tracking-wide">
-                      Featured
-                    </span>
-                  </div>
-                  {featuredPost.image && (
-                    <div className="w-full mb-6 sm:mb-8">
-                      <img 
-                        src={featuredPost.image} 
-                        alt={featuredPost.title}
-                        className="w-full h-auto"
-                        style={{ aspectRatio: 'auto' }}
-                      />
-                    </div>
-                  )}
-                  <div className="mb-3">
-                    <time className="text-sm text-[#6B6B6B]">
-                      {formatDate(featuredPost.publish_date || featuredPost.created_at)}
-                    </time>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
-                    {featuredPost.title}
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 sm:mb-6 text-pretty">
-                    {(() => {
-                      // Filter out RTF code from summary or body
-                      let text = featuredPost.summary || featuredPost.body || '';
-                      // Remove RTF code patterns
-                      text = text.replace(/\{\\rtf[^}]*\}/gi, '');
-                      text = text.replace(/\\[a-z]+\d*\s*/gi, '');
-                      text = text.replace(/\{[^}]*\}/g, '');
-                      // Clean up extra whitespace
-                      text = text.replace(/\s+/g, ' ').trim();
-                      // Get first 200 chars
-                      return text.length > 200 ? text.substring(0, 200) + '...' : text;
-                    })()}
-                  </p>
-                  <a 
-                    href={`/journal/${featuredPost.slug}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePostClick(featuredPost.slug);
-                    }}
-                    className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#C85A3C] transition-colors"
-                  >
-                    Read Article →
-                  </a>
-                </article>
-              )}
-
-              {/* Other Articles Grid */}
-              {otherPosts.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 sm:mb-16 md:mb-20">
-                  {otherPosts.map((post) => (
-                    <article 
-                      key={post.slug} 
-                      className="cursor-pointer"
-                      onClick={() => handlePostClick(post.slug)}
-                    >
-                      {post.image && (
-                        <div className="w-full mb-4">
-                          <img 
-                            src={post.image} 
-                            alt={post.title}
-                            className="w-full h-auto opacity-100 hover:opacity-90 transition-opacity"
-                            style={{ aspectRatio: 'auto' }}
-                          />
-                        </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
+                    {/* Left: Image */}
+                    <div className="bg-[#FAFAF9]">
+                      {featuredPost.image ? (
+                        <img 
+                          src={featuredPost.image} 
+                          alt={featuredPost.title}
+                          className="w-full h-auto group-hover:opacity-90 transition-opacity"
+                        />
+                      ) : (
+                        <div className="w-full aspect-video bg-[#FAFAF9]"></div>
                       )}
-                      <div className="mb-2">
-                        <time className="text-sm text-[#6B6B6B]">
-                          {formatDate(post.publish_date || post.created_at)}
-                        </time>
+                    </div>
+                    
+                    {/* Right: Content */}
+                    <div>
+                      <div className="mb-4">
+                        <span className="inline-block px-3 py-1 bg-[#C85A3C]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
+                          Featured
+                        </span>
                       </div>
-                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif tracking-tight text-balance">
-                        {post.title}
+                      <time className="text-xs sm:text-sm text-[#1A1A1A]/40 mb-4 sm:mb-6 block">
+                        {formatDate(featuredPost.publish_date || featuredPost.created_at)}
+                      </time>
+                      <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 group-hover:text-[#1A1A1A]/60 transition-colors leading-tight">
+                        {featuredPost.title}
                       </h3>
-                      <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] line-clamp-3 text-pretty">
+                      <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A]/70 mb-8">
                         {(() => {
                           // Filter out RTF code from summary or body
-                          let text = post.summary || post.body || '';
+                          let text = featuredPost.summary || featuredPost.body || '';
                           // Remove RTF code patterns
                           text = text.replace(/\{\\rtf[^}]*\}/gi, '');
                           text = text.replace(/\\[a-z]+\d*\s*/gi, '');
                           text = text.replace(/\{[^}]*\}/g, '');
                           // Clean up extra whitespace
                           text = text.replace(/\s+/g, ' ').trim();
-                          // Get first 150 chars
-                          return text.length > 150 ? text.substring(0, 150) + '...' : text;
+                          // Get first 200 chars
+                          return text.length > 200 ? text.substring(0, 200) + '...' : text;
                         })()}
                       </p>
+                      <a 
+                        href={`/journal/${featuredPost.slug}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePostClick(featuredPost.slug);
+                        }}
+                        className="inline-flex items-center font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                      >
+                        Read Article →
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              )}
+
+              {/* Other Articles Grid */}
+              {otherPosts.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-14 md:gap-16 mb-16 sm:mb-20 md:mb-24">
+                  {otherPosts.map((post) => (
+                    <article 
+                      key={post.slug} 
+                      className="group cursor-pointer"
+                      onClick={() => handlePostClick(post.slug)}
+                    >
+                      {post.image && (
+                        <div className="mb-6 sm:mb-8 bg-[#FAFAF9]">
+                          <img 
+                            src={post.image} 
+                            alt={post.title}
+                            className="w-full h-auto group-hover:opacity-90 transition-opacity"
+                          />
+                        </div>
+                      )}
+                      <div className="border-t-2 border-[#1A1A1A] pt-6 sm:pt-8">
+                        <time className="text-xs sm:text-sm text-[#1A1A1A]/40 mb-4 block">
+                          {formatDate(post.publish_date || post.created_at)}
+                        </time>
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 group-hover:text-[#1A1A1A]/60 transition-colors leading-tight">
+                          {post.title}
+                        </h3>
+                        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
+                          {(() => {
+                            // Filter out RTF code from summary or body
+                            let text = post.summary || post.body || '';
+                            // Remove RTF code patterns
+                            text = text.replace(/\{\\rtf[^}]*\}/gi, '');
+                            text = text.replace(/\\[a-z]+\d*\s*/gi, '');
+                            text = text.replace(/\{[^}]*\}/g, '');
+                            // Clean up extra whitespace
+                            text = text.replace(/\s+/g, ' ').trim();
+                            // Get first 150 chars
+                            return text.length > 150 ? text.substring(0, 150) + '...' : text;
+                          })()}
+                        </p>
+                      </div>
                     </article>
                   ))}
                 </div>
               )}
 
-              {/* Link to Journal */}
-              <div className="text-center">
-                  <a 
-                    href="/journal"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.history.pushState({}, '', '/journal');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    className="inline-block bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#C85A3C] transition-colors"
-                  >
-                    View all Journal Entries
-                  </a>
+              {/* View All CTA */}
+              <div className="text-center mt-16 sm:mt-20 md:mt-24">
+                <a 
+                  href="/journal"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.history.pushState({}, '', '/journal');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="inline-block bg-[#1A1A1A] text-white px-10 sm:px-12 py-5 sm:py-6 font-medium text-base hover:bg-[#C85A3C] transition-colors border-2 border-[#1A1A1A] hover:border-[#C85A3C]"
+                >
+                  View all Journal Entries
+                </a>
               </div>
             </>
           )}

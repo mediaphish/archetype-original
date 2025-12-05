@@ -5,47 +5,48 @@
 import React from 'react';
 
 export default function FinalCTA() {
+  const handleLinkClick = (e, href) => {
+    e.preventDefault();
+    window.history.pushState({}, '', href);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-white">
+    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-3xl mx-auto text-center">
           {/* Badge */}
           <div className="mb-6">
-            <span className="text-xs bg-[#C85A3C]/10 text-[#C85A3C] px-4 py-2 rounded-full inline-block">
+            <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
               Limited Spots Available
             </span>
           </div>
           
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
-            If You're Ready to Lead Differently
+          {/* Header */}
+          <h2 className="text-[48px] sm:text-[64px] md:text-[72px] font-bold text-[#1A1A1A] mb-8 sm:mb-10 leading-[0.9]">
+            Ready to Build Something Real?
           </h2>
           
-          <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-8 sm:mb-10 max-w-3xl mx-auto">
-            Whether you're navigating transition, rebuilding culture, or just trying to make sense of the weight you're carrying — I'm here to help. Let's start a conversation about what you're facing and where you want to go.
+          {/* Body paragraph */}
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-10 sm:mb-12">
+            Leadership that lasts starts with a conversation. I work with a limited number of leaders and organizations each year — let's talk about what you're building, what you're facing, and what you want to create.
           </p>
           
-          <div className="flex flex-col items-center gap-4">
+          {/* Two CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <a
               href="/contact"
-              onClick={(e) => {
-                e.preventDefault();
-                window.history.pushState({}, '', '/contact');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
-              className="bg-[#1A1A1A] text-white px-12 py-5 font-medium text-base rounded-md hover:bg-[#1A1A1A]/90 transition-colors"
+              onClick={(e) => handleLinkClick(e, '/contact')}
+              className="px-8 sm:px-10 py-4 sm:py-5 bg-[#1A1A1A] text-white font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
             >
               Start a Conversation
             </a>
             <a
-              href="/methods"
-              onClick={(e) => {
-                e.preventDefault();
-                window.history.pushState({}, '', '/methods');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
-              className="text-sm text-[#6B6B6B] hover:underline"
+              href="/journal"
+              onClick={(e) => handleLinkClick(e, '/journal')}
+              className="px-8 sm:px-10 py-4 sm:py-5 bg-transparent text-[#1A1A1A] font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
             >
-              Or explore what I offer
+              Explore the Journal
             </a>
           </div>
         </div>
