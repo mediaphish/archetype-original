@@ -6,6 +6,7 @@ import ChatApp from "./app/ChatApp";
 import Contact from "./components/Contact";
 import FloatingArchyButton from "./components/FloatingArchyButton";
 import HomeHero from "./components/home/HomeHero";
+import MeetBart from "./components/home/MeetBart";
 import MeetArchy from "./components/home/MeetArchy";
 import WhatImBuilding from "./components/home/WhatImBuilding";
 import AntiProjects from "./components/home/AntiProjects";
@@ -73,7 +74,9 @@ export default function App() {
       }
       
       // Route detection
-      if (path === '/journal') {
+      if (path === '/' || path === '') {
+        setCurrentPage('home');
+      } else if (path === '/journal') {
         setCurrentPage('journal');
       } else if (path.startsWith('/journal/')) {
         setCurrentPage('journal-post');
@@ -107,6 +110,8 @@ export default function App() {
           }
         } else if (path === '/culture-science/anti-projects') {
           setCurrentPage('anti-projects');
+        } else if (path === '/culture-science/anti-projects/scoreboard-leadership') {
+          setCurrentPage('scoreboard-leadership');
         } else if (path === '/culture-science/scoreboard-leadership') {
           setCurrentPage('scoreboard-leadership');
         } else if (path === '/culture-science/bad-leader-project') {
@@ -548,11 +553,10 @@ export default function App() {
       <main>
         <Header />
         <HomeHero />
-        <MeetArchy />
+        <MeetBart />
         <WhatImBuilding />
         <AntiProjects />
-        <WhyArchetypeOriginal />
-        <JournalHighlights />
+        <MeetArchy />
         <FinalCTA />
         <FloatingArchyButton />
       </main>

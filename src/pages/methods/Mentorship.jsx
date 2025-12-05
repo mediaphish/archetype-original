@@ -12,9 +12,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
 
+const sections = [
+  { id: 'opening', label: 'Opening' },
+  { id: 'what-is', label: 'What Mentorship Really Is' },
+  { id: 'who-for', label: 'Who Mentorship Is For' },
+  { id: 'how-works', label: 'How Mentorship Works' },
+  { id: 'culture-science', label: 'Culture Science & ALI' },
+  { id: 'why-matters', label: 'Why Mentorship Matters' },
+  { id: 'closing', label: 'Closing' }
+];
+
 export default function Mentorship() {
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeSection, setActiveSection] = useState('opening');
+  const [showStickyNav, setShowStickyNav] = useState(false);
+  const sectionRefs = useRef({});
+  const clickedSectionRef = useRef(null);
   const heroRef = useRef(null);
 
   // Mobile detection and scroll tracking for parallax
@@ -30,6 +44,12 @@ export default function Mentorship() {
       if (window.innerWidth >= 1024) {
         setScrollY(window.scrollY);
       }
+      
+      // Show sticky nav after scrolling past hero
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
+        setShowStickyNav(window.scrollY > heroBottom - 100);
+      }
     };
 
     handleScroll();
@@ -40,6 +60,55 @@ export default function Mentorship() {
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
+
+  // Intersection Observer for active section detection
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !clickedSectionRef.current) {
+          const sectionId = entry.target.id;
+          setActiveSection(sectionId);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((section) => {
+      const element = sectionRefs.current[section.id];
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const scrollToSection = (id, event) => {
+    clickedSectionRef.current = id;
+    
+    const element = sectionRefs.current[id];
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.offsetTop - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        clickedSectionRef.current = null;
+      }, 1000);
+    }
+  };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -159,7 +228,11 @@ export default function Mentorship() {
         </section>
 
         {/* Section 2: What Mentorship Really Is */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section 
+          id="what-is" 
+          ref={(el) => (sectionRefs.current['what-is'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -202,7 +275,11 @@ export default function Mentorship() {
         </section>
 
         {/* Section 3: Who Mentorship Is For */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+        <section 
+          id="who-for" 
+          ref={(el) => (sectionRefs.current['who-for'] = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -254,7 +331,11 @@ export default function Mentorship() {
         </section>
 
         {/* Section 4: How Mentorship Works */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section 
+          id="how-works" 
+          ref={(el) => (sectionRefs.current['how-works'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -297,7 +378,11 @@ export default function Mentorship() {
         </section>
 
         {/* Section 5: How Culture Science & ALI Support the Work */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+        <section 
+          id="culture-science" 
+          ref={(el) => (sectionRefs.current['culture-science'] = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -320,7 +405,11 @@ export default function Mentorship() {
         </section>
 
         {/* Section 6: Why Mentorship Matters */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section 
+          id="why-matters" 
+          ref={(el) => (sectionRefs.current['why-matters'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -355,7 +444,11 @@ export default function Mentorship() {
         </section>
 
         {/* Section 7: Closing CTA */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+        <section 
+          id="closing" 
+          ref={(el) => (sectionRefs.current.closing = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto text-center space-y-6">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight">

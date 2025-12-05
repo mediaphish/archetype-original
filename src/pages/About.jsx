@@ -1,10 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+
+const sections = [
+  { id: 'work-found-me', label: 'The Work Found Me' },
+  { id: 'insurance-moment', label: 'The Insurance Moment' },
+  { id: 'real-world', label: 'Leadership in the Real World' },
+  { id: 'years-tested', label: 'The Years That Tested Everything' },
+  { id: 'questions', label: 'The Questions That Followed' },
+  { id: 'posture', label: 'The Posture That Shapes My Leadership' },
+  { id: 'research', label: 'The Research That Made It Clear' },
+  { id: 'show-up', label: 'How I Show Up Today' },
+  { id: 'ready', label: 'If You\'re Ready' }
+];
 
 export default function About() {
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeSection, setActiveSection] = useState('work-found-me');
+  const [showStickyNav, setShowStickyNav] = useState(false);
+  const sectionRefs = useRef({});
+  const clickedSectionRef = useRef(null);
+  const heroRef = useRef(null);
 
   // Mobile detection and scroll tracking for parallax
   useEffect(() => {
@@ -19,6 +36,12 @@ export default function About() {
       if (window.innerWidth >= 768) {
         setScrollY(window.scrollY);
       }
+      
+      // Show sticky nav after scrolling past hero
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
+        setShowStickyNav(window.scrollY > heroBottom - 100);
+      }
     };
 
     handleScroll();
@@ -29,6 +52,55 @@ export default function About() {
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
+
+  // Intersection Observer for active section detection
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !clickedSectionRef.current) {
+          const sectionId = entry.target.id;
+          setActiveSection(sectionId);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((section) => {
+      const element = sectionRefs.current[section.id];
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const scrollToSection = (id, event) => {
+    clickedSectionRef.current = id;
+    
+    const element = sectionRefs.current[id];
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.offsetTop - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        clickedSectionRef.current = null;
+      }, 1000);
+    }
+  };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -50,7 +122,7 @@ export default function About() {
       
       <div className="min-h-screen bg-white">
         {/* Hero Section with 3-Layer Parallax */}
-        <section className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
+        <section ref={heroRef} className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
               {/* Left Content */}
@@ -136,8 +208,71 @@ export default function About() {
           </div>
         </section>
 
+        {/* Table of Contents - Initial */}
+        <section className="w-full bg-[#FAFAF9] py-8 sm:py-10">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <nav aria-label="Table of contents">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-1 text-xs font-medium uppercase tracking-wider border transition-colors ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          </div>
+        </section>
+
+        {/* Sticky Navigation - Appears after scrolling past hero */}
+        <nav 
+          aria-label="Sticky table of contents"
+          className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
+            showStickyNav ? 'translate-y-0' : '-translate-y-full'
+          }`}
+        >
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-7xl mx-auto py-3 sm:py-4">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center items-center">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-all ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
+
         {/* The Work Found Me Before I Knew Its Name */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section 
+          id="work-found-me" 
+          ref={(el) => (sectionRefs.current['work-found-me'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12 items-start">
               <div className="flex justify-center lg:justify-start">
@@ -172,7 +307,11 @@ export default function About() {
         </section>
 
         {/* The Insurance Moment - DARK SECTION */}
-        <section className="w-full bg-[#1A1A1A] py-16 sm:py-24 md:py-32">
+        <section 
+          id="insurance-moment" 
+          ref={(el) => (sectionRefs.current['insurance-moment'] = el)} 
+          className="w-full bg-[#1A1A1A] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 sm:mb-10 tracking-tight">
               The Insurance Moment
@@ -199,7 +338,11 @@ export default function About() {
         </section>
 
         {/* Leadership in the Real World */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+        <section 
+          id="real-world" 
+          ref={(el) => (sectionRefs.current['real-world'] = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
               <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
@@ -229,7 +372,11 @@ export default function About() {
         </section>
 
         {/* The Years That Tested Everything */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section 
+          id="years-tested" 
+          ref={(el) => (sectionRefs.current['years-tested'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
               <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
@@ -279,7 +426,11 @@ export default function About() {
         </section>
 
         {/* The Questions That Followed */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+        <section 
+          id="questions" 
+          ref={(el) => (sectionRefs.current.questions = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
               <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
@@ -314,7 +465,11 @@ export default function About() {
         </section>
 
         {/* The Posture That Shapes My Leadership */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section 
+          id="posture" 
+          ref={(el) => (sectionRefs.current.posture = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
               <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
@@ -341,7 +496,11 @@ export default function About() {
         </section>
 
         {/* The Research That Made It Clear */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+        <section 
+          id="research" 
+          ref={(el) => (sectionRefs.current.research = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
               <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
@@ -362,7 +521,11 @@ export default function About() {
         </section>
 
         {/* How I Show Up Today */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section 
+          id="show-up" 
+          ref={(el) => (sectionRefs.current['show-up'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
               <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
@@ -428,7 +591,11 @@ export default function About() {
         </section>
 
         {/* If You're Ready - CTA */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
+        <section 
+          id="ready" 
+          ref={(el) => (sectionRefs.current.ready = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 tracking-tight">
               If You're Ready

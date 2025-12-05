@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
   try {
-    const { name, email, message } = req.body || {};
+    const { name, email, message, company, phone } = req.body || {};
     if (!name || !email || !message) {
       return res.status(400).json({ error: "Missing required fields." });
     }
@@ -35,12 +35,25 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Email is not configured." });
     }
 
-    const subject = `Archetype Original — New Message from ${name}`;
-    const html = `
+    const companyDisplay = company ? escapeHtml(company) : 'Personal';
+    const subject = `Contact Form: ${escapeHtml(name)} from ${companyDisplay}`;
+    
+    let html = `
       <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#0f172a;">
         <h2 style="margin:0 0 12px 0;">New Contact Message</h2>
         <p><strong>Name:</strong> ${escapeHtml(name)}</p>
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+    `;
+    
+    if (company) {
+      html += `<p><strong>Company:</strong> ${escapeHtml(company)}</p>`;
+    }
+    
+    if (phone) {
+      html += `<p><strong>Phone:</strong> ${escapeHtml(phone)}</p>`;
+    }
+    
+    html += `
         <p><strong>Message:</strong><br/>${nl2br(message)}</p>
         <hr style="border:none;border-top:1px solid #e5e7eb; margin:16px 0;" />
         <p style="font-size:12px;color:#64748b;">Sent from archetypeoriginal.com contact form</p>

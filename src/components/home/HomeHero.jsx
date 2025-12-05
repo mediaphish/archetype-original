@@ -1,6 +1,6 @@
 /**
  * Homepage Hero Section
- * Editorial Minimal Design
+ * Editorial Minimal Design - Parallax Hero with Archy
  */
 import React, { useState, useEffect } from 'react';
 
@@ -22,75 +22,112 @@ export default function HomeHero() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkMobile);
     };
   }, [isMobile]);
 
+  const scrollToWhatImBuilding = (e) => {
+    e.preventDefault();
+    const element = document.getElementById('what-im-building');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
+    <section className="py-24 sm:py-32 md:py-40 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left Content */}
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-24 items-center">
+            {/* Left Column: Hero Content */}
+            <div className="order-2 md:order-1">
+              {/* Badge */}
               <div className="inline-block mb-6 sm:mb-8">
-                <span className="text-sm font-medium text-[#1A1A1A]">32+ Years Building Leaders</span>
+                <span className="text-xs font-medium tracking-wider text-[#C85A3C] uppercase px-3 py-1 border border-[#1A1A1A]/10">
+                  32+ Years Building Leaders
+                </span>
               </div>
               
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                Leadership That Actually Lasts
+              {/* Title */}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight leading-tight">
+                Leadership That Builds People, Not Just Organizations
               </h1>
               
-              <p className="text-lg sm:text-xl leading-relaxed text-[#6B6B6B] mb-6 sm:mb-8 text-pretty">
-                I help small and mid-sized businesses build cultures where people thrive, leaders grow, and clarity becomes normal again.
-              </p>
+              {/* Body paragraphs */}
+              <div className="space-y-6 mb-8 sm:mb-10">
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Hi. I'm Bart Stewart — servant leader, former CEO, coach, and someone who spent three decades leading people through environments that mattered. I work with leaders who want to build cultures that strengthen people instead of draining them.
+                </p>
+                
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  This site houses the work I'm building: Culture Science, the Archetype Leadership Index (ALI), servant leadership education, and the tools that help leaders move from instinct to clarity.
+                </p>
+                
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  You can also meet Archy — the AI assistant I've trained to help you explore leadership, culture, and the questions that matter most. Ask him anything. He's loaded with everything I've learned, researched, and tested over 30+ years.
+                </p>
+              </div>
               
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-8 sm:mb-10 md:mb-12 text-pretty">
-                One way to learn is through <span className="text-[#C85A3C] font-medium">Archy</span>—an AI chatbot with full and direct access to Bart's leadership expertise. Ask him anything.
-              </p>
-              
+              {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors">
-                  Work With Me
-                </button>
-                <button className="bg-transparent text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors">
-                  Meet Archy →
+                <a
+                  href="/contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.history.pushState({}, '', '/contact');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
+                >
+                  Start a Conversation
+                </a>
+                <button
+                  onClick={scrollToWhatImBuilding}
+                  className="bg-transparent text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors"
+                >
+                  Learn About the Work
                 </button>
               </div>
             </div>
           
-            {/* Right Image - Parallax Layers (disabled on mobile) */}
-            <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1' }}>
-              {/* Layer 1: Archy - Moves UP as you scroll (desktop only) */}
+            {/* Right Column: Parallax Archy Images */}
+            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-first md:order-last">
+              {/* Layer 2 (Back layer - speech bubble): Moves DOWN on scroll */}
               <div 
-                className="absolute inset-0 z-10"
+                className="absolute inset-0 z-10 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'none' : `translateY(${scrollY * -0.15}px)`,
-                  transition: 'transform 0.1s ease-out'
-                }}
-              >
-                <img 
-                  src="/images/hero-layer-1.png" 
-                  alt="Archy" 
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              
-              {/* Layer 2: Speech Bubble - Moves DOWN as you scroll (desktop only) */}
-              <div 
-                className="absolute inset-0 z-20"
-                style={{ 
-                  transform: isMobile ? 'none' : `translateY(${scrollY * 0.03}px)`,
+                  transform: isMobile ? 'translateY(0)' : `translateY(${scrollY * 0.03}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
                 <img 
                   src="/images/hero-layer-2.png" 
-                  alt="Speech bubble" 
-                  className="w-full h-full object-contain"
+                  alt="Hi, I'm Archy speech bubble" 
+                  className="max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full h-auto object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+              
+              {/* Layer 1 (Front layer - Archy character): Moves UP on scroll */}
+              <div 
+                className="absolute inset-0 z-20 flex items-center justify-center"
+                style={{ 
+                  transform: isMobile ? 'translateY(0)' : `translateY(${scrollY * -0.15}px)`,
+                  transition: 'transform 0.1s ease-out'
+                }}
+              >
+                <img 
+                  src="/images/hero-layer-1.png" 
+                  alt="Archy, the wise leadership guide" 
+                  className="max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full h-auto object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
               </div>
             </div>

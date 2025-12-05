@@ -12,6 +12,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 
+const sections = [
+  { id: 'opening-frame', label: 'Opening Frame' },
+  { id: 'what-i-offer', label: 'What I Offer' },
+  { id: 'how-i-work', label: 'How I Work' },
+  { id: 'what-informs', label: 'What Informs My Work' },
+  { id: 'why-this-works', label: 'Why This Works' },
+  { id: 'closing', label: 'Ready to Begin' }
+];
+
 const services = [
   {
     id: 'mentorship',
@@ -145,6 +154,10 @@ export default function Methods() {
   const [openAccordion, setOpenAccordion] = useState(0); // First item (Mentorship) open by default
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeSection, setActiveSection] = useState('opening-frame');
+  const [showStickyNav, setShowStickyNav] = useState(false);
+  const sectionRefs = useRef({});
+  const clickedSectionRef = useRef(null);
   const heroRef = useRef(null);
 
   // Mobile detection and scroll tracking for parallax
@@ -160,6 +173,12 @@ export default function Methods() {
       if (window.innerWidth >= 1024) {
         setScrollY(window.scrollY);
       }
+      
+      // Show sticky nav after scrolling past hero
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
+        setShowStickyNav(window.scrollY > heroBottom - 100);
+      }
     };
 
     handleScroll();
@@ -170,6 +189,55 @@ export default function Methods() {
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
+
+  // Intersection Observer for active section detection
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !clickedSectionRef.current) {
+          const sectionId = entry.target.id;
+          setActiveSection(sectionId);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((section) => {
+      const element = sectionRefs.current[section.id];
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const scrollToSection = (id, event) => {
+    clickedSectionRef.current = id;
+    
+    const element = sectionRefs.current[id];
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.offsetTop - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        clickedSectionRef.current = null;
+      }, 1000);
+    }
+  };
 
   const toggleAccordion = (index) => {
     if (openAccordion === index) {
@@ -295,8 +363,71 @@ export default function Methods() {
           </div>
         </section>
 
+        {/* Table of Contents - Initial */}
+        <section className="w-full bg-[#FAFAF9] py-8 sm:py-10">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <nav aria-label="Table of contents">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-1 text-xs font-medium uppercase tracking-wider border transition-colors ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          </div>
+        </section>
+
+        {/* Sticky Navigation - Appears after scrolling past hero */}
+        <nav 
+          aria-label="Sticky table of contents"
+          className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
+            showStickyNav ? 'translate-y-0' : '-translate-y-full'
+          }`}
+        >
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-7xl mx-auto py-3 sm:py-4">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center items-center">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-all ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
+
         {/* Section I: Opening Frame */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40">
+        <section 
+          id="opening-frame" 
+          ref={(el) => (sectionRefs.current['opening-frame'] = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
@@ -326,7 +457,11 @@ export default function Methods() {
         </section>
 
         {/* Section II: What I Offer (Accordion) */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <section 
+          id="what-i-offer" 
+          ref={(el) => (sectionRefs.current['what-i-offer'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-12 sm:mb-16 font-serif tracking-tight">
@@ -443,7 +578,11 @@ export default function Methods() {
         </section>
 
         {/* Section III: How I Work */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40">
+        <section 
+          id="how-i-work" 
+          ref={(el) => (sectionRefs.current['how-i-work'] = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -466,7 +605,11 @@ export default function Methods() {
         </section>
 
         {/* Section IV: What Informs My Work */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <section 
+          id="what-informs" 
+          ref={(el) => (sectionRefs.current['what-informs'] = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -509,7 +652,11 @@ export default function Methods() {
         </section>
 
         {/* Section V: Why This Works */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40">
+        <section 
+          id="why-this-works" 
+          ref={(el) => (sectionRefs.current['why-this-works'] = el)} 
+          className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -538,7 +685,11 @@ export default function Methods() {
         </section>
 
         {/* Closing CTA */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <section 
+          id="closing" 
+          ref={(el) => (sectionRefs.current.closing = el)} 
+          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
