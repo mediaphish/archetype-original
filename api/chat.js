@@ -156,7 +156,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { message, conversationHistory = [], sessionId } = req.body;
+  const { message, conversationHistory = [], sessionId, context } = req.body;
   const clientIP = getClientIP(req);
 
   if (!message) {
@@ -183,6 +183,9 @@ export default async function handler(req, res) {
   if (relevantKnowledge.length > 0) {
     console.log('Found documents:', relevantKnowledge.map(doc => doc.title));
   }
+  
+  // Track start time for response time measurement
+  const startTime = Date.now();
 
   // Build knowledge context for AI
   let knowledgeContext = '';
@@ -286,6 +289,9 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
       
       const data = await openaiResponse.json();
       console.log('OpenAI response data:', data);
+      
+      // Calculate response time
+      const responseTime = Date.now() - startTime;
       
       if (data.choices && data.choices[0]) {
         let response = data.choices[0].message.content;
@@ -509,7 +515,7 @@ Respond with ONLY a JSON object:
           message.toLowerCase().includes(keyword) || response.toLowerCase().includes('handoff')
         ) && !isBasicQuestion && !isDarkHours;
 
-        // Store conversation in Supabase
+        // Store conversation in Supabase (legacy table)
         if (sessionId) {
           try {
             await supabase
@@ -525,6 +531,56 @@ Respond with ONLY a JSON object:
           } catch (error) {
             console.error('Error storing conversation:', error);
           }
+        }
+        
+        // Log all questions for corpus building analysis
+        try {
+          // Extract topic category from question (simple keyword matching)
+          const questionLower = message.toLowerCase();
+          let topicCategory = null;
+          if (questionLower.includes('leadership') || questionLower.includes('leader')) {
+            topicCategory = 'leadership';
+          } else if (questionLower.includes('culture') || questionLower.includes('cultural')) {
+            topicCategory = 'culture';
+          } else if (questionLower.includes('team') || questionLower.includes('teams')) {
+            topicCategory = 'teams';
+          } else if (questionLower.includes('consulting') || questionLower.includes('consultant')) {
+            topicCategory = 'consulting';
+          } else if (questionLower.includes('mentor') || questionLower.includes('mentorship')) {
+            topicCategory = 'mentorship';
+          } else if (questionLower.includes('speaking') || questionLower.includes('speech') || questionLower.includes('seminar')) {
+            topicCategory = 'speaking';
+          } else if (questionLower.includes('fractional') || questionLower.includes('cco')) {
+            topicCategory = 'fractional';
+          } else if (questionLower.includes('training') || questionLower.includes('education')) {
+            topicCategory = 'training';
+          } else if (questionLower.includes('philosophy') || questionLower.includes('principle')) {
+            topicCategory = 'philosophy';
+          } else if (questionLower.includes('bart') || questionLower.includes('about')) {
+            topicCategory = 'about';
+          }
+          
+          await supabase
+            .from('archy_questions')
+            .insert([
+              {
+                session_id: sessionId,
+                question: message,
+                response: response,
+                context: context || 'default',
+                knowledge_docs_used: relevantKnowledge.map(doc => doc.title),
+                knowledge_docs_count: relevantKnowledge.length,
+                response_length: response.length,
+                was_answered: !cannotAnswer,
+                is_valuable: cannotAnswer ? isValuableQuestion : null, // Only set for cannot-answer questions
+                topic_category: topicCategory,
+                response_time_ms: responseTime,
+                created_at: new Date().toISOString()
+              }
+            ]);
+        } catch (error) {
+          console.error('Error logging question for corpus analysis:', error);
+          // Don't fail the request if logging fails
         }
 
         return res.status(200).json({ 

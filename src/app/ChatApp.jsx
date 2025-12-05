@@ -263,7 +263,8 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
         body: JSON.stringify({
           message: messageText,
           conversationHistory,
-          sessionId
+          sessionId,
+          context: context || 'default'
         }),
       });
 
