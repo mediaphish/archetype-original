@@ -36,8 +36,8 @@ export default function AntiProjects() {
                 When leadership becomes a metrics-first performance, people become expendable. Scoreboard Leadership names the patterns of ego-driven decision-making that erode trust, undermine culture, and quietly fracture teams from the inside out.
               </p>
               <a
-                href="/culture-science/anti-projects"
-                onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects')}
+                href="/culture-science/anti-projects/scoreboard-leadership"
+                onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/scoreboard-leadership')}
                 className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
               >
                 Explore Research →
@@ -53,8 +53,8 @@ export default function AntiProjects() {
                 A heat-map of dysfunctional leadership across industries. Anonymous stories, aggregated patterns, and research that reveals where leadership is breaking down — and what it will take to repair it. Launching Q1 2026.
               </p>
               <a
-                href="/culture-science/anti-projects"
-                onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects')}
+                href="/culture-science/anti-projects/bad-leader-project"
+                onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/bad-leader-project')}
                 className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
               >
                 Explore Research →
