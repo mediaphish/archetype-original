@@ -78,7 +78,7 @@ export default function MeetArchy() {
                       </div>
                     </div>
                     <div className="border-t border-[#1A1A1A]/10 pt-4">
-                      <form onSubmit={handlePreviewSubmit}>
+                      <form onSubmit={handlePreviewSubmit} noValidate>
                         <input 
                           placeholder="Ask Archy anything..." 
                           value={previewInput}

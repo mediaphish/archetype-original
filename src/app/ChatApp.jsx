@@ -15,6 +15,8 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSentInitialMessage, setHasSentInitialMessage] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showCannotAnswerForm, setShowCannotAnswerForm] = useState(false);
+  const [cannotAnswerQuestion, setCannotAnswerQuestion] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -331,7 +333,6 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
         isUser: false
       };
       setMessages(prev => [...prev, errorMessage]);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -573,7 +574,10 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    handleSendMessage();
+    if (!isLoading && !isBlocked && inputValue.trim()) {
+      handleSendMessage();
+    }
+    return false;
   };
 
   return (
@@ -644,7 +648,7 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
             />
           )}
 
-          <form onSubmit={handleFormSubmit} className="flex space-x-2 sm:space-x-3">
+          <form onSubmit={handleFormSubmit} className="flex space-x-2 sm:space-x-3" noValidate>
             <input
               type="text"
               value={inputValue}
