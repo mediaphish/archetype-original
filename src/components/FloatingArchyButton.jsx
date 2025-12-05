@@ -10,13 +10,30 @@ export default function FloatingArchyButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [context, setContext] = useState('default');
 
-  // Detect current page context from URL
-  useEffect(() => {
+  // Detect current page context from URL and update on route changes
+  const updateContext = () => {
     const path = window.location.pathname;
     if (path === '/' || path === '') {
       setContext('home');
     } else if (path.includes('/journal')) {
       setContext('journal');
+    } else if (path.includes('/methods')) {
+      // Methods page and subpages
+      if (path.includes('/methods/speaking-seminars')) {
+        setContext('methods-speaking-seminars');
+      } else if (path.includes('/methods/mentorship')) {
+        setContext('methods-mentorship');
+      } else if (path.includes('/methods/consulting')) {
+        setContext('methods-consulting');
+      } else if (path.includes('/methods/training-education')) {
+        setContext('methods-training-education');
+      } else if (path.includes('/methods/fractional-roles')) {
+        setContext('methods-fractional-roles');
+      } else if (path === '/methods') {
+        setContext('methods');
+      } else {
+        setContext('methods');
+      }
     } else if (path.includes('/mentoring') || path.includes('/consulting') || path.includes('/speaking') || path.includes('/fractional')) {
       setContext('mentoring');
     } else if (path.includes('/culture-science') || path.includes('/ali')) {
@@ -30,6 +47,26 @@ export default function FloatingArchyButton() {
     } else {
       setContext('default');
     }
+  };
+
+  useEffect(() => {
+    updateContext();
+    
+    // Listen for route changes (popstate for back/forward, custom event for programmatic navigation)
+    window.addEventListener('popstate', updateContext);
+    window.addEventListener('pushstate', updateContext);
+    window.addEventListener('replacestate', updateContext);
+    
+    // Also listen for custom navigation events from the app
+    const handleRouteChange = () => updateContext();
+    window.addEventListener('routechange', handleRouteChange);
+    
+    return () => {
+      window.removeEventListener('popstate', updateContext);
+      window.removeEventListener('pushstate', updateContext);
+      window.removeEventListener('replacestate', updateContext);
+      window.removeEventListener('routechange', handleRouteChange);
+    };
   }, []);
 
   return (

@@ -44,6 +44,18 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
       greetingText = "Hi, I'm Archy. I see you're exploring the homepage. I'm here to help you understand servant leadership, culture building, and how Bart's 32+ years of experience can help your business. What would you like to know about leadership, culture, or how we can work together?";
     } else if (context === 'journal') {
       greetingText = "Hi, I'm Archy. I see you're reading the journal. I can help you dive deeper into any of these leadership topics or answer questions about the ideas Bart shares. What would you like to explore?";
+    } else if (context === 'methods-speaking-seminars') {
+      greetingText = "Hi, I'm Archy. I see you're exploring Speaking & Seminars. What questions do you have about how Bart speaks, what he covers, or whether this might be right for your organization?";
+    } else if (context === 'methods-mentorship') {
+      greetingText = "Hi, I'm Archy. You're looking at Mentorship. I can help you understand how Bart works with leaders one-on-one, what mentorship looks like, and whether this might be a good fit. What would you like to know?";
+    } else if (context === 'methods-consulting') {
+      greetingText = "Hi, I'm Archy. You're exploring Consulting. I can help answer questions about how Bart works with teams and organizations, what consulting engagements look like, and how this might help your situation. What questions do you have?";
+    } else if (context === 'methods-training-education') {
+      greetingText = "Hi, I'm Archy. I see you're looking at Training & Education. I can help you understand what these offerings include, who they're for, and how they might benefit your team or organization. What would you like to know?";
+    } else if (context === 'methods-fractional-roles') {
+      greetingText = "Hi, I'm Archy. You're exploring Fractional Roles. I can help answer questions about how fractional leadership works, when it's the right fit, and what roles Bart can step into. What questions do you have?";
+    } else if (context === 'methods') {
+      greetingText = "Hi, I'm Archy. You're exploring Methods—how Bart works with leaders, teams, and organizations. I can help you understand the different approaches, what to expect, and which might be right for you. What would you like to know?";
     } else if (context === 'mentoring') {
       greetingText = "Hi, I'm Archy. You're looking at our mentoring and consulting services. I can help you understand how Bart works with leaders and teams, what to expect, and whether this might be a good fit for you. What questions do you have?";
     } else if (context === 'culture-science') {
