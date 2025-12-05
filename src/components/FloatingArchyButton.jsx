@@ -1,8 +1,3 @@
-/**
- * Floating Archy Chat Button
- * 
- * Fixed bottom-right, opens chat overlay with context-aware messaging
- */
 import React, { useState, useEffect } from 'react';
 import ChatApp from '../app/ChatApp';
 
@@ -10,81 +5,70 @@ export default function FloatingArchyButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [context, setContext] = useState('default');
 
-  // Detect current page context from URL and update on route changes
-  const updateContext = () => {
-    const path = window.location.pathname;
-    if (path === '/' || path === '') {
-      setContext('home');
-    } else if (path.includes('/journal')) {
-      setContext('journal');
-    } else if (path.includes('/methods')) {
-      // Methods page and subpages
-      if (path.includes('/methods/speaking-seminars')) {
-        setContext('methods-speaking-seminars');
-      } else if (path.includes('/methods/mentorship')) {
-        setContext('methods-mentorship');
-      } else if (path.includes('/methods/consulting')) {
-        setContext('methods-consulting');
-      } else if (path.includes('/methods/training-education')) {
-        setContext('methods-training-education');
-      } else if (path.includes('/methods/fractional-roles')) {
-        setContext('methods-fractional-roles');
-      } else if (path === '/methods') {
-        setContext('methods');
-      } else {
-        setContext('methods');
-      }
-    } else if (path.includes('/mentoring') || path.includes('/consulting') || path.includes('/speaking') || path.includes('/fractional')) {
-      setContext('mentoring');
-    } else if (path.includes('/culture-science') || path.includes('/ali')) {
-      setContext('culture-science');
-    } else if (path.includes('/archy')) {
-      setContext('archy');
-    } else if (path.includes('/philosophy')) {
-      setContext('philosophy');
-    } else if (path.includes('/about')) {
-      setContext('about');
-    } else {
-      setContext('default');
-    }
-  };
-
+  // Detect context based on current path
   useEffect(() => {
+    const updateContext = () => {
+      const path = window.location.pathname;
+      
+      if (path === '/') {
+        setContext('home');
+      } else if (path === '/journal' || path.startsWith('/journal/')) {
+        setContext('journal');
+      } else if (path === '/methods/mentorship') {
+        setContext('methods-mentorship');
+      } else if (path === '/methods/consulting') {
+        setContext('methods-consulting');
+      } else if (path === '/methods/training-education') {
+        setContext('methods-training-education');
+      } else if (path === '/methods/fractional-roles') {
+        setContext('methods-fractional-roles');
+      } else if (path === '/methods/speaking-seminars') {
+        setContext('methods-speaking-seminars');
+      } else if (path === '/methods/fractional-roles/cco') {
+        setContext('methods-fractional-cco');
+      } else if (path === '/methods' || path.startsWith('/methods/')) {
+        setContext('methods');
+      } else if (path === '/mentoring' || path.startsWith('/mentoring/')) {
+        setContext('mentoring');
+      } else if (path === '/culture-science' || path.startsWith('/culture-science/')) {
+        setContext('culture-science');
+      } else if (path === '/archy' || path.startsWith('/archy/')) {
+        setContext('archy');
+      } else if (path === '/philosophy') {
+        setContext('philosophy');
+      } else if (path === '/about') {
+        setContext('about');
+      } else if (path === '/contact') {
+        setContext('contact');
+      } else {
+        setContext('default');
+      }
+    };
+
     updateContext();
-    
-    // Listen for route changes (popstate for back/forward, custom event for programmatic navigation)
     window.addEventListener('popstate', updateContext);
-    window.addEventListener('pushstate', updateContext);
-    window.addEventListener('replacestate', updateContext);
-    
-    // Also listen for custom navigation events from the app
-    const handleRouteChange = () => updateContext();
-    window.addEventListener('routechange', handleRouteChange);
     
     return () => {
       window.removeEventListener('popstate', updateContext);
-      window.removeEventListener('pushstate', updateContext);
-      window.removeEventListener('replacestate', updateContext);
-      window.removeEventListener('routechange', handleRouteChange);
     };
   }, []);
 
   return (
     <>
-      {/* Floating Button - Fixed position, stays visible while scrolling */}
+      {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 right-8 z-[9999] w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#ff801d] shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group relative overflow-hidden"
-        style={{ position: 'fixed' }}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
         aria-label="Chat with Archy"
       >
         <img
           src="/images/archy-avatar.png"
           alt="Archy"
-          className="w-12 h-12 md:w-16 md:h-16 rounded-full relative z-10 border-0"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
         />
-        {/* Pulse animation ring */}
-        <span className="absolute inset-0 rounded-full bg-[#ff801d] opacity-75 animate-ping"></span>
       </button>
 
       {/* Chat Overlay - Opens when button is clicked */}
@@ -102,19 +86,24 @@ export default function FloatingArchyButton() {
                       className="w-10 h-10 rounded-full border-0"
                     />
                   </div>
-                  <span className="font-semibold text-[#2B2D2F]">Archy</span>
+                  <div>
+                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
+                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
+                  </div>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-[#6B6B6B] hover:text-[#2B2D2F] transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center"
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
                   aria-label="Close chat"
                 >
-                  ×
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
-              
-              {/* Chat App - Context-aware based on current page */}
-              <div className="flex-1 min-h-0 overflow-hidden">
+
+              {/* Chat Content */}
+              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
                 <ChatApp context={context} />
               </div>
             </div>
