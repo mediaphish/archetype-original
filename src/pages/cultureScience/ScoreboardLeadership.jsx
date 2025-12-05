@@ -2,29 +2,106 @@
  * Scoreboard Leadership Anti-Project Page
  * Editorial Minimal Design - Diagnostic Lens for Toxic Leadership Patterns
  */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import SEO from '../../components/SEO';
 
 export default function ScoreboardLeadership() {
+  const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection and scroll tracking for parallax
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint - disable parallax on mobile
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    const handleScroll = () => {
+      // Check mobile directly in handler to avoid stale closure
+      if (window.innerWidth >= 1024) {
+        setScrollY(window.scrollY);
+      }
+    };
+
+    // Initial scroll position
+    handleScroll();
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+  const handleLinkClick = (e, href) => {
+    e.preventDefault();
+    window.history.pushState({}, '', href);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   return (
     <>
       <SEO pageKey="scoreboard-leadership" />
       <div className="min-h-screen bg-white">
-        {/* SECTION 1: HERO */}
-        <section className="bg-white py-20 sm:py-28">
+        {/* SECTION 1: HERO WITH PARALLAX */}
+        <section className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
-              {/* Badge */}
-              <div className="mb-6">
-                <span className="inline-block px-4 py-2 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#6B6B6B] uppercase">
-                  Anti-Project
-                </span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+              {/* Left Content */}
+              <div>
+                {/* Badge */}
+                <div className="mb-6">
+                  <span className="inline-block px-4 py-2 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#6B6B6B] uppercase">
+                    Anti-Project
+                  </span>
+                </div>
+                
+                {/* Title */}
+                <h1 className="font-serif font-bold text-4xl sm:text-5xl md:text-6xl text-[#1A1A1A] tracking-tight mb-8">
+                  Scoreboard Leadership
+                </h1>
               </div>
               
-              {/* Title */}
-              <h1 className="font-serif font-bold text-4xl sm:text-5xl md:text-6xl text-[#1A1A1A] tracking-tight mb-8">
-                Scoreboard Leadership
-              </h1>
+              {/* Right: 2-Layer Parallax (Desktop Only) */}
+              <div className="relative h-[500px] hidden lg:block">
+                {/* Layer 2: Back - Moves VERTICALLY (slow) */}
+                <div 
+                  className="absolute inset-0 z-10"
+                  style={{ 
+                    transform: isMobile ? 'translateY(0)' : `translateY(${scrollY * 0.05}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/scoreboard-layer-2.png" 
+                    alt="Scoreboard Leadership Background" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                {/* Layer 1: Front - Moves HORIZONTALLY (faster) */}
+                <div 
+                  className="absolute inset-0 z-20"
+                  style={{ 
+                    transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.15}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/scoreboard-layer-1.png" 
+                    alt="Scoreboard Leadership Foreground" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -294,11 +371,7 @@ export default function ScoreboardLeadership() {
                 </a>
                 <a
                   href="/contact"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.history.pushState({}, '', '/contact');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
+                  onClick={(e) => handleLinkClick(e, '/contact')}
                   className="border-2 border-[#1A1A1A] text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
                 >
                   Start a Conversation
