@@ -23,7 +23,7 @@ export default function WhyArchetypeOriginal() {
           </div>
           
           {/* Header */}
-          <h2 className="text-[48px] sm:text-[64px] md:text-[72px] font-bold text-[#1A1A1A] mb-8 sm:mb-10 leading-[0.9]">
+          <h2 className="font-serif text-[48px] sm:text-[64px] md:text-[72px] font-bold text-[#1A1A1A] mb-8 sm:mb-10 leading-[0.9]">
             Why Archetype Original?
           </h2>
           

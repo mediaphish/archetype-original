@@ -16,7 +16,7 @@ export default function WhatImBuilding() {
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <h2 className="text-[48px] sm:text-[64px] md:text-[80px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9]">
+          <h2 className="font-serif text-[48px] sm:text-[64px] md:text-[80px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9]">
             What I'm Building
           </h2>
           
@@ -30,7 +30,7 @@ export default function WhatImBuilding() {
             {/* PILLAR 01: Culture Science */}
             <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
               <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">01</div>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
+              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
                 Culture Science
               </h3>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">

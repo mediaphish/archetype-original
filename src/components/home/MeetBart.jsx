@@ -40,7 +40,7 @@ export default function MeetBart() {
               </div>
               
               {/* Header */}
-              <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 leading-tight tracking-tight">
+              <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 leading-tight tracking-tight">
                 Meet Bart
               </h2>
               

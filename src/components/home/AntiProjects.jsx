@@ -16,7 +16,7 @@ export default function AntiProjects() {
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
-          <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
             The Anti-Projects
           </h2>
           
@@ -29,7 +29,7 @@ export default function AntiProjects() {
           <div className="space-y-12 sm:space-y-16 md:space-y-20">
             {/* ANTI-PROJECT 1: Scoreboard Leadership */}
             <div className="border-l-[6px] border-[#C85A3C] pl-8 sm:pl-10 md:pl-12 py-4">
-              <h3 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+              <h3 className="font-serif text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
                 Scoreboard Leadership
               </h3>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
@@ -46,7 +46,7 @@ export default function AntiProjects() {
 
             {/* ANTI-PROJECT 2: The Bad Leader Project */}
             <div className="border-l-[6px] border-[#C85A3C] pl-8 sm:pl-10 md:pl-12 py-4">
-              <h3 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+              <h3 className="font-serif text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
                 The Bad Leader Project
               </h3>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">

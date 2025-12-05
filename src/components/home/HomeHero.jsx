@@ -58,7 +58,7 @@ export default function HomeHero() {
               </div>
               
               {/* Title */}
-              <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#1A1A1A] tracking-tight mb-6 sm:mb-8">
+              <h1 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#1A1A1A] tracking-tight mb-6 sm:mb-8">
                 Leadership That Actually Lasts
               </h1>
               
