@@ -262,7 +262,7 @@ export default function Philosophy() {
         {/* Sticky Navigation - Appears after scrolling past hero */}
         <nav 
           aria-label="Sticky table of contents"
-          className={`fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
+          className={`fixed top-20 left-0 right-0 z-40 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
             showStickyNav ? 'translate-y-0' : '-translate-y-full'
           }`}
         >
