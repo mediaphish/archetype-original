@@ -1,24 +1,70 @@
 /**
  * Enhanced Navigation Component
- * v0 Design - EXACT IMPLEMENTATION
+ * Editorial Minimal Design with Dropdown Menus
+ * Best Practices: Clear hierarchy, hover/click dropdowns, active states, responsive
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [methodsDropdownOpen, setMethodsDropdownOpen] = useState(false);
+  const [cultureScienceDropdownOpen, setCultureScienceDropdownOpen] = useState(false);
+  const [currentPath, setCurrentPath] = useState('');
+
+  useEffect(() => {
+    // Get current path for active state
+    const path = window.location.pathname;
+    setCurrentPath(path);
+
+    // Listen for route changes
+    const handleRouteChange = () => {
+      setCurrentPath(window.location.pathname);
+      setMobileMenuOpen(false);
+      setMethodsDropdownOpen(false);
+      setCultureScienceDropdownOpen(false);
+    };
+
+    window.addEventListener('popstate', handleRouteChange);
+    window.addEventListener('routechange', handleRouteChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('routechange', handleRouteChange);
+    };
+  }, []);
 
   const handleNavigation = (path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     setMobileMenuOpen(false);
+    setMethodsDropdownOpen(false);
+    setCultureScienceDropdownOpen(false);
+  };
+
+  const isActive = (path) => {
+    if (path === '/' && currentPath === '/') return true;
+    if (path !== '/' && currentPath.startsWith(path)) return true;
+    return false;
+  };
+
+  const navLinkClass = (path) => {
+    const base = "text-base font-medium transition-colors";
+    const active = isActive(path) 
+      ? "text-[#1A1A1A] border-b-2 border-[#1A1A1A]" 
+      : "text-[#6B6B6B] hover:text-[#1A1A1A]";
+    return `${base} ${active}`;
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-[#1A1A1A]/10">
-      <div className="container mx-auto px-6">
+    <nav className="sticky top-0 z-50 bg-white border-b border-[#1A1A1A]/10 backdrop-blur-sm bg-white/95">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <a 
+            href="/" 
+            onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
+            className="flex items-center"
+          >
             <svg 
               id="Layer_1" 
               data-name="Layer 1" 
@@ -54,50 +100,205 @@ export default function Header() {
             </svg>
           </a>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
-            <a href="/#mentoring" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
-              Mentoring
-            </a>
-            <a href="/#culture-science" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
-              Culture Science
-            </a>
-            <a href="/journal" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
-              Journal
-            </a>
-            <a 
-              href="/philosophy" 
-              onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
-              className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
-            >
-              Philosophy
-            </a>
-            <a 
-              href="/methods" 
-              onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
-              className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
-            >
-              Methods
-            </a>
-            <a 
-              href="/about" 
-              onClick={(e) => { e.preventDefault(); handleNavigation('/about'); }}
-              className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
-            >
-              About
-            </a>
-            <a href="/#archy" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
-              Meet Archy
-            </a>
-            <a href="/contact" className="px-8 py-3 bg-[#1A1A1A] text-white font-medium hover:bg-[#1A1A1A]/90 transition-colors">
-              Contact
-            </a>
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-8">
+            {/* Primary Navigation */}
+            <div className="flex items-center gap-6">
+              <a 
+                href="/about" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/about'); }}
+                className={navLinkClass('/about')}
+              >
+                About
+              </a>
+              
+              <a 
+                href="/philosophy" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
+                className={navLinkClass('/philosophy')}
+              >
+                Philosophy
+              </a>
+
+              {/* Methods Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setMethodsDropdownOpen(true)}
+                onMouseLeave={() => setMethodsDropdownOpen(false)}
+              >
+                <button
+                  className={`${navLinkClass('/methods')} flex items-center gap-1`}
+                >
+                  Methods
+                  <svg 
+                    className={`w-4 h-4 transition-transform ${methodsDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {methodsDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                    <a
+                      href="/methods"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Overview
+                    </a>
+                    <a
+                      href="/methods/mentorship"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/mentorship'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Mentorship
+                    </a>
+                    <a
+                      href="/methods/consulting"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/consulting'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Consulting
+                    </a>
+                    <a
+                      href="/methods/fractional-roles"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/fractional-roles'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Fractional Roles
+                    </a>
+                    <a
+                      href="/methods/speaking-seminars"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Speaking & Seminars
+                    </a>
+                    <a
+                      href="/methods/training-education"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/training-education'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Training & Education
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Culture Science Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setCultureScienceDropdownOpen(true)}
+                onMouseLeave={() => setCultureScienceDropdownOpen(false)}
+              >
+                <button
+                  className={`${navLinkClass('/culture-science')} flex items-center gap-1`}
+                >
+                  Culture Science
+                  <svg 
+                    className={`w-4 h-4 transition-transform ${cultureScienceDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {cultureScienceDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                    <a
+                      href="/culture-science"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Overview
+                    </a>
+                    <a
+                      href="/culture-science/ali"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ali'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      The Archetype Leadership Index (ALI)
+                    </a>
+                    <div className="border-t border-[#1A1A1A]/10 my-1"></div>
+                    <div className="px-4 py-2 text-xs font-medium text-[#6B6B6B] uppercase tracking-wider">
+                      Anti-Projects
+                    </div>
+                    <a
+                      href="/culture-science/anti-projects/scoreboard-leadership"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/anti-projects/scoreboard-leadership'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors pl-8"
+                    >
+                      Scoreboard Leadership
+                    </a>
+                    <a
+                      href="/culture-science/anti-projects/bad-leader-project"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/anti-projects/bad-leader-project'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors pl-8"
+                    >
+                      The Bad Leader Project
+                    </a>
+                    <div className="border-t border-[#1A1A1A]/10 my-1"></div>
+                    <a
+                      href="/culture-science/research"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/research'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Research
+                    </a>
+                    <a
+                      href="/culture-science/industry-reports"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/industry-reports'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Industry Reports
+                    </a>
+                    <a
+                      href="/culture-science/ethics"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ethics'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Ethics
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <a 
+                href="/archy" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
+                className={navLinkClass('/archy')}
+              >
+                Meet Archy
+              </a>
+            </div>
+
+            {/* Secondary Navigation (Right-aligned) */}
+            <div className="flex items-center gap-6 ml-8 pl-8 border-l border-[#1A1A1A]/10">
+              <a 
+                href="/journal" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/journal'); }}
+                className={navLinkClass('/journal')}
+              >
+                Journal
+              </a>
+              <a 
+                href="/contact" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
+                className="px-6 py-2.5 bg-[#1A1A1A] text-white font-medium text-sm hover:bg-[#1A1A1A]/90 transition-colors rounded-sm"
+              >
+                Contact
+              </a>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-[#2B2D2F] hover:bg-gray-100 rounded-lg transition-colors"
+            className="lg:hidden p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors"
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,44 +314,186 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
-            <div className="flex flex-col space-y-4">
-              <a href="/#mentoring" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                Mentoring
-              </a>
-              <a href="/#culture-science" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                Culture Science
-              </a>
-              <a href="/journal" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
-                Journal
-              </a>
-              <a 
-                href="/philosophy" 
-                onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
-                className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
-              >
-                Philosophy
-              </a>
-              <a 
-                href="/methods" 
-                onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
-                className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
-              >
-                Methods
-              </a>
+          <div className="lg:hidden py-4 border-t border-[#1A1A1A]/10">
+            <div className="flex flex-col space-y-1">
               <a 
                 href="/about" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/about'); }}
-                className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                className={`px-4 py-3 text-base font-medium transition-colors ${isActive('/about') ? 'text-[#1A1A1A] bg-[#FAFAF9]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}
               >
                 About
               </a>
-              <a href="/#archy" className="text-base font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              
+              <a 
+                href="/philosophy" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
+                className={`px-4 py-3 text-base font-medium transition-colors ${isActive('/philosophy') ? 'text-[#1A1A1A] bg-[#FAFAF9]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}
+              >
+                Philosophy
+              </a>
+
+              {/* Methods Mobile Accordion */}
+              <div>
+                <button
+                  onClick={() => setMethodsDropdownOpen(!methodsDropdownOpen)}
+                  className={`w-full px-4 py-3 text-base font-medium text-left transition-colors flex items-center justify-between ${isActive('/methods') ? 'text-[#1A1A1A] bg-[#FAFAF9]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}
+                >
+                  Methods
+                  <svg 
+                    className={`w-4 h-4 transition-transform ${methodsDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {methodsDropdownOpen && (
+                  <div className="bg-white pl-8 space-y-1">
+                    <a
+                      href="/methods"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Overview
+                    </a>
+                    <a
+                      href="/methods/mentorship"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/mentorship'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Mentorship
+                    </a>
+                    <a
+                      href="/methods/consulting"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/consulting'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Consulting
+                    </a>
+                    <a
+                      href="/methods/fractional-roles"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/fractional-roles'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Fractional Roles
+                    </a>
+                    <a
+                      href="/methods/speaking-seminars"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Speaking & Seminars
+                    </a>
+                    <a
+                      href="/methods/training-education"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/methods/training-education'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Training & Education
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Culture Science Mobile Accordion */}
+              <div>
+                <button
+                  onClick={() => setCultureScienceDropdownOpen(!cultureScienceDropdownOpen)}
+                  className={`w-full px-4 py-3 text-base font-medium text-left transition-colors flex items-center justify-between ${isActive('/culture-science') ? 'text-[#1A1A1A] bg-[#FAFAF9]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}
+                >
+                  Culture Science
+                  <svg 
+                    className={`w-4 h-4 transition-transform ${cultureScienceDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {cultureScienceDropdownOpen && (
+                  <div className="bg-white pl-8 space-y-1">
+                    <a
+                      href="/culture-science"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Overview
+                    </a>
+                    <a
+                      href="/culture-science/ali"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ali'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      The Archetype Leadership Index (ALI)
+                    </a>
+                    <div className="px-4 py-2 text-xs font-medium text-[#6B6B6B] uppercase tracking-wider">
+                      Anti-Projects
+                    </div>
+                    <a
+                      href="/culture-science/anti-projects/scoreboard-leadership"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/anti-projects/scoreboard-leadership'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors pl-8"
+                    >
+                      Scoreboard Leadership
+                    </a>
+                    <a
+                      href="/culture-science/anti-projects/bad-leader-project"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/anti-projects/bad-leader-project'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors pl-8"
+                    >
+                      The Bad Leader Project
+                    </a>
+                    <a
+                      href="/culture-science/research"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/research'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Research
+                    </a>
+                    <a
+                      href="/culture-science/industry-reports"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/industry-reports'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Industry Reports
+                    </a>
+                    <a
+                      href="/culture-science/ethics"
+                      onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ethics'); }}
+                      className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                    >
+                      Ethics
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <a 
+                href="/archy" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
+                className={`px-4 py-3 text-base font-medium transition-colors ${isActive('/archy') ? 'text-[#1A1A1A] bg-[#FAFAF9]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}
+              >
                 Meet Archy
               </a>
-              <a href="/contact" className="px-8 py-3 bg-[#1A1A1A] text-white font-medium hover:bg-[#1A1A1A]/90 transition-colors text-center min-h-[44px] flex items-center justify-center" onClick={() => setMobileMenuOpen(false)}>
-                Contact
-              </a>
+
+              <div className="border-t border-[#1A1A1A]/10 my-2 pt-2">
+                <a 
+                  href="/journal" 
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/journal'); }}
+                  className={`block px-4 py-3 text-base font-medium transition-colors ${isActive('/journal') ? 'text-[#1A1A1A] bg-[#FAFAF9]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}
+                >
+                  Journal
+                </a>
+                <a 
+                  href="/contact" 
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
+                  className="block mx-4 mt-2 px-6 py-3 bg-[#1A1A1A] text-white font-medium text-center hover:bg-[#1A1A1A]/90 transition-colors rounded-sm"
+                >
+                  Contact
+                </a>
+              </div>
             </div>
           </div>
         )}
