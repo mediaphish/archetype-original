@@ -167,7 +167,8 @@ export default function Header() {
                       </svg>
                     </button>
                     {methodsDropdownOpen && (
-                      <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="absolute top-full right-0 pt-1 w-56">
+                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                         <a
                           href="/methods"
                           onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
@@ -210,6 +211,7 @@ export default function Header() {
                         >
                           Training & Education
                         </a>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -234,7 +236,8 @@ export default function Header() {
                       </svg>
                     </button>
                     {cultureScienceDropdownOpen && (
-                      <div className="absolute top-full right-0 mt-2 w-64 bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="absolute top-full right-0 pt-1 w-64">
+                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                         <a
                           href="/culture-science"
                           onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science'); }}
@@ -289,6 +292,7 @@ export default function Header() {
                         >
                           Ethics
                         </a>
+                        </div>
                       </div>
                     )}
                   </div>
