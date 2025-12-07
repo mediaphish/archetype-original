@@ -242,7 +242,7 @@ export default function Mentorship() {
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Mentorship creates a space leaders rarely get: a space without expectation, without posturing, without the pressure to perform.
+                Mentorship creates a space leaders rarely get: a space without expectation, without posturing, without the pressure to perform. I don't push people forward — I <a href="/journal/clearing-the-path" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/clearing-the-path'); window.dispatchEvent(new PopStateEvent('popstate')); }}>clear what's in their way</a>.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 It slows the pace long enough for truth to surface.
@@ -392,7 +392,7 @@ export default function Mentorship() {
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                While still in development, Culture Science and the Archetype Leadership Index (ALI) quietly inform parts of this work. They help reveal patterns leaders often sense but rarely have language for — alignment drift, communication tension, cultural friction, or internal pressure.
+                While still in development, Culture Science and the Archetype Leadership Index (ALI) quietly inform parts of this work. They help reveal patterns leaders often sense but rarely have language for — alignment drift, communication tension, cultural friction, or internal pressure. This work is grounded in <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); }}>servant leadership research</a> and the <a href="/journal/psychology-of-servant-leadership-part-1-servant-mindset" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/psychology-of-servant-leadership-part-1-servant-mindset'); window.dispatchEvent(new PopStateEvent('popstate')); }}>psychology of servant leadership</a>.
               </p>
               <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A] italic font-serif">
                 They don't define mentorship. They sharpen it when needed.

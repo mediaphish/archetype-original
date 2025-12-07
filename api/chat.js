@@ -320,6 +320,137 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
           responseLower.includes("i'm not able to") ||
           (hasLowKnowledge && responseLower.includes("don't have"));
         
+        // Detect nonsensical/trolling questions
+        const nonsensicalPatterns = [
+          /quantum.*(physics|mechanics|entanglement).*(espresso|coffee|dairy|milk|latte|cappuccino)/i,
+          /(espresso|coffee|dairy|milk).*(quantum|physics|mechanics)/i,
+          /(philosophy|philosophical).*(quantum|physics|espresso|coffee|dairy)/i,
+          /(compare|comparing).*(philosophy|philosophical).*(quantum|physics|espresso|coffee)/i,
+          /(what.*color.*horse|how many.*angels.*pinhead|if.*tree.*falls)/i, // Classic nonsensical questions
+          /(meaning.*life.*universe.*everything.*42)/i, // Hitchhiker's Guide reference (if used nonsensically)
+        ];
+        
+        let isNonsensical = nonsensicalPatterns.some(pattern => pattern.test(message));
+        
+        // Use AI to detect nonsensical questions that don't match patterns
+        if (!isNonsensical && message.length > 20) {
+          try {
+            const nonsensicalCheckPrompt = `You are checking if a question asked to Archy (an AI assistant for Bart Paden, a leadership consultant) is nonsensical, off-topic, or clearly trolling.
+
+Question: "${message}"
+
+A question is nonsensical if it:
+- Combines completely unrelated topics (e.g., quantum physics + coffee, philosophy + dairy ratios)
+- Is clearly testing/trolling the AI
+- Has no connection to leadership, culture, business, teams, or organizational health
+- Is a joke or prank question
+
+Respond with ONLY a JSON object:
+{
+  "isNonsensical": true/false,
+  "reason": "brief explanation"
+}`;
+
+            const nonsensicalCheckResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.OPEN_API_KEY}`,
+              },
+              body: JSON.stringify({
+                model: 'gpt-4',
+                messages: [{ role: 'user', content: nonsensicalCheckPrompt }],
+                max_tokens: 100,
+                temperature: 0.3
+              })
+            });
+
+            if (nonsensicalCheckResponse.ok) {
+              const checkData = await nonsensicalCheckResponse.json();
+              const checkText = checkData.choices?.[0]?.message?.content;
+              if (checkText) {
+                try {
+                  const check = JSON.parse(checkText);
+                  isNonsensical = check.isNonsensical === true;
+                  if (isNonsensical) {
+                    console.log('AI detected nonsensical question:', check.reason);
+                  }
+                } catch (parseError) {
+                  // If parsing fails, fall back to pattern matching only
+                  console.error('Error parsing nonsensical check:', parseError);
+                }
+              }
+            }
+          } catch (checkError) {
+            console.error('Error checking for nonsensical question:', checkError);
+            // Fall back to pattern matching only
+          }
+        }
+        
+        // Playful responses for nonsensical questions
+        const playfulResponses = [
+          "You know, that's a good question for a different AI. If you'd like to get back on topic, I'm here for it. If not, let's part friends.",
+          "I appreciate the creativity, but I'm focused on leadership, culture, and building things that last. Want to talk about that instead?",
+          "That's... quite a question. I'm more of a leadership and culture kind of AI. If you want to explore those topics, I'm all in.",
+          "I think you might have me confused with a different AI. I'm here to talk about leadership, teams, and building healthy organizations. Interested?",
+          "That's outside my wheelhouse. I'm here for leadership, culture, and helping people build what matters. Want to try again?",
+          "I'm going to be honest—that's not really my thing. But if you want to talk about leadership, teams, or building something real, I'm your AI.",
+          "That's a fascinating question, but probably better suited for a physics or coffee AI. I'm here for leadership and culture. Want to pivot?",
+          "I'm not the right AI for that one. But if you're interested in leadership, building teams, or creating healthy cultures, I'm all ears.",
+          "That's creative, but I'm focused on leadership and organizational health. If you want to explore those topics, let's do it.",
+          "I think we might be on different wavelengths. I'm here to help with leadership, culture, and building things that last. Want to give that a shot?",
+          "That's not really my area of expertise. I'm more about leadership, teams, and helping people build what matters. Interested?",
+          "I appreciate the curveball, but I'm here for leadership and culture conversations. If you want to explore those, I'm ready.",
+          "That's a question for another time—and another AI. I'm here for leadership, culture, and building healthy organizations. Want to talk about that?",
+          "I'm going to pass on that one. But if you want to discuss leadership, building teams, or creating cultures people actually want to belong to, I'm here.",
+          "That's outside my scope. I'm focused on leadership, organizational health, and helping people build what lasts. Want to try a different question?",
+          "I think you might be testing me. That's fine—but I'm here for real conversations about leadership and culture. Want to have one?",
+          "That's not my thing, but I respect the creativity. If you want to talk about leadership, teams, or building something meaningful, I'm all in.",
+          "I'm going to be straight with you—that's not what I do. But leadership, culture, and building healthy organizations? That's my jam.",
+          "That's a question for a different AI entirely. I'm here for leadership and culture. If you want to explore those, let's go.",
+          "I appreciate the originality, but I'm focused on leadership, teams, and organizational health. Want to talk about that instead?",
+        ];
+        
+        // If nonsensical, return a playful response immediately
+        if (isNonsensical) {
+          const randomResponse = playfulResponses[Math.floor(Math.random() * playfulResponses.length)];
+          
+          // Still log the question for analysis
+          try {
+            const questionLower = message.toLowerCase();
+            let topicCategory = 'nonsensical';
+            
+            await supabase
+              .from('archy_questions')
+              .insert([
+                {
+                  session_id: sessionId,
+                  question: message,
+                  response: randomResponse,
+                  context: context || 'default',
+                  knowledge_docs_used: [],
+                  knowledge_docs_count: 0,
+                  response_length: randomResponse.length,
+                  was_answered: false,
+                  is_valuable: false,
+                  topic_category: topicCategory,
+                  response_time_ms: Date.now() - startTime,
+                  created_at: new Date().toISOString()
+                }
+              ]);
+          } catch (error) {
+            console.error('Error logging nonsensical question:', error);
+          }
+          
+          return res.status(200).json({ 
+            response: randomResponse,
+            shouldEscalate: false,
+            isDarkHours,
+            cannotAnswer: false,
+            suggestedButtons: undefined
+          });
+        }
+        
         // Assess if the question is valuable (not spam, potentially a client, or adds to canon)
         let isValuableQuestion = false;
         if (indicatesCannotAnswer) {

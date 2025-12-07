@@ -39,7 +39,6 @@ import Testimonials from "./pages/mentoring/Testimonials";
 import Consulting from "./pages/mentoring/Consulting";
 import Fractional from "./pages/mentoring/Fractional";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
-import AntiProjectsPage from "./pages/cultureScience/AntiProjects";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
 import BadLeaderProject from "./pages/cultureScience/BadLeaderProject";
 import IndustryReports from "./pages/cultureScience/IndustryReports";
@@ -109,8 +108,6 @@ export default function App() {
           } else {
             setCurrentPage('ali');
           }
-        } else if (path === '/culture-science/anti-projects') {
-          setCurrentPage('anti-projects');
         } else if (path === '/culture-science/anti-projects/scoreboard-leadership') {
           setCurrentPage('scoreboard-leadership');
         } else if (path === '/culture-science/scoreboard-leadership') {
@@ -469,16 +466,6 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <CultureSciencePage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'anti-projects') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <AntiProjectsPage />
         <Footer />
         <FloatingArchyButton />
       </main>

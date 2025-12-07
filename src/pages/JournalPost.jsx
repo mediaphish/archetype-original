@@ -809,6 +809,92 @@ export default function JournalPost() {
                   </div>
                 </div>
               )}
+
+              {/* Related Reading Section */}
+              <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-[#1A1A1A]/10">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif">
+                  Related Reading
+                </h3>
+                
+                <div className="space-y-6">
+                  {/* Related Pages based on categories */}
+                  {post.categories && (
+                    <div>
+                      <h4 className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3 sm:mb-4">
+                        Explore More
+                      </h4>
+                      <ul className="space-y-2">
+                        {post.categories.some(cat => ['servant-leadership', 'leadership', 'philosophy'].includes(cat.toLowerCase())) && (
+                          <li>
+                            <a 
+                              href="/philosophy" 
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/philosophy'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                            >
+                              Philosophy — The foundation of servant leadership
+                            </a>
+                          </li>
+                        )}
+                        {post.categories.some(cat => ['servant-leadership', 'leadership', 'mentorship', 'consulting'].includes(cat.toLowerCase())) && (
+                          <li>
+                            <a 
+                              href="/methods" 
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/methods'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                            >
+                              Methods — How I work with leaders and teams
+                            </a>
+                          </li>
+                        )}
+                        {post.categories.some(cat => ['servant-leadership', 'leadership', 'golden-rule', 'posture'].includes(cat.toLowerCase())) && (
+                          <li>
+                            <a 
+                              href="/about" 
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                            >
+                              About — The posture that shapes my leadership
+                            </a>
+                          </li>
+                        )}
+                        {post.categories.some(cat => ['scoreboard-leadership', 'anti-project', 'bad-leader', 'culture'].includes(cat.toLowerCase())) && (
+                          <li>
+                            <a 
+                              href="/culture-science/anti-projects/scoreboard-leadership" 
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/culture-science/anti-projects/scoreboard-leadership'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                            >
+                              Scoreboard Leadership — The diagnostic lens
+                            </a>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Related Journal Posts */}
+                  {post.related && post.related.length > 0 && (
+                    <div>
+                      <h4 className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3 sm:mb-4">
+                        Related Journal Posts
+                      </h4>
+                      <ul className="space-y-2">
+                        {post.related.map((relatedSlug, index) => (
+                          <li key={index}>
+                            <a 
+                              href={`/journal/${relatedSlug}`}
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', `/journal/${relatedSlug}`); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                            >
+                              {relatedSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </article>
         </div>

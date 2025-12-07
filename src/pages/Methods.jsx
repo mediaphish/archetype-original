@@ -35,7 +35,7 @@ const services = [
           Mentorship isn't a program. It's a relationship built on clarity, trust, development, and the honesty it takes to grow as a leader. Some leaders come to mentorship because they're under pressure. Others come because they're ready to sharpen their skills, expand their capacity, or step into responsibility they've never held before. Both are valid. Both matter. Both are leadership.
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-          I mentor leaders the same way real leadership works—adaptively. Some conversations require steadiness and presence. Others require direct truth. Some are about navigating conflict; others are about uncovering potential. Sometimes a leader needs someone to slow things down; other times they need someone to push them forward. The approach shifts with the moment because leadership does too.
+          I mentor leaders the same way real leadership works—adaptively. Some conversations require steadiness and presence. Others require direct truth. Some are about navigating conflict; others are about uncovering potential. Sometimes a leader needs someone to slow things down; other times they need someone to push them forward. The approach shifts with the moment because leadership does too. I don't push people forward — I <a href="/journal/clearing-the-path" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/clearing-the-path'); window.dispatchEvent(new PopStateEvent('popstate')); }}>clear what's in their way</a>.
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
           If you're ready to grow, change, or lead with more clarity than you have today, we can begin with a conversation.
@@ -60,7 +60,7 @@ const services = [
     content: (
       <>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-          Consulting, the way I practice it, isn't built on models, slide decks, or theories. It's built on reality—what's actually happening inside a team, a department, or an organization. People don't need a consultant who read three books and built a framework. They need someone who can walk in, see the truth, understand the pressure, and help them move forward with clarity.
+          Consulting, the way I practice it, isn't built on models, slide decks, or theories. It's built on reality—what's actually happening inside a team, a department, or an organization. People don't need a consultant who read three books and built a framework. They need someone who can walk in, see the truth, understand the pressure, and help them move forward with clarity. I help identify and resolve <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership bottlenecks</a> that stifle innovation and growth.
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
           Consulting can be about solving problems, strengthening what's already working, or helping build what comes next.
@@ -431,7 +431,7 @@ export default function Methods() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                Leadership doesn't happen in ideal conditions. It happens in motion—inside pressure, relationships, expectations, and the realities leaders are already navigating. Most programs and models break down at that point because they rely on steps, templates, or theory. This work doesn't. It adjusts to what is actually happening.
+                Leadership doesn't happen in ideal conditions. It happens in motion—inside pressure, relationships, expectations, and the realities leaders are already navigating. Most programs and models break down at that point because they rely on steps, templates, or theory. This work doesn't. It adjusts to what is actually happening. When <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership bottlenecks</a> form, this approach adapts.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
                 This approach works because it brings clarity to the moment. Leaders can't make aligned decisions when the situation feels foggy or overwhelming. When we slow the moment down and name what's really going on—behaviorally, relationally, culturally—leaders regain their footing. Clarity creates steadiness, and steadiness changes everything.
@@ -638,7 +638,7 @@ export default function Methods() {
                   Writing that forces clarity and accountability
                 </li>
                 <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  Research across leadership, psychology, communication, and organizational behavior
+                  Research across leadership, psychology, communication, and organizational behavior — including <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); }}>servant leadership research</a> and the <a href="/journal/psychology-of-servant-leadership-part-1-servant-mindset" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/psychology-of-servant-leadership-part-1-servant-mindset'); window.dispatchEvent(new PopStateEvent('popstate')); }}>psychology of servant leadership</a>
                 </li>
                 <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Developing Culture Science and ALI as tools that support clarity—not systems to install

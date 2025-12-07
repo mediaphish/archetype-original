@@ -132,15 +132,6 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/culture-science/anti-projects"
-                    onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
-                  >
-                    Anti-Projects
-                  </a>
-                </li>
-                <li>
-                  <a
                     href="/culture-science/anti-projects/scoreboard-leadership"
                     onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/scoreboard-leadership')}
                     className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"

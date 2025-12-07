@@ -330,7 +330,7 @@ export default function Philosophy() {
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Servant leadership has been mischaracterized for years. It isn't weakness, softness, or endless sacrifice. It is strength under control — strength for the good of others, not at the expense of them.
+                <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); }}>Servant leadership</a> has been mischaracterized for years. It isn't weakness, softness, or endless sacrifice. It is strength under control — strength for the good of others, not at the expense of them.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 At its core, servant leadership is stewardship of people and purpose.
@@ -363,7 +363,7 @@ export default function Philosophy() {
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Faith quietly shapes everything I do. The Golden Rule — treat people the way you want to be treated — isn't just morality; it's mechanism. It is one of the most reliable drivers of trust and performance I've seen in 32 years.
+                Faith quietly shapes everything I do. <a href="/journal/golden-rule-leadership-strategy" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy'); window.dispatchEvent(new PopStateEvent('popstate')); }}>The Golden Rule</a> — treat people the way you want to be treated — isn't just morality; it's mechanism. It is one of the most reliable drivers of trust and performance I've seen in 32 years.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Alongside that sits a second principle that has shaped every season of my leadership:
@@ -625,7 +625,7 @@ export default function Philosophy() {
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Modern research across psychology, neuroscience, communication, behavioral economics, anthropology, and organizational behavior keeps confirming what decades of lived leadership have already shown: Leaders who create clarity, trust, and consistency unlock the best in their teams.
+                Modern research across psychology, neuroscience, communication, behavioral economics, anthropology, and organizational behavior keeps confirming what decades of lived leadership have already shown: Leaders who create clarity, trust, and consistency unlock the best in their teams. The <a href="/journal/psychology-of-servant-leadership-part-1-servant-mindset" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/psychology-of-servant-leadership-part-1-servant-mindset'); window.dispatchEvent(new PopStateEvent('popstate')); }}>psychology of servant leadership</a> explains why this approach works.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Healthy cultures aren't an accident. They are the predictable result of:
