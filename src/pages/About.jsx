@@ -397,7 +397,7 @@ export default function About() {
               Some days felt like momentum. Some days felt like pushing a stalled engine uphill. I watched people grow into leaders they never expected to become. And I watched how misalignment and pressure, when left unnamed, can slowly tear everything apart.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Those years taught me things I couldn't have learned any other way. I saw firsthand how <a href="/journal/when-leadership-sank-kodak" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/when-leadership-sank-kodak'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership failures</a> can destroy even the strongest organizations:
+              Those years taught me things I couldn't have learned any other way. I saw firsthand how <a href="/journal/when-leadership-sank-kodak" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/when-leadership-sank-kodak'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership failures</a> can destroy even the strongest organizations:
             </p>
             <ul className="list-disc space-y-3 sm:space-y-4 mb-3 sm:mb-4 pl-6 sm:pl-8">
               <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
@@ -478,7 +478,7 @@ export default function About() {
               </h2>
             </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Two sentences have guided my leadership for decades: <a href="/journal/golden-rule-leadership-strategy" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy'); window.dispatchEvent(new PopStateEvent('popstate')); }}>The Golden Rule</a> — "treat others the way you would want to be treated." And: "I am second."
+              Two sentences have guided my leadership for decades: <a href="/journal/golden-rule-leadership-strategy" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>The Golden Rule</a> — "treat others the way you would want to be treated." And: "I am second."
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               The Golden Rule is ancient — rooted in Scripture, echoed in philosophy, and found across cultures. It has endured because it names something universal: leadership begins with valuing the person in front of you as much as you value yourself.
@@ -512,7 +512,7 @@ export default function About() {
               When the company was no longer mine to build, and the people I had developed were no longer mine to develop, the questions became unavoidable. Did any of it matter? Did people grow under my care? Was the way I led actually good?
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Those questions sent me into years of research across psychology, communication, neuroscience, anthropology, organizational behavior, and cultural theory. What I found didn't just validate the work — it explained it. The <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); }}>servant leadership research</a> confirmed what I had lived.
+              Those questions sent me into years of research across psychology, communication, neuroscience, anthropology, organizational behavior, and cultural theory. What I found didn't just validate the work — it explained it. The <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>servant leadership research</a> confirmed what I had lived.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               There were names for the instincts I followed. There was data behind the decisions I made. There were patterns behind the results I saw. That research became the book. The book became Archetype Original. Archetype Original became my next act.
@@ -542,7 +542,7 @@ export default function About() {
                   <strong className="font-bold">Mentorship:</strong>
                 </p>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  Helping leaders at every level gain clarity, courage, and direction. I don't push people forward — I <a href="/journal/clearing-the-path" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/clearing-the-path'); window.dispatchEvent(new PopStateEvent('popstate')); }}>clear what's in their way</a>.
+                  Helping leaders at every level gain clarity, courage, and direction. I don't push people forward — I <a href="/journal/clearing-the-path" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/clearing-the-path'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>clear what's in their way</a>.
                 </p>
               </div>
               <div>
@@ -550,7 +550,7 @@ export default function About() {
                   <strong className="font-bold">Consulting:</strong>
                 </p>
                 <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  Strengthening systems, communication, alignment, and culture so leaders can build what they actually intend. I help identify and resolve <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership bottlenecks</a> that stifle innovation and growth.
+                  Strengthening systems, communication, alignment, and culture so leaders can build what they actually intend. I help identify and resolve <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership bottlenecks</a> that stifle innovation and growth.
                 </p>
               </div>
               <div>

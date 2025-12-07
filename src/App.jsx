@@ -175,6 +175,14 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleRoute);
   }, []);
 
+  // Scroll to top when page changes (but not for hash links)
+  useEffect(() => {
+    // Only scroll if there's no hash in the URL (anchor links should handle their own scrolling)
+    if (!window.location.hash) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [currentPage]);
+
   // Render About page
   if (currentPage === 'about') {
     return (

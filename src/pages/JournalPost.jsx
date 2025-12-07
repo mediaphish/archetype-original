@@ -828,7 +828,7 @@ export default function JournalPost() {
                           <li>
                             <a 
                               href="/philosophy" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/philosophy'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/philosophy'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
                             >
                               Philosophy — The foundation of servant leadership
@@ -839,7 +839,7 @@ export default function JournalPost() {
                           <li>
                             <a 
                               href="/methods" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/methods'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/methods'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
                             >
                               Methods — How I work with leaders and teams
@@ -850,7 +850,7 @@ export default function JournalPost() {
                           <li>
                             <a 
                               href="/about" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
                             >
                               About — The posture that shapes my leadership
@@ -861,7 +861,7 @@ export default function JournalPost() {
                           <li>
                             <a 
                               href="/culture-science/anti-projects/scoreboard-leadership" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/culture-science/anti-projects/scoreboard-leadership'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/culture-science/anti-projects/scoreboard-leadership'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
                             >
                               Scoreboard Leadership — The diagnostic lens
@@ -883,7 +883,7 @@ export default function JournalPost() {
                           <li key={index}>
                             <a 
                               href={`/journal/${relatedSlug}`}
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', `/journal/${relatedSlug}`); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', `/journal/${relatedSlug}`); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
                             >
                               {relatedSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}

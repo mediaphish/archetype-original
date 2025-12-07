@@ -37,6 +37,10 @@ export default function Header() {
   const handleNavigation = (path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
+    // Scroll to top when navigating to a new page (but not for hash links)
+    if (!path.includes('#')) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
     setMobileMenuOpen(false);
     setMethodsDropdownOpen(false);
     setCultureScienceDropdownOpen(false);

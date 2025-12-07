@@ -9,6 +9,10 @@ export default function Footer() {
     e.preventDefault();
     window.history.pushState({}, '', href);
     window.dispatchEvent(new PopStateEvent('popstate'));
+    // Scroll to top when navigating to a new page (but not for hash links)
+    if (!href.includes('#')) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
   };
 
   return (

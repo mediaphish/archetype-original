@@ -10,6 +10,8 @@ export default function BadLeaderProject() {
     e.preventDefault();
     window.history.pushState({}, '', href);
     window.dispatchEvent(new PopStateEvent('popstate'));
+    // Scroll to top when navigating to a new page
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   return (

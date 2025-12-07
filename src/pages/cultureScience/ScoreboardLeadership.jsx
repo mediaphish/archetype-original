@@ -39,6 +39,8 @@ export default function ScoreboardLeadership() {
     e.preventDefault();
     window.history.pushState({}, '', href);
     window.dispatchEvent(new PopStateEvent('popstate'));
+    // Scroll to top when navigating to a new page
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   return (
@@ -121,7 +123,7 @@ export default function ScoreboardLeadership() {
               {/* Content */}
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
-                  Scoreboard Leadership is a dominance pattern where <strong>metrics are weaponized to drive compliance</strong>, optics outrank outcomes, and people become a means to public wins. The score replaces the standard; theater replaces trust. As I've written, <a href="/journal/leadership-isnt-a-scoreboard" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-isnt-a-scoreboard'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership isn't a scoreboard</a> — great leaders don't compete with their team; they build platforms for their people to rise.
+                  Scoreboard Leadership is a dominance pattern where <strong>metrics are weaponized to drive compliance</strong>, optics outrank outcomes, and people become a means to public wins. The score replaces the standard; theater replaces trust. As I've written, <a href="/journal/leadership-isnt-a-scoreboard" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-isnt-a-scoreboard'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership isn't a scoreboard</a> — great leaders don't compete with their team; they build platforms for their people to rise.
                 </p>
                 <p>
                   You get velocity spikes, shallow accountability, and hidden churn. The antidote isn't anti-measurement — it's <strong>servant-led standards</strong>: clear roles, honest rhythms, and leaders who carry the cost instead of pushing it down.
@@ -181,22 +183,22 @@ export default function ScoreboardLeadership() {
                     <strong>KPI theater</strong> Solution: Score service — NPS by team, on-time handoffs, first-time quality.
                   </li>
                   <li>
-                    <strong>Top-down pressure cycles</strong> — Often driven by <a href="/journal/manufactured-crisis" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/manufactured-crisis'); window.dispatchEvent(new PopStateEvent('popstate')); }}>manufactured crisis</a> and fear. Solution: Servant standards with owner-operators + weekly inspect-and-improve.
+                    <strong>Top-down pressure cycles</strong> — Often driven by <a href="/journal/manufactured-crisis" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/manufactured-crisis'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>manufactured crisis</a> and fear. Solution: Servant standards with owner-operators + weekly inspect-and-improve.
                   </li>
                   <li>
-                    <strong>Prestige over people</strong> — When leaders <a href="/journal/stop-turning-your-team-into-opponents" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/stop-turning-your-team-into-opponents'); window.dispatchEvent(new PopStateEvent('popstate')); }}>turn their team into opponents</a> through competition. Solution: Reward maintenance wins, cross-team assists, and clean handoffs.
+                    <strong>Prestige over people</strong> — When leaders <a href="/journal/stop-turning-your-team-into-opponents" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/stop-turning-your-team-into-opponents'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>turn their team into opponents</a> through competition. Solution: Reward maintenance wins, cross-team assists, and clean handoffs.
                   </li>
                   <li>
-                    <strong>Churn masked by hype</strong> — Hidden by <a href="/journal/the-proxy-trap" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-proxy-trap'); window.dispatchEvent(new PopStateEvent('popstate')); }}>proxy traps</a> and delegation failures. Solution: Track role tenure, cross-training depth, and regretted attrition.
+                    <strong>Churn masked by hype</strong> — Hidden by <a href="/journal/the-proxy-trap" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-proxy-trap'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>proxy traps</a> and delegation failures. Solution: Track role tenure, cross-training depth, and regretted attrition.
                   </li>
                   <li>
-                    <strong>Hero dependency</strong> — Created by <a href="/journal/shadow-of-shame" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/shadow-of-shame'); window.dispatchEvent(new PopStateEvent('popstate')); }}>shadow of shame</a> and fear-based control. Solution: One-page plays with backups and rituals that survive PTO and turnover.
+                    <strong>Hero dependency</strong> — Created by <a href="/journal/shadow-of-shame" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/shadow-of-shame'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>shadow of shame</a> and fear-based control. Solution: One-page plays with backups and rituals that survive PTO and turnover.
                   </li>
                   <li>
-                    <strong>Busy over outcomes</strong> — Often driven by <a href="/journal/cult-of-confusion" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/cult-of-confusion'); window.dispatchEvent(new PopStateEvent('popstate')); }}>cult of confusion</a> where clarity is withheld. Solution: One page, one owner, one outcome per initiative — inspect weekly.
+                    <strong>Busy over outcomes</strong> — Often driven by <a href="/journal/cult-of-confusion" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/cult-of-confusion'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>cult of confusion</a> where clarity is withheld. Solution: One page, one owner, one outcome per initiative — inspect weekly.
                   </li>
                   <li>
-                    <strong>Vanity pipeline</strong> — When <a href="/journal/the-pursuit-of-power-corrupts" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-pursuit-of-power-corrupts'); window.dispatchEvent(new PopStateEvent('popstate')); }}>the pursuit of power corrupts</a> decision-making. Solution: Qualify for fit; publish kill-criteria; celebrate strategic "no" calls.
+                    <strong>Vanity pipeline</strong> — When <a href="/journal/the-pursuit-of-power-corrupts" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-pursuit-of-power-corrupts'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>the pursuit of power corrupts</a> decision-making. Solution: Qualify for fit; publish kill-criteria; celebrate strategic "no" calls.
                   </li>
                   <li>
                     <strong>Meeting fog</strong> Solution: Agenda → output → owner. Daily 10-minute huddles that ship decisions.
