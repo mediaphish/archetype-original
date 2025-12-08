@@ -569,7 +569,7 @@ export default function CultureScience() {
                 </p>
                 
                 <p className="text-pretty">
-                  It's a 10-question assessment that your team completes anonymously. You get a scorecard showing how your leadership scores across all six dimensions—and what it means.
+                  It's a 10-question assessment, taken 4 times a year, that your team completes anonymously. With each round, you get a scorecard showing how your leadership scores across all six dimensions—and what it means.
                 </p>
                 
                 <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
