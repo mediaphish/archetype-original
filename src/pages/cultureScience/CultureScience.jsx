@@ -472,7 +472,18 @@ export default function CultureScience() {
                     </li>
                     <li>
                       <span className="text-[#1A1A1A]">
-                        <a href="/culture-science/anti-projects/scoreboard-leadership" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">Scoreboard Leadership</a> and our playbooks, that are in development, show leaders how to act on the data—shifting away from brittle, fear-based habits toward durable, servant-minded leadership.
+                        <a 
+                          href="/culture-science/anti-projects/scoreboard-leadership" 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.history.pushState({}, '', '/culture-science/anti-projects/scoreboard-leadership');
+                            window.dispatchEvent(new PopStateEvent('popstate'));
+                            window.scrollTo({ top: 0, behavior: 'instant' });
+                          }}
+                          className="text-[#1A1A1A] underline hover:text-[#C85A3C]"
+                        >
+                          Scoreboard Leadership
+                        </a> and our playbooks, that are in development, show leaders how to act on the data—shifting away from brittle, fear-based habits toward durable, servant-minded leadership.
                       </span>
                     </li>
                   </ul>
