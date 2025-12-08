@@ -323,11 +323,11 @@ export default function Methods() {
                   />
                 </div>
                 
-                {/* Layer 2: Middle */}
+                {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
                 <div 
                   className="absolute inset-0 z-20"
                   style={{ 
-                    transform: `translateY(${scrollY * 0.08}px)`,
+                    transform: `translateX(${scrollY * 0.08}px)`,
                     transition: 'transform 0.1s ease-out'
                   }}
                 >
@@ -341,11 +341,11 @@ export default function Methods() {
                   />
                 </div>
                 
-                {/* Layer 1: Front (fastest) */}
+                {/* Layer 1: Front - Moves HORIZONTALLY ONLY (grounded) */}
                 <div 
                   className="absolute inset-0 z-30"
                   style={{ 
-                    transform: `translateY(${scrollY * 0.12}px)`,
+                    transform: `translateX(${scrollY * -0.15}px)`,
                     transition: 'transform 0.1s ease-out'
                   }}
                 >

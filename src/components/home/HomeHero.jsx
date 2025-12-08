@@ -118,11 +118,11 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 1 (Front layer - Archy character): Moves UP on scroll */}
+              {/* Layer 1 (Front layer - Archy character): Moves HORIZONTALLY ONLY (grounded) */}
               <div 
                 className="absolute inset-0 z-20 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translateY(0)' : `translateY(${scrollY * -0.15}px)`,
+                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.15}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >

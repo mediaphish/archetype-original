@@ -191,11 +191,11 @@ export default function Philosophy() {
                   />
                 </div>
                 
-                {/* Layer 2: Middle - Moves VERTICALLY (moderate) */}
+                {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
                 <div 
                   className="absolute inset-0 z-20"
                   style={{ 
-                    transform: `translateY(${scrollY * 0.08}px)`,
+                    transform: `translateX(${scrollY * 0.08}px)`,
                     transition: 'transform 0.1s ease-out'
                   }}
                 >
