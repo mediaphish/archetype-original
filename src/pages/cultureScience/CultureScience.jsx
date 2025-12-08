@@ -315,48 +315,174 @@ export default function CultureScience() {
         <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-12 sm:mb-16 font-serif tracking-tight text-balance">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance uppercase">
                 The Research Behind It (Explained in Human Words)
               </h2>
+              
+              <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16">
+                <p className="text-pretty">
+                  Culture Science is built on decades of research in organizational psychology, neuroscience, and leadership. Across hundreds of studies and many meta-analyses, the same themes show up again and again.
+                </p>
+              </div>
               
               <div className="space-y-12 sm:space-y-16">
                 {/* Research 1 */}
                 <div>
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    Psychological Safety — Dr. Amy Edmondson
+                    1. People need real safety to tell the truth.
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                    Teams that feel safe to speak up learn faster and adapt better. When people can ask questions, admit mistakes, and challenge ideas without fear, performance improves.
+                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
+                    Teams that feel safe to speak up, ask questions, and challenge ideas learn faster and perform better. Psychological safety is one of the strongest predictors of team learning, innovation, and adaptability.
                   </p>
+                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
+                    Representative research:
+                  </p>
+                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
+                    <li>
+                      <a href="https://www.hbs.edu/faculty/Publication%20Files/98-066_4446b0b4-2615-46df-8a2e-5f1e9bcfbd54.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Edmondson, "Psychological Safety and Learning Behavior in Work Teams"
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://psycnet.apa.org/record/2017-07055-001" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Frazier et al., Meta-analysis of psychological safety
+                      </a>
+                    </li>
+                  </ul>
                 </div>
                 
                 {/* Research 2 */}
                 <div>
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    Empathic Listening — Dr. Carl Rogers
+                    2. Healthy cultures balance demands with support.
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                    Listening to understand reduces reactivity and unlocks reasoning. When leaders truly hear what their teams are saying, better decisions follow.
+                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
+                    The Job Demands–Resources (JD-R) model shows that chronic overload without support drains motivation and leads to burnout. But when expectations, resources, autonomy, and feedback are aligned, people stay engaged and energized.
                   </p>
+                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
+                    Representative research:
+                  </p>
+                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
+                    <li>
+                      <a href="https://www.wilmarschaufeli.nl/publications/Schaufeli/350.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Bakker & Demerouti, "The Job Demands–Resources model"
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://journals.aom.org/doi/abs/10.5465/amj.2010.51468988" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Crawford et al., JD-R meta-analysis
+                      </a>
+                    </li>
+                  </ul>
                 </div>
                 
                 {/* Research 3 */}
                 <div>
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    The Neuroscience of Trust — Paul Zak
+                    3. Trust-centered leadership changes outcomes.
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                    Trust changes brain chemistry—lower cortisol, higher oxytocin, better performance. When people trust their leaders, they work harder, innovate more, and stay longer.
+                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
+                    Across large studies, trust-based and servant-minded leadership models consistently correlate with higher job performance, stronger commitment, and better service quality.
                   </p>
+                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
+                    Representative research:
+                  </p>
+                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
+                    <li>
+                      <a href="https://journals.sagepub.com/doi/10.1177/0149206314523836" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Hoch et al., Meta-analysis of servant leadership
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://journals.aom.org/doi/10.5465/amj.2002.5549658" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Dirks & Ferrin, Trust in leadership meta-analysis
+                      </a>
+                    </li>
+                  </ul>
                 </div>
                 
                 {/* Research 4 */}
                 <div>
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    Executive Isolation — Gallup
+                    4. Toxic leadership reliably breaks companies.
                   </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                    Leaders without a safe place to process make poorer decisions. Isolation leads to blind spots, and blind spots lead to cultural breakdown.
+                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
+                    Decades of research show that abusive, fear-driven, and narcissistic leadership causes burnout, stress, withdrawal behaviors, lower engagement, and higher turnover.
+                  </p>
+                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
+                    Representative research:
+                  </p>
+                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
+                    <li>
+                      <a href="https://journals.aom.org/doi/10.5465/AMJ.2000.3312921" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Tepper, "Consequences of Abusive Supervision"
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://www.tandfonline.com/doi/abs/10.1080/1359432X.2013.771812" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Schyns & Schilling, Destructive leadership meta-analysis
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                
+                {/* Research 5 */}
+                <div>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
+                    5. Engagement isn't a perk; it's an engine.
+                  </h3>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
+                    Global engagement studies confirm that engaged teams outperform disengaged teams—profitability, productivity, customer satisfaction, retention, safety, and quality all move in measurable ways.
+                  </p>
+                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
+                    Representative research:
+                  </p>
+                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
+                    <li>
+                      <a href="https://www.gallup.com/workplace/236927/state-american-workplace-report-2017.aspx" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Harter et al., Gallup engagement meta-analysis
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://psycnet.apa.org/record/2006-07939-003" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                        Saks, "Antecedents and Consequences of Employee Engagement"
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* What Archetype Original Does With All This Research */}
+              <div className="mt-16 sm:mt-20 md:mt-24 space-y-6 sm:space-y-8">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
+                  What Archetype Original Does With All This Research
+                </h3>
+                
+                <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                  <p className="text-pretty">
+                    Archetype Original translates decades of cross-disciplinary evidence into a practical system leaders can actually use:
+                  </p>
+                  
+                  <ul className="list-disc space-y-3 ml-6 marker:text-[#C85A3C]">
+                    <li>
+                      <span className="text-[#1A1A1A]">Culture Science organizes the patterns into early-warning indicators of cultural drift and risk.</span>
+                    </li>
+                    <li>
+                      <span className="text-[#1A1A1A]">The Archetype Leadership Index (ALI) turns trust, clarity, safety, and load-balance into measurable leadership signals.</span>
+                    </li>
+                    <li>
+                      <span className="text-[#1A1A1A]">
+                        <a href="/culture-science/anti-projects/scoreboard-leadership" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">Scoreboard Leadership</a> and our playbooks, that are in development, show leaders how to act on the data—shifting away from brittle, fear-based habits toward durable, servant-minded leadership.
+                      </span>
+                    </li>
+                  </ul>
+                  
+                  <p className="text-pretty font-semibold text-[#1A1A1A]">
+                    This isn't inspirational theory.
+                  </p>
+                  
+                  <p className="text-pretty">
+                    It's a framework grounded in a massive body of real research—distilled into tools that make cultures stronger, healthier, and more resilient.
                   </p>
                 </div>
               </div>
