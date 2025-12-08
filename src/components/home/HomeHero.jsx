@@ -109,7 +109,7 @@ export default function HomeHero() {
                 }}
               >
                 <img 
-                  src="/images/hero-layer-4.png" 
+                  src="/images/home-layer-4.png" 
                   alt="Bart" 
                   className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
                   onError={(e) => {
@@ -127,7 +127,7 @@ export default function HomeHero() {
                 }}
               >
                 <img 
-                  src="/images/hero-layer-3.png" 
+                  src="/images/home-layer-3.png" 
                   alt="Hi, I'm Bart! speech bubble" 
                   className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
                   onError={(e) => {
@@ -145,7 +145,7 @@ export default function HomeHero() {
                 }}
               >
                 <img 
-                  src="/images/hero-layer-2.png" 
+                  src="/images/home-layer-2.png" 
                   alt="Archy, the wise leadership guide" 
                   className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
                   onError={(e) => {
@@ -163,7 +163,7 @@ export default function HomeHero() {
                 }}
               >
                 <img 
-                  src="/images/hero-layer-1.png" 
+                  src="/images/home-layer-1.png" 
                   alt="And, I'm Archy! speech bubble" 
                   className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
                   onError={(e) => {
