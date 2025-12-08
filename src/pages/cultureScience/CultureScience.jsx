@@ -236,14 +236,11 @@ export default function CultureScience() {
               
               <div className="space-y-12 sm:space-y-16">
                 {/* Card 1 */}
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="flex-shrink-0 relative">
-                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
-                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
-                      1
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
+                <div className="relative pl-16 sm:pl-20 md:pl-24">
+                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
+                    1
+                  </span>
+                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       Leaders and teams experience culture differently
                     </h3>
@@ -254,14 +251,11 @@ export default function CultureScience() {
                 </div>
                 
                 {/* Card 2 */}
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="flex-shrink-0 relative">
-                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
-                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
-                      2
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
+                <div className="relative pl-16 sm:pl-20 md:pl-24">
+                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
+                    2
+                  </span>
+                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       Most companies measure performance but never measure leadership clarity
                     </h3>
@@ -280,14 +274,11 @@ export default function CultureScience() {
                 </div>
                 
                 {/* Card 3 */}
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="flex-shrink-0 relative">
-                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
-                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
-                      3
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
+                <div className="relative pl-16 sm:pl-20 md:pl-24">
+                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
+                    3
+                  </span>
+                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       People rarely tell leadership the truth
                     </h3>
@@ -298,14 +289,11 @@ export default function CultureScience() {
                 </div>
                 
                 {/* Card 4 */}
-                <div className="flex items-start gap-4 sm:gap-6">
-                  <div className="flex-shrink-0 relative">
-                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
-                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
-                      4
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
+                <div className="relative pl-16 sm:pl-20 md:pl-24">
+                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
+                    4
+                  </span>
+                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       Leaders don't lack desire. They lack a mirror
                     </h3>
