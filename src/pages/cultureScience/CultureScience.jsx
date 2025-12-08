@@ -234,80 +234,84 @@ export default function CultureScience() {
                 </h3>
               </div>
               
-              <div className="space-y-12 sm:space-y-16 md:space-y-20">
+              <div className="space-y-12 sm:space-y-16">
                 {/* Card 1 */}
-                <div className="pl-0 sm:pl-6 md:pl-8 border-l-[6px] border-[#C85A3C] relative">
-                  <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-                    <span className="text-[144px] sm:text-[160px] md:text-[192px] font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight absolute -left-4 md:-left-8 top-0">
+                <div className="flex items-start gap-4 sm:gap-6">
+                  <div className="flex-shrink-0 relative">
+                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
+                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
                       1
                     </span>
-                    <div className="flex-1 pl-0 md:pl-8">
-                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
-                        Leaders and teams experience culture differently
-                      </h3>
-                      <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                        Research shows this consistently. Leaders score culture higher than the people under them—every time.
-                      </p>
-                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
+                      Leaders and teams experience culture differently
+                    </h3>
+                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                      Research shows this consistently. Leaders score culture higher than the people under them—every time.
+                    </p>
                   </div>
                 </div>
                 
                 {/* Card 2 */}
-                <div className="pl-0 sm:pl-6 md:pl-8 border-l-[6px] border-[#C85A3C] relative">
-                  <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-                    <span className="text-[144px] sm:text-[160px] md:text-[192px] font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight absolute -left-4 md:-left-8 top-0">
+                <div className="flex items-start gap-4 sm:gap-6">
+                  <div className="flex-shrink-0 relative">
+                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
+                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
                       2
                     </span>
-                    <div className="flex-1 pl-0 md:pl-8">
-                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
-                        Most companies measure performance but never measure leadership clarity
-                      </h3>
-                      <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
-                        They track KPIs, revenue, and output. But not:
-                      </p>
-                      <ul className="list-disc list-inside space-y-2 ml-4 text-base sm:text-lg text-[#6B6B6B]">
-                        <li>Consistency</li>
-                        <li>Trust</li>
-                        <li>Communication quality</li>
-                        <li>Team psychological safety</li>
-                        <li>Operational clarity</li>
-                        <li>Expectations</li>
-                      </ul>
-                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
+                      Most companies measure performance but never measure leadership clarity
+                    </h3>
+                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4">
+                      They track KPIs, revenue, and output. But not:
+                    </p>
+                    <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg text-[#6B6B6B] marker:text-[#C85A3C]">
+                      <li><span className="text-[#1A1A1A]">Consistency</span></li>
+                      <li><span className="text-[#1A1A1A]">Trust</span></li>
+                      <li><span className="text-[#1A1A1A]">Communication quality</span></li>
+                      <li><span className="text-[#1A1A1A]">Team psychological safety</span></li>
+                      <li><span className="text-[#1A1A1A]">Operational clarity</span></li>
+                      <li><span className="text-[#1A1A1A]">Expectations</span></li>
+                    </ul>
                   </div>
                 </div>
                 
                 {/* Card 3 */}
-                <div className="pl-0 sm:pl-6 md:pl-8 border-l-[6px] border-[#C85A3C] relative">
-                  <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-                    <span className="text-[144px] sm:text-[160px] md:text-[192px] font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight absolute -left-4 md:-left-8 top-0">
+                <div className="flex items-start gap-4 sm:gap-6">
+                  <div className="flex-shrink-0 relative">
+                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
+                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
                       3
                     </span>
-                    <div className="flex-1 pl-0 md:pl-8">
-                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
-                        People rarely tell leadership the truth
-                      </h3>
-                      <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                        Without psychological safety, feedback is filtered, problems are hidden, and leaders make decisions with incomplete information.
-                      </p>
-                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
+                      People rarely tell leadership the truth
+                    </h3>
+                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                      Without psychological safety, feedback is filtered, problems are hidden, and leaders make decisions with incomplete information.
+                    </p>
                   </div>
                 </div>
                 
                 {/* Card 4 */}
-                <div className="pl-0 sm:pl-6 md:pl-8 border-l-[6px] border-[#C85A3C] relative">
-                  <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-                    <span className="text-[144px] sm:text-[160px] md:text-[192px] font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight absolute -left-4 md:-left-8 top-0">
+                <div className="flex items-start gap-4 sm:gap-6">
+                  <div className="flex-shrink-0 relative">
+                    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C]"></div>
+                    <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight block mt-2">
                       4
                     </span>
-                    <div className="flex-1 pl-0 md:pl-8">
-                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
-                        Leaders don't lack desire. They lack a mirror
-                      </h3>
-                      <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                        Most leaders want to lead well. They just don't have a clear picture of how their leadership actually feels to the people experiencing it.
-                      </p>
-                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
+                      Leaders don't lack desire. They lack a mirror
+                    </h3>
+                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                      Most leaders want to lead well. They just don't have a clear picture of how their leadership actually feels to the people experiencing it.
+                    </p>
                   </div>
                 </div>
               </div>
