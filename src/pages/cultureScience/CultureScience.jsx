@@ -85,48 +85,58 @@ export default function CultureScience() {
                 {/* Right: 3-Layer Parallax Science Lab */}
                 {!isMobile && (
                   <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1' }}>
-                    {/* Layer 1: Archy - Stays on ground (moves down slightly) */}
+                    {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
                     <div 
                       className="absolute inset-0 z-10"
                       style={{ 
-                        transform: `translateY(${scrollY * 0.02}px)`,
+                        transform: `translateY(${scrollY * 0.05}px)`,
                         transition: 'transform 0.1s ease-out'
                       }}
                     >
                       <img 
-                        src="/images/archy-avatar.png" 
-                        alt="Archy" 
-                        className="w-full h-full object-contain border-0"
+                        src="/images/science-layer-3.png" 
+                        alt="Culture Science Background" 
+                        className="w-full h-full object-contain"
                         onError={(e) => {
                           e.target.style.display = 'none';
                         }}
                       />
                     </div>
                     
-                    {/* Layer 2: Middle layer - Moves right slowly */}
+                    {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
                     <div 
                       className="absolute inset-0 z-20"
                       style={{ 
-                        transform: `translateX(${scrollY * 0.01}px)`,
+                        transform: `translateX(${scrollY * 0.08}px)`,
                         transition: 'transform 0.1s ease-out'
                       }}
                     >
-                      <div className="w-full h-full bg-[#FAFAF9] border border-[#1A1A1A]/10 flex items-center justify-center">
-                        <span className="text-[#6B6B6B] text-sm">Science Lab Layer 2</span>
-                      </div>
+                      <img 
+                        src="/images/science-layer-2.png" 
+                        alt="Culture Science Middle Layer" 
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
                     </div>
                     
-                    {/* Layer 3: Background - Moves down slowly */}
+                    {/* Layer 1: Archy - Moves HORIZONTALLY ONLY (grounded) */}
                     <div 
-                      className="absolute inset-0 z-0"
+                      className="absolute inset-0 z-30"
                       style={{ 
-                        transform: `translateY(${scrollY * 0.03}px)`,
+                        transform: `translateX(${scrollY * -0.15}px)`,
                         transition: 'transform 0.1s ease-out'
                       }}
                     >
-                      <div className="w-full h-full bg-[#6B6B6B]/5 flex items-center justify-center">
-                        <span className="text-[#6B6B6B] text-sm">Science Lab Layer 3</span>
-                      </div>
+                      <img 
+                        src="/images/science-layer-1.png" 
+                        alt="Archy" 
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
                     </div>
                   </div>
                 )}
@@ -134,9 +144,14 @@ export default function CultureScience() {
                 {/* Mobile: Static image */}
                 {isMobile && (
                   <div className="relative w-full max-w-lg mx-auto" style={{ aspectRatio: '1/1' }}>
-                    <div className="w-full h-full bg-[#FAFAF9] border border-[#1A1A1A]/10 flex items-center justify-center">
-                      <span className="text-[#6B6B6B] text-sm">Science Lab</span>
-                    </div>
+                    <img 
+                      src="/images/science-layer-1.png" 
+                      alt="Archy" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
                   </div>
                 )}
               </div>
