@@ -100,17 +100,17 @@ export default function HomeHero() {
           
             {/* Right Column: 4-Layer Parallax */}
             <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-first md:order-last mt-[-40px] sm:mt-0">
-              {/* Layer 4 (Back - Bart character): Moves horizontally with slight vertical movement */}
+              {/* Layer 4 (Back - Archy's speech bubble): Moves up at different pace than Bart's bubble */}
               <div 
                 className="absolute inset-0 z-10 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.05}px, ${scrollY * 0.02}px)`,
+                  transform: isMobile ? 'translate(0, 0)' : `translate(0, ${scrollY * -0.03}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
                 <img 
                   src="/images/home-layer-4.png" 
-                  alt="Bart" 
+                  alt="Archy's speech bubble" 
                   className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -118,11 +118,11 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 3 (Second middle - "Hi, I'm Bart!" speech bubble): Reduced movement */}
+              {/* Layer 3 (Second middle - Bart's speech bubble): Moves up and right slowly */}
               <div 
                 className="absolute inset-0 z-20 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * -0.04}px, ${scrollY * 0.02}px)`,
+                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.02}px, ${scrollY * -0.04}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
@@ -136,11 +136,11 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 2 (First middle - Archy character): Moves horizontally with slight vertical movement */}
+              {/* Layer 2 (First middle - Archy character): Moves left, slower and less distance */}
               <div 
                 className="absolute inset-0 z-30 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * -0.12}px, ${scrollY * -0.02}px)`,
+                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.06}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
@@ -154,11 +154,11 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 1 (Front - "And, I'm Archy!" speech bubble): Slower horizontal movement */}
+              {/* Layer 1 (Front - Bart character): Moves right, slower and less distance */}
               <div 
                 className="absolute inset-0 z-40 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.06}px, ${scrollY * -0.04}px)`,
+                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * 0.03}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
