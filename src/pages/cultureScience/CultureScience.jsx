@@ -35,125 +35,126 @@ export default function CultureScience() {
       <SEO pageKey="culture-science" />
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section with 3-Layer Parallax */}
-        <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white relative overflow-hidden">
+        <section className="w-full bg-[#FAFAF9] py-20 sm:py-24 md:py-28 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                {/* Left Content */}
-                <div>
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                    Culture Science for Small Business
-                  </h1>
-                  
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                    Where leadership, behavioral research, and lived experience converge.
-                  </h2>
-                  
-                  <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                    <p className="text-pretty">
-                      Most leaders don't see the gap between how they think they lead and how their teams actually experience leadership. They measure performance, track KPIs, and celebrate wins—but they rarely measure the thing that makes everything else possible: leadership clarity.
-                    </p>
-                    
-                    <p className="text-pretty">
-                      Culture Science exists to change that. It's where 32 years of building companies meets behavioral research, trust psychology, and the lived experience of thousands of leaders and teams.
-                    </p>
-                    
-                    <p className="text-pretty">
-                      This isn't another engagement survey. It's not a personality test. It's evidence-based culture measurement designed specifically for small and mid-sized businesses—the companies that don't have HR departments, consultants on retainer, or culture committees.
-                    </p>
-                    
-                    <p className="text-pretty">
-                      Culture Science measures what matters: How clear is leadership? How safe do people feel? How much trust exists? How well do teams communicate? These aren't soft metrics. They're the foundation of everything else.
-                    </p>
-                    
-                    <p className="text-pretty">
-                      The research is clear: Psychological safety drives performance. Trust unlocks innovation. Clarity removes friction. When leaders get these right, teams stop surviving and start creating.
-                    </p>
-                    
-                    <p className="text-pretty">
-                      Culture Science exists to change that.
-                    </p>
-                    
-                    <blockquote className="my-10 sm:my-12 pl-6 sm:pl-8 border-l-4 border-[#C85A3C]">
-                      <p className="text-xl sm:text-2xl md:text-3xl italic font-serif text-[#1A1A1A] leading-tight">
-                        Most leaders don't see the gap between how they think they lead and how their teams actually experience leadership.
-                      </p>
-                    </blockquote>
-                  </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+              {/* Left Content */}
+              <div>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
+                  Culture Science for Small Business
+                </h1>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-light leading-snug text-[#1A1A1A]">
+                  Where leadership, behavioral research, and lived experience converge.
+                </p>
+              </div>
+              
+              {/* Right: 3-Layer Parallax (Desktop Only) */}
+              <div className="relative h-[500px] hidden lg:block">
+                {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
+                <div 
+                  className="absolute inset-0 z-10"
+                  style={{ 
+                    transform: `translateY(${scrollY * 0.05}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/science-layer-3.png" 
+                    alt="Culture Science Background" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
                 </div>
                 
-                {/* Right: 3-Layer Parallax Science Lab */}
-                {!isMobile && (
-                  <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0" style={{ aspectRatio: '1/1' }}>
-                    {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
-                    <div 
-                      className="absolute inset-0 z-10"
-                      style={{ 
-                        transform: `translateY(${scrollY * 0.05}px)`,
-                        transition: 'transform 0.1s ease-out'
-                      }}
-                    >
-                      <img 
-                        src="/images/science-layer-3.png" 
-                        alt="Culture Science Background" 
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                    
-                    {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
-                    <div 
-                      className="absolute inset-0 z-20"
-                      style={{ 
-                        transform: `translateX(${scrollY * 0.08}px)`,
-                        transition: 'transform 0.1s ease-out'
-                      }}
-                    >
-                      <img 
-                        src="/images/science-layer-2.png" 
-                        alt="Culture Science Middle Layer" 
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                    
-                    {/* Layer 1: Archy - Moves HORIZONTALLY ONLY (grounded) */}
-                    <div 
-                      className="absolute inset-0 z-30"
-                      style={{ 
-                        transform: `translateX(${scrollY * -0.15}px)`,
-                        transition: 'transform 0.1s ease-out'
-                      }}
-                    >
-                      <img 
-                        src="/images/science-layer-1.png" 
-                        alt="Archy" 
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
+                {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
+                <div 
+                  className="absolute inset-0 z-20"
+                  style={{ 
+                    transform: `translateX(${scrollY * 0.08}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/science-layer-2.png" 
+                    alt="Culture Science Middle Layer" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
                 
-                {/* Mobile: Static image */}
-                {isMobile && (
-                  <div className="relative w-full max-w-lg mx-auto" style={{ aspectRatio: '1/1' }}>
-                    <img 
-                      src="/images/science-layer-1.png" 
-                      alt="Archy" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
+                {/* Layer 1: Archy - Moves HORIZONTALLY ONLY (grounded) */}
+                <div 
+                  className="absolute inset-0 z-30"
+                  style={{ 
+                    transform: `translateX(${scrollY * -0.15}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/science-layer-1.png" 
+                    alt="Archy" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+              
+              {/* Mobile: Static image */}
+              {isMobile && (
+                <div className="relative w-full max-w-lg mx-auto lg:hidden" style={{ aspectRatio: '1/1' }}>
+                  <img 
+                    src="/images/science-layer-1.png" 
+                    alt="Archy" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+              
+            </div>
+          </div>
+        </section>
+
+        {/* First Content Section */}
+        <section className="py-16 sm:py-24 md:py-32 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
+                <p className="text-pretty">
+                  Most leaders don't see the gap between how they think they lead and how their teams actually experience leadership. They measure performance, track KPIs, and celebrate wins—but they rarely measure the thing that makes everything else possible: leadership clarity.
+                </p>
+                
+                <p className="text-pretty">
+                  Culture Science exists to change that. It's where 32 years of building companies meets behavioral research, trust psychology, and the lived experience of thousands of leaders and teams.
+                </p>
+                
+                <p className="text-pretty">
+                  This isn't another engagement survey. It's not a personality test. It's evidence-based culture measurement designed specifically for small and mid-sized businesses—the companies that don't have HR departments, consultants on retainer, or culture committees.
+                </p>
+                
+                <p className="text-pretty">
+                  Culture Science measures what matters: How clear is leadership? How safe do people feel? How much trust exists? How well do teams communicate? These aren't soft metrics. They're the foundation of everything else.
+                </p>
+                
+                <p className="text-pretty">
+                  The research is clear: Psychological safety drives performance. Trust unlocks innovation. Clarity removes friction. When leaders get these right, teams stop surviving and start creating.
+                </p>
+                
+                <p className="text-pretty">
+                  Culture Science exists to change that.
+                </p>
+                
+                <p className="text-pretty">
+                  Most leaders don't see the gap between how they think they lead and how their teams actually experience leadership.
+                </p>
               </div>
             </div>
           </div>
