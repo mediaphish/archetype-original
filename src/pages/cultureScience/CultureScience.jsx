@@ -304,7 +304,7 @@ export default function CultureScience() {
                 </div>
               </div>
               
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mt-12 sm:mt-16 text-pretty">
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A1A] leading-relaxed mt-12 sm:mt-16 text-pretty">
                 Culture Science builds that mirror.
               </p>
             </div>
