@@ -98,19 +98,19 @@ export default function HomeHero() {
               </div>
             </div>
           
-            {/* Right Column: Parallax Archy Images */}
+            {/* Right Column: 4-Layer Parallax */}
             <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-first md:order-last mt-[-40px] sm:mt-0">
-              {/* Layer 2 (Back layer - speech bubble): Moves DOWN on scroll */}
+              {/* Layer 4 (Back - Bart character): Moves HORIZONTALLY ONLY (grounded) */}
               <div 
                 className="absolute inset-0 z-10 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translateY(0)' : `translateY(${scrollY * 0.03}px)`,
+                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * 0.05}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
                 <img 
-                  src="/images/hero-layer-2.png" 
-                  alt="Hi, I'm Archy speech bubble" 
+                  src="/images/hero-layer-4.png" 
+                  alt="Bart" 
                   className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -118,17 +118,53 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 1 (Front layer - Archy character): Moves HORIZONTALLY ONLY (grounded) */}
+              {/* Layer 3 (Second middle - "Hi, I'm Bart!" speech bubble): Can move any direction for depth */}
               <div 
                 className="absolute inset-0 z-20 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.15}px)`,
+                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * -0.08}px, ${scrollY * 0.04}px)`,
+                  transition: 'transform 0.1s ease-out'
+                }}
+              >
+                <img 
+                  src="/images/hero-layer-3.png" 
+                  alt="Hi, I'm Bart! speech bubble" 
+                  className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+              
+              {/* Layer 2 (First middle - Archy character): Moves HORIZONTALLY ONLY (grounded) */}
+              <div 
+                className="absolute inset-0 z-30 flex items-center justify-center"
+                style={{ 
+                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.12}px)`,
+                  transition: 'transform 0.1s ease-out'
+                }}
+              >
+                <img 
+                  src="/images/hero-layer-2.png" 
+                  alt="Archy, the wise leadership guide" 
+                  className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+              
+              {/* Layer 1 (Front - "And, I'm Archy!" speech bubble): Can move any direction for depth */}
+              <div 
+                className="absolute inset-0 z-40 flex items-center justify-center"
+                style={{ 
+                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.15}px, ${scrollY * -0.06}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
                 <img 
                   src="/images/hero-layer-1.png" 
-                  alt="Archy, the wise leadership guide" 
+                  alt="And, I'm Archy! speech bubble" 
                   className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
