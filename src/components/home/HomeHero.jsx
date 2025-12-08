@@ -100,11 +100,11 @@ export default function HomeHero() {
           
             {/* Right Column: 4-Layer Parallax */}
             <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-first md:order-last mt-[-40px] sm:mt-0">
-              {/* Layer 4 (Back - Bart character): Moves HORIZONTALLY ONLY (grounded) */}
+              {/* Layer 4 (Back - Bart character): Moves horizontally with slight vertical movement */}
               <div 
                 className="absolute inset-0 z-10 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * 0.05}px)`,
+                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.05}px, ${scrollY * 0.02}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
@@ -118,11 +118,11 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 3 (Second middle - "Hi, I'm Bart!" speech bubble): Can move any direction for depth */}
+              {/* Layer 3 (Second middle - "Hi, I'm Bart!" speech bubble): Reduced movement */}
               <div 
                 className="absolute inset-0 z-20 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * -0.08}px, ${scrollY * 0.04}px)`,
+                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * -0.04}px, ${scrollY * 0.02}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
@@ -136,11 +136,11 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 2 (First middle - Archy character): Moves HORIZONTALLY ONLY (grounded) */}
+              {/* Layer 2 (First middle - Archy character): Moves horizontally with slight vertical movement */}
               <div 
                 className="absolute inset-0 z-30 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.12}px)`,
+                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * -0.12}px, ${scrollY * -0.02}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
@@ -154,11 +154,11 @@ export default function HomeHero() {
                 />
               </div>
               
-              {/* Layer 1 (Front - "And, I'm Archy!" speech bubble): Can move any direction for depth */}
+              {/* Layer 1 (Front - "And, I'm Archy!" speech bubble): Slower horizontal movement */}
               <div 
                 className="absolute inset-0 z-40 flex items-center justify-center"
                 style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.15}px, ${scrollY * -0.06}px)`,
+                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.06}px, ${scrollY * -0.04}px)`,
                   transition: 'transform 0.1s ease-out'
                 }}
               >
