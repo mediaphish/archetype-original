@@ -8,11 +8,35 @@
  *   }
  * }
  */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
 
 export default function Consulting() {
+  const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint - disable parallax on mobile
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    const handleScroll = () => {
+      if (!isMobile) {
+        setScrollY(window.scrollY);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, [isMobile]);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -30,16 +54,90 @@ export default function Consulting() {
       </Helmet>
       
       <div className="min-h-screen bg-[#FAFAF9]">
-        {/* Hero Section */}
-        <section className="w-full bg-[#FAFAF9] py-20 sm:py-24 md:py-28">
+        {/* Hero Section with Parallax */}
+        <section className="w-full bg-[#FAFAF9] py-20 sm:py-24 md:py-28 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
-                Consulting
-              </h1>
-              <p className="text-xl sm:text-2xl font-light leading-relaxed text-[#1A1A1A]">
-                Real solutions for real organizations. No frameworks. No fluff. Just clarity, alignment, and the work required to move forward.
-              </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+              {/* Left Content */}
+              <div>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
+                  Consulting
+                </h1>
+                <p className="text-xl sm:text-2xl md:text-3xl font-light leading-snug text-[#1A1A1A]">
+                  Real solutions for real organizations. No frameworks. No fluff. Just clarity, alignment, and the work required to move forward.
+                </p>
+              </div>
+              
+              {/* Right: 3-Layer Parallax (Desktop Only) */}
+              <div className="relative h-[500px] hidden lg:block">
+                {/* Layer 3 (Back): Can move any direction for depth */}
+                <div 
+                  className="absolute inset-0 z-10 flex items-center justify-center"
+                  style={{ 
+                    transform: isMobile ? 'translate(0, 0)' : `translate(0, ${scrollY * -0.03}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/consulting-layer-3.png" 
+                    alt="Consulting Background" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                {/* Layer 2 (Middle - Character): Moves HORIZONTALLY ONLY (grounded) */}
+                <div 
+                  className="absolute inset-0 z-20 flex items-center justify-center"
+                  style={{ 
+                    transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.06}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/consulting-layer-2.png" 
+                    alt="Bart" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                {/* Layer 1 (Front): Can move any direction for depth */}
+                <div 
+                  className="absolute inset-0 z-30 flex items-center justify-center"
+                  style={{ 
+                    transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.03}px, ${scrollY * -0.04}px)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  <img 
+                    src="/images/consulting-layer-1.png" 
+                    alt="Consulting Foreground" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+              
+              {/* Mobile: Static image */}
+              {isMobile && (
+                <div className="relative w-full max-w-lg mx-auto lg:hidden" style={{ aspectRatio: '1/1' }}>
+                  <img 
+                    src="/images/consulting-layer-2.png" 
+                    alt="Bart" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </section>
