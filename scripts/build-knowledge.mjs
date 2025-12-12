@@ -8,6 +8,7 @@ import matter from 'gray-matter';
 
 const KNOWLEDGE_DIR = 'ao-knowledge-hq-kit/knowledge';
 const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
+const FAQ_DIR = 'ao-knowledge-hq-kit/faqs';
 const OUTPUT_FILE = 'public/knowledge.json';
 
 // Recursively find all markdown files
@@ -312,6 +313,62 @@ async function buildKnowledgeCorpus() {
     console.log(`   ⏰ Future posts: ${futurePosts}`);
     console.log(`   ⏭️  Skipped: ${skippedCount}`);
     console.log(`   ❌ Errors: ${errorCount}`);
+  }
+  
+  // Process FAQs
+  if (fs.existsSync(FAQ_DIR)) {
+    console.log(`\n❓ Processing FAQs...`);
+    const faqFiles = findMarkdownFiles(FAQ_DIR);
+    console.log(`📋 Found ${faqFiles.length} FAQ files`);
+    
+    let faqProcessed = 0;
+    let faqSkipped = 0;
+    
+    for (const filePath of faqFiles) {
+      try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        const { data: frontmatter, content: body } = matter(content);
+        
+        // Only process published FAQs
+        if (frontmatter.status !== 'published') {
+          console.log(`⏭️  Skipping draft FAQ: ${frontmatter.title || path.basename(filePath)}`);
+          faqSkipped++;
+          continue;
+        }
+        
+        const slug = frontmatter.slug || path.basename(filePath, '.md');
+        
+        const faqDoc = {
+          title: frontmatter.title || 'Untitled FAQ',
+          slug: slug,
+          type: 'faq',
+          tags: frontmatter.tags || frontmatter.categories || [],
+          categories: frontmatter.categories || [],
+          status: frontmatter.status || 'published',
+          created_at: frontmatter.created_at || new Date().toISOString(),
+          updated_at: frontmatter.updated_at || new Date().toISOString(),
+          summary: frontmatter.summary || (body ? body.substring(0, 200).trim() + '...' : ''),
+          featured: frontmatter.featured || false,
+          featured_on: frontmatter.featured_on || [],
+          source: {
+            kind: 'faq',
+            original_source: 'site-content'
+          },
+          body: body ? body.trim() : ''
+        };
+        
+        docs.push(faqDoc);
+        faqProcessed++;
+        console.log(`✅ Processed FAQ: ${frontmatter.title || slug}`);
+      } catch (error) {
+        faqSkipped++;
+        console.error(`❌ Error processing FAQ ${path.basename(filePath)}:`, error.message);
+      }
+    }
+    
+    console.log(`📊 FAQ Processing Summary:`);
+    console.log(`   ✅ Published: ${faqProcessed}`);
+    console.log(`   ⏭️  Skipped: ${faqSkipped}`);
   }
   
   // Sort by updated_at (newest first)
