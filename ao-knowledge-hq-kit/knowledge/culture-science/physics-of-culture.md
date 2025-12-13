@@ -1,26 +1,28 @@
 ---
 title: "Section 3 — The Physics of Culture"
-slug: "physics-of-culture"
+slug: physics-of-culture
 type: culture-science
-tags: ["culture-science", "ali", "leadership", "cultural-physics", "drift", "stability"]
+tags:
+  - culture-science
+  - culture science
+  - leadership
+  - cultural physics
+  - drift
+  - stability
+  - section-3
 status: final
-created_at: "2026-01-03"
-updated_at: "2026-01-03"
+created_at: "2025-12-12"
+updated_at: "2025-12-12"
 summary: >
-  Culture behaves like physics, not philosophy. It responds to forces (pressure, clarity, trust, responsibility, information, support, leadership presence) according to predictable laws. Every culture has momentum (positive or negative), resistance (which signals instability), and pressure that must transfer somewhere. Cultures seek equilibrium around dominant leadership patterns, and cultural movement is predictable—when clarity weakens, confusion spreads; when trust erodes, self-protection grows.
+  Canonical Culture Science content for the Archetype Original corpus.
 source:
   kind: internal
 takeaways:
-  - Culture has momentum—positive or negative—that determines how much effort is needed to shift it
-  - Resistance is physics, not personal—it signals something is unclear, misaligned, too heavy, or destabilizing
-  - Pressure always moves somewhere—in healthy systems intentionally, in unhealthy systems chaotically
-  - Culture seeks equilibrium around whatever leadership pattern is most consistent
-  - Cultural movement is predictable—understanding physics allows forecasting and prevention
+  - This file preserves the full canonical text for this section.
+  - It is the doctrine-level reference for Culture Science.
 applications:
-  - Leaders should read resistance as diagnostic information, not threats
-  - Pressure must be managed intentionally—leaders absorb it first, clarify expectations, distribute fairly
-  - Leaders can forecast culture by understanding the physics of forces
-  - Healthy equilibrium must be actively built to replace unhealthy patterns
+  - Use as source-of-truth content when building Culture Science tools, training, and products.
+  - Reference when generating articles, curriculum, or product copy related to this section.
 related:
   - foundations-of-leadership-reality
   - drift-how-cultures-move
@@ -167,7 +169,7 @@ When responsibility is unclear → resentment appears.
 
 These movements follow stable laws of human behavior.
 
-You don't need to guess what will happen when a force moves — you can predict it.
+You don’t need to guess what will happen when a force moves — you can predict it.
 
 This is where Culture Science gives leaders a structural advantage:
 
@@ -196,4 +198,3 @@ When leaders understand the physics behind culture, they no longer react to symp
 they manage the forces that created them.
 
 This section sets the stage for Section 4: **Drift — How Cultures Move Without Permission**, where these physics turn into long-term patterns of deterioration (and how to stop them).
-

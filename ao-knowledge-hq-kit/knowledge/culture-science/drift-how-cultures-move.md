@@ -1,26 +1,28 @@
 ---
 title: "Section 4 — Drift: How Cultures Move Without Permission"
-slug: "drift-how-cultures-move"
+slug: drift-how-cultures-move
 type: culture-science
-tags: ["culture-science", "ali", "drift", "leadership", "instability", "environmental-forces"]
+tags:
+  - culture-science
+  - culture science
+  - drift
+  - leadership
+  - instability
+  - environmental forces
+  - section-4
 status: final
-created_at: "2026-01-04"
-updated_at: "2026-01-04"
+created_at: "2025-12-12"
+updated_at: "2025-12-12"
 summary: >
-  Drift is the silent destroyer of culture—slow, subtle, and cumulative. It begins with micro-movements (tone changes, delayed communication, unclear decisions) that create patterns, which become environmental, which become culture. Drift follows four predictable paths: toward confusion, pressure overload, trust erosion, or misalignment. It accelerates when leaders lose bandwidth and grows in silence. By the time drift becomes visible, it has already destabilized the environment.
+  Canonical Culture Science content for the Archetype Original corpus.
 source:
   kind: internal
 takeaways:
-  - Drift begins with micro-movements that seem harmless but are cumulative
-  - Drift follows four predictable paths: confusion, pressure overload, trust erosion, misalignment
-  - Drift accelerates when leaders lose bandwidth and stop stabilizing the environment
-  - Drift grows in silence—absence of communication doesn't mean everything is fine
-  - By the time drift is visible, it has already destabilized the environment
+  - This file preserves the full canonical text for this section.
+  - It is the doctrine-level reference for Culture Science.
 applications:
-  - Leaders must actively stabilize the environment—drift happens automatically without intervention
-  - Silence should be treated as a warning signal, not success
-  - Leaders must maintain bandwidth to prevent drift acceleration
-  - Early warning signals must be identified and addressed before drift matures
+  - Use as source-of-truth content when building Culture Science tools, training, and products.
+  - Reference when generating articles, curriculum, or product copy related to this section.
 related:
   - physics-of-culture
   - instability-patterns-failure-modes
@@ -102,7 +104,7 @@ Pressure overload happens when:
 
 The culture becomes survival-based.  
 Execution turns reactive.  
-People stop bringing problems forward because "everyone is already overwhelmed."
+People stop bringing problems forward because “everyone is already overwhelmed.”
 
 ---
 
@@ -176,13 +178,13 @@ Drift fills every empty space where leadership bandwidth once existed.
 
 Drift multiplies wherever truth is avoided.
 
-People don't want to burden the leader.  
-Teams don't want to seem dramatic.  
+People don’t want to burden the leader.  
+Teams don’t want to seem dramatic.  
 Problems feel too small to mention.  
 Leaders misread silence as stability.  
 Employees normalize unhealthy patterns.
 
-Silence is drift's natural habitat.
+Silence is drift’s natural habitat.
 
 The absence of upward communication does not mean everything is fine.  
 It means drift has become familiar enough that people stopped expecting improvement.
@@ -240,4 +242,3 @@ Drift is not mysterious.
 It is predictable, measurable, and preventable.
 
 This prepares the way for Section 5: **Instability Patterns and Failure Modes**, where we examine the structural consequences of prolonged drift.
-

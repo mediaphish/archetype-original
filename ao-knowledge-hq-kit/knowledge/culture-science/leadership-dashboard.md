@@ -1,31 +1,30 @@
 ---
 title: "Section 6 — The Leadership Dashboard"
-slug: "leadership-dashboard"
+slug: leadership-dashboard
 type: culture-science
-tags: ["culture-science", "ali", "leadership-dashboard", "measurement", "environmental-forces", "leadership-clarity"]
+tags:
+  - culture-science
+  - culture science
+  - leadership dashboard
+  - measurement
+  - environmental forces
+  - leadership clarity
+  - section-6
 status: final
-created_at: "2026-01-06"
-updated_at: "2026-01-06"
+created_at: "2025-12-12"
+updated_at: "2025-12-12"
 summary: >
-  The Leadership Dashboard is the instrument panel of Culture Science—a navigation tool that tracks six core environmental forces (Clarity, Trust, Alignment, Pressure, Support, Responsibility) and shows leaders where movement is happening before symptoms appear. It measures patterns, not people, separating symptoms from causes and providing clear intervention paths. The Dashboard creates accountability without fear by focusing on structural forces rather than individual blame.
+  Canonical Culture Science content for the Archetype Original corpus.
 source:
   kind: internal
 takeaways:
-  - The Dashboard tracks environmental forces, not individual behavior
-  - Leaders are the last to feel instability—the Dashboard closes that gap
-  - The Dashboard is a navigation tool, not a scorecard (green/red/yellow thinking is rejected)
-  - The Dashboard separates symptoms from causes, exposing movement before symptoms appear
-  - The Dashboard measures patterns, not people—protecting confidentiality and emotional safety
-  - The Dashboard provides clear intervention paths for each force
-  - Accountability becomes structural (forces must be corrected) rather than emotional (people blamed)
+  - This file preserves the full canonical text for this section.
+  - It is the doctrine-level reference for Culture Science.
 applications:
-  - Leaders must read the Dashboard like an instrument panel, not a scorecard
-  - Movement requires investigation, not judgment
-  - The Dashboard shows current state, direction of movement, rate of change, pressure points, and intervention priority
-  - The Dashboard shifts conversation from "Who is causing the problem?" to "What force is destabilizing the environment?"
+  - Use as source-of-truth content when building Culture Science tools, training, and products.
+  - Reference when generating articles, curriculum, or product copy related to this section.
 related:
   - instability-patterns-failure-modes
-  - ali-diagnostic-part-1
 ---
 
 # Section 6 — The Leadership Dashboard (Doctrine-Level)
@@ -118,10 +117,10 @@ But Culture Science rejects that thinking.
 The Dashboard is not a grading tool.  
 It is a **navigation tool**.
 
-A low trust reading does not mean "trust is bad."  
+A low trust reading does not mean “trust is bad.”  
 It means trust is **moving**, and movement requires investigation.
 
-A rising pressure reading does not mean "pressure is wrong."  
+A rising pressure reading does not mean “pressure is wrong.”  
 It means pressure is **concentrating**, and concentration requires redistribution or stabilization.
 
 The Dashboard tells leaders:
@@ -185,9 +184,9 @@ They feel supported because:
 
 The Dashboard shifts the conversation from:
 
-"Who is causing the problem?"  
+“Who is causing the problem?”  
 to  
-"What force is destabilizing the environment?"
+“What force is destabilizing the environment?”
 
 This is leadership maturity.
 
@@ -228,9 +227,9 @@ The Dashboard provides precise, early direction.
 
 Traditional performance systems create fear:
 
-- "Who is to blame?"  
-- "Who underperformed?"  
-- "Who caused this problem?"  
+- “Who is to blame?”  
+- “Who underperformed?”  
+- “Who caused this problem?”  
 
 The Dashboard eliminates those questions.
 
@@ -269,4 +268,3 @@ It replaces emotion with structure.
 It stabilizes the environment by making the invisible visible.
 
 This completes Section 6 and prepares the way for Section 7 — **The ALI Diagnostic**, the full measurement engine behind the Dashboard.
-
