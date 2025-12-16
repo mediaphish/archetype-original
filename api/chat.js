@@ -636,15 +636,51 @@ Respond with ONLY a JSON object:
           console.log('Question detected as not valuable - no notification sent:', message.substring(0, 50));
         }
         
-        // Check for escalation triggers - be much more specific and don't escalate basic questions
-        const escalationKeywords = ['crisis', 'urgent', 'conflict', 'failure', 'book', 'workshop', 'keynote', 'schedule', 'meeting', 'consulting', 'coaching', 'speak', 'presentation', 'mentorship', 'proposal'];
-        const basicQuestionWords = ['who is', 'what is', 'tell me about', 'can he help', 'how does', 'what are', 'explain'];
-        const isBasicQuestion = basicQuestionWords.some(word => message.toLowerCase().includes(word));
-        
-        // Only escalate for high-intent requests, not basic questions
-        const shouldOfferEscalation = escalationKeywords.some(keyword => 
-          message.toLowerCase().includes(keyword) || response.toLowerCase().includes('handoff')
-        ) && !isBasicQuestion && !isDarkHours;
+        // AI-driven escalation decision - let the AI determine if contact should be offered
+        let shouldOfferEscalation = false;
+
+        if (!isDarkHours && !cannotAnswer) {
+          try {
+            const escalationCheck = await openai.chat.completions.create({
+              model: "gpt-4o-mini",
+              messages: [
+                {
+                  role: "system",
+                  content: `You are evaluating whether to offer a user direct contact with Bart Paden. 
+Answer ONLY "yes" or "no".
+
+Offer contact ONLY if:
+- User explicitly requests to schedule, meet, hire, or work with Bart
+- User has a specific business need that requires human conversation (consulting, speaking engagement, proposal)
+- User expresses frustration that the AI cannot help them
+
+Do NOT offer contact if:
+- User is asking informational questions (about the book, philosophy, methods, etc.)
+- User is exploring or learning
+- User just started the conversation
+- The AI successfully answered their question`
+                },
+                {
+                  role: "user",
+                  content: `User's message: "${message}"
+
+AI's response: "${response}"
+
+Conversation length: ${conversationHistory.length} messages
+
+Should we offer direct contact with Bart?`
+                }
+              ],
+              max_tokens: 10,
+              temperature: 0
+            });
+            
+            shouldOfferEscalation = escalationCheck.choices[0]?.message?.content?.toLowerCase().includes('yes');
+          } catch (err) {
+            console.error('Escalation check failed:', err);
+            shouldOfferEscalation = false;
+          }
+        }
 
         // Store conversation in Supabase (legacy table)
         if (sessionId) {
