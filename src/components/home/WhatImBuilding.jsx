@@ -31,10 +31,16 @@ export default function WhatImBuilding() {
           <div className="max-w-7xl mx-auto space-y-16 sm:space-y-20 md:space-y-24">
             {/* PILLAR 01: Culture Science */}
             <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
-              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">01</div>
-              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
-                Culture Science
-              </h3>
+              <div className="relative mb-6 sm:mb-8">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  01
+                </div>
+                <div className="relative z-10">
+                  <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] leading-tight">
+                    Culture Science
+                  </h3>
+                </div>
+              </div>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
                 The research engine behind Archetype Original. Culture Science brings together psychology, behavior, communication, trust physiology, organizational clarity, and environmental patterns into a usable discipline. This is where the Archetype Leadership Index (ALI), Scoreboard Leadership, and The Bad Leader Project live.
               </p>
@@ -49,10 +55,16 @@ export default function WhatImBuilding() {
 
             {/* PILLAR 02: Mentorship */}
             <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
-              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">02</div>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
-                Mentorship
-              </h3>
+              <div className="relative mb-6 sm:mb-8">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  02
+                </div>
+                <div className="relative z-10">
+                  <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] leading-tight">
+                    Mentorship
+                  </h3>
+                </div>
+              </div>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
                 Clarity, courage, responsibility, and adaptive support for leaders at every stage — from rising leaders to seasoned executives. This is real-time leadership development grounded in lived experience, not programs or scripts.
               </p>
@@ -67,10 +79,16 @@ export default function WhatImBuilding() {
 
             {/* PILLAR 03: Consulting */}
             <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
-              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">03</div>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
-                Consulting
-              </h3>
+              <div className="relative mb-6 sm:mb-8">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  03
+                </div>
+                <div className="relative z-10">
+                  <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] leading-tight">
+                    Consulting
+                  </h3>
+                </div>
+              </div>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
                 Clarity for teams. Alignment for organizations. Cultural repair, operational steadiness, communication systems, and leadership behavior calibrated to support real growth. When clarity is missing, consulting brings it back.
               </p>
@@ -85,10 +103,16 @@ export default function WhatImBuilding() {
 
             {/* PILLAR 04: Training & Education */}
             <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
-              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">04</div>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
-                Training & Education
-              </h3>
+              <div className="relative mb-6 sm:mb-8">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  04
+                </div>
+                <div className="relative z-10">
+                  <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] leading-tight">
+                    Training & Education
+                  </h3>
+                </div>
+              </div>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
                 Workshops, playbooks, and leadership curriculum rooted in experience and backed by research. For leaders, teams, and emerging talent who need clarity they can actually apply the next day.
               </p>
@@ -103,10 +127,16 @@ export default function WhatImBuilding() {
 
             {/* PILLAR 05: Speaking & Seminars */}
             <div className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 md:pl-12">
-              <div className="text-[#C85A3C] font-bold text-xl sm:text-2xl mb-4">05</div>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight">
-                Speaking & Seminars
-              </h3>
+              <div className="relative mb-6 sm:mb-8">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  05
+                </div>
+                <div className="relative z-10">
+                  <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] leading-tight">
+                    Speaking & Seminars
+                  </h3>
+                </div>
+              </div>
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
                 Leadership in the room — not a performance on a stage. Talks, seminars, workshops, and intensives built around clarity, steadiness, and lived truth instead of hype or theatrics.
               </p>
