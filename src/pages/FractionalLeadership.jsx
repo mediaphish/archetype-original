@@ -2,25 +2,38 @@ import React from 'react';
 
 export default function FractionalLeadership() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 pt-20">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Back button */}
-        <div className="mb-8">
-          <a 
-            href="/" 
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Home
-          </a>
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12">
+          <div className="max-w-5xl mx-auto text-center space-y-8">
+            <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+              Fractional Leadership
+            </h1>
+          </div>
         </div>
+      </section>
 
-        {/* Page content */}
-        <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6">Fractional Leadership</h1>
+      {/* Content Section */}
+      <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12">
+          <div className="max-w-4xl mx-auto">
+            {/* Back button */}
+            <div className="mb-8">
+              <a 
+                href="/" 
+                className="inline-flex items-center text-[#1A1A1A]/70 hover:text-[#1A1A1A] transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Home
+              </a>
+            </div>
+
+            {/* Page content */}
+            <article className="bg-white rounded-lg shadow-sm border border-[#1A1A1A]/10 overflow-hidden">
+              <div className="p-8">
             
             {/* PLACEHOLDER CONTENT - Replace with ChatGPT generated content */}
             <div className="prose prose-lg max-w-none">
@@ -43,7 +56,9 @@ export default function FractionalLeadership() {
             </div>
           </div>
         </article>
-      </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
