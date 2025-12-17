@@ -20,7 +20,7 @@ export default function ALIEarlyWarning() {
         <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-5xl mx-auto text-center space-y-8">
-              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
                 Early Warning Indicators
               </h1>
               <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">

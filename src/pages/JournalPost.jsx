@@ -123,7 +123,7 @@ export default function JournalPost() {
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
-              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 leading-[0.9] tracking-tight">
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 leading-[0.9] tracking-tight">
                 Post Not Found
               </h1>
                     <p className="text-base sm:text-lg leading-normal text-[#6B6B6B] mb-3 sm:mb-4 text-pretty">

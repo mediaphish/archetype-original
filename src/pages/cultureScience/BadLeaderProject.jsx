@@ -30,7 +30,7 @@ export default function BadLeaderProject() {
               </div>
               
               {/* Title */}
-              <h1 className="font-serif font-bold text-7xl sm:text-8xl md:text-9xl text-[#1A1A1A] leading-[0.9] tracking-tight">
+              <h1 className="font-serif font-bold text-5xl sm:text-6xl md:text-7xl text-[#1A1A1A] leading-[0.9] tracking-tight">
                 The Bad Leader Project
               </h1>
               

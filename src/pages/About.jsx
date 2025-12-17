@@ -127,7 +127,7 @@ export default function About() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
               {/* Left Content */}
               <div>
-                <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
+                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
                   About Bart
                 </h1>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-light text-[#1A1A1A]/70 mb-6 sm:mb-8 leading-relaxed">

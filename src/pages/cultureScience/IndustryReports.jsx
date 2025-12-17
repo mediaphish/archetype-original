@@ -20,7 +20,7 @@ export default function IndustryReports() {
                 </div>
               </div>
               
-              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] leading-[0.9] tracking-tight">
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] leading-[0.9] tracking-tight">
                 Industry Insights
               </h1>
             </div>
