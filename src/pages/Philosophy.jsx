@@ -158,7 +158,7 @@ export default function Philosophy() {
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section with 3-Layer Parallax */}
-        <section ref={heroRef} className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48 relative overflow-hidden">
+        <section ref={heroRef} className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
               {/* Left Content */}

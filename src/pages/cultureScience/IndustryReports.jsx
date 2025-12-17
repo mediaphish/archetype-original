@@ -11,7 +11,7 @@ export default function IndustryReports() {
       <SEO pageKey="industry-reports" />
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+        <section className="bg-white py-16 sm:py-20 md:py-24 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-5xl mx-auto text-center space-y-8">
               <div className="inline-block mb-6">
