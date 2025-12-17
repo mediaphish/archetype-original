@@ -115,9 +115,9 @@ export default function App() {
             setCurrentPage('ali-method');
           } else if (path === '/culture-science/ali/early-warning' || path === '/culture-science/ali/early-warning-indicators') {
             setCurrentPage('ali-early-warning');
-          } else if (path === '/culture-science/ali/dashboard') {
+          } else if (path === '/culture-science/ali/dashboard' || path === '/culture-science/ali/dashboard/') {
             setCurrentPage('ali-dashboard');
-          } else if (path === '/culture-science/ali/six-leadership-conditions') {
+          } else if (path === '/culture-science/ali/six-leadership-conditions' || path === '/culture-science/ali/six-leadership-conditions/') {
             setCurrentPage('ali-six-conditions');
           } else if (path === '/culture-science/ali/faqs') {
             setCurrentPage('ali-faqs');
