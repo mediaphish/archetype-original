@@ -36,15 +36,15 @@ export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true })
         const response = await fetch('/knowledge.json');
         const data = await response.json();
         
-        // Filter for FAQs that are featured on this page
-        const allFaqs = data.documents?.filter(doc => {
+        // Filter for FAQs that are featured on this page - knowledge corpus uses 'docs' not 'documents'
+        const allFaqs = (data.docs || data.documents || []).filter(doc => {
           if (doc.type !== 'faq') return false;
           if (!doc.featured) return false;
           if (doc.featured_on && Array.isArray(doc.featured_on)) {
             return doc.featured_on.includes(pageKey);
           }
           return false;
-        }) || [];
+        });
         
         // Limit the number shown
         const limitedFaqs = allFaqs.slice(0, limit);
