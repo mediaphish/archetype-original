@@ -82,22 +82,22 @@ It tracks **environmental forces**, not individual behavior.
 
 These are the cultural equivalents of pressure, temperature, and structural load in engineering.
 
-### **1. Clarity**  
+### 1. Clarity  
 Is information moving clearly, consistently, and early?
 
-### **2. Trust**  
+### 2. Trust  
 Are leadership behaviors predictable, congruent, and stable?
 
-### **3. Alignment**  
+### 3. Alignment  
 Is the organization moving in one direction with unified expectations?
 
-### **4. Pressure**  
+### 4. Pressure  
 Is pressure distributed correctly and regulated early?
 
-### **5. Support**  
+### 5. Support  
 Are people strengthened before capacity collapses?
 
-### **6. Responsibility**  
+### 6. Responsibility  
 Are lanes predictable, fair, and matched to capability?
 
 If any of these forces weaken, the Dashboard detects movement immediately.
@@ -196,19 +196,19 @@ This is leadership maturity.
 
 For each of the six forces, the Dashboard shows:
 
-### **1. Current State**
+### 1. Current State  
 The present strength of the force.
 
-### **2. Direction of Movement**
+### 2. Direction of Movement  
 Is it rising, falling, or holding stable?
 
-### **3. Rate of Change**
+### 3. Rate of Change  
 Is the movement slow, sharp, or accelerating?
 
-### **4. Pressure Points**
+### 4. Pressure Points  
 Where the environment is beginning to lose stability.
 
-### **5. Intervention Priority**
+### 5. Intervention Priority  
 Which force must be corrected first to restore equilibrium.
 
 This prevents leaders from:
