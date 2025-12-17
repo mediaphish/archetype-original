@@ -46,7 +46,7 @@ export default function HomeHero() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FAFAF9] pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-20 md:pb-32 lg:pb-40">
+    <section className="min-h-screen bg-white py-24 sm:py-32 md:py-40 lg:py-48">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-24 items-center">
@@ -60,13 +60,13 @@ export default function HomeHero() {
               </div>
               
               {/* Title */}
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#1A1A1A] tracking-tight mb-6 sm:mb-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] mb-6 sm:mb-8">
                 Leadership That Actually Lasts
               </h1>
               
               {/* Body paragraphs */}
               <div className="space-y-6 mb-8 sm:mb-10">
-                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-xl">
+                <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light">
                   Clarity, culture, responsibility, and leadership that strengthens people and transforms environments.
                 </p>
                 
