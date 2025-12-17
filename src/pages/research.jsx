@@ -84,8 +84,8 @@ export default function Research() {
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-black mb-4">Research Corpus</h1>
-          <p className="text-lg text-gray-700 mb-4">
+          <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-4 leading-[0.9] tracking-tight">Research Corpus</h1>
+          <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 mb-4 font-light">
             Explore the knowledge base with {docs.length} documents
           </p>
           

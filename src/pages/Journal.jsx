@@ -127,10 +127,10 @@ export default function Journal() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 sm:mb-16 md:mb-20">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance">
+            <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 leading-[0.9] tracking-tight">
               Journal
             </h1>
-            <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] max-w-2xl mx-auto text-pretty">
+            <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-2xl mx-auto font-light">
               Thoughts, insights, and lessons learned from 32+ years of building companies and growing people.
             </p>
           </div>

@@ -19,7 +19,7 @@ export default function ALIThanks() {
               </div>
 
               {/* Headline */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
                 Welcome to the ALI Pilot
               </h1>
 
