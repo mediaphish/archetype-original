@@ -43,8 +43,9 @@ export default function Corpus() {
                 Additional placeholder text here.
               </p>
             </section>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </>
   );
