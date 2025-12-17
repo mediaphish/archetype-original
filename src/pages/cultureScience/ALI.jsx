@@ -1,6 +1,7 @@
 import React from "react";
 import SEO from "../../components/SEO";
 import ALISubNav from "../../components/ALISubNav";
+import FeaturedFAQs from "../../components/FeaturedFAQs";
 
 // Simple icon components (inline SVGs to avoid lucide-react dependency)
 const LightbulbIcon = () => (
@@ -436,6 +437,9 @@ export default function ALI() {
             </div>
           </div>
         </section>
+
+        {/* Featured FAQs Section */}
+        <FeaturedFAQs pageKey="ali" limit={5} showViewAll={true} />
 
       </main>
     </>
