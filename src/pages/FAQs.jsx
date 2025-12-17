@@ -75,9 +75,11 @@ export default function FAQs() {
   // Filter and search FAQs
   const filteredFaqs = useMemo(() => {
     return faqs.filter(faq => {
-      // Category filter
+      // Category filter (case-insensitive matching)
       if (selectedCategory) {
-        const hasCategory = faq.categories && faq.categories.includes(selectedCategory);
+        const normalizedCategory = selectedCategory.toLowerCase();
+        const hasCategory = faq.categories && Array.isArray(faq.categories) && 
+          faq.categories.some(cat => cat.toLowerCase() === normalizedCategory);
         if (!hasCategory) return false;
       }
 
