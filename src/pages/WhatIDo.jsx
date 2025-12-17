@@ -182,7 +182,8 @@ export default function WhatIDo() {
           </div>
         </section>
 
-        <div className="bg-[#FAFAF9] py-12">
+        {/* Content Section */}
+        <section className="bg-[#FAFAF9] py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
               {/* Anchor Navigation Sidebar */}
@@ -483,8 +484,9 @@ export default function WhatIDo() {
                 </div>
               </div>
             </article>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </>
   );
