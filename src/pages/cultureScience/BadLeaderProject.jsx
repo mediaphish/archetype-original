@@ -19,9 +19,9 @@ export default function BadLeaderProject() {
       <SEO pageKey="bad-leader-project" />
       <div className="min-h-screen bg-white">
         {/* SECTION 1: HERO */}
-        <section className="bg-white py-20 sm:py-28">
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
               {/* Badge */}
               <div className="mb-6">
                 <span className="inline-block px-4 py-2 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#6B6B6B] uppercase">
@@ -30,12 +30,12 @@ export default function BadLeaderProject() {
               </div>
               
               {/* Title */}
-              <h1 className="font-serif font-bold text-4xl sm:text-5xl md:text-6xl text-[#1A1A1A] tracking-tight mb-6">
+              <h1 className="font-serif font-bold text-7xl sm:text-8xl md:text-9xl text-[#1A1A1A] leading-[0.9] tracking-tight">
                 The Bad Leader Project
               </h1>
               
               {/* Subtitle */}
-              <p className="text-xl sm:text-2xl md:text-3xl text-[#6B6B6B] font-light leading-snug">
+              <p className="text-xl sm:text-2xl md:text-3xl text-[#1A1A1A]/70 font-light leading-relaxed">
                 A heat-map of dysfunctional leadership across industries and regions.
               </p>
             </div>

@@ -9,12 +9,22 @@ export default function Ethics() {
   return (
     <>
       <SEO pageKey="ethics" />
-      <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
-        <div className="container mx-auto px-4 sm:px-6 md:px-12">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 font-serif tracking-tight text-balance">
-              Ethics & Confidentiality
-            </h1>
+      <div className="min-h-screen bg-white">
+        {/* Hero Section */}
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] leading-[0.9] tracking-tight">
+                Ethics & Confidentiality
+              </h1>
+            </div>
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
             
             <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-8 sm:mb-10 text-pretty">
               <p>
@@ -66,8 +76,9 @@ export default function Ethics() {
                 Culture Science exists because leaders and teams trust us with their honest feedback. That trust is non-negotiable. We're committed to maintaining the highest standards of privacy, security, and ethical data handling.
               </p>
             </section>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </>
   );

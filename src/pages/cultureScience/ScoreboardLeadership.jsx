@@ -48,9 +48,9 @@ export default function ScoreboardLeadership() {
       <SEO pageKey="scoreboard-leadership" />
       <div className="min-h-screen bg-white">
         {/* SECTION 1: HERO WITH PARALLAX */}
-        <section className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
+        <section className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
               {/* Left Content */}
               <div>
                 {/* Badge */}
@@ -61,7 +61,7 @@ export default function ScoreboardLeadership() {
                 </div>
                 
                 {/* Title */}
-                <h1 className="font-serif font-bold text-4xl sm:text-5xl md:text-6xl text-[#1A1A1A] tracking-tight mb-8">
+                <h1 className="font-serif font-bold text-7xl sm:text-8xl md:text-9xl text-[#1A1A1A] leading-[0.9] tracking-tight mb-8">
                   Scoreboard Leadership
                 </h1>
               </div>
