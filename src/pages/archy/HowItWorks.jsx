@@ -13,10 +13,22 @@ export default function HowItWorks() {
   return (
     <>
       <SEO pageKey="archy-how-it-works" />
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
-        <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="h1 mb-8">How Archy Works</h1>
+      <div className="min-h-screen bg-white">
+        {/* Hero Section */}
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+                How Archy Works
+              </h1>
+            </div>
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
             
             <section className="mb-12">
               <h2 className="h2 mb-6">Step 1</h2>

@@ -13,15 +13,25 @@ export default function Archy() {
   return (
     <>
       <SEO pageKey="archy" />
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
-        <div className="container">
-          {/* Hero Section */}
-          <section className="mb-16 text-center">
-            <h1 className="h1 mb-6">Archy</h1>
-            <p className="p text-lg max-w-3xl mx-auto">
-              Hero placeholder text here.
-            </p>
-          </section>
+      <div className="min-h-screen bg-white">
+        {/* Hero Section */}
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+                Archy
+              </h1>
+              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
+                Hero placeholder text here.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Content Sections */}
+        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
 
           {/* Who Archy Is */}
           <section className="mb-16">
@@ -71,7 +81,9 @@ export default function Archy() {
               Ask Archy
             </a>
           </section>
-        </div>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );
