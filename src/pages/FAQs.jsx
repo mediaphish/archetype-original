@@ -48,8 +48,8 @@ export default function FAQs() {
         const response = await fetch('/knowledge.json');
         const data = await response.json();
         
-        // Filter for FAQs only
-        const allFaqs = data.documents?.filter(doc => doc.type === 'faq') || [];
+        // Filter for FAQs only - knowledge corpus uses 'docs' not 'documents'
+        const allFaqs = (data.docs || data.documents || []).filter(doc => doc.type === 'faq');
         setFaqs(allFaqs);
         setLoading(false);
       } catch (error) {
