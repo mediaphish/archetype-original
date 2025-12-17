@@ -10,11 +10,11 @@ export default function ALISubNav() {
 
   const navItems = [
     { label: 'Overview', href: '/culture-science/ali' },
+    { label: 'Why ALI Exists', href: '/culture-science/ali/why-ali-exists' },
     { label: 'The Method', href: '/culture-science/ali/method' },
-    { label: 'Early Warning', href: '/culture-science/ali/early-warning' },
     { label: 'Dashboard', href: '/culture-science/ali/dashboard' },
-    { label: 'Six Conditions', href: '/culture-science/ali/conditions' },
-    { label: 'Archy Integration', href: '/culture-science/ali/archy' },
+    { label: 'Six Conditions', href: '/culture-science/ali/six-leadership-conditions' },
+    { label: 'Early Warning', href: '/culture-science/ali/early-warning' },
     { label: 'FAQs', href: '/culture-science/ali/faqs' },
   ];
 
