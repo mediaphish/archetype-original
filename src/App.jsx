@@ -33,6 +33,7 @@ import WhyALIExists from "./pages/cultureScience/WhyALIExists";
 import ALIMethod from "./pages/cultureScience/ALIMethod";
 import ALIEarlyWarning from "./pages/cultureScience/ALIEarlyWarning";
 import ALIDashboard from "./pages/cultureScience/ALIDashboard";
+import ALISixConditions from "./pages/cultureScience/ALISixConditions";
 import ContactPage from "./pages/Contact";
 import MentoringPage from "./pages/mentoring/Mentoring";
 import Mentoring1on1 from "./pages/mentoring/Mentoring1on1";
@@ -422,6 +423,18 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ALIDashboard />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render ALI Six Conditions page
+  if (currentPage === 'ali-six-conditions') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ALISixConditions />
         <Footer />
         <FloatingArchyButton />
       </main>
