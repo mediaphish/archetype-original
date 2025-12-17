@@ -417,7 +417,7 @@ export default function App() {
     );
   }
 
-  // Render ALI Dashboard page
+  // Render ALI Dashboard page (elevated design)
   if (currentPage === 'ali-dashboard') {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
