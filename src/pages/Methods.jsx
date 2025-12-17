@@ -284,24 +284,22 @@ export default function Methods() {
       </Helmet>
       
       <div className="min-h-screen bg-[#FAFAF9]">
-        {/* Hero Section */}
-        <section ref={heroRef} className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+        {/* Hero Section with Parallax */}
+        <section ref={heroRef} className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-5xl mx-auto text-center space-y-8">
-              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] leading-[0.9] tracking-tight">
-                Methods
-              </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
-                An adaptive leadership practice
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Parallax Section (if needed) */}
-        <section className="w-full bg-white py-12 relative overflow-hidden hidden lg:block">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="relative h-[500px] max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+              {/* Left Content */}
+              <div>
+                <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
+                  Methods
+                </h1>
+                <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-[#1A1A1A]/70">
+                  An adaptive leadership practice
+                </p>
+              </div>
+              
+              {/* Right: 3-Layer Parallax (Desktop Only) */}
+              <div className="relative h-[500px] hidden lg:block">
                 {/* Layer 3: Back (slowest) */}
                 <div 
                   className="absolute inset-0 z-10"
