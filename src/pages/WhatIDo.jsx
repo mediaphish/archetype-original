@@ -167,72 +167,72 @@ export default function WhatIDo() {
         </script>
       </Helmet>
       
-      <div className="min-h-screen bg-warm-offWhite py-12 pt-28">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Sequential Navigation */}
-          <div className="mb-8 flex items-center justify-end border-b border-warm-border pb-4 mt-8">
-            <a
-              href="/philosophy"
-              className="inline-flex items-center text-warm-gray hover:text-amber transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber rounded px-2 py-1"
-              aria-label="Next page: Philosophy"
-            >
-              <span className="text-sm">Philosophy</span>
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
+      <div className="min-h-screen bg-white">
+        {/* Hero Section */}
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+                What I Do
+              </h1>
+              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
+                Every engagement has one purpose—help people and businesses grow without losing what makes them human.
+              </p>
+            </div>
           </div>
+        </section>
 
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Anchor Navigation Sidebar */}
-            <aside className="lg:w-64 flex-shrink-0">
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden w-full flex items-center justify-between p-4 bg-warm-offWhiteAlt border border-warm-border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-amber"
-                aria-label="Toggle navigation menu"
-              >
-                <span className="font-medium text-warm-charcoal">Navigation</span>
-                <svg className="w-5 h-5 text-warm-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
+        <div className="bg-[#FAFAF9] py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+              {/* Anchor Navigation Sidebar */}
+              <aside className="lg:w-64 flex-shrink-0">
+                {/* Mobile menu button */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="lg:hidden w-full flex items-center justify-between p-4 bg-white border border-[#1A1A1A]/10 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-[#C85A3C]"
+                  aria-label="Toggle navigation menu"
+                >
+                  <span className="font-medium text-[#1A1A1A]">Navigation</span>
+                  <svg className="w-5 h-5 text-[#1A1A1A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {isMobileMenuOpen ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    )}
+                  </svg>
+                </button>
 
-              {/* Navigation menu */}
-              <nav 
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-warm-offWhiteAlt border border-warm-border rounded-lg p-4`}
-                aria-label="Page sections"
-              >
-                <ul className="space-y-2">
-                  {sections.map((section) => (
-                    <li key={section.id}>
-                      <a
-                        href={`#${section.id}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          scrollToSection(section.id, e);
-                        }}
-                        className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber active:scale-95 ${
-                          activeSection === section.id
-                            ? 'bg-amber text-white font-semibold shadow-md'
-                            : 'text-warm-charcoal hover:bg-warm-border hover:text-amber'
-                        }`}
-                      >
-                        {section.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </aside>
+                {/* Navigation menu */}
+                <nav 
+                  className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block sticky top-24 bg-white border border-[#1A1A1A]/10 rounded-lg p-4`}
+                  aria-label="Page sections"
+                >
+                  <ul className="space-y-2">
+                    {sections.map((section) => (
+                      <li key={section.id}>
+                        <a
+                          href={`#${section.id}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            scrollToSection(section.id, e);
+                          }}
+                          className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#C85A3C] active:scale-95 ${
+                            activeSection === section.id
+                              ? 'bg-[#C85A3C] text-white font-semibold shadow-md'
+                              : 'text-[#1A1A1A] hover:bg-[#FAFAF9] hover:text-[#C85A3C]'
+                          }`}
+                        >
+                          {section.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </aside>
 
             {/* Main Content */}
             <article className="flex-1 max-w-4xl">
-              <h1 className="h1 mb-12">What I Do</h1>
 
               {/* Intro */}
               <section id="intro" ref={(el) => (sectionRefs.current.intro = el)} className="mb-16 scroll-mt-24">

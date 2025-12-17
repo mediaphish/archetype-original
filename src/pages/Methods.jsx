@@ -285,26 +285,23 @@ export default function Methods() {
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section */}
-        <section ref={heroRef} className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+        <section ref={heroRef} className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
-              {/* Left Column */}
-              <div>
-                <div className="inline-block mb-6 sm:mb-8">
-                  <span className="text-xs font-medium uppercase tracking-wider text-[#C85A3C] border border-[#C85A3C]/20 px-3 py-1">
-                    HOW I WORK
-                  </span>
-                </div>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight leading-tight">
-                  Methods
-                </h1>
-                <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]">
-                  An adaptive leadership practice
-                </p>
-              </div>
-              
-              {/* Right Column - Parallax (Desktop Only) */}
-              <div className="relative h-[500px] hidden lg:block">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] leading-[0.9] tracking-tight">
+                Methods
+              </h1>
+              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
+                An adaptive leadership practice
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Parallax Section (if needed) */}
+        <section className="w-full bg-white py-12 relative overflow-hidden hidden lg:block">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="relative h-[500px] max-w-4xl mx-auto">
                 {/* Layer 3: Back (slowest) */}
                 <div 
                   className="absolute inset-0 z-10"

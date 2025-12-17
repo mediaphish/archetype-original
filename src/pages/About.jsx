@@ -122,15 +122,15 @@ export default function About() {
       
       <div className="min-h-screen bg-white">
         {/* Hero Section with 3-Layer Parallax */}
-        <section ref={heroRef} className="w-full bg-white py-20 sm:py-24 md:py-28 relative overflow-hidden">
+        <section ref={heroRef} className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
               {/* Left Content */}
               <div>
-                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 tracking-tight">
+                <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
                   About Bart
                 </h1>
-                <h2 className="!font-sans text-2xl sm:text-3xl md:text-4xl font-light text-[#1A1A1A] mb-6 sm:mb-8 leading-snug">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-light text-[#1A1A1A]/70 mb-6 sm:mb-8 leading-relaxed">
                   Thirty-two years building people, teams, and leaders who do work that matters.
                 </h2>
               </div>
