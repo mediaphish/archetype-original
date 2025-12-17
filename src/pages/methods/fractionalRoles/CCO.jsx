@@ -31,14 +31,14 @@ export default function CCO() {
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section */}
-        <section className="w-full bg-[#FAFAF9] py-20 sm:py-24 md:py-28">
+        <section className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] leading-[0.9] tracking-tight">
                 Fractional Chief Culture Officer
               </h1>
-              <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A]">
-                A Fractional Chief Culture Officer steps into an organization at the moments when culture, leadership, and direction need clarity. Sometimes that means stabilizing what's fragile. Sometimes it means strengthening what's already working. Sometimes it means helping a team or company grow into its next season with intention instead of reaction. In every case, the work is real-time, relational, and built around the truth of what's actually happening inside the environment.
+              <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-[#1A1A1A]/70 max-w-4xl mx-auto">
+                A Fractional Chief Culture Officer steps into an organization at the moments when culture, leadership, and direction need clarity.
               </p>
             </div>
           </div>

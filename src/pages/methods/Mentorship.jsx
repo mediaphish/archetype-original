@@ -128,15 +128,15 @@ export default function Mentorship() {
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section with Parallax */}
-        <section ref={heroRef} className="w-full bg-[#FAFAF9] py-20 sm:py-24 md:py-28">
+        <section ref={heroRef} className="w-full bg-white py-24 sm:py-32 md:py-40 lg:py-48">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
               {/* Left Column */}
               <div>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
+                <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
                   Mentorship
                 </h1>
-                <p className="text-xl sm:text-2xl font-light leading-relaxed text-[#1A1A1A]">
+                <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-[#1A1A1A]/70">
                   Clarity is the first act of leadership — and the anchor leaders return to, whether they are rising, steady, or carrying more weight than anyone sees.
                 </p>
               </div>
