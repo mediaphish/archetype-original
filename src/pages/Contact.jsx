@@ -64,14 +64,16 @@ export default function ContactPage() {
       <SEO pageKey="contact" />
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section */}
-        <section className="py-16 sm:py-20 md:py-24 bg-[#FAFAF9]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 text-center">
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight mb-4">
-              Start a Conversation
-            </h1>
-            <p className="text-base sm:text-lg text-[#6B6B6B] leading-relaxed max-w-2xl mx-auto">
-              Leadership carries weight. If you need clarity or direction, I'm here to help.
-            </p>
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+                Start a Conversation
+              </h1>
+              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
+                Leadership carries weight. If you need clarity or direction, I'm here to help.
+              </p>
+            </div>
           </div>
         </section>
 
