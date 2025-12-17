@@ -50,8 +50,9 @@ export default function HowItWorks() {
                 Step 3 placeholder text here.
               </p>
             </section>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </>
   );
