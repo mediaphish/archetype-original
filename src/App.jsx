@@ -29,6 +29,7 @@ import WhatIDoPage from "./pages/WhatIDo.jsx";
 import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
 import ALIThanks from "./pages/cultureScience/ALIThanks";
+import WhyALIExists from "./pages/cultureScience/WhyALIExists";
 import ContactPage from "./pages/Contact";
 import MentoringPage from "./pages/mentoring/Mentoring";
 import Mentoring1on1 from "./pages/mentoring/Mentoring1on1";
@@ -105,6 +106,8 @@ export default function App() {
             setCurrentPage('ali-apply');
           } else if (path === '/culture-science/ali/thanks') {
             setCurrentPage('ali-thanks');
+          } else if (path === '/culture-science/ali/why-ali-exists') {
+            setCurrentPage('why-ali-exists');
           } else {
             setCurrentPage('ali');
           }
@@ -358,6 +361,18 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ALIThanks />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Why ALI Exists page
+  if (currentPage === 'why-ali-exists') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <WhyALIExists />
         <Footer />
         <FloatingArchyButton />
       </main>
