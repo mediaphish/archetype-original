@@ -21,7 +21,7 @@ export default function ALISubNav() {
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
   return (
-    <nav className="bg-[#FAFAF9] border-b border-[#1A1A1A]/10 sticky top-0 z-40">
+    <nav className="bg-[#FAFAF9] border-b border-[#1A1A1A]/10 sticky top-20 z-40">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-3 sm:py-4 scrollbar-hide">
           {navItems.map((item) => {
