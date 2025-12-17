@@ -112,6 +112,16 @@ export default function Header() {
                 {/* Secondary Navigation - Stacked Above */}
                 <div className="flex items-center gap-4 text-sm">
                   <a 
+                    href="/faqs" 
+                    onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
+                    className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/faqs') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-xs">FAQs</span>
+                  </a>
+                  <a 
                     href="/journal" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/journal'); }}
                     className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/journal') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
@@ -562,8 +572,19 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Drawer Footer - Journal and Contact at Bottom */}
+            {/* Drawer Footer - FAQs, Journal and Contact at Bottom */}
             <div className="border-t border-[#1A1A1A]/10 p-6 space-y-3">
+              <a 
+                href="/faqs" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
+                className={`block px-4 py-3 text-base font-medium transition-all duration-200 rounded-sm ${
+                  isActive('/faqs') 
+                    ? 'text-[#1A1A1A] bg-[#FAFAF9]' 
+                    : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
+                }`}
+              >
+                FAQs
+              </a>
               <a 
                 href="/journal" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/journal'); }}

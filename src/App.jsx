@@ -54,6 +54,7 @@ import ArchyHowItWorks from "./pages/archy/HowItWorks";
 import ArchyCorpus from "./pages/archy/Corpus";
 import ArchyAsk from "./pages/archy/Ask";
 import Playbooks from "./pages/Playbooks";
+import FAQsPage from "./pages/FAQs";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -89,6 +90,8 @@ export default function App() {
         setCurrentPage('about');
       } else if (path === '/contact') {
         setCurrentPage('contact');
+      } else if (path === '/faqs' || path.startsWith('/faqs')) {
+        setCurrentPage('faqs');
       } else if (path === '/mentoring' || path.startsWith('/mentoring/')) {
         // Handle mentoring sub-routes
         if (path === '/mentoring/1-1') {
@@ -121,7 +124,9 @@ export default function App() {
           } else if (path === '/culture-science/ali/six-leadership-conditions' || path === '/culture-science/ali/six-leadership-conditions/') {
             setCurrentPage('ali-six-conditions');
           } else if (path === '/culture-science/ali/faqs') {
-            setCurrentPage('ali-faqs');
+            // Redirect old ALI FAQs route to universal FAQs with category filter
+            window.history.replaceState({}, '', '/faqs?category=ali');
+            setCurrentPage('faqs');
           } else {
             setCurrentPage('ali');
           }
@@ -435,6 +440,18 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ALISixConditions />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render FAQs page
+  if (currentPage === 'faqs') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <FAQsPage />
         <Footer />
         <FloatingArchyButton />
       </main>
