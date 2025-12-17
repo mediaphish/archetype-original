@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import ALISubNav from '../../components/ALISubNav';
 
 const ALIDashboard = () => {
@@ -309,8 +308,9 @@ const ALIDashboard = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                 {/* Card 1 */}
-                <Link
-                  to="/culture-science/ali/six-leadership-conditions"
+                <a
+                  href="/culture-science/ali/six-leadership-conditions"
+                  onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/culture-science/ali/six-leadership-conditions'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                   className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
                   <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
@@ -322,11 +322,12 @@ const ALIDashboard = () => {
                   <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
                     Explore →
                   </span>
-                </Link>
+                </a>
 
                 {/* Card 2 */}
-                <Link
-                  to="/culture-science/ali/early-warning"
+                <a
+                  href="/culture-science/ali/early-warning"
+                  onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/culture-science/ali/early-warning'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                   className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
                   <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
@@ -338,7 +339,7 @@ const ALIDashboard = () => {
                   <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
                     Explore →
                   </span>
-                </Link>
+                </a>
               </div>
             </div>
           </div>
