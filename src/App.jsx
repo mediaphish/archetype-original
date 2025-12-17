@@ -117,6 +117,10 @@ export default function App() {
             setCurrentPage('ali-early-warning');
           } else if (path === '/culture-science/ali/dashboard') {
             setCurrentPage('ali-dashboard');
+          } else if (path === '/culture-science/ali/six-leadership-conditions') {
+            setCurrentPage('ali-six-conditions');
+          } else if (path === '/culture-science/ali/faqs') {
+            setCurrentPage('ali-faqs');
           } else {
             setCurrentPage('ali');
           }
