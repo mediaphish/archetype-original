@@ -2,16 +2,6 @@ import React from "react";
 import SEO from "../../components/SEO";
 import ALISubNav from "../../components/ALISubNav";
 
-// Section header with orange left border
-const SectionHeader = ({ children }) => (
-  <div className="flex items-start gap-4 sm:gap-6">
-    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
-    <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A1A]">
-      {children}
-    </h2>
-  </div>
-);
-
 export default function ALIMethod() {
   const handleLinkClick = (e, href) => {
     e.preventDefault();
@@ -27,13 +17,13 @@ export default function ALIMethod() {
       <main className="min-h-screen">
         
         {/* SECTION 1: HERO */}
-        <section className="bg-white py-20 sm:py-28 md:py-32">
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto text-center space-y-6">
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight text-[#1A1A1A]">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
                 The ALI Method
               </h1>
-              <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A]/70">
+              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
                 How leadership conditions become measurable, trackable, and directional.
               </p>
             </div>
@@ -41,13 +31,13 @@ export default function ALIMethod() {
         </section>
 
         {/* SECTION 2: INTRODUCTION */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section className="bg-gradient-to-b from-white via-[#FFF8F0] to-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
               <p>
                 The ALI Method is built on three pillars:
               </p>
-              <div className="pl-6 space-y-1 font-semibold">
+              <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 font-semibold text-[#1A1A1A]">
                 <p>Environmental Measurement</p>
                 <p>Pattern Detection</p>
                 <p>Directional Insight</p>
@@ -66,7 +56,18 @@ export default function ALIMethod() {
         <section className="bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>1. Environmental Measurement</SectionHeader>
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  01
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
+                    Environmental Measurement
+                  </h2>
+                </div>
+              </div>
+
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
                   A quarterly pulse that measures conditions, not emotions.
@@ -74,37 +75,76 @@ export default function ALIMethod() {
                 <p>
                   The ALI diagnostic consists of 10 precise questions designed to reveal the state of six leadership conditions:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
-                  <p>Clarity</p>
-                  <p>Trust</p>
-                  <p>Communication</p>
-                  <p>Consistency</p>
-                  <p>Safety</p>
-                  <p>Emotional Tone</p>
-                </div>
+                <ul className="list-none space-y-2 pl-6">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Clarity</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Trust</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Communication</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Consistency</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Safety</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Emotional Tone</span>
+                  </li>
+                </ul>
                 <p>
                   Each question has been refined to expose behavioral reality, not preference or sentiment.
                 </p>
                 <p>
                   This matters because:
                 </p>
-                <div className="pl-6 space-y-2 text-[#1A1A1A]/70">
-                  <p>People can be frustrated yet still operating in a strong environment.</p>
-                  <p>People can feel "good" while important conditions are declining.</p>
-                  <p>Leaders cannot rely on emotional feedback to diagnose environmental truth.</p>
-                </div>
+                <ul className="list-none space-y-2 pl-6">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">People can be frustrated yet still operating in a strong environment.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">People can feel "good" while important conditions are declining.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Leaders cannot rely on emotional feedback to diagnose environmental truth.</span>
+                  </li>
+                </ul>
                 <p>
                   The ALI Method focuses on observable environmental signals, not individual feelings.
                 </p>
                 <p>
                   Every question is engineered to cut through perception and reveal:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
-                  <p>how people are experiencing leadership behavior</p>
-                  <p>whether conditions are strengthening or weakening</p>
-                  <p>where friction is emerging</p>
-                  <p>what signals are forming under the surface</p>
-                </div>
+                <ul className="list-none space-y-2 pl-6">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">how people are experiencing leadership behavior</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">whether conditions are strengthening or weakening</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">where friction is emerging</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">what signals are forming under the surface</span>
+                  </li>
+                </ul>
                 <p>
                   This is the opposite of a traditional survey.
                 </p>
@@ -117,31 +157,57 @@ export default function ALIMethod() {
         </section>
 
         {/* SECTION 4: 2. PATTERN DETECTION */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section className="bg-[#FFF8F0] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>2. Pattern Detection</SectionHeader>
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  02
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
+                    Pattern Detection
+                  </h2>
+                </div>
+              </div>
+
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
                   Isolated data points don't mean anything. Patterns do.
                 </p>
                 <p>
-                  Leadership conditions don't change all at once.
-                </p>
-                <p>
-                  They drift.
+                  Leadership conditions don't change all at once. They drift.
                 </p>
                 <p>
                   Drift appears as:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
-                  <p>small inconsistencies in how leaders communicate</p>
-                  <p>subtle changes in clarity</p>
-                  <p>slight shifts in emotional tone</p>
-                  <p>early signs of avoidance</p>
-                  <p>mild softening of standards</p>
-                  <p>tiny distortions in information flow</p>
-                </div>
+                <ul className="list-none space-y-2 pl-6">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">small inconsistencies in how leaders communicate</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">subtle changes in clarity</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">slight shifts in emotional tone</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">early signs of avoidance</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">mild softening of standards</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">tiny distortions in information flow</span>
+                  </li>
+                </ul>
                 <p>
                   Individually, none of these seem alarming.
                 </p>
@@ -151,21 +217,39 @@ export default function ALIMethod() {
                 <p>
                   The ALI Method is built to detect this movement through:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
-                  <p>quarterly comparison</p>
-                  <p>pattern mapping</p>
-                  <p>drift thresholds</p>
-                  <p>condition-to-condition relationships</p>
-                  <p>underlying signal correlation</p>
-                  <p>historical trend data</p>
-                </div>
+                <ul className="list-none space-y-2 pl-6">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">quarterly comparison</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">pattern mapping</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">drift thresholds</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">condition-to-condition relationships</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">underlying signal correlation</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">historical trend data</span>
+                  </li>
+                </ul>
                 <p>
                   ALI doesn't treat a measurement as "good" or "bad."
                 </p>
                 <p>
                   It treats it as directional:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
                   <p>Are conditions strengthening?</p>
                   <p>Are they weakening?</p>
                   <p>How quickly?</p>
@@ -189,7 +273,18 @@ export default function ALIMethod() {
         <section className="bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>3. Directional Insight</SectionHeader>
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  03
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
+                    Directional Insight
+                  </h2>
+                </div>
+              </div>
+
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
                   Where culture is actually going — not where it feels like it is today.
@@ -197,49 +292,47 @@ export default function ALIMethod() {
                 <p>
                   The ALI Method combines environmental measurement and pattern detection to produce insight leaders rarely get:
                 </p>
-                <p>
+                <p className="font-semibold">
                   visibility into where the culture is heading if nothing changes.
                 </p>
                 <p>
                   This includes:
                 </p>
 
-                {/* Subsections */}
-                <div className="space-y-4">
-                  <p><strong>Strengthening Conditions</strong></p>
-                  <p>Where leadership behavior is stabilizing the environment.</p>
-                </div>
-
-                <div className="space-y-4">
-                  <p><strong>Weakening Conditions</strong></p>
-                  <p>Where drift is forming and why.</p>
-                </div>
-
-                <div className="space-y-4">
-                  <p><strong>Emerging Signals</strong></p>
-                  <p>Which early warning indicators are beginning to surface.</p>
-                </div>
-
-                <div className="space-y-4">
-                  <p><strong>Stability vs. Volatility</strong></p>
-                  <p>Which areas remain reliable and which fluctuate under pressure.</p>
-                </div>
-
-                <div className="space-y-4">
-                  <p><strong>Environmental Direction</strong></p>
-                  <p>The forward trajectory of leadership influence.</p>
+                {/* Insight cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                    <p className="font-bold text-[#1A1A1A] mb-2">Strengthening Conditions</p>
+                    <p className="text-[#1A1A1A]/70">Where leadership behavior is stabilizing the environment.</p>
+                  </div>
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                    <p className="font-bold text-[#1A1A1A] mb-2">Weakening Conditions</p>
+                    <p className="text-[#1A1A1A]/70">Where drift is forming and why.</p>
+                  </div>
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                    <p className="font-bold text-[#1A1A1A] mb-2">Emerging Signals</p>
+                    <p className="text-[#1A1A1A]/70">Which early warning indicators are beginning to surface.</p>
+                  </div>
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                    <p className="font-bold text-[#1A1A1A] mb-2">Stability vs. Volatility</p>
+                    <p className="text-[#1A1A1A]/70">Which areas remain reliable and which fluctuate under pressure.</p>
+                  </div>
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C] sm:col-span-2">
+                    <p className="font-bold text-[#1A1A1A] mb-2">Environmental Direction</p>
+                    <p className="text-[#1A1A1A]/70">The forward trajectory of leadership influence.</p>
+                  </div>
                 </div>
 
                 <p>
                   The ALI Method shifts leaders from:
                 </p>
-                <div className="pl-6 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#1A1A1A]/20 italic text-[#1A1A1A]/70">
                   <p>"Do people feel good right now?"</p>
                 </div>
                 <p>
                   To:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
                   <p>"What conditions are forming?"</p>
                   <p>"What will this become?"</p>
                   <p>"Where do we need to pay attention?"</p>
@@ -252,17 +345,28 @@ export default function ALIMethod() {
           </div>
         </section>
 
-        {/* SECTION 6: HOW THE QUARTERLY CYCLE WORKS */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        {/* SECTION 6: HOW THE QUARTERLY CYCLE WORKS - DARK SECTION */}
+        <section className="bg-[#1A1A1A] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>How the ALI Quarterly Cycle Works</SectionHeader>
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-white/5 pointer-events-none">
+                  04
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-6">
+                    How the Quarterly Cycle Works
+                  </h2>
+                </div>
+              </div>
+
+              <div className="text-base sm:text-lg leading-relaxed text-white/80 space-y-6">
                 <p>
                   Every quarter, your team receives a 10-question pulse. It takes 10 minutes. The questions don't ask how people feel—they ask what people are experiencing. The data flows in clean, consistent, and anonymous.
                 </p>
                 <p>
-                  ALI then translates that data into condition strength across all six leadership conditions: Clarity, Accountability, Safety, Consistency, Recognition, and Direction. It calculates not just where each condition sits right now, but which direction it's moving and how quickly.
+                  ALI then translates that data into condition strength across all six leadership conditions. It calculates not just where each condition sits right now, but which direction it's moving and how quickly.
                 </p>
                 <p>
                   By the end of the third quarter, ALI has enough data to reveal patterns over time. That's when you stop seeing snapshots and start seeing trajectory: Is this condition stable? Drifting? Correcting? Continuing to strengthen?
@@ -271,57 +375,82 @@ export default function ALIMethod() {
                   Leaders review their dashboard—not a survey report, but a navigation instrument. You see current condition levels, direction of change, underlying early warning indicators, and environmental interpretation that explains what the data actually means.
                 </p>
                 <p>
-                  Archy steps in here as your interpretive engine. He breaks the dashboard down into plain language: what it means, why it matters, what it suggests, how it connects to specific leadership behaviors, and what you might consider next. This isn't automation—it's intelligence applied to your context.
+                  Archy steps in here as your interpretive engine. He breaks the dashboard down into plain language: what it means, why it matters, what it suggests, how it connects to specific leadership behaviors, and what you might consider next.
                 </p>
                 <p>
-                  Then you choose. ALI doesn't prescribe programs or force you down predetermined paths. It reveals truth so you can make intentional, aligned decisions about where to focus next. You act. The next quarter begins. The cycle repeats.
+                  Then you choose. ALI doesn't prescribe programs or force you down predetermined paths. It reveals truth so you can make intentional, aligned decisions about where to focus next.
                 </p>
                 <p>
-                  Over time, you're not just measuring culture—you're steering it. Quarter by quarter, adjustment by adjustment, you build the leadership environment your team deserves.
+                  You act. The next quarter begins. The cycle repeats.
+                </p>
+                <p>
+                  Over time, you're not just measuring culture—you're steering it.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 7: NAVIGATION LINKS */}
-        <section className="bg-white py-16 sm:py-24">
+        {/* SECTION 7: CTA - GO DEEPER */}
+        <section className="bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto">
-              <p className="text-base sm:text-lg text-[#1A1A1A]/70">
-                Explore{' '}
-                <a 
-                  href="/culture-science/ali/dashboard" 
+            <div className="max-w-4xl mx-auto space-y-12">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] text-center mb-12">
+                Go Deeper
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                {/* Card 1 */}
+                <a
+                  href="/culture-science/ali/dashboard"
                   onClick={(e) => handleLinkClick(e, '/culture-science/ali/dashboard')}
-                  className="text-[#1A1A1A] underline hover:text-[#C85A3C] transition-colors"
+                  className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
-                  The Dashboard
-                </a>,{' '}
-                <a 
-                  href="/culture-science/ali/six-leadership-conditions" 
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
+                    The Dashboard
+                  </h3>
+                  <p className="text-base text-[#1A1A1A]/70 group-hover:text-white/80 mb-4">
+                    Your leadership navigation instrument.
+                  </p>
+                  <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
+                    Explore →
+                  </span>
+                </a>
+
+                {/* Card 2 */}
+                <a
+                  href="/culture-science/ali/six-leadership-conditions"
                   onClick={(e) => handleLinkClick(e, '/culture-science/ali/six-leadership-conditions')}
-                  className="text-[#1A1A1A] underline hover:text-[#C85A3C] transition-colors"
+                  className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
-                  The Six Leadership Conditions
-                </a>, or{' '}
-                <a 
-                  href="/culture-science/ali/early-warning-indicators" 
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/early-warning-indicators')}
-                  className="text-[#1A1A1A] underline hover:text-[#C85A3C] transition-colors"
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
+                    Six Conditions
+                  </h3>
+                  <p className="text-base text-[#1A1A1A]/70 group-hover:text-white/80 mb-4">
+                    The environmental conditions ALI measures.
+                  </p>
+                  <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
+                    Explore →
+                  </span>
+                </a>
+
+                {/* Card 3 */}
+                <a
+                  href="/culture-science/ali/early-warning"
+                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/early-warning')}
+                  className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
-                  Early Warning Indicators
-                </a>.
-              </p>
-              <p className="text-base sm:text-lg text-[#1A1A1A]/70 mt-4">
-                Or return to the{' '}
-                <a 
-                  href="/culture-science/ali" 
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali')}
-                  className="text-[#1A1A1A] underline hover:text-[#C85A3C] transition-colors"
-                >
-                  ALI overview
-                </a>.
-              </p>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
+                    Early Warning
+                  </h3>
+                  <p className="text-base text-[#1A1A1A]/70 group-hover:text-white/80 mb-4">
+                    How ALI detects drift before damage.
+                  </p>
+                  <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
+                    Explore →
+                  </span>
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -330,4 +459,3 @@ export default function ALIMethod() {
     </>
   );
 }
-

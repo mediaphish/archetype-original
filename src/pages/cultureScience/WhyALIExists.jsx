@@ -2,16 +2,6 @@ import React from "react";
 import SEO from "../../components/SEO";
 import ALISubNav from "../../components/ALISubNav";
 
-// Section header with orange left border
-const SectionHeader = ({ children }) => (
-  <div className="flex items-start gap-4 sm:gap-6">
-    <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
-    <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A1A]">
-      {children}
-    </h2>
-  </div>
-);
-
 export default function WhyALIExists() {
   const handleLinkClick = (e, href) => {
     e.preventDefault();
@@ -27,21 +17,35 @@ export default function WhyALIExists() {
       <main className="min-h-screen">
         
         {/* SECTION 1: HERO */}
-        <section className="bg-white py-20 sm:py-28 md:py-32">
+        <section className="bg-white py-24 sm:py-32 md:py-40 lg:py-48">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto text-center space-y-6">
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight text-[#1A1A1A]">
-                Why the Archetype Leadership Index Exists
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              <h1 className="font-serif text-7xl sm:text-8xl md:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+                Why ALI Exists
               </h1>
+              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
+                The personal motivation behind building a leadership diagnostic.
+              </p>
             </div>
           </div>
         </section>
 
         {/* SECTION 2: WHY I'M BUILDING ALI */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section className="bg-gradient-to-b from-white via-[#FFF8F0] to-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>Why I'm Building ALI</SectionHeader>
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  01
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
+                    Why I'm Building ALI
+                  </h2>
+                </div>
+              </div>
+
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
                   ALI is the next chapter of a career spent building companies, strengthening people, and changing cultures in ways that helped teams do their best work together.
@@ -49,7 +53,7 @@ export default function WhyALIExists() {
                 <p>
                   Over decades of leadership, one pattern kept repeating:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
                   <p>Leadership creates conditions.</p>
                   <p>Conditions shape culture.</p>
                   <p>Culture determines outcomes.</p>
@@ -72,7 +76,18 @@ export default function WhyALIExists() {
         <section className="bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>The Problem I Kept Seeing</SectionHeader>
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  02
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
+                    The Problem I Kept Seeing
+                  </h2>
+                </div>
+              </div>
+
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
                   In every organization I've led or worked alongside, the same problem surfaced in different forms.
@@ -86,25 +101,37 @@ export default function WhyALIExists() {
                 <p>
                   It begins quietly:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
-                  <p>clarity softens</p>
-                  <p>communication compresses</p>
-                  <p>tone shifts under pressure</p>
-                  <p>consistency erodes</p>
-                  <p>trust thins</p>
-                  <p>expectations blur</p>
-                </div>
+                <ul className="list-none space-y-2 pl-6">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">clarity softens</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">communication compresses</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">tone shifts under pressure</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">consistency erodes</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">trust thins</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">expectations blur</span>
+                  </li>
+                </ul>
                 <p>
                   From inside the system, this feels normal.
                 </p>
                 <p>
-                  Teams adapt.
-                </p>
-                <p>
-                  Leaders interpret generously.
-                </p>
-                <p>
-                  Everyone keeps moving.
+                  Teams adapt. Leaders interpret generously. Everyone keeps moving.
                 </p>
                 <p>
                   By the time symptoms become obvious, damage has already occurred.
@@ -118,10 +145,21 @@ export default function WhyALIExists() {
         </section>
 
         {/* SECTION 4: WHY TRADITIONAL TOOLS FALL SHORT */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section className="bg-[#FFF8F0] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>Why Traditional Tools Fall Short</SectionHeader>
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  03
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
+                    Why Traditional Tools Fall Short
+                  </h2>
+                </div>
+              </div>
+
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
                   Most leadership tools measure sentiment, engagement, or personality.
@@ -129,7 +167,7 @@ export default function WhyALIExists() {
                 <p>
                   Those tools answer questions like:
                 </p>
-                <div className="pl-6 space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
                   <p>Are people happy?</p>
                   <p>Are they motivated?</p>
                   <p>Do they feel engaged?</p>
@@ -147,10 +185,7 @@ export default function WhyALIExists() {
                   People can feel frustrated inside strong ones.
                 </p>
                 <p>
-                  Sentiment fluctuates.
-                </p>
-                <p>
-                  Conditions persist.
+                  Sentiment fluctuates. Conditions persist.
                 </p>
                 <p>
                   ALI measures conditions because conditions are what leadership actually controls.
@@ -164,7 +199,18 @@ export default function WhyALIExists() {
         <section className="bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>Why This Had to Be Built as a System</SectionHeader>
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
+                  04
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
+                    Why This Had to Be Built as a System
+                  </h2>
+                </div>
+              </div>
+
               <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
                 <p>
                   ALI was not conceived as a survey.
@@ -192,12 +238,23 @@ export default function WhyALIExists() {
           </div>
         </section>
 
-        {/* SECTION 6: WHY THIS MATTERS TO ME */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        {/* SECTION 6: WHY THIS MATTERS TO ME - DARK SECTION */}
+        <section className="bg-[#1A1A1A] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              <SectionHeader>Why This Matters to Me</SectionHeader>
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
+              {/* Numbered section header */}
+              <div className="relative">
+                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-white/5 pointer-events-none">
+                  05
+                </div>
+                <div className="relative z-10">
+                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-6">
+                    Why This Matters to Me
+                  </h2>
+                </div>
+              </div>
+
+              <div className="text-base sm:text-lg leading-relaxed text-white/80 space-y-6">
                 <p>
                   Leadership has real consequences.
                 </p>
@@ -214,10 +271,7 @@ export default function WhyALIExists() {
                   ALI exists to give leaders that clarity earlier.
                 </p>
                 <p>
-                  Not to shame them.
-                </p>
-                <p>
-                  Not to expose them.
+                  Not to shame them. Not to expose them.
                 </p>
                 <p>
                   But to help them lead well.
@@ -230,38 +284,49 @@ export default function WhyALIExists() {
           </div>
         </section>
 
-        {/* SECTION 7: NAVIGATION LINKS */}
-        <section className="bg-white py-16 sm:py-24">
+        {/* SECTION 7: CTA - GO DEEPER */}
+        <section className="bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto">
-              <p className="text-base sm:text-lg text-[#1A1A1A]/70">
-                Continue to{' '}
-                <a 
-                  href="/culture-science/ali/what-is-ali" 
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/what-is-ali')}
-                  className="text-[#1A1A1A] underline hover:text-[#C85A3C] transition-colors"
-                >
-                  What Is ALI
-                </a>
-                {' '}or explore{' '}
-                <a 
-                  href="/culture-science/ali/method" 
+            <div className="max-w-4xl mx-auto space-y-12">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] text-center mb-12">
+                Go Deeper
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                {/* Card 1 */}
+                <a
+                  href="/culture-science/ali/method"
                   onClick={(e) => handleLinkClick(e, '/culture-science/ali/method')}
-                  className="text-[#1A1A1A] underline hover:text-[#C85A3C] transition-colors"
+                  className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
-                  The ALI Method
-                </a>.
-              </p>
-              <p className="text-base sm:text-lg text-[#1A1A1A]/70 mt-4">
-                Or return to the{' '}
-                <a 
-                  href="/culture-science/ali" 
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
+                    The ALI Method
+                  </h3>
+                  <p className="text-base sm:text-lg text-[#1A1A1A]/70 group-hover:text-white/80 mb-4">
+                    How leadership conditions become measurable, trackable, and directional.
+                  </p>
+                  <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
+                    Explore →
+                  </span>
+                </a>
+
+                {/* Card 2 */}
+                <a
+                  href="/culture-science/ali"
                   onClick={(e) => handleLinkClick(e, '/culture-science/ali')}
-                  className="text-[#1A1A1A] underline hover:text-[#C85A3C] transition-colors"
+                  className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
-                  ALI overview
-                </a>.
-              </p>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
+                    ALI Overview
+                  </h3>
+                  <p className="text-base sm:text-lg text-[#1A1A1A]/70 group-hover:text-white/80 mb-4">
+                    Return to the main ALI landing page for a complete introduction.
+                  </p>
+                  <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
+                    Explore →
+                  </span>
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -270,4 +335,3 @@ export default function WhyALIExists() {
     </>
   );
 }
-
