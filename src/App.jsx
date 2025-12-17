@@ -30,6 +30,7 @@ import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
 import ALIThanks from "./pages/cultureScience/ALIThanks";
 import WhyALIExists from "./pages/cultureScience/WhyALIExists";
+import ALIMethod from "./pages/cultureScience/ALIMethod";
 import ContactPage from "./pages/Contact";
 import MentoringPage from "./pages/mentoring/Mentoring";
 import Mentoring1on1 from "./pages/mentoring/Mentoring1on1";
@@ -108,6 +109,8 @@ export default function App() {
             setCurrentPage('ali-thanks');
           } else if (path === '/culture-science/ali/why-ali-exists') {
             setCurrentPage('why-ali-exists');
+          } else if (path === '/culture-science/ali/method') {
+            setCurrentPage('ali-method');
           } else {
             setCurrentPage('ali');
           }
@@ -373,6 +376,18 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <WhyALIExists />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render ALI Method page
+  if (currentPage === 'ali-method') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ALIMethod />
         <Footer />
         <FloatingArchyButton />
       </main>
