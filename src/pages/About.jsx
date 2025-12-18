@@ -124,7 +124,7 @@ export default function About() {
               {/* Right: Bart Character Image */}
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
                 <img
-                  src="/images/bart-character.png"
+                  src="/images/bart-character-001b.png"
                   alt="Bart Paden"
                   className="w-full max-w-md lg:max-w-lg h-auto object-contain"
                   onError={(e) => {
