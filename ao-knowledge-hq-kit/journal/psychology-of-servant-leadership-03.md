@@ -6,7 +6,7 @@ created_at: "2025-12-22"
 updated_at: "2025-12-22"
 summary: "Servant leaders don’t squeeze results out of people — they design systems that satisfy the human needs that make motivation renewable."
 categories: ["servant-leadership", "leadership", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-03.png"
+featured_image: "../images/psychology-of-servant-leadership-03.jpg"
 takeaways:
   - Safety gets people honest; meaning keeps them fully engaged.
   - Autonomy, competence, and relatedness are the core psychological drivers of sustained motivation.
@@ -29,7 +29,7 @@ original_url: ""
 
 # Psychology of Servant Leadership, Part 3: Motivation and Meaning — Autonomy, Competence, and Relatedness
 
-![Psychology of Servant Leadership, Part 3](../images/psychology-of-servant-leadership-03.png)
+![Psychology of Servant Leadership, Part 3](../images/psychology-of-servant-leadership-03.jpg)
 
 If safety gets people to show up honestly, meaning keeps them showing up fully.
 
