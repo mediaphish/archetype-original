@@ -20,6 +20,8 @@ original_url: "https://www.archetypeoriginal.com/journal/performance-of-perfecti
 
 # The Performance of Perfection
 
+![The Performance of Perfection](../images/performance-of-perfection.jpg)
+
 Some leaders don’t try to be competent — they try to look competent. Everything is polished. Everything is curated. Everything is crafted to signal strength without ever proving it.
 
 At first it’s impressive.  
