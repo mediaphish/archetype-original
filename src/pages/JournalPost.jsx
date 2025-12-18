@@ -171,15 +171,12 @@ export default function JournalPost() {
                 href="/journal" 
                 onClick={(e) => {
                   e.preventDefault();
-                  // Navigate back to journal - use browser back if possible, otherwise pushState
-                  if (window.history.length > 1) {
-                    window.history.back();
-                  } else {
-                    window.history.pushState({}, '', '/journal');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }
-                  // Ensure we scroll to top
+                  e.stopPropagation();
+                  // Immediately scroll to top to prevent any scroll restoration
                   window.scrollTo({ top: 0, behavior: 'instant' });
+                  // Navigate using pushState (not history.back to avoid scroll restoration)
+                  window.history.pushState({ scrollToTop: true }, '', '/journal');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
                 className="inline-flex items-center text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors text-base sm:text-lg"
               >

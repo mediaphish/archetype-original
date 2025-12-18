@@ -44,6 +44,9 @@ export default function Journal() {
   };
 
   useEffect(() => {
+    // Ensure we're at the top when the Journal page loads
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    
     // Load journal posts from the knowledge corpus
     fetch('/api/knowledge?type=journal-post')
       .then(response => response.json())
