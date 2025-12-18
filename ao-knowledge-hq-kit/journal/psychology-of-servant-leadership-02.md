@@ -29,7 +29,7 @@ original_url: ""
 
 # Psychology of Servant Leadership, Part 2: Safety Before Strategy — The Neuroscience of Trust and Performance
 
-![Psychology of Servant Leadership, Part 2](../images/psychology-of-servant-leadership-02.png)
+![Psychology of Servant Leadership, Part 2](../images/psychology-of-servant-leadership-02.jpg)
 
 Most leaders think performance starts with a plan.  
 It doesn’t.  
