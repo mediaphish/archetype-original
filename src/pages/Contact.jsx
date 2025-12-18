@@ -66,11 +66,11 @@ export default function ContactPage() {
         {/* Hero Section */}
         <section className="bg-white py-16 sm:py-20 md:py-24 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-5xl mx-auto text-center space-y-8">
-              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
+            <div className="max-w-5xl mx-auto text-center space-y-4 sm:space-y-6 md:space-y-8">
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] break-words">
                 Start a Conversation
               </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light break-words">
                 Leadership carries weight. If you need clarity or direction, I'm here to help.
               </p>
             </div>
@@ -80,16 +80,16 @@ export default function ContactPage() {
         {/* Main Content - Two Column Layout */}
         <section className="py-12 sm:py-16 md:py-20 bg-[#FAFAF9]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
               
               {/* LEFT COLUMN: Archy AI Chat */}
-              <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8 md:p-10 flex flex-col h-full">
+              <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col h-full order-2 lg:order-1">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
-                    <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-2">
+                    <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A1A] mb-2 break-words">
                       Ask Archy Anything
                     </h2>
-                    <p className="text-sm sm:text-base text-[#6B6B6B] leading-relaxed">
+                    <p className="text-xs sm:text-sm md:text-base text-[#6B6B6B] leading-relaxed break-words">
                       Bart has loaded decades of leadership experience into Archy's knowledge base. Ask questions about culture, leadership, servant leadership, methods, or what might work for your specific situation. If Archy can't help, we'll get you to the right person.
                     </p>
                   </div>
@@ -99,7 +99,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Embedded Archy Chat Interface */}
-                <div className="flex-1 flex flex-col min-h-[500px] max-h-[600px] border border-[#1A1A1A]/10 rounded-md overflow-hidden">
+                <div className="flex-1 flex flex-col min-h-[400px] sm:min-h-[500px] max-h-[500px] sm:max-h-[600px] border border-[#1A1A1A]/10 rounded-md overflow-hidden">
                   <div className="h-full">
                     <ChatApp key={chatKey} context="contact" initialMessage={archyInitialMessage} />
                   </div>
@@ -112,7 +112,7 @@ export default function ContactPage() {
                       setArchyInitialMessage('What is servant leadership?');
                       setChatKey(prev => prev + 1);
                     }}
-                    className="text-xs px-3 py-1.5 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                      className="text-xs px-3 py-2 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors min-h-[44px] flex items-center justify-center"
                   >
                     What is servant leadership?
                   </button>
@@ -121,7 +121,7 @@ export default function ContactPage() {
                       setArchyInitialMessage('How does mentorship work?');
                       setChatKey(prev => prev + 1);
                     }}
-                    className="text-xs px-3 py-1.5 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                      className="text-xs px-3 py-2 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors min-h-[44px] flex items-center justify-center"
                   >
                     How does mentorship work?
                   </button>
@@ -130,7 +130,7 @@ export default function ContactPage() {
                       setArchyInitialMessage('What offering fits my situation?');
                       setChatKey(prev => prev + 1);
                     }}
-                    className="text-xs px-3 py-1.5 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors"
+                      className="text-xs px-3 py-2 border border-[#1A1A1A]/20 rounded-md text-[#1A1A1A] hover:bg-[#FAFAF9] transition-colors min-h-[44px] flex items-center justify-center"
                   >
                     What offering fits my situation?
                   </button>
@@ -138,13 +138,13 @@ export default function ContactPage() {
               </div>
 
               {/* RIGHT COLUMN: Contact Form */}
-              <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-8 md:p-10 flex flex-col h-full">
+              <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col h-full order-1 lg:order-2">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
-                    <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-2">
+                    <h2 className="font-serif text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A1A] mb-2 break-words">
                       Or Reach Out Directly
                     </h2>
-                    <p className="text-sm sm:text-base text-[#6B6B6B] leading-relaxed">
+                    <p className="text-xs sm:text-sm md:text-base text-[#6B6B6B] leading-relaxed break-words">
                       Prefer to start with a human conversation? Fill out the form below and I'll get back to you personally.
                     </p>
                   </div>

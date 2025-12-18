@@ -124,13 +124,13 @@ export default function About() {
         {/* Hero Section with 3-Layer Parallax */}
         <section ref={heroRef} className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
               {/* Left Content */}
               <div>
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
+                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-[0.9] tracking-tight break-words">
                   About Bart
                 </h1>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-light text-[#1A1A1A]/70 mb-6 sm:mb-8 leading-relaxed">
+                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-[#1A1A1A]/70 mb-4 sm:mb-6 md:mb-8 leading-relaxed break-words">
                   Thirty-two years building people, teams, and leaders who do work that matters.
                 </h2>
               </div>
@@ -221,7 +221,7 @@ export default function About() {
                       e.preventDefault();
                       scrollToSection(section.id, e);
                     }}
-                    className={`inline-block px-3 py-1 text-xs font-medium uppercase tracking-wider border transition-colors ${
+                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-colors min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
                         : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
@@ -253,7 +253,7 @@ export default function About() {
                       e.preventDefault();
                       scrollToSection(section.id, e);
                     }}
-                    className={`inline-block px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-all ${
+                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-all min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
                         : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'

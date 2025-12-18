@@ -32,15 +32,15 @@ const renderParagraph = (text, key) => {
   if (text.trim().startsWith('>')) {
     const quoteText = text.trim().substring(1).trim();
     return (
-      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-8 sm:pl-10 my-12 sm:my-16">
-        <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
+      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-10 my-8 sm:my-10 md:my-12 lg:my-16">
+        <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed break-words">
           "{quoteText}"
         </p>
       </blockquote>
     );
   }
   return (
-    <p key={key} className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+    <p key={key} className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4 break-words">
       {text}
     </p>
   );
@@ -160,19 +160,19 @@ export default function Philosophy() {
         {/* Hero Section with 3-Layer Parallax */}
         <section ref={heroRef} className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
               {/* Left Content */}
               <div>
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
+                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-[0.9] tracking-tight break-words">
                   Philosophy
                 </h1>
-                <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-[#1A1A1A]/70">
+                <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light leading-relaxed text-[#1A1A1A]/70 break-words">
                   Leadership is stewardship.
                 </p>
               </div>
               
               {/* Right: 3-Layer Parallax (Desktop Only) */}
-              <div className="relative h-[500px] hidden lg:block">
+              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px] hidden lg:block">
                 {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
                 <div 
                   className="absolute inset-0 z-10"
@@ -245,7 +245,7 @@ export default function Philosophy() {
                       e.preventDefault();
                       scrollToSection(section.id, e);
                     }}
-                    className={`inline-block px-3 py-1 text-xs font-medium uppercase tracking-wider border transition-colors ${
+                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-colors min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
                         : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
@@ -277,7 +277,7 @@ export default function Philosophy() {
                       e.preventDefault();
                       scrollToSection(section.id, e);
                     }}
-                    className={`inline-block px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-all ${
+                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-all min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
                         : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
