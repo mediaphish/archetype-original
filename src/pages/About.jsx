@@ -135,7 +135,7 @@ export default function About() {
                 </h2>
               </div>
               
-              {/* Right: 3-Layer Parallax */}
+              {/* Right: 2-Layer Parallax */}
               {!isMobile && (
                 <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0 hidden lg:block" style={{ aspectRatio: '1/1', height: 'auto' }}>
                   {/* Layer 3 (back) - Monitor - can move vertically */}
@@ -148,23 +148,6 @@ export default function About() {
                     <img 
                       src="/images/about-layer-3.png" 
                       alt="Monitor with presentation" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 2 (middle) - Archy - moves horizontally only (grounded) */}
-                  <div 
-                    className="absolute inset-0 z-20"
-                    style={{ 
-                      transform: `translateX(${scrollY * 0.08}px)`
-                    }}
-                  >
-                    <img 
-                      src="/images/about-layer-2.png" 
-                      alt="Archy" 
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
