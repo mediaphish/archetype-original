@@ -6,7 +6,7 @@ created_at: "2026-01-12"
 updated_at: "2026-01-12"
 summary: "Servant leadership stops being fragile when it’s baked into systems and rituals, not just resting on the personality of one good leader."
 categories: ["servant-leadership", "leadership", "culture", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-06.png"
+featured_image: "../images/psychology-of-servant-leadership-06.jpg"
 takeaways:
   - Culture is what your systems consistently reward, not what you say you value.
   - People mirror the emotional and ethical patterns they experience from leaders.
@@ -29,7 +29,7 @@ original_url: ""
 
 # Psychology of Servant Leadership, Part 6: The System of Service — Scaling Humility
 
-![Psychology of Servant Leadership, Part 6](../images/psychology-of-servant-leadership-06.png)
+![Psychology of Servant Leadership, Part 6](../images/psychology-of-servant-leadership-06.jpg)
 
 Most companies try to scale processes, technologies, or performance.  
 Very few try to scale humility.  
