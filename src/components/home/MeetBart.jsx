@@ -59,8 +59,8 @@ export default function MeetBart() {
               
               {/* CTA Button */}
               <a
-                href="/about"
-                onClick={(e) => handleLinkClick(e, '/about')}
+                href="/meet-bart"
+                onClick={(e) => handleLinkClick(e, '/meet-bart')}
                 className="inline-block bg-[#1A1A1A] text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors min-h-[44px] flex items-center justify-center"
               >
                 Read My Story →

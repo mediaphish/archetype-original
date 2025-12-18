@@ -146,11 +146,19 @@ export default function Header() {
                 {/* Primary Navigation */}
                 <div className="flex items-center gap-6">
                   <a 
-                    href="/about" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/about'); }}
-                    className={navLinkClass('/about')}
+                    href="/meet-bart" 
+                    onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
+                    className={navLinkClass('/meet-bart')}
                   >
-                    About
+                    Meet Bart
+                  </a>
+                  
+                  <a 
+                    href="/archy" 
+                    onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
+                    className={navLinkClass('/archy')}
+                  >
+                    Meet Archy
                   </a>
                   
                   <a 
@@ -310,14 +318,6 @@ export default function Header() {
                       </div>
                     )}
                   </div>
-
-                  <a 
-                    href="/archy" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
-                    className={navLinkClass('/archy')}
-                  >
-                    Meet Archy
-                  </a>
                 </div>
               </div>
             </div>
@@ -389,15 +389,27 @@ export default function Header() {
             <div className="flex-1 overflow-y-auto py-4">
               <div className="flex flex-col space-y-1">
                 <a 
-                  href="/about" 
-                  onClick={(e) => { e.preventDefault(); handleNavigation('/about'); }}
+                  href="/meet-bart" 
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
                   className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/about') 
+                    isActive('/meet-bart') 
                       ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
                       : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                   }`}
                 >
-                  About
+                  Meet Bart
+                </a>
+                
+                <a 
+                  href="/archy" 
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
+                  className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
+                    isActive('/archy') 
+                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
+                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
+                  }`}
+                >
+                  Meet Archy
                 </a>
                 
                 <a 
@@ -557,18 +569,6 @@ export default function Header() {
                     </div>
                   )}
                 </div>
-
-                <a 
-                  href="/archy" 
-                  onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
-                  className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/archy') 
-                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
-                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
-                  }`}
-                >
-                  Meet Archy
-                </a>
               </div>
             </div>
 

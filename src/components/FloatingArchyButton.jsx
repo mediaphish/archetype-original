@@ -36,7 +36,7 @@ export default function FloatingArchyButton() {
         setContext('archy');
       } else if (path === '/philosophy') {
         setContext('philosophy');
-      } else if (path === '/about') {
+      } else if (path === '/meet-bart') {
         setContext('about');
       } else if (path === '/contact') {
         setContext('contact');

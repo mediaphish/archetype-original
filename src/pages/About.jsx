@@ -15,28 +15,15 @@ const sections = [
 ];
 
 export default function About() {
-  const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState('work-found-me');
   const [showStickyNav, setShowStickyNav] = useState(false);
   const sectionRefs = useRef({});
   const clickedSectionRef = useRef(null);
   const heroRef = useRef(null);
 
-  // Mobile detection and scroll tracking for parallax
+  // Scroll tracking for sticky nav
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
     const handleScroll = () => {
-      if (window.innerWidth >= 768) {
-        setScrollY(window.scrollY);
-      }
-      
       // Show sticky nav after scrolling past hero
       if (heroRef.current) {
         const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
@@ -49,7 +36,6 @@ export default function About() {
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkMobile);
     };
   }, []);
 
@@ -124,69 +110,28 @@ export default function About() {
         {/* Hero Section with 3-Layer Parallax */}
         <section ref={heroRef} className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center max-w-6xl mx-auto">
               {/* Left Content */}
-              <div>
+              <div className="order-2 lg:order-1">
                 <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-[0.9] tracking-tight break-words">
-                  About Bart
+                  Meet Bart
                 </h1>
                 <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-[#1A1A1A]/70 mb-4 sm:mb-6 md:mb-8 leading-relaxed break-words">
                   Thirty-two years building people, teams, and leaders who do work that matters.
                 </h2>
               </div>
               
-              {/* Right: 2-Layer Parallax */}
-              {!isMobile && (
-                <div className="relative w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0 hidden lg:block" style={{ aspectRatio: '1/1', height: 'auto' }}>
-                  {/* Layer 3 (back) - Monitor - can move vertically */}
-                  <div 
-                    className="absolute inset-0 z-10"
-                    style={{ 
-                      transform: `translateY(${scrollY * 0.05}px)`
-                    }}
-                  >
-                    <img 
-                      src="/images/about-layer-3.png" 
-                      alt="Monitor with presentation" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1 (front) - Cartoon Bart - moves horizontally only (grounded) */}
-                  <div 
-                    className="absolute inset-0 z-30"
-                    style={{ 
-                      transform: `translateX(${scrollY * -0.12}px)`
-                    }}
-                  >
-                    <img 
-                      src="/images/about-layer-1.png" 
-                      alt="Bart" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-              
-              {/* Mobile: Static image */}
-              {isMobile && (
-                <div className="relative w-full max-w-lg mx-auto lg:hidden" style={{ aspectRatio: '1/1' }}>
-                  <img 
-                    src="/images/about-layer-1.png" 
-                    alt="Bart" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
+              {/* Right: Bart Character Image */}
+              <div className="flex justify-center lg:justify-end order-1 lg:order-2">
+                <img
+                  src="/images/bart-character.png"
+                  alt="Bart Paden"
+                  className="w-full max-w-md lg:max-w-lg h-auto object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
             </div>
           </div>
         </section>

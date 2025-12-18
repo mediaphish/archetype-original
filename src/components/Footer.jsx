@@ -28,8 +28,8 @@ export default function Footer() {
               <ul className="space-y-2">
                 <li>
                   <a
-                    href="/about"
-                    onClick={(e) => handleLinkClick(e, '/about')}
+                    href="/meet-bart"
+                    onClick={(e) => handleLinkClick(e, '/meet-bart')}
                     className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
                   >
                     About Bart

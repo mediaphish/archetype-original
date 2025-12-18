@@ -86,8 +86,13 @@ export default function App() {
         setCurrentPage('journal');
       } else if (path.startsWith('/journal/')) {
         setCurrentPage('journal-post');
-      } else if (path === '/about') {
+      } else if (path === '/meet-bart') {
         setCurrentPage('about');
+      } else if (path === '/about') {
+        // Redirect old /about to /meet-bart
+        window.history.replaceState({}, '', '/meet-bart');
+        setCurrentPage('about');
+        return;
       } else if (path === '/contact') {
         setCurrentPage('contact');
       } else if (path === '/faqs' || path.startsWith('/faqs')) {
