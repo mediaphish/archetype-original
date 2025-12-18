@@ -29,7 +29,7 @@ original_url: ""
 
 # Psychology of Servant Leadership, Part 1: The Servant Mindset — Why It Works and Why It’s Misunderstood
 
-![Psychology of Servant Leadership, Part 1](../images/psychology-of-servant-leadership-01.png)
+![Psychology of Servant Leadership, Part 1](../images/psychology-of-servant-leadership-01.jpg)
 
 Most people get servant leadership wrong. They picture someone nice. Quiet. Maybe even passive.  
 That’s not it at all.
