@@ -60,21 +60,21 @@ export default function HomeHero() {
               </div>
               
               {/* Title */}
-              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] mb-6 sm:mb-8">
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] mb-6 sm:mb-8 break-words">
                 Leadership That Actually Lasts
               </h1>
               
               {/* Body paragraphs */}
               <div className="space-y-6 mb-8 sm:mb-10">
-                <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light">
+                <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light break-words">
                   Clarity, culture, responsibility, and leadership that strengthens people and transforms environments.
                 </p>
                 
-                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-xl">
+                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-xl break-words">
                   I'm Bart — I've spent more than three decades building leaders, teams, companies, and cultures that can hold real weight. Archy is my AI persona, built on the same lived experience, the same philosophy, and the research behind Culture Science.
                 </p>
                 
-                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-xl">
+                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-xl break-words">
                   Together, we help leaders lead with clarity — and help teams become places people actually want to belong.
                 </p>
               </div>
@@ -84,14 +84,14 @@ export default function HomeHero() {
                 <a
                   href="/contact"
                   onClick={(e) => handleLinkClick(e, '/contact')}
-                  className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
+                  className="bg-[#1A1A1A] text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center min-h-[44px] flex items-center justify-center"
                 >
                   Work With Me
                 </a>
                 <a
                   href="#archy"
                   onClick={(e) => handleLinkClick(e, '#archy')}
-                  className="bg-transparent text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
+                  className="bg-transparent text-[#1A1A1A] px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center min-h-[44px] flex items-center justify-center"
                 >
                   Meet Archy →
                 </a>
@@ -99,7 +99,7 @@ export default function HomeHero() {
             </div>
           
             {/* Right Column: 4-Layer Parallax */}
-            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] order-first md:order-last mt-[-40px] sm:mt-0">
+            <div className="relative h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] order-first md:order-last mt-[-20px] sm:mt-0">
               {/* Layer 4 (Back - Archy's speech bubble): Moves up at different pace than Bart's bubble */}
               <div 
                 className="absolute inset-0 z-10 flex items-center justify-center"
@@ -111,7 +111,7 @@ export default function HomeHero() {
                 <img 
                   src="/images/home-layer-4.png" 
                   alt="Archy's speech bubble" 
-                  className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
+                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -129,7 +129,7 @@ export default function HomeHero() {
                 <img 
                   src="/images/home-layer-3.png" 
                   alt="Hi, I'm Bart! speech bubble" 
-                  className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
+                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -147,7 +147,7 @@ export default function HomeHero() {
                 <img 
                   src="/images/home-layer-2.png" 
                   alt="Archy, the wise leadership guide" 
-                  className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
+                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -165,7 +165,7 @@ export default function HomeHero() {
                 <img 
                   src="/images/home-layer-1.png" 
                   alt="And, I'm Archy! speech bubble" 
-                  className="w-full h-auto max-w-[280px] sm:max-w-[360px] md:max-w-[480px] lg:max-w-full object-contain"
+                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

@@ -20,7 +20,7 @@ export default function MeetBart() {
           <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-12 lg:gap-16 items-center">
             {/* Left Column: Headshot (order-2 lg:order-1) */}
             <div className="order-2 lg:order-1">
-              <div className="relative aspect-[3/4] w-full max-w-[280px] mx-auto lg:mx-0">
+              <div className="relative aspect-[3/4] w-full max-w-[240px] sm:max-w-[280px] mx-auto lg:mx-0">
                 <img
                   src="/images/bart-headshot-003.jpg"
                   alt="Bart - Founder of Archetype Original"

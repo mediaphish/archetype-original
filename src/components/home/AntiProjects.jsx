@@ -30,34 +30,34 @@ export default function AntiProjects() {
           {/* Two Anti-Projects (vertical layout with thick orange left borders) */}
           <div className="space-y-12 sm:space-y-16 md:space-y-20">
             {/* ANTI-PROJECT 1: Scoreboard Leadership */}
-            <div className="border-l-[6px] border-[#C85A3C] pl-8 sm:pl-10 md:pl-12 py-4">
-              <h3 className="font-serif text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+            <div className="border-l-[6px] border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12 py-4">
+              <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight break-words">
                 Scoreboard Leadership
               </h3>
-              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-6 sm:mb-8 md:mb-10 max-w-3xl break-words">
                 When leadership becomes a metrics-first performance, people become expendable. Scoreboard Leadership names the patterns of ego-driven decision-making that erode trust, undermine culture, and quietly fracture teams from the inside out.
               </p>
               <a
                 href="/culture-science/anti-projects/scoreboard-leadership"
                 onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/scoreboard-leadership')}
-                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
               >
                 Explore Research →
               </a>
             </div>
 
             {/* ANTI-PROJECT 2: The Bad Leader Project */}
-            <div className="border-l-[6px] border-[#C85A3C] pl-8 sm:pl-10 md:pl-12 py-4">
-              <h3 className="font-serif text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-tight tracking-tight">
+            <div className="border-l-[6px] border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12 py-4">
+              <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight break-words">
                 The Bad Leader Project
               </h3>
-              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 max-w-3xl">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-6 sm:mb-8 md:mb-10 max-w-3xl break-words">
                 A heat-map of dysfunctional leadership across industries. Anonymous stories, aggregated patterns, and research that reveals where leadership is breaking down — and what it will take to repair it. Launching Q1 2026.
               </p>
               <a
                 href="/culture-science/anti-projects/bad-leader-project"
                 onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/bad-leader-project')}
-                className="inline-flex items-center text-lg sm:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
               >
                 Explore Research →
               </a>

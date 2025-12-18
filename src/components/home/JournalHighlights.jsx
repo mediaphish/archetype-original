@@ -62,7 +62,7 @@ export default function JournalHighlights() {
     <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="font-serif text-[48px] sm:text-[64px] md:text-[80px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9]">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] break-words">
             Latest From The Journal
           </h2>
           
@@ -106,7 +106,7 @@ export default function JournalHighlights() {
                       <time className="text-xs sm:text-sm text-[#1A1A1A]/40 mb-4 sm:mb-6 block">
                         {formatDate(featuredPost.publish_date || featuredPost.created_at)}
                       </time>
-                      <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 group-hover:text-[#1A1A1A]/60 transition-colors leading-tight">
+                      <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 group-hover:text-[#1A1A1A]/60 transition-colors leading-tight break-words">
                         {featuredPost.title}
                       </h3>
                       <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A]/70 mb-8">
@@ -160,7 +160,7 @@ export default function JournalHighlights() {
                         <time className="text-xs sm:text-sm text-[#1A1A1A]/40 mb-4 block">
                           {formatDate(post.publish_date || post.created_at)}
                         </time>
-                        <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 group-hover:text-[#1A1A1A]/60 transition-colors leading-tight">
+                        <h3 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 group-hover:text-[#1A1A1A]/60 transition-colors leading-tight break-words">
                           {post.title}
                         </h3>
                         <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">

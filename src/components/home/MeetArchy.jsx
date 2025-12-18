@@ -58,7 +58,7 @@ export default function MeetArchy() {
             </div>
             
             {/* Right Column: Archy Chat Preview Box */}
-            <div className="border border-[#1A1A1A]/10 p-6 sm:p-8 md:p-10 lg:p-12">
+            <div className="border border-[#1A1A1A]/10 p-4 sm:p-6 md:p-8 lg:p-12">
               {/* Archy Message */}
               <div className="flex items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <img 

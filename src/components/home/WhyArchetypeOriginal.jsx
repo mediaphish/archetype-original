@@ -25,7 +25,7 @@ export default function WhyArchetypeOriginal() {
           </div>
           
           {/* Header */}
-          <h2 className="font-serif text-[48px] sm:text-[64px] md:text-[72px] font-bold text-[#1A1A1A] mb-8 sm:mb-10 leading-[0.9]">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 leading-[0.9] break-words">
             Why Archetype Original?
           </h2>
           
@@ -41,8 +41,8 @@ export default function WhyArchetypeOriginal() {
           </div>
           
           {/* Blockquote */}
-          <blockquote className="my-10 sm:my-12 pl-6 sm:pl-8 border-l-4 border-[#C85A3C]">
-            <p className="text-xl sm:text-2xl md:text-3xl italic font-serif text-[#1A1A1A] leading-tight">
+          <blockquote className="my-8 sm:my-10 md:my-12 pl-4 sm:pl-6 md:pl-8 border-l-4 border-[#C85A3C]">
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl italic font-serif text-[#1A1A1A] leading-tight break-words">
               Be the kind of leader others want to follow. Lead in a way that becomes the pattern for something healthier, stronger, and more human.
             </p>
           </blockquote>
