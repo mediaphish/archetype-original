@@ -6,7 +6,7 @@ created_at: "2025-08-11"
 updated_at: "2025-10-28"
 summary: "A leadership reflection contrasting extractive management with investment-driven leadership—reminding that teams thrive when they’re nurtured, not drained."
 categories: ["team-building", "leadership-development"]
-featured_image: "../images/wells-run-dry.jpg"
+featured_image: "../images/teams-are-not-wells.jpg"
 takeaways: []
 applications: []
 related: []
@@ -16,7 +16,7 @@ original_url: "https://www.facebook.com/share/p/1JVzjT3Ln1/"
 
 # Wells Run Dry
 
-![Wells Run Dry](../images/wells-run-dry.jpg)
+![Wells Run Dry](../images/teams-are-not-wells.jpg)
 
 Some leaders see their teams as wells to be drawn from.  
 Every meeting, every task, every quarter is about getting more.  
