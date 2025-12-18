@@ -6,7 +6,7 @@ created_at: "2025-12-29"
 updated_at: "2025-12-29"
 summary: "High performance isn’t about red-lining people — it’s about aligning pressure, clarity, and trust so teams can live in the flow state more often."
 categories: ["servant-leadership", "leadership", "high-performance", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-04.png"
+featured_image: "../images/psychology-of-servant-leadership-04.jpg"
 takeaways:
   - Performance without health is temporary; alignment beats adrenaline.
   - Flow happens where meaningful challenge meets real capability, not in chaos.
@@ -29,7 +29,7 @@ original_url: ""
 
 # Psychology of Servant Leadership, Part 4: Flourishing and Flow — Servant Leadership in High-Performance Systems
 
-![Psychology of Servant Leadership, Part 4](../images/psychology-of-servant-leadership-04.png)
+![Psychology of Servant Leadership, Part 4](../images/psychology-of-servant-leadership-04.jpg)
 
 Some leaders think pressure proves strength.  
 They run their teams like engines red-lined at the edge of burnout and call it “high performance.”  
