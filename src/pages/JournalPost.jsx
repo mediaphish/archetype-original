@@ -172,11 +172,22 @@ export default function JournalPost() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  // Immediately scroll to top to prevent any scroll restoration
+                  // Prevent any scroll restoration
+                  if ('scrollRestoration' in window.history) {
+                    window.history.scrollRestoration = 'manual';
+                  }
+                  // Immediately scroll to top
                   window.scrollTo({ top: 0, behavior: 'instant' });
                   // Navigate using pushState (not history.back to avoid scroll restoration)
                   window.history.pushState({ scrollToTop: true }, '', '/journal');
                   window.dispatchEvent(new PopStateEvent('popstate'));
+                  // Ensure scroll stays at top after navigation completes
+                  setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+                    if ('scrollRestoration' in window.history) {
+                      window.history.scrollRestoration = 'auto';
+                    }
+                  }, 100);
                 }}
                 className="inline-flex items-center text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors text-base sm:text-lg"
               >
