@@ -40,7 +40,7 @@ export default function Archy() {
                   MEET ARCHY
                 </p>
                 
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] break-words">
+                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] break-words">
                   Your AI Leadership Coach
                 </h1>
                 
