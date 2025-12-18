@@ -24,25 +24,25 @@ export default function MeetArchy() {
             </span>
           </div>
           
-          {/* Header */}
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-8 sm:mb-10 md:mb-12 leading-tight tracking-tight">
+              {/* Header */}
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 lg:mb-12 leading-tight tracking-tight break-words">
             Meet Archy
           </h2>
           
           {/* 2-column grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 md:gap-20 lg:gap-24 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-24 items-start">
             {/* Left Column: Content */}
-            <div>
-              <div className="space-y-6 mb-8 sm:mb-10 md:mb-12">
-                <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70">
+            <div className="order-2 lg:order-1">
+              <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8 md:mb-10 lg:mb-12">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
                   Archy is a digital extension of how I think about people, culture, and leadership. He's grounded in lived experience, sharpened by research, and aligned with the core philosophy that shaped Archetype Original: clarity, responsibility, humility, and strength used in the right way.
                 </p>
                 
-                <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
                   Ask him anything — leadership tension, culture drift, team conflict, communication challenges, decision pressure. He answers with the same values I bring into the room.
                 </p>
                 
-                <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
                   No noise. No ego. Just real guidance when you need it.
                 </p>
               </div>
@@ -51,14 +51,14 @@ export default function MeetArchy() {
               <a
                 href="/contact"
                 onClick={(e) => handleLinkClick(e, '/contact')}
-                className="mt-8 sm:mt-10 md:mt-12 inline-block bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
+                className="mt-6 sm:mt-8 md:mt-10 lg:mt-12 inline-block bg-[#1A1A1A] text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors min-h-[44px] flex items-center justify-center"
               >
                 Start a Conversation →
               </a>
             </div>
             
             {/* Right Column: Archy Chat Preview Box */}
-            <div className="border border-[#1A1A1A]/10 p-4 sm:p-6 md:p-8 lg:p-12">
+            <div className="order-1 lg:order-2 border border-[#1A1A1A]/10 p-4 sm:p-6 md:p-8 lg:p-12">
               {/* Archy Message */}
               <div className="flex items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <img 
