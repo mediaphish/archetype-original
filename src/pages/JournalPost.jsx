@@ -8,6 +8,11 @@ export default function JournalPost() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Disable browser scroll restoration for this page
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    
     // Extract slug from URL
     const path = window.location.pathname;
     const slug = path.replace('/journal/', '').replace(/\/$/, '');
@@ -37,6 +42,13 @@ export default function JournalPost() {
         setError('Failed to load post');
         setLoading(false);
       });
+    
+    // Cleanup: restore scroll restoration when component unmounts
+    return () => {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'auto';
+      }
+    };
   }, []);
 
   const formatDate = (dateString) => {
@@ -157,6 +169,18 @@ export default function JournalPost() {
             <div className="mb-8 sm:mb-12">
               <a 
                 href="/journal" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Navigate back to journal - use browser back if possible, otherwise pushState
+                  if (window.history.length > 1) {
+                    window.history.back();
+                  } else {
+                    window.history.pushState({}, '', '/journal');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }
+                  // Ensure we scroll to top
+                  window.scrollTo({ top: 0, behavior: 'instant' });
+                }}
                 className="inline-flex items-center text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors text-base sm:text-lg"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

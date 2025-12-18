@@ -1,6 +1,6 @@
 ---
 title: "Psychology of Servant Leadership, Part 1: The Servant Mindset"
-slug: "psychology-of-servant-leadership-part-1-servant-mindset"
+slug: "psychology-of-servant-leadership-part-1"
 publish_date: "2025-12-08"
 created_at: "2025-12-08"
 updated_at: "2025-12-08"
@@ -18,11 +18,11 @@ applications:
   - Practice separating the person from the problem when you confront or correct.
   - Notice one place this week where your ego wants to “prove” you’re in charge and choose restraint instead.
 related:
-  - "psychology-of-servant-leadership-part-2-safety-before-strategy"
-  - "psychology-of-servant-leadership-part-3-motivation-and-meaning"
-  - "psychology-of-servant-leadership-part-4-flourishing-and-flow"
-  - "psychology-of-servant-leadership-part-5-paradox-of-the-servant"
-  - "psychology-of-servant-leadership-part-6-system-of-service"
+  - "psychology-of-servant-leadership-part-2"
+  - "psychology-of-servant-leadership-part-3"
+  - "psychology-of-servant-leadership-part-4"
+  - "psychology-of-servant-leadership-part-5"
+  - "psychology-of-servant-leadership-part-6"
 original_source: ""
 original_url: ""
 ---

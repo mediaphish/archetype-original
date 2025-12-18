@@ -1,6 +1,6 @@
 ---
 title: "Psychology of Servant Leadership, Part 5: The Paradox of the Servant"
-slug: "psychology-of-servant-leadership-part-5-paradox-of-the-servant"
+slug: "psychology-of-servant-leadership-part-5"
 publish_date: "2026-01-05"
 created_at: "2026-01-05"
 updated_at: "2026-01-05"
@@ -18,11 +18,11 @@ applications:
   - When you feel the urge to rescue, ask, “Am I empowering them or avoiding discomfort?”
   - Name one clear limit to your team: what you will gladly give and what you can’t.
 related:
-  - "psychology-of-servant-leadership-part-1-servant-mindset"
-  - "psychology-of-servant-leadership-part-2-safety-before-strategy"
-  - "psychology-of-servant-leadership-part-3-motivation-and-meaning"
-  - "psychology-of-servant-leadership-part-4-flourishing-and-flow"
-  - "psychology-of-servant-leadership-part-6-system-of-service"
+  - "psychology-of-servant-leadership-part-1"
+  - "psychology-of-servant-leadership-part-2"
+  - "psychology-of-servant-leadership-part-3"
+  - "psychology-of-servant-leadership-part-4"
+  - "psychology-of-servant-leadership-part-6"
 original_source: ""
 original_url: ""
 ---

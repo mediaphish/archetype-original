@@ -1,6 +1,6 @@
 ---
 title: "Psychology of Servant Leadership, Part 6: The System of Service"
-slug: "psychology-of-servant-leadership-part-6-system-of-service"
+slug: "psychology-of-servant-leadership-part-6"
 publish_date: "2026-01-12"
 created_at: "2026-01-12"
 updated_at: "2026-01-12"

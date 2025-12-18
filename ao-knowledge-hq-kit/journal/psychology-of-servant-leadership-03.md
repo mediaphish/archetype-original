@@ -1,6 +1,6 @@
 ---
 title: "Psychology of Servant Leadership, Part 3: Motivation and Meaning"
-slug: "psychology-of-servant-leadership-part-3-motivation-and-meaning"
+slug: "psychology-of-servant-leadership-part-3"
 publish_date: "2025-12-22"
 created_at: "2025-12-22"
 updated_at: "2025-12-22"
@@ -18,11 +18,11 @@ applications:
   - Schedule a short conversation that’s about the person, not the project.
   - Identify one place where you may be keeping things foggy and clarify the target.
 related:
-  - "psychology-of-servant-leadership-part-1-servant-mindset"
-  - "psychology-of-servant-leadership-part-2-safety-before-strategy"
-  - "psychology-of-servant-leadership-part-4-flourishing-and-flow"
-  - "psychology-of-servant-leadership-part-5-paradox-of-the-servant"
-  - "psychology-of-servant-leadership-part-6-system-of-service"
+  - "psychology-of-servant-leadership-part-1"
+  - "psychology-of-servant-leadership-part-2"
+  - "psychology-of-servant-leadership-part-4"
+  - "psychology-of-servant-leadership-part-5"
+  - "psychology-of-servant-leadership-part-6"
 original_source: ""
 original_url: ""
 ---

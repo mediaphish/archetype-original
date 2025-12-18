@@ -197,11 +197,15 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleRoute);
   }, []);
 
-  // Scroll to top when page changes (but not for hash links)
+  // Scroll to top when page changes (but not for hash links or browser back/forward)
   useEffect(() => {
     // Only scroll if there's no hash in the URL (anchor links should handle their own scrolling)
+    // Don't scroll on initial load or when navigating back/forward (browser handles scroll restoration)
     if (!window.location.hash) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      });
     }
   }, [currentPage]);
 

@@ -230,14 +230,32 @@ async function buildKnowledgeCorpus() {
         
         const slug = frontmatter.slug || path.basename(filePath, '.md');
         
-        // Check for matching image (try multiple formats)
+        // Check for image - prioritize featured_image from frontmatter
         let imagePath = null;
-        const imageFormats = ['jpg', 'jpeg', 'png', 'webp'];
-        for (const format of imageFormats) {
-          const imageFile = path.join(process.cwd(), 'public', 'images', `${slug}.${format}`);
-          if (fs.existsSync(imageFile)) {
-            imagePath = `/images/${slug}.${format}`;
-            break;
+        
+        // First, check if featured_image is specified in frontmatter
+        if (frontmatter.featured_image) {
+          // Convert relative paths to absolute
+          let featuredImage = frontmatter.featured_image;
+          if (featuredImage.startsWith('../images/')) {
+            imagePath = featuredImage.replace('../images/', '/images/');
+          } else if (featuredImage.startsWith('images/')) {
+            imagePath = `/${featuredImage}`;
+          } else if (featuredImage.startsWith('/images/')) {
+            imagePath = featuredImage;
+          } else {
+            // Try to find it in public/images
+            imagePath = `/images/${featuredImage.replace(/^.*\//, '')}`;
+          }
+        } else {
+          // Fallback: Check for matching image based on slug (try multiple formats)
+          const imageFormats = ['jpg', 'jpeg', 'png', 'webp'];
+          for (const format of imageFormats) {
+            const imageFile = path.join(process.cwd(), 'public', 'images', `${slug}.${format}`);
+            if (fs.existsSync(imageFile)) {
+              imagePath = `/images/${slug}.${format}`;
+              break;
+            }
           }
         }
         

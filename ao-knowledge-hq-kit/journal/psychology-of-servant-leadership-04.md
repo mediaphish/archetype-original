@@ -1,6 +1,6 @@
 ---
 title: "Psychology of Servant Leadership, Part 4: Flourishing and Flow"
-slug: "psychology-of-servant-leadership-part-4-flourishing-and-flow"
+slug: "psychology-of-servant-leadership-part-4"
 publish_date: "2025-12-29"
 created_at: "2025-12-29"
 updated_at: "2025-12-29"
@@ -18,11 +18,11 @@ applications:
   - Ask your team what they need to stay focused instead of just asking for more output.
   - Review one recurring meeting and tighten its purpose, length, and decisions.
 related:
-  - "psychology-of-servant-leadership-part-1-servant-mindset"
-  - "psychology-of-servant-leadership-part-2-safety-before-strategy"
-  - "psychology-of-servant-leadership-part-3-motivation-and-meaning"
-  - "psychology-of-servant-leadership-part-5-paradox-of-the-servant"
-  - "psychology-of-servant-leadership-part-6-system-of-service"
+  - "psychology-of-servant-leadership-part-1"
+  - "psychology-of-servant-leadership-part-2"
+  - "psychology-of-servant-leadership-part-3"
+  - "psychology-of-servant-leadership-part-5"
+  - "psychology-of-servant-leadership-part-6"
 original_source: ""
 original_url: ""
 ---
