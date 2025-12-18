@@ -421,7 +421,7 @@ export default function Methods() {
         <section 
           id="opening-frame" 
           ref={(el) => (sectionRefs.current['opening-frame'] = el)} 
-          className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+          className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-20 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
@@ -455,7 +455,7 @@ export default function Methods() {
         <section 
           id="what-i-offer" 
           ref={(el) => (sectionRefs.current['what-i-offer'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
@@ -576,7 +576,7 @@ export default function Methods() {
         <section 
           id="how-i-work" 
           ref={(el) => (sectionRefs.current['how-i-work'] = el)} 
-          className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+          className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-20 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
@@ -603,7 +603,7 @@ export default function Methods() {
         <section 
           id="what-informs" 
           ref={(el) => (sectionRefs.current['what-informs'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
@@ -650,7 +650,7 @@ export default function Methods() {
         <section 
           id="why-this-works" 
           ref={(el) => (sectionRefs.current['why-this-works'] = el)} 
-          className="w-full bg-white py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+          className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-20 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
@@ -683,7 +683,7 @@ export default function Methods() {
         <section 
           id="closing" 
           ref={(el) => (sectionRefs.current.closing = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40 scroll-mt-32"
+          className="w-full bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto text-center">

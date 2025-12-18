@@ -108,7 +108,7 @@ export default function Journal() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+      <div className="min-h-screen bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20">
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
@@ -122,7 +122,7 @@ export default function Journal() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+    <div className="min-h-screen bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Header */}

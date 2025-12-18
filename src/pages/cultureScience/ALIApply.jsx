@@ -133,7 +133,7 @@ export default function ALIApply() {
   return (
     <>
       <SEO pageKey="ali-apply" />
-      <div className="min-h-screen bg-[#FAFAF9] py-16 sm:py-24 md:py-32 lg:py-40">
+      <div className="min-h-screen bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20">
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-2xl mx-auto">
             <div className="bg-white border border-[#1A1A1A]/10 p-8 sm:p-10 md:p-12">

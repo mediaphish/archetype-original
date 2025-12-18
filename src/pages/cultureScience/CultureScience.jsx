@@ -161,7 +161,7 @@ export default function CultureScience() {
         </section>
 
         {/* What Culture Science Actually Is */}
-        <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
@@ -213,7 +213,7 @@ export default function CultureScience() {
         </section>
 
         {/* The Problem We're Solving */}
-        <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-7xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
@@ -312,7 +312,7 @@ export default function CultureScience() {
         </section>
 
         {/* The Research Behind It */}
-        <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance uppercase">
@@ -502,7 +502,7 @@ export default function CultureScience() {
         </section>
 
         {/* Why Small & Mid-Sized Businesses */}
-        <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-7xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-12 sm:mb-16 font-serif tracking-tight text-balance">
@@ -556,7 +556,7 @@ export default function CultureScience() {
         </section>
 
         {/* Introducing ALI */}
-        <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">

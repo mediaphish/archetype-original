@@ -6,7 +6,7 @@ created_at: "2025-12-08"
 updated_at: "2025-12-08"
 summary: "Most people mistake servant leadership for softness. In reality, it’s power under control — strength aimed at serving others, not inflating ego."
 categories: ["servant-leadership", "leadership", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-01.png"
+featured_image: "../images/psychology-of-servant-leadership-01.jpg"
 takeaways:
   - Servant leadership is not passive or weak; it is disciplined strength.
   - Psychological safety allows people to move from self-protection to problem-solving.

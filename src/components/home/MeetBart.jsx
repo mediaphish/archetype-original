@@ -14,7 +14,7 @@ export default function MeetBart() {
   };
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-[#FAFAF9]">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-8 sm:gap-12 lg:gap-16 items-center">
