@@ -59,7 +59,7 @@ export default function JournalHighlights() {
   const otherPosts = posts.slice(1);
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 lg:py-40 bg-white">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] break-words">
