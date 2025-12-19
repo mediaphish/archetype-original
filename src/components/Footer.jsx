@@ -192,9 +192,26 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Copyright */}
-          <div className="mt-12 pt-8 border-t border-[#1A1A1A]/10 text-center">
-            <p className="text-sm text-[#6B6B6B]">
+          {/* Legal Links */}
+          <div className="mt-12 pt-8 border-t border-[#1A1A1A]/10">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mb-6">
+              <a
+                href="/privacy-policy"
+                onClick={(e) => handleLinkClick(e, '/privacy-policy')}
+                className="text-xs sm:text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <span className="hidden sm:inline text-[#6B6B6B]">•</span>
+              <a
+                href="/terms-and-conditions"
+                onClick={(e) => handleLinkClick(e, '/terms-and-conditions')}
+                className="text-xs sm:text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+              >
+                Terms and Conditions
+              </a>
+            </div>
+            <p className="text-sm text-[#6B6B6B] text-center">
               © {new Date().getFullYear()} Archetype Original. All rights reserved.
             </p>
           </div>

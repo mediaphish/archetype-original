@@ -43,6 +43,8 @@ import Ethics from "./pages/cultureScience/Ethics";
 import Research from "./pages/cultureScience/Research";
 import ArchyPage from "./pages/archy/Archy";
 import FAQsPage from "./pages/FAQs";
+import PrivacyPolicyPage from "./pages/PrivacyPolicy";
+import TermsAndConditionsPage from "./pages/TermsAndConditions";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -94,6 +96,10 @@ export default function App() {
         setCurrentPage('contact');
       } else if (path === '/faqs' || path.startsWith('/faqs')) {
         setCurrentPage('faqs');
+      } else if (path === '/privacy-policy' || path === '/privacy') {
+        setCurrentPage('privacy-policy');
+      } else if (path === '/terms-and-conditions' || path === '/terms' || path === '/terms-of-service') {
+        setCurrentPage('terms-and-conditions');
       } else if (path === '/culture-science' || path.startsWith('/culture-science/')) {
         if (path === '/culture-science/ali' || path.startsWith('/culture-science/ali/')) {
           if (path === '/culture-science/ali/apply') {
@@ -470,6 +476,30 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <FAQsPage />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Privacy Policy page
+  if (currentPage === 'privacy-policy') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <PrivacyPolicyPage />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Terms and Conditions page
+  if (currentPage === 'terms-and-conditions') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <TermsAndConditionsPage />
         <Footer />
         <FloatingArchyButton />
       </main>
