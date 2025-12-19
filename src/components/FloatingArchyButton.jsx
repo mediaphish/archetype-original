@@ -28,8 +28,7 @@ export default function FloatingArchyButton() {
         setContext('methods-fractional-cco');
       } else if (path === '/methods' || path.startsWith('/methods/')) {
         setContext('methods');
-      } else if (path === '/mentoring' || path.startsWith('/mentoring/')) {
-        setContext('mentoring');
+      // Mentoring placeholder pages removed
       } else if (path === '/culture-science' || path.startsWith('/culture-science/')) {
         setContext('culture-science');
       } else if (path === '/archy' || path.startsWith('/archy/')) {

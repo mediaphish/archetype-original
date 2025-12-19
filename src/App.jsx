@@ -35,14 +35,6 @@ import ALIEarlyWarning from "./pages/cultureScience/ALIEarlyWarning";
 import ALIDashboard from "./pages/cultureScience/ALIDashboard";
 import ALISixConditions from "./pages/cultureScience/ALISixConditions";
 import ContactPage from "./pages/Contact";
-import MentoringPage from "./pages/mentoring/Mentoring";
-import Mentoring1on1 from "./pages/mentoring/Mentoring1on1";
-import TeamCulture from "./pages/mentoring/TeamCulture";
-import Workshops from "./pages/mentoring/Workshops";
-import SpeakingPage from "./pages/mentoring/Speaking";
-import Testimonials from "./pages/mentoring/Testimonials";
-import Consulting from "./pages/mentoring/Consulting";
-import Fractional from "./pages/mentoring/Fractional";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
 import BadLeaderProject from "./pages/cultureScience/BadLeaderProject";
@@ -50,10 +42,6 @@ import IndustryReports from "./pages/cultureScience/IndustryReports";
 import Ethics from "./pages/cultureScience/Ethics";
 import Research from "./pages/cultureScience/Research";
 import ArchyPage from "./pages/archy/Archy";
-import ArchyHowItWorks from "./pages/archy/HowItWorks";
-import ArchyCorpus from "./pages/archy/Corpus";
-import ArchyAsk from "./pages/archy/Ask";
-import Playbooks from "./pages/Playbooks";
 import FAQsPage from "./pages/FAQs";
 
 export default function App() {
@@ -106,21 +94,6 @@ export default function App() {
         setCurrentPage('contact');
       } else if (path === '/faqs' || path.startsWith('/faqs')) {
         setCurrentPage('faqs');
-      } else if (path === '/mentoring' || path.startsWith('/mentoring/')) {
-        // Handle mentoring sub-routes
-        if (path === '/mentoring/1-1') {
-          setCurrentPage('mentoring-1-1');
-        } else if (path === '/mentoring/team-culture') {
-          setCurrentPage('mentoring-team-culture');
-        } else if (path === '/mentoring/workshops') {
-          setCurrentPage('mentoring-workshops');
-        } else if (path === '/mentoring/speaking') {
-          setCurrentPage('mentoring-speaking');
-        } else if (path === '/mentoring/testimonials') {
-          setCurrentPage('mentoring-testimonials');
-        } else {
-          setCurrentPage('mentoring');
-        }
       } else if (path === '/culture-science' || path.startsWith('/culture-science/')) {
         if (path === '/culture-science/ali' || path.startsWith('/culture-science/ali/')) {
           if (path === '/culture-science/ali/apply') {
@@ -162,25 +135,10 @@ export default function App() {
           setCurrentPage('culture-science');
         }
       } else if (path === '/archy' || path.startsWith('/archy/')) {
-        if (path === '/archy/how-it-works') {
-          setCurrentPage('archy-how-it-works');
-        } else if (path === '/archy/corpus') {
-          setCurrentPage('archy-corpus');
-        } else if (path === '/archy/ask') {
-          setCurrentPage('archy-ask');
-        } else {
-          setCurrentPage('archy');
-        }
+        // Only allow main Archy page - placeholder subpages removed
+        setCurrentPage('archy');
       } else if (path === '/philosophy') {
         setCurrentPage('philosophy');
-      } else if (path === '/playbooks') {
-        setCurrentPage('playbooks');
-      } else if (path === '/consulting') {
-        setCurrentPage('consulting');
-      } else if (path === '/speaking') {
-        setCurrentPage('speaking');
-      } else if (path === '/fractional') {
-        setCurrentPage('fractional');
       } else if (path === '/methods' || path.startsWith('/methods/')) {
         if (path === '/methods/mentorship') {
           setCurrentPage('methods-mentorship');
@@ -531,96 +489,6 @@ export default function App() {
   }
 
   // Render Mentoring pages
-  if (currentPage === 'mentoring') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <MentoringPage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'mentoring-1-1') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <Mentoring1on1 />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'mentoring-team-culture') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <TeamCulture />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'mentoring-workshops') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <Workshops />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'mentoring-speaking') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <SpeakingPage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'mentoring-testimonials') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <Testimonials />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'consulting') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <Consulting />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'speaking') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <SpeakingPage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'fractional') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <Fractional />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
 
   // Render Culture Science pages
   if (currentPage === 'culture-science') {
@@ -690,46 +558,6 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ArchyPage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'archy-how-it-works') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <ArchyHowItWorks />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'archy-corpus') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <ArchyCorpus />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'archy-ask') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <ArchyAsk />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-  if (currentPage === 'playbooks') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <Playbooks />
         <Footer />
         <FloatingArchyButton />
       </main>
