@@ -217,7 +217,7 @@ export default function CultureScience() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-7xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                The Problem We're Solving (Plainly)
+                The Problem We're Solving
               </h2>
               
               <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16">
@@ -316,7 +316,7 @@ export default function CultureScience() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance uppercase">
-                The Research Behind It (Explained in Human Words)
+                The Research Behind It
               </h2>
               
               <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16">
