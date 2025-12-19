@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SEO from "./components/SEO";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -58,8 +58,17 @@ import FAQsPage from "./pages/FAQs";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const isNavigatingBack = useRef(false);
+  const previousPath = useRef(window.location.pathname);
 
   useEffect(() => {
+    // Save scroll position before navigation
+    const saveScrollPosition = () => {
+      const path = window.location.pathname;
+      const scrollY = window.scrollY;
+      sessionStorage.setItem(`scrollPos:${path}`, scrollY.toString());
+    };
+
     // Handle routing and redirects
     const handleRoute = () => {
       const path = window.location.pathname;
@@ -196,22 +205,64 @@ export default function App() {
     };
 
     // Listen for route changes
-    window.addEventListener('popstate', handleRoute);
+    const handlePopState = (e) => {
+      const currentPath = window.location.pathname;
+      // Check if we're navigating back by comparing paths
+      // If the new path was visited before (has saved scroll), it's likely a back navigation
+      const hasSavedScroll = sessionStorage.getItem(`scrollPos:${currentPath}`) !== null;
+      isNavigatingBack.current = hasSavedScroll && currentPath !== previousPath.current;
+      previousPath.current = currentPath;
+      handleRoute();
+    };
+
+    window.addEventListener('popstate', handlePopState);
     handleRoute(); // Check initial route
 
-    return () => window.removeEventListener('popstate', handleRoute);
+    // Save scroll position before unload
+    const handleBeforeUnload = () => {
+      saveScrollPosition();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Save scroll position periodically while on page
+    const scrollSaveInterval = setInterval(() => {
+      saveScrollPosition();
+    }, 1000);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      clearInterval(scrollSaveInterval);
+    };
   }, []);
 
-  // Scroll to top when page changes (but not for hash links or browser back/forward)
+  // Handle scroll restoration when page changes
   useEffect(() => {
-    // Only scroll if there's no hash in the URL (anchor links should handle their own scrolling)
-    // Don't scroll on initial load or when navigating back/forward (browser handles scroll restoration)
-    if (!window.location.hash) {
-      // Use requestAnimationFrame to ensure DOM is ready
+    const path = window.location.pathname;
+    const savedScrollPos = sessionStorage.getItem(`scrollPos:${path}`);
+    
+    // If we have a saved scroll position (means we're returning to this page), restore it
+    // This handles back navigation - when you go back, the saved position exists
+    if (savedScrollPos !== null && !window.location.hash && isNavigatingBack.current) {
+      const scrollY = parseInt(savedScrollPos, 10);
+      // Use requestAnimationFrame to ensure DOM is ready, then restore scroll
+      requestAnimationFrame(() => {
+        // Double RAF to ensure layout is complete
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: scrollY, behavior: 'instant' });
+        });
+      });
+      // Clear the saved position so it doesn't interfere with future visits
+      // sessionStorage.removeItem(`scrollPos:${path}`);
+    } else if (!window.location.hash) {
+      // Forward navigation or first visit - scroll to top
       requestAnimationFrame(() => {
         window.scrollTo({ top: 0, behavior: 'instant' });
       });
     }
+    
+    // Reset the flag after handling
+    isNavigatingBack.current = false;
   }, [currentPage]);
 
   // Render About page
