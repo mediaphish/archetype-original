@@ -1,15 +1,13 @@
 ---
-title: "What does Archetype Original mean by cultural stability?"
-slug: cultural-stability
+title: "What does cultural stability actually mean?"
+slug: what-is-stability
 categories:
   - culture-science
 featured: false
 status: published
 ---
 
-Stability is the ability of a culture to perform under pressure without fracturing.
+Stability is the capacity to absorb pressure without exporting it.
 
-Stable cultures absorb stress.
-Unstable cultures transmit it.
-
-Leadership behavior determines which one forms.
+Stable cultures slow chaos.
+Unstable cultures accelerate it.
