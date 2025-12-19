@@ -461,50 +461,63 @@ export default function About() {
                 How I Show Up Today
               </h2>
             </div>
-            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
+            <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-6 sm:mb-8">
               Today, I work with leaders, teams, and organizations who want to build something healthy — something real, sustainable, and worth belonging to.
             </p>
-            <div className="space-y-4 sm:space-y-5">
-              <div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Mentorship:</strong>
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  Helping leaders at every level gain clarity, courage, and direction. I don't push people forward — I <a href="/journal/clearing-the-path" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); const currentPath = window.location.pathname; const scrollY = window.scrollY; sessionStorage.setItem(`scrollPos:${currentPath}`, scrollY.toString()); window.history.pushState({}, '', '/journal/clearing-the-path'); window.dispatchEvent(new PopStateEvent('popstate')); }}>clear what's in their way</a>.
-                </p>
-              </div>
-              <div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Consulting:</strong>
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  Strengthening systems, communication, alignment, and culture so leaders can build what they actually intend. I help identify and resolve <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); const currentPath = window.location.pathname; const scrollY = window.scrollY; sessionStorage.setItem(`scrollPos:${currentPath}`, scrollY.toString()); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership bottlenecks</a> that stifle innovation and growth.
+            
+            {/* Methods Grid - Card Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+              
+              {/* Card 1: Mentorship */}
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+                  Mentorship
+                </h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
+                  helping leaders at every level find clarity, courage, and confidence
                 </p>
               </div>
-              <div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Fractional Leadership:</strong>
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  Stepping in when teams need stability, clarity, or steady leadership through seasons of pressure or transition.
-                </p>
-              </div>
-              <div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Speaking & Seminars:</strong>
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  Bringing lived leadership, cultural insight, and research-backed understanding into rooms that need clarity and language for what they're experiencing.
+              
+              {/* Card 2: Consulting */}
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+                  Consulting
+                </h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
+                  strengthening systems, communication, alignment, and culture
                 </p>
               </div>
-              <div>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  <strong className="font-bold">Training & Education:</strong>
-                </p>
-                <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-2">
-                  Developing tools, frameworks, and curriculum that help people understand leadership, culture, and human behavior in ways they can immediately apply.
+              
+              {/* Card 3: Fractional Leadership */}
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+                  Fractional Leadership
+                </h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
+                  stepping in when teams need stability and direction during transitional seasons
                 </p>
               </div>
+              
+              {/* Card 4: Speaking & Seminars */}
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+                  Speaking & Seminars
+                </h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
+                  sharing lived leadership and research-backed insight
+                </p>
+              </div>
+              
+              {/* Card 5: Training & Education - Full Width */}
+              <div className="md:col-span-2 bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+                  Training & Education
+                </h3>
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
+                  Tools, Playbooks and Curriculum designed to support and affect positive change in leadership
+                </p>
+              </div>
+              
             </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mt-6 sm:mt-8 mb-3 sm:mb-4">
               The work isn't programmatic or pre-packaged.
