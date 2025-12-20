@@ -197,7 +197,7 @@ Generate the full response following the structure above.`;
         <SEO pageKey="engagement-inquiry" />
         <div className="min-h-screen bg-[#FAFAF9]">
           {/* Confirmation Section */}
-          <section className="bg-white py-16 sm:py-20 md:py-24 lg:py-20">
+          <section className="bg-white py-12 sm:py-16 md:py-20">
             <div className="container mx-auto px-4 sm:px-6 md:px-12">
               <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
                 <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] break-words">
@@ -232,41 +232,20 @@ Generate the full response following the structure above.`;
       <SEO pageKey="engagement-inquiry" />
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section */}
-        <section className="bg-white py-16 sm:py-20 md:py-24 lg:py-20">
+        <section className="bg-white py-12 sm:py-16 md:py-20">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+            <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
               <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] break-words">
-                Start a Conversation
+                Work Together
               </h1>
               
-              {/* Primary Intro Copy */}
-              <div className="space-y-4 sm:space-y-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
+              {/* Supporting Copy */}
+              <div className="space-y-4 text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
                 <p>
-                  An inquiry is simply a way to begin a thoughtful conversation.
+                  If you're exploring advisory, consulting, or partnership work with Archetype Original, this is where that conversation begins.
                 </p>
                 <p>
-                  It doesn't assume there's a problem to solve or a service to sell. It creates space to understand who you are, what you're navigating, and whether a conversation would be useful.
-                </p>
-                <p>
-                  Strong leaders don't wait for things to break before seeking perspective. They look ahead, invite challenge, and think in seasons. This page exists for that purpose.
-                </p>
-              </div>
-
-              {/* Secondary Clarifying Copy */}
-              <div className="space-y-4 sm:space-y-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80 pt-4 sm:pt-6 border-t border-[#1A1A1A]/10">
-                <p>
-                  There's no obligation attached to an inquiry.
-                </p>
-                <p>
-                  You're not committing to an engagement, and you're not being evaluated. You're offering context so a real conversation—if it happens—starts from understanding rather than assumption.
-                </p>
-                <p>
-                  Some inquiries lead to ongoing partnerships.<br />
-                  Some lead to a single conversation.<br />
-                  Some simply confirm you're already on the right track.
-                </p>
-                <p>
-                  All of those outcomes are valid.
+                  This inquiry helps establish context so any next step—whether a single conversation or ongoing work—starts from understanding.
                 </p>
               </div>
             </div>
@@ -274,20 +253,13 @@ Generate the full response following the structure above.`;
         </section>
 
         {/* Form Section */}
-        <section className="py-12 sm:py-16 md:py-20">
+        <section className="py-8 sm:py-12 md:py-16">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto">
-              {/* Transition Line */}
-              <div className="mb-6 sm:mb-8">
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
-                  If you're open to starting that conversation, the questions below help establish a shared starting point.
-                </p>
-              </div>
-
-              {/* Optional Micro-Reinforcement */}
-              <div className="mb-6 sm:mb-8">
+              {/* Optional Micro-Line */}
+              <div className="mb-6">
                 <p className="text-sm text-[#6B6B6B]">
-                  This takes about 3–5 minutes. Thoughtful answers help make the conversation better for everyone.
+                  Takes about 3–5 minutes.
                 </p>
               </div>
 

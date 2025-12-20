@@ -321,13 +321,13 @@ export default function Header() {
                     )}
                   </div>
 
-                  {/* Inquiry CTA Button */}
+                  {/* Work Together CTA Button */}
                   <a
                     href="/engagement-inquiry"
                     onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
                     className="ml-4 px-4 py-2 bg-[#C85A3C] text-white font-medium rounded-lg hover:bg-[#B54A32] transition-all duration-200"
                   >
-                    Inquiry
+                    Work Together
                   </a>
                 </div>
               </div>
@@ -581,7 +581,7 @@ export default function Header() {
                   )}
                 </div>
 
-                {/* Inquiry CTA Button - Mobile */}
+                {/* Work Together CTA Button - Mobile */}
                 <a
                   href="/engagement-inquiry"
                   onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
@@ -591,7 +591,7 @@ export default function Header() {
                       : 'bg-[#C85A3C] text-white hover:bg-[#B54A32]'
                   } rounded-lg mx-6 my-4 text-center`}
                 >
-                  Inquiry
+                  Work Together
                 </a>
               </div>
             </div>
