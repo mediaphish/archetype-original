@@ -242,7 +242,7 @@ Generate the full response following the structure above.`;
               {/* Supporting Copy */}
               <div className="space-y-4 text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
                 <p>
-                  If you're exploring advisory, consulting, or partnership work with Archetype Original, this is where that conversation begins.
+                  If you're exploring advisory, consulting, or partnership work with Bart Paden through Archetype Original, this is where that conversation begins.
                 </p>
                 <p>
                   This inquiry helps establish context so any next step—whether a single conversation or ongoing work—starts from understanding.
