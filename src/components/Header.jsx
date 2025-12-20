@@ -134,16 +134,6 @@ export default function Header() {
                     <span className="text-xs">Journal</span>
                   </a>
                   <a 
-                    href="/engagement-inquiry" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
-                    className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/engagement-inquiry') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    <span className="text-xs">Start a Conversation</span>
-                  </a>
-                  <a 
                     href="/contact" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
                     className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/contact') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
@@ -330,6 +320,15 @@ export default function Header() {
                       </div>
                     )}
                   </div>
+
+                  {/* Inquiry CTA Button */}
+                  <a
+                    href="/engagement-inquiry"
+                    onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
+                    className="ml-4 px-4 py-2 bg-[#C85A3C] text-white font-medium rounded-lg hover:bg-[#B54A32] transition-all duration-200"
+                  >
+                    Inquiry
+                  </a>
                 </div>
               </div>
             </div>
@@ -581,6 +580,19 @@ export default function Header() {
                     </div>
                   )}
                 </div>
+
+                {/* Inquiry CTA Button - Mobile */}
+                <a
+                  href="/engagement-inquiry"
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
+                  className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
+                    isActive('/engagement-inquiry') 
+                      ? 'text-white bg-[#C85A3C]' 
+                      : 'bg-[#C85A3C] text-white hover:bg-[#B54A32]'
+                  } rounded-lg mx-6 my-4 text-center`}
+                >
+                  Inquiry
+                </a>
               </div>
             </div>
 
@@ -607,13 +619,6 @@ export default function Header() {
                 }`}
               >
                 Journal
-              </a>
-              <a 
-                href="/engagement-inquiry" 
-                onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
-                className="block px-4 py-3 bg-[#1A1A1A] text-white font-medium text-center hover:bg-[#1A1A1A]/90 transition-all duration-200 rounded-sm mb-2"
-              >
-                Start a Conversation
               </a>
               <a 
                 href="/contact" 
