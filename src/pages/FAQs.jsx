@@ -25,7 +25,7 @@ const markdownToHtml = (text) => {
       const isOrdered = /^\d+\.\s/.test(firstLine);
       const tag = isOrdered ? 'ol' : 'ul';
       
-      html += `<${tag} className="list-disc list-inside space-y-1 ml-4 my-2">`;
+      html += `<${tag} className="list-disc list-inside space-y-2 ml-4 my-4">`;
       lines.forEach(line => {
         line = line.trim();
         if (!line) return;
@@ -56,7 +56,7 @@ const markdownToHtml = (text) => {
       // Handle markdown links [text](url)
       processedBlock = processedBlock.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[#C85A3C] hover:text-[#B54A32] underline">$1</a>');
       
-      html += `<p>${processedBlock}</p>`;
+      html += `<p class="mb-4">${processedBlock}</p>`;
     }
   });
   
@@ -347,7 +347,7 @@ export default function FAQs() {
                       {isExpanded && (
                         <div className="px-6 py-5 border-t border-[#1A1A1A]/10 bg-[#FAFAF9]">
                           <div
-                            className="prose prose-sm max-w-none text-[#1A1A1A]/80 mb-4"
+                            className="prose prose-sm max-w-none text-[#1A1A1A]/80 mb-4 space-y-4 [&>p]:mb-4 [&>ul]:mb-4 [&>ol]:mb-4 [&>li]:mb-1"
                             dangerouslySetInnerHTML={{
                               __html: markdownToHtml(faq.body || '')
                             }}
