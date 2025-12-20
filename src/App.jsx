@@ -45,6 +45,7 @@ import ArchyPage from "./pages/archy/Archy";
 import FAQsPage from "./pages/FAQs";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import TermsAndConditionsPage from "./pages/TermsAndConditions";
+import EngagementInquiryPage from "./pages/EngagementInquiry";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -96,6 +97,8 @@ export default function App() {
         setCurrentPage('contact');
       } else if (path === '/faqs' || path.startsWith('/faqs')) {
         setCurrentPage('faqs');
+      } else if (path === '/engagement-inquiry') {
+        setCurrentPage('engagement-inquiry');
       } else if (path === '/privacy-policy' || path === '/privacy') {
         setCurrentPage('privacy-policy');
       } else if (path === '/terms-and-conditions' || path === '/terms' || path === '/terms-of-service') {
@@ -500,6 +503,18 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <TermsAndConditionsPage />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render Engagement Inquiry page
+  if (currentPage === 'engagement-inquiry') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <EngagementInquiryPage />
         <Footer />
         <FloatingArchyButton />
       </main>

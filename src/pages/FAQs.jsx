@@ -309,11 +309,26 @@ export default function FAQs() {
                       {isExpanded && (
                         <div className="px-6 py-5 border-t border-[#1A1A1A]/10 bg-[#FAFAF9]">
                           <div
-                            className="prose prose-sm max-w-none text-[#1A1A1A]/80"
+                            className="prose prose-sm max-w-none text-[#1A1A1A]/80 mb-4"
                             dangerouslySetInnerHTML={{
                               __html: markdownToHtml(faq.body || '')
                             }}
                           />
+                          {/* Engagement Inquiry Button for Engagement FAQs */}
+                          {faq.categories && faq.categories.includes('engagement') && (
+                            <div className="mt-6 pt-4 border-t border-[#1A1A1A]/10">
+                              <button
+                                onClick={() => {
+                                  window.history.pushState({}, '', '/engagement-inquiry');
+                                  window.dispatchEvent(new PopStateEvent('popstate'));
+                                  window.scrollTo({ top: 0, behavior: 'instant' });
+                                }}
+                                className="bg-[#C85A3C] text-white px-6 py-3 font-medium hover:bg-[#B54A32] transition-colors rounded-lg"
+                              >
+                                Start an Engagement Inquiry
+                              </button>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
