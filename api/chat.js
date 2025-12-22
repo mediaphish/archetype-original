@@ -44,11 +44,6 @@ function searchKnowledge(query, corpus) {
   const searchTerm = query.toLowerCase();
   const words = searchTerm.split(' ').filter(word => word.length > 2);
   
-  // Special handling for Culture Science queries - prioritize canonical definitions
-  const isCultureScienceQuery = searchTerm.includes('culture science') || 
-                                 searchTerm.includes('what does culture science') ||
-                                 searchTerm.includes('culture science study');
-  
   // If no meaningful words, return some general docs
   if (words.length === 0) {
     return corpus.docs.slice(0, 3);
@@ -62,18 +57,24 @@ function searchKnowledge(query, corpus) {
     
     let score = 0;
     
-    // For Culture Science queries, heavily prioritize canonical definition documents
-    if (isCultureScienceQuery) {
-      // Prioritize Section 1 and Section 4 which contain the canonical definition
-      if (title.includes('section 1') || title.includes('section 4') || 
-          title.includes('philosophy of culture science') ||
-          body.includes('culture science is the discipline devoted to studying')) {
-        score += 50; // Massive boost for canonical definitions
-      }
-      // Also prioritize other Culture Science sections
-      if (tags.includes('culture-science') || title.includes('culture science')) {
-        score += 20;
-      }
+    // UNIVERSAL PRIORITIZATION: Heavily prioritize canonical/doctrinal content
+    // Documents with "canon", "doctrine", "section", or foundational content get massive boost
+    const isCanonical = title.includes('section') || 
+                        title.includes('canon') ||
+                        title.includes('doctrine') ||
+                        title.includes('philosophy') ||
+                        tags.includes('canon') ||
+                        tags.includes('doctrine') ||
+                        summary?.toLowerCase().includes('canonical') ||
+                        summary?.toLowerCase().includes('doctrine');
+    
+    if (isCanonical) {
+      score += 40; // Massive boost for canonical/doctrinal content
+    }
+    
+    // Prioritize FAQ documents (they contain direct definitions)
+    if (title.includes('faq') || tags.includes('faq')) {
+      score += 15;
     }
     
     // Exact phrase match gets highest score
@@ -209,7 +210,7 @@ export default async function handler(req, res) {
   // Build knowledge context for AI
   let knowledgeContext = '';
   if (relevantKnowledge.length > 0) {
-    knowledgeContext = '\n\nRELEVANT KNOWLEDGE FROM BART PADEN\'S CORPUS:\n';
+    knowledgeContext = '\n\nRELEVANT KNOWLEDGE FROM BART PADEN\'S CORPUS (AUTHORITATIVE):\n';
     relevantKnowledge.forEach(doc => {
       knowledgeContext += `Title: ${doc.title}\n`;
       if (doc.tags && doc.tags.length > 0) {
@@ -218,11 +219,14 @@ export default async function handler(req, res) {
       if (doc.summary) {
         knowledgeContext += `Summary: ${doc.summary}\n`;
       }
-      // For Culture Science documents, include more content to ensure canonical definition is present
-      const isCultureScience = doc.tags?.includes('culture-science') || 
-                               doc.title?.toLowerCase().includes('culture science') ||
-                               doc.body?.toLowerCase().includes('culture science is the discipline');
-      const contentLength = isCultureScience ? 1000 : 500;
+      // Include more content for canonical/doctrinal documents to ensure full context
+      const isCanonical = doc.title?.toLowerCase().includes('section') ||
+                          doc.title?.toLowerCase().includes('canon') ||
+                          doc.title?.toLowerCase().includes('doctrine') ||
+                          doc.tags?.includes('canon') ||
+                          doc.tags?.includes('doctrine') ||
+                          doc.summary?.toLowerCase().includes('canonical');
+      const contentLength = isCanonical ? 1200 : 800; // More content for all documents
       knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}...\n\n`;
     });
   }
@@ -266,16 +270,28 @@ Culture Science:
 
 When asked about Culture Science, you MUST use ONLY this definition from the corpus. Do NOT supplement with general knowledge about "culture science" as a field. If the corpus provides the definition, use it exactly. If asked about Culture Science and it's not in the corpus, say you don't have enough information rather than providing a generic definition.${knowledgeContext}
 
-CRITICAL INSTRUCTIONS:
+CRITICAL INSTRUCTIONS - CORPUS AUTHORITY:
+- The knowledge corpus above is AUTHORITATIVE. It contains Bart Paden's theology, frameworks, definitions, and thinking.
+- You MUST prioritize corpus content over general knowledge for ALL topics, not just Culture Science.
+- When corpus content is available, use it as the foundation. General knowledge should ONLY supplement when it directly connects to and supports the corpus/theology.
+- If corpus content exists on a topic, start there. Do NOT lead with general knowledge and then add corpus content.
+- If corpus content contradicts general knowledge, the corpus is correct. Use the corpus definition/framework.
+- Only use general knowledge when:
+  1. The corpus doesn't have relevant information, AND
+  2. The general knowledge directly connects to and supports the corpus/theology, AND
+  3. You explicitly acknowledge you're drawing a connection to help explain the corpus content
+- If you don't have relevant corpus information, be honest: "I don't have enough information in Bart's corpus to answer that fully. Would you like to explore what I do know about [related topic]?"
+- Never blend generic definitions with corpus definitions. If the corpus has a definition, use ONLY that definition.
+
+CONVERSATION STYLE:
 - You are NOT a chatbot with canned responses. You are having a genuine conversation.
 - Listen to what the person actually said. Respond to their specific words and meaning.
 - If they say something isn't helpful, acknowledge that directly and ask what would be helpful.
 - If they express frustration, acknowledge it and respond to the underlying need.
 - Never give generic responses that ignore what they just said.
 - Be conversational, not scripted. Respond like a real person would.
-- Use the knowledge corpus above to inform your responses, but don't just quote it - synthesize it naturally.
-- CRITICAL: For Culture Science specifically, use ONLY the corpus definition. Do NOT blend it with general knowledge about culture science as an academic field.
-- If you don't have relevant information in the corpus, be honest about it.
+- Use the knowledge corpus above to inform your responses, but don't just quote it - synthesize it naturally while maintaining theological accuracy.
+- Keep the conversation going - invite follow-up questions
 
 NEVER SUGGEST CONTACTING BART:
 - Do NOT offer to schedule time with Bart
