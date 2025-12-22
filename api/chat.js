@@ -44,6 +44,11 @@ function searchKnowledge(query, corpus) {
   const searchTerm = query.toLowerCase();
   const words = searchTerm.split(' ').filter(word => word.length > 2);
   
+  // Special handling for Culture Science queries - prioritize canonical definitions
+  const isCultureScienceQuery = searchTerm.includes('culture science') || 
+                                 searchTerm.includes('what does culture science') ||
+                                 searchTerm.includes('culture science study');
+  
   // If no meaningful words, return some general docs
   if (words.length === 0) {
     return corpus.docs.slice(0, 3);
@@ -56,6 +61,20 @@ function searchKnowledge(query, corpus) {
     const tags = (doc.tags || []).join(' ').toLowerCase();
     
     let score = 0;
+    
+    // For Culture Science queries, heavily prioritize canonical definition documents
+    if (isCultureScienceQuery) {
+      // Prioritize Section 1 and Section 4 which contain the canonical definition
+      if (title.includes('section 1') || title.includes('section 4') || 
+          title.includes('philosophy of culture science') ||
+          body.includes('culture science is the discipline devoted to studying')) {
+        score += 50; // Massive boost for canonical definitions
+      }
+      // Also prioritize other Culture Science sections
+      if (tags.includes('culture-science') || title.includes('culture science')) {
+        score += 20;
+      }
+    }
     
     // Exact phrase match gets highest score
     if (title.includes(searchTerm)) score += 10;
@@ -199,7 +218,12 @@ export default async function handler(req, res) {
       if (doc.summary) {
         knowledgeContext += `Summary: ${doc.summary}\n`;
       }
-      knowledgeContext += `Content: ${doc.body.substring(0, 500)}...\n\n`;
+      // For Culture Science documents, include more content to ensure canonical definition is present
+      const isCultureScience = doc.tags?.includes('culture-science') || 
+                               doc.title?.toLowerCase().includes('culture science') ||
+                               doc.body?.toLowerCase().includes('culture science is the discipline');
+      const contentLength = isCultureScience ? 1000 : 500;
+      knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}...\n\n`;
     });
   }
 
@@ -224,7 +248,23 @@ Bart consults across multiple areas:
 - LEADERSHIP: Developing emerging leaders, strengthening existing leaders, building sustainable leadership habits
 - PERSONAL CLARITY: Purpose, direction, better decision-making
 
-Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.${knowledgeContext}
+Today he channels that experience into Archetype Original, helping others build what lasts — businesses, teams, and lives with structure and soul.
+
+CRITICAL DEFINITION - CULTURE SCIENCE:
+Culture Science is NOT a general academic field or multidisciplinary study. It is Bart Paden's specific discipline.
+
+The ONLY correct definition of Culture Science is:
+"Culture Science is the discipline devoted to studying the forces, patterns, and conditions that affect leadership — both positive and negative."
+
+Culture Science:
+- Studies the forces, patterns, and conditions that affect leadership behavior
+- Focuses on environmental pressure, structural clarity, trust dynamics, communication patterns, stability under stress, and leadership consistency
+- Does NOT focus on individual personalities, leadership intentions, motivational narratives, isolated behaviors, or performance outcomes in isolation
+- Is NOT a multidisciplinary field drawing on anthropology, sociology, psychology, or business studies
+- Is NOT about collective behaviors, beliefs, values, and norms in general
+- Is Bart's specific framework for understanding how leadership environments shape behavior
+
+When asked about Culture Science, you MUST use ONLY this definition from the corpus. Do NOT supplement with general knowledge about "culture science" as a field. If the corpus provides the definition, use it exactly. If asked about Culture Science and it's not in the corpus, say you don't have enough information rather than providing a generic definition.${knowledgeContext}
 
 CRITICAL INSTRUCTIONS:
 - You are NOT a chatbot with canned responses. You are having a genuine conversation.
@@ -234,6 +274,7 @@ CRITICAL INSTRUCTIONS:
 - Never give generic responses that ignore what they just said.
 - Be conversational, not scripted. Respond like a real person would.
 - Use the knowledge corpus above to inform your responses, but don't just quote it - synthesize it naturally.
+- CRITICAL: For Culture Science specifically, use ONLY the corpus definition. Do NOT blend it with general knowledge about culture science as an academic field.
 - If you don't have relevant information in the corpus, be honest about it.
 
 NEVER SUGGEST CONTACTING BART:
