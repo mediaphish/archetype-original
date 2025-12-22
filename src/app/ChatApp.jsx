@@ -19,16 +19,17 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   const [cannotAnswerQuestion, setCannotAnswerQuestion] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
-  // Auto-scroll to bottom when new messages are added
+  // Auto-scroll to bottom when new messages are added or loading state changes
   useEffect(() => {
-    if (messagesEndRef.current) {
-      const scrollContainer = messagesEndRef.current.parentElement;
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    // Use requestAnimationFrame to ensure DOM has updated
+    requestAnimationFrame(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-    }
-  }, [messages]);
+    });
+  }, [messages, isLoading]);
 
 
   // Show greeting immediately - context-aware (skip if initialMessage provided)
@@ -589,7 +590,7 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
     <div className="h-full flex flex-col bg-white relative chat-container">
       <div className="flex-1 flex flex-col w-full mx-auto px-4 md:px-6 h-full">
         {/* Messages Area - Scrollable container with fixed height */}
-        <div className="flex-1 overflow-y-auto min-h-0" style={{ maxHeight: 'calc(100% - 120px)' }}>
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto min-h-0" style={{ maxHeight: 'calc(100% - 120px)' }}>
           {messages.length > 0 && (
             <div className="py-8">
               {messages.map((message, index) => (
