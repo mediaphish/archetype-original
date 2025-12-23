@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run build-knowledge && node scripts/prerender.mjs",
-    "build:no-prerender": "vite build && npm run build-knowledge",
+    "build": "node scripts/generate-sitemap.mjs && vite build && npm run build-knowledge && node scripts/prerender.mjs",
+    "build:no-prerender": "node scripts/generate-sitemap.mjs && vite build && npm run build-knowledge",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "build-knowledge": "node scripts/build-knowledge.mjs",
