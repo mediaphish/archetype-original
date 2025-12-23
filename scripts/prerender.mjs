@@ -90,6 +90,16 @@ routes.push(...journalSlugs);
 console.log(`📋 Found ${journalSlugs.length} journal posts to pre-render`);
 console.log(`📋 Total routes to pre-render: ${routes.length}`);
 
+// Check if we're on Vercel (skip pre-rendering there - will use static files)
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
+
+if (isVercel) {
+  console.log('⚠️  Running on Vercel - skipping pre-rendering');
+  console.log('   Pre-rendered files should be committed to the repository');
+  console.log('   Or use a pre-rendering service like Prerender.io');
+  process.exit(0);
+}
+
 // Check if Puppeteer is available
 let puppeteer;
 let useSystemChrome = false;
