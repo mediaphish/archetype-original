@@ -8,9 +8,12 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
 dist-ssr
 *.local
+# Note: dist/ is NOT ignored - we commit pre-rendered HTML files for SEO
+# But ignore build artifacts that change every build
+dist/assets/*.js.map
+dist/.DS_Store
 
 # Editor directories and files
 .vscode/*
