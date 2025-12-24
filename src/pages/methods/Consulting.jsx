@@ -68,76 +68,104 @@ export default function Consulting() {
                 </p>
               </div>
               
-              {/* Right: 3-Layer Parallax (Desktop Only) */}
-              <div className="relative h-[500px] hidden lg:block">
-                {/* Layer 3 (Back): Can move any direction for depth */}
-                <div 
-                  className="absolute inset-0 z-10 flex items-center justify-center"
-                  style={{ 
-                    transform: isMobile ? 'translate(0, 0)' : `translate(0, ${scrollY * -0.03}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/consulting-layer-3.png" 
-                    alt="Consulting Background" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
+              {/* Right: 3-Layer Parallax (Desktop) / Static (Mobile) */}
+              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px]">
+                {/* Desktop: Parallax layers */}
+                <div className="hidden lg:block absolute inset-0">
+                  {/* Layer 3 (Back): Can move any direction for depth */}
+                  <div 
+                    className="absolute inset-0 z-10"
+                    style={{ 
+                      transform: `translateY(${scrollY * 0.05}px)`,
+                      transition: 'transform 0.1s ease-out'
                     }}
-                  />
-                </div>
-                
-                {/* Layer 2 (Middle - Character): Moves HORIZONTALLY ONLY (grounded) */}
-                <div 
-                  className="absolute inset-0 z-20 flex items-center justify-center"
-                  style={{ 
-                    transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.06}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/consulting-layer-2.png" 
+                  >
+                    <img 
+                      src="/images/consulting-layer-3.png" 
+                      alt="Consulting Background" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 2 (Middle - Character): Moves HORIZONTALLY ONLY (grounded) */}
+                  <div 
+                    className="absolute inset-0 z-20"
+                    style={{ 
+                      transform: `translateX(${scrollY * 0.08}px)`,
+                      transition: 'transform 0.1s ease-out'
+                    }}
+                  >
+                    <img 
+                      src="/images/consulting-layer-2.png" 
                     alt="Bart" 
                     className="w-full h-full object-contain"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
-                  />
+                    />
+                  </div>
+                  
+                  {/* Layer 1 (Front): Moves HORIZONTALLY ONLY (grounded) */}
+                  <div 
+                    className="absolute inset-0 z-30"
+                    style={{ 
+                      transform: `translateX(${scrollY * -0.15}px)`,
+                      transition: 'transform 0.1s ease-out'
+                    }}
+                  >
+                    <img 
+                      src="/images/consulting-layer-1.png" 
+                      alt="Consulting Foreground" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
                 
-                {/* Layer 1 (Front): Can move any direction for depth */}
-                <div 
-                  className="absolute inset-0 z-30 flex items-center justify-center"
-                  style={{ 
-                    transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.03}px, ${scrollY * -0.04}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/consulting-layer-1.png" 
-                    alt="Consulting Foreground" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
+                {/* Mobile: Static layers (no parallax) */}
+                <div className="lg:hidden absolute inset-0">
+                  {/* Layer 3: Back */}
+                  <div className="absolute inset-0 z-10">
+                    <img 
+                      src="/images/consulting-layer-3.png" 
+                      alt="Consulting Background" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 2: Middle */}
+                  <div className="absolute inset-0 z-20">
+                    <img 
+                      src="/images/consulting-layer-2.png" 
+                      alt="Bart" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1: Front */}
+                  <div className="absolute inset-0 z-30">
+                    <img 
+                      src="/images/consulting-layer-1.png" 
+                      alt="Consulting Foreground" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-              
-              {/* Mobile: Static image */}
-              {isMobile && (
-                <div className="relative w-full max-w-lg mx-auto lg:hidden" style={{ aspectRatio: '1/1' }}>
-                  <img 
-                    src="/images/consulting-layer-2.png" 
-                    alt="Bart" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
             </div>
           </div>
         </section>
