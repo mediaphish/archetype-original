@@ -108,7 +108,7 @@ export default function About() {
       
       <div className="min-h-screen bg-white">
         {/* Hero Section with 3-Layer Parallax */}
-        <section ref={heroRef} className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
+        <section ref={heroRef} className="w-full bg-white py-8 sm:py-12 md:py-16 lg:py-12 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center max-w-6xl mx-auto">
               {/* Left Content */}
@@ -121,12 +121,12 @@ export default function About() {
                 </h2>
               </div>
               
-              {/* Right: Bart Character Image */}
+              {/* Right: Bart Character Image - 30% smaller desktop, 50% smaller mobile */}
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
                 <img
                   src="/images/bart-character-001b.png"
                   alt="Bart Paden"
-                  className="w-full max-w-md lg:max-w-lg h-auto object-contain"
+                  className="w-full max-w-[14rem] sm:max-w-[16rem] lg:max-w-[22rem] h-auto object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

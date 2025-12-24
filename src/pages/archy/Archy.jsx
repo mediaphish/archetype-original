@@ -30,7 +30,7 @@ export default function Archy() {
       <div className="min-h-screen bg-white">
         
         {/* SECTION 1: HERO WITH ARCHY CHARACTER */}
-        <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-12 sm:py-16 md:py-20 lg:py-24">
+        <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-8 sm:py-12 md:py-16 lg:py-12">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
               
@@ -49,12 +49,12 @@ export default function Archy() {
                 </p>
               </div>
               
-              {/* Right: Archy Character Image */}
+              {/* Right: Archy Character Image - 30% smaller desktop, 50% smaller mobile */}
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
                 <img
                   src="/images/archy-character-008.png"
                   alt="Archy - AI Leadership Coach"
-                  className="w-full max-w-md lg:max-w-lg h-auto object-contain"
+                  className="w-full max-w-[14rem] sm:max-w-[16rem] lg:max-w-[22rem] h-auto object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
