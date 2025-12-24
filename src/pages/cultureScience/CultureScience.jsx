@@ -48,76 +48,104 @@ export default function CultureScience() {
                 </p>
               </div>
               
-              {/* Right: 3-Layer Parallax (Desktop Only) */}
-              <div className="relative h-[500px] hidden lg:block">
-                {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
-                <div 
-                  className="absolute inset-0 z-10"
-                  style={{ 
-                    transform: `translateY(${scrollY * 0.05}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/science-layer-3.png" 
-                    alt="Culture Science Background" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
+              {/* Right: 3-Layer Parallax (Desktop) / Static (Mobile) */}
+              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px]">
+                {/* Desktop: Parallax layers */}
+                <div className="hidden lg:block absolute inset-0">
+                  {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
+                  <div 
+                    className="absolute inset-0 z-10"
+                    style={{ 
+                      transform: `translateY(${scrollY * 0.05}px)`,
+                      transition: 'transform 0.1s ease-out'
                     }}
-                  />
+                  >
+                    <img 
+                      src="/images/science-layer-3.png" 
+                      alt="Culture Science Background" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
+                  <div 
+                    className="absolute inset-0 z-20"
+                    style={{ 
+                      transform: `translateX(${scrollY * 0.08}px)`,
+                      transition: 'transform 0.1s ease-out'
+                    }}
+                  >
+                    <img 
+                      src="/images/science-layer-2.png" 
+                      alt="Culture Science Middle Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1: Archy - Moves HORIZONTALLY ONLY (grounded) */}
+                  <div 
+                    className="absolute inset-0 z-30"
+                    style={{ 
+                      transform: `translateX(${scrollY * -0.15}px)`,
+                      transition: 'transform 0.1s ease-out'
+                    }}
+                  >
+                    <img 
+                      src="/images/science-layer-1.png" 
+                      alt="Archy" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
                 
-                {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
-                <div 
-                  className="absolute inset-0 z-20"
-                  style={{ 
-                    transform: `translateX(${scrollY * 0.08}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/science-layer-2.png" 
-                    alt="Culture Science Middle Layer" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-                
-                {/* Layer 1: Archy - Moves HORIZONTALLY ONLY (grounded) */}
-                <div 
-                  className="absolute inset-0 z-30"
-                  style={{ 
-                    transform: `translateX(${scrollY * -0.15}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/science-layer-1.png" 
-                    alt="Archy" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
+                {/* Mobile: Static layers (no parallax) */}
+                <div className="lg:hidden absolute inset-0">
+                  {/* Layer 3: Background */}
+                  <div className="absolute inset-0 z-10">
+                    <img 
+                      src="/images/science-layer-3.png" 
+                      alt="Culture Science Background" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 2: Middle */}
+                  <div className="absolute inset-0 z-20">
+                    <img 
+                      src="/images/science-layer-2.png" 
+                      alt="Culture Science Middle Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1: Archy */}
+                  <div className="absolute inset-0 z-30">
+                    <img 
+                      src="/images/science-layer-1.png" 
+                      alt="Archy" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-              
-              {/* Mobile: Static image */}
-              {isMobile && (
-                <div className="relative w-full max-w-lg mx-auto lg:hidden" style={{ aspectRatio: '1/1' }}>
-                  <img 
-                    src="/images/science-layer-1.png" 
-                    alt="Archy" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
               
             </div>
           </div>

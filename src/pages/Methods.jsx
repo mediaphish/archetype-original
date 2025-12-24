@@ -156,9 +156,11 @@ export default function Methods() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState('opening-frame');
   const [showStickyNav, setShowStickyNav] = useState(false);
+  const [stickyNavVisible, setStickyNavVisible] = useState(true);
   const sectionRefs = useRef({});
   const clickedSectionRef = useRef(null);
   const heroRef = useRef(null);
+  const lastScrollY = useRef(0);
 
   // Mobile detection and scroll tracking for parallax
   useEffect(() => {
@@ -177,7 +179,21 @@ export default function Methods() {
       // Show sticky nav after scrolling past hero
       if (heroRef.current) {
         const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
-        setShowStickyNav(window.scrollY > heroBottom - 100);
+        const shouldShow = window.scrollY > heroBottom - 100;
+        setShowStickyNav(shouldShow);
+        
+        // On mobile, hide sticky nav when scrolling down, show when scrolling up
+        if (window.innerWidth < 768 && shouldShow) {
+          const currentScrollY = window.scrollY;
+          if (currentScrollY > lastScrollY.current && currentScrollY > heroBottom) {
+            setStickyNavVisible(false);
+          } else if (currentScrollY < lastScrollY.current) {
+            setStickyNavVisible(true);
+          }
+          lastScrollY.current = currentScrollY;
+        } else {
+          setStickyNavVisible(true);
+        }
       }
     };
 
@@ -298,60 +314,102 @@ export default function Methods() {
                 </p>
               </div>
               
-              {/* Right: 3-Layer Parallax (Desktop Only) */}
-              <div className="relative h-[500px] hidden lg:block">
-                {/* Layer 3: Back (slowest) */}
-                <div 
-                  className="absolute inset-0 z-10"
-                  style={{ 
-                    transform: `translateY(${scrollY * 0.05}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/methods-layer-3.png" 
-                    alt="Methods Background Layer" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
+              {/* Right: 3-Layer Parallax (Desktop) / Static (Mobile) */}
+              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px]">
+                {/* Desktop: Parallax layers */}
+                <div className="hidden lg:block absolute inset-0">
+                  {/* Layer 3: Back (slowest) */}
+                  <div 
+                    className="absolute inset-0 z-10"
+                    style={{ 
+                      transform: `translateY(${scrollY * 0.05}px)`,
+                      transition: 'transform 0.1s ease-out'
                     }}
-                  />
+                  >
+                    <img 
+                      src="/images/methods-layer-3.png" 
+                      alt="Methods Background Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
+                  <div 
+                    className="absolute inset-0 z-20"
+                    style={{ 
+                      transform: `translateX(${scrollY * 0.08}px)`,
+                      transition: 'transform 0.1s ease-out'
+                    }}
+                  >
+                    <img 
+                      src="/images/methods-layer-2.png" 
+                      alt="Methods Middle Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1: Front - Moves HORIZONTALLY ONLY (grounded) */}
+                  <div 
+                    className="absolute inset-0 z-30"
+                    style={{ 
+                      transform: `translateX(${scrollY * -0.15}px)`,
+                      transition: 'transform 0.1s ease-out'
+                    }}
+                  >
+                    <img 
+                      src="/images/methods-layer-1.png" 
+                      alt="Methods Foreground Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
                 
-                {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
-                <div 
-                  className="absolute inset-0 z-20"
-                  style={{ 
-                    transform: `translateX(${scrollY * 0.08}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/methods-layer-2.png" 
-                    alt="Methods Middle Layer" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-                
-                {/* Layer 1: Front - Moves HORIZONTALLY ONLY (grounded) */}
-                <div 
-                  className="absolute inset-0 z-30"
-                  style={{ 
-                    transform: `translateX(${scrollY * -0.15}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/methods-layer-1.png" 
-                    alt="Methods Foreground Layer" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
+                {/* Mobile: Static layers (no parallax) */}
+                <div className="lg:hidden absolute inset-0">
+                  {/* Layer 3: Back */}
+                  <div className="absolute inset-0 z-10">
+                    <img 
+                      src="/images/methods-layer-3.png" 
+                      alt="Methods Background Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 2: Middle */}
+                  <div className="absolute inset-0 z-20">
+                    <img 
+                      src="/images/methods-layer-2.png" 
+                      alt="Methods Middle Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1: Front */}
+                  <div className="absolute inset-0 z-30">
+                    <img 
+                      src="/images/methods-layer-1.png" 
+                      alt="Methods Foreground Layer" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -389,7 +447,7 @@ export default function Methods() {
         <nav 
           aria-label="Sticky table of contents"
           className={`fixed top-20 left-0 right-0 z-40 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
-            showStickyNav ? 'translate-y-0' : '-translate-y-full'
+            showStickyNav && stickyNavVisible ? 'translate-y-0' : '-translate-y-full'
           }`}
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">

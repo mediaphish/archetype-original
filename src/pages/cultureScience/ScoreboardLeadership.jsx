@@ -66,42 +66,72 @@ export default function ScoreboardLeadership() {
                 </h1>
               </div>
               
-              {/* Right: 2-Layer Parallax (Desktop Only) */}
-              <div className="relative h-[500px] hidden lg:block">
-                {/* Layer 2: Back - Moves VERTICALLY (slow) */}
-                <div 
-                  className="absolute inset-0 z-10"
-                  style={{ 
-                    transform: isMobile ? 'translateY(0)' : `translateY(${scrollY * 0.05}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/scoreboard-layer-2.png" 
-                    alt="Scoreboard Leadership Background" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
+              {/* Right: 2-Layer Parallax (Desktop) / Static (Mobile) */}
+              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px]">
+                {/* Desktop: Parallax layers */}
+                <div className="hidden lg:block absolute inset-0">
+                  {/* Layer 2: Back - Moves VERTICALLY (slow) */}
+                  <div 
+                    className="absolute inset-0 z-10"
+                    style={{ 
+                      transform: `translateY(${scrollY * 0.05}px)`,
+                      transition: 'transform 0.1s ease-out'
                     }}
-                  />
+                  >
+                    <img 
+                      src="/images/scoreboard-layer-2.png" 
+                      alt="Scoreboard Leadership Background" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1: Front - Moves HORIZONTALLY (faster) */}
+                  <div 
+                    className="absolute inset-0 z-20"
+                    style={{ 
+                      transform: `translateX(${scrollY * -0.15}px)`,
+                      transition: 'transform 0.1s ease-out'
+                    }}
+                  >
+                    <img 
+                      src="/images/scoreboard-layer-1.png" 
+                      alt="Scoreboard Leadership Foreground" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
                 
-                {/* Layer 1: Front - Moves HORIZONTALLY (faster) */}
-                <div 
-                  className="absolute inset-0 z-20"
-                  style={{ 
-                    transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.15}px)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                >
-                  <img 
-                    src="/images/scoreboard-layer-1.png" 
-                    alt="Scoreboard Leadership Foreground" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
+                {/* Mobile: Static layers (no parallax) */}
+                <div className="lg:hidden absolute inset-0">
+                  {/* Layer 2: Back */}
+                  <div className="absolute inset-0 z-10">
+                    <img 
+                      src="/images/scoreboard-layer-2.png" 
+                      alt="Scoreboard Leadership Background" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Layer 1: Front */}
+                  <div className="absolute inset-0 z-20">
+                    <img 
+                      src="/images/scoreboard-layer-1.png" 
+                      alt="Scoreboard Leadership Foreground" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

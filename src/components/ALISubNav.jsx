@@ -1,6 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function ALISubNav() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    const handleScroll = () => {
+      // Only hide/show on mobile
+      if (window.innerWidth < 768) {
+        const currentScrollY = window.scrollY;
+        
+        // Show when scrolling up, hide when scrolling down
+        if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+          // Scrolling down - hide
+          setIsVisible(false);
+        } else if (currentScrollY < lastScrollY.current) {
+          // Scrolling up - show
+          setIsVisible(true);
+        }
+        
+        lastScrollY.current = currentScrollY;
+      } else {
+        // Always visible on desktop
+        setIsVisible(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   const handleLinkClick = (e, href) => {
     e.preventDefault();
     window.history.pushState({}, '', href);
@@ -22,7 +63,9 @@ export default function ALISubNav() {
   const currentSearch = typeof window !== 'undefined' ? window.location.search : '';
 
   return (
-    <nav className="bg-[#FAFAF9] border-b border-[#1A1A1A]/10 sticky top-20 z-40">
+    <nav className={`bg-[#FAFAF9] border-b border-[#1A1A1A]/10 sticky top-20 z-40 transition-transform duration-300 ${
+      isVisible ? 'translate-y-0' : '-translate-y-full'
+    }`}>
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-3 sm:py-4 scrollbar-hide">
           {navItems.map((item) => {
