@@ -17,9 +17,11 @@ const sections = [
 export default function About() {
   const [activeSection, setActiveSection] = useState('work-found-me');
   const [showStickyNav, setShowStickyNav] = useState(false);
+  const [stickyNavVisible, setStickyNavVisible] = useState(true);
   const sectionRefs = useRef({});
   const clickedSectionRef = useRef(null);
   const heroRef = useRef(null);
+  const lastScrollY = useRef(0);
 
   // Scroll tracking for sticky nav
   useEffect(() => {
@@ -27,7 +29,22 @@ export default function About() {
       // Show sticky nav after scrolling past hero
       if (heroRef.current) {
         const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
-        setShowStickyNav(window.scrollY > heroBottom - 100);
+        const shouldShow = window.scrollY > heroBottom - 100;
+        setShowStickyNav(shouldShow);
+        
+        // On mobile, hide sticky nav when scrolling down, show when scrolling up
+        if (window.innerWidth < 768 && shouldShow) {
+          const currentScrollY = window.scrollY;
+          // Only hide if scrolling down significantly (more than 10px) to avoid jitter
+          if (currentScrollY > lastScrollY.current + 10 && currentScrollY > heroBottom) {
+            setStickyNavVisible(false);
+          } else if (currentScrollY < lastScrollY.current - 10) {
+            setStickyNavVisible(true);
+          }
+          lastScrollY.current = currentScrollY;
+        } else {
+          setStickyNavVisible(true);
+        }
       }
     };
 
@@ -167,7 +184,7 @@ export default function About() {
         <nav 
           aria-label="Sticky table of contents"
           className={`fixed top-20 left-0 right-0 z-40 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
-            showStickyNav ? 'translate-y-0' : '-translate-y-full'
+            showStickyNav && stickyNavVisible ? 'translate-y-0' : '-translate-y-full'
           }`}
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">

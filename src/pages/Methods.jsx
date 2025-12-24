@@ -185,9 +185,10 @@ export default function Methods() {
         // On mobile, hide sticky nav when scrolling down, show when scrolling up
         if (window.innerWidth < 768 && shouldShow) {
           const currentScrollY = window.scrollY;
-          if (currentScrollY > lastScrollY.current && currentScrollY > heroBottom) {
+          // Only hide if scrolling down significantly (more than 10px) to avoid jitter
+          if (currentScrollY > lastScrollY.current + 10 && currentScrollY > heroBottom) {
             setStickyNavVisible(false);
-          } else if (currentScrollY < lastScrollY.current) {
+          } else if (currentScrollY < lastScrollY.current - 10) {
             setStickyNavVisible(true);
           }
           lastScrollY.current = currentScrollY;

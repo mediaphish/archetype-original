@@ -4,10 +4,108 @@
  * Clean, purposeful design that lets content speak for itself.
  * Restrained design without theatrics - content-first approach.
  */
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SEO from '../../components/SEO';
 
+const sections = [
+  { id: 'what-archy-does', label: 'What Archy Does' },
+  { id: 'how-archy-works', label: 'How Archy Works' },
+  { id: 'what-archy-doesnt-do', label: "What Archy Doesn't Do" },
+  { id: 'when-archy-hands-off', label: 'When Archy Hands Off' },
+  { id: 'why-archy-exists', label: 'Why Archy Exists' }
+];
+
 export default function Archy() {
+  const [activeSection, setActiveSection] = useState('what-archy-does');
+  const [showStickyNav, setShowStickyNav] = useState(false);
+  const [stickyNavVisible, setStickyNavVisible] = useState(true);
+  const sectionRefs = useRef({});
+  const clickedSectionRef = useRef(null);
+  const heroRef = useRef(null);
+  const lastScrollY = useRef(0);
+
+  // Scroll tracking for sticky nav
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show sticky nav after scrolling past hero
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
+        const shouldShow = window.scrollY > heroBottom - 100;
+        setShowStickyNav(shouldShow);
+        
+        // On mobile, hide sticky nav when scrolling down, show when scrolling up
+        if (window.innerWidth < 768 && shouldShow) {
+          const currentScrollY = window.scrollY;
+          // Only hide if scrolling down significantly (more than 10px) to avoid jitter
+          if (currentScrollY > lastScrollY.current + 10 && currentScrollY > heroBottom) {
+            setStickyNavVisible(false);
+          } else if (currentScrollY < lastScrollY.current - 10) {
+            setStickyNavVisible(true);
+          }
+          lastScrollY.current = currentScrollY;
+        } else {
+          setStickyNavVisible(true);
+        }
+      }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Intersection Observer for active section detection
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !clickedSectionRef.current) {
+          const sectionId = entry.target.id;
+          setActiveSection(sectionId);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((section) => {
+      const element = sectionRefs.current[section.id];
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const scrollToSection = (id, event) => {
+    clickedSectionRef.current = id;
+    
+    const element = sectionRefs.current[id];
+    if (element) {
+      const offset = 100;
+      const elementPosition = element.offsetTop - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        clickedSectionRef.current = null;
+      }, 1000);
+    }
+  };
+
   const handleLinkClick = (e, href) => {
     e.preventDefault();
     if (href.startsWith('#')) {
@@ -30,7 +128,7 @@ export default function Archy() {
       <div className="min-h-screen bg-white">
         
         {/* SECTION 1: HERO WITH ARCHY CHARACTER */}
-        <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-8 sm:py-12 md:py-16 lg:py-12">
+        <section ref={heroRef} className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-8 sm:py-12 md:py-16 lg:py-12">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
               
@@ -65,8 +163,71 @@ export default function Archy() {
           </div>
         </section>
 
+        {/* Table of Contents - Initial */}
+        <section className="w-full bg-[#FAFAF9] py-8 sm:py-10">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
+            <nav aria-label="Table of contents">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-colors min-h-[44px] flex items-center justify-center ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          </div>
+        </section>
+
+        {/* Sticky Navigation - Appears after scrolling past hero */}
+        <nav 
+          aria-label="Sticky table of contents"
+          className={`fixed top-20 left-0 right-0 z-40 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
+            showStickyNav && stickyNavVisible ? 'translate-y-0' : '-translate-y-full'
+          }`}
+        >
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-7xl mx-auto py-3 sm:py-4">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center items-center">
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(section.id, e);
+                    }}
+                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-all min-h-[44px] flex items-center justify-center ${
+                      activeSection === section.id
+                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                    }`}
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
+
         {/* SECTION 2: WHAT ARCHY DOES */}
-        <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+        <section 
+          id="what-archy-does" 
+          ref={(el) => (sectionRefs.current['what-archy-does'] = el)} 
+          className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
@@ -113,7 +274,11 @@ export default function Archy() {
         </section>
 
         {/* SECTION 3: HOW ARCHY WORKS */}
-        <section className="bg-[#FFF8F0] py-12 sm:py-16 md:py-20 lg:py-24">
+        <section 
+          id="how-archy-works" 
+          ref={(el) => (sectionRefs.current['how-archy-works'] = el)} 
+          className="bg-[#FFF8F0] py-12 sm:py-16 md:py-20 lg:py-24 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
@@ -160,7 +325,11 @@ export default function Archy() {
         </section>
 
         {/* SECTION 4: WHAT ARCHY DOESN'T DO */}
-        <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+        <section 
+          id="what-archy-doesnt-do" 
+          ref={(el) => (sectionRefs.current['what-archy-doesnt-do'] = el)} 
+          className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
@@ -207,7 +376,11 @@ export default function Archy() {
         </section>
 
         {/* SECTION 5: WHEN ARCHY HANDS OFF */}
-        <section className="bg-[#FFF8F0] py-12 sm:py-16 md:py-20 lg:py-24">
+        <section 
+          id="when-archy-hands-off" 
+          ref={(el) => (sectionRefs.current['when-archy-hands-off'] = el)} 
+          className="bg-[#FFF8F0] py-12 sm:py-16 md:py-20 lg:py-24 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
@@ -247,7 +420,11 @@ export default function Archy() {
         </section>
 
         {/* SECTION 6: WHY ARCHY EXISTS */}
-        <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+        <section 
+          id="why-archy-exists" 
+          ref={(el) => (sectionRefs.current['why-archy-exists'] = el)} 
+          className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 scroll-mt-32"
+        >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
