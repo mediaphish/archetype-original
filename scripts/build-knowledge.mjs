@@ -213,8 +213,9 @@ async function buildKnowledgeCorpus() {
         
         const now = new Date();
         
-        // Skip future posts
-        if (publishDate && publishDate > now) {
+        // Skip future posts (but allow devotionals to be published even if dated in the future)
+        const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
+        if (publishDate && publishDate > now && !isDevotional) {
           console.log(`⏰ Skipping future post: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDate.toISOString()})`);
           futurePosts++;
           continue;
@@ -231,7 +232,7 @@ async function buildKnowledgeCorpus() {
         const slug = frontmatter.slug || path.basename(filePath, '.md');
         
         // Determine if this is a devotional (check if file is in devotionals subdirectory)
-        const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
+        // Note: isDevotional was already determined above for future post check
         const postType = isDevotional ? 'devotional' : 'journal-post';
         
         // Check for image - prioritize featured_image from frontmatter
