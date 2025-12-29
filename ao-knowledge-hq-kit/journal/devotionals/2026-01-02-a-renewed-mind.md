@@ -5,7 +5,7 @@ date: "2026-01-02"
 type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
-publish_date: "2026-01-02"
+publish_date: "2025-12-29"
 scripture_reference: "Romans 12:1–2"
 summary: "Renewal begins upstream, not at the surface."
 ---

@@ -5,7 +5,7 @@ date: "2026-01-03"
 type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
-publish_date: "2026-01-03"
+publish_date: "2025-12-29"
 scripture_reference: "Isaiah 43:18–19"
 summary: "New beginnings require perception and trust."
 ---

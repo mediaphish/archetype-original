@@ -5,7 +5,7 @@ date: "2026-01-05"
 type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
-publish_date: "2026-01-05"
+publish_date: "2025-12-29"
 scripture_reference: "Proverbs 3:5–6"
 summary: "Trust often precedes clarity."
 ---
