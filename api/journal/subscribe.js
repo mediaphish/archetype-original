@@ -18,7 +18,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { email } = req.body || {};
+    const { 
+      email, 
+      subscribe_journal_entries = true, 
+      subscribe_devotionals = false 
+    } = req.body || {};
     
     if (!email) {
       return res.status(400).json({ error: "Email address is required." });
@@ -30,12 +34,17 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Invalid email address." });
     }
 
+    // Require at least one subscription type
+    if (!subscribe_journal_entries && !subscribe_devotionals) {
+      return res.status(400).json({ error: "Please select at least one subscription type." });
+    }
+
     const normalizedEmail = email.toLowerCase().trim();
 
     // Check if email already exists
     const { data: existing, error: checkError } = await supabaseAdmin
       .from("journal_subscriptions")
-      .select("id, is_active, unsubscribed_at")
+      .select("id, is_active, unsubscribed_at, subscribe_journal_entries, subscribe_devotionals")
       .eq("email", normalizedEmail)
       .maybeSingle();
 
@@ -44,23 +53,40 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Database error." });
     }
 
-    // If exists and is active, return success (idempotent)
+    // Prepare subscription data
+    const subscriptionData = {
+      subscribe_journal_entries: Boolean(subscribe_journal_entries),
+      subscribe_devotionals: Boolean(subscribe_devotionals)
+    };
+
+    // If exists and is active, update preferences
     if (existing && existing.is_active) {
+      const { error: updateError } = await supabaseAdmin
+        .from("journal_subscriptions")
+        .update(subscriptionData)
+        .eq("id", existing.id);
+
+      if (updateError) {
+        console.error("Error updating subscription preferences:", updateError);
+        return res.status(500).json({ error: "Failed to update subscription preferences." });
+      }
+
       return res.status(200).json({ 
         ok: true, 
-        message: "You're already subscribed!",
+        message: "Subscription preferences updated!",
         already_subscribed: true 
       });
     }
 
-    // If exists but was unsubscribed, reactivate it
+    // If exists but was unsubscribed, reactivate it with new preferences
     if (existing && !existing.is_active) {
       const { error: updateError } = await supabaseAdmin
         .from("journal_subscriptions")
         .update({ 
           is_active: true,
           subscribed_at: new Date().toISOString(),
-          unsubscribed_at: null
+          unsubscribed_at: null,
+          ...subscriptionData
         })
         .eq("id", existing.id);
 
@@ -70,7 +96,7 @@ export default async function handler(req, res) {
       }
 
       // Send confirmation email
-      await sendConfirmationEmail(normalizedEmail);
+      await sendConfirmationEmail(normalizedEmail, subscriptionData);
       
       return res.status(200).json({ 
         ok: true, 
@@ -86,7 +112,8 @@ export default async function handler(req, res) {
         {
           email: normalizedEmail,
           is_active: true,
-          subscribed_at: new Date().toISOString()
+          subscribed_at: new Date().toISOString(),
+          ...subscriptionData
         }
       ])
       .select()
@@ -98,7 +125,7 @@ export default async function handler(req, res) {
     }
 
     // Send confirmation email
-    await sendConfirmationEmail(normalizedEmail);
+    await sendConfirmationEmail(normalizedEmail, subscriptionData);
 
     return res.status(200).json({ 
       ok: true, 
@@ -112,7 +139,7 @@ export default async function handler(req, res) {
   }
 }
 
-async function sendConfirmationEmail(email) {
+async function sendConfirmationEmail(email, preferences = {}) {
   if (!process.env.RESEND_API_KEY) {
     console.warn("RESEND_API_KEY not configured, skipping confirmation email");
     return;
@@ -121,22 +148,34 @@ async function sendConfirmationEmail(email) {
   const from = process.env.CONTACT_FROM || "Archetype Original <noreply@archetypeoriginal.com>";
   const siteUrl = process.env.PUBLIC_SITE_URL || "https://www.archetypeoriginal.com";
 
+  // Build subscription list
+  const subscriptions = [];
+  if (preferences.subscribe_journal_entries) {
+    subscriptions.push("Servant Leadership Entries");
+  }
+  if (preferences.subscribe_devotionals) {
+    subscriptions.push("Servant Leadership Devotional");
+  }
+  const subscriptionText = subscriptions.length > 0 
+    ? subscriptions.join(" and ")
+    : "updates";
+
   try {
     const result = await resend.emails.send({
       from,
       to: email,
-      subject: "You're subscribed to Archetype Original Journal",
+      subject: "You're subscribed to Archetype Original",
       html: `
         <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#1A1A1A; max-width:600px; margin:0 auto;">
           <h2 style="margin:0 0 16px 0; color:#1A1A1A;">Thanks for subscribing!</h2>
-          <p>You'll now receive an email notification whenever a new journal post is published on Archetype Original.</p>
+          <p>You'll now receive email notifications for ${subscriptionText}.</p>
           <p>We share thoughts, insights, and lessons learned from 32+ years of building companies and growing people.</p>
           <p style="margin-top:24px;">
             <a href="${siteUrl}/journal" style="display:inline-block; background-color:#1A1A1A; color:#FFFFFF; padding:12px 24px; text-decoration:none; font-weight:500;">Read the Journal</a>
           </p>
           <hr style="border:none;border-top:1px solid #e5e7eb; margin:24px 0;" />
           <p style="font-size:12px;color:#6B6B6B;">
-            You're receiving this because you subscribed to journal updates at ${siteUrl}/journal
+            You're receiving this because you subscribed to updates at ${siteUrl}/journal
           </p>
         </div>
       `
