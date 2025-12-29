@@ -1,12 +1,14 @@
 /**
  * Journal Email Subscription Form
  * 
- * Allows users to subscribe to email notifications when new journal posts are published
+ * Allows users to subscribe to email notifications for journal entries and/or devotionals
  */
 import React, { useState } from 'react';
 
 export default function JournalSubscription() {
   const [email, setEmail] = useState('');
+  const [subscribeJournalEntries, setSubscribeJournalEntries] = useState(true);
+  const [subscribeDevotionals, setSubscribeDevotionals] = useState(false);
   const [status, setStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
   const [message, setMessage] = useState('');
 
@@ -19,6 +21,13 @@ export default function JournalSubscription() {
       return;
     }
 
+    // Require at least one subscription type
+    if (!subscribeJournalEntries && !subscribeDevotionals) {
+      setStatus('error');
+      setMessage('Please select at least one subscription type.');
+      return;
+    }
+
     setStatus('loading');
     setMessage('');
 
@@ -28,15 +37,24 @@ export default function JournalSubscription() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ 
+          email,
+          subscribe_journal_entries: subscribeJournalEntries,
+          subscribe_devotionals: subscribeDevotionals
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok && data.ok) {
         setStatus('success');
-        setMessage('Thanks! You\'ll receive an email when new posts are published.');
+        const selectedTypes = [];
+        if (subscribeJournalEntries) selectedTypes.push('journal entries');
+        if (subscribeDevotionals) selectedTypes.push('devotionals');
+        setMessage(`Thanks! You'll receive emails for ${selectedTypes.join(' and ')}.`);
         setEmail('');
+        setSubscribeJournalEntries(true);
+        setSubscribeDevotionals(false);
       } else {
         setStatus('error');
         setMessage(data.error || 'Something went wrong. Please try again.');
@@ -54,26 +72,57 @@ export default function JournalSubscription() {
           Get New Posts by Email
         </h3>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6 sm:mb-8 text-pretty">
-          Subscribe to receive an email notification whenever a new journal post is published.
+          Subscribe to receive email notifications when new content is published.
         </p>
         
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your.email@example.com"
-            className="flex-1 px-4 py-3 border border-[#1A1A1A]/20 text-[#1A1A1A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors"
-            disabled={status === 'loading'}
-            required
-          />
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="bg-[#1A1A1A] text-white px-6 sm:px-8 py-3 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-          >
-            {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
-          </button>
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+          {/* Subscription Type Checkboxes */}
+          <div className="flex flex-col gap-3 text-left">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={subscribeJournalEntries}
+                onChange={(e) => setSubscribeJournalEntries(e.target.checked)}
+                disabled={status === 'loading'}
+                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#C85A3C] focus:ring-[#C85A3C] focus:ring-2"
+              />
+              <span className="text-base sm:text-lg text-[#1A1A1A]">
+                Servant Leadership Entries
+              </span>
+            </label>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={subscribeDevotionals}
+                onChange={(e) => setSubscribeDevotionals(e.target.checked)}
+                disabled={status === 'loading'}
+                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#C85A3C] focus:ring-[#C85A3C] focus:ring-2"
+              />
+              <span className="text-base sm:text-lg text-[#1A1A1A]">
+                Servant Leadership Devotional
+              </span>
+            </label>
+          </div>
+
+          {/* Email Input and Submit */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your.email@example.com"
+              className="flex-1 px-4 py-3 border border-[#1A1A1A]/20 text-[#1A1A1A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors"
+              disabled={status === 'loading'}
+              required
+            />
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              className="bg-[#1A1A1A] text-white px-6 sm:px-8 py-3 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+            </button>
+          </div>
         </form>
 
         {message && (
