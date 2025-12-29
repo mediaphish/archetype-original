@@ -382,12 +382,13 @@ export default function App() {
     );
   }
 
-  // Render Faith page (not in navigation)
+  // Render Faith page
   if (currentPage === 'faith') {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Faith />
         <Footer />
+        <FloatingArchyButton />
       </main>
     );
   }

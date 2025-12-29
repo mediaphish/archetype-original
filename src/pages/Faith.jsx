@@ -3,11 +3,11 @@
  * 
  * Features the current day's devotional at the top in full,
  * with previous days below for reference.
- * This page is NOT connected to the main navigation.
  */
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import Header from '../components/Header';
 import ScriptureBlock from '../components/ScriptureBlock';
 import ESVCopyright from '../components/ESVCopyright';
 import JournalSubscription from '../components/JournalSubscription';
@@ -167,16 +167,52 @@ export default function Faith() {
       </Helmet>
 
       <div className="min-h-screen bg-white">
+        {/* Header */}
+        <Header />
+
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-12 sm:py-16 md:py-20">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-4 leading-tight">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-8 leading-tight text-center">
                 Servant Leadership Devotional
               </h1>
-              <p className="text-lg sm:text-xl text-[#6B6B6B] max-w-2xl mx-auto">
-                Daily reflections on leadership, renewal, and purpose
-              </p>
+              
+              {/* Intro Content */}
+              <div className="max-w-3xl mx-auto space-y-6 mb-12">
+                <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A]">
+                  This devotional is built on a simple, demanding idea:
+                </p>
+                
+                <p className="text-xl sm:text-2xl font-semibold leading-relaxed text-[#1A1A1A]">
+                  Lead others the way you would want to be led.
+                </p>
+                
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Often called the Golden Rule, this principle sits at the foundation of Servant Leadership. These daily reflections connect Scripture to the real pressures of leadership—power, responsibility, trust, restraint, and care for people.
+                </p>
+                
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  The goal is not inspiration for inspiration's sake, but formation. Each entry invites leaders to slow down, examine their assumptions, and renew how they think about influence and responsibility.
+                </p>
+                
+                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  👉 To understand the leadership framework behind this devotional, read{' '}
+                  <a 
+                    href="/journal/golden-rule-leadership-strategy"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      window.scrollTo({ top: 0, behavior: 'instant' });
+                    }}
+                    className="text-[#C85A3C] hover:text-[#B54A32] underline font-medium"
+                  >
+                    The Golden Rule Has Always Been a Leadership Strategy
+                  </a>
+                  .
+                </p>
+              </div>
             </div>
           </div>
         </section>
