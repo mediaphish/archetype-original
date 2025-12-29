@@ -191,8 +191,9 @@ async function buildKnowledgeCorpus() {
         // Now parse frontmatter from cleaned content
         let { data: frontmatter, content: body } = matter(content);
         
-        // Remove any frontmatter that might still be in body
-        body = body.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/gm, '');
+        // Remove any frontmatter that might still be in body (only at the start)
+        // Don't remove --- separators that are used as section dividers in content
+        body = body.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/m, '');
         body = body.trim();
         
         // Check if post should be published
