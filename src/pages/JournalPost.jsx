@@ -766,8 +766,7 @@ export default function JournalPost() {
                               const processedItem = processInlineMarkdown(item);
                               return (
                                 <li key={itemIndex} className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
-                                  <span className="text-[#C85A3C] mr-3 font-bold">•</span>
-                                  <span>{processedItem}</span>
+                                  {processedItem}
                                 </li>
                               );
                             })}
