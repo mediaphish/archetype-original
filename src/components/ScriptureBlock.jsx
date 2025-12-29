@@ -27,7 +27,7 @@ export default function ScriptureBlock({ reference }) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[#C85A3C] hover:text-[#A0452E] font-medium text-base sm:text-lg transition-colors underline"
           >
-            Read on ESV.org
+            Read {reference} on ESV.org
             <svg 
               className="w-4 h-4" 
               fill="none" 

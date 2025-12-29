@@ -63,15 +63,9 @@ export function buildEsvUrl(reference) {
   const book = parts.slice(0, chapterIndex).join('+');
   const chapter = parts[chapterIndex];
   
-  // Build URL
-  let url = `${baseUrl}${book}+${chapter}/`;
-  
-  // Add verse hash if we have a verse
-  if (verse) {
-    url += `#${verse}`;
-    // Note: ESV.org may handle verse ranges differently
-    // If hash doesn't work for ranges, we might need to adjust
-  }
+  // Build URL - ESV.org doesn't support direct verse linking via hash
+  // Link to the chapter; users can scroll to find the verse
+  const url = `${baseUrl}${book}+${chapter}/`;
   
   return url;
 }
