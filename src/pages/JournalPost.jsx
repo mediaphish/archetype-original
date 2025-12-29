@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import DevotionalPost from './DevotionalPost';
+import JournalSubscription from '../components/JournalSubscription';
 
 export default function JournalPost() {
   const [post, setPost] = useState(null);
@@ -942,6 +943,11 @@ export default function JournalPost() {
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Subscription Form */}
+              <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-[#1A1A1A]/10">
+                <JournalSubscription />
               </div>
             </div>
           </article>
