@@ -230,7 +230,12 @@ async function buildKnowledgeCorpus() {
         
         const slug = frontmatter.slug || path.basename(filePath, '.md');
         
+        // Determine if this is a devotional (check if file is in devotionals subdirectory)
+        const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
+        const postType = isDevotional ? 'devotional' : 'journal-post';
+        
         // Check for image - prioritize featured_image from frontmatter
+        // Devotionals typically don't have images
         let imagePath = null;
         
         // First, check if featured_image is specified in frontmatter
@@ -292,20 +297,22 @@ async function buildKnowledgeCorpus() {
           .trim();
 
         const journalDoc = {
-          title: frontmatter.title || 'Untitled Journal Post',
+          title: frontmatter.title || (isDevotional ? 'Untitled Devotional' : 'Untitled Journal Post'),
           slug: slug,
-          type: 'journal-post',
+          type: postType,
           tags: frontmatter.tags || [],
           categories: frontmatter.categories || [],
           status: status,
           created_at: frontmatter.created_at || new Date().toISOString(),
           updated_at: frontmatter.updated_at || new Date().toISOString(),
-          publish_date: frontmatter.publish_date || new Date().toISOString(),
+          publish_date: frontmatter.publish_date || frontmatter.date || new Date().toISOString(),
+          date: frontmatter.date || frontmatter.publish_date || null, // For devotionals
           summary: frontmatter.summary || (body ? body.substring(0, 200).trim() + '...' : ''),
           email_summary: emailSummary, // Email-specific summary (longer, cleaner)
           image: imagePath,
+          scripture_reference: frontmatter.scripture_reference || null, // For devotionals
           source: { 
-            kind: 'journal',
+            kind: isDevotional ? 'devotional' : 'journal',
             original_source: frontmatter.original_source || null,
             original_url: frontmatter.original_url || null
           },
@@ -317,7 +324,8 @@ async function buildKnowledgeCorpus() {
         
         docs.push(journalDoc);
         processedCount++;
-        console.log(`✅ Processed journal post: ${frontmatter.title || slug}`);
+        const postLabel = isDevotional ? 'devotional' : 'journal post';
+        console.log(`✅ Processed ${postLabel}: ${frontmatter.title || slug}`);
       } catch (error) {
         errorCount++;
         console.error(`❌ Error processing journal ${path.basename(filePath)}:`, error.message);

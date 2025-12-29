@@ -47,12 +47,22 @@ export default function Journal() {
     // Ensure we're at the top when the Journal page loads
     window.scrollTo({ top: 0, behavior: 'instant' });
     
-    // Load journal posts from the knowledge corpus
-    fetch('/api/knowledge?type=journal-post')
-      .then(response => response.json())
-      .then(data => {
+    // Load both journal posts and devotionals from the knowledge corpus
+    Promise.all([
+      fetch('/api/knowledge?type=journal-post').then(r => r.json()),
+      fetch('/api/knowledge?type=devotional').then(r => r.json())
+    ])
+      .then(([journalData, devotionalData]) => {
+        // Combine both types, but exclude devotionals from main journal view
+        // (they'll be shown on /faith page instead)
+        const allPosts = [
+          ...journalData.docs,
+          // Optionally include devotionals here if desired
+          // ...devotionalData.docs
+        ];
+        
         // Filter to only published posts, then sort by publish date, newest first
-        const publishedPosts = data.docs.filter(post => 
+        const publishedPosts = allPosts.filter(post => 
           post.status === 'published' || post.status === undefined
         );
         const sortedPosts = publishedPosts.sort((a, b) => {

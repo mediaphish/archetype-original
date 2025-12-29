@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import DevotionalPost from './DevotionalPost';
 
 export default function JournalPost() {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDevotional, setIsDevotional] = useState(false);
 
   useEffect(() => {
     // Disable browser scroll restoration for this page
@@ -23,22 +25,32 @@ export default function JournalPost() {
       return;
     }
 
-    // Load journal posts from the knowledge corpus
-    fetch('/api/knowledge?type=journal-post')
-      .then(response => response.json())
-      .then(data => {
-        // Find the post with matching slug
-        const foundPost = data.docs.find(p => p.slug === slug);
+    // Try to load as journal post first, then as devotional
+    Promise.all([
+      fetch('/api/knowledge?type=journal-post').then(r => r.json()),
+      fetch('/api/knowledge?type=devotional').then(r => r.json())
+    ])
+      .then(([journalData, devotionalData]) => {
+        // Check journal posts first
+        let foundPost = journalData.docs.find(p => p.slug === slug);
+        let devotional = false;
+        
+        // If not found, check devotionals
+        if (!foundPost) {
+          foundPost = devotionalData.docs.find(p => p.slug === slug);
+          devotional = !!foundPost;
+        }
         
         if (!foundPost) {
           setError('Post not found');
         } else {
           setPost(foundPost);
+          setIsDevotional(devotional);
         }
         setLoading(false);
       })
       .catch(error => {
-        console.error('Error loading journal post:', error);
+        console.error('Error loading post:', error);
         setError('Failed to load post');
         setLoading(false);
       });
@@ -113,6 +125,11 @@ export default function JournalPost() {
     
     window.open(shareUrl, '_blank', 'width=600,height=400');
   };
+
+  // If it's a devotional, render DevotionalPost component
+  if (!loading && post && isDevotional) {
+    return <DevotionalPost />;
+  }
 
   if (loading) {
     return (

@@ -16,6 +16,8 @@ import JournalHighlights from "./components/home/JournalHighlights";
 import FinalCTA from "./components/home/FinalCTA";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
+import DevotionalPost from "./pages/DevotionalPost";
+import Faith from "./pages/Faith";
 import AboutPage from "./pages/About";
 import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
@@ -48,7 +50,30 @@ import TermsAndConditionsPage from "./pages/TermsAndConditions";
 import EngagementInquiryPage from "./pages/EngagementInquiry";
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  // Initialize currentPage based on initial pathname
+  const getInitialPage = () => {
+    const path = window.location.pathname;
+    if (path === '/faith') return 'faith';
+    if (path === '/journal') return 'journal';
+    if (path.startsWith('/journal/')) return 'journal-post';
+    if (path === '/meet-bart' || path === '/about') return 'about';
+    if (path === '/contact') return 'contact';
+    if (path === '/faqs' || path.startsWith('/faqs')) return 'faqs';
+    if (path === '/engagement-inquiry') return 'engagement-inquiry';
+    if (path === '/privacy-policy' || path === '/privacy') return 'privacy-policy';
+    if (path === '/terms-and-conditions' || path === '/terms' || path === '/terms-of-service') return 'terms-and-conditions';
+    if (path === '/culture-science' || path.startsWith('/culture-science/')) {
+      if (path === '/culture-science/ali' || path.startsWith('/culture-science/ali/')) return 'ali';
+      return 'culture-science';
+    }
+    if (path === '/archy' || path.startsWith('/archy/')) return 'archy';
+    if (path === '/philosophy') return 'philosophy';
+    if (path === '/methods' || path.startsWith('/methods/')) return 'methods';
+    if (path === '/what-i-do') return 'what-i-do';
+    return 'home';
+  };
+  
+  const [currentPage, setCurrentPage] = useState(getInitialPage());
   const isNavigatingBack = useRef(false);
   const previousPath = useRef(window.location.pathname);
 
@@ -82,9 +107,13 @@ export default function App() {
       // Route detection
       if (path === '/' || path === '') {
         setCurrentPage('home');
+      } else if (path === '/faith') {
+        setCurrentPage('faith');
       } else if (path === '/journal') {
         setCurrentPage('journal');
       } else if (path.startsWith('/journal/')) {
+        // Check if it's a devotional or journal post
+        // We'll determine this in the component based on the post type
         setCurrentPage('journal-post');
       } else if (path === '/meet-bart') {
         setCurrentPage('about');
@@ -353,7 +382,17 @@ export default function App() {
     );
   }
 
-  // Render Journal post page
+  // Render Faith page (not in navigation)
+  if (currentPage === 'faith') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Faith />
+        <Footer />
+      </main>
+    );
+  }
+
+  // Render Journal post page (handles both journal posts and devotionals)
   if (currentPage === 'journal-post') {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
