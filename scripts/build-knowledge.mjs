@@ -191,9 +191,15 @@ async function buildKnowledgeCorpus() {
         // Now parse frontmatter from cleaned content
         let { data: frontmatter, content: body } = matter(content);
         
-        // Remove any frontmatter that might still be in body (only at the start)
-        // Don't remove --- separators that are used as section dividers in content
-        body = body.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/m, '');
+        // gray-matter already removes frontmatter, but check if there's any leftover
+        // Only remove frontmatter at the very start of the string (not line-by-line)
+        // This preserves --- separators used as section dividers in devotional content
+        if (body.trim().startsWith('---')) {
+          const firstEnd = body.indexOf('\n---', 4);
+          if (firstEnd > 0) {
+            body = body.substring(firstEnd + 5); // Remove the frontmatter block
+          }
+        }
         body = body.trim();
         
         // Check if post should be published
