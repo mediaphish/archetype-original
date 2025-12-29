@@ -29,12 +29,21 @@ export default async function handler(req, res) {
     const { postSlug, post } = req.body || {};
     
     // If postSlug is provided, fetch post from knowledge corpus
+    // Check both journal-post and devotional types
     let postData = post;
     if (postSlug && !post) {
       try {
-        const knowledgeResponse = await fetch(`${process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com'}/api/knowledge?type=journal-post`);
-        const knowledgeData = await knowledgeResponse.json();
+        // Try journal-post first
+        let knowledgeResponse = await fetch(`${process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com'}/api/knowledge?type=journal-post`);
+        let knowledgeData = await knowledgeResponse.json();
         postData = knowledgeData.docs?.find(p => p.slug === postSlug);
+        
+        // If not found, try devotional
+        if (!postData) {
+          knowledgeResponse = await fetch(`${process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com'}/api/knowledge?type=devotional`);
+          knowledgeData = await knowledgeResponse.json();
+          postData = knowledgeData.docs?.find(p => p.slug === postSlug);
+        }
         
         if (!postData) {
           return res.status(404).json({ error: "Post not found in knowledge corpus." });
@@ -49,17 +58,32 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Post data or postSlug is required." });
     }
 
-    const { title, slug, email_summary, summary, publish_date } = postData;
+    const { title, slug, email_summary, summary, publish_date, type } = postData;
     
     if (!title || !slug) {
       return res.status(400).json({ error: "Post must have title and slug." });
     }
 
-    // Get all active subscribers
-    const { data: subscribers, error: subError } = await supabaseAdmin
+    // Determine post type (default to journal-post if not specified)
+    const postType = type || 'journal-post';
+    const isDevotional = postType === 'devotional';
+
+    // Get active subscribers, filtering by their preferences
+    // For journal posts: only subscribers who have subscribe_journal_entries = true
+    // For devotionals: only subscribers who have subscribe_devotionals = true
+    let subscriberQuery = supabaseAdmin
       .from("journal_subscriptions")
-      .select("email")
+      .select("email, subscribe_journal_entries, subscribe_devotionals")
       .eq("is_active", true);
+    
+    // Filter by subscription preferences
+    if (isDevotional) {
+      subscriberQuery = subscriberQuery.eq("subscribe_devotionals", true);
+    } else {
+      subscriberQuery = subscriberQuery.eq("subscribe_journal_entries", true);
+    }
+
+    const { data: subscribers, error: subError } = await subscriberQuery;
 
     if (subError) {
       console.error("Error fetching subscribers:", subError);
@@ -84,6 +108,27 @@ export default async function handler(req, res) {
 
     const from = process.env.CONTACT_FROM || "Archetype Original <noreply@archetypeoriginal.com>";
     
+    // Determine email subject and content based on post type
+    const emailSubject = isDevotional 
+      ? `New Devotional: ${escapeHtml(title)}`
+      : `New Journal Post: ${escapeHtml(title)}`;
+    
+    const emailHeader = isDevotional
+      ? "New Devotional"
+      : "New Journal Post";
+    
+    const emailFooter = isDevotional
+      ? `You're receiving this because you subscribed to devotionals at ${siteUrl}/journal`
+      : `You're receiving this because you subscribed to journal updates at ${siteUrl}/journal`;
+    
+    const viewAllLink = isDevotional
+      ? `${siteUrl}/faith`
+      : `${siteUrl}/journal`;
+    
+    const viewAllText = isDevotional
+      ? "View all devotionals"
+      : "View all journal posts";
+    
     // Send emails to all subscribers
     let sentCount = 0;
     let failedCount = 0;
@@ -94,10 +139,10 @@ export default async function handler(req, res) {
         const result = await resend.emails.send({
           from,
           to: subscriber.email,
-          subject: `New Journal Post: ${escapeHtml(title)}`,
+          subject: emailSubject,
           html: `
             <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#1A1A1A; max-width:600px; margin:0 auto;">
-              <h2 style="margin:0 0 16px 0; color:#1A1A1A; font-size:24px;">New Journal Post</h2>
+              <h2 style="margin:0 0 16px 0; color:#1A1A1A; font-size:24px;">${emailHeader}</h2>
               <h3 style="margin:0 0 12px 0; color:#1A1A1A; font-size:20px; font-weight:600;">${escapeHtml(title)}</h3>
               <p style="margin:0 0 16px 0; color:#6B6B6B; font-size:14px;">Published: ${publishDate}</p>
               
@@ -106,17 +151,17 @@ export default async function handler(req, res) {
               </div>
               
               <p style="margin:24px 0;">
-                <a href="${postUrl}" style="display:inline-block; background-color:#1A1A1A; color:#FFFFFF; padding:12px 24px; text-decoration:none; font-weight:500;">Read Full Article</a>
+                <a href="${postUrl}" style="display:inline-block; background-color:#1A1A1A; color:#FFFFFF; padding:12px 24px; text-decoration:none; font-weight:500;">Read ${isDevotional ? 'Full Devotional' : 'Full Article'}</a>
               </p>
               
               <hr style="border:none;border-top:1px solid #e5e7eb; margin:24px 0;" />
               
               <p style="margin:0 0 8px 0;">
-                <a href="${siteUrl}/journal" style="color:#C85A3C; text-decoration:none;">View all journal posts</a>
+                <a href="${viewAllLink}" style="color:#C85A3C; text-decoration:none;">${viewAllText}</a>
               </p>
               
               <p style="font-size:12px;color:#6B6B6B; margin:16px 0 0 0;">
-                You're receiving this because you subscribed to journal updates at ${siteUrl}/journal
+                ${emailFooter}
               </p>
             </div>
           `

@@ -5,7 +5,7 @@ date: "2026-01-04"
 type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
-publish_date: "2025-12-29"
+publish_date: "2026-01-04"
 scripture_reference: "Ephesians 2:10"
 summary: "Leadership flows from identity, not performance."
 ---

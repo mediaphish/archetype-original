@@ -5,7 +5,7 @@ date: "2026-01-06"
 type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
-publish_date: "2025-12-29"
+publish_date: "2026-01-06"
 scripture_reference: "James 4:6"
 summary: "Humility redirects strength toward service."
 ---

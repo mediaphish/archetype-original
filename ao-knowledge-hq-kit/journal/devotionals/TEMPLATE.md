@@ -1,47 +1,34 @@
 ---
-title: "Made New"
-slug: made-new
-date: "2026-01-01"
+title: "Devotional Title"
+slug: devotional-slug
+date: "YYYY-MM-DD"
 type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
-publish_date: "2026-01-01"
-scripture_reference: "2 Corinthians 5:16–17"
-summary: "Renewal begins with perspective, not behavior."
+publish_date: "YYYY-MM-DD"
+scripture_reference: "Book Chapter:Verse-Verse"
+summary: "One sentence summary of the devotional's main point."
 ---
 
 ## Scripture
 
-**2 Corinthians 5:16–17**
-
----
+**Book Chapter:Verse-Verse**
 
 ## Reflection
 
-Paul is not talking about incremental improvement. He is describing a fundamental shift in identity and perspective. To be made new in Christ means we no longer see ourselves—or others—through the same lenses we once did. Old measures of worth, success, and power lose their authority. A new framework takes their place.
-
-For leaders, this is where renewal begins. Leadership does not start with refining techniques; it starts with reorienting vision. When leaders adopt a renewed way of seeing, they stop leading from ego, fear, or performance and begin leading from purpose and conviction. New leadership does not emerge because circumstances change—it emerges because perspective does.
-
-This is not about forgetting the past. It is about refusing to let the past define the future.
-
----
+[Reflection content here - typically 2-4 paragraphs exploring the scripture and its meaning for leaders. This section should be thoughtful, substantive, and connect the biblical text to leadership practice.]
 
 ## Practical Application
 
-- Identify one leadership assumption you may need to release.
-- Approach today's decisions with a renewed sense of purpose.
-- Choose to see people for who they can become, not only who they have been.
-
----
+- [First practical action point]
+- [Second practical action point]
+- [Third practical action point]
 
 ## Takeaways
 
-- Renewal begins with perspective, not behavior.
-- New leadership flows from new vision.
-
----
+- [First key takeaway]
+- [Second key takeaway]
 
 ## Closing Thought
 
-Today I step into leadership with a renewed perspective.
-
+[One sentence closing thought that serves as a personal commitment or reminder for the day.]
