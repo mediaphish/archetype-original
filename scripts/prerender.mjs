@@ -109,8 +109,9 @@ try {
 } catch (err) {
   // Puppeteer is optional - skip pre-rendering if not available
   console.log('⚠️  Puppeteer not available (optional dependency)');
-  console.log('   Skipping pre-rendering. This is normal on Vercel or if Puppeteer is not installed.');
-  console.log('   To enable pre-rendering locally, run: npm install puppeteer');
+  console.log('   Skipping pre-rendering. This is normal on Vercel.');
+  console.log('   To enable pre-rendering locally for SEO, run: npm install puppeteer');
+  console.log('   Pre-rendered files should be committed to git for Google to crawl.');
   process.exit(0);
 }
 
