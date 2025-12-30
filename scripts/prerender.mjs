@@ -107,21 +107,11 @@ let useSystemChrome = false;
 try {
   puppeteer = await import('puppeteer');
 } catch (err) {
-  // Try puppeteer-core with system Chrome
-  try {
-    puppeteer = await import('puppeteer-core');
-    useSystemChrome = true;
-    console.log('📦 Using puppeteer-core with system Chrome');
-  } catch (coreErr) {
-    console.error('❌ Puppeteer not found. Installing...');
-    try {
-      execSync('npm install --save-dev puppeteer', { cwd: rootDir, stdio: 'inherit' });
-      puppeteer = await import('puppeteer');
-    } catch (installErr) {
-      console.error('❌ Failed to install Puppeteer:', installErr);
-      process.exit(1);
-    }
-  }
+  // Puppeteer is optional - skip pre-rendering if not available
+  console.log('⚠️  Puppeteer not available (optional dependency)');
+  console.log('   Skipping pre-rendering. This is normal on Vercel or if Puppeteer is not installed.');
+  console.log('   To enable pre-rendering locally, run: npm install puppeteer');
+  process.exit(0);
 }
 
 // Start a simple HTTP server to serve the built site
