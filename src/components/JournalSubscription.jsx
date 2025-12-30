@@ -44,24 +44,45 @@ export default function JournalSubscription() {
         }),
       });
 
+      // Check if response is ok before trying to parse JSON
+      if (!response.ok) {
+        // Try to get error message from response
+        let errorMessage = 'Something went wrong. Please try again.';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          // If JSON parsing fails, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        setStatus('error');
+        setMessage(errorMessage);
+        return;
+      }
+
       const data = await response.json();
 
-      if (response.ok && data.ok) {
+      if (data.ok) {
         setStatus('success');
         const selectedTypes = [];
         if (subscribeJournalEntries) selectedTypes.push('journal entries');
         if (subscribeDevotionals) selectedTypes.push('devotionals');
-        setMessage(`Thanks! You'll receive emails for ${selectedTypes.join(' and ')}.`);
+        setMessage(data.message || `Thanks! You'll receive emails for ${selectedTypes.join(' and ')}.`);
         setEmail('');
-        setSubscribeJournalEntries(true);
-        setSubscribeDevotionals(false);
+        // Keep checkboxes as they were for user convenience
       } else {
         setStatus('error');
         setMessage(data.error || 'Something went wrong. Please try again.');
       }
     } catch (error) {
+      console.error('Subscription error:', error);
       setStatus('error');
-      setMessage('Unable to subscribe. Please try again later.');
+      // Provide more specific error message based on error type
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        setMessage('Network error. Please check your connection and try again.');
+      } else {
+        setMessage('Unable to subscribe. Please try again later.');
+      }
     }
   };
 
