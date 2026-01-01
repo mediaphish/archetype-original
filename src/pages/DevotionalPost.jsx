@@ -148,10 +148,25 @@ export default function DevotionalPost({ post: postProp = null }) {
 
   const sections = parseDevotionalSections(post.body || '');
 
-  // Format date
+  // Format date (handles YYYY-MM-DD strings correctly without timezone issues)
   const formatDate = (dateString) => {
     if (!dateString) return '';
+    
+    // Extract YYYY-MM-DD from date string (handles both "2026-01-01" and "2026-01-01T00:00:00.000Z")
+    const dateStr = String(dateString).split('T')[0].split(' ')[0];
+    
+    // If it's a YYYY-MM-DD string, parse it as local date (not UTC) to avoid timezone shifts
+    if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      // Create date in local timezone, not UTC, so "2026-01-01" displays as January 1, 2026
+      const date = new Date(year, month - 1, day);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+    
+    // Fallback for other date formats
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
   };
@@ -218,9 +233,9 @@ export default function DevotionalPost({ post: postProp = null }) {
                 <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
                   {post.title}
                 </h1>
-                {post.date && (
+                {(post.publish_date || post.date) && (
                   <p className="text-base sm:text-lg text-[#6B6B6B]">
-                    {formatDate(post.date)}
+                    {formatDate(post.publish_date || post.date)}
                   </p>
                 )}
               </div>

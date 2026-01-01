@@ -91,18 +91,26 @@ export default function Faith() {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    let date;
-    if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      const [year, month, day] = dateString.split('-').map(Number);
-      date = new Date(Date.UTC(year, month - 1, day));
-    } else {
-      date = new Date(dateString);
+    
+    // Extract YYYY-MM-DD from date string (handles both "2026-01-01" and "2026-01-01T00:00:00.000Z")
+    const dateStr = String(dateString).split('T')[0].split(' ')[0];
+    
+    // If it's a YYYY-MM-DD string, parse it as local date (not UTC) to avoid timezone shifts
+    if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      // Create date in local timezone, not UTC, so "2026-01-01" displays as January 1, 2026
+      const date = new Date(year, month - 1, day);
+      if (isNaN(date.getTime())) return '';
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
     }
     
-    if (isNaN(date.getTime())) {
-      return '';
-    }
-    
+    // Fallback for other date formats
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
