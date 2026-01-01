@@ -12,6 +12,7 @@
         { "src": "api/journal/subscribe.js", "use": "@vercel/node" },
         { "src": "api/journal/notify.js", "use": "@vercel/node" },
         { "src": "api/journal/retry-failed-emails.js", "use": "@vercel/node" },
+        { "src": "api/journal/check-subscription.js", "use": "@vercel/node" },
         { "src": "api/cron/daily-devotional-notify.js", "use": "@vercel/node" },
         { "src": "api/cron/retry-failed-emails.js", "use": "@vercel/node" }
   ],
@@ -26,6 +27,7 @@
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
         { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
         { "src": "/api/journal/retry-failed-emails", "dest": "/api/journal/retry-failed-emails.js" },
+        { "src": "/api/journal/check-subscription", "dest": "/api/journal/check-subscription.js" },
         { "src": "/api/cron/daily-devotional-notify", "dest": "/api/cron/daily-devotional-notify.js" },
         { "src": "/api/cron/retry-failed-emails", "dest": "/api/cron/retry-failed-emails.js" },
     { "handle": "filesystem" },
