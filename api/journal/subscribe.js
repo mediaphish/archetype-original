@@ -61,26 +61,44 @@ export default async function handler(req, res) {
 
     // If exists and is active, update preferences
     if (existing && existing.is_active) {
-      const { error: updateError } = await supabaseAdmin
+      console.log(`📝 Updating subscription for ${normalizedEmail}:`, {
+        current: {
+          subscribe_journal_entries: existing.subscribe_journal_entries,
+          subscribe_devotionals: existing.subscribe_devotionals
+        },
+        new: subscriptionData
+      });
+
+      const { data: updated, error: updateError } = await supabaseAdmin
         .from("journal_subscriptions")
         .update(subscriptionData)
-        .eq("id", existing.id);
+        .eq("id", existing.id)
+        .select()
+        .single();
 
       if (updateError) {
         console.error("Error updating subscription preferences:", updateError);
         return res.status(500).json({ error: "Failed to update subscription preferences." });
       }
 
+      console.log(`✅ Subscription updated successfully for ${normalizedEmail}:`, updated);
+
+      // Send confirmation email when preferences are updated
+      await sendConfirmationEmail(normalizedEmail, subscriptionData);
+
       return res.status(200).json({ 
         ok: true, 
         message: "Subscription preferences updated!",
-        already_subscribed: true 
+        already_subscribed: true,
+        updated: updated
       });
     }
 
     // If exists but was unsubscribed, reactivate it with new preferences
     if (existing && !existing.is_active) {
-      const { error: updateError } = await supabaseAdmin
+      console.log(`📝 Reactivating subscription for ${normalizedEmail}:`, subscriptionData);
+      
+      const { data: reactivated, error: updateError } = await supabaseAdmin
         .from("journal_subscriptions")
         .update({ 
           is_active: true,
@@ -88,24 +106,35 @@ export default async function handler(req, res) {
           unsubscribed_at: null,
           ...subscriptionData
         })
-        .eq("id", existing.id);
+        .eq("id", existing.id)
+        .select()
+        .single();
 
       if (updateError) {
-        console.error("Error reactivating subscription:", updateError);
+        console.error("❌ Error reactivating subscription:", updateError);
         return res.status(500).json({ error: "Failed to reactivate subscription." });
       }
 
+      console.log(`✅ Subscription reactivated successfully for ${normalizedEmail}:`, reactivated);
+
       // Send confirmation email
-      await sendConfirmationEmail(normalizedEmail, subscriptionData);
+      const emailResult = await sendConfirmationEmail(normalizedEmail, subscriptionData);
+      
+      if (!emailResult.sent) {
+        console.warn(`⚠️  Subscription reactivated but confirmation email failed for ${normalizedEmail}`);
+      }
       
       return res.status(200).json({ 
         ok: true, 
         message: "Welcome back! Your subscription has been reactivated.",
-        reactivated: true 
+        reactivated: true,
+        email_sent: emailResult.sent
       });
     }
 
     // Create new subscription
+    console.log(`📝 Creating new subscription for ${normalizedEmail}:`, subscriptionData);
+    
     const { data: subscription, error: insertError } = await supabaseAdmin
       .from("journal_subscriptions")
       .insert([
@@ -120,17 +149,24 @@ export default async function handler(req, res) {
       .single();
 
     if (insertError) {
-      console.error("Error creating subscription:", insertError);
+      console.error("❌ Error creating subscription:", insertError);
       return res.status(500).json({ error: "Failed to create subscription." });
     }
 
+    console.log(`✅ Subscription created successfully for ${normalizedEmail}:`, subscription);
+
     // Send confirmation email
-    await sendConfirmationEmail(normalizedEmail, subscriptionData);
+    const emailResult = await sendConfirmationEmail(normalizedEmail, subscriptionData);
+    
+    if (!emailResult.sent) {
+      console.warn(`⚠️  Subscription created but confirmation email failed for ${normalizedEmail}`);
+    }
 
     return res.status(200).json({ 
       ok: true, 
       message: "Successfully subscribed!",
-      subscription_id: subscription.id 
+      subscription_id: subscription.id,
+      email_sent: emailResult.sent
     });
 
   } catch (err) {
@@ -142,7 +178,7 @@ export default async function handler(req, res) {
 async function sendConfirmationEmail(email, preferences = {}) {
   if (!process.env.RESEND_API_KEY) {
     console.warn("RESEND_API_KEY not configured, skipping confirmation email");
-    return;
+    return { sent: false, reason: "RESEND_API_KEY not configured" };
   }
 
   const from = process.env.CONTACT_FROM || "Archetype Original <noreply@archetypeoriginal.com>";
@@ -159,6 +195,8 @@ async function sendConfirmationEmail(email, preferences = {}) {
   const subscriptionText = subscriptions.length > 0 
     ? subscriptions.join(" and ")
     : "updates";
+
+  console.log(`📧 Sending confirmation email to ${email} for: ${subscriptionText}`);
 
   try {
     const result = await resend.emails.send({
@@ -182,10 +220,15 @@ async function sendConfirmationEmail(email, preferences = {}) {
     });
 
     if (result?.error) {
-      console.error("Failed to send confirmation email:", result.error);
+      console.error(`❌ Failed to send confirmation email to ${email}:`, result.error);
+      return { sent: false, error: result.error };
     }
+
+    console.log(`✅ Confirmation email sent successfully to ${email}, Resend ID: ${result?.data?.id || 'unknown'}`);
+    return { sent: true, resendId: result?.data?.id };
   } catch (emailError) {
-    console.error("Error sending confirmation email:", emailError);
+    console.error(`❌ Error sending confirmation email to ${email}:`, emailError);
+    return { sent: false, error: emailError.message };
   }
 }
 
