@@ -78,11 +78,27 @@ export default function App() {
   const previousPath = useRef(window.location.pathname);
 
   useEffect(() => {
+    // Disable scroll restoration globally for journal pages
+    if ('scrollRestoration' in window.history) {
+      const path = window.location.pathname;
+      const isJournalPage = path === '/journal' || path.startsWith('/journal/');
+      if (isJournalPage) {
+        window.history.scrollRestoration = 'manual';
+      }
+    }
+    
     // Save scroll position before navigation
     const saveScrollPosition = () => {
       const path = window.location.pathname;
-      const scrollY = window.scrollY;
-      sessionStorage.setItem(`scrollPos:${path}`, scrollY.toString());
+      // Don't save scroll positions for journal pages - they should always start at top
+      const isJournalPage = path === '/journal' || path.startsWith('/journal/');
+      if (!isJournalPage) {
+        const scrollY = window.scrollY;
+        sessionStorage.setItem(`scrollPos:${path}`, scrollY.toString());
+      } else {
+        // Clear any saved scroll position for journal pages
+        sessionStorage.removeItem(`scrollPos:${path}`);
+      }
     };
 
     // Handle routing and redirects
@@ -208,6 +224,32 @@ export default function App() {
       const hasSavedScroll = sessionStorage.getItem(`scrollPos:${currentPath}`) !== null;
       isNavigatingBack.current = hasSavedScroll && currentPath !== previousPath.current;
       previousPath.current = currentPath;
+      
+      // If navigating to a journal page, immediately disable scroll restoration and scroll to top
+      const isJournalPage = currentPath === '/journal' || currentPath.startsWith('/journal/');
+      if (isJournalPage) {
+        // Disable scroll restoration immediately
+        if ('scrollRestoration' in window.history) {
+          window.history.scrollRestoration = 'manual';
+        }
+        // Force scroll to top immediately - multiple attempts
+        window.scrollTo(0, 0);
+        // Use requestAnimationFrame for additional attempts
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+          requestAnimationFrame(() => {
+            window.scrollTo(0, 0);
+          });
+        });
+        // Additional delayed attempts
+        setTimeout(() => window.scrollTo(0, 0), 0);
+        setTimeout(() => window.scrollTo(0, 0), 10);
+        setTimeout(() => window.scrollTo(0, 0), 50);
+        setTimeout(() => window.scrollTo(0, 0), 100);
+        // Clear any saved scroll position
+        sessionStorage.removeItem(`scrollPos:${currentPath}`);
+      }
+      
       handleRoute();
     };
 
@@ -235,26 +277,62 @@ export default function App() {
   // Handle scroll restoration when page changes
   useEffect(() => {
     const path = window.location.pathname;
-    const savedScrollPos = sessionStorage.getItem(`scrollPos:${path}`);
     
-    // If we have a saved scroll position (means we're returning to this page), restore it
-    // This handles back navigation - when you go back, the saved position exists
-    if (savedScrollPos !== null && !window.location.hash && isNavigatingBack.current) {
-      const scrollY = parseInt(savedScrollPos, 10);
-      // Use requestAnimationFrame to ensure DOM is ready, then restore scroll
+    // Journal pages should always scroll to top (both forward and back navigation)
+    const isJournalPage = path === '/journal' || path.startsWith('/journal/');
+    
+    if (isJournalPage) {
+      // Ensure scroll restoration is disabled
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      
+      // Always scroll to top for journal pages - use multiple attempts to ensure it sticks
+      const scrollToTop = () => window.scrollTo(0, 0);
+      
+      // Immediate scroll (synchronous)
+      scrollToTop();
+      
+      // Multiple delayed attempts to catch any late scroll restoration
       requestAnimationFrame(() => {
-        // Double RAF to ensure layout is complete
+        scrollToTop();
         requestAnimationFrame(() => {
-          window.scrollTo({ top: scrollY, behavior: 'instant' });
+          scrollToTop();
         });
       });
-      // Clear the saved position so it doesn't interfere with future visits
-      // sessionStorage.removeItem(`scrollPos:${path}`);
-    } else if (!window.location.hash) {
-      // Forward navigation or first visit - scroll to top
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-      });
+      
+      // Additional delayed attempts - more aggressive
+      const timers = [0, 10, 50, 100, 200, 300, 500].map(delay => 
+        setTimeout(scrollToTop, delay)
+      );
+      
+      // Clear any saved scroll position for journal pages
+      sessionStorage.removeItem(`scrollPos:${path}`);
+      
+      return () => {
+        timers.forEach(clearTimeout);
+      };
+    } else {
+      // For other pages, use normal scroll restoration
+      const savedScrollPos = sessionStorage.getItem(`scrollPos:${path}`);
+      
+      // If we have a saved scroll position (means we're returning to this page), restore it
+      // This handles back navigation - when you go back, the saved position exists
+      if (savedScrollPos !== null && !window.location.hash && isNavigatingBack.current) {
+        const scrollY = parseInt(savedScrollPos, 10);
+        // Use requestAnimationFrame to ensure DOM is ready, then restore scroll
+        requestAnimationFrame(() => {
+          // Double RAF to ensure layout is complete
+          requestAnimationFrame(() => {
+            window.scrollTo({ top: scrollY, behavior: 'instant' });
+          });
+        });
+      } else if (!window.location.hash) {
+        // Forward navigation or first visit - scroll to top
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        });
+      }
     }
     
     // Reset the flag after handling

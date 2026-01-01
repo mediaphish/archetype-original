@@ -11,10 +11,30 @@ export default function JournalPost() {
   const [isDevotional, setIsDevotional] = useState(false);
 
   useEffect(() => {
-    // Disable browser scroll restoration for this page
+    // Ensure scroll restoration is disabled for journal pages
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
+    
+    // Always scroll to top when this component mounts (including on back navigation)
+    // Use multiple attempts to ensure it sticks, even with browser scroll restoration
+    const scrollToTop = () => window.scrollTo(0, 0);
+    
+    // Immediate scroll (synchronous)
+    scrollToTop();
+    
+    // Multiple delayed attempts to catch any late scroll restoration
+    requestAnimationFrame(() => {
+      scrollToTop();
+      requestAnimationFrame(() => {
+        scrollToTop();
+      });
+    });
+    
+    // Additional delayed attempts - more aggressive
+    const timers = [0, 10, 50, 100, 200, 300, 500].map(delay => 
+      setTimeout(scrollToTop, delay)
+    );
     
     // Extract slug from URL
     const path = window.location.pathname;
@@ -49,6 +69,16 @@ export default function JournalPost() {
           setIsDevotional(devotional);
         }
         setLoading(false);
+        
+        // Ensure scroll stays at top after content loads - multiple attempts
+        requestAnimationFrame(() => {
+          scrollToTop();
+          requestAnimationFrame(() => {
+            scrollToTop();
+          });
+        });
+        setTimeout(scrollToTop, 100);
+        setTimeout(scrollToTop, 200);
       })
       .catch(error => {
         console.error('Error loading post:', error);
@@ -56,11 +86,8 @@ export default function JournalPost() {
         setLoading(false);
       });
     
-    // Cleanup: restore scroll restoration when component unmounts
     return () => {
-      if ('scrollRestoration' in window.history) {
-        window.history.scrollRestoration = 'auto';
-      }
+      timers.forEach(clearTimeout);
     };
   }, []);
 
@@ -190,22 +217,13 @@ export default function JournalPost() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  // Prevent any scroll restoration
-                  if ('scrollRestoration' in window.history) {
-                    window.history.scrollRestoration = 'manual';
-                  }
+                  // Save current path to sessionStorage to mark we're navigating away
+                  sessionStorage.setItem('journalPostNavigating', 'true');
                   // Immediately scroll to top
                   window.scrollTo({ top: 0, behavior: 'instant' });
-                  // Navigate using pushState (not history.back to avoid scroll restoration)
+                  // Navigate using pushState
                   window.history.pushState({ scrollToTop: true }, '', '/journal');
                   window.dispatchEvent(new PopStateEvent('popstate'));
-                  // Ensure scroll stays at top after navigation completes
-                  setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'instant' });
-                    if ('scrollRestoration' in window.history) {
-                      window.history.scrollRestoration = 'auto';
-                    }
-                  }, 100);
                 }}
                 className="inline-flex items-center text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors text-base sm:text-lg"
               >

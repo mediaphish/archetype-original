@@ -17,12 +17,20 @@ import ScriptureBlock from '../components/ScriptureBlock';
 import ESVCopyright from '../components/ESVCopyright';
 import JournalSubscription from '../components/JournalSubscription';
 
-export default function DevotionalPost() {
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function DevotionalPost({ post: postProp = null }) {
+  const [post, setPost] = useState(postProp);
+  const [loading, setLoading] = useState(!postProp);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // If post is provided as prop, use it directly
+    if (postProp) {
+      setPost(postProp);
+      setLoading(false);
+      return;
+    }
+
+    // Otherwise, load from URL
     // Extract slug from URL
     const path = window.location.pathname;
     const slug = path.replace('/journal/', '').replace('/devotional/', '').replace(/\/$/, '');
@@ -52,7 +60,7 @@ export default function DevotionalPost() {
         setError('Failed to load post');
         setLoading(false);
       });
-  }, []);
+  }, [postProp]);
 
   if (loading) {
     return (
@@ -183,38 +191,61 @@ export default function DevotionalPost() {
     return html;
   };
 
+  // If post is provided as prop, render in compact mode (for inline use)
+  const isInline = !!postProp;
+
   return (
     <>
-      <SEO pageKey="journal-post" />
-      <Helmet>
-        <title>{post.title} | Archetype Original</title>
-        <meta name="description" content={post.summary || post.title} />
-      </Helmet>
+      {!isInline && (
+        <>
+          <SEO pageKey="journal-post" />
+          <Helmet>
+            <title>{post.title} | Archetype Original</title>
+            <meta name="description" content={post.summary || post.title} />
+          </Helmet>
+        </>
+      )}
 
-      <div className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-12 sm:py-16 md:py-20">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto text-center">
-              <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C] mb-4">
-                SERVANT LEADERSHIP DEVOTIONAL
-              </p>
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
-                {post.title}
-              </h1>
-              {post.date && (
-                <p className="text-base sm:text-lg text-[#6B6B6B]">
-                  {formatDate(post.date)}
+      <div className={isInline ? '' : 'min-h-screen bg-white'}>
+        {!isInline && (
+          /* Hero Section */
+          <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-12 sm:py-16 md:py-20">
+            <div className="container mx-auto px-4 sm:px-6 md:px-12">
+              <div className="max-w-4xl mx-auto text-center">
+                <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C] mb-4">
+                  SERVANT LEADERSHIP DEVOTIONAL
                 </p>
-              )}
+                <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
+                  {post.title}
+                </h1>
+                {post.date && (
+                  <p className="text-base sm:text-lg text-[#6B6B6B]">
+                    {formatDate(post.date)}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Content Section */}
-        <section className="py-12 sm:py-16 md:py-20">
+        <section className={isInline ? 'py-6 sm:py-8' : 'py-12 sm:py-16 md:py-20'}>
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-12 sm:space-y-16">
+              {isInline && (
+                <>
+                  <div className="text-center mb-8">
+                    <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-2 leading-tight">
+                      {post.title}
+                    </h1>
+                    {(post.publish_date || post.date) && (
+                      <p className="text-sm sm:text-base text-[#6B6B6B]">
+                        {formatDate(post.publish_date || post.date)}
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
               
               {/* Scripture */}
               {post.scripture_reference && (
@@ -275,10 +306,12 @@ export default function DevotionalPost() {
               {/* ESV Copyright */}
               <ESVCopyright />
 
-              {/* Subscription Form */}
-              <div className="mt-16 sm:mt-20">
-                <JournalSubscription />
-              </div>
+              {/* Subscription Form - only show when not inline */}
+              {!isInline && (
+                <div className="mt-16 sm:mt-20">
+                  <JournalSubscription />
+                </div>
+              )}
 
             </div>
           </div>

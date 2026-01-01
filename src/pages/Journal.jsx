@@ -40,12 +40,44 @@ export default function Journal() {
       'neuroscience', 
       'empathy', 
       'data-research'
+    ],
+    'devotional': [
+      'devotional'
     ]
   };
 
   useEffect(() => {
-    // Ensure we're at the top when the Journal page loads
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Ensure scroll restoration is disabled for journal pages
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    
+    // Always scroll to top when Journal page loads (including on back navigation)
+    // Use multiple attempts to ensure it sticks, even with browser scroll restoration
+    const scrollToTop = () => window.scrollTo(0, 0);
+    
+    // Immediate scroll (synchronous)
+    scrollToTop();
+    
+    // Multiple delayed attempts to catch any late scroll restoration
+    requestAnimationFrame(() => {
+      scrollToTop();
+      requestAnimationFrame(() => {
+        scrollToTop();
+      });
+    });
+    
+    // Additional delayed attempts - more aggressive
+    const timers = [0, 10, 50, 100, 200, 300, 500].map(delay => 
+      setTimeout(scrollToTop, delay)
+    );
+    
+    // Check if we're navigating back from a journal post
+    const isNavigatingBack = sessionStorage.getItem('journalPostNavigating') === 'true';
+    if (isNavigatingBack) {
+      // Clear the flag
+      sessionStorage.removeItem('journalPostNavigating');
+    }
     
     // Load both journal posts and devotionals from the knowledge corpus
     Promise.all([
@@ -53,12 +85,10 @@ export default function Journal() {
       fetch('/api/knowledge?type=devotional').then(r => r.json())
     ])
       .then(([journalData, devotionalData]) => {
-        // Combine both types, but exclude devotionals from main journal view
-        // (they'll be shown on /faith page instead)
+        // Combine both types - include devotionals so they can be filtered by category
         const allPosts = [
           ...journalData.docs,
-          // Optionally include devotionals here if desired
-          // ...devotionalData.docs
+          ...devotionalData.docs
         ];
         
         // Filter to only published posts, then sort by publish date, newest first
@@ -72,16 +102,34 @@ export default function Journal() {
         });
         setPosts(sortedPosts);
         setLoading(false);
+        
+        // Ensure scroll stays at top after content loads - multiple attempts
+        requestAnimationFrame(() => {
+          scrollToTop();
+          requestAnimationFrame(() => {
+            scrollToTop();
+          });
+        });
+        setTimeout(scrollToTop, 100);
+        setTimeout(scrollToTop, 200);
       })
       .catch(error => {
         console.error('Error loading journal posts:', error);
         setLoading(false);
       });
+    
+    return () => {
+      timers.forEach(clearTimeout);
+    };
   }, []);
 
   const filteredPosts = selectedCategory === 'all' 
-    ? posts 
+    ? posts.filter(post => post.type !== 'devotional') // Exclude devotionals from "all" view
+    : selectedCategory === 'devotional'
+    ? posts.filter(post => post.type === 'devotional') // Show only devotionals
     : posts.filter(post => {
+        // For other categories, exclude devotionals and filter by category
+        if (post.type === 'devotional') return false;
         const postCategories = post.categories || [];
         const mappedCategories = categoryMapping[selectedCategory] || [];
         return postCategories.some(cat => mappedCategories.includes(cat));
@@ -151,7 +199,7 @@ export default function Journal() {
           {/* Category Filters */}
           <div className="mb-12 sm:mb-16 lg:mb-20">
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              {['all', 'leadership', 'culture', 'growth', 'philosophy'].map(category => (
+              {['all', 'leadership', 'culture', 'growth', 'philosophy', 'devotional'].map(category => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}

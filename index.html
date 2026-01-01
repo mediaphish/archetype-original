@@ -21,6 +21,37 @@
   <!-- Optional: Plausible later
   <script defer data-domain="archetypeoriginal.com" src="https://plausible.io/js/script.js"></script>
   -->
+  <!-- Disable scroll restoration for journal pages immediately -->
+  <script>
+    // Disable browser scroll restoration immediately, before React loads
+    if ('scrollRestoration' in window.history) {
+      // Check if we're on a journal page
+      const path = window.location.pathname;
+      const isJournalPage = path === '/journal' || path.startsWith('/journal/');
+      
+      if (isJournalPage) {
+        // Disable scroll restoration for journal pages
+        window.history.scrollRestoration = 'manual';
+        // Immediately scroll to top
+        window.scrollTo(0, 0);
+      }
+      
+      // Listen for popstate (browser back/forward) and disable scroll restoration for journal pages
+      window.addEventListener('popstate', function(e) {
+        const currentPath = window.location.pathname;
+        const isJournal = currentPath === '/journal' || currentPath.startsWith('/journal/');
+        if (isJournal) {
+          window.history.scrollRestoration = 'manual';
+          // Force scroll to top immediately
+          window.scrollTo(0, 0);
+          // Additional attempts to ensure it sticks
+          setTimeout(function() { window.scrollTo(0, 0); }, 0);
+          setTimeout(function() { window.scrollTo(0, 0); }, 10);
+          setTimeout(function() { window.scrollTo(0, 0); }, 50);
+        }
+      }, { capture: true }); // Use capture phase to run before other handlers
+    }
+  </script>
 </head>
 <body class="bg-warm-offWhite text-warm-charcoal antialiased">
   <div id="root"></div>
