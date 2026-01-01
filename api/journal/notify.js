@@ -73,7 +73,7 @@ export default async function handler(req, res) {
     // For devotionals: only subscribers who have subscribe_devotionals = true
     let subscriberQuery = supabaseAdmin
       .from("journal_subscriptions")
-      .select("email, subscribe_journal_entries, subscribe_devotionals")
+      .select("id, email, subscribe_journal_entries, subscribe_devotionals")
       .eq("is_active", true);
     
     // Filter by subscription preferences
@@ -189,18 +189,53 @@ export default async function handler(req, res) {
                 console.warn(`⏳ Rate limit hit for ${subscriber.email}, waiting 2 seconds before retry...`);
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 continue;
+                } else {
+                  failedCount++;
+                  errors.push({ email: subscriber.email, error: result.error });
+                  console.error(`❌ Failed to send email to ${subscriber.email} after retries:`, result.error);
+                  
+                  // Store failure in database for later retry
+                  try {
+                    await supabaseAdmin.from('journal_email_failures').insert({
+                      email: subscriber.email,
+                      subscription_id: subscriber.id,
+                      post_slug: slug,
+                      post_type: isDevotional ? 'devotional' : 'journal-post',
+                      post_title: title,
+                      error_type: 'rate_limit_exceeded',
+                      error_message: result.error.message || JSON.stringify(result.error),
+                      error_code: 429,
+                      status: 'pending'
+                    });
+                  } catch (dbError) {
+                    console.error(`Failed to store email failure in database:`, dbError);
+                  }
+                }
               } else {
+                // Non-rate-limit error, don't retry
                 failedCount++;
                 errors.push({ email: subscriber.email, error: result.error });
-                console.error(`❌ Failed to send email to ${subscriber.email} after retries:`, result.error);
+                console.error(`❌ Failed to send email to ${subscriber.email}:`, result.error);
+                
+                // Store failure in database for later retry
+                try {
+                  await supabaseAdmin.from('journal_email_failures').insert({
+                    email: subscriber.email,
+                    subscription_id: subscriber.id,
+                    post_slug: slug,
+                    post_type: isDevotional ? 'devotional' : 'journal-post',
+                    post_title: title,
+                    error_type: result.error.name || 'unknown',
+                    error_message: result.error.message || JSON.stringify(result.error),
+                    error_code: result.error.statusCode || 500,
+                    status: 'pending'
+                  });
+                } catch (dbError) {
+                  console.error(`Failed to store email failure in database:`, dbError);
+                }
+                
+                sent = true; // Exit retry loop
               }
-            } else {
-              // Non-rate-limit error, don't retry
-              failedCount++;
-              errors.push({ email: subscriber.email, error: result.error });
-              console.error(`❌ Failed to send email to ${subscriber.email}:`, result.error);
-              sent = true; // Exit retry loop
-            }
           } else {
             sentCount++;
             sent = true; // Success, exit retry loop
@@ -213,18 +248,53 @@ export default async function handler(req, res) {
               console.warn(`⏳ Rate limit hit for ${subscriber.email}, waiting 2 seconds before retry...`);
               await new Promise(resolve => setTimeout(resolve, 2000));
               continue;
+              } else {
+                failedCount++;
+                errors.push({ email: subscriber.email, error: emailError.message });
+                console.error(`❌ Error sending email to ${subscriber.email} after retries:`, emailError);
+                
+                // Store failure in database for later retry
+                try {
+                  await supabaseAdmin.from('journal_email_failures').insert({
+                    email: subscriber.email,
+                    subscription_id: subscriber.id,
+                    post_slug: slug,
+                    post_type: isDevotional ? 'devotional' : 'journal-post',
+                    post_title: title,
+                    error_type: 'rate_limit_exceeded',
+                    error_message: emailError.message,
+                    error_code: 429,
+                    status: 'pending'
+                  });
+                } catch (dbError) {
+                  console.error(`Failed to store email failure in database:`, dbError);
+                }
+              }
             } else {
+              // Non-rate-limit error, don't retry
               failedCount++;
               errors.push({ email: subscriber.email, error: emailError.message });
-              console.error(`❌ Error sending email to ${subscriber.email} after retries:`, emailError);
+              console.error(`❌ Error sending email to ${subscriber.email}:`, emailError);
+              
+              // Store failure in database for later retry
+              try {
+                await supabaseAdmin.from('journal_email_failures').insert({
+                  email: subscriber.email,
+                  subscription_id: subscriber.id,
+                  post_slug: slug,
+                  post_type: isDevotional ? 'devotional' : 'journal-post',
+                  post_title: title,
+                  error_type: emailError.name || 'unknown',
+                  error_message: emailError.message,
+                  error_code: emailError.statusCode || 500,
+                  status: 'pending'
+                });
+              } catch (dbError) {
+                console.error(`Failed to store email failure in database:`, dbError);
+              }
+              
+              sent = true; // Exit retry loop
             }
-          } else {
-            // Non-rate-limit error, don't retry
-            failedCount++;
-            errors.push({ email: subscriber.email, error: emailError.message });
-            console.error(`❌ Error sending email to ${subscriber.email}:`, emailError);
-            sent = true; // Exit retry loop
-          }
         }
       }
     }

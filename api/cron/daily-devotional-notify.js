@@ -84,7 +84,7 @@ export default async function handler(req, res) {
     // Get all active subscribers who want devotional emails
     const { data: subscribers, error: subError } = await supabaseAdmin
       .from("journal_subscriptions")
-      .select("email, subscribe_devotionals")
+      .select("id, email, subscribe_devotionals")
       .eq("is_active", true)
       .eq("subscribe_devotionals", true);
 
@@ -191,12 +191,47 @@ export default async function handler(req, res) {
                   totalFailed++;
                   errors.push({ email: subscriber.email, devotional: slug, error: result.error });
                   console.error(`❌ Failed to send email to ${subscriber.email} for ${slug} after retries:`, result.error);
+                  
+                  // Store failure in database for later retry
+                  try {
+                    await supabaseAdmin.from('journal_email_failures').insert({
+                      email: subscriber.email,
+                      subscription_id: subscriber.id,
+                      post_slug: slug,
+                      post_type: 'devotional',
+                      post_title: title,
+                      error_type: 'rate_limit_exceeded',
+                      error_message: result.error.message || JSON.stringify(result.error),
+                      error_code: 429,
+                      status: 'pending'
+                    });
+                  } catch (dbError) {
+                    console.error(`Failed to store email failure in database:`, dbError);
+                  }
                 }
               } else {
                 // Non-rate-limit error, don't retry
                 totalFailed++;
                 errors.push({ email: subscriber.email, devotional: slug, error: result.error });
                 console.error(`❌ Failed to send email to ${subscriber.email} for ${slug}:`, result.error);
+                
+                // Store failure in database for later retry
+                try {
+                  await supabaseAdmin.from('journal_email_failures').insert({
+                    email: subscriber.email,
+                    subscription_id: subscriber.id,
+                    post_slug: slug,
+                    post_type: 'devotional',
+                    post_title: title,
+                    error_type: result.error.name || 'unknown',
+                    error_message: result.error.message || JSON.stringify(result.error),
+                    error_code: result.error.statusCode || 500,
+                    status: 'pending'
+                  });
+                } catch (dbError) {
+                  console.error(`Failed to store email failure in database:`, dbError);
+                }
+                
                 sent = true; // Exit retry loop
               }
             } else {
@@ -217,12 +252,47 @@ export default async function handler(req, res) {
                 totalFailed++;
                 errors.push({ email: subscriber.email, devotional: slug, error: emailError.message });
                 console.error(`❌ Error sending email to ${subscriber.email} for ${slug} after retries:`, emailError);
+                
+                // Store failure in database for later retry
+                try {
+                  await supabaseAdmin.from('journal_email_failures').insert({
+                    email: subscriber.email,
+                    subscription_id: subscriber.id,
+                    post_slug: slug,
+                    post_type: 'devotional',
+                    post_title: title,
+                    error_type: 'rate_limit_exceeded',
+                    error_message: emailError.message,
+                    error_code: 429,
+                    status: 'pending'
+                  });
+                } catch (dbError) {
+                  console.error(`Failed to store email failure in database:`, dbError);
+                }
               }
             } else {
               // Non-rate-limit error, don't retry
               totalFailed++;
               errors.push({ email: subscriber.email, devotional: slug, error: emailError.message });
               console.error(`❌ Error sending email to ${subscriber.email} for ${slug}:`, emailError);
+              
+              // Store failure in database for later retry
+              try {
+                await supabaseAdmin.from('journal_email_failures').insert({
+                  email: subscriber.email,
+                  subscription_id: subscriber.id,
+                  post_slug: slug,
+                  post_type: 'devotional',
+                  post_title: title,
+                  error_type: emailError.name || 'unknown',
+                  error_message: emailError.message,
+                  error_code: emailError.statusCode || 500,
+                  status: 'pending'
+                });
+              } catch (dbError) {
+                console.error(`Failed to store email failure in database:`, dbError);
+              }
+              
               sent = true; // Exit retry loop
             }
           }
