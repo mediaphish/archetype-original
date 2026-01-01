@@ -28,10 +28,29 @@ export default function Faith() {
       .then(data => {
         const allDevotionals = data.docs || [];
         
-        // Filter to only published devotionals
-        const publishedDevotionals = allDevotionals.filter(devotional => 
-          devotional.status === 'published' || devotional.status === undefined
-        );
+        // Get today's date in YYYY-MM-DD format for accurate comparison
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0]; // "2026-01-01"
+        
+        // Filter to ONLY published devotionals with publish_date <= today
+        // This ensures only today's and past devotionals are shown
+        const publishedDevotionals = allDevotionals.filter(devotional => {
+          // Must be published
+          if (devotional.status !== 'published' && devotional.status !== undefined) {
+            return false;
+          }
+          
+          // Must have a publish_date
+          if (!devotional.publish_date) {
+            return false;
+          }
+          
+          // Extract date string (YYYY-MM-DD) for accurate comparison
+          const publishDateStr = String(devotional.publish_date).split('T')[0].split(' ')[0];
+          
+          // publish_date must be <= today (compare as strings)
+          return publishDateStr <= todayStr;
+        });
         
         // Sort by publish_date, newest first
         const sortedDevotionals = publishedDevotionals.sort((a, b) => {
@@ -42,26 +61,23 @@ export default function Faith() {
         
         setDevotionals(sortedDevotionals);
         
-        // Find today's devotional or most recent one
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        // All devotionals are already filtered to published, so use sortedDevotionals directly
-        // Find today's devotional
+        // Find ONLY today's devotional (not most recent)
         const todaysDevotional = sortedDevotionals.find(d => {
           if (!d.publish_date) return false;
-          const publishDate = new Date(d.publish_date);
-          publishDate.setHours(0, 0, 0, 0);
-          return publishDate.getTime() === today.getTime();
+          const publishDateStr = String(d.publish_date).split('T')[0].split(' ')[0];
+          return publishDateStr === todayStr;
         });
         
-        // If no devotional for today, use the most recent one
-        const current = todaysDevotional || sortedDevotionals[0] || null;
+        // Only show today's devotional - don't fall back to most recent
+        const current = todaysDevotional || null;
         
-        // Previous devotionals are all others (excluding current)
-        const previous = sortedDevotionals.filter(d => 
-          !current || d.slug !== current.slug
-        );
+        // Previous devotionals are only those with publish_date < today (excluding today's)
+        const previous = sortedDevotionals.filter(d => {
+          if (!d.publish_date) return false;
+          const publishDateStr = String(d.publish_date).split('T')[0].split(' ')[0];
+          return publishDateStr < todayStr;
+        });
+        
         setCurrentDevotional(current);
         setPreviousDevotionals(previous);
         

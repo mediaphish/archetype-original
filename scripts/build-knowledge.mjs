@@ -218,14 +218,28 @@ async function buildKnowledgeCorpus() {
           }
         }
         
-        const now = new Date();
+        // Get today's date in YYYY-MM-DD format for accurate comparison
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0]; // "2026-01-01"
         
-        // Skip future posts (but allow devotionals to be published even if dated in the future)
+        // Skip future posts - INCLUDING devotionals (only show devotionals on or before their publish date)
         const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
-        if (publishDate && publishDate > now && !isDevotional) {
-          console.log(`⏰ Skipping future post: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDate.toISOString()})`);
-          futurePosts++;
-          continue;
+        if (publishDate) {
+          // Parse publish_date as YYYY-MM-DD string for accurate comparison
+          let publishDateStr = null;
+          if (typeof frontmatter.publish_date === 'string') {
+            // Extract just the date part (YYYY-MM-DD) if it includes time
+            publishDateStr = frontmatter.publish_date.split('T')[0].split(' ')[0];
+          } else if (publishDate instanceof Date) {
+            publishDateStr = publishDate.toISOString().split('T')[0];
+          }
+          
+          // Compare date strings directly (YYYY-MM-DD format)
+          if (publishDateStr && publishDateStr > todayStr) {
+            console.log(`⏰ Skipping future ${isDevotional ? 'devotional' : 'post'}: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDateStr}, today is ${todayStr})`);
+            futurePosts++;
+            continue;
+          }
         }
         
         // Check status - only skip if explicitly set to 'draft'

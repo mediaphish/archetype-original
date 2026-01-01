@@ -85,10 +85,27 @@ export default function Journal() {
       fetch('/api/knowledge?type=devotional').then(r => r.json())
     ])
       .then(([journalData, devotionalData]) => {
-        // Combine both types - include devotionals so they can be filtered by category
+        // Get today's date in YYYY-MM-DD format for accurate comparison
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0]; // "2026-01-01"
+        
+        // Filter devotionals to only include those with publish_date <= today
+        const publishedDevotionals = (devotionalData.docs || []).filter(devotional => {
+          if (devotional.status !== 'published' && devotional.status !== undefined) {
+            return false;
+          }
+          if (!devotional.publish_date) {
+            return false;
+          }
+          // Extract date string (YYYY-MM-DD) for accurate comparison
+          const publishDateStr = String(devotional.publish_date).split('T')[0].split(' ')[0];
+          return publishDateStr <= todayStr;
+        });
+        
+        // Combine both types - include only published devotionals
         const allPosts = [
           ...journalData.docs,
-          ...devotionalData.docs
+          ...publishedDevotionals
         ];
         
         // Filter to only published posts, then sort by publish date, newest first

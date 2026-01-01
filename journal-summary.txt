@@ -1,0 +1,261 @@
+
+> archetype-original@0.0.0 list-journal-entries
+> node scripts/list-journal-entries.mjs
+
+📋 Journal Entries Summary
+
+====================================================================================================
+
+Total entries: 47
+
+
+1. After the Smoke Clears
+   Categories: leadership, psychology, organizational-dynamics, servant-leadership, culture
+   Facebook Release: N/A
+   Journal Release: February 4, 2026
+   ⏰ Scheduled Release: February 4, 2026
+
+2. Clearing the Path
+   Categories: servant-leadership, team-building
+   Facebook Release: November 3, 2025.
+   Journal Release: November 4, 2025
+
+3. I’ve spent some time purposely not writing.
+   Categories: personal-reflection, purpose
+   Facebook Release: July 15, 2025
+   Journal Release: July 14, 2025
+
+4. Leadership bottlenecks will choke the life out of a business.
+   Categories: trust, culture, innovation
+   Facebook Release: June 4, 2025
+   Journal Release: June 3, 2025
+
+5. Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 1)
+   Categories: power-control, servant-leadership, trust
+   Facebook Release: September 1, 2025
+   Journal Release: August 31, 2025
+
+6. Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 2)
+   Categories: power-control, servant-leadership, communication
+   Facebook Release: September 2, 2025
+   Journal Release: September 1, 2025
+
+7. Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 3)
+   Categories: power-control, servant-leadership, legacy
+   Facebook Release: September 15, 2025
+   Journal Release: September 14, 2025
+
+8. Leadership isn’t a scoreboard.
+   Categories: team-building, trust
+   Facebook Release: May 29, 2025
+   Journal Release: May 28, 2025
+
+9. Leadership, Shoes, and Melted Feet
+   Categories: empathy, communication, team-building
+   Facebook Release: June 24, 2025
+   Journal Release: June 23, 2025
+
+10. LONE WOLVES DIE YOUNG
+   Categories: team-building, collaboration
+   Facebook Release: July 25, 2025
+   Journal Release: July 24, 2025
+
+11. Most people hear. Few actually listen.
+   Categories: communication, empathy
+   Facebook Release: June 12, 2025
+   Journal Release: June 11, 2025
+
+12. Psychology of Servant Leadership, Part 1: The Servant Mindset
+   Categories: servant-leadership, leadership, psychology
+   Facebook Release: N/A
+   Journal Release: December 7, 2025
+
+13. Psychology of Servant Leadership, Part 2: Safety Before Strategy
+   Categories: servant-leadership, leadership, psychology
+   Facebook Release: N/A
+   Journal Release: December 14, 2025
+
+14. Psychology of Servant Leadership, Part 3: Motivation and Meaning
+   Categories: servant-leadership, leadership, psychology
+   Facebook Release: N/A
+   Journal Release: December 21, 2025
+
+15. Psychology of Servant Leadership, Part 4: Flourishing and Flow
+   Categories: servant-leadership, leadership, high-performance, psychology
+   Facebook Release: N/A
+   Journal Release: December 28, 2025
+
+16. Psychology of Servant Leadership, Part 5: The Paradox of the Servant
+   Categories: servant-leadership, leadership, burnout, psychology
+   Facebook Release: N/A
+   Journal Release: January 4, 2026
+   ⏰ Scheduled Release: January 4, 2026
+
+17. The Loyalty Economy
+   Categories: leadership, psychology, narcissism, organizational-dynamics, servant-leadership, culture
+   Facebook Release: N/A
+   Journal Release: January 7, 2026
+   ⏰ Scheduled Release: January 7, 2026
+
+18. Psychology of Servant Leadership, Part 6: The System of Service
+   Categories: servant-leadership, leadership, culture, psychology
+   Facebook Release: N/A
+   Journal Release: January 11, 2026
+   ⏰ Scheduled Release: January 11, 2026
+
+19. Stop Turning Your Team Into Opponents
+   Categories: team-building, trust, culture
+   Facebook Release: May 19, 2025
+   Journal Release: May 18, 2025
+
+20. Teams Are Not Wells
+   Categories: team-building, leadership-development
+   Facebook Release: August 11, 2025
+   Journal Release: August 10, 2025
+
+21. The Case for Servant Leadership (Part 1)
+   Categories: servant-leadership, trust, neuroscience
+   Facebook Release: Published (date unknown)
+   Journal Release: November 3, 2025
+
+22. The Case for Servant Leadership (Part 2)
+   Categories: servant-leadership, neuroscience, data-research
+   Facebook Release: Published (date unknown)
+   Journal Release: November 10, 2025
+
+23. The Case for Servant Leadership (Part 3)
+   Categories: servant-leadership, fear, neuroscience
+   Facebook Release: Published (date unknown)
+   Journal Release: November 17, 2025
+
+24. The Case for Servant Leadership (Part 4)
+   Categories: servant-leadership, leadership-principles, systems
+   Facebook Release: Published (date unknown)
+   Journal Release: November 24, 2025
+
+25. The Case for Servant Leadership (Part 5)
+   Categories: servant-leadership, personal-reflection
+   Facebook Release: Published (date unknown)
+   Journal Release: December 1, 2025
+
+26. The Cost of Calm
+   Categories: balance, personal-reflection, boundaries
+   Facebook Release: October 20, 2025.
+   Journal Release: October 19, 2025
+
+27. The Cult of Confusion
+   Categories: leadership, psychology, narcissism, communication, servant-leadership, organizational-dynamics
+   Facebook Release: N/A
+   Journal Release: December 10, 2025
+
+28. The Distraction Play
+   Categories: leadership, psychology, narcissism, organizational-dynamics, servant-leadership, culture
+   Facebook Release: N/A
+   Journal Release: January 28, 2026
+   ⏰ Scheduled Release: January 28, 2026
+
+29. The Golden Rule Has Always Been a Leadership Strategy
+   Categories: leadership, servant-leadership, culture, scoreboard-leadership, ethics
+   Facebook Release: N/A
+   Journal Release: December 4, 2025
+
+30. The Illusion of Control
+   Categories: leadership, psychology, narcissism, servant-leadership, power-control, organizational-dynamics
+   Facebook Release: N/A
+   Journal Release: November 26, 2025
+
+31. The Manufactured Crisis
+   Categories: leadership, psychology, narcissism, emotional-dynamics, servant-leadership, organizational-dynamics
+   Facebook Release: N/A
+   Journal Release: December 31, 2025
+   ⏰ Scheduled Release: December 31, 2025
+
+32. The Isolation Strategy
+   Categories: leadership, psychology, narcissism, organizational-dynamics, servant-leadership, communication
+   Facebook Release: N/A
+   Journal Release: January 21, 2026
+   ⏰ Scheduled Release: January 21, 2026
+
+33. The Pendulum of Leadership: Efficiency vs. Empathy
+   Categories: balance, empathy
+   Facebook Release: May 5, 2025
+   Journal Release: May 4, 2025
+
+34. The Performance of Perfection
+   Categories: leadership, psychology, narcissism, culture, servant-leadership, organizational-dynamics
+   Facebook Release: N/A
+   Journal Release: December 3, 2025
+
+35. The Producer-Leader Paradox
+   Categories: leadership-development, balance
+   Facebook Release: October 8, 2025.
+   Journal Release: October 7, 2025
+
+36. The Proxy Trap
+   Categories: leadership, psychology, narcissism, organizational-dynamics, servant-leadership, team-building
+   Facebook Release: N/A
+   Journal Release: December 24, 2025
+
+37. The Pursuit of Power Corrupts
+   Categories: power-control, servant-leadership
+   Facebook Release: May 12, 2025
+   Journal Release: May 11, 2025
+
+38. The Scarcity Switch
+   Categories: leadership, psychology, narcissism, organizational-dynamics, servant-leadership, culture
+   Facebook Release: N/A
+   Journal Release: January 14, 2026
+   ⏰ Scheduled Release: January 14, 2026
+
+39. The Shadow of Shame
+   Categories: leadership, psychology, emotional-intelligence, narcissism, servant-leadership, accountability
+   Facebook Release: N/A
+   Journal Release: December 17, 2025
+
+40. The Work Is Now Public
+   Categories: leadership, culture, formation, servant-leadership
+   Facebook Release: N/A
+   Journal Release: December 18, 2025
+
+41. Untitled
+   Categories: N/A
+   Facebook Release: August 26, 2025
+   Journal Release: Not published
+
+42. We’ve Lost the Plot on Leadership.
+   Categories: servant-leadership, power-control
+   Facebook Release: June 20, 2025
+   Journal Release: June 19, 2025
+
+43. What are your values as a business leader?
+   Categories: culture-values, accountability
+   Facebook Release: October 15, 2025 at 10:25 a.m.
+   Journal Release: October 15, 2025
+
+44. When Leaders Refuse to Change: The Enron Lesson
+   Categories: case-studies, power-control, accountability, culture
+   Facebook Release: August 21, 2025
+   Journal Release: August 20, 2025
+
+45. Where We Begin
+   Categories: leadership, servant-leadership, faith, culture
+   Facebook Release: N/A
+   Journal Release: December 29, 2025
+
+46. Why I Chose the Name Archetype Original
+   Categories: leadership, servant-leadership, culture, identity, formation
+   Facebook Release: N/A
+   Journal Release: December 22, 2025
+
+47. Why Leaders Hire Me
+   Categories: leadership, advisory, consulting, decision-making, trust
+   Facebook Release: N/A
+   Journal Release: December 27, 2025
+
+====================================================================================================
+
+📊 Summary Statistics:
+   Published on Journal: 38
+   Scheduled for Future: 8
+   Facebook Only (not on Journal): 1
+   Unpublished: 1
