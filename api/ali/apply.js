@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { Resend } from 'resend';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const HANDOFF_TO_EMAIL = process.env.HANDOFF_TO_EMAIL || 'bart@archetypeoriginal.com';
@@ -62,7 +57,7 @@ export default async function handler(req, res) {
     }
 
     // Store in Supabase
-    const { data: applicationData, error: supabaseError } = await supabase
+    const { data: applicationData, error: supabaseError } = await supabaseAdmin
       .from('ali_applications')
       .insert([
         {
