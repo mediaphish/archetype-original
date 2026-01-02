@@ -16,6 +16,7 @@ import SEO from '../components/SEO';
 import ScriptureBlock from '../components/ScriptureBlock';
 import ESVCopyright from '../components/ESVCopyright';
 import JournalSubscription from '../components/JournalSubscription';
+import ShareLinks from '../components/ShareLinks';
 
 export default function DevotionalPost({ post: postProp = null }) {
   const [post, setPost] = useState(postProp);
@@ -233,11 +234,18 @@ export default function DevotionalPost({ post: postProp = null }) {
                 <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
                   {post.title}
                 </h1>
-                {(post.publish_date || post.date) && (
-                  <p className="text-base sm:text-lg text-[#6B6B6B]">
-                    {formatDate(post.publish_date || post.date)}
-                  </p>
-                )}
+                <div className="flex items-center justify-center gap-4">
+                  {(post.publish_date || post.date) && (
+                    <time className="text-base sm:text-lg text-[#6B6B6B]">
+                      {formatDate(post.publish_date || post.date)}
+                    </time>
+                  )}
+                  <ShareLinks 
+                    url={typeof window !== 'undefined' ? window.location.href : ''}
+                    title={post.title}
+                    description={post.summary || ''}
+                  />
+                </div>
               </div>
             </div>
           </section>
@@ -250,14 +258,21 @@ export default function DevotionalPost({ post: postProp = null }) {
               {isInline && (
                 <>
                   <div className="text-center mb-8">
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      {(post.publish_date || post.date) && (
+                        <time className="text-sm text-[#6B6B6B]">
+                          {formatDate(post.publish_date || post.date)}
+                        </time>
+                      )}
+                      <ShareLinks 
+                        url={typeof window !== 'undefined' ? `${window.location.origin}/journal/${post.slug}` : ''}
+                        title={post.title}
+                        description={post.summary || ''}
+                      />
+                    </div>
                     <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-2 leading-tight">
                       {post.title}
                     </h1>
-                    {(post.publish_date || post.date) && (
-                      <p className="text-sm sm:text-base text-[#6B6B6B]">
-                        {formatDate(post.publish_date || post.date)}
-                      </p>
-                    )}
                   </div>
                 </>
               )}

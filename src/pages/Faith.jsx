@@ -11,6 +11,7 @@ import JournalSubscription from '../components/JournalSubscription';
 import FloatingArchyButton from '../components/FloatingArchyButton';
 import Footer from '../components/Footer';
 import DevotionalPost from './DevotionalPost';
+import ShareLinks from '../components/ShareLinks';
 
 export default function Faith() {
   const [devotionals, setDevotionals] = useState([]);
@@ -191,13 +192,20 @@ export default function Faith() {
           <section className="py-12 sm:py-16 md:py-20 bg-[#FAFAF9]">
             <div className="container mx-auto px-4 sm:px-6 md:px-12">
               <div className="max-w-4xl mx-auto">
-                <div className="mb-8">
-                  <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C] mb-2">
-                    Today's Devotional
-                  </p>
-                  <p className="text-sm text-[#6B6B6B]">
-                    {formatDate(currentDevotional.publish_date || currentDevotional.date)}
-                  </p>
+                <div className="mb-8 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C] mb-2">
+                      Today's Devotional
+                    </p>
+                    <p className="text-sm text-[#6B6B6B]">
+                      {formatDate(currentDevotional.publish_date || currentDevotional.date)}
+                    </p>
+                  </div>
+                  <ShareLinks 
+                    url={typeof window !== 'undefined' ? `${window.location.origin}/journal/${currentDevotional.slug}` : ''}
+                    title={currentDevotional.title}
+                    description={currentDevotional.summary || ''}
+                  />
                 </div>
                 <div className="bg-white border border-[#1A1A1A]/10">
                   <DevotionalPost post={currentDevotional} />
