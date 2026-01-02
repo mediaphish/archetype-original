@@ -1,29 +1,15 @@
 /**
  * ESV API Proxy Endpoint
  * 
- * Fetches scripture passages from the ESV API and caches responses.
- * This endpoint acts as a proxy to keep API keys secure and enable caching.
+ * Fetches scripture passages from the ESV API and returns them with proper formatting.
+ * Includes caching to reduce API calls.
+ * 
+ * GET /api/esv/passage?reference=2+Corinthians+5:16-17
  */
 
-// Simple in-memory cache (24-hour TTL)
+// Simple in-memory cache (clears on serverless function restart)
 const cache = new Map();
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-function getCached(reference) {
-  const cached = cache.get(reference);
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.data;
-  }
-  cache.delete(reference);
-  return null;
-}
-
-function setCache(reference, data) {
-  cache.set(reference, {
-    data,
-    timestamp: Date.now()
-  });
-}
+const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 hours
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -33,83 +19,89 @@ export default async function handler(req, res) {
   const { reference } = req.query;
 
   if (!reference) {
-    return res.status(400).json({ error: 'Scripture reference is required' });
+    return res.status(400).json({ error: 'Scripture reference is required.' });
   }
 
   // Check cache first
-  const cached = getCached(reference);
-  if (cached) {
-    return res.status(200).json(cached);
+  const cacheKey = reference.toLowerCase().trim();
+  if (cache.has(cacheKey)) {
+    const cached = cache.get(cacheKey);
+    if (Date.now() - cached.timestamp < CACHE_TTL) {
+      console.log(`✅ ESV cache hit for: ${reference}`);
+      return res.status(200).json(cached.data);
+    } else {
+      cache.delete(cacheKey); // Cache expired
+    }
   }
 
   // Check for API key
   if (!process.env.ESV_API_KEY) {
-    console.error('ESV_API_KEY not configured');
+    console.error('ESV_API_KEY is not set.');
     return res.status(500).json({ 
-      error: 'ESV API not configured',
-      reference,
-      text: null // Return reference only if API unavailable
+      error: 'Server configuration error: ESV API key missing.',
+      message: 'Please configure ESV_API_KEY in your environment variables.'
     });
   }
 
   try {
-    // Fetch from ESV API
-    const esvUrl = new URL('https://api.esv.org/v3/passage/text/');
-    esvUrl.searchParams.append('q', reference);
-    esvUrl.searchParams.append('include-verse-numbers', 'false');
-    esvUrl.searchParams.append('include-footnotes', 'false');
-    esvUrl.searchParams.append('include-headings', 'false');
-    esvUrl.searchParams.append('include-short-copyright', 'false');
+    // ESV API endpoint
+    // Documentation: https://api.esv.org/docs/passage/text/
+    const esvApiUrl = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(reference)}&include-verse-numbers=true&include-footnotes=false&include-headings=false&include-short-copyright=false&include-passage-references=false`;
 
-    const response = await fetch(esvUrl.toString(), {
+    console.log(`📖 Fetching from ESV API: ${reference}`);
+
+    const esvResponse = await fetch(esvApiUrl, {
       headers: {
         'Authorization': `Token ${process.env.ESV_API_KEY}`
       }
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('ESV API error:', response.status, errorText);
+    if (!esvResponse.ok) {
+      const errorText = await esvResponse.text();
+      console.error(`ESV API error for reference "${reference}": ${esvResponse.status} - ${errorText}`);
       
-      // Return reference only if API fails
-      const fallback = {
-        reference,
-        text: null,
-        copyright: null,
-        error: 'Unable to fetch scripture text'
-      };
-      return res.status(200).json(fallback);
+      if (esvResponse.status === 401) {
+        return res.status(401).json({ 
+          error: 'ESV API authentication failed. Please check your API key.' 
+        });
+      }
+      
+      return res.status(esvResponse.status).json({ 
+        error: `Failed to fetch scripture from ESV API: ${esvResponse.statusText}`,
+        details: errorText
+      });
     }
 
-    const data = await response.json();
+    const data = await esvResponse.json();
     
-    // Extract text from ESV API response
-    const text = data.passages && data.passages.length > 0 
-      ? data.passages[0].trim()
-      : null;
+    // ESV API returns passages in an array
+    const passageText = data.passages ? data.passages.join('\n\n').trim() : '';
+    const passageReference = data.canonical || reference;
+
+    if (!passageText) {
+      return res.status(404).json({ 
+        error: 'No passage found for the given reference.',
+        reference: reference
+      });
+    }
 
     const result = {
-      reference,
-      text,
-      copyright: 'ESV® Bible (The Holy Bible, English Standard Version®), © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.'
+      reference: passageReference,
+      text: passageText,
+      copyright: 'Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.'
     };
 
     // Cache the result
-    setCache(reference, result);
-
+    cache.set(cacheKey, { data: result, timestamp: Date.now() });
+    
+    console.log(`✅ ESV API success for: ${reference}`);
     return res.status(200).json(result);
 
   } catch (error) {
-    console.error('Error fetching from ESV API:', error);
-    
-    // Return reference only if error occurs
-    const fallback = {
-      reference,
-      text: null,
-      copyright: null,
-      error: 'Unable to fetch scripture text'
-    };
-    return res.status(200).json(fallback);
+    console.error('Error in ESV API proxy:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error while fetching scripture.',
+      details: error.message
+    });
   }
 }
-

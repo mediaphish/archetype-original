@@ -15,7 +15,8 @@
         { "src": "api/journal/check-subscription.js", "use": "@vercel/node" },
         { "src": "api/journal/diagnose-subscriptions.js", "use": "@vercel/node" },
         { "src": "api/cron/daily-devotional-notify.js", "use": "@vercel/node" },
-        { "src": "api/cron/retry-failed-emails.js", "use": "@vercel/node" }
+        { "src": "api/cron/retry-failed-emails.js", "use": "@vercel/node" },
+        { "src": "api/esv/passage.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -32,6 +33,7 @@
         { "src": "/api/journal/diagnose-subscriptions", "dest": "/api/journal/diagnose-subscriptions.js" },
         { "src": "/api/cron/daily-devotional-notify", "dest": "/api/cron/daily-devotional-notify.js" },
         { "src": "/api/cron/retry-failed-emails", "dest": "/api/cron/retry-failed-emails.js" },
+        { "src": "/api/esv/passage", "dest": "/api/esv/passage.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
