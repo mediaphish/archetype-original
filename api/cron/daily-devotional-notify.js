@@ -130,71 +130,76 @@ export default async function handler(req, res) {
         ? new Date(publish_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
         : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-      // Send to all devotional subscribers with rate limiting
-      // Resend allows 2 requests per second, so we'll send at ~1.5 requests/second (600ms delay)
-      for (let i = 0; i < subscribers.length; i++) {
-        const subscriber = subscribers[i];
+      // Build email HTML template
+      const emailHtml = `
+        <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#1A1A1A; max-width:600px; margin:0 auto;">
+          <h2 style="margin:0 0 16px 0; color:#1A1A1A; font-size:24px;">New Devotional</h2>
+          <h3 style="margin:0 0 12px 0; color:#1A1A1A; font-size:20px; font-weight:600;">${escapeHtml(title)}</h3>
+          <p style="margin:0 0 16px 0; color:#6B6B6B; font-size:14px;">Published: ${publishDate}</p>
+          
+          <div style="margin:24px 0; padding:16px; background-color:#FAFAF9; border-left:4px solid #C85A3C;">
+            <p style="margin:0; color:#1A1A1A; line-height:1.7;">${escapeHtml(postSummary)}</p>
+          </div>
+          
+          <p style="margin:24px 0;">
+            <a href="${postUrl}" style="display:inline-block; background-color:#1A1A1A; color:#FFFFFF; padding:12px 24px; text-decoration:none; font-weight:500;">Read Full Devotional</a>
+          </p>
+          
+          <hr style="border:none;border-top:1px solid #e5e7eb; margin:24px 0;" />
+          
+          <p style="margin:0 0 8px 0;">
+            <a href="${siteUrl}/faith" style="color:#C85A3C; text-decoration:none;">View all devotionals</a>
+          </p>
+          
+          <p style="font-size:12px;color:#6B6B6B; margin:16px 0 0 0;">
+            You're receiving this because you subscribed to devotionals at ${siteUrl}/journal
+          </p>
+        </div>
+      `;
+
+      // Use Resend Batch API: up to 100 emails per batch
+      // With 10 req/sec limit, we can send batches much faster
+      const BATCH_SIZE = 100;
+      const failedEmails = [];
+
+      // Split subscribers into batches of 100
+      for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
+        const batch = subscribers.slice(i, i + BATCH_SIZE);
+        const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
+        const totalBatches = Math.ceil(subscribers.length / BATCH_SIZE);
         
-        // Add delay between emails to respect rate limit (except for first email)
-        if (i > 0) {
-          await new Promise(resolve => setTimeout(resolve, 600)); // 600ms = ~1.67 requests/second
-        }
-        
-        // Retry logic for rate limit errors
+        console.log(`📦 Sending batch ${batchNumber}/${totalBatches} (${batch.length} emails) for ${slug}...`);
+
+        // Build batch array for Resend
+        const batchEmails = batch.map(subscriber => ({
+          from,
+          to: subscriber.email,
+          subject: `New Devotional: ${escapeHtml(title)}`,
+          html: emailHtml
+        }));
+
         let retries = 3;
-        let sent = false;
-        
-        while (retries > 0 && !sent) {
+        let batchSent = false;
+
+        while (retries > 0 && !batchSent) {
           try {
-            console.log(`📨 Sending to ${subscriber.email}... (${4 - retries}/3 attempt)`);
-            const result = await resend.emails.send({
-              from,
-              to: subscriber.email,
-              subject: `New Devotional: ${escapeHtml(title)}`,
-              html: `
-                <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#1A1A1A; max-width:600px; margin:0 auto;">
-                  <h2 style="margin:0 0 16px 0; color:#1A1A1A; font-size:24px;">New Devotional</h2>
-                  <h3 style="margin:0 0 12px 0; color:#1A1A1A; font-size:20px; font-weight:600;">${escapeHtml(title)}</h3>
-                  <p style="margin:0 0 16px 0; color:#6B6B6B; font-size:14px;">Published: ${publishDate}</p>
-                  
-                  <div style="margin:24px 0; padding:16px; background-color:#FAFAF9; border-left:4px solid #C85A3C;">
-                    <p style="margin:0; color:#1A1A1A; line-height:1.7;">${escapeHtml(postSummary)}</p>
-                  </div>
-                  
-                  <p style="margin:24px 0;">
-                    <a href="${postUrl}" style="display:inline-block; background-color:#1A1A1A; color:#FFFFFF; padding:12px 24px; text-decoration:none; font-weight:500;">Read Full Devotional</a>
-                  </p>
-                  
-                  <hr style="border:none;border-top:1px solid #e5e7eb; margin:24px 0;" />
-                  
-                  <p style="margin:0 0 8px 0;">
-                    <a href="${siteUrl}/faith" style="color:#C85A3C; text-decoration:none;">View all devotionals</a>
-                  </p>
-                  
-                  <p style="font-size:12px;color:#6B6B6B; margin:16px 0 0 0;">
-                    You're receiving this because you subscribed to devotionals at ${siteUrl}/journal
-                  </p>
-                </div>
-              `
-            });
+            const result = await resend.batch.send(batchEmails);
 
             if (result?.error) {
               // Check if it's a rate limit error
               if (result.error.name === 'rate_limit_exceeded' || result.error.statusCode === 429) {
                 retries--;
                 if (retries > 0) {
-                  // Wait longer before retry (2 seconds for rate limit)
-                  console.warn(`⏳ Rate limit hit for ${subscriber.email}, waiting 2 seconds before retry...`);
+                  console.warn(`⏳ Rate limit hit for batch ${batchNumber}, waiting 2 seconds before retry...`);
                   await new Promise(resolve => setTimeout(resolve, 2000));
                   continue;
                 } else {
-                  totalFailed++;
-                  errors.push({ email: subscriber.email, devotional: slug, error: result.error });
-                  console.error(`❌ Failed to send email to ${subscriber.email} for ${slug} after retries:`, result.error);
-                  
-                  // Store failure in database for later retry
-                  try {
-                    await supabaseAdmin.from('journal_email_failures').insert({
+                  // Batch failed after retries - store individual failures
+                  console.error(`❌ Batch ${batchNumber} failed after retries:`, result.error);
+                  batch.forEach(subscriber => {
+                    totalFailed++;
+                    errors.push({ email: subscriber.email, devotional: slug, error: result.error });
+                    failedEmails.push({
                       email: subscriber.email,
                       subscription_id: subscriber.id,
                       post_slug: slug,
@@ -205,19 +210,16 @@ export default async function handler(req, res) {
                       error_code: 429,
                       status: 'pending'
                     });
-                  } catch (dbError) {
-                    console.error(`Failed to store email failure in database:`, dbError);
-                  }
+                  });
+                  batchSent = true;
                 }
               } else {
-                // Non-rate-limit error, don't retry
-                totalFailed++;
-                errors.push({ email: subscriber.email, devotional: slug, error: result.error });
-                console.error(`❌ Failed to send email to ${subscriber.email} for ${slug}:`, result.error);
-                
-                // Store failure in database for later retry
-                try {
-                  await supabaseAdmin.from('journal_email_failures').insert({
+                // Non-rate-limit error
+                console.error(`❌ Batch ${batchNumber} failed:`, result.error);
+                batch.forEach(subscriber => {
+                  totalFailed++;
+                  errors.push({ email: subscriber.email, devotional: slug, error: result.error });
+                  failedEmails.push({
                     email: subscriber.email,
                     subscription_id: subscriber.id,
                     post_slug: slug,
@@ -228,74 +230,99 @@ export default async function handler(req, res) {
                     error_code: result.error.statusCode || 500,
                     status: 'pending'
                   });
-                } catch (dbError) {
-                  console.error(`Failed to store email failure in database:`, dbError);
-                }
-                
-                sent = true; // Exit retry loop
+                });
+                batchSent = true;
               }
             } else {
-              totalSent++;
-              sentEmails.push(subscriber.email);
-              console.log(`✅ Sent to ${subscriber.email}`);
-              sent = true; // Success, exit retry loop
+              // Batch success - check individual results
+              const batchResults = result.data || [];
+              batchResults.forEach((emailResult, index) => {
+                if (emailResult.error) {
+                  totalFailed++;
+                  const subscriber = batch[index];
+                  errors.push({ email: subscriber.email, devotional: slug, error: emailResult.error });
+                  failedEmails.push({
+                    email: subscriber.email,
+                    subscription_id: subscriber.id,
+                    post_slug: slug,
+                    post_type: 'devotional',
+                    post_title: title,
+                    error_type: emailResult.error.name || 'unknown',
+                    error_message: emailResult.error.message || JSON.stringify(emailResult.error),
+                    error_code: emailResult.error.statusCode || 500,
+                    status: 'pending'
+                  });
+                } else {
+                  totalSent++;
+                  sentEmails.push(batch[index].email);
+                }
+              });
+              console.log(`✅ Batch ${batchNumber} completed for ${slug}: ${totalSent} sent, ${totalFailed} failed`);
+              batchSent = true;
             }
-          } catch (emailError) {
+          } catch (batchError) {
             // Check if it's a rate limit error
-            if (emailError.message?.includes('rate_limit') || emailError.statusCode === 429) {
+            if (batchError.message?.includes('rate_limit') || batchError.statusCode === 429) {
               retries--;
               if (retries > 0) {
-                console.warn(`⏳ Rate limit hit for ${subscriber.email}, waiting 2 seconds before retry...`);
+                console.warn(`⏳ Rate limit hit for batch ${batchNumber}, waiting 2 seconds before retry...`);
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 continue;
               } else {
-                totalFailed++;
-                errors.push({ email: subscriber.email, devotional: slug, error: emailError.message });
-                console.error(`❌ Error sending email to ${subscriber.email} for ${slug} after retries:`, emailError);
-                
-                // Store failure in database for later retry
-                try {
-                  await supabaseAdmin.from('journal_email_failures').insert({
+                console.error(`❌ Batch ${batchNumber} error after retries:`, batchError);
+                batch.forEach(subscriber => {
+                  totalFailed++;
+                  errors.push({ email: subscriber.email, devotional: slug, error: batchError.message });
+                  failedEmails.push({
                     email: subscriber.email,
                     subscription_id: subscriber.id,
                     post_slug: slug,
                     post_type: 'devotional',
                     post_title: title,
                     error_type: 'rate_limit_exceeded',
-                    error_message: emailError.message,
+                    error_message: batchError.message,
                     error_code: 429,
                     status: 'pending'
                   });
-                } catch (dbError) {
-                  console.error(`Failed to store email failure in database:`, dbError);
-                }
+                });
+                batchSent = true;
               }
             } else {
-              // Non-rate-limit error, don't retry
-              totalFailed++;
-              errors.push({ email: subscriber.email, devotional: slug, error: emailError.message });
-              console.error(`❌ Error sending email to ${subscriber.email} for ${slug}:`, emailError);
-              
-              // Store failure in database for later retry
-              try {
-                await supabaseAdmin.from('journal_email_failures').insert({
+              // Non-rate-limit error
+              console.error(`❌ Batch ${batchNumber} error:`, batchError);
+              batch.forEach(subscriber => {
+                totalFailed++;
+                errors.push({ email: subscriber.email, devotional: slug, error: batchError.message });
+                failedEmails.push({
                   email: subscriber.email,
                   subscription_id: subscriber.id,
                   post_slug: slug,
                   post_type: 'devotional',
                   post_title: title,
-                  error_type: emailError.name || 'unknown',
-                  error_message: emailError.message,
-                  error_code: emailError.statusCode || 500,
+                  error_type: batchError.name || 'unknown',
+                  error_message: batchError.message,
+                  error_code: batchError.statusCode || 500,
                   status: 'pending'
                 });
-              } catch (dbError) {
-                console.error(`Failed to store email failure in database:`, dbError);
-              }
-              
-              sent = true; // Exit retry loop
+              });
+              batchSent = true;
             }
           }
+        }
+
+        // Small delay between batches to respect rate limits (100ms = 10 batches/second max)
+        if (i + BATCH_SIZE < subscribers.length) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
+
+      // Store all failures in database
+      if (failedEmails.length > 0) {
+        try {
+          await supabaseAdmin.from('journal_email_failures').insert(failedEmails);
+          console.log(`📝 Stored ${failedEmails.length} email failures in database for retry`);
+        } catch (dbError) {
+          console.error(`Failed to store email failures in database:`, dbError);
         }
       }
     }
