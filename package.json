@@ -16,7 +16,7 @@
     "update-journal": "node scripts/manage-journal.mjs update",
     "list-journal": "node scripts/manage-journal.mjs list",
     "test": "jest",
-    "install-prerender": "npm install puppeteer"
+    "install-prerender": "npm install --save-dev puppeteer"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
@@ -40,8 +40,5 @@
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.9",
     "vite": "^5.0.8"
-  },
-  "optionalDependencies": {
-    "puppeteer": "^21.6.1"
   }
 }
