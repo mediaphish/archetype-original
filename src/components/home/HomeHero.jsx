@@ -60,7 +60,14 @@ export default function HomeHero() {
               </div>
               
               {/* Title */}
-              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] mb-6 sm:mb-8 break-words">
+              <h1 
+                className="font-serif font-bold mb-6 sm:mb-8 text-balance text-[#1A1A1A]"
+                style={{
+                  fontSize: 'clamp(2.5rem, 5vw + 1rem, 5rem)',
+                  lineHeight: '1.1',
+                  letterSpacing: '-0.02em'
+                }}
+              >
                 Leadership That Actually Lasts
               </h1>
               

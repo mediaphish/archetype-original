@@ -109,7 +109,7 @@ export default function Header() {
             </a>
 
             {/* Desktop Navigation - Right Aligned */}
-            <div className="hidden lg:flex items-center">
+            <div className="hidden md:flex items-center">
               <div className="flex flex-col items-end gap-2">
                 {/* Secondary Navigation - Stacked Above */}
                 <div className="flex items-center gap-4 text-sm">
@@ -146,11 +146,11 @@ export default function Header() {
                 </div>
 
                 {/* Primary Navigation */}
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 lg:gap-6 xl:gap-8">
                   <a 
                     href="/meet-bart" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
-                    className={navLinkClass('/meet-bart')}
+                    className={`${navLinkClass('/meet-bart')} whitespace-nowrap text-sm md:text-sm lg:text-base`}
                   >
                     Meet Bart
                   </a>
@@ -158,7 +158,7 @@ export default function Header() {
                   <a 
                     href="/archy" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
-                    className={navLinkClass('/archy')}
+                    className={`${navLinkClass('/archy')} whitespace-nowrap text-sm md:text-sm lg:text-base`}
                   >
                     Meet Archy
                   </a>
@@ -166,7 +166,7 @@ export default function Header() {
                   <a 
                     href="/philosophy" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
-                    className={navLinkClass('/philosophy')}
+                    className={`${navLinkClass('/philosophy')} whitespace-nowrap text-sm md:text-sm lg:text-base`}
                   >
                     Philosophy
                   </a>
@@ -178,7 +178,7 @@ export default function Header() {
                     onMouseLeave={() => setMethodsDropdownOpen(false)}
                   >
                     <button
-                      className={`${navLinkClass('/methods')} flex items-center gap-1`}
+                      className={`${navLinkClass('/methods')} flex items-center gap-1 whitespace-nowrap text-sm md:text-sm lg:text-base`}
                     >
                       Methods
                       <svg 
@@ -247,7 +247,7 @@ export default function Header() {
                     onMouseLeave={() => setCultureScienceDropdownOpen(false)}
                   >
                     <button
-                      className={`${navLinkClass('/culture-science')} flex items-center gap-1`}
+                      className={`${navLinkClass('/culture-science')} flex items-center gap-1 whitespace-nowrap text-sm md:text-sm lg:text-base`}
                     >
                       Culture Science
                       <svg 
@@ -325,7 +325,7 @@ export default function Header() {
                   <a
                     href="/engagement-inquiry"
                     onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
-                    className="ml-4 px-4 py-2 bg-[#C85A3C] text-white font-medium rounded-lg hover:bg-[#B54A32] transition-all duration-200"
+                    className="ml-4 px-4 lg:px-6 py-2 bg-[#C85A3C] text-white font-medium rounded-lg hover:bg-[#B54A32] transition-all duration-200 whitespace-nowrap"
                   >
                     Work Together
                   </a>
@@ -336,7 +336,7 @@ export default function Header() {
             {/* Mobile Menu Button - Animated Hamburger to X */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative w-8 h-8"
+              className="md:hidden p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative w-8 h-8"
               aria-label="Toggle menu"
             >
               <span className="sr-only">Toggle menu</span>
@@ -365,7 +365,7 @@ export default function Header() {
 
       {/* Mobile Side Drawer */}
       <div 
-        className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
+        className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
