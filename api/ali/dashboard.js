@@ -156,7 +156,7 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Company not found' });
     }
 
-    // Get all completed deployments for this company
+    // Get all deployments for this company (active or completed - we'll process responses from any)
     const { data: deployments, error: deploymentsError } = await supabaseAdmin
       .from('ali_survey_deployments')
       .select(`
@@ -168,7 +168,7 @@ export default async function handler(req, res) {
         status
       `)
       .eq('company_id', companyId)
-      .eq('status', 'completed')
+      .in('status', ['active', 'completed'])
       .order('deployed_at', { ascending: true });
 
     if (deploymentsError) {
@@ -401,19 +401,19 @@ export default async function handler(req, res) {
       surveyCount: deployments.length
     });
 
-    // Leadership Mirror
+    // Leadership Mirror - use rolling scores where available, fallback to current
     const leadershipMirror = calculateLeadershipMirror(
       {
-        ali: leaderRollingScores.ali?.rolling,
-        alignment: leaderRollingScores.patterns.alignment?.rolling,
-        stability: leaderRollingScores.patterns.stability?.rolling,
-        clarity: leaderRollingScores.patterns.clarity?.rolling
+        ali: leaderRollingScores.ali?.rolling || leaderRollingScores.ali?.current,
+        alignment: leaderRollingScores.patterns.alignment?.rolling || leaderRollingScores.patterns.alignment?.current,
+        stability: leaderRollingScores.patterns.stability?.rolling || leaderRollingScores.patterns.stability?.current,
+        clarity: leaderRollingScores.patterns.clarity?.rolling || leaderRollingScores.patterns.clarity?.current
       },
       {
-        ali: teamRollingScores.ali?.rolling,
-        alignment: teamRollingScores.patterns.alignment?.rolling,
-        stability: teamRollingScores.patterns.stability?.rolling,
-        clarity: teamRollingScores.patterns.clarity?.rolling
+        ali: teamRollingScores.ali?.rolling || teamRollingScores.ali?.current,
+        alignment: teamRollingScores.patterns.alignment?.rolling || teamRollingScores.patterns.alignment?.current,
+        stability: teamRollingScores.patterns.stability?.rolling || teamRollingScores.patterns.stability?.current,
+        clarity: teamRollingScores.patterns.clarity?.rolling || teamRollingScores.patterns.clarity?.current
       }
     );
 
