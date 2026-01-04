@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ALIDashboard = () => {
+  const [expandedZone, setExpandedZone] = useState(null);
+  const [expandedProfile, setExpandedProfile] = useState(false);
+
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -163,7 +166,7 @@ const ALIDashboard = () => {
           <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">HEADLINE REALITY</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Alignment Score Card */}
-            <div className={`bg-white rounded-lg border-2 p-6 ${getScoreBgColor(mockData.coreScores.alignment)}`}>
+            <div className={`bg-white rounded-lg border-2 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg ${getScoreBgColor(mockData.coreScores.alignment)}`}>
               <div className="text-sm font-medium text-gray-600 mb-2">Alignment</div>
               <div className={`text-4xl font-bold mb-2 ${getScoreColor(mockData.coreScores.alignment)}`}>
                 {Math.round(mockData.coreScores.alignment)}
@@ -178,7 +181,7 @@ const ALIDashboard = () => {
             </div>
 
             {/* Stability Score Card */}
-            <div className={`bg-white rounded-lg border-2 p-6 ${getScoreBgColor(mockData.coreScores.stability)}`}>
+            <div className={`bg-white rounded-lg border-2 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg ${getScoreBgColor(mockData.coreScores.stability)}`}>
               <div className="text-sm font-medium text-gray-600 mb-2">Stability</div>
               <div className={`text-4xl font-bold mb-2 ${getScoreColor(mockData.coreScores.stability)}`}>
                 {Math.round(mockData.coreScores.stability)}
@@ -193,7 +196,7 @@ const ALIDashboard = () => {
             </div>
 
             {/* Clarity Score Card */}
-            <div className={`bg-white rounded-lg border-2 p-6 ${getScoreBgColor(mockData.coreScores.clarity)}`}>
+            <div className={`bg-white rounded-lg border-2 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg ${getScoreBgColor(mockData.coreScores.clarity)}`}>
               <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
               <div className={`text-4xl font-bold mb-2 ${getScoreColor(mockData.coreScores.clarity)}`}>
                 {Math.round(mockData.coreScores.clarity)}
@@ -208,7 +211,7 @@ const ALIDashboard = () => {
             </div>
 
             {/* Trajectory Score Card */}
-            <div className={`bg-white rounded-lg border-2 p-6 ${mockData.trajectory.direction === 'improving' ? 'bg-green-50 border-green-200' : mockData.trajectory.direction === 'declining' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
+            <div className={`bg-white rounded-lg border-2 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg ${mockData.trajectory.direction === 'improving' ? 'bg-green-50 border-green-200' : mockData.trajectory.direction === 'declining' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
               <div className="text-sm font-medium text-gray-600 mb-2">Trajectory</div>
               <div className="flex items-center gap-2 mb-2">
                 {mockData.trajectory.direction === 'improving' ? (
@@ -232,34 +235,64 @@ const ALIDashboard = () => {
 
         {/* Section 2: Team Experience Map */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">Team Experience Map</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-[#1A1A1A]">Team Experience Map</h2>
+            <button
+              onClick={() => setExpandedZone(expandedZone === 'map' ? null : 'map')}
+              className="text-sm text-[#C85A3C] hover:text-[#B8492A]"
+            >
+              {expandedZone === 'map' ? 'Hide explanation' : 'What does this mean?'}
+            </button>
+          </div>
+          
+          {expandedZone === 'map' && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-gray-700 mb-2">
+                The Team Experience Map visualizes your team's experience across two dimensions: <strong>Clarity</strong> (how clearly expectations are communicated) and <strong>Stability + Trust</strong> (how predictable and safe the environment feels).
+              </p>
+              <p className="text-xs text-gray-600">
+                The map is divided into four zones that represent different team experiences. Your current position shows where your team is right now.
+              </p>
+            </div>
+          )}
+
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <div className="relative w-full h-96 border border-gray-300 bg-gray-50">
-              {/* Zone Labels */}
-              <div className="absolute top-4 left-4 text-green-700 font-semibold">Harmony</div>
-              <div className="absolute top-4 right-4 text-yellow-700 font-semibold">Strain</div>
+              {/* Equal Quadrants - 50/50 split */}
+              <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
+                {/* Top-Left Quadrant - Strain Zone */}
+                <div className="border-r border-b border-gray-200 bg-yellow-50/30"></div>
+                {/* Top-Right Quadrant - Harmony Zone */}
+                <div className="border-b border-gray-200 bg-green-50/30"></div>
+                {/* Bottom-Left Quadrant - Stress Zone */}
+                <div className="border-r border-gray-200 bg-orange-50/30"></div>
+                {/* Bottom-Right Quadrant - Hazard Zone */}
+                <div className="bg-red-50/30"></div>
+              </div>
+
+              {/* Zone Boundaries (dashed lines at 70) */}
+              <div className="absolute top-0 bottom-0 w-px border-l-2 border-dashed border-gray-400" style={{ left: '70%' }}></div>
+              <div className="absolute left-0 right-0 h-px border-t-2 border-dashed border-gray-400" style={{ top: '30%' }}></div>
+
+              {/* Zone Labels - positioned at centers of visual quadrants */}
+              <div className="absolute top-4 left-4 text-yellow-700 font-semibold">Strain</div>
+              <div className="absolute top-4 right-4 text-green-700 font-semibold">Harmony</div>
               <div className="absolute bottom-4 left-4 text-orange-700 font-semibold">Stress</div>
               <div className="absolute bottom-4 right-4 text-red-700 font-semibold">Hazard</div>
 
-              {/* Zone Boundaries (dashed lines at 70) */}
-              <div className="absolute top-0 left-1/2 bottom-0 w-px bg-gray-400 border-dashed transform -translate-x-1/2" style={{ left: '70%' }}></div>
-              <div className="absolute left-0 right-0 top-1/2 h-px bg-gray-400 border-dashed transform -translate-y-1/2" style={{ top: '30%' }}></div>
-
-              {/* Zone Colors */}
-              <div className="absolute top-0 right-0 w-[30%] h-[30%] bg-green-100 opacity-30"></div>
-              <div className="absolute top-0 left-0 w-[70%] h-[30%] bg-yellow-100 opacity-30"></div>
-              <div className="absolute bottom-0 left-0 w-[70%] h-[70%] bg-orange-100 opacity-30"></div>
-              <div className="absolute bottom-0 right-0 w-[30%] h-[70%] bg-red-100 opacity-30"></div>
-
-              {/* Axes Labels */}
-              <div className="absolute bottom-2 left-2 text-xs text-gray-600">Clarity (Low)</div>
-              <div className="absolute bottom-2 right-2 text-xs text-gray-600">Clarity (High)</div>
-              <div className="absolute top-2 left-2 text-xs text-gray-600 transform -rotate-90 origin-left">Stability + Trust (High)</div>
-              <div className="absolute bottom-2 left-2 text-xs text-gray-600 transform -rotate-90 origin-left">Stability + Trust (Low)</div>
+              {/* Axes Labels - single label per axis */}
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-medium">
+                Clarity (Low) ← → Clarity (High)
+              </div>
+              <div className="absolute left-2 top-1/2 transform -translate-y-1/2 -rotate-90 origin-center text-xs text-gray-600 font-medium whitespace-nowrap">
+                (Stability + Trust) / 2
+              </div>
+              <div className="absolute left-2 top-2 text-xs text-gray-500">High</div>
+              <div className="absolute left-2 bottom-2 text-xs text-gray-500">Low</div>
 
               {/* Current Position Dot */}
               <div
-                className="absolute w-4 h-4 bg-[#C85A3C] rounded-full border-2 border-white transform -translate-x-1/2 -translate-y-1/2 shadow-lg"
+                className="absolute w-4 h-4 bg-[#C85A3C] rounded-full border-2 border-white transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-10"
                 style={{
                   left: `${mockData.experienceMap.x}%`,
                   top: `${100 - mockData.experienceMap.y}%`
@@ -272,7 +305,7 @@ const ALIDashboard = () => {
             </div>
 
             <div className="mt-4 text-sm text-gray-600">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4 mb-4">
                 <div>
                   <strong>X-axis (Clarity):</strong> {mockData.experienceMap.x.toFixed(1)}
                 </div>
@@ -283,6 +316,32 @@ const ALIDashboard = () => {
                   <strong>Zone:</strong> <span className="capitalize font-semibold">{mockData.experienceMap.zone}</span>
                 </div>
               </div>
+
+              {/* Zone Descriptions - Expandable */}
+              <div className="border-t border-gray-200 pt-4">
+                <button
+                  onClick={() => setExpandedZone(expandedZone === 'zones' ? null : 'zones')}
+                  className="text-sm font-medium text-[#C85A3C] hover:text-[#B8492A] mb-2"
+                >
+                  {expandedZone === 'zones' ? '▼' : '▶'} Zone Descriptions
+                </button>
+                {expandedZone === 'zones' && (
+                  <div className="mt-2 space-y-3 text-xs text-gray-600">
+                    <div>
+                      <strong className="text-green-700">Harmony Zone (Top-Right):</strong> High Clarity and High Stability + Trust. Teams experience clear expectations and a safe, predictable environment.
+                    </div>
+                    <div>
+                      <strong className="text-yellow-700">Strain Zone (Top-Left):</strong> Low Clarity but High Stability + Trust. Teams feel safe but confused about priorities and expectations.
+                    </div>
+                    <div>
+                      <strong className="text-orange-700">Stress Zone (Bottom-Left):</strong> Low Clarity and Low Stability + Trust. Teams experience confusion and unpredictability.
+                    </div>
+                    <div>
+                      <strong className="text-red-700">Hazard Zone (Bottom-Right):</strong> High Clarity but Low Stability + Trust. Teams understand expectations but lack trust and stability.
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>
@@ -291,16 +350,48 @@ const ALIDashboard = () => {
         <section className="mb-12">
           <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">DIAGNOSIS - Pattern Analysis</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {Object.entries(mockData.scores.patterns).map(([pattern, scores]) => (
-              <div key={pattern} className="bg-white rounded-lg border border-gray-200 p-4">
-                <div className="text-sm font-medium text-gray-600 mb-2 capitalize">{pattern.replace('_', ' ')}</div>
-                <div className={`text-3xl font-bold mb-2 ${getScoreColor(scores.rolling)}`}>
-                  {Math.round(scores.rolling)}
+            {Object.entries(mockData.scores.patterns).map(([pattern, scores]) => {
+              // Mock historical data for mini chart (4 quarters)
+              const historicalData = [
+                scores.rolling - 5,
+                scores.rolling - 2,
+                scores.rolling + 1,
+                scores.rolling
+              ];
+              const maxVal = Math.max(...historicalData, 100);
+              const minVal = Math.min(...historicalData, 0);
+              const range = maxVal - minVal || 1;
+
+              return (
+                <div key={pattern} className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+                  <div className="text-sm font-medium text-gray-600 mb-2 capitalize">{pattern.replace('_', ' ')}</div>
+                  <div className={`text-3xl font-bold mb-2 ${getScoreColor(scores.rolling)}`}>
+                    {Math.round(scores.rolling)}
+                  </div>
+                  <div className="text-xs text-gray-500 mb-3">Rolling: {scores.rolling.toFixed(1)}</div>
+                  
+                  {/* Mini Trend Chart */}
+                  <div className="mb-3">
+                    <div className="flex items-end gap-1 h-12">
+                      {historicalData.map((value, idx) => {
+                        const height = ((value - minVal) / range) * 100;
+                        return (
+                          <div
+                            key={idx}
+                            className="flex-1 bg-[#C85A3C] rounded-t opacity-60"
+                            style={{ height: `${Math.max(height, 5)}%` }}
+                            title={`Q${idx + 1}: ${value.toFixed(1)}`}
+                          ></div>
+                        );
+                      })}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">Last 4 quarters</div>
+                  </div>
+
+                  <div className="text-xs text-gray-400">Status: Stable</div>
                 </div>
-                <div className="text-xs text-gray-500 mb-2">Rolling: {scores.rolling.toFixed(1)}</div>
-                <div className="text-xs text-gray-400">Status: Stable</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -340,7 +431,7 @@ const ALIDashboard = () => {
         {/* Section 5: Leadership Mirror */}
         <section className="mb-12">
           <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">Leadership Mirror</h2>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
             <div className="space-y-6">
               {(['ali', 'alignment', 'stability', 'clarity']).map((metric) => {
                 const gap = mockData.leadershipMirror.gaps[metric];
@@ -378,26 +469,101 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* Section 6: Response Analytics */}
+        {/* Section 6: Historical Trends */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">Response Analytics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="text-sm font-medium text-gray-600 mb-1">Total Responses</div>
-              <div className="text-3xl font-bold text-[#1A1A1A]">{mockData.responseCounts.overall}</div>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="text-sm font-medium text-gray-600 mb-1">Leader Responses</div>
-              <div className="text-3xl font-bold text-[#1A1A1A]">{mockData.responseCounts.leader}</div>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <div className="text-sm font-medium text-gray-600 mb-1">Team Member Responses</div>
-              <div className="text-3xl font-bold text-[#1A1A1A]">{mockData.responseCounts.team_member}</div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-[#1A1A1A]">Historical Trends</h2>
+            <button
+              onClick={() => handleNavigate('/ali/reports')}
+              className="text-sm text-[#C85A3C] hover:text-[#B8492A] font-medium"
+            >
+              View Full Report →
+            </button>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
+            {/* Multi-Metric Overlay Chart */}
+            <div className="mb-4">
+              <div className="text-sm text-gray-600 mb-4">Rolling Scores (4-survey average)</div>
+              <div className="h-64 relative border-b border-l border-gray-300">
+                {/* Y-axis labels */}
+                <div className="absolute -left-10 top-0 text-xs text-gray-500">100</div>
+                <div className="absolute -left-10 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">50</div>
+                <div className="absolute -left-10 bottom-0 text-xs text-gray-500">0</div>
+                
+                {/* Chart lines */}
+                <svg className="absolute inset-0 w-full h-full" style={{ padding: '10px' }}>
+                  {/* Alignment line (green) */}
+                  <polyline
+                    points="20,180 120,170 220,160 320,150"
+                    fill="none"
+                    stroke="#10B981"
+                    strokeWidth="2"
+                  />
+                  {/* Stability line (blue) */}
+                  <polyline
+                    points="20,190 120,175 220,165 320,155"
+                    fill="none"
+                    stroke="#3B82F6"
+                    strokeWidth="2"
+                  />
+                  {/* Clarity line (orange) */}
+                  <polyline
+                    points="20,185 120,172 220,162 320,152"
+                    fill="none"
+                    stroke="#F59E0B"
+                    strokeWidth="2"
+                  />
+                </svg>
+                
+                {/* X-axis labels */}
+                <div className="absolute bottom-0 left-0 right-0 flex justify-around pt-2">
+                  <div className="text-xs text-gray-600">Q4 2025</div>
+                  <div className="text-xs text-gray-600">Q1 2026</div>
+                  <div className="text-xs text-gray-600">Q2 2026</div>
+                  <div className="text-xs text-gray-600">Q1 2027</div>
+                </div>
+              </div>
+              
+              {/* Legend */}
+              <div className="flex gap-6 mt-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-0.5 bg-[#10B981]"></div>
+                  <span className="text-gray-600">Alignment</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-0.5 bg-[#3B82F6]"></div>
+                  <span className="text-gray-600">Stability</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-0.5 bg-[#F59E0B]"></div>
+                  <span className="text-gray-600">Clarity</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <div className="text-sm text-gray-600">
-              <strong>Data Quality:</strong> {mockData.dataQuality.meets_minimum_n_org ? 'Full dashboard enabled' : mockData.dataQuality.meets_minimum_n ? 'Limited features (5-9 responses)' : 'Insufficient data (<5 responses)'}
+        </section>
+
+        {/* Section 7: Response Analytics */}
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">Response Analytics</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+              <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
+              <div className="text-4xl font-bold text-[#1A1A1A]">{mockData.responseCounts.overall}</div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+              <div className="text-sm font-medium text-gray-600 mb-2">This Quarter</div>
+              <div className="text-4xl font-bold text-[#1A1A1A]">{Math.floor(mockData.responseCounts.overall * 0.6)}</div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+              <div className="text-sm font-medium text-gray-600 mb-2">Avg. Completion</div>
+              <div className="text-4xl font-bold text-[#1A1A1A]">4.2</div>
+              <div className="text-xs text-gray-500 mt-1">min</div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+              <div className="text-sm font-medium text-gray-600 mb-2">Response Rate</div>
+              <div className="text-4xl font-bold text-[#1A1A1A]">92</div>
+              <div className="text-xs text-gray-500 mt-1">%</div>
             </div>
           </div>
         </section>

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const ALISurvey = () => {
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState({});
+  const [respondentRole, setRespondentRole] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -117,12 +118,24 @@ const ALISurvey = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!respondentRole) {
+      alert('Please select your role');
+      return;
+    }
+    
     if (Object.keys(responses).length !== questions.length) {
       alert('Please answer all questions');
       return;
     }
 
     setSubmitting(true);
+
+    // In real implementation, submit to API with respondentRole
+    // const submitData = {
+    //   deploymentToken: token,
+    //   respondentRole: respondentRole,
+    //   responses: responses
+    // };
 
     // Fake submission
     setTimeout(() => {
@@ -165,6 +178,49 @@ const ALISurvey = () => {
 
         {/* Survey Form */}
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
+          {/* Role Question */}
+          <div className="mb-8 pb-8 border-b border-gray-200">
+            <label className="block text-lg font-medium text-[#1A1A1A] mb-4">
+              What best describes your role?
+            </label>
+            <div className="flex gap-4">
+              <label className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                respondentRole === 'leader'
+                  ? 'border-[#C85A3C] bg-[#C85A3C] text-white'
+                  : 'border-gray-300 hover:border-gray-400'
+              }`}>
+                <input
+                  type="radio"
+                  name="respondentRole"
+                  value="leader"
+                  checked={respondentRole === 'leader'}
+                  onChange={(e) => setRespondentRole(e.target.value)}
+                  className="sr-only"
+                />
+                <div className="text-center">
+                  <div className="font-semibold mb-1">I am a leader or manager</div>
+                </div>
+              </label>
+              <label className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                respondentRole === 'team_member'
+                  ? 'border-[#C85A3C] bg-[#C85A3C] text-white'
+                  : 'border-gray-300 hover:border-gray-400'
+              }`}>
+                <input
+                  type="radio"
+                  name="respondentRole"
+                  value="team_member"
+                  checked={respondentRole === 'team_member'}
+                  onChange={(e) => setRespondentRole(e.target.value)}
+                  className="sr-only"
+                />
+                <div className="text-center">
+                  <div className="font-semibold mb-1">I am a team member</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
           <div className="mb-6">
             <p className="text-sm text-gray-600 mb-4">
               Please answer each question on a scale of 1 (Strongly Disagree) to 5 (Strongly Agree).
@@ -218,11 +274,12 @@ const ALISurvey = () => {
 
           <div className="flex items-center justify-between pt-6 border-t border-gray-200">
             <div className="text-sm text-gray-500">
+              {!respondentRole && <span className="text-red-600 mr-2">Please select your role</span>}
               {Object.keys(responses).length} of {questions.length} questions answered
             </div>
             <button
               type="submit"
-              disabled={submitting || Object.keys(responses).length !== questions.length}
+              disabled={submitting || !respondentRole || Object.keys(responses).length !== questions.length}
               className="bg-[#C85A3C] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B8492A] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Submitting...' : 'Submit Survey'}

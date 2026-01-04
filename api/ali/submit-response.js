@@ -8,6 +8,7 @@
  * Body: {
  *   deploymentToken: string (required)
  *   divisionId?: string (optional - which division respondent is in)
+ *   respondentRole: string (required - "leader" or "team_member")
  *   responses: object (required - actual survey responses)
  *   deviceType?: string (optional - mobile, desktop, tablet)
  * }
@@ -24,6 +25,7 @@ export default async function handler(req, res) {
     const {
       deploymentToken,
       divisionId,
+      respondentRole,
       responses,
       deviceType
     } = req.body || {};
@@ -31,6 +33,10 @@ export default async function handler(req, res) {
     // Validation
     if (!deploymentToken) {
       return res.status(400).json({ error: 'deploymentToken is required' });
+    }
+
+    if (!respondentRole || !['leader', 'team_member'].includes(respondentRole)) {
+      return res.status(400).json({ error: 'respondentRole is required and must be "leader" or "team_member"' });
     }
 
     if (!responses || typeof responses !== 'object') {
@@ -93,6 +99,7 @@ export default async function handler(req, res) {
       .insert({
         deployment_id: deployment.id,
         division_id: finalDivisionId,
+        respondent_role: respondentRole,
         responses: responses,
         device_type: deviceType || null,
         completed_at: new Date().toISOString()
