@@ -315,9 +315,8 @@ export default function ALI() {
                 <div className="bg-white/10 p-6 sm:p-8 border-l-4 border-[#C85A3C] my-8">
                   <p className="font-bold text-xl text-white mb-4">Pilot details:</p>
                   <ul className="space-y-3 text-white/80">
-                    <li><strong className="text-white">$99.99 annual access</strong></li>
-                    <li>No monthly option</li>
-                    <li><strong className="text-white">25% lifetime discount</strong> for pilot participants</li>
+                    <li><strong className="text-white">Free for 1 year</strong> — includes 4 quarterly surveys</li>
+                    <li>Full dashboard access and all insights</li>
                     <li>First 20 primary users receive an <strong className="text-white">"I Am Second."</strong> AO tee</li>
                   </ul>
                 </div>
