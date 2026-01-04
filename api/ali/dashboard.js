@@ -22,9 +22,11 @@ import {
 import {
   calculateThreeCoreScores,
   calculateLeadershipProfile,
-  calculateLeadershipMirror,
-  calculateTeamExperienceMapCoordinates
+  calculateLeadershipMirror
 } from '../../lib/ali-dashboard-calculations.js';
+import {
+  calculateTeamExperienceMapCoordinates
+} from '../../lib/ali-scoring.js';
 
 /**
  * Transform response data from database format to scoring function format
@@ -375,25 +377,34 @@ export default async function handler(req, res) {
     const leaderRollingScores = leaderScores;
     const teamRollingScores = teamScores;
 
-    // Three core scores (rolling pattern scores)
-    const coreScores = calculateThreeCoreScores(overallScores.patterns);
+    // Three core scores (rolling pattern scores) - need to pass rolling scores, not current
+    const coreScores = calculateThreeCoreScores({
+      alignment: overallScores.patterns.alignment?.rolling || overallScores.patterns.alignment?.current,
+      stability: overallScores.patterns.stability?.rolling || overallScores.patterns.stability?.current,
+      clarity: overallScores.patterns.clarity?.rolling || overallScores.patterns.clarity?.current
+    });
 
-    // Team Experience Map coordinates
+    // Team Experience Map coordinates - use rolling scores where available, fallback to current
     const experienceMap = calculateTeamExperienceMapCoordinates(
-      overallScores.patterns.clarity?.rolling,
-      overallScores.patterns.stability?.rolling,
-      overallScores.patterns.trust?.rolling
+      overallScores.patterns.clarity?.rolling || overallScores.patterns.clarity?.current,
+      overallScores.patterns.stability?.rolling || overallScores.patterns.stability?.current,
+      overallScores.patterns.trust?.rolling || overallScores.patterns.trust?.current
     );
 
     // Calculate gaps for Leadership Mirror
     const trustGap = calculatePerceptionGap(
-      leaderRollingScores.patterns.trust?.rolling,
-      teamRollingScores.patterns.trust?.rolling
+      leaderRollingScores.patterns.trust?.rolling || leaderRollingScores.patterns.trust?.current,
+      teamRollingScores.patterns.trust?.rolling || teamRollingScores.patterns.trust?.current
     );
 
-    // Leadership Profile (team responses only)
+    // Leadership Profile (team responses only) - use rolling scores where available
+    const teamRollingPatterns = {};
+    Object.keys(teamRollingScores.patterns || {}).forEach(pattern => {
+      teamRollingPatterns[pattern] = teamRollingScores.patterns[pattern]?.rolling || teamRollingScores.patterns[pattern]?.current;
+    });
+
     const leadershipProfile = calculateLeadershipProfile({
-      rollingPatternScores: teamRollingScores.patterns,
+      rollingPatternScores: teamRollingPatterns,
       gaps: {
         trust: trustGap
       },
@@ -492,15 +503,16 @@ export default async function handler(req, res) {
       coreScores,
       experienceMap,
       leadershipProfile: {
-        ...leadershipProfile,
+        profile: leadershipProfile?.profile || 'profile_forming',
         honesty: {
-          ...leadershipProfile.honesty,
+          score: leadershipProfile?.honesty?.score || null,
+          state: leadershipProfile?.honesty?.state || null,
           gap_component_used: trustGap !== null && trustGap !== undefined
         },
         clarity: {
-          level: leadershipProfile.clarity.level,
-          stddev: leadershipProfile.clarity.variance ? Math.sqrt(leadershipProfile.clarity.variance) : null,
-          state: leadershipProfile.clarity.state
+          level: leadershipProfile?.clarity?.level || null,
+          stddev: leadershipProfile?.clarity?.variance ? Math.sqrt(leadershipProfile.clarity.variance) : (leadershipProfile?.clarity?.stddev || null),
+          state: leadershipProfile?.clarity?.state || null
         }
       },
       leadershipMirror,
