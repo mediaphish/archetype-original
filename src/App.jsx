@@ -77,7 +77,10 @@ export default function App() {
     if (path === '/privacy-policy' || path === '/privacy') return 'privacy-policy';
     if (path === '/terms-and-conditions' || path === '/terms' || path === '/terms-of-service') return 'terms-and-conditions';
     // Standalone ALI SaaS routes (not under culture-science)
-    if (path === '/ali' || path.startsWith('/ali/')) {
+    if (path === '/ali') {
+      return 'ali-landing';
+    }
+    if (path.startsWith('/ali/')) {
       if (path === '/ali/login') return 'ali-login';
       if (path === '/ali/signup') return 'ali-signup';
       if (path === '/ali/verify-email') return 'ali-verify-email';
@@ -88,6 +91,7 @@ export default function App() {
       if (path === '/ali/billing') return 'ali-billing';
       if (path === '/ali/reports') return 'ali-reports';
       if (path.startsWith('/ali/survey/')) return 'ali-survey';
+      // Unknown /ali/* route - redirect to landing
       return 'ali-landing';
     }
     if (path === '/culture-science' || path.startsWith('/culture-science/')) {
@@ -133,7 +137,11 @@ export default function App() {
       const path = window.location.pathname;
       
       // Standalone ALI SaaS routes
-      if (path === '/ali' || path.startsWith('/ali/')) {
+      if (path === '/ali') {
+        setCurrentPage('ali-landing');
+        return;
+      }
+      if (path.startsWith('/ali/')) {
         if (path === '/ali/login') {
           setCurrentPage('ali-login');
         } else if (path === '/ali/signup') {
@@ -155,6 +163,8 @@ export default function App() {
         } else if (path.startsWith('/ali/survey/')) {
           setCurrentPage('ali-survey');
         } else {
+          // Unknown /ali/* route - redirect to landing
+          window.history.replaceState({}, '', '/ali');
           setCurrentPage('ali-landing');
         }
         return;
