@@ -560,16 +560,6 @@ const ALIDashboard = () => {
   );
 };
 
-export default ALIDashboard;
-
-                      Std Dev: {leadershipProfile.clarity.stddev.toFixed(1)}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Leadership Mirror */}
           {leadershipMirror && (
             <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 mb-8">
