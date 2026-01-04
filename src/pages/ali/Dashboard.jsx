@@ -93,6 +93,14 @@ const ALIDashboard = () => {
     return 'text-red-500';
   };
 
+  // Progress bar colors (background) for score displays
+  const getProgressBarColor = (score) => {
+    if (score >= 75) return 'bg-green-500';
+    if (score >= 60) return 'bg-yellow-500';
+    if (score >= 45) return 'bg-orange-500';
+    return 'bg-red-500';
+  };
+
   const profileNames = {
     guardian: 'Guardian',
     aspirer: 'Aspirer',
@@ -337,50 +345,38 @@ const ALIDashboard = () => {
         {/* Section 3: Pattern Analysis */}
         <section className="mb-12">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">DIAGNOSIS - Pattern Analysis</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {Object.entries(mockData.scores.patterns).map(([pattern, scores]) => {
-              // Mock historical data for mini chart (4 quarters)
-              const historicalData = [
-                scores.rolling - 5,
-                scores.rolling - 2,
-                scores.rolling + 1,
-                scores.rolling
-              ];
-              const maxVal = Math.max(...historicalData, 100);
-              const minVal = Math.min(...historicalData, 0);
-              const range = maxVal - minVal || 1;
+              const trendChange = scores.current - scores.rolling;
+              const trendDirection = trendChange > 0 ? '↑' : trendChange < 0 ? '↓' : '→';
+              const trendDisplay = trendChange > 0 ? `+${trendChange.toFixed(1)}` : trendChange < 0 ? trendChange.toFixed(1) : '0.0';
+              const progressPercentage = Math.min(Math.max(scores.rolling, 0), 100);
               const patternColor = getPatternColor(pattern);
 
               return (
-                <div key={pattern} className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
-                  <div className="text-sm font-medium text-gray-600 mb-2 capitalize">{pattern.replace('_', ' ')}</div>
-                  <div className={`text-3xl font-bold mb-2 ${getScoreColor(scores.rolling)}`}>
+                <div key={pattern} className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-sm font-medium text-gray-600 capitalize">{pattern.replace('_', ' ')}</div>
+                    <div className="flex items-center gap-1 text-sm text-green-600">
+                      <span>{trendDirection}</span>
+                      <span>{trendDisplay}</span>
+                    </div>
+                  </div>
+                  <div className="text-4xl font-bold mb-3" style={{ color: patternColor }}>
                     {Math.round(scores.rolling)}
                   </div>
-                  <div className="text-xs text-gray-500 mb-3">Rolling: {scores.rolling.toFixed(1)}</div>
                   
-                  {/* Mini Trend Chart - uses pattern color */}
+                  {/* Progress Bar */}
                   <div className="mb-3">
-                    <div className="flex items-end gap-1 h-12">
-                      {historicalData.map((value, idx) => {
-                        const height = ((value - minVal) / range) * 100;
-                        return (
-                          <div
-                            key={idx}
-                            className="flex-1 rounded-t opacity-60"
-                            style={{ 
-                              height: `${Math.max(height, 5)}%`,
-                              backgroundColor: patternColor
-                            }}
-                            title={`Q${idx + 1}: ${value.toFixed(1)}`}
-                          ></div>
-                        );
-                      })}
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full"
+                        style={{ width: `${progressPercentage}%`, backgroundColor: patternColor }}
+                      ></div>
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">Last 4 quarters</div>
                   </div>
-
-                  <div className="text-xs text-gray-400">Status: Stable</div>
+                  
+                  <div className="text-xs text-gray-500">Current: {scores.current.toFixed(1)}</div>
                 </div>
               );
             })}
