@@ -554,12 +554,6 @@ const ALIDashboard = () => {
               </div>
             </div>
           )}
-        </div>
-      </main>
-    </>
-  );
-};
-
           {/* Leadership Mirror */}
           {leadershipMirror && (
             <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 mb-8">
@@ -683,7 +677,6 @@ const ALIDashboard = () => {
           )}
         </div>
       </main>
-    </>
   );
 };
 
