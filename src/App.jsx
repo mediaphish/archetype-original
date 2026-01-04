@@ -62,14 +62,8 @@ export default function App() {
     if (path === '/engagement-inquiry') return 'engagement-inquiry';
     if (path === '/privacy-policy' || path === '/privacy') return 'privacy-policy';
     if (path === '/terms-and-conditions' || path === '/terms' || path === '/terms-of-service') return 'terms-and-conditions';
-    // Standalone ALI SaaS routes (not under culture-science)
-    if (path === '/ali' || path.startsWith('/ali/')) {
-      if (path === '/ali/dashboard' || path === '/ali/dashboard/') return 'ali-dashboard';
-      if (path === '/ali/apply') return 'ali-apply';
-      if (path === '/ali/thanks') return 'ali-thanks';
-      return 'ali';
-    }
     if (path === '/culture-science' || path.startsWith('/culture-science/')) {
+      if (path === '/culture-science/ali' || path.startsWith('/culture-science/ali/')) return 'ali';
       return 'culture-science';
     }
     if (path === '/archy' || path.startsWith('/archy/')) return 'archy';
