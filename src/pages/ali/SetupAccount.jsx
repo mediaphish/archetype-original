@@ -32,8 +32,8 @@ const ALISetupAccount = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <div className="text-3xl font-bold text-[#1A1A1A] mb-2">ALI</div>
-          <h1 className="text-2xl font-bold text-[#1A1A1A]">Set Up Your Account</h1>
+          <div className="text-3xl font-bold text-gray-900 mb-2">ALI</div>
+          <h1 className="text-2xl font-bold text-gray-900">Set Up Your Account</h1>
           <p className="text-gray-600 mt-2">Complete your account setup to get started</p>
         </div>
 
@@ -41,7 +41,7 @@ const ALISetupAccount = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name <span className="text-red-500">*</span>
+                Full Name <span className="text-gray-600">*</span>
               </label>
               <input
                 type="text"
@@ -49,7 +49,7 @@ const ALISetupAccount = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 required
               />
             </div>
@@ -64,14 +64,14 @@ const ALISetupAccount = () => {
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 placeholder="e.g., Manager, Director, Team Lead"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password <span className="text-red-500">*</span>
+                Password <span className="text-gray-600">*</span>
               </label>
               <input
                 type="password"
@@ -79,7 +79,7 @@ const ALISetupAccount = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 required
                 minLength={8}
               />
@@ -88,7 +88,7 @@ const ALISetupAccount = () => {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password <span className="text-red-500">*</span>
+                Confirm Password <span className="text-gray-600">*</span>
               </label>
               <input
                 type="password"
@@ -96,14 +96,14 @@ const ALISetupAccount = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#C85A3C] text-white py-3 rounded-lg font-semibold hover:bg-[#B8492A]"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
             >
               Complete Setup
             </button>

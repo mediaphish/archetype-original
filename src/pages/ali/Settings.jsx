@@ -37,29 +37,29 @@ const ALISettings = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-[#1A1A1A]">ALI</div>
+            <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-6">
               <button
                 onClick={() => handleNavigate('/ali/dashboard')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => handleNavigate('/ali/deploy')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
                 onClick={() => handleNavigate('/ali/settings')}
-                className="text-[#C85A3C] font-semibold"
+                className="text-blue-600 font-semibold"
               >
                 Settings
               </button>
               <button
                 onClick={() => handleNavigate('/ali/billing')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Billing
               </button>
@@ -77,7 +77,7 @@ const ALISettings = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Account Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Account Settings</h1>
         </div>
 
         {/* Tabs */}
@@ -86,7 +86,7 @@ const ALISettings = () => {
             <button
               onClick={() => setActiveTab('company')}
               className={`py-3 px-1 border-b-2 font-semibold ${
-                activeTab === 'company' ? 'border-[#C85A3C] text-[#C85A3C]' : 'border-transparent text-gray-600 hover:text-[#1A1A1A]'
+                activeTab === 'company' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
               Company Profile
@@ -94,7 +94,7 @@ const ALISettings = () => {
             <button
               onClick={() => setActiveTab('contacts')}
               className={`py-3 px-1 border-b-2 font-semibold ${
-                activeTab === 'contacts' ? 'border-[#C85A3C] text-[#C85A3C]' : 'border-transparent text-gray-600 hover:text-[#1A1A1A]'
+                activeTab === 'contacts' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
               Contacts
@@ -105,7 +105,7 @@ const ALISettings = () => {
         {/* Company Profile Tab */}
         {activeTab === 'company' && (
           <section className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-[#1A1A1A] mb-6">Company Profile</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Company Profile</h2>
             
             <form onSubmit={handleCompanySave} className="space-y-6">
               <div>
@@ -117,7 +117,7 @@ const ALISettings = () => {
                   id="companyName"
                   value={companyData.name}
                   onChange={(e) => setCompanyData({ ...companyData, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   required
                 />
               </div>
@@ -130,7 +130,7 @@ const ALISettings = () => {
                   id="companySize"
                   value={companyData.size}
                   onChange={(e) => setCompanyData({ ...companyData, size: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 >
                   <option value="1-10">1-10 employees</option>
                   <option value="11-50">11-50 employees</option>
@@ -150,7 +150,7 @@ const ALISettings = () => {
                   id="industry"
                   value={companyData.industry}
                   onChange={(e) => setCompanyData({ ...companyData, industry: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 />
               </div>
 
@@ -163,14 +163,14 @@ const ALISettings = () => {
                   id="website"
                   value={companyData.website}
                   onChange={(e) => setCompanyData({ ...companyData, website: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 />
               </div>
 
               <div className="pt-4 border-t border-gray-200">
                 <button
                   type="submit"
-                  className="bg-[#C85A3C] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#B8492A]"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700"
                 >
                   Save Changes
                 </button>
@@ -183,10 +183,10 @@ const ALISettings = () => {
         {activeTab === 'contacts' && (
           <section className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-[#1A1A1A]">Contacts</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Contacts</h2>
               <button
                 onClick={handleAddContact}
-                className="bg-[#C85A3C] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#B8492A] text-sm"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 text-sm"
               >
                 Add Contact
               </button>
@@ -203,9 +203,9 @@ const ALISettings = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <div className="text-lg font-semibold text-[#1A1A1A]">{contact.name}</div>
+                          <div className="text-lg font-semibold text-gray-900">{contact.name}</div>
                           <span className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-                            contact.permission === 'account_owner' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                            contact.permission === 'account_owner' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
                           }`}>
                             {contact.permission === 'account_owner' ? 'Account Owner' : 'View Only'}
                           </span>
@@ -216,7 +216,7 @@ const ALISettings = () => {
                       <div className="flex gap-2">
                         <button
                           onClick={() => alert('Edit contact - coming soon')}
-                          className="text-sm text-[#C85A3C] hover:underline"
+                          className="text-sm text-blue-600 hover:underline"
                         >
                           Edit
                         </button>

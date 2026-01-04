@@ -37,8 +37,8 @@ const ALISignup = () => {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-3xl font-bold text-[#1A1A1A] mb-2">ALI</div>
-          <h1 className="text-2xl font-bold text-[#1A1A1A]">Create Your Account</h1>
+          <div className="text-3xl font-bold text-gray-900 mb-2">ALI</div>
+          <h1 className="text-2xl font-bold text-gray-900">Create Your Account</h1>
           <p className="text-gray-600 mt-2">Get started with ALI in minutes</p>
         </div>
 
@@ -47,11 +47,11 @@ const ALISignup = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Company Information */}
             <div>
-              <h2 className="text-lg font-semibold text-[#1A1A1A] mb-4">Company Information</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Company Information</h2>
               
               <div className="mb-4">
                 <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Company Name <span className="text-red-500">*</span>
+                  Company Name <span className="text-gray-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -59,21 +59,21 @@ const ALISignup = () => {
                   name="companyName"
                   value={formData.companyName}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   required
                 />
               </div>
 
               <div className="mb-4">
                 <label htmlFor="companySize" className="block text-sm font-medium text-gray-700 mb-2">
-                  Company Size <span className="text-red-500">*</span>
+                  Company Size <span className="text-gray-600">*</span>
                 </label>
                 <select
                   id="companySize"
                   name="companySize"
                   value={formData.companySize}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   required
                 >
                   <option value="">Select size</option>
@@ -96,7 +96,7 @@ const ALISignup = () => {
                   name="industry"
                   value={formData.industry}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="e.g., Technology, Healthcare, Manufacturing"
                 />
               </div>
@@ -111,7 +111,7 @@ const ALISignup = () => {
                   name="website"
                   value={formData.website}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="https://company.com"
                 />
               </div>
@@ -119,11 +119,11 @@ const ALISignup = () => {
 
             {/* Primary Contact */}
             <div>
-              <h2 className="text-lg font-semibold text-[#1A1A1A] mb-4">Primary Contact (Account Owner)</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Primary Contact (Account Owner)</h2>
               
               <div className="mb-4">
                 <label htmlFor="contactName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name <span className="text-red-500">*</span>
+                  Full Name <span className="text-gray-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -131,14 +131,14 @@ const ALISignup = () => {
                   name="contactName"
                   value={formData.contactName}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   required
                 />
               </div>
 
               <div className="mb-4">
                 <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address <span className="text-red-500">*</span>
+                  Email Address <span className="text-gray-600">*</span>
                 </label>
                 <input
                   type="email"
@@ -146,7 +146,7 @@ const ALISignup = () => {
                   name="contactEmail"
                   value={formData.contactEmail}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   required
                 />
                 <p className="text-xs text-gray-500 mt-1">You'll use this email to sign in</p>
@@ -162,7 +162,7 @@ const ALISignup = () => {
                   name="contactRole"
                   value={formData.contactRole}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="e.g., CEO, Founder, HR Director"
                 />
               </div>
@@ -181,17 +181,17 @@ const ALISignup = () => {
               />
               <label htmlFor="acceptTerms" className="text-sm text-gray-700">
                 I agree to the{' '}
-                <a href="/terms-and-conditions" className="text-[#C85A3C] hover:underline">Terms of Service</a>
+                <a href="/terms-and-conditions" className="text-blue-600 hover:underline">Terms of Service</a>
                 {' '}and{' '}
-                <a href="/privacy-policy" className="text-[#C85A3C] hover:underline">Privacy Policy</a>
-                <span className="text-red-500">*</span>
+                <a href="/privacy-policy" className="text-blue-600 hover:underline">Privacy Policy</a>
+                <span className="text-gray-600">*</span>
               </label>
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-[#C85A3C] text-white py-3 rounded-lg font-semibold hover:bg-[#B8492A]"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
             >
               Create Account
             </button>
@@ -202,7 +202,7 @@ const ALISignup = () => {
               Already have an account?{' '}
               <button
                 onClick={() => handleNavigate('/ali/login')}
-                className="text-[#C85A3C] hover:underline font-semibold"
+                className="text-blue-600 hover:underline font-semibold"
               >
                 Log In
               </button>

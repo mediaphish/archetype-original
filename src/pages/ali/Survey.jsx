@@ -149,12 +149,12 @@ const ALISurvey = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full text-center">
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">Thank You!</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h1>
             <p className="text-gray-600 mb-6">
               Your response has been submitted successfully. Your feedback helps improve leadership conditions.
             </p>
@@ -172,7 +172,7 @@ const ALISurvey = () => {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="text-3xl font-bold text-[#1A1A1A] mb-2">ALI Survey</div>
+          <div className="text-3xl font-bold text-gray-900 mb-2">ALI Survey</div>
           <p className="text-gray-600">Your responses are anonymous and confidential</p>
         </div>
 
@@ -180,13 +180,13 @@ const ALISurvey = () => {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
           {/* Role Question */}
           <div className="mb-8 pb-8 border-b border-gray-200">
-            <label className="block text-lg font-medium text-[#1A1A1A] mb-4">
+            <label className="block text-lg font-medium text-gray-900 mb-4">
               What best describes your role?
             </label>
             <div className="flex gap-4">
               <label className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 respondentRole === 'leader'
-                  ? 'border-[#C85A3C] bg-[#C85A3C] text-white'
+                  ? 'border-blue-600 bg-blue-600 text-white'
                   : 'border-gray-300 hover:border-gray-400'
               }`}>
                 <input
@@ -203,7 +203,7 @@ const ALISurvey = () => {
               </label>
               <label className={`flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 respondentRole === 'team_member'
-                  ? 'border-[#C85A3C] bg-[#C85A3C] text-white'
+                  ? 'border-blue-600 bg-blue-600 text-white'
                   : 'border-gray-300 hover:border-gray-400'
               }`}>
                 <input
@@ -233,7 +233,7 @@ const ALISurvey = () => {
                 <div className="mb-4">
                   <div className="flex items-start gap-2 mb-2">
                     <span className="text-sm font-semibold text-gray-500">{index + 1}.</span>
-                    <label className="text-lg font-medium text-[#1A1A1A] flex-1">
+                    <label className="text-lg font-medium text-gray-900 flex-1">
                       {question.question_text}
                     </label>
                   </div>
@@ -245,7 +245,7 @@ const ALISurvey = () => {
                       key={value}
                       className={`flex flex-col items-center cursor-pointer p-3 rounded-lg border-2 transition-all ${
                         responses[question.stable_id] === value
-                          ? 'border-[#C85A3C] bg-[#C85A3C] text-white'
+                          ? 'border-blue-600 bg-blue-600 text-white'
                           : 'border-gray-300 hover:border-gray-400'
                       }`}
                     >
@@ -274,13 +274,13 @@ const ALISurvey = () => {
 
           <div className="flex items-center justify-between pt-6 border-t border-gray-200">
             <div className="text-sm text-gray-500">
-              {!respondentRole && <span className="text-red-600 mr-2">Please select your role</span>}
+              {!respondentRole && <span className="text-gray-600 mr-2">Please select your role</span>}
               {Object.keys(responses).length} of {questions.length} questions answered
             </div>
             <button
               type="submit"
               disabled={submitting || !respondentRole || Object.keys(responses).length !== questions.length}
-              className="bg-[#C85A3C] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B8492A] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Submitting...' : 'Submit Survey'}
             </button>
@@ -297,4 +297,3 @@ const ALISurvey = () => {
 };
 
 export default ALISurvey;
-

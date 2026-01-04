@@ -7,6 +7,28 @@ const ALIReports = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  // Pattern color mapping for charts ONLY
+  const getPatternColor = (pattern) => {
+    const colors = {
+      clarity: '#2563eb',
+      consistency: '#14b8a6',
+      trust: '#8b5cf6',
+      communication: '#f59e0b',
+      alignment: '#10b981',
+      stability: '#6366f1',
+      leadership_drift: '#ef4444'
+    };
+    return colors[pattern] || '#2563eb';
+  };
+
+  // Zone colors for score displays ONLY
+  const getScoreColor = (score) => {
+    if (score >= 75) return 'text-green-500';
+    if (score >= 60) return 'text-yellow-500';
+    if (score >= 45) return 'text-orange-500';
+    return 'text-red-500';
+  };
+
   // Mock data for historical analysis
   const mockData = {
     company: {
@@ -40,41 +62,41 @@ const ALIReports = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-[#1A1A1A]">ALI</div>
+            <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-6">
               <button
                 onClick={() => handleNavigate('/ali/dashboard')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => handleNavigate('/ali/reports')}
-                className="text-[#C85A3C] font-semibold"
+                className="text-blue-600 font-semibold"
               >
                 Reports
               </button>
               <button
                 onClick={() => handleNavigate('/ali/deploy')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
                 onClick={() => handleNavigate('/ali/settings')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Settings
               </button>
               <button
                 onClick={() => handleNavigate('/ali/billing')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Billing
               </button>
               <button
                 onClick={() => handleNavigate('/ali')}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Log Out
               </button>
@@ -87,12 +109,12 @@ const ALIReports = () => {
         {/* Page Title */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Leadership Trends & Analytics</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Trends & Analytics</h1>
             <p className="text-gray-600">Multi-year progression analysis 2025 Q4 - 2027 Q1</p>
           </div>
           <button
             onClick={() => handleNavigate('/ali/dashboard')}
-            className="text-sm text-[#C85A3C] hover:text-[#B8492A]"
+            className="text-sm text-blue-600 hover:text-blue-700"
           >
             ← Back to Dashboard
           </button>
@@ -103,17 +125,17 @@ const ALIReports = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-600 mb-2">ALI Overall Improvement</div>
-              <div className="text-4xl font-bold text-green-600 mb-1">+14.6%</div>
+              <div className={`text-4xl font-bold mb-1 ${getScoreColor(73.7)}`}>+14.6%</div>
               <div className="text-sm text-gray-500">from 64.3 to 73.7</div>
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-600 mb-2">Current ALI Score</div>
-              <div className="text-4xl font-bold text-[#1A1A1A] mb-1">73.7</div>
+              <div className="text-4xl font-bold text-gray-900 mb-1">73.7</div>
               <div className="text-sm text-gray-500">Rolling: 71.8</div>
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
-              <div className="text-4xl font-bold text-[#1A1A1A] mb-1">86</div>
+              <div className="text-4xl font-bold text-gray-900 mb-1">86</div>
               <div className="text-sm text-gray-500">across 4 surveys</div>
             </div>
           </div>
@@ -121,7 +143,7 @@ const ALIReports = () => {
 
         {/* Pattern Analysis with Historical Charts */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">Core Patterns</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Core Patterns</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(mockData.patternTrends).map(([pattern, values]) => {
               const current = values[values.length - 1];
@@ -130,16 +152,17 @@ const ALIReports = () => {
               const maxVal = Math.max(...values, 100);
               const minVal = Math.min(...values, 0);
               const range = maxVal - minVal || 1;
+              const patternColor = getPatternColor(pattern);
 
               return (
                 <div key={pattern} className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
                   <div className="text-sm font-medium text-gray-600 mb-2 capitalize">{pattern.replace('_', ' ')}</div>
-                  <div className="text-3xl font-bold text-[#1A1A1A] mb-1">{current.toFixed(1)}</div>
+                  <div className="text-3xl font-bold text-gray-900 mb-1">{current.toFixed(1)}</div>
                   <div className="text-xs text-gray-500 mb-4">
                     Rolling: {((values.reduce((a, b) => a + b, 0) / values.length)).toFixed(1)} • ↑ {change}%
                   </div>
                   
-                  {/* Historical Bar Chart */}
+                  {/* Historical Bar Chart - uses pattern color */}
                   <div className="mb-4">
                     <div className="flex items-end gap-2 h-20">
                       {values.map((value, idx) => {
@@ -147,8 +170,11 @@ const ALIReports = () => {
                         return (
                           <div key={idx} className="flex-1 flex flex-col items-center">
                             <div
-                              className="w-full bg-[#C85A3C] rounded-t"
-                              style={{ height: `${Math.max(height, 5)}%` }}
+                              className="w-full rounded-t"
+                              style={{ 
+                                height: `${Math.max(height, 5)}%`,
+                                backgroundColor: patternColor
+                              }}
                               title={`${mockData.historicalTrends[idx].period}: ${value.toFixed(1)}`}
                             ></div>
                             <div className="text-xs text-gray-400 mt-1">{mockData.historicalTrends[idx].period.split(' ')[1]}</div>
@@ -170,29 +196,29 @@ const ALIReports = () => {
 
         {/* Key Insights */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-[#1A1A1A] mb-4">Key Insights & Movement</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Key Insights & Movement</h2>
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <ul className="space-y-4 text-sm text-gray-700">
               <li className="flex items-start gap-3">
-                <span className="text-green-600 mt-1">✓</span>
+                <span className="text-gray-600 mt-1">✓</span>
                 <div>
                   <strong>Sustained Positive Movement:</strong> Consistent improvement across core patterns, with Clarity showing the strongest gains (+12.6%).
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-green-600 mt-1">↓</span>
+                <span className="text-gray-600 mt-1">↓</span>
                 <div>
                   <strong>Leadership Drift Reduction:</strong> 40% decrease in Leadership Drift indicates improved alignment between stated values and actual behaviors.
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-yellow-600 mt-1">!</span>
+                <span className="text-gray-600 mt-1">!</span>
                 <div>
                   <strong>Perception Gap Alert: Communication</strong> — Moderate perception gap detected: Leaders: 75.0, Team: 70.0, Gap: 5.0. Consider 360-degree feedback opportunities.
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-blue-600 mt-1">💡</span>
+                <span className="text-gray-600 mt-1">💡</span>
                 <div>
                   <strong>Recommended Next Steps:</strong> Continue quarterly surveys. ALI Overall Score has reached 73.7 (Yellow Zone). Focus on sustaining gains and addressing the communication perception gap.
                 </div>

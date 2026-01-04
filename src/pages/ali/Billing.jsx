@@ -36,29 +36,29 @@ const ALIBilling = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-[#1A1A1A]">ALI</div>
+            <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-6">
               <button
                 onClick={() => handleNavigate('/ali/dashboard')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => handleNavigate('/ali/deploy')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
                 onClick={() => handleNavigate('/ali/settings')}
-                className="text-gray-600 hover:text-[#1A1A1A]"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Settings
               </button>
               <button
                 onClick={() => handleNavigate('/ali/billing')}
-                className="text-[#C85A3C] font-semibold"
+                className="text-blue-600 font-semibold"
               >
                 Billing
               </button>
@@ -76,21 +76,21 @@ const ALIBilling = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Billing & Subscription</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Billing & Subscription</h1>
         </div>
 
         {/* Current Plan */}
         <section className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-[#1A1A1A] mb-6">Current Plan</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Current Plan</h2>
           
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className="text-2xl font-bold text-[#1A1A1A] mb-1">{subscription.plan}</div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">{subscription.plan}</div>
               <div className="text-sm text-gray-600">
                 <span className={`inline-block px-2 py-1 text-xs font-semibold rounded mr-2 ${
-                  subscription.status === 'active' ? 'bg-green-100 text-green-700' :
+                  subscription.status === 'active' ? 'bg-blue-100 text-blue-700' :
                   subscription.status === 'trial' ? 'bg-blue-100 text-blue-700' :
-                  'bg-red-100 text-red-700'
+                  'bg-gray-100 text-gray-700'
                 }`}>
                   {subscription.status}
                 </span>
@@ -99,7 +99,7 @@ const ALIBilling = () => {
             </div>
             <button
               onClick={() => alert('Change plan - coming soon')}
-              className="bg-gray-100 text-[#1A1A1A] px-4 py-2 rounded-lg font-semibold hover:bg-gray-200"
+              className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200"
             >
               Change Plan
             </button>
@@ -115,10 +115,10 @@ const ALIBilling = () => {
         {/* Payment Method */}
         <section className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-[#1A1A1A]">Payment Method</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
             <button
               onClick={() => alert('Update payment method - coming soon')}
-              className="text-sm text-[#C85A3C] hover:underline font-semibold"
+              className="text-sm text-blue-600 hover:underline font-semibold"
             >
               Update
             </button>
@@ -129,7 +129,7 @@ const ALIBilling = () => {
               {paymentMethod.brand.charAt(0)}
             </div>
             <div>
-              <div className="font-semibold text-[#1A1A1A]">
+              <div className="font-semibold text-gray-900">
                 {paymentMethod.brand} •••• {paymentMethod.last4}
               </div>
               <div className="text-sm text-gray-600">
@@ -141,7 +141,7 @@ const ALIBilling = () => {
 
         {/* Billing History */}
         <section className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-[#1A1A1A] mb-6">Billing History</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Billing History</h2>
           
           {billingHistory.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
@@ -161,13 +161,13 @@ const ALIBilling = () => {
                 <tbody>
                   {billingHistory.map((invoice) => (
                     <tr key={invoice.id} className="border-b border-gray-100">
-                      <td className="py-3 px-4 text-sm text-[#1A1A1A]">{invoice.date}</td>
-                      <td className="py-3 px-4 text-sm font-semibold text-[#1A1A1A]">{invoice.amount}</td>
+                      <td className="py-3 px-4 text-sm text-gray-900">{invoice.date}</td>
+                      <td className="py-3 px-4 text-sm font-semibold text-gray-900">{invoice.amount}</td>
                       <td className="py-3 px-4">
                         <span className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-                          invoice.status === 'paid' ? 'bg-green-100 text-green-700' :
-                          invoice.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-red-100 text-red-700'
+                          invoice.status === 'paid' ? 'bg-blue-100 text-blue-700' :
+                          invoice.status === 'pending' ? 'bg-gray-100 text-gray-700' :
+                          'bg-gray-100 text-gray-700'
                         }`}>
                           {invoice.status}
                         </span>
@@ -175,7 +175,7 @@ const ALIBilling = () => {
                       <td className="py-3 px-4">
                         <button
                           onClick={() => alert('Download invoice - coming soon')}
-                          className="text-sm text-[#C85A3C] hover:underline"
+                          className="text-sm text-blue-600 hover:underline"
                         >
                           Download
                         </button>

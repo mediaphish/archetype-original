@@ -42,26 +42,26 @@ const ALIVerifyEmail = () => {
         <div className="bg-white rounded-lg shadow-lg p-8 text-center">
           {status === 'verifying' && (
             <>
-              <div className="w-16 h-16 border-4 border-[#C85A3C] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">Verifying Email</h1>
+              <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Verifying Email</h1>
               <p className="text-gray-600">Please wait...</p>
             </>
           )}
 
           {status === 'success' && (
             <>
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">Email Verified!</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Email Verified!</h1>
               <p className="text-gray-600 mb-6">
                 Your email has been verified. You can now sign in to your account.
               </p>
               <button
                 onClick={() => handleNavigate('/ali/dashboard')}
-                className="w-full bg-[#C85A3C] text-white py-3 rounded-lg font-semibold hover:bg-[#B8492A]"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
               >
                 Go to Dashboard
               </button>
@@ -70,18 +70,18 @@ const ALIVerifyEmail = () => {
 
           {status === 'expired' && (
             <>
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">Link Expired</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Link Expired</h1>
               <p className="text-gray-600 mb-6">
                 This verification link has expired. Please request a new one.
               </p>
               <button
                 onClick={handleResend}
-                className="w-full bg-[#C85A3C] text-white py-3 rounded-lg font-semibold hover:bg-[#B8492A] mb-3"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 mb-3"
               >
                 Resend Verification Email
               </button>
@@ -101,13 +101,13 @@ const ALIVerifyEmail = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">Already Verified</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Already Verified</h1>
               <p className="text-gray-600 mb-6">
                 This email has already been verified. You can sign in to your account.
               </p>
               <button
                 onClick={() => handleNavigate('/ali/login')}
-                className="w-full bg-[#C85A3C] text-white py-3 rounded-lg font-semibold hover:bg-[#B8492A]"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
               >
                 Log In
               </button>
