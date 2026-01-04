@@ -222,10 +222,28 @@ export default async function handler(req, res) {
       
       if (updateError) {
         console.error('Error setting baseline_date:', updateError);
-        // Continue anyway - baseline_date will be set when survey is sent
-      } else {
-        company.baseline_date = today;
+        return res.status(500).json({ 
+          error: 'Failed to set baseline_date',
+          details: updateError.message
+        });
       }
+      
+      // Refresh company data to get updated baseline_date
+      const { data: updatedCompany, error: refreshError } = await supabaseAdmin
+        .from('ali_companies')
+        .select('id, name, baseline_date')
+        .eq('id', companyId)
+        .single();
+      
+      if (refreshError || !updatedCompany) {
+        console.error('Error refreshing company data:', refreshError);
+        return res.status(500).json({ 
+          error: 'Failed to refresh company data',
+          details: refreshError?.message
+        });
+      }
+      
+      company.baseline_date = updatedCompany.baseline_date;
     }
 
     // If division specified, verify it exists and belongs to company
@@ -267,8 +285,14 @@ export default async function handler(req, res) {
 
     // Calculate available_at from baseline_date and survey_index
     let availableAt = opensAt ? new Date(opensAt) : null;
-    if (!availableAt && company.baseline_date) {
-      availableAt = calculateAvailableAt(company.baseline_date, finalSurveyIndex);
+    if (!availableAt) {
+      if (company.baseline_date) {
+        availableAt = calculateAvailableAt(company.baseline_date, finalSurveyIndex);
+      } else {
+        // Fallback: use current date for S1 if baseline_date is still not set
+        availableAt = new Date();
+        availableAt.setUTCHours(0, 0, 0, 0);
+      }
     }
 
     // Generate unique deployment token
@@ -316,7 +340,12 @@ export default async function handler(req, res) {
 
     if (deploymentError) {
       console.error('Error creating deployment:', deploymentError);
-      return res.status(500).json({ error: 'Failed to create survey deployment' });
+      return res.status(500).json({ 
+        error: 'Failed to create survey deployment',
+        details: deploymentError.message,
+        code: deploymentError.code,
+        hint: deploymentError.hint
+      });
     }
 
     // Build survey URL
