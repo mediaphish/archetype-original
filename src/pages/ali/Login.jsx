@@ -1,0 +1,114 @@
+import React, { useState } from 'react';
+
+const ALILogin = () => {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, sending, sent, error
+
+  const handleNavigate = (path) => {
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setStatus('sending');
+    // Fake magic link send
+    setTimeout(() => {
+      setStatus('sent');
+    }, 1000);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+      <div className="max-w-md w-full">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="text-3xl font-bold text-[#1A1A1A] mb-2">ALI</div>
+          <h1 className="text-2xl font-bold text-[#1A1A1A]">Log In</h1>
+          <p className="text-gray-600 mt-2">We'll send you a magic link to sign in</p>
+        </div>
+
+        {/* Login Form */}
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          {status === 'sent' ? (
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-semibold text-[#1A1A1A] mb-2">Check Your Email</h2>
+              <p className="text-gray-600 mb-4">
+                We've sent a magic link to <strong>{email}</strong>
+              </p>
+              <p className="text-sm text-gray-500 mb-6">
+                Click the link in the email to sign in. The link will expire in 15 minutes.
+              </p>
+              <button
+                onClick={() => {
+                  setStatus('idle');
+                  setEmail('');
+                }}
+                className="text-[#C85A3C] hover:underline"
+              >
+                Use a different email
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="mb-6">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  placeholder="you@company.com"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className="w-full bg-[#C85A3C] text-white py-2 rounded-lg font-semibold hover:bg-[#B8492A] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {status === 'sending' ? 'Sending...' : 'Send Magic Link'}
+              </button>
+            </form>
+          )}
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <button
+                onClick={() => handleNavigate('/ali/signup')}
+                className="text-[#C85A3C] hover:underline font-semibold"
+              >
+                Sign Up
+              </button>
+            </p>
+          </div>
+
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => handleNavigate('/ali')}
+              className="text-sm text-gray-500 hover:text-gray-700"
+            >
+              ← Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ALILogin;
+

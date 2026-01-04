@@ -28,6 +28,7 @@ import TrainingEducationPage from "./pages/methods/TrainingEducation";
 import FractionalRolesPage from "./pages/methods/FractionalRoles";
 import CCOPage from "./pages/methods/fractionalRoles/CCO";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
+// Culture Science ALI marketing pages (remain under /culture-science/ali/*)
 import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
 import ALIThanks from "./pages/cultureScience/ALIThanks";
@@ -36,6 +37,19 @@ import ALIMethod from "./pages/cultureScience/ALIMethod";
 import ALIEarlyWarning from "./pages/cultureScience/ALIEarlyWarning";
 import ALIDashboard from "./pages/cultureScience/ALIDashboard";
 import ALISixConditions from "./pages/cultureScience/ALISixConditions";
+
+// Standalone ALI SaaS pages (under /ali/*)
+import ALILanding from "./pages/ali/Landing";
+import ALILogin from "./pages/ali/Login";
+import ALISignup from "./pages/ali/Signup";
+import ALIVerifyEmail from "./pages/ali/VerifyEmail";
+import ALISetupAccount from "./pages/ali/SetupAccount";
+import ALIDashboardSaaS from "./pages/ali/Dashboard";
+import ALIDeploy from "./pages/ali/Deploy";
+import ALISettings from "./pages/ali/Settings";
+import ALIBilling from "./pages/ali/Billing";
+import ALIReports from "./pages/ali/Reports";
+import ALISurvey from "./pages/ali/Survey";
 import ContactPage from "./pages/Contact";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
@@ -62,8 +76,21 @@ export default function App() {
     if (path === '/engagement-inquiry') return 'engagement-inquiry';
     if (path === '/privacy-policy' || path === '/privacy') return 'privacy-policy';
     if (path === '/terms-and-conditions' || path === '/terms' || path === '/terms-of-service') return 'terms-and-conditions';
+    // Standalone ALI SaaS routes (not under culture-science)
+    if (path === '/ali' || path.startsWith('/ali/')) {
+      if (path === '/ali/login') return 'ali-login';
+      if (path === '/ali/signup') return 'ali-signup';
+      if (path === '/ali/verify-email') return 'ali-verify-email';
+      if (path === '/ali/setup-account') return 'ali-setup-account';
+      if (path === '/ali/dashboard') return 'ali-dashboard';
+      if (path === '/ali/deploy') return 'ali-deploy';
+      if (path === '/ali/settings') return 'ali-settings';
+      if (path === '/ali/billing') return 'ali-billing';
+      if (path === '/ali/reports') return 'ali-reports';
+      if (path.startsWith('/ali/survey/')) return 'ali-survey';
+      return 'ali-landing';
+    }
     if (path === '/culture-science' || path.startsWith('/culture-science/')) {
-      if (path === '/culture-science/ali' || path.startsWith('/culture-science/ali/')) return 'ali';
       return 'culture-science';
     }
     if (path === '/archy' || path.startsWith('/archy/')) return 'archy';
@@ -105,18 +132,63 @@ export default function App() {
     const handleRoute = () => {
       const path = window.location.pathname;
       
-      // ALI redirects - redirect old routes to new canonical structure
-      if (path === '/ali') {
-        window.history.replaceState({}, '', '/culture-science/ali');
-        setCurrentPage('ali');
+      // Standalone ALI SaaS routes
+      if (path === '/ali' || path.startsWith('/ali/')) {
+        if (path === '/ali/login') {
+          setCurrentPage('ali-login');
+        } else if (path === '/ali/signup') {
+          setCurrentPage('ali-signup');
+        } else if (path === '/ali/verify-email') {
+          setCurrentPage('ali-verify-email');
+        } else if (path === '/ali/setup-account') {
+          setCurrentPage('ali-setup-account');
+        } else if (path === '/ali/dashboard') {
+          setCurrentPage('ali-dashboard');
+        } else if (path === '/ali/deploy') {
+          setCurrentPage('ali-deploy');
+        } else if (path === '/ali/settings') {
+          setCurrentPage('ali-settings');
+        } else if (path === '/ali/billing') {
+          setCurrentPage('ali-billing');
+        } else if (path === '/ali/reports') {
+          setCurrentPage('ali-reports');
+        } else if (path.startsWith('/ali/survey/')) {
+          setCurrentPage('ali-survey');
+        } else {
+          setCurrentPage('ali-landing');
+        }
         return;
-      } else if (path === '/ali/apply') {
-        window.history.replaceState({}, '', '/culture-science/ali/apply');
-        setCurrentPage('ali-apply');
-        return;
-      } else if (path === '/ali/thanks') {
-        window.history.replaceState({}, '', '/culture-science/ali/thanks');
-        setCurrentPage('ali-thanks');
+      }
+      
+      // Redirect old culture-science/ali routes to standalone /ali routes (preserve existing marketing pages)
+      if (path === '/culture-science/ali' || path.startsWith('/culture-science/ali/')) {
+        // Keep marketing pages under culture-science, only redirect SaaS routes
+        if (path === '/culture-science/ali/apply') {
+          window.history.replaceState({}, '', '/ali/signup');
+          setCurrentPage('ali-signup');
+        } else if (path === '/culture-science/ali/thanks') {
+          // Keep thanks page or redirect appropriately
+          setCurrentPage('ali-thanks');
+        } else {
+          // All other culture-science/ali/* remain as marketing pages
+          if (path === '/culture-science/ali/why-ali-exists') {
+            setCurrentPage('why-ali-exists');
+          } else if (path === '/culture-science/ali/method') {
+            setCurrentPage('ali-method');
+          } else if (path === '/culture-science/ali/early-warning' || path === '/culture-science/ali/early-warning-indicators') {
+            setCurrentPage('ali-early-warning');
+          } else if (path === '/culture-science/ali/dashboard' || path === '/culture-science/ali/dashboard/') {
+            window.history.replaceState({}, '', '/ali/dashboard');
+            setCurrentPage('ali-dashboard');
+          } else if (path === '/culture-science/ali/six-leadership-conditions' || path === '/culture-science/ali/six-leadership-conditions/') {
+            setCurrentPage('ali-six-conditions');
+          } else if (path === '/culture-science/ali/faqs') {
+            window.history.replaceState({}, '', '/faqs?category=ali');
+            setCurrentPage('faqs');
+          } else {
+            setCurrentPage('ali');
+          }
+        }
         return;
       }
       
@@ -567,8 +639,53 @@ export default function App() {
     );
   }
 
-  // Render ALI Dashboard page (elevated design)
+  // Render standalone ALI SaaS pages (no Header/Footer/Archy)
+  if (currentPage === 'ali-landing') {
+    return <ALILanding />;
+  }
+
+  if (currentPage === 'ali-login') {
+    return <ALILogin />;
+  }
+
+  if (currentPage === 'ali-signup') {
+    return <ALISignup />;
+  }
+
+  if (currentPage === 'ali-verify-email') {
+    return <ALIVerifyEmail />;
+  }
+
+  if (currentPage === 'ali-setup-account') {
+    return <ALISetupAccount />;
+  }
+
   if (currentPage === 'ali-dashboard') {
+    return <ALIDashboardSaaS />;
+  }
+
+  if (currentPage === 'ali-deploy') {
+    return <ALIDeploy />;
+  }
+
+  if (currentPage === 'ali-settings') {
+    return <ALISettings />;
+  }
+
+  if (currentPage === 'ali-billing') {
+    return <ALIBilling />;
+  }
+
+  if (currentPage === 'ali-reports') {
+    return <ALIReports />;
+  }
+
+  if (currentPage === 'ali-survey') {
+    return <ALISurvey />;
+  }
+
+  // Render ALI Dashboard page (elevated design) - OLD route under culture-science
+  if (currentPage === 'ali-dashboard-old') {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
