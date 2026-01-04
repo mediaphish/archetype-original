@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ALISubNav from '../../components/ALISubNav';
 
 const ALIDashboard = () => {
   // Static mock data for layout review
@@ -152,9 +151,7 @@ const ALIDashboard = () => {
   const { company, scores, coreScores, experienceMap, leadershipProfile, leadershipMirror, drift, trajectory, responseCounts, dataQuality, surveys, historicalTrends } = dashboardData;
 
   return (
-    <>
-      <ALISubNav />
-      <main className="min-h-screen bg-gray-50 py-8">
+    <main className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
           <div className="mb-8">
