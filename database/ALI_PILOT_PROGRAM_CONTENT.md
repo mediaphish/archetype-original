@@ -52,6 +52,26 @@ The pilot application collects the following information:
 ### Call-to-Action Button
 "Apply for the Pilot" - Links to `/culture-science/ali/apply`
 
+### Section 6: The ALI Pilot
+
+**Heading:** "The ALI Pilot"
+
+**Content:**
+
+"ALI is currently in pilot."
+
+"Participation begins with a short, 10-question survey designed to seed the system with real data."
+
+"This early phase is about proving direction, validating signal strength, and refining interpretation."
+
+**Pilot Details Card:**
+- **$99.99 annual access**
+- No monthly option
+- **25% lifetime discount** for pilot participants
+- First 20 primary users receive an **"I Am Second."** AO tee
+
+"The database matters. The insight grows with every record. This system is being built to last."
+
 ---
 
 ## Key Themes and Messaging
