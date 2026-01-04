@@ -538,7 +538,13 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error('Dashboard error:', err);
-    return res.status(500).json({ error: 'Server error. Please try again.' });
+    console.error('Error stack:', err.stack);
+    console.error('Error details:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
+    return res.status(500).json({ 
+      error: 'Server error. Please try again.',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 }
 
