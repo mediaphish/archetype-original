@@ -320,21 +320,27 @@ export default async function handler(req, res) {
     }
 
     // Create deployment
+    // Note: survey_id is deprecated but may still be NOT NULL in some databases
+    // We'll try to insert without it first, and if that fails, we'll need to handle it
+    const deploymentData = {
+      snapshot_id: snapshot.id,
+      company_id: companyId,
+      division_id: divisionId || null,
+      survey_index: finalSurveyIndex,
+      deployment_token: deploymentToken,
+      status: availableAt && availableAt > new Date() ? 'pending' : 'active',
+      opens_at: opensAt ? new Date(opensAt) : null,
+      available_at: availableAt,
+      closes_at: closesAt ? new Date(closesAt) : null,
+      minimum_responses: minimumResponses
+    };
+    
+    // Only include survey_id if the column allows null (for backward compatibility)
+    // If the migration hasn't been run, we'll need a workaround
+    // For now, try without survey_id - if it fails, we'll catch and provide better error
     const { data: deployment, error: deploymentError } = await supabaseAdmin
       .from('ali_survey_deployments')
-      .insert({
-        snapshot_id: snapshot.id,
-        survey_id: null, // Deprecated, but keep for backward compatibility
-        company_id: companyId,
-        division_id: divisionId || null,
-        survey_index: finalSurveyIndex,
-        deployment_token: deploymentToken,
-        status: availableAt && availableAt > new Date() ? 'pending' : 'active',
-        opens_at: opensAt ? new Date(opensAt) : null,
-        available_at: availableAt,
-        closes_at: closesAt ? new Date(closesAt) : null,
-        minimum_responses: minimumResponses
-      })
+      .insert(deploymentData)
       .select()
       .single();
 
