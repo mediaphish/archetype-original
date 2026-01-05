@@ -6,34 +6,34 @@ type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
 publish_date: "2026-01-19"
-scripture_reference: "James 1:19 (ESV)"
-summary: "Renewal in leadership begins with renewed attention before renewed action."
+scripture_reference: "James 1:19–20 (ESV)"
+summary: "Leadership renewal begins with disciplined listening and restraint before action."
 ---
 
 ## Scripture
 
-**James 1:19 (ESV)**  
-https://www.esv.org/James+1:19/
+**James 1:19–20 (ESV)**  
+https://www.esv.org/James+1:19-20/
 
 ## Reflection
 
-Renewal often begins not with new action, but with renewed attention. Leadership culture rewards speed and decisiveness, but Scripture places listening first. Being “quick to hear” is not passive—it is disciplined restraint that resets how leaders engage the world around them.
+Renewal often begins not with new action, but with renewed attention. Scripture places listening before speaking and restraint before reaction. Leaders are reminded that attentiveness is not passive—it is a disciplined posture that shapes how power and influence are exercised.
 
-When leaders fail to listen, they often act on assumptions rather than reality. Renewal of leadership attention slows this impulse. Servant leaders listen not to confirm their own thinking, but to understand people, context, and consequence. This renewed posture changes the quality of decisions long before outcomes are visible.
+Verse 20 provides essential context. Unchecked anger does not produce the righteousness God desires. When leaders act from impatience, defensiveness, or emotional reactivity, they often undermine trust and clarity. Renewal requires leaders to address internal responses before external decisions.
 
-Listening before leading is one of the simplest—and most overlooked—ways leaders renew their effectiveness.
+Servant leadership listens first, responds thoughtfully, and acts without being driven by frustration. This posture renews leadership not by increasing activity, but by improving discernment and restraint.
 
 ## Practical Application
 
-- Identify one situation where you tend to move too quickly.
-- Practice listening without preparing your response.
-- Allow renewed attention to shape your next decision.
+- Identify a situation where frustration has influenced your response.
+- Practice listening fully before reacting.
+- Choose restraint so your leadership produces the right outcomes.
 
 ## Takeaways
 
-- Renewal begins with how leaders listen.
-- Understanding precedes wise leadership action.
+- Renewal begins with disciplined attention.
+- Restraint protects leadership effectiveness.
 
 ## Closing Thought
 
-Today I renew my leadership by listening before I lead.
+Today I renew my leadership by listening first and responding with restraint.
