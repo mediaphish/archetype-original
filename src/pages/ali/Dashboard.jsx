@@ -701,6 +701,7 @@ const ALIDashboard = () => {
               </div>
             </div>
           </div>
+          </div>
         </section>
 
         {/* Section 6: Historical Trends */}
