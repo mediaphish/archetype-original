@@ -594,24 +594,55 @@ const ALIDashboard = () => {
                 <div className="absolute -left-10 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">50</div>
                 <div className="absolute -left-10 bottom-0 text-xs text-gray-500">0</div>
                 
-                {/* Chart lines - using pattern colors */}
+                {/* Chart lines - all 7 patterns */}
                 <svg className="absolute inset-0 w-full h-full" style={{ padding: '10px' }}>
+                  {/* Clarity - Blue */}
+                  <polyline
+                    points="20,185 120,172 220,162 320,152"
+                    fill="none"
+                    stroke="#2563eb"
+                    strokeWidth="2"
+                  />
+                  {/* Consistency - Teal */}
+                  <polyline
+                    points="20,190 120,178 220,168 320,158"
+                    fill="none"
+                    stroke="#14b8a6"
+                    strokeWidth="2"
+                  />
+                  {/* Trust - Purple */}
+                  <polyline
+                    points="20,195 120,185 220,175 320,165"
+                    fill="none"
+                    stroke="#8b5cf6"
+                    strokeWidth="2"
+                  />
+                  {/* Communication - Orange */}
+                  <polyline
+                    points="20,200 120,188 220,178 320,168"
+                    fill="none"
+                    stroke="#f59e0b"
+                    strokeWidth="2"
+                  />
+                  {/* Alignment - Green */}
                   <polyline
                     points="20,180 120,170 220,160 320,150"
                     fill="none"
                     stroke="#10b981"
                     strokeWidth="2"
                   />
+                  {/* Stability - Indigo */}
                   <polyline
-                    points="20,190 120,175 220,165 320,155"
+                    points="20,192 120,180 220,170 320,160"
                     fill="none"
                     stroke="#6366f1"
                     strokeWidth="2"
                   />
+                  {/* Leadership Drift - Red */}
                   <polyline
-                    points="20,185 120,172 220,162 320,152"
+                    points="20,205 120,195 220,185 320,175"
                     fill="none"
-                    stroke="#2563eb"
+                    stroke="#ef4444"
                     strokeWidth="2"
                   />
                 </svg>
@@ -625,8 +656,24 @@ const ALIDashboard = () => {
                 </div>
               </div>
               
-              {/* Legend */}
-              <div className="flex gap-6 mt-4 text-sm">
+              {/* Legend - All 7 patterns */}
+              <div className="flex flex-wrap gap-4 mt-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-0.5" style={{ backgroundColor: '#2563eb' }}></div>
+                  <span className="text-gray-600">Clarity</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-0.5" style={{ backgroundColor: '#14b8a6' }}></div>
+                  <span className="text-gray-600">Consistency</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-0.5" style={{ backgroundColor: '#8b5cf6' }}></div>
+                  <span className="text-gray-600">Trust</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-0.5" style={{ backgroundColor: '#f59e0b' }}></div>
+                  <span className="text-gray-600">Communication</span>
+                </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-0.5" style={{ backgroundColor: '#10b981' }}></div>
                   <span className="text-gray-600">Alignment</span>
@@ -636,8 +683,8 @@ const ALIDashboard = () => {
                   <span className="text-gray-600">Stability</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#2563eb' }}></div>
-                  <span className="text-gray-600">Clarity</span>
+                  <div className="w-4 h-0.5" style={{ backgroundColor: '#ef4444' }}></div>
+                  <span className="text-gray-600">Leadership Drift</span>
                 </div>
               </div>
             </div>
