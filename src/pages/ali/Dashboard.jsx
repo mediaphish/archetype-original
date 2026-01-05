@@ -584,12 +584,12 @@ const ALIDashboard = () => {
 
         {/* Section 3: Pattern Analysis */}
         <section className="mb-12">
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-1">Pattern Analysis</h2>
               <p className="text-sm text-gray-600">7 leadership patterns • Rolling scores (4-survey average)</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-visible">
               {Object.entries(mockData.scores.patterns).map(([pattern, scores]) => {
                 const trendChange = scores.current - scores.rolling;
                 const trendDirection = trendChange > 0 ? '↑' : trendChange < 0 ? '↓' : '→';
@@ -624,7 +624,8 @@ const ALIDashboard = () => {
                 return (
                   <div 
                     key={pattern} 
-                    className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
+                    className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative overflow-visible"
+                    style={{ zIndex: hoveredPattern === pattern ? 50 : 1 }}
                     onMouseEnter={() => setHoveredPattern(pattern)}
                     onMouseLeave={() => setHoveredPattern(null)}
                   >
@@ -657,7 +658,7 @@ const ALIDashboard = () => {
                     
                     <div className="text-xs text-gray-500">Current: {scores.current.toFixed(1)}</div>
                     {hoveredPattern === pattern && (
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[9999] whitespace-nowrap pointer-events-none">
                         Rolling: {scores.rolling.toFixed(1)}<br/>
                         Current: {scores.current.toFixed(1)}<br/>
                         Change: {trendDisplay}
