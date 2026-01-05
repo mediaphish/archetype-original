@@ -342,18 +342,18 @@ const ALIDashboard = () => {
               </div>
 
               {/* Y-axis Label (Vertical) - Outside chart area */}
-              <div className="absolute" style={{ top: '50%', left: '0px', transform: 'translateY(-50%) rotate(-90deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}>
+              <div className="absolute" style={{ top: '50%', left: '12px', transform: 'translateY(-50%) rotate(-90deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}>
                 <span className="text-xs text-gray-600 font-medium">Stability + Trust (Low) ← → Stability + Trust (High)</span>
               </div>
-              <div className="absolute" style={{ left: '8px', top: '16px' }}>
+              <div className="absolute" style={{ left: '20px', top: '16px' }}>
                 <span className="text-xs text-gray-500">High</span>
               </div>
-              <div className="absolute" style={{ left: '8px', bottom: '32px' }}>
+              <div className="absolute" style={{ left: '20px', bottom: '32px' }}>
                 <span className="text-xs text-gray-500">Low</span>
               </div>
 
               {/* X-axis Label (Horizontal) - At bottom center of chart area */}
-              <div className="absolute" style={{ bottom: '0px', left: '48px', right: '16px', textAlign: 'center' }}>
+              <div className="absolute" style={{ bottom: '12px', left: '48px', right: '16px', textAlign: 'center' }}>
                 <span className="text-xs text-gray-600 font-medium">Clarity (Low) ← → Clarity (High)</span>
               </div>
             </div>
