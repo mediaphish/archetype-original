@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3 } from 'lucide-react';
 
 const ALIDashboard = () => {
   const [expandedZone, setExpandedZone] = useState(null);
