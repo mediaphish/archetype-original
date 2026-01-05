@@ -181,7 +181,7 @@ const ALIDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }
@@ -475,20 +475,14 @@ const ALIDashboard = () => {
                 </div>
               </div>
 
-              {/* Y-axis Label (Vertical) - Left side, centered vertically */}
+              {/* Y-axis Label (Vertical) - Rotated 90 degrees on left edge */}
               <div className="absolute" style={{ top: '50%', left: '0px', transform: 'translateY(-50%) rotate(-90deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}>
-                <span className="text-xs text-gray-600 font-medium">(Stability + Trust) / 2</span>
-              </div>
-              <div className="absolute" style={{ left: '8px', top: '8px' }}>
-                <span className="text-xs text-gray-500">70</span>
+                <span className="text-xs text-gray-600 font-medium">Stability + Trust (Low) ← → Stability + Trust (High)</span>
               </div>
 
-              {/* X-axis Label (Horizontal) - Bottom center */}
+              {/* X-axis Label (Horizontal) - Bottom edge, same syntax */}
               <div className="absolute" style={{ bottom: '0px', left: '48px', right: '16px', textAlign: 'center' }}>
-                <span className="text-xs text-gray-600 font-medium">Clarity (Low → High)</span>
-              </div>
-              <div className="absolute" style={{ bottom: '0px', left: '50%', transform: 'translateX(-50%)' }}>
-                <span className="text-xs text-gray-500">70</span>
+                <span className="text-xs text-gray-600 font-medium">Clarity (Low) ← → Clarity (High)</span>
               </div>
             </div>
 
