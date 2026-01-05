@@ -6,34 +6,43 @@ type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
 publish_date: "2026-01-29"
-scripture_reference: "Luke 16:10 (ESV)"
-summary: "Sustainable leadership is built through steady faithfulness over time."
+scripture_reference: "Lamentations 3:22–23"
+summary: "Renewal is sustained through steady faithfulness, not bursts of intensity."
 ---
 
 ## Scripture
 
-**Luke 16:10 (ESV)**  
-https://www.esv.org/Luke+16:10/
+**Lamentations 3:22–23**
+
+---
+
+---
 
 ## Reflection
 
-Leadership culture often celebrates bursts of intensity—big pushes, bold moves, and visible effort. Scripture emphasizes something less dramatic but far more sustaining: consistency. Faithfulness practiced over time shapes character more deeply than short-lived intensity.
+Leadership culture often celebrates intensity—big pushes, dramatic effort, and visible momentum. Scripture points leaders in a quieter direction. Renewal is sustained not by bursts of strength, but by steady faithfulness that shows up day after day.
 
-Servant leaders understand that steady presence matters. People are formed not by occasional moments of inspiration, but by reliable leadership that shows up day after day. Consistency builds credibility because it creates predictability, safety, and trust.
+Lamentations reminds leaders that God’s mercies are not occasional. They are renewed every morning. This rhythm matters. Consistency creates stability, trust, and endurance. Intensity may impress in the moment, but it rarely lasts.
 
-Long-term leadership health depends more on rhythm than force.
+Servant leadership is formed through daily faithfulness. Leaders who value consistency build environments where people can grow without fear of burnout or volatility.
+
+---
 
 ## Practical Application
 
-- Reflect on whether your leadership tends toward bursts or rhythms.
-- Identify one small habit that needs consistency rather than intensity.
-- Commit to showing up steadily today.
+- Reflect on where intensity has replaced steady practice.
+- Identify one leadership habit that needs daily consistency.
+- Choose faithfulness today, not dramatic effort.
+
+---
 
 ## Takeaways
 
-- Consistency builds trust.
-- Sustainable leadership values rhythm over force.
+- Consistency sustains renewal.
+- Faithfulness over time builds trust.
+
+---
 
 ## Closing Thought
 
-Today I choose consistency over intensity.
+Today I choose steady faithfulness over momentary intensity.

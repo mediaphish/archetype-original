@@ -6,14 +6,17 @@ type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
 publish_date: "2026-01-19"
-scripture_reference: "James 1:19–20 (ESV)"
+scripture_reference: "James 1:19–20"
 summary: "Leadership renewal begins with disciplined listening and restraint before action."
 ---
 
 ## Scripture
 
-**James 1:19–20 (ESV)**  
-https://www.esv.org/James+1:19-20/
+**James 1:19–20**
+
+---
+
+---
 
 ## Reflection
 
@@ -23,16 +26,22 @@ Verse 20 provides essential context. Unchecked anger does not produce the righte
 
 Servant leadership listens first, responds thoughtfully, and acts without being driven by frustration. This posture renews leadership not by increasing activity, but by improving discernment and restraint.
 
+---
+
 ## Practical Application
 
 - Identify a situation where frustration has influenced your response.
 - Practice listening fully before reacting.
 - Choose restraint so your leadership produces the right outcomes.
 
+---
+
 ## Takeaways
 
 - Renewal begins with disciplined attention.
 - Restraint protects leadership effectiveness.
+
+---
 
 ## Closing Thought
 

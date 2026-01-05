@@ -6,14 +6,17 @@ type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
 publish_date: "2026-01-20"
-scripture_reference: "Ecclesiastes 7:8–9 (ESV)"
+scripture_reference: "Ecclesiastes 7:8–9"
 summary: "Renewal reshapes how leaders relate to time, growth, and process."
 ---
 
 ## Scripture
 
-**Ecclesiastes 7:8–9 (ESV)**  
-https://www.esv.org/Ecclesiastes+7:8-9/
+**Ecclesiastes 7:8–9**
+
+---
+
+---
 
 ## Reflection
 
@@ -23,16 +26,22 @@ Servant leadership requires renewed patience because growth rarely follows clean
 
 Patience is not inactivity. It is renewed trust that faithful consistency produces stronger foundations than forced momentum.
 
+---
+
 ## Practical Application
 
 - Reflect on where impatience may be driving your leadership.
 - Identify one area where you need to slow down rather than speed up.
 - Choose steady faithfulness over quick results today.
 
+---
+
 ## Takeaways
 
 - Renewal reframes how leaders relate to time.
 - Patience protects long-term health.
+
+---
 
 ## Closing Thought
 
