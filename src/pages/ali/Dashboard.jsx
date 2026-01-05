@@ -115,7 +115,7 @@ const ALIDashboard = () => {
     profile_forming: 'Profile Forming'
   };
 
-  // Profile colors for panel backgrounds
+  // Profile background colors
   const getProfileColor = (profile) => {
     const colors = {
       guardian: 'bg-purple-50 border-purple-200',
@@ -488,99 +488,87 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* Section 4: Leadership Profile & Leadership Mirror - Side by Side */}
+        {/* Section 4: Leadership Profile */}
         <section className="mb-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Leadership Profile - Left */}
-            <div className={`rounded-lg border p-6 ${getProfileColor(mockData.leadershipProfile.profile)}`}>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Profile</h2>
-              <div className="text-2xl font-bold text-gray-900 mb-2 capitalize">
-                {profileNames[mockData.leadershipProfile.profile]}
-              </div>
-              <div className="text-sm text-gray-600 mb-6">Based on 4 completed surveys</div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Honesty Card */}
-                <div className="bg-white rounded-lg border border-gray-200 p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-gray-600 mb-2">Honesty</div>
-                      <div className="text-4xl font-bold text-gray-900">
-                        {mockData.leadershipProfile.honesty.score.toFixed(1)}
-                      </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Profile</h2>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="text-2xl font-bold text-gray-900 mb-2 capitalize">
+              {profileNames[mockData.leadershipProfile.profile]}
+            </div>
+            <div className="text-sm text-gray-600 mb-6">Based on 4 completed surveys</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Honesty Card */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-gray-600 mb-2">Honesty</div>
+                    <div className="text-4xl font-bold text-gray-900">
+                      {mockData.leadershipProfile.honesty.score.toFixed(1)}
                     </div>
-                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
-                      {mockData.leadershipProfile.honesty.state}
-                    </div>
+                  </div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
+                    {mockData.leadershipProfile.honesty.state}
                   </div>
                 </div>
-                {/* Clarity Card */}
-                <div className="bg-white rounded-lg border border-gray-200 p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
-                      <div className="text-4xl font-bold text-gray-900">
-                        {mockData.leadershipProfile.clarity.level.toFixed(1)}
-                      </div>
-                    </div>
-                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
-                      {mockData.leadershipProfile.clarity.state}
+              </div>
+              {/* Clarity Card */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
+                    <div className="text-4xl font-bold text-gray-900">
+                      {mockData.leadershipProfile.clarity.level.toFixed(1)}
                     </div>
                   </div>
-                  <div className="text-xs text-gray-500 mt-2">
-                    Stddev: {mockData.leadershipProfile.clarity.stddev.toFixed(1)}
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
+                    {mockData.leadershipProfile.clarity.state}
                   </div>
+                </div>
+                <div className="text-xs text-gray-500 mt-2">
+                  Stddev: {mockData.leadershipProfile.clarity.stddev.toFixed(1)}
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
-            {/* Leadership Mirror - Right */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Leadership Mirror</h2>
-              <p className="text-sm text-gray-600 mb-6">Leader vs Team perception gaps</p>
-              <div className="space-y-6">
-                {(['ali', 'alignment', 'stability', 'clarity']).map((metric) => {
-                  const gap = mockData.leadershipMirror.gaps[metric];
-                  const severity = mockData.leadershipMirror.severity[metric];
-                  const leaderScore = mockData.leadershipMirror.leaderScores[metric];
-                  const teamScore = mockData.leadershipMirror.teamScores[metric];
-                  const maxScore = Math.max(leaderScore, teamScore, 100);
-                  
-                  // Gap color based on severity
-                  const gapColor = severity === 'critical' ? 'text-red-600' : severity === 'caution' ? 'text-yellow-600' : 'text-green-600';
+        {/* Section 5: Leadership Mirror */}
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Mirror</h2>
+          <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
+            <div className="space-y-6">
+              {(['ali', 'alignment', 'stability', 'clarity']).map((metric) => {
+                const gap = mockData.leadershipMirror.gaps[metric];
+                const severity = mockData.leadershipMirror.severity[metric];
+                const leaderScore = mockData.leadershipMirror.leaderScores[metric];
+                const teamScore = mockData.leadershipMirror.teamScores[metric];
+                const maxScore = Math.max(leaderScore, teamScore, 100);
 
-                  return (
-                    <div key={metric} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="text-sm font-medium text-gray-900 capitalize">{metric === 'ali' ? 'ALI' : metric}</div>
-                        <div className={`text-sm font-semibold ${gapColor}`}>
-                          Gap: {gap.toFixed(1)}
+                return (
+                  <div key={metric} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-sm font-medium text-gray-900 capitalize">{metric === 'ali' ? 'ALI Overall' : metric}</div>
+                      <div className="text-sm font-semibold text-gray-600 capitalize">
+                        Gap: {gap.toFixed(1)} ({severity})
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <div className="text-xs text-gray-500 mb-1">Leader</div>
+                        <div className="h-8 bg-blue-100 rounded flex items-center justify-end pr-2" style={{ width: `${(leaderScore / maxScore) * 100}%` }}>
+                          <span className="text-xs font-semibold text-blue-700">{leaderScore.toFixed(1)}</span>
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <div>
-                          <div className="text-xs text-gray-500 mb-1">LEADER</div>
-                          <div className="h-8 bg-blue-100 rounded flex items-center justify-end pr-2" style={{ width: `${(leaderScore / maxScore) * 100}%` }}>
-                            <span className="text-xs font-semibold text-blue-700">{leaderScore.toFixed(1)}</span>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500 mb-1">TEAM</div>
-                          <div className="h-8 bg-green-100 rounded flex items-center justify-end pr-2" style={{ width: `${(teamScore / maxScore) * 100}%` }}>
-                            <span className="text-xs font-semibold text-green-700">{teamScore.toFixed(1)}</span>
-                          </div>
+                      <div className="flex-1">
+                        <div className="text-xs text-gray-500 mb-1">Team</div>
+                        <div className="h-8 bg-gray-100 rounded flex items-center justify-end pr-2" style={{ width: `${(teamScore / maxScore) * 100}%` }}>
+                          <span className="text-xs font-semibold text-gray-700">{teamScore.toFixed(1)}</span>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <div className="text-xs text-gray-600 space-y-1">
-                  <div><strong>Neutral:</strong> &lt;8 points</div>
-                  <div><strong>Caution:</strong> 8-14 points</div>
-                  <div><strong>Critical:</strong> ≥15 points</div>
-                </div>
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
