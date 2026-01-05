@@ -6,14 +6,14 @@ type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
 publish_date: "2026-01-20"
-scripture_reference: "Ecclesiastes 7:8 (ESV)"
+scripture_reference: "Ecclesiastes 7:8–9 (ESV)"
 summary: "Renewal reshapes how leaders relate to time, growth, and process."
 ---
 
 ## Scripture
 
-**Ecclesiastes 7:8 (ESV)**  
-https://www.esv.org/Ecclesiastes+7:8/
+**Ecclesiastes 7:8–9 (ESV)**  
+https://www.esv.org/Ecclesiastes+7:8-9/
 
 ## Reflection
 
