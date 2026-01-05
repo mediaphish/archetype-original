@@ -94,9 +94,16 @@ const ALIDashboard = () => {
       method: 'drift_index'
     },
     experienceMap: {
-      x: 70.1,
-      y: 69.6,
-      zone: 'harmony'
+      current: {
+        x: 70.1,
+        y: 69.6,
+        zone: 'harmony'
+      },
+      previous: [
+        { x: 68.5, y: 67.2, period: 'Q4 2025' },
+        { x: 69.0, y: 68.0, period: 'Q1 2026' },
+        { x: 69.5, y: 68.8, period: 'Q2 2026' }
+      ]
     },
     leadershipProfile: {
       profile: 'guardian',
@@ -179,6 +186,15 @@ const ALIDashboard = () => {
     };
     return colors[profile] || 'bg-gray-50 border-gray-200';
   };
+
+  // Zone definitions for Team Experience Map
+  const ZONES = {
+    harmony: { label: 'Harmony', color: '#10b981' },
+    strain: { label: 'Strain', color: '#f59e0b' },
+    stress: { label: 'Stress', color: '#fb923c' },
+    hazard: { label: 'Hazard', color: '#ef4444' }
+  };
+  const currentZone = mockData.experienceMap.current.zone;
 
   return (
     <div className="min-h-screen bg-white">
@@ -374,152 +390,193 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* Section 2: Team Experience Map */}
+        {/* Section 2: Team Experience Map - EXACT V0 SPECIFICATION */}
         <section className="mb-12">
-          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 lg:p-8">
-            {/* Title and subtitle INSIDE the panel */}
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white rounded-lg border border-black/[0.12] p-8">
+            <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Team Experience Map</h2>
-                <p className="text-sm text-gray-600 mt-1">Current position in Harmony Zone</p>
+                <h2 className="text-[22px] font-semibold text-black/[0.87] mb-1">Team Experience Map</h2>
+                <p className="text-[13px] text-black/[0.6]">Current position in {ZONES[currentZone].label} Zone</p>
               </div>
-              <button
-                onClick={() => setExpandedZone(expandedZone === 'map' ? null : 'map')}
-                className="text-sm text-blue-600 hover:text-blue-700"
+              {!mockData.dataQuality.meets_minimum_n_org && (
+                <div className="px-3 py-1.5 bg-[#f59e0b]/10 rounded-md text-[12px] font-medium text-[#f59e0b]">
+                  Neutral view: &lt;10 responses
+                </div>
+              )}
+            </div>
+
+            {/* Experience Map Visualization - EXACT POSITIONING */}
+            <div className="relative w-full aspect-square max-w-[600px] mx-auto">
+              
+              {/* Quadrant backgrounds - EXACT COLORS AND POSITIONS */}
+              {mockData.dataQuality.meets_minimum_n_org && (
+                <>
+                  {/* Top-right: Harmony - Light teal */}
+                  <div
+                    className="absolute top-0 right-0 w-1/2 h-1/2"
+                    style={{ backgroundColor: "rgba(16, 185, 129, 0.08)" }}
+                  />
+                  {/* Top-left: Strain - Light beige/tan */}
+                  <div
+                    className="absolute top-0 left-0 w-1/2 h-1/2"
+                    style={{ backgroundColor: "rgba(245, 158, 11, 0.08)" }}
+                  />
+                  {/* Bottom-left: Stress - Light beige/tan */}
+                  <div
+                    className="absolute bottom-0 left-0 w-1/2 h-1/2"
+                    style={{ backgroundColor: "rgba(251, 146, 60, 0.08)" }}
+                  />
+                  {/* Bottom-right: Hazard - Light pink/red */}
+                  <div
+                    className="absolute bottom-0 right-0 w-1/2 h-1/2"
+                    style={{ backgroundColor: "rgba(239, 68, 68, 0.08)" }}
+                  />
+                </>
+              )}
+
+              {/* Grid lines - EXACT BORDER WIDTH AND COLOR */}
+              <div className="absolute inset-0 border-2 border-black/[0.12] rounded-lg">
+                {/* Horizontal center line */}
+                <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-black/[0.12] -translate-y-1/2" />
+                {/* Vertical center line */}
+                <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-black/[0.12] -translate-x-1/2" />
+              </div>
+
+              {/* X-AXIS LABEL - BELOW CHART, CENTERED, OUTSIDE BORDER */}
+              <div className="absolute -bottom-8 left-0 right-0 text-center">
+                <span className="text-[13px] font-medium text-black/[0.6]">
+                  Clarity (Low → High)
+                </span>
+              </div>
+
+              {/* Y-AXIS LABEL - LEFT OF CHART, CENTERED VERTICALLY, ROTATED 90° CCW, INSIDE BORDER */}
+              <div 
+                className="absolute left-3 top-1/2 origin-center"
+                style={{ transform: "translateY(-50%) rotate(-90deg)" }}
               >
-                {expandedZone === 'map' ? 'Hide explanation' : 'What does this mean?'}
-              </button>
-            </div>
-            
-            {expandedZone === 'map' && (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                <p className="text-sm text-gray-700 mb-2">
-                  The Team Experience Map visualizes your team's experience across two dimensions: <strong>Clarity</strong> (how clearly expectations are communicated) and <strong>Stability + Trust</strong> (how predictable and safe the environment feels).
-                </p>
-                <p className="text-xs text-gray-600">
-                  The map is divided into four zones that represent different team experiences. Your current position shows where your team is right now.
-                </p>
+                <span className="text-[13px] font-medium text-black/[0.6] whitespace-nowrap">
+                  (Stability + Trust) / 2
+                </span>
               </div>
-            )}
-            <div className="relative w-full max-w-md mx-auto border border-gray-300 bg-gray-50 rounded" style={{ paddingLeft: '48px', paddingRight: '16px', paddingTop: '16px', paddingBottom: '32px' }}>
-              {/* Chart Container - Square aspect ratio, compact size */}
-              <div className="relative" style={{ paddingBottom: '100%' }}>
-                <div className="absolute inset-0">
-                  {/* Equal Quadrants - 50/50 split with colors */}
-                  <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-                    <div className="border-r border-b border-gray-200 bg-orange-50"></div>
-                    <div className="border-b border-gray-200 bg-green-50"></div>
-                    <div className="border-r border-gray-200 bg-yellow-50"></div>
-                    <div className="bg-red-50"></div>
-                  </div>
 
-                  {/* Zone Boundaries (dashed lines at 50%) */}
-                  <div className="absolute top-0 bottom-0 left-1/2 w-px border-l-2 border-dashed border-gray-400"></div>
-                  <div className="absolute left-0 right-0 top-1/2 h-px border-t-2 border-dashed border-gray-400"></div>
+              {/* Threshold markers - EXACT POSITIONING AT 70/70 CROSSHAIRS */}
+              <div 
+                className="absolute text-[11px] text-black/[0.38] font-medium"
+                style={{ bottom: "50%", left: "-24px", transform: "translateY(50%)" }}
+              >
+                70
+              </div>
+              <div 
+                className="absolute text-[11px] text-black/[0.38] font-medium"
+                style={{ left: "50%", bottom: "-20px", transform: "translateX(-50%)" }}
+              >
+                70
+              </div>
 
-                  {/* Zone Labels */}
-                  <div className="absolute top-4 left-4 text-gray-900 font-semibold text-sm sm:text-base">High Strain</div>
-                  <div className="absolute top-4 right-4 text-gray-900 font-semibold text-sm sm:text-base">Harmony</div>
-                  <div className="absolute bottom-4 left-4 text-gray-900 font-semibold text-sm sm:text-base">
-                    <div>Stress</div>
-                    <div className="text-xs font-normal text-gray-600">Low</div>
-                  </div>
-                  <div className="absolute bottom-4 right-4 text-gray-900 font-semibold text-sm sm:text-base">Hazard</div>
+              {/* Previous positions (trail) - SMALL GRAY DOTS */}
+              {mockData.experienceMap.previous.map((point, idx) => (
+                <div
+                  key={idx}
+                  className="absolute w-3 h-3 rounded-full bg-black/[0.2]"
+                  style={{
+                    left: `${point.x}%`,
+                    bottom: `${point.y}%`,
+                    transform: "translate(-50%, 50%)",
+                  }}
+                  title={`${point.period}: (${point.x}, ${point.y})`}
+                />
+              ))}
 
-                  {/* Trailing Dots */}
+              {/* Connection line - DASHED LINE CONNECTING DOTS */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                <polyline
+                  points={[
+                    ...mockData.experienceMap.previous.map((p) => `${p.x}%,${100 - p.y}%`),
+                    `${mockData.experienceMap.current.x}%,${100 - mockData.experienceMap.current.y}%`,
+                  ].join(" ")}
+                  fill="none"
+                  stroke="rgba(0,0,0,0.15)"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                />
+              </svg>
+
+              {/* Current position - LARGE DOT WITH ZONE COLOR */}
+              <div
+                className="absolute w-6 h-6 rounded-full shadow-lg z-10 flex items-center justify-center"
+                style={{
+                  left: `${mockData.experienceMap.current.x}%`,
+                  bottom: `${mockData.experienceMap.current.y}%`,
+                  transform: "translate(-50%, 50%)",
+                  backgroundColor: ZONES[currentZone].color,
+                }}
+              >
+                {/* White center dot */}
+                <div className="w-3 h-3 rounded-full bg-white" />
+              </div>
+
+              {/* Zone labels - POSITIONED IN EACH QUADRANT CENTER */}
+              {mockData.dataQuality.meets_minimum_n_org && (
+                <>
+                  {/* Harmony - Top-right quadrant */}
                   <div
-                    className="absolute w-2 h-2 bg-gray-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-5"
-                    style={{
-                      left: `${Math.max(mockData.experienceMap.x - 5, 0)}%`,
-                      top: `${100 - Math.max(mockData.experienceMap.y - 3, 0)}%`
+                    className="absolute text-[14px] font-bold"
+                    style={{ 
+                      top: "25%", 
+                      right: "25%", 
+                      transform: "translate(50%, -50%)",
+                      color: "#10b981"
                     }}
-                  ></div>
-                  <div
-                    className="absolute w-2 h-2 bg-gray-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-5"
-                    style={{
-                      left: `${Math.max(mockData.experienceMap.x - 3, 0)}%`,
-                      top: `${100 - Math.max(mockData.experienceMap.y - 2, 0)}%`
-                    }}
-                  ></div>
-                  <div
-                    className="absolute w-2 h-2 bg-gray-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-5"
-                    style={{
-                      left: `${Math.max(mockData.experienceMap.x - 1.5, 0)}%`,
-                      top: `${100 - Math.max(mockData.experienceMap.y - 1, 0)}%`
-                    }}
-                  ></div>
-                  {/* Current Position Dot */}
-                  <div
-                    className="absolute w-4 h-4 bg-blue-600 rounded-full border-2 border-white transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-10 transition-all duration-1000 ease-out cursor-pointer hover:scale-125 hover:shadow-xl"
-                    style={{
-                      left: `${mockData.experienceMap.x}%`,
-                      top: `${100 - mockData.experienceMap.y}%`,
-                      animation: 'pulse 2s ease-in-out infinite'
-                    }}
-                    onMouseEnter={() => setHoveredMetric('experienceMap')}
-                    onMouseLeave={() => setHoveredMetric(null)}
                   >
-                    {hoveredMetric === 'experienceMap' && (
-                      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded z-20">
-                        X: {mockData.experienceMap.x.toFixed(1)}<br/>
-                        Y: {mockData.experienceMap.y.toFixed(1)}<br/>
-                        Zone: {mockData.experienceMap.zone}
-                      </div>
-                    )}
-                    {hoveredMetric !== 'experienceMap' && (
-                      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded z-20 opacity-0 hover:opacity-100 transition-opacity">
-                        Current Position
-                      </div>
-                    )}
+                    Harmony
                   </div>
-                </div>
-              </div>
-
-              {/* Y-axis Label (Vertical) - Rotated 90 degrees on left edge */}
-              <div className="absolute" style={{ top: '50%', left: '0px', transform: 'translateY(-50%) rotate(-90deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}>
-                <span className="text-xs text-gray-600 font-medium">Stability + Trust (Low) ← → Stability + Trust (High)</span>
-              </div>
-
-              {/* X-axis Label (Horizontal) - Bottom edge, same syntax */}
-              <div className="absolute" style={{ bottom: '0px', left: '48px', right: '16px', textAlign: 'center' }}>
-                <span className="text-xs text-gray-600 font-medium">Clarity (Low) ← → Clarity (High)</span>
-              </div>
+                  {/* Strain - Top-left quadrant */}
+                  <div
+                    className="absolute text-[14px] font-bold"
+                    style={{ 
+                      top: "25%", 
+                      left: "25%",
+                      transform: "translate(-50%, -50%)",
+                      color: "#f59e0b"
+                    }}
+                  >
+                    Strain
+                  </div>
+                  {/* Stress - Bottom-left quadrant */}
+                  <div
+                    className="absolute text-[14px] font-bold"
+                    style={{ 
+                      bottom: "25%", 
+                      left: "25%",
+                      transform: "translate(-50%, 50%)",
+                      color: "#fb923c"
+                    }}
+                  >
+                    Stress
+                  </div>
+                  {/* Hazard - Bottom-right quadrant */}
+                  <div
+                    className="absolute text-[14px] font-bold"
+                    style={{ 
+                      bottom: "25%", 
+                      right: "25%",
+                      transform: "translate(50%, 50%)",
+                      color: "#ef4444"
+                    }}
+                  >
+                    Hazard
+                  </div>
+                </>
+              )}
             </div>
 
-            <div className="mt-4 text-sm text-gray-600">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <strong>Clarity:</strong> <span className="font-bold">{mockData.experienceMap.x.toFixed(1)}</span>
-                </div>
-                <div>
-                  <strong>(Stability + Trust) / 2:</strong> <span className="font-bold">{mockData.experienceMap.y.toFixed(1)}</span>
-                </div>
+            {/* Coordinates display below map */}
+            <div className="mt-6 flex items-center justify-center gap-8 text-[13px] text-black/[0.6]">
+              <div>
+                Clarity: <span className="font-bold text-black/[0.87]">{mockData.experienceMap.current.x.toFixed(1)}</span>
               </div>
-
-              {/* Zone Descriptions - Expandable */}
-              <div className="border-t border-gray-200 pt-4">
-                <button
-                  onClick={() => setExpandedZone(expandedZone === 'zones' ? null : 'zones')}
-                  className="text-sm font-medium text-blue-600 hover:text-blue-700 mb-2"
-                >
-                  {expandedZone === 'zones' ? '▼' : '▶'} Zone Descriptions
-                </button>
-                {expandedZone === 'zones' && (
-                  <div className="mt-2 space-y-3 text-xs text-gray-600">
-                    <div>
-                      <strong className="text-gray-900">Harmony Zone (Top-Right):</strong> High Clarity and High Stability + Trust. Teams experience clear expectations and a safe, predictable environment.
-                    </div>
-                    <div>
-                      <strong className="text-gray-900">Strain Zone (Top-Left):</strong> Low Clarity but High Stability + Trust. Teams feel safe but confused about priorities and expectations.
-                    </div>
-                    <div>
-                      <strong className="text-gray-900">Stress Zone (Bottom-Left):</strong> Low Clarity and Low Stability + Trust. Teams experience confusion and unpredictability.
-                    </div>
-                    <div>
-                      <strong className="text-gray-900">Hazard Zone (Bottom-Right):</strong> High Clarity but Low Stability + Trust. Teams understand expectations but lack trust and stability.
-                    </div>
-                  </div>
-                )}
+              <div>
+                (Stability + Trust) / 2: <span className="font-bold text-black/[0.87]">{mockData.experienceMap.current.y.toFixed(1)}</span>
               </div>
             </div>
           </div>
