@@ -53,10 +53,10 @@ const ALIDashboard = () => {
       clarity: { level: 70.1, stddev: 5.2, state: 'high' }
     },
     leadershipMirror: {
-      gaps: { ali: 12.3, alignment: 8.4, stability: 5.2, clarity: 10.1 },
-      severity: { ali: 'caution', alignment: 'neutral', stability: 'neutral', clarity: 'caution' },
-      leaderScores: { ali: 75.0, alignment: 72.0, stability: 78.0, clarity: 75.0 },
-      teamScores: { ali: 62.7, alignment: 63.6, stability: 72.8, clarity: 64.9 }
+      gaps: { ali: 5.2, alignment: 7.0, stability: 3.5, clarity: 6.0 },
+      severity: { ali: 'neutral', alignment: 'neutral', stability: 'neutral', clarity: 'neutral' },
+      leaderScores: { ali: 76.2, alignment: 78.5, stability: 73.0, clarity: 80.5 },
+      teamScores: { ali: 71.0, alignment: 71.5, stability: 69.5, clarity: 74.5 }
     },
     responseCounts: {
       overall: 86,
