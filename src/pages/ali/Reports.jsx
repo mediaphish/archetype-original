@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, ChevronDown, User, Share2, Send, ExternalLink } from 'lucide-react';
+import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, ChevronDown, User, Share2, Send, ExternalLink, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import DefinitionModal from '../../components/ali/DefinitionModal';
+import ChatApp from '../../app/ChatApp';
 
 const ALIReports = () => {
   const [animatedValues, setAnimatedValues] = useState({});
   const [latestDropdownOpen, setLatestDropdownOpen] = useState(false);
+  const [openDefinition, setOpenDefinition] = useState(null);
+  const [showArchyChat, setShowArchyChat] = useState(false);
+  const [patternScrollPositions, setPatternScrollPositions] = useState({});
+  const [visibleQuarters, setVisibleQuarters] = useState(4); // Show last 4 quarters by default
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -31,6 +37,160 @@ const ALIReports = () => {
     if (score >= 60) return 'text-yellow-500';
     if (score >= 45) return 'text-orange-500';
     return 'text-red-500';
+  };
+
+  // Definition content for Reports page sections
+  const definitions = {
+    'pattern-analysis': {
+      title: 'Leadership Pattern Analysis',
+      content: (
+        <div>
+          <p className="mb-4">
+            Pattern Analysis tracks seven key leadership patterns that influence how your team experiences your leadership over time. This view shows historical progression across multiple survey cycles.
+          </p>
+          <p className="mb-4">
+            Each pattern displays:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Current Score:</strong> The most recent survey result</li>
+            <li><strong>Rolling Average:</strong> Average across the last 4 surveys for trend stability</li>
+            <li><strong>Trend:</strong> Percentage change showing improvement or decline</li>
+            <li><strong>Historical Bars:</strong> Horizontal progression showing each survey cycle with score and response count</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            This view scales to show all survey cycles. Use horizontal scrolling to navigate through many surveys, or filter by time range to focus on specific periods.
+          </p>
+        </div>
+      )
+    },
+    'pattern-clarity': {
+      title: 'Clarity',
+      content: (
+        <div>
+          <p className="mb-4">
+            Clarity measures how clearly you communicate vision, expectations, and goals. High clarity means your team understands what you mean and why.
+          </p>
+          <p className="text-sm text-gray-600">
+            Clear communication of vision, expectations, and goals.
+          </p>
+        </div>
+      )
+    },
+    'pattern-consistency': {
+      title: 'Consistency',
+      content: (
+        <div>
+          <p className="mb-4">
+            Consistency measures reliable patterns in decision-making and follow-through. High consistency means your team can predict and count on your behavior.
+          </p>
+          <p className="text-sm text-gray-600">
+            Reliable patterns in decision-making and follow-through.
+          </p>
+        </div>
+      )
+    },
+    'pattern-trust': {
+      title: 'Trust',
+      content: (
+        <div>
+          <p className="mb-4">
+            Trust measures psychological safety and confidence in leadership. High trust means your team feels safe to speak truth and take risks.
+          </p>
+          <p className="text-sm text-gray-600">
+            Psychological safety and confidence in leadership.
+          </p>
+        </div>
+      )
+    },
+    'pattern-communication': {
+      title: 'Communication',
+      content: (
+        <div>
+          <p className="mb-4">
+            Communication measures open, transparent, and effective information flow. High communication means information moves freely in both directions.
+          </p>
+          <p className="text-sm text-gray-600">
+            Open, transparent, and effective information flow.
+          </p>
+        </div>
+      )
+    },
+    'pattern-alignment': {
+      title: 'Alignment',
+      content: (
+        <div>
+          <p className="mb-4">
+            Alignment measures shared understanding of direction and priorities. High alignment means everyone is moving in the same direction.
+          </p>
+          <p className="text-sm text-gray-600">
+            Shared understanding of direction and priorities.
+          </p>
+        </div>
+      )
+    },
+    'pattern-stability': {
+      title: 'Stability',
+      content: (
+        <div>
+          <p className="mb-4">
+            Stability measures a predictable environment that supports sustained performance. High stability means your team can plan and execute with confidence.
+          </p>
+          <p className="text-sm text-gray-600">
+            Predictable environment that supports sustained performance.
+          </p>
+        </div>
+      )
+    },
+    'pattern-leadership_drift': {
+      title: 'Leadership Drift',
+      content: (
+        <div>
+          <p className="mb-4">
+            Leadership Drift measures the gap between stated and observed leadership behaviors. Lower drift means your actions match your words.
+          </p>
+          <p className="text-sm text-gray-600">
+            Gap between stated and observed leadership behaviors.
+          </p>
+        </div>
+      )
+    },
+    'summary': {
+      title: 'Summary Metrics',
+      content: (
+        <div>
+          <p className="mb-4">
+            The summary cards provide a high-level overview of your leadership trends:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>ALI Overall Improvement:</strong> Percentage change in your overall ALI score over time</li>
+            <li><strong>Current ALI Score:</strong> Your most recent overall score and rolling average</li>
+            <li><strong>Total Responses:</strong> Total number of survey responses collected across all surveys</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            These metrics give you a quick snapshot of your leadership environment's trajectory.
+          </p>
+        </div>
+      )
+    },
+    'insights': {
+      title: 'Key Insights & Movement',
+      content: (
+        <div>
+          <p className="mb-4">
+            Key Insights & Movement highlights important patterns, trends, and recommendations based on your data:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Sustained Positive Movement:</strong> Patterns showing consistent improvement</li>
+            <li><strong>Leadership Drift Reduction:</strong> Improvements in alignment between values and behaviors</li>
+            <li><strong>Perception Gap Alerts:</strong> Areas where leader and team perceptions differ significantly</li>
+            <li><strong>Recommended Next Steps:</strong> Actionable guidance based on your current scores</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            These insights help you understand not just what's happening, but what to do about it.
+          </p>
+        </div>
+      )
+    }
   };
 
   // Mock data matching the image exactly
@@ -213,6 +373,15 @@ const ALIReports = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <style>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
       {/* Header - Matching Dashboard exactly */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -293,6 +462,16 @@ const ALIReports = () => {
 
         {/* Summary Scorecards */}
         <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">Summary</h2>
+            <button
+              onClick={() => setOpenDefinition('summary')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Summary Metrics"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* ALI Overall Improvement */}
             <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
@@ -317,79 +496,159 @@ const ALIReports = () => {
           </div>
         </section>
 
-        {/* Leadership Pattern Analysis - 7 cards in grid */}
+        {/* Leadership Pattern Analysis - Horizontal Bar Charts (EXACT IMAGE DESIGN) */}
         <section className="mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">Leadership Pattern Analysis</h2>
+            <button
+              onClick={() => setOpenDefinition('pattern-analysis')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Pattern Analysis"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {mockData.patterns.map((pattern) => {
               const Icon = pattern.icon;
               const patternColor = getPatternColor(pattern.name);
               const trendColor = pattern.trendDirection === 'up' ? 'text-green-600' : 'text-red-600';
-              const maxScore = Math.max(...pattern.quarters.map(q => q.score), 100);
-              const minScore = Math.min(...pattern.quarters.map(q => q.score), 0);
-              const range = maxScore - minScore || 1;
+              const maxScore = 100;
+              const scrollKey = pattern.name;
+              const scrollPosition = patternScrollPositions[scrollKey] || 0;
+              
+              // For scalability: show all quarters, but allow horizontal scrolling
+              const displayQuarters = pattern.quarters;
+              const hasMoreQuarters = pattern.quarters.length > 4;
 
               return (
                 <div key={pattern.name} className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
-                  {/* Icon and Pattern Name */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <Icon className="w-5 h-5" style={{ color: patternColor }} />
-                    <div className="text-sm font-semibold text-gray-900 capitalize">{pattern.name.replace('_', ' ')}</div>
-                  </div>
-
-                  {/* Large Score */}
-                  <div className="text-3xl font-bold mb-1" style={{ color: patternColor }}>
-                    {pattern.score.toFixed(1)}
-                  </div>
-
-                  {/* Rolling Score and Trend */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-xs text-gray-500">Rolling: {pattern.rolling.toFixed(1)}</div>
-                    <div className={`flex items-center gap-1 text-sm font-medium ${trendColor}`}>
-                      {pattern.trendDirection === 'up' ? '↑' : '↓'}
-                      <span>{pattern.trend.toFixed(1)}%</span>
+                  {/* Header with Icon, Title, and Subtitle */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div 
+                      className="w-10 h-10 rounded flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: `${patternColor}20` }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: patternColor }} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-semibold text-gray-900 capitalize">{pattern.name.replace('_', ' ')}</h3>
+                        <button
+                          onClick={() => setOpenDefinition(`pattern-${pattern.name}`)}
+                          className="text-gray-400 hover:text-blue-600 transition-colors"
+                          aria-label={`Learn about ${pattern.name}`}
+                        >
+                          <HelpCircle className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500">{pattern.quarters.length} survey cycles</p>
                     </div>
                   </div>
 
-                  {/* Historical Bar Chart */}
+                  {/* Current Score - Large and Prominent */}
+                  <div className="mb-2">
+                    <div className="text-5xl font-bold mb-1" style={{ color: patternColor }}>
+                      {pattern.score.toFixed(1)}
+                    </div>
+                    <div className="text-sm text-gray-600">Rolling: {pattern.rolling.toFixed(1)}</div>
+                  </div>
+
+                  {/* Trend Indicator */}
+                  <div className={`flex items-center gap-1 text-sm font-medium mb-6 ${trendColor}`}>
+                    {pattern.trendDirection === 'up' ? '↑' : '↓'}
+                    <span>{pattern.trend.toFixed(1)}%</span>
+                  </div>
+
+                  {/* Horizontal Bar Chart - Scalable Design */}
                   <div className="mb-4">
-                    <div className="flex items-end gap-2 h-24 mb-2">
-                      {pattern.quarters.map((quarter, idx) => {
-                        const height = ((quarter.score - minScore) / range) * 100;
-                        const animatedHeight = animatedValues[`${pattern.name}_${idx}`] 
-                          ? ((animatedValues[`${pattern.name}_${idx}`] - minScore) / range) * 100 
-                          : 0;
-                        
-                        return (
-                          <div key={idx} className="flex-1 flex flex-col items-center">
-                            <div className="w-full relative">
-                              <div
-                                className="w-full rounded-t transition-all duration-1000 ease-out"
-                                style={{ 
-                                  height: `${Math.max(animatedHeight || height, 5)}%`,
-                                  backgroundColor: patternColor,
-                                  minHeight: '4px'
-                                }}
-                                title={`${quarter.period}: ${quarter.score.toFixed(1)} (${quarter.responses} responses)`}
-                              ></div>
-                            </div>
-                            <div className="text-xs text-gray-400 mt-1">{quarter.period.split(' ')[1]}</div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {/* Quarter scores and responses */}
-                    <div className="text-xs text-gray-500 space-y-1">
-                      {pattern.quarters.map((quarter, idx) => (
-                        <div key={idx} className="flex justify-between">
-                          <span>{quarter.period}:</span>
-                          <span className="font-medium">{quarter.score.toFixed(1)} ({quarter.responses})</span>
+                    {/* Scrollable container for many quarters */}
+                    <div className="relative">
+                      {hasMoreQuarters && scrollPosition > 0 && (
+                        <button
+                          onClick={() => {
+                            const container = document.getElementById(`scroll-${scrollKey}`);
+                            if (container) {
+                              container.scrollLeft -= 200;
+                              setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: container.scrollLeft - 200 });
+                            }
+                          }}
+                          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-1 shadow-md hover:bg-gray-50"
+                          aria-label="Scroll left"
+                        >
+                          <ChevronLeft className="w-4 h-4 text-gray-600" />
+                        </button>
+                      )}
+                      
+                      <div
+                        id={`scroll-${scrollKey}`}
+                        className="overflow-x-auto scrollbar-hide"
+                        style={{ scrollBehavior: 'smooth' }}
+                        onScroll={(e) => {
+                          setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: e.target.scrollLeft });
+                        }}
+                      >
+                        <div className="flex flex-col gap-3 min-w-max">
+                          {displayQuarters.map((quarter, idx) => {
+                            const barWidth = (quarter.score / maxScore) * 100;
+                            const animatedWidth = animatedValues[`${pattern.name}_${idx}`] 
+                              ? (animatedValues[`${pattern.name}_${idx}`] / maxScore) * 100 
+                              : 0;
+                            
+                            return (
+                              <div key={idx} className="flex items-center gap-3 min-w-[400px]">
+                                {/* Quarter Label */}
+                                <div className="w-20 text-xs text-gray-600 font-medium flex-shrink-0">
+                                  {quarter.period}
+                                </div>
+                                
+                                {/* Horizontal Bar */}
+                                <div className="flex-1 relative h-8 bg-gray-100 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full transition-all duration-1000 ease-out flex items-center justify-end pr-2"
+                                    style={{ 
+                                      width: `${Math.max(animatedWidth || barWidth, 2)}%`,
+                                      backgroundColor: patternColor,
+                                      minWidth: quarter.score > 0 ? '40px' : '0'
+                                    }}
+                                  >
+                                    <span className="text-xs font-semibold text-white">
+                                      {quarter.score.toFixed(1)}
+                                    </span>
+                                  </div>
+                                </div>
+                                
+                                {/* Response Count */}
+                                <div className="w-24 text-xs text-gray-500 flex-shrink-0 text-right">
+                                  {quarter.responses} responses
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                      ))}
+                      </div>
+
+                      {hasMoreQuarters && (
+                        <button
+                          onClick={() => {
+                            const container = document.getElementById(`scroll-${scrollKey}`);
+                            if (container) {
+                              container.scrollLeft += 200;
+                              setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: container.scrollLeft + 200 });
+                            }
+                          }}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-1 shadow-md hover:bg-gray-50"
+                          aria-label="Scroll right"
+                        >
+                          <ChevronRight className="w-4 h-4 text-gray-600" />
+                        </button>
+                      )}
                     </div>
                   </div>
 
-                  {/* Description */}
-                  <div className="text-xs text-gray-600 border-t border-gray-100 pt-3 mt-3">
+                  {/* Definition Text */}
+                  <div className="text-xs text-gray-600 border-t border-gray-100 pt-4 mt-4">
                     {pattern.description}
                   </div>
                 </div>
@@ -400,7 +659,16 @@ const ALIReports = () => {
 
         {/* Key Insights & Movement */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Key Insights & Movement</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">Key Insights & Movement</h2>
+            <button
+              onClick={() => setOpenDefinition('insights')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Key Insights"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="space-y-4">
               {mockData.insights.map((insight, idx) => {
@@ -419,6 +687,83 @@ const ALIReports = () => {
           </div>
         </section>
       </main>
+
+      {/* Definition Modals */}
+      {openDefinition && definitions[openDefinition] && (
+        <DefinitionModal
+          isOpen={!!openDefinition}
+          onClose={() => setOpenDefinition(null)}
+          title={definitions[openDefinition].title}
+          content={definitions[openDefinition].content}
+          sectionKey={openDefinition}
+          onOpenArchy={(key) => {
+            setOpenDefinition(null);
+            setShowArchyChat(true);
+          }}
+        />
+      )}
+
+      {/* Archy Chat Floating Button */}
+      <button
+        onClick={() => setShowArchyChat(!showArchyChat)}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
+        aria-label="Chat with Archy about your reports"
+      >
+        <img
+          src="/images/archy-avatar.png"
+          alt="Archy"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      </button>
+
+      {/* Archy Chat Overlay */}
+      {showArchyChat && (
+        <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
+          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
+            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-10 h-10">
+                    <img
+                      src="/images/archy-avatar.png"
+                      alt="Archy"
+                      className="w-10 h-10 rounded-full border-0"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
+                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowArchyChat(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
+                  aria-label="Close chat"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Chat Content */}
+              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                <ChatApp 
+                  context="ali-reports" 
+                  initialMessage="I'm looking at my Leadership Trends & Analytics report. Can you help me interpret the patterns, trends, and insights I'm seeing?"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
