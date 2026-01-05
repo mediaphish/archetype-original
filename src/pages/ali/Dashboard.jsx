@@ -443,7 +443,7 @@ const ALIDashboard = () => {
               </div>
 
               {/* X-AXIS LABEL - BELOW CHART, CENTERED, OUTSIDE BORDER */}
-              <div className="absolute -bottom-8 left-0 right-0 text-center">
+              <div className="absolute left-0 right-0 text-center" style={{ bottom: "0.3rem" }}>
                 <span className="text-[13px] font-medium text-black/[0.6]">
                   Clarity (Low → High)
                 </span>
@@ -451,8 +451,8 @@ const ALIDashboard = () => {
 
               {/* Y-AXIS LABEL - LEFT OF CHART, CENTERED VERTICALLY, ROTATED 90° CCW, INSIDE BORDER */}
               <div 
-                className="absolute left-3 top-1/2 origin-center"
-                style={{ transform: "translateY(-50%) rotate(-90deg)" }}
+                className="absolute top-1/2 origin-center"
+                style={{ left: "-3rem", transform: "translateY(-50%) rotate(-90deg)" }}
               >
                 <span className="text-[13px] font-medium text-black/[0.6] whitespace-nowrap">
                   (Stability + Trust) / 2
