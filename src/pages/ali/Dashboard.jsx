@@ -1,15 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3 } from 'lucide-react';
 
 const ALIDashboard = () => {
   const [expandedZone, setExpandedZone] = useState(null);
   const [expandedProfile, setExpandedProfile] = useState(false);
+  const [hoveredPattern, setHoveredPattern] = useState(null);
+  const [hoveredMetric, setHoveredMetric] = useState(null);
+  const [hoveredChartPoint, setHoveredChartPoint] = useState(null);
+  const [animatedValues, setAnimatedValues] = useState({});
+  const [chartAnimated, setChartAnimated] = useState(false);
+  const chartRef = useRef(null);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
+
+  // Animation on mount
+  useEffect(() => {
+    // Animate progress bars and numbers
+    const animateValue = (key, start, end, duration = 1000) => {
+      const startTime = performance.now();
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const current = start + (end - start) * easeOutQuart;
+        
+        setAnimatedValues(prev => ({ ...prev, [key]: current }));
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      requestAnimationFrame(animate);
+    };
+
+    // Animate all numeric values
+    setTimeout(() => {
+      Object.entries(mockData.coreScores).forEach(([key, value]) => {
+        animateValue(`core_${key}`, 0, value.rolling, 1200);
+      });
+      
+      Object.entries(mockData.scores.patterns).forEach(([key, value]) => {
+        animateValue(`pattern_${key}`, 0, value.rolling, 1200);
+      });
+
+      animateValue('trajectory', 0, mockData.trajectory.value, 1000);
+      animateValue('honesty', 0, mockData.leadershipProfile.honesty.score, 1000);
+      animateValue('clarity_level', 0, mockData.leadershipProfile.clarity.level, 1000);
+      animateValue('response_overall', 0, mockData.responseCounts.overall, 800);
+      animateValue('response_quarter', 0, mockData.responseCounts.thisQuarter, 800);
+      animateValue('response_completion', 0, mockData.responseCounts.avgCompletion, 800);
+      animateValue('response_rate', 0, mockData.responseCounts.responseRate, 800);
+    }, 100);
+
+    // Animate chart lines
+    setTimeout(() => {
+      setChartAnimated(true);
+    }, 300);
+  }, []);
 
   // Mock data matching the API structure
   const mockData = {
@@ -131,6 +182,12 @@ const ALIDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+      `}</style>
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -184,7 +241,11 @@ const ALIDashboard = () => {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Dashboard</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Alignment Score Card */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+            <div 
+              className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
+              onMouseEnter={() => setHoveredMetric('alignment')}
+              onMouseLeave={() => setHoveredMetric(null)}
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="text-sm font-medium text-gray-600">Alignment</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
@@ -192,22 +253,34 @@ const ALIDashboard = () => {
                   <span>+{mockData.coreScores.alignment.trend.toFixed(1)}</span>
                 </div>
               </div>
-              <div className="text-4xl font-bold mb-2 text-orange-500">
-                {mockData.coreScores.alignment.rolling.toFixed(1)}
+              <div className="text-4xl font-bold mb-2 text-orange-500 transition-all duration-300">
+                {(animatedValues.core_alignment ?? mockData.coreScores.alignment.rolling).toFixed(1)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-orange-500"
-                    style={{ width: `${Math.min(Math.max(mockData.coreScores.alignment.rolling, 0), 100)}%` }}
+                    className="h-full bg-orange-500 transition-all duration-1000 ease-out"
+                    style={{ width: `${Math.min(Math.max(animatedValues.core_alignment ?? 0, 0), 100)}%` }}
                   ></div>
                 </div>
               </div>
               <div className="text-xs text-gray-500">Current: {mockData.coreScores.alignment.current.toFixed(1)}</div>
+              {hoveredMetric === 'alignment' && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-50 whitespace-nowrap">
+                  Rolling: {mockData.coreScores.alignment.rolling.toFixed(1)}<br/>
+                  Current: {mockData.coreScores.alignment.current.toFixed(1)}<br/>
+                  Trend: +{mockData.coreScores.alignment.trend.toFixed(1)}
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                </div>
+              )}
             </div>
 
             {/* Stability Score Card */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+            <div 
+              className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
+              onMouseEnter={() => setHoveredMetric('stability')}
+              onMouseLeave={() => setHoveredMetric(null)}
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="text-sm font-medium text-gray-600">Stability</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
@@ -215,22 +288,34 @@ const ALIDashboard = () => {
                   <span>+{mockData.coreScores.stability.trend.toFixed(1)}</span>
                 </div>
               </div>
-              <div className="text-4xl font-bold mb-2 text-yellow-500">
-                {mockData.coreScores.stability.rolling.toFixed(1)}
+              <div className="text-4xl font-bold mb-2 text-yellow-500 transition-all duration-300">
+                {(animatedValues.core_stability ?? mockData.coreScores.stability.rolling).toFixed(1)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-yellow-500"
-                    style={{ width: `${Math.min(Math.max(mockData.coreScores.stability.rolling, 0), 100)}%` }}
+                    className="h-full bg-yellow-500 transition-all duration-1000 ease-out"
+                    style={{ width: `${Math.min(Math.max(animatedValues.core_stability ?? 0, 0), 100)}%` }}
                   ></div>
                 </div>
               </div>
               <div className="text-xs text-gray-500">Current: {mockData.coreScores.stability.current.toFixed(1)}</div>
+              {hoveredMetric === 'stability' && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-50 whitespace-nowrap">
+                  Rolling: {mockData.coreScores.stability.rolling.toFixed(1)}<br/>
+                  Current: {mockData.coreScores.stability.current.toFixed(1)}<br/>
+                  Trend: +{mockData.coreScores.stability.trend.toFixed(1)}
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                </div>
+              )}
             </div>
 
             {/* Clarity Score Card */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+            <div 
+              className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
+              onMouseEnter={() => setHoveredMetric('clarity')}
+              onMouseLeave={() => setHoveredMetric(null)}
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="text-sm font-medium text-gray-600">Clarity</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
@@ -238,31 +323,53 @@ const ALIDashboard = () => {
                   <span>+{mockData.coreScores.clarity.trend.toFixed(1)}</span>
                 </div>
               </div>
-              <div className="text-4xl font-bold mb-2 text-green-500">
-                {mockData.coreScores.clarity.rolling.toFixed(1)}
+              <div className="text-4xl font-bold mb-2 text-green-500 transition-all duration-300">
+                {(animatedValues.core_clarity ?? mockData.coreScores.clarity.rolling).toFixed(1)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-green-500"
-                    style={{ width: `${Math.min(Math.max(mockData.coreScores.clarity.rolling, 0), 100)}%` }}
+                    className="h-full bg-green-500 transition-all duration-1000 ease-out"
+                    style={{ width: `${Math.min(Math.max(animatedValues.core_clarity ?? 0, 0), 100)}%` }}
                   ></div>
                 </div>
               </div>
               <div className="text-xs text-gray-500">Current: {mockData.coreScores.clarity.current.toFixed(1)}</div>
+              {hoveredMetric === 'clarity' && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-50 whitespace-nowrap">
+                  Rolling: {mockData.coreScores.clarity.rolling.toFixed(1)}<br/>
+                  Current: {mockData.coreScores.clarity.current.toFixed(1)}<br/>
+                  Trend: +{mockData.coreScores.clarity.trend.toFixed(1)}
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                </div>
+              )}
             </div>
 
             {/* Trajectory Score Card */}
-            <div className="bg-green-50 rounded-lg border border-green-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+            <div 
+              className="bg-green-50 rounded-lg border border-green-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
+              onMouseEnter={() => setHoveredMetric('trajectory')}
+              onMouseLeave={() => setHoveredMetric(null)}
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="text-sm font-medium text-gray-600">Trajectory</div>
                 <div className="text-xs text-gray-500">DRIFTINDEX</div>
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-4xl text-green-600">↑</span>
-                <span className="text-4xl font-bold text-green-600">+{mockData.trajectory.value.toFixed(1)}</span>
+                <span className="text-4xl text-green-600 transition-transform duration-300 hover:scale-110">↑</span>
+                <span className="text-4xl font-bold text-green-600 transition-all duration-300">
+                  +{(animatedValues.trajectory ?? mockData.trajectory.value).toFixed(1)}
+                </span>
               </div>
               <div className="text-sm font-medium text-green-600">Improving Momentum</div>
+              {hoveredMetric === 'trajectory' && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-50 whitespace-nowrap">
+                  Value: +{mockData.trajectory.value.toFixed(1)}<br/>
+                  Direction: {mockData.trajectory.direction}<br/>
+                  Method: {mockData.trajectory.method}
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -343,15 +450,27 @@ const ALIDashboard = () => {
                   ></div>
                   {/* Current Position Dot */}
                   <div
-                    className="absolute w-4 h-4 bg-blue-600 rounded-full border-2 border-white transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-10"
+                    className="absolute w-4 h-4 bg-blue-600 rounded-full border-2 border-white transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-10 transition-all duration-1000 ease-out cursor-pointer hover:scale-125 hover:shadow-xl"
                     style={{
                       left: `${mockData.experienceMap.x}%`,
-                      top: `${100 - mockData.experienceMap.y}%`
+                      top: `${100 - mockData.experienceMap.y}%`,
+                      animation: 'pulse 2s ease-in-out infinite'
                     }}
+                    onMouseEnter={() => setHoveredMetric('experienceMap')}
+                    onMouseLeave={() => setHoveredMetric(null)}
                   >
-                    <div className="absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded z-20">
-                      Current Position
-                    </div>
+                    {hoveredMetric === 'experienceMap' && (
+                      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded z-20">
+                        X: {mockData.experienceMap.x.toFixed(1)}<br/>
+                        Y: {mockData.experienceMap.y.toFixed(1)}<br/>
+                        Zone: {mockData.experienceMap.zone}
+                      </div>
+                    )}
+                    {hoveredMetric !== 'experienceMap' && (
+                      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded z-20 opacity-0 hover:opacity-100 transition-opacity">
+                        Current Position
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -455,10 +574,15 @@ const ALIDashboard = () => {
                 const Icon = iconMap[pattern] || Lightbulb;
 
                 return (
-                  <div key={pattern} className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
+                  <div 
+                    key={pattern} 
+                    className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
+                    onMouseEnter={() => setHoveredPattern(pattern)}
+                    onMouseLeave={() => setHoveredPattern(null)}
+                  >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Icon className="w-4 h-4" style={{ color: patternColor }} />
+                        <Icon className="w-4 h-4 transition-transform duration-200 hover:scale-110" style={{ color: patternColor }} />
                         <div className="text-sm font-medium text-gray-600 capitalize">{pattern.replace('_', ' ')}</div>
                       </div>
                       <div className={`flex items-center gap-1 text-sm ${trendColor}`}>
@@ -466,21 +590,32 @@ const ALIDashboard = () => {
                         <span>{trendDisplay}</span>
                       </div>
                     </div>
-                    <div className="text-4xl font-bold mb-3" style={{ color: patternColor }}>
-                      {scores.rolling.toFixed(1)}
+                    <div className="text-4xl font-bold mb-3 transition-all duration-300" style={{ color: patternColor }}>
+                      {(animatedValues[`pattern_${pattern}`] ?? scores.rolling).toFixed(1)}
                     </div>
                     
                     {/* Progress Bar */}
                     <div className="mb-3">
                       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full"
-                          style={{ width: `${progressPercentage}%`, backgroundColor: patternColor }}
+                          className="h-full transition-all duration-1000 ease-out"
+                          style={{ 
+                            width: `${Math.min(Math.max(animatedValues[`pattern_${pattern}`] ?? 0, 0), 100)}%`, 
+                            backgroundColor: patternColor 
+                          }}
                         ></div>
                       </div>
                     </div>
                     
                     <div className="text-xs text-gray-500">Current: {scores.current.toFixed(1)}</div>
+                    {hoveredPattern === pattern && (
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-50 whitespace-nowrap">
+                        Rolling: {scores.rolling.toFixed(1)}<br/>
+                        Current: {scores.current.toFixed(1)}<br/>
+                        Change: {trendDisplay}
+                        <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -502,8 +637,8 @@ const ALIDashboard = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="text-sm font-medium text-gray-600 mb-2">Honesty</div>
-                    <div className="text-4xl font-bold text-gray-900">
-                      {mockData.leadershipProfile.honesty.score.toFixed(1)}
+                    <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
+                      {(animatedValues.honesty ?? mockData.leadershipProfile.honesty.score).toFixed(1)}
                     </div>
                   </div>
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
@@ -516,8 +651,8 @@ const ALIDashboard = () => {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
-                    <div className="text-4xl font-bold text-gray-900">
-                      {mockData.leadershipProfile.clarity.level.toFixed(1)}
+                    <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
+                      {(animatedValues.clarity_level ?? mockData.leadershipProfile.clarity.level).toFixed(1)}
                     </div>
                   </div>
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
@@ -555,13 +690,13 @@ const ALIDashboard = () => {
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
                         <div className="text-xs text-gray-500 mb-1">Leader</div>
-                        <div className="h-8 bg-blue-100 rounded flex items-center justify-end pr-2" style={{ width: `${(leaderScore / maxScore) * 100}%` }}>
+                        <div className="h-8 bg-blue-100 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(leaderScore / maxScore) * 100}%` }}>
                           <span className="text-xs font-semibold text-blue-700">{leaderScore.toFixed(1)}</span>
                         </div>
                       </div>
                       <div className="flex-1">
                         <div className="text-xs text-gray-500 mb-1">Team</div>
-                        <div className="h-8 bg-gray-100 rounded flex items-center justify-end pr-2" style={{ width: `${(teamScore / maxScore) * 100}%` }}>
+                        <div className="h-8 bg-green-100 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(teamScore / maxScore) * 100}%` }}>
                           <span className="text-xs font-semibold text-gray-700">{teamScore.toFixed(1)}</span>
                         </div>
                       </div>
@@ -595,57 +730,118 @@ const ALIDashboard = () => {
                 <div className="absolute -left-10 bottom-0 text-xs text-gray-500">0</div>
                 
                 {/* Chart lines - all 7 patterns */}
-                <svg className="absolute inset-0 w-full h-full" style={{ padding: '10px' }}>
+                <svg className="absolute inset-0 w-full h-full" style={{ padding: '10px' }} ref={chartRef}>
                   {/* Clarity - Blue */}
                   <polyline
                     points="20,185 120,172 220,162 320,152"
                     fill="none"
                     stroke="#2563eb"
-                    strokeWidth="2"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredChartPoint('clarity')}
+                    onMouseLeave={() => setHoveredChartPoint(null)}
+                    style={{ 
+                      strokeDasharray: chartAnimated ? "0" : "1000",
+                      strokeDashoffset: chartAnimated ? "0" : "1000",
+                      strokeWidth: hoveredChartPoint === 'clarity' ? 3 : 2,
+                      transition: 'stroke-dashoffset 1.5s ease-out, stroke-width 0.2s'
+                    }}
                   />
                   {/* Consistency - Teal */}
                   <polyline
                     points="20,190 120,178 220,168 320,158"
                     fill="none"
                     stroke="#14b8a6"
-                    strokeWidth="2"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredChartPoint('consistency')}
+                    onMouseLeave={() => setHoveredChartPoint(null)}
+                    style={{ 
+                      strokeDasharray: chartAnimated ? "0" : "1000",
+                      strokeDashoffset: chartAnimated ? "0" : "1000",
+                      strokeWidth: hoveredChartPoint === 'consistency' ? 3 : 2,
+                      transition: 'stroke-dashoffset 1.5s ease-out 0.1s, stroke-width 0.2s'
+                    }}
                   />
                   {/* Trust - Purple */}
                   <polyline
                     points="20,195 120,185 220,175 320,165"
                     fill="none"
                     stroke="#8b5cf6"
-                    strokeWidth="2"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredChartPoint('trust')}
+                    onMouseLeave={() => setHoveredChartPoint(null)}
+                    style={{ 
+                      strokeDasharray: chartAnimated ? "0" : "1000",
+                      strokeDashoffset: chartAnimated ? "0" : "1000",
+                      strokeWidth: hoveredChartPoint === 'trust' ? 3 : 2,
+                      transition: 'stroke-dashoffset 1.5s ease-out 0.2s, stroke-width 0.2s'
+                    }}
                   />
                   {/* Communication - Orange */}
                   <polyline
                     points="20,200 120,188 220,178 320,168"
                     fill="none"
                     stroke="#f59e0b"
-                    strokeWidth="2"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredChartPoint('communication')}
+                    onMouseLeave={() => setHoveredChartPoint(null)}
+                    style={{ 
+                      strokeDasharray: chartAnimated ? "0" : "1000",
+                      strokeDashoffset: chartAnimated ? "0" : "1000",
+                      strokeWidth: hoveredChartPoint === 'communication' ? 3 : 2,
+                      transition: 'stroke-dashoffset 1.5s ease-out 0.3s, stroke-width 0.2s'
+                    }}
                   />
                   {/* Alignment - Green */}
                   <polyline
                     points="20,180 120,170 220,160 320,150"
                     fill="none"
                     stroke="#10b981"
-                    strokeWidth="2"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredChartPoint('alignment')}
+                    onMouseLeave={() => setHoveredChartPoint(null)}
+                    style={{ 
+                      strokeDasharray: chartAnimated ? "0" : "1000",
+                      strokeDashoffset: chartAnimated ? "0" : "1000",
+                      strokeWidth: hoveredChartPoint === 'alignment' ? 3 : 2,
+                      transition: 'stroke-dashoffset 1.5s ease-out 0.4s, stroke-width 0.2s'
+                    }}
                   />
                   {/* Stability - Indigo */}
                   <polyline
                     points="20,192 120,180 220,170 320,160"
                     fill="none"
                     stroke="#6366f1"
-                    strokeWidth="2"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredChartPoint('stability')}
+                    onMouseLeave={() => setHoveredChartPoint(null)}
+                    style={{ 
+                      strokeDasharray: chartAnimated ? "0" : "1000",
+                      strokeDashoffset: chartAnimated ? "0" : "1000",
+                      strokeWidth: hoveredChartPoint === 'stability' ? 3 : 2,
+                      transition: 'stroke-dashoffset 1.5s ease-out 0.5s, stroke-width 0.2s'
+                    }}
                   />
                   {/* Leadership Drift - Red */}
                   <polyline
                     points="20,205 120,195 220,185 320,175"
                     fill="none"
                     stroke="#ef4444"
-                    strokeWidth="2"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredChartPoint('leadership_drift')}
+                    onMouseLeave={() => setHoveredChartPoint(null)}
+                    style={{ 
+                      strokeDasharray: chartAnimated ? "0" : "1000",
+                      strokeDashoffset: chartAnimated ? "0" : "1000",
+                      strokeWidth: hoveredChartPoint === 'leadership_drift' ? 3 : 2,
+                      transition: 'stroke-dashoffset 1.5s ease-out 0.6s, stroke-width 0.2s'
+                    }}
                   />
                 </svg>
+                {hoveredChartPoint && (
+                  <div className="absolute top-4 right-4 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-50">
+                    {hoveredChartPoint.replace('_', ' ').charAt(0).toUpperCase() + hoveredChartPoint.replace('_', ' ').slice(1)}
+                  </div>
+                )}
                 
                 {/* X-axis labels */}
                 <div className="absolute bottom-0 left-0 right-0 flex justify-around pt-2">
@@ -696,22 +892,30 @@ const ALIDashboard = () => {
           <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Response Analytics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
+              <div className="transition-all duration-200 hover:scale-105">
                 <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
-                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.overall}</div>
+                <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
+                  {Math.round(animatedValues.response_overall ?? mockData.responseCounts.overall)}
+                </div>
               </div>
-              <div>
+              <div className="transition-all duration-200 hover:scale-105">
                 <div className="text-sm font-medium text-gray-600 mb-2">This Quarter</div>
-                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.thisQuarter}</div>
+                <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
+                  {Math.round(animatedValues.response_quarter ?? mockData.responseCounts.thisQuarter)}
+                </div>
               </div>
-              <div>
+              <div className="transition-all duration-200 hover:scale-105">
                 <div className="text-sm font-medium text-gray-600 mb-2">Avg. Completion</div>
-                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.avgCompletion}</div>
+                <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
+                  {(animatedValues.response_completion ?? mockData.responseCounts.avgCompletion).toFixed(1)}
+                </div>
                 <div className="text-xs text-gray-500 mt-1">min</div>
               </div>
-              <div>
+              <div className="transition-all duration-200 hover:scale-105">
                 <div className="text-sm font-medium text-gray-600 mb-2">Response Rate</div>
-                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.responseRate}</div>
+                <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
+                  {Math.round(animatedValues.response_rate ?? mockData.responseCounts.responseRate)}
+                </div>
                 <div className="text-xs text-gray-500 mt-1">%</div>
               </div>
             </div>
