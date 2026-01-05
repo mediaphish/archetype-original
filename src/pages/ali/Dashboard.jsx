@@ -671,15 +671,15 @@ const ALIDashboard = () => {
 
         {/* Section 8: Multi-Year Trends */}
         <section className="mb-12">
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200 p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">Multi-Year Trends & Insights</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">Multi-Year Trends & Insights</h2>
                 <p className="text-sm text-gray-600">View comprehensive analysis with historical comparisons and pattern evolution</p>
               </div>
               <button
                 onClick={() => handleNavigate('/ali/reports')}
-                className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 whitespace-nowrap"
               >
                 View Full Report &gt;
               </button>
