@@ -6,34 +6,34 @@ type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
 publish_date: "2026-01-18"
-scripture_reference: "1 Corinthians 4:2"
-summary: "Leadership is a trust to steward faithfully, not something to possess."
+scripture_reference: "1 Peter 4:10–11 (ESV)"
+summary: "Stewardship leads with responsibility and dependence, not control and entitlement."
 ---
 
 ## Scripture
 
-**1 Corinthians 4:2**  
-https://www.esv.org/1+Corinthians+4:2/
+**1 Peter 4:10–11 (ESV)**  
+https://www.esv.org/1+Peter+4:10-11/
 
 ## Reflection
 
-Leadership often tempts people toward ownership rather than stewardship. When leaders view their role as ownership, they protect territory, resist change, and measure success by control. Scripture calls leaders to something different: faithfulness in what has been entrusted, not dominance over what is held.
+Leadership breaks when it treats people, roles, and outcomes like personal property. Ownership creates entitlement. Stewardship creates responsibility.
 
-Stewardship shifts the focus from possession to care. Servant leaders understand that influence, authority, and opportunity are entrusted temporarily and must be handled responsibly. This perspective frees leaders from ego-driven decisions and aligns leadership with long-term impact rather than short-term gain.
+Peter frames everything we carry as something entrusted. Not earned. Not possessed. Given. That one shift changes how leaders lead. When you see your influence as a trust, you stop using it to protect yourself and start using it to serve others.
 
-Faithful stewardship asks a different question—not “What can I get from this?” but “What has been entrusted to me, and how do I care for it well?”
+Verse 11 completes the picture. Stewardship is not just what we do—it’s how we do it. Leaders do not lead from self-sufficiency. They lead from dependence. Strength comes from God, not image. And the goal is not personal credit, but God’s glory. That’s the difference between leadership that consumes people and leadership that lifts them.
 
 ## Practical Application
 
-- Reflect on an area where you may be acting like an owner instead of a steward.
-- Ask how your decisions affect people beyond immediate outcomes.
-- Choose faithfulness over control in one decision today.
+- Identify one area where you’ve started acting like you “own” the outcome.
+- Reframe it as something entrusted to you for others’ good.
+- Lead today with service, not entitlement—and with dependence, not performance.
 
 ## Takeaways
 
-- Leadership is a trust, not a possession.
-- Faithfulness matters more than visibility or control.
+- Stewardship leads with responsibility, not control.
+- Servant leadership relies on God’s strength, not personal image.
 
 ## Closing Thought
 
-Today I will lead as a faithful steward, not an owner.
+Today I will lead as a steward—serving with what I’ve been given, in the strength God supplies.
