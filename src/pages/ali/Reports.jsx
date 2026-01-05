@@ -219,6 +219,41 @@ const ALIReports = () => {
     }
   };
 
+  // Zone background colors and descriptions
+  const getZoneInfo = (zone) => {
+    const zones = {
+      green: {
+        bg: 'bg-green-100',
+        border: 'border-green-300',
+        text: 'text-green-800',
+        label: 'Green Zone',
+        description: 'Healthy, thriving leadership environment. Maintain consistency to sustain this level.'
+      },
+      yellow: {
+        bg: 'bg-yellow-100',
+        border: 'border-yellow-300',
+        text: 'text-yellow-800',
+        label: 'Yellow Zone',
+        description: 'Stable but with room for improvement. Focus on strengthening core patterns to move toward Green Zone.'
+      },
+      orange: {
+        bg: 'bg-orange-100',
+        border: 'border-orange-300',
+        text: 'text-orange-800',
+        label: 'Orange Zone',
+        description: 'Warning signs of drift and instability. Address core patterns to prevent further decline.'
+      },
+      red: {
+        bg: 'bg-red-100',
+        border: 'border-red-300',
+        text: 'text-red-800',
+        label: 'Red Zone',
+        description: 'Critical issues requiring immediate attention. Focus on rebuilding trust and clarity.'
+      }
+    };
+    return zones[zone] || zones.yellow;
+  };
+
   // Mock data matching the image exactly
   const mockData = {
     aliImprovement: {
@@ -228,7 +263,14 @@ const ALIReports = () => {
     },
     currentALI: {
       score: 73.7,
-      rolling: 71.8
+      rolling: 71.8,
+      zone: 'yellow',
+      history: [
+        { period: '2025 Q4', score: 64.3, responses: 18 },
+        { period: '2026 Q1', score: 68.5, responses: 23 },
+        { period: '2026 Q2', score: 70.2, responses: 21 },
+        { period: '2027 Q1', score: 73.7, responses: 24 }
+      ]
     },
     totalResponses: {
       count: 86,
@@ -486,10 +528,10 @@ const ALIReports = () => {
           </button>
         </div>
 
-        {/* PRIORITY 1: ALI Score - Most Important */}
+        {/* PRIORITY 1: ALI Score - Standalone Hero Panel */}
         <section className="mb-8">
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border-2 border-blue-300 p-8">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white rounded-lg border-2 border-gray-200 p-8 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <h2 className="text-2xl font-bold text-gray-900">ALI Overall Score</h2>
                 <button
@@ -501,29 +543,130 @@ const ALIReports = () => {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Current ALI Score */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="text-sm font-medium text-gray-600 mb-2">Current Score</div>
-                <div className="text-6xl font-bold text-blue-600 mb-2">
+            
+            {/* Hero Score Display */}
+            <div className="mb-6">
+              <div className="flex items-baseline gap-4 mb-2">
+                <div className="text-7xl font-bold text-blue-600">
                   {mockData.currentALI.score.toFixed(1)}
                 </div>
-                <div className="text-sm text-gray-500">Rolling: {mockData.currentALI.rolling.toFixed(1)}</div>
+                <div className="text-xl text-gray-600 pt-2">
+                  Rolling: {mockData.currentALI.rolling.toFixed(1)}
+                </div>
               </div>
-              
-              {/* ALI Overall Improvement */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="text-sm font-medium text-gray-600 mb-2">Improvement</div>
-                <div className="text-5xl font-bold text-green-600 mb-2">+{mockData.aliImprovement.percent.toFixed(1)}%</div>
-                <div className="text-sm text-gray-500">from {mockData.aliImprovement.from.toFixed(1)} to {mockData.aliImprovement.to.toFixed(1)}</div>
+            </div>
+
+            {/* Score Progression Line Chart */}
+            <div className="mb-6">
+              <div className="h-64 relative bg-gray-50 rounded-lg p-4">
+                <div className="absolute inset-0 p-4">
+                  <svg className="w-full h-full" viewBox="0 0 400 160" preserveAspectRatio="none">
+                    {/* Y-axis labels */}
+                    <text x="5" y="20" className="text-xs fill-gray-500" fontSize="9">100</text>
+                    <text x="5" y="60" className="text-xs fill-gray-500" fontSize="9">75</text>
+                    <text x="5" y="100" className="text-xs fill-gray-500" fontSize="9">50</text>
+                    <text x="5" y="140" className="text-xs fill-gray-500" fontSize="9">25</text>
+                    <text x="5" y="160" className="text-xs fill-gray-500" fontSize="9">0</text>
+                    
+                    {/* Grid lines */}
+                    <line x1="30" y1="20" x2="400" y2="20" stroke="#e5e7eb" strokeWidth="1" />
+                    <line x1="30" y1="60" x2="400" y2="60" stroke="#e5e7eb" strokeWidth="1" />
+                    <line x1="30" y1="100" x2="400" y2="100" stroke="#e5e7eb" strokeWidth="1" />
+                    <line x1="30" y1="140" x2="400" y2="140" stroke="#e5e7eb" strokeWidth="1" />
+                    
+                    {/* Score line */}
+                    <polyline
+                      points={mockData.currentALI.history.map((point, idx) => {
+                        const x = 40 + (idx * (360 / (mockData.currentALI.history.length - 1)));
+                        const y = 160 - ((point.score / 100) * 140);
+                        return `${x},${y}`;
+                      }).join(' ')}
+                      fill="none"
+                      stroke="#2563eb"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    
+                    {/* Data points */}
+                    {mockData.currentALI.history.map((point, idx) => {
+                      const x = 40 + (idx * (360 / (mockData.currentALI.history.length - 1)));
+                      const y = 160 - ((point.score / 100) * 140);
+                      return (
+                        <g key={idx}>
+                          <circle
+                            cx={x}
+                            cy={y}
+                            r="5"
+                            fill="#2563eb"
+                            stroke="white"
+                            strokeWidth="2"
+                          />
+                          {/* Score label */}
+                          <text
+                            x={x}
+                            y={y - 10}
+                            textAnchor="middle"
+                            className="text-xs font-semibold fill-blue-600"
+                            fontSize="11"
+                          >
+                            {point.score.toFixed(1)}
+                          </text>
+                        </g>
+                      );
+                    })}
+                    
+                    {/* Period labels */}
+                    {mockData.currentALI.history.map((point, idx) => {
+                      const x = 40 + (idx * (360 / (mockData.currentALI.history.length - 1)));
+                      return (
+                        <text
+                          key={idx}
+                          x={x}
+                          y="175"
+                          textAnchor="middle"
+                          className="text-xs fill-gray-600 font-medium"
+                          fontSize="10"
+                        >
+                          {point.period}
+                        </text>
+                      );
+                    })}
+                  </svg>
+                </div>
               </div>
-              
-              {/* Total Responses */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
-                <div className="text-5xl font-bold text-gray-900 mb-2">{mockData.totalResponses.count}</div>
-                <div className="text-sm text-gray-500">across {mockData.totalResponses.surveys} surveys</div>
-              </div>
+            </div>
+
+            {/* Zone Indicator with Colored Background */}
+            {(() => {
+              const zoneInfo = getZoneInfo(mockData.currentALI.zone);
+              return (
+                <div className={`${zoneInfo.bg} ${zoneInfo.border} rounded-lg border-2 p-6`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-medium text-gray-600 mb-1">Current Zone</div>
+                      <div className={`text-3xl font-bold ${zoneInfo.text} capitalize mb-2`}>
+                        {zoneInfo.label}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`text-sm ${zoneInfo.text} leading-relaxed`}>
+                    {zoneInfo.description}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </section>
+
+        {/* Supporting Metrics */}
+        <section className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* ALI Overall Improvement */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="text-sm font-medium text-gray-600 mb-2">Improvement</div>
+              <div className="text-5xl font-bold text-green-600 mb-2">+{mockData.aliImprovement.percent.toFixed(1)}%</div>
+              <div className="text-sm text-gray-500">from {mockData.aliImprovement.from.toFixed(1)} to {mockData.aliImprovement.to.toFixed(1)}</div>
             </div>
           </div>
         </section>
