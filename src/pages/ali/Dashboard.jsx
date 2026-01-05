@@ -256,52 +256,62 @@ const ALIDashboard = () => {
             </div>
           )}
 
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
-            <div className="relative w-full h-96 border border-gray-300 bg-gray-50">
-              {/* Equal Quadrants - 50/50 split - NO colored backgrounds */}
-              <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-                <div className="border-r border-b border-gray-200"></div>
-                <div className="border-b border-gray-200"></div>
-                <div className="border-r border-gray-200"></div>
-                <div></div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 lg:p-8">
+            <div className="relative w-full border border-gray-300 bg-gray-50 rounded" style={{ paddingLeft: '48px', paddingRight: '16px', paddingTop: '16px', paddingBottom: '32px' }}>
+              {/* Chart Container - Square aspect ratio */}
+              <div className="relative" style={{ paddingBottom: '100%' }}>
+                <div className="absolute inset-0">
+                  {/* Equal Quadrants - 50/50 split */}
+                  <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
+                    <div className="border-r border-b border-gray-200"></div>
+                    <div className="border-b border-gray-200"></div>
+                    <div className="border-r border-gray-200"></div>
+                    <div></div>
+                  </div>
+
+                  {/* Zone Boundaries (dashed lines at 50%) */}
+                  <div className="absolute top-0 bottom-0 left-1/2 w-px border-l-2 border-dashed border-gray-400"></div>
+                  <div className="absolute left-0 right-0 top-1/2 h-px border-t-2 border-dashed border-gray-400"></div>
+
+                  {/* Zone Labels */}
+                  <div className="absolute top-4 left-4 text-gray-900 font-semibold text-sm sm:text-base">High Strain</div>
+                  <div className="absolute top-4 right-4 text-gray-900 font-semibold text-sm sm:text-base">Harmony</div>
+                  <div className="absolute bottom-4 left-4 text-gray-900 font-semibold text-sm sm:text-base">
+                    <div>Stress</div>
+                    <div className="text-xs font-normal text-gray-600">Low</div>
+                  </div>
+                  <div className="absolute bottom-4 right-4 text-gray-900 font-semibold text-sm sm:text-base">Hazard</div>
+
+                  {/* Current Position Dot */}
+                  <div
+                    className="absolute w-4 h-4 bg-blue-600 rounded-full border-2 border-white transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-10"
+                    style={{
+                      left: `${mockData.experienceMap.x}%`,
+                      top: `${100 - mockData.experienceMap.y}%`
+                    }}
+                  >
+                    <div className="absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded z-20">
+                      Current Position
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Zone Boundaries (dashed lines at 50%) */}
-              <div className="absolute top-0 bottom-0 left-1/2 w-px border-l-2 border-dashed border-gray-400"></div>
-              <div className="absolute left-0 right-0 top-1/2 h-px border-t-2 border-dashed border-gray-400"></div>
-
-              {/* Zone Labels */}
-              <div className="absolute top-4 left-4 text-gray-900 font-semibold">Strain</div>
-              <div className="absolute top-4 right-4 text-gray-900 font-semibold">Harmony</div>
-              <div className="absolute bottom-4 left-4 text-gray-900 font-semibold">Stress</div>
-              <div className="absolute bottom-4 right-4 text-gray-900 font-semibold">Hazard</div>
-
-              {/* Axes Labels */}
-              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-medium">
-                Clarity (Low) ← → Clarity (High)
-              </div>
-              <div className="absolute left-2 top-1/2 transform -translate-y-1/2 -rotate-90 origin-center text-xs text-gray-600 font-medium whitespace-nowrap">
+              {/* Y-axis Label (Vertical) - Outside chart area */}
+              <div className="absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 -rotate-90 origin-center text-xs text-gray-600 font-medium whitespace-nowrap" style={{ transformOrigin: 'center' }}>
                 Stability + Trust (Low) ← → Stability + Trust (High)
               </div>
-              <div className="absolute left-2 top-2 text-xs text-gray-500">High</div>
-              <div className="absolute left-2 bottom-2 text-xs text-gray-500">Low</div>
+              <div className="absolute left-2 sm:left-4 top-4 text-xs text-gray-500">High</div>
+              <div className="absolute left-2 sm:left-4 bottom-8 text-xs text-gray-500">Low</div>
 
-              {/* Current Position Dot */}
-              <div
-                className="absolute w-4 h-4 bg-blue-600 rounded-full border-2 border-white transform -translate-x-1/2 -translate-y-1/2 shadow-lg z-10"
-                style={{
-                  left: `${mockData.experienceMap.x}%`,
-                  top: `${100 - mockData.experienceMap.y}%`
-                }}
-              >
-                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1 rounded">
-                  Current Position
-                </div>
+              {/* X-axis Label (Horizontal) - At bottom */}
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-medium" style={{ left: 'calc(48px + 50%)' }}>
+                Clarity (Low) ← → Clarity (High)
               </div>
             </div>
 
             <div className="mt-4 text-sm text-gray-600">
-              <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 <div>
                   <strong>X-axis (Clarity):</strong> {mockData.experienceMap.x.toFixed(1)}
                 </div>
@@ -387,29 +397,39 @@ const ALIDashboard = () => {
         <section className="mb-12">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Profile</h2>
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="text-2xl font-bold text-gray-900 mb-4 capitalize">
+            <div className="text-2xl font-bold text-gray-900 mb-6 capitalize">
               {profileNames[mockData.leadershipProfile.profile]}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <div className="text-sm font-medium text-gray-600 mb-2">Honesty Axis</div>
-                <div className="text-lg font-semibold text-gray-900 mb-1">
-                  Score: {mockData.leadershipProfile.honesty.score.toFixed(1)}
-                </div>
-                <div className="text-sm text-gray-600 capitalize">
-                  State: {mockData.leadershipProfile.honesty.state}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Honesty Card */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-gray-600 mb-2">Honesty</div>
+                    <div className="text-4xl font-bold text-gray-900">
+                      {mockData.leadershipProfile.honesty.score.toFixed(1)}
+                    </div>
+                  </div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
+                    {mockData.leadershipProfile.honesty.state}
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className="text-sm font-medium text-gray-600 mb-2">Clarity Axis</div>
-                <div className="text-lg font-semibold text-gray-900 mb-1">
-                  Level: {mockData.leadershipProfile.clarity.level.toFixed(1)}
+              {/* Clarity Card */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
+                    <div className="text-4xl font-bold text-gray-900">
+                      {mockData.leadershipProfile.clarity.level.toFixed(1)}
+                    </div>
+                  </div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
+                    {mockData.leadershipProfile.clarity.state}
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600 capitalize">
-                  State: {mockData.leadershipProfile.clarity.state}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Std Dev: {mockData.leadershipProfile.clarity.stddev.toFixed(1)}
+                <div className="text-xs text-gray-500 mt-2">
+                  Stddev: {mockData.leadershipProfile.clarity.stddev.toFixed(1)}
                 </div>
               </div>
             </div>
