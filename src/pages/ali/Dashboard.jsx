@@ -704,6 +704,7 @@ const ALIDashboard = () => {
                   </div>
                 );
               })}
+              </div>
             </div>
           </div>
         </section>
