@@ -279,8 +279,8 @@ const ALIDashboard = () => {
           )}
 
           <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 lg:p-8">
-            <div className="relative w-full border border-gray-300 bg-gray-50 rounded" style={{ paddingLeft: '48px', paddingRight: '16px', paddingTop: '16px', paddingBottom: '32px' }}>
-              {/* Chart Container - Square aspect ratio */}
+            <div className="relative w-full max-w-md mx-auto border border-gray-300 bg-gray-50 rounded" style={{ paddingLeft: '48px', paddingRight: '16px', paddingTop: '16px', paddingBottom: '32px' }}>
+              {/* Chart Container - Square aspect ratio, compact size */}
               <div className="relative" style={{ paddingBottom: '100%' }}>
                 <div className="absolute inset-0">
                   {/* Equal Quadrants - 50/50 split with colors */}
