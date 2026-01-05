@@ -10,7 +10,7 @@ const ALIReports = () => {
   const [showArchyChat, setShowArchyChat] = useState(false);
   const [archyInitialMessage, setArchyInitialMessage] = useState(null);
   const [patternScrollPositions, setPatternScrollPositions] = useState({});
-  const [visibleQuarters, setVisibleQuarters] = useState(4); // Show last 4 quarters by default
+  const [timeRangeFilter, setTimeRangeFilter] = useState('last-4'); // 'last-4', 'last-8', 'last-year', 'all'
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -580,15 +580,31 @@ const ALIReports = () => {
 
         {/* Leadership Pattern Analysis - Horizontal Bar Charts (EXACT IMAGE DESIGN) */}
         <section className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Leadership Pattern Analysis</h2>
-            <button
-              onClick={() => setOpenDefinition('pattern-analysis')}
-              className="text-gray-400 hover:text-blue-600 transition-colors"
-              aria-label="Learn about Pattern Analysis"
-            >
-              <HelpCircle className="w-5 h-5" />
-            </button>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-gray-900">Leadership Pattern Analysis</h2>
+              <button
+                onClick={() => setOpenDefinition('pattern-analysis')}
+                className="text-gray-400 hover:text-blue-600 transition-colors"
+                aria-label="Learn about Pattern Analysis"
+              >
+                <HelpCircle className="w-5 h-5" />
+              </button>
+            </div>
+            {/* Time Range Filter */}
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-600">Time Range:</label>
+              <select
+                value={timeRangeFilter}
+                onChange={(e) => setTimeRangeFilter(e.target.value)}
+                className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="last-4">Last 4 Surveys</option>
+                <option value="last-8">Last 8 Surveys</option>
+                <option value="last-year">Last Year</option>
+                <option value="all">All Time</option>
+              </select>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -600,9 +616,27 @@ const ALIReports = () => {
               const scrollKey = pattern.name;
               const scrollPosition = patternScrollPositions[scrollKey] || 0;
               
-              // For scalability: show all quarters, but allow horizontal scrolling
-              const displayQuarters = pattern.quarters;
-              const hasMoreQuarters = pattern.quarters.length > 4;
+              // Filter quarters based on time range selection
+              const getFilteredQuarters = () => {
+                const allQuarters = pattern.quarters;
+                switch (timeRangeFilter) {
+                  case 'last-4':
+                    return allQuarters.slice(-4);
+                  case 'last-8':
+                    return allQuarters.slice(-8);
+                  case 'last-year':
+                    // Show last 4 quarters (1 year)
+                    return allQuarters.slice(-4);
+                  case 'all':
+                    return allQuarters;
+                  default:
+                    return allQuarters.slice(-4);
+                }
+              };
+              
+              const displayQuarters = getFilteredQuarters();
+              const hasMoreQuarters = displayQuarters.length > 4;
+              const totalQuarters = pattern.quarters.length;
 
               return (
                 <div key={pattern.name} className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
@@ -625,7 +659,12 @@ const ALIReports = () => {
                           <HelpCircle className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-xs text-gray-500">{pattern.quarters.length} survey cycles</p>
+                      <p className="text-xs text-gray-500">
+                        {displayQuarters.length} of {totalQuarters} survey cycles
+                        {timeRangeFilter !== 'all' && totalQuarters > displayQuarters.length && (
+                          <span className="text-gray-400"> (filtered)</span>
+                        )}
+                      </p>
                     </div>
                   </div>
 
@@ -647,31 +686,49 @@ const ALIReports = () => {
                   <div className="mb-4">
                     {/* Scrollable container for many quarters */}
                     <div className="relative">
-                      {hasMoreQuarters && scrollPosition > 0 && (
-                        <button
-                          onClick={() => {
-                            const container = document.getElementById(`scroll-${scrollKey}`);
-                            if (container) {
-                              container.scrollLeft -= 200;
-                              setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: container.scrollLeft - 200 });
-                            }
-                          }}
-                          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-1 shadow-md hover:bg-gray-50"
-                          aria-label="Scroll left"
-                        >
-                          <ChevronLeft className="w-4 h-4 text-gray-600" />
-                        </button>
+                      {hasMoreQuarters && (
+                        <>
+                          <button
+                            onClick={() => {
+                              const container = document.getElementById(`scroll-${scrollKey}`);
+                              if (container) {
+                                container.scrollLeft -= 200;
+                                setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: container.scrollLeft - 200 });
+                              }
+                            }}
+                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-1.5 shadow-md hover:bg-gray-50 transition-all"
+                            aria-label="Scroll left"
+                            style={{ opacity: scrollPosition > 0 ? 1 : 0.3 }}
+                          >
+                            <ChevronLeft className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              const container = document.getElementById(`scroll-${scrollKey}`);
+                              if (container) {
+                                const maxScroll = container.scrollWidth - container.clientWidth;
+                                container.scrollLeft += 200;
+                                setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: Math.min(container.scrollLeft, maxScroll) });
+                              }
+                            }}
+                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-1.5 shadow-md hover:bg-gray-50 transition-all"
+                            aria-label="Scroll right"
+                            style={{ opacity: scrollPosition < (displayQuarters.length * 100) ? 1 : 0.3 }}
+                          >
+                            <ChevronRight className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </>
                       )}
                       
                       <div
                         id={`scroll-${scrollKey}`}
-                        className="overflow-x-auto scrollbar-hide"
+                        className={`overflow-x-auto scrollbar-hide ${hasMoreQuarters ? 'px-8' : ''}`}
                         style={{ scrollBehavior: 'smooth' }}
                         onScroll={(e) => {
                           setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: e.target.scrollLeft });
                         }}
                       >
-                        <div className="flex flex-col gap-3 min-w-max">
+                        <div className="flex flex-col gap-3" style={{ minWidth: hasMoreQuarters ? 'max-content' : '100%' }}>
                           {displayQuarters.map((quarter, idx) => {
                             const barWidth = (quarter.score / maxScore) * 100;
                             const animatedWidth = animatedValues[`${pattern.name}_${idx}`] 
@@ -679,7 +736,7 @@ const ALIReports = () => {
                               : 0;
                             
                             return (
-                              <div key={idx} className="flex items-center gap-3 min-w-[400px]">
+                              <div key={idx} className="flex items-center gap-3" style={{ minWidth: hasMoreQuarters ? '400px' : '100%' }}>
                                 {/* Quarter Label */}
                                 <div className="w-20 text-xs text-gray-600 font-medium flex-shrink-0">
                                   {quarter.period}
@@ -710,23 +767,20 @@ const ALIReports = () => {
                           })}
                         </div>
                       </div>
-
-                      {hasMoreQuarters && (
-                        <button
-                          onClick={() => {
-                            const container = document.getElementById(`scroll-${scrollKey}`);
-                            if (container) {
-                              container.scrollLeft += 200;
-                              setPatternScrollPositions({ ...patternScrollPositions, [scrollKey]: container.scrollLeft + 200 });
-                            }
-                          }}
-                          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-1 shadow-md hover:bg-gray-50"
-                          aria-label="Scroll right"
-                        >
-                          <ChevronRight className="w-4 h-4 text-gray-600" />
-                        </button>
-                      )}
                     </div>
+                    
+                    {/* Show indicator if more data available */}
+                    {timeRangeFilter !== 'all' && totalQuarters > displayQuarters.length && (
+                      <div className="mt-2 text-xs text-gray-500 text-center">
+                        Showing {displayQuarters.length} of {totalQuarters} surveys. 
+                        <button
+                          onClick={() => setTimeRangeFilter('all')}
+                          className="text-blue-600 hover:text-blue-700 font-medium ml-1"
+                        >
+                          Show all →
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Definition Text */}
