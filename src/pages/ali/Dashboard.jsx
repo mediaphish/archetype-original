@@ -342,15 +342,19 @@ const ALIDashboard = () => {
               </div>
 
               {/* Y-axis Label (Vertical) - Outside chart area */}
-              <div className="absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 -rotate-90 origin-center text-xs text-gray-600 font-medium whitespace-nowrap" style={{ transformOrigin: 'center' }}>
-                Stability + Trust (Low) ← → Stability + Trust (High)
+              <div className="absolute" style={{ top: '50%', left: '8px', transform: 'translateY(-50%) rotate(-90deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}>
+                <span className="text-xs text-gray-600 font-medium">Stability + Trust (Low) ← → Stability + Trust (High)</span>
               </div>
-              <div className="absolute left-2 sm:left-4 top-4 text-xs text-gray-500">High</div>
-              <div className="absolute left-2 sm:left-4 bottom-8 text-xs text-gray-500">Low</div>
+              <div className="absolute" style={{ left: '20px', top: '16px' }}>
+                <span className="text-xs text-gray-500">High</span>
+              </div>
+              <div className="absolute" style={{ left: '20px', bottom: '32px' }}>
+                <span className="text-xs text-gray-500">Low</span>
+              </div>
 
-              {/* X-axis Label (Horizontal) - At bottom */}
-              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-medium" style={{ left: 'calc(48px + 50%)' }}>
-                Clarity (Low) ← → Clarity (High)
+              {/* X-axis Label (Horizontal) - At bottom center of chart area */}
+              <div className="absolute" style={{ bottom: '8px', left: '48px', right: '16px', textAlign: 'center' }}>
+                <span className="text-xs text-gray-600 font-medium">Clarity (Low) ← → Clarity (High)</span>
               </div>
             </div>
 
