@@ -1540,13 +1540,7 @@ const ALIDashboard = () => {
                 <HelpCircle className="w-5 h-5" />
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
-                <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
-                <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                  {Math.round(animatedValues.response_overall ?? mockData.responseCounts.overall)}
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">This Quarter</div>
                 <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
@@ -1588,6 +1582,13 @@ const ALIDashboard = () => {
             </div>
           </div>
         </section>
+
+        {/* Footer Footnote: Total Responses */}
+        <div className="mt-12 pt-6 border-t border-gray-200">
+          <div className="text-center text-sm text-gray-500">
+            Total Responses: <span className="font-semibold text-gray-700">{Math.round(animatedValues.response_overall ?? mockData.responseCounts.overall)}</span> across all surveys
+          </div>
+        </div>
       </main>
 
       {/* Definition Modals */}
