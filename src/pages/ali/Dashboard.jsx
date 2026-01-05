@@ -646,32 +646,34 @@ const ALIDashboard = () => {
 
         {/* Section 7: Response Analytics */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Response Analytics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
-              <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
-              <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.overall}</div>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
-              <div className="text-sm font-medium text-gray-600 mb-2">This Quarter</div>
-              <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.thisQuarter}</div>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
-              <div className="text-sm font-medium text-gray-600 mb-2">Avg. Completion</div>
-              <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.avgCompletion}</div>
-              <div className="text-xs text-gray-500 mt-1">min</div>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg">
-              <div className="text-sm font-medium text-gray-600 mb-2">Response Rate</div>
-              <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.responseRate}</div>
-              <div className="text-xs text-gray-500 mt-1">%</div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Response Analytics</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
+                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.overall}</div>
+              </div>
+              <div>
+                <div className="text-sm font-medium text-gray-600 mb-2">This Quarter</div>
+                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.thisQuarter}</div>
+              </div>
+              <div>
+                <div className="text-sm font-medium text-gray-600 mb-2">Avg. Completion</div>
+                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.avgCompletion}</div>
+                <div className="text-xs text-gray-500 mt-1">min</div>
+              </div>
+              <div>
+                <div className="text-sm font-medium text-gray-600 mb-2">Response Rate</div>
+                <div className="text-4xl font-bold text-gray-900">{mockData.responseCounts.responseRate}</div>
+                <div className="text-xs text-gray-500 mt-1">%</div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Section 8: Multi-Year Trends */}
         <section className="mb-12">
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200 p-6">
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-1">Multi-Year Trends & Insights</h2>
