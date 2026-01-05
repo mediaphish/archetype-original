@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3 } from 'lucide-react';
+import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle } from 'lucide-react';
+import DefinitionModal from '../../components/ali/DefinitionModal';
+import ChatApp from '../../app/ChatApp';
 
 const ALIDashboard = () => {
   const [expandedZone, setExpandedZone] = useState(null);
@@ -9,6 +11,8 @@ const ALIDashboard = () => {
   const [hoveredChartPoint, setHoveredChartPoint] = useState(null);
   const [animatedValues, setAnimatedValues] = useState({});
   const [chartAnimated, setChartAnimated] = useState(false);
+  const [openDefinition, setOpenDefinition] = useState(null);
+  const [showArchyChat, setShowArchyChat] = useState(false);
   const chartRef = useRef(null);
 
   const handleNavigate = (path) => {
@@ -61,6 +65,188 @@ const ALIDashboard = () => {
       setChartAnimated(true);
     }, 300);
   }, []);
+
+  // Definition content for each section
+  const definitions = {
+    'core-scores': {
+      title: 'Core Scores',
+      content: (
+        <div>
+          <p className="mb-4">
+            The Core Scores measure three fundamental leadership conditions that determine how your team experiences your leadership:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Alignment:</strong> How well your team understands and follows your direction. High alignment means expectations are clear and people know what to do.</li>
+            <li><strong>Stability:</strong> How predictable and steady your leadership feels. High stability means your team can count on consistent behavior and decisions.</li>
+            <li><strong>Clarity:</strong> How well you communicate expectations, priorities, and decisions. High clarity means people understand what you mean and why.</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            These scores are rolling averages from your last 4 surveys, showing trends over time rather than just a single snapshot.
+          </p>
+        </div>
+      )
+    },
+    'trajectory': {
+      title: 'Trajectory',
+      content: (
+        <div>
+          <p className="mb-4">
+            Trajectory measures the overall direction of your leadership environment. It's calculated using the Drift Index method, which tracks how conditions are changing over time.
+          </p>
+          <p className="mb-4">
+            A positive trajectory (improving momentum) means your leadership conditions are getting stronger. A negative trajectory means drift is increasing and conditions are weakening.
+          </p>
+          <p className="text-sm text-gray-600">
+            This metric helps you see the big picture: are you moving toward healthier leadership patterns, or away from them?
+          </p>
+        </div>
+      )
+    },
+    'team-experience-map': {
+      title: 'Team Experience Map',
+      content: (
+        <div>
+          <p className="mb-4">
+            The Team Experience Map transforms ALI data into a visual representation of how your leadership is landing with your team. It shows:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li>How leadership is landing</li>
+            <li>How the team is interpreting behavior</li>
+            <li>How clarity and trust interact</li>
+            <li>Where communication is working</li>
+            <li>Where instability is forming</li>
+            <li>How all of this changes quarter after quarter</li>
+          </ul>
+          <p className="mb-4 font-semibold">The Four Zones:</p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Harmony Zone:</strong> Clarity high, trust high, stability strong. This is where teams thrive with intentional, consistent leadership.</li>
+            <li><strong>Strain Zone:</strong> Clarity is breaking down, but trust still holds. This is the earliest warning sign of cultural drift.</li>
+            <li><strong>Stress Zone:</strong> Stability is eroding, communication is inconsistent. Teams can still recover quickly if leadership acknowledges the instability.</li>
+            <li><strong>Hazard Zone:</strong> Trust fractured, clarity unclear, leadership unpredictable. This is where culture breaks.</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            The map is not about judgment—it's about awareness. It shows you where your team actually is, not where you assume they are.
+          </p>
+        </div>
+      )
+    },
+    'pattern-analysis': {
+      title: 'Pattern Analysis',
+      content: (
+        <div>
+          <p className="mb-4">
+            Pattern Analysis tracks seven key leadership patterns that influence how your team experiences your leadership:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Clarity:</strong> How clearly you communicate expectations and decisions</li>
+            <li><strong>Consistency:</strong> How predictable and steady your behavior is</li>
+            <li><strong>Trust:</strong> How safe your team feels to speak truth</li>
+            <li><strong>Communication:</strong> How well information flows in both directions</li>
+            <li><strong>Alignment:</strong> How well your team understands and follows direction</li>
+            <li><strong>Stability:</strong> How steady and reliable your leadership feels</li>
+            <li><strong>Leadership Drift:</strong> How much conditions are shifting over time (lower is better)</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            These patterns are rolling averages from your last 4 surveys, showing trends over time. Each pattern tells part of the story of how your leadership is experienced.
+          </p>
+        </div>
+      )
+    },
+    'leadership-profile': {
+      title: 'Leadership Profile',
+      content: (
+        <div>
+          <p className="mb-4">
+            Your Leadership Profile reveals the archetype of how you lead, measured across two fundamental axes:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Honesty:</strong> Your relationship with truth—ranging from Protective (avoids truth) to Courageous (faces truth directly)</li>
+            <li><strong>Clarity:</strong> Your relationship with communication—ranging from Ambiguous (leaves people guessing) to Consistent (predictably clear)</li>
+          </ul>
+          <p className="mb-4 font-semibold">The Six Leadership Profiles:</p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Guardian:</strong> High Honesty • High Clarity. The healthiest leadership model—stable, safe, aligned.</li>
+            <li><strong>Aspirer:</strong> High Honesty • Unstable Clarity. Well-intentioned but clarity slips under stress.</li>
+            <li><strong>Protector:</strong> Selective Honesty • High Clarity. Communicates well but edits truth to protect.</li>
+            <li><strong>Producer-Leader:</strong> Courageous Honesty • Ambiguous Clarity. Works hard, tells truth, but vague due to overload.</li>
+            <li><strong>Stabilizer:</strong> Selective Honesty • Unstable Clarity. Keeps peace but unintentionally confuses team.</li>
+            <li><strong>Operator:</strong> Protective Honesty • Ambiguous Clarity. Well-meaning but exhausted and unequipped.</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            These profiles are not moral judgments—they're behavioral patterns that reveal where to grow. Once you see your profile, you understand your drift patterns and what needs to be strengthened.
+          </p>
+        </div>
+      )
+    },
+    'leadership-mirror': {
+      title: 'Leadership Mirror',
+      content: (
+        <div>
+          <p className="mb-4">
+            The Leadership Mirror compares how you see yourself as a leader versus how your team actually experiences you. Every leader carries two versions:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>What Leaders See:</strong> Intent, motivation, work ethic, vision, strategic reasoning, pressure, sacrifices, context</li>
+            <li><strong>What Teams See:</strong> Behavior, tone, emotional regulation, communication patterns, stability, predictability, fairness, clarity, follow-through</li>
+          </ul>
+          <p className="mb-4">
+            The Mirror compares leader intention with team experience across:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li>Stability under pressure</li>
+            <li>Predictability vs. reactivity</li>
+            <li>Trust signals</li>
+            <li>Clarity signals</li>
+          </ul>
+          <p className="mb-4">
+            The Mirror is not a verdict—it's a calibration tool. It helps you see what your team sees so you can lead with precision. When teams feel heard, leaders gain influence, not resistance.
+          </p>
+          <p className="text-sm text-gray-600">
+            This creates shared reality—the foundation of healthy, aligned cultures.
+          </p>
+        </div>
+      )
+    },
+    'response-analytics': {
+      title: 'Response Analytics',
+      content: (
+        <div>
+          <p className="mb-4">
+            Response Analytics tracks participation and engagement with your ALI surveys:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Total Responses:</strong> All survey responses collected since you started using ALI</li>
+            <li><strong>This Quarter:</strong> Responses collected in the current quarter</li>
+            <li><strong>Avg. Completion:</strong> Average time it takes team members to complete a survey</li>
+            <li><strong>Response Rate:</strong> Percentage of invited team members who completed the survey</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            Higher response rates and consistent participation give you more accurate data about how your leadership is experienced. Low response rates may indicate trust issues or survey fatigue.
+          </p>
+        </div>
+      )
+    },
+    'historical-trends': {
+      title: 'Historical Trends',
+      content: (
+        <div>
+          <p className="mb-4">
+            Historical Trends shows how all seven leadership patterns have changed over time. This view helps you:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li>See long-term patterns and trends</li>
+            <li>Identify which patterns are improving or declining</li>
+            <li>Understand how patterns relate to each other</li>
+            <li>Spot early warning signs of drift</li>
+            <li>Track the impact of leadership changes</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            Each line represents one of the seven patterns tracked by ALI. Trends over multiple quarters reveal whether your leadership environment is strengthening or weakening.
+          </p>
+        </div>
+      )
+    }
+  };
 
   // Mock data matching the API structure
   const mockData = {
@@ -254,7 +440,16 @@ const ALIDashboard = () => {
 
         {/* Section 1: Four Core Score Cards */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Dashboard</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">Leadership Dashboard</h2>
+            <button
+              onClick={() => setOpenDefinition('core-scores')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Core Scores"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Alignment Score Card */}
             <div 
@@ -368,7 +563,16 @@ const ALIDashboard = () => {
               onMouseLeave={() => setHoveredMetric(null)}
             >
               <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-medium text-gray-600">Trajectory</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-sm font-medium text-gray-600">Trajectory</div>
+                  <button
+                    onClick={() => setOpenDefinition('trajectory')}
+                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    aria-label="Learn about Trajectory"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </button>
+                </div>
                 <div className="text-xs text-gray-500">DRIFTINDEX</div>
               </div>
               <div className="flex items-center gap-2 mb-2">
@@ -395,7 +599,16 @@ const ALIDashboard = () => {
           <div className="bg-white rounded-lg border border-black/[0.12] p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-[22px] font-semibold text-black/[0.87] mb-1">Team Experience Map</h2>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-[22px] font-semibold text-black/[0.87]">Team Experience Map</h2>
+                  <button
+                    onClick={() => setOpenDefinition('team-experience-map')}
+                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    aria-label="Learn about Team Experience Map"
+                  >
+                    <HelpCircle className="w-5 h-5" />
+                  </button>
+                </div>
                 <p className="text-[13px] text-black/[0.6]">Current position in {ZONES[currentZone].label} Zone</p>
               </div>
               {!mockData.dataQuality.meets_minimum_n_org && (
@@ -586,7 +799,16 @@ const ALIDashboard = () => {
         <section className="mb-12">
           <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-1">Pattern Analysis</h2>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-xl font-semibold text-gray-900">Pattern Analysis</h2>
+                <button
+                  onClick={() => setOpenDefinition('pattern-analysis')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Pattern Analysis"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
               <p className="text-sm text-gray-600">7 leadership patterns • Rolling scores (4-survey average)</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-visible">
@@ -677,7 +899,16 @@ const ALIDashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Leadership Profile - Full purple background */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Profile</h2>
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Leadership Profile</h2>
+                <button
+                  onClick={() => setOpenDefinition('leadership-profile')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Leadership Profile"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
               <div className="bg-purple-100 rounded-lg border border-purple-200 p-6">
                 <div className="text-2xl font-bold text-gray-900 mb-2 capitalize">
                   {profileNames[mockData.leadershipProfile.profile]}
@@ -721,7 +952,16 @@ const ALIDashboard = () => {
 
             {/* Leadership Mirror - No pale colors */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Leadership Mirror</h2>
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Leadership Mirror</h2>
+                <button
+                  onClick={() => setOpenDefinition('leadership-mirror')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Leadership Mirror"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
               <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
             <div className="space-y-6">
               {(['ali', 'alignment', 'stability', 'clarity']).map((metric) => {
@@ -765,7 +1005,16 @@ const ALIDashboard = () => {
         {/* Section 6: Historical Trends */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Historical Trends</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-gray-900">Historical Trends</h2>
+              <button
+                onClick={() => setOpenDefinition('historical-trends')}
+                className="text-gray-400 hover:text-blue-600 transition-colors"
+                aria-label="Learn about Historical Trends"
+              >
+                <HelpCircle className="w-5 h-5" />
+              </button>
+            </div>
             <button
               onClick={() => handleNavigate('/ali/reports')}
               className="text-sm text-blue-600 hover:text-blue-700 font-medium"
@@ -944,7 +1193,16 @@ const ALIDashboard = () => {
         {/* Section 7: Response Analytics */}
         <section className="mb-12">
           <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Response Analytics</h2>
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Response Analytics</h2>
+              <button
+                onClick={() => setOpenDefinition('response-analytics')}
+                className="text-gray-400 hover:text-blue-600 transition-colors"
+                aria-label="Learn about Response Analytics"
+              >
+                <HelpCircle className="w-5 h-5" />
+              </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">Total Responses</div>
@@ -994,6 +1252,83 @@ const ALIDashboard = () => {
           </div>
         </section>
       </main>
+
+      {/* Definition Modals */}
+      {openDefinition && definitions[openDefinition] && (
+        <DefinitionModal
+          isOpen={!!openDefinition}
+          onClose={() => setOpenDefinition(null)}
+          title={definitions[openDefinition].title}
+          content={definitions[openDefinition].content}
+          sectionKey={openDefinition}
+          onOpenArchy={(key) => {
+            setOpenDefinition(null);
+            setShowArchyChat(true);
+          }}
+        />
+      )}
+
+      {/* Archy Chat Floating Button */}
+      <button
+        onClick={() => setShowArchyChat(!showArchyChat)}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
+        aria-label="Chat with Archy about your dashboard"
+      >
+        <img
+          src="/images/archy-avatar.png"
+          alt="Archy"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      </button>
+
+      {/* Archy Chat Overlay */}
+      {showArchyChat && (
+        <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
+          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
+            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-10 h-10">
+                    <img
+                      src="/images/archy-avatar.png"
+                      alt="Archy"
+                      className="w-10 h-10 rounded-full border-0"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
+                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowArchyChat(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
+                  aria-label="Close chat"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Chat Content */}
+              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                <ChatApp 
+                  context="ali-dashboard" 
+                  initialMessage="I'm looking at my ALI dashboard. Can you help me interpret what I'm seeing and answer questions about my leadership data?"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
