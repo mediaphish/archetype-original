@@ -1241,6 +1241,77 @@ const ALIDashboard = () => {
           </div>
         </section>
 
+        {/* Quick Actions & Recent Activity - MOVED DOWN */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+          {/* Quick Actions */}
+          <section>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-5 h-5 text-blue-600" />
+                <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+              </div>
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleNavigate('/ali/deploy')}
+                  className="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Send className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium text-gray-900">Deploy Survey</span>
+                  </div>
+                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transform -rotate-90" />
+                </button>
+                <button
+                  onClick={() => {}}
+                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Share2 className="w-5 h-5 text-gray-600" />
+                    <span className="font-medium text-gray-900">Share Report</span>
+                  </div>
+                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transform -rotate-90" />
+                </button>
+                <button
+                  onClick={() => {}}
+                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-5 h-5 text-gray-600" />
+                    <span className="font-medium text-gray-900">Schedule Review</span>
+                  </div>
+                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transform -rotate-90" />
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Recent Activity Feed */}
+          <section>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Activity className="w-5 h-5 text-blue-600" />
+                <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+              </div>
+              <div className="space-y-3">
+                {mockData.recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-900">{activity.message}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Clock className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-500">{activity.timestamp}</span>
+                        {activity.scoreChange && (
+                          <span className="text-xs font-medium text-green-600">+{activity.scoreChange}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
 
         {/* Section 7: Response Analytics */}
         <section className="mb-12">
