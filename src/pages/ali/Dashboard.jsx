@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon } from 'lucide-react';
+import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon, Bell, Zap, Activity, TrendingUp, Send, Share2, Calendar, Clock } from 'lucide-react';
 import DefinitionModal from '../../components/ali/DefinitionModal';
 import ChatApp from '../../app/ChatApp';
 
@@ -405,16 +405,30 @@ const ALIDashboard = () => {
         title: 'Team Experience in Harmony Zone',
         text: 'Your team is experiencing leadership in the Harmony Zone—high clarity and trust. Maintain consistency to sustain this healthy state.',
         priority: 'medium'
-      },
+      }
+    ],
+    alerts: [
       {
-        id: 'insight-4',
-        icon: Sparkles,
-        iconColor: 'text-blue-600',
-        title: 'Guardian Profile Detected',
-        text: 'Your leadership profile shows Guardian characteristics—high honesty and clarity. This is the healthiest leadership model for sustainable team performance.',
+        id: 'alert-1',
+        type: 'warning',
+        title: 'Response Rate Below Target',
+        message: 'Current response rate is 92%. Consider sending a reminder to increase participation.',
+        action: 'Send Reminder',
         priority: 'medium'
       }
-    ]
+    ],
+    recentActivity: [
+      { id: 'act-1', type: 'survey_completed', message: 'Q1 2027 survey completed', timestamp: '2 days ago', scoreChange: '+1.7' },
+      { id: 'act-2', type: 'score_improvement', message: 'ALI score improved to 71.2', timestamp: '5 days ago', scoreChange: '+2.1' },
+      { id: 'act-3', type: 'survey_deployed', message: 'Q1 2027 survey deployed', timestamp: '1 week ago', scoreChange: null },
+      { id: 'act-4', type: 'insight_generated', message: 'New insight: Sustained Positive Movement', timestamp: '1 week ago', scoreChange: null }
+    ],
+    lastQuarterComparison: {
+      ali: { current: 71.2, previous: 69.2, change: 2.0 },
+      alignment: { current: 76.3, previous: 72.1, change: 4.2 },
+      stability: { current: 71.3, previous: 68.5, change: 2.8 },
+      clarity: { current: 78.8, previous: 73.2, change: 5.6 }
+    }
   };
 
   // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
@@ -788,6 +802,152 @@ const ALIDashboard = () => {
           </div>
         </section>
 
+        {/* Status Alert Panel */}
+        {mockData.alerts && mockData.alerts.length > 0 && (
+          <section className="mb-8">
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-lg p-4">
+              <div className="flex items-start">
+                <Bell className="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-yellow-800 mb-1">
+                    {mockData.alerts[0].title}
+                  </h3>
+                  <p className="text-sm text-yellow-700 mb-3">
+                    {mockData.alerts[0].message}
+                  </p>
+                  <button className="text-sm font-medium text-yellow-800 hover:text-yellow-900 underline">
+                    {mockData.alerts[0].action} →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Quick Actions & Recent Activity - Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+          {/* Quick Actions */}
+          <section>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-5 h-5 text-blue-600" />
+                <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+              </div>
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleNavigate('/ali/deploy')}
+                  className="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Send className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium text-gray-900">Deploy Survey</span>
+                  </div>
+                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transform -rotate-90" />
+                </button>
+                <button
+                  onClick={() => {}}
+                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Share2 className="w-5 h-5 text-gray-600" />
+                    <span className="font-medium text-gray-900">Share Report</span>
+                  </div>
+                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transform -rotate-90" />
+                </button>
+                <button
+                  onClick={() => {}}
+                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-5 h-5 text-gray-600" />
+                    <span className="font-medium text-gray-900">Schedule Review</span>
+                  </div>
+                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transform -rotate-90" />
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Recent Activity Feed */}
+          <section>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Activity className="w-5 h-5 text-blue-600" />
+                <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+              </div>
+              <div className="space-y-3">
+                {mockData.recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-900">{activity.message}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Clock className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-500">{activity.timestamp}</span>
+                        {activity.scoreChange && (
+                          <span className="text-xs font-medium text-green-600">+{activity.scoreChange}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* Comparison Widget - vs Last Quarter */}
+        <section className="mb-12">
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-5 h-5 text-blue-600" />
+              <h2 className="text-lg font-semibold text-gray-900">vs Last Quarter</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-xs text-gray-600 mb-1">ALI Score</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">
+                  {mockData.lastQuarterComparison.ali.current.toFixed(1)}
+                </div>
+                <div className="flex items-center justify-center gap-1 text-sm">
+                  <TrendingUp className="w-4 h-4 text-green-600" />
+                  <span className="text-green-600 font-medium">+{mockData.lastQuarterComparison.ali.change.toFixed(1)}</span>
+                </div>
+              </div>
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-xs text-gray-600 mb-1">Alignment</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">
+                  {mockData.lastQuarterComparison.alignment.current.toFixed(1)}
+                </div>
+                <div className="flex items-center justify-center gap-1 text-sm">
+                  <TrendingUp className="w-4 h-4 text-green-600" />
+                  <span className="text-green-600 font-medium">+{mockData.lastQuarterComparison.alignment.change.toFixed(1)}</span>
+                </div>
+              </div>
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-xs text-gray-600 mb-1">Stability</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">
+                  {mockData.lastQuarterComparison.stability.current.toFixed(1)}
+                </div>
+                <div className="flex items-center justify-center gap-1 text-sm">
+                  <TrendingUp className="w-4 h-4 text-green-600" />
+                  <span className="text-green-600 font-medium">+{mockData.lastQuarterComparison.stability.change.toFixed(1)}</span>
+                </div>
+              </div>
+              <div className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="text-xs text-gray-600 mb-1">Clarity</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">
+                  {mockData.lastQuarterComparison.clarity.current.toFixed(1)}
+                </div>
+                <div className="flex items-center justify-center gap-1 text-sm">
+                  <TrendingUp className="w-4 h-4 text-green-600" />
+                  <span className="text-green-600 font-medium">+{mockData.lastQuarterComparison.clarity.change.toFixed(1)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Section 1: Four Core Score Cards */}
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-4">
@@ -1145,104 +1305,17 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* Section 3: Pattern Analysis */}
+        {/* Section 3: View Full Analytics - Link to Reports */}
         <section className="mb-12">
-          <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-xl font-semibold text-gray-900">Pattern Analysis</h2>
-                <button
-                  onClick={() => setOpenDefinition('pattern-analysis')}
-                  className="text-gray-400 hover:text-blue-600 transition-colors"
-                  aria-label="Learn about Pattern Analysis"
-                >
-                  <HelpCircle className="w-5 h-5" />
-                </button>
-              </div>
-              <p className="text-sm text-gray-600">7 leadership patterns • Rolling scores (4-survey average)</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-visible">
-              {Object.entries(mockData.scores.patterns).map(([pattern, scores]) => {
-                const isLeadershipDrift = pattern === 'leadership_drift';
-                
-                // For Leadership Drift, convert to Alignment (reversed scale)
-                const displayCurrent = isLeadershipDrift ? getDriftAsAlignment(scores.current) : scores.current;
-                const displayRolling = isLeadershipDrift ? getDriftAsAlignment(scores.rolling) : scores.rolling;
-                
-                const trendChange = displayCurrent - displayRolling;
-                const trendDirection = trendChange > 0 ? '↑' : trendChange < 0 ? '↓' : '→';
-                const isPositive = trendChange > 0;
-                // Now all patterns follow same logic: increase is good
-                const trendIsGood = trendChange > 0;
-                const trendColor = trendIsGood ? 'text-green-600' : 'text-orange-600';
-                
-                const trendDisplay = isPositive ? `+${trendChange.toFixed(1)}` : trendChange.toFixed(1);
-                
-                const progressPercentage = Math.min(Math.max(displayRolling, 0), 100);
-                const patternColor = getPatternColor(pattern);
-
-                // Icon mapping
-                const iconMap = {
-                  clarity: Lightbulb,
-                  consistency: Scale,
-                  trust: Handshake,
-                  communication: MessageSquare,
-                  alignment: Compass,
-                  stability: Shield,
-                  leadership_drift: BarChart3
-                };
-                const Icon = iconMap[pattern] || Lightbulb;
-
-                return (
-                  <div 
-                    key={pattern} 
-                    className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative overflow-visible"
-                    style={{ zIndex: hoveredPattern === pattern ? 50 : 1 }}
-                    onMouseEnter={() => setHoveredPattern(pattern)}
-                    onMouseLeave={() => setHoveredPattern(null)}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Icon className="w-4 h-4 transition-transform duration-200 hover:scale-110" style={{ color: patternColor }} />
-                        <div className="text-sm font-medium text-gray-600 capitalize">
-                          {pattern === 'leadership_drift' ? 'Leadership Alignment' : pattern.replace('_', ' ')}
-                        </div>
-                      </div>
-                      <div className={`flex items-center gap-1 text-sm ${trendColor}`}>
-                        <span>{trendDirection}</span>
-                        <span>{trendDisplay}</span>
-                      </div>
-                    </div>
-                    <div className="text-4xl font-bold mb-3 transition-all duration-300" style={{ color: patternColor }}>
-                      {(animatedValues[`pattern_${pattern}`] ?? displayRolling).toFixed(1)}
-                    </div>
-                    
-                    {/* Progress Bar */}
-                    <div className="mb-3">
-                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full transition-all duration-1000 ease-out"
-                          style={{ 
-                            width: `${Math.min(Math.max(animatedValues[`pattern_${pattern}`] ?? 0, 0), 100)}%`, 
-                            backgroundColor: patternColor 
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                    
-                    <div className="text-xs text-gray-500">Current: {displayCurrent.toFixed(1)}</div>
-                    {hoveredPattern === pattern && (
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[9999] whitespace-nowrap pointer-events-none">
-                        Rolling: {scores.rolling.toFixed(1)}<br/>
-                        Current: {scores.current.toFixed(1)}<br/>
-                        Change: {trendDisplay}
-                        <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200 p-8 text-center">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Deep Dive Analytics Available</h2>
+            <p className="text-gray-600 mb-6">Explore detailed pattern analysis, comparative insights, root cause analysis, and predictive analytics</p>
+            <button
+              onClick={() => handleNavigate('/ali/reports')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              View Full Analytics →
+            </button>
           </div>
         </section>
 
@@ -1354,193 +1427,6 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* Section 6: Historical Trends */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold text-gray-900">Historical Trends</h2>
-              <button
-                onClick={() => setOpenDefinition('historical-trends')}
-                className="text-gray-400 hover:text-blue-600 transition-colors"
-                aria-label="Learn about Historical Trends"
-              >
-                <HelpCircle className="w-5 h-5" />
-              </button>
-            </div>
-            <button
-              onClick={() => handleNavigate('/ali/reports')}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-            >
-              View Full Report →
-            </button>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
-            {/* Multi-Metric Overlay Chart */}
-            <div className="mb-4">
-              <div className="text-sm text-gray-600 mb-4">Rolling Scores (4-survey average)</div>
-              <div className="h-64 relative border-b border-l border-gray-300">
-                {/* Y-axis labels */}
-                <div className="absolute -left-10 top-0 text-xs text-gray-500">100</div>
-                <div className="absolute -left-10 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">50</div>
-                <div className="absolute -left-10 bottom-0 text-xs text-gray-500">0</div>
-                
-                {/* Chart lines - all 7 patterns */}
-                <svg className="absolute inset-0 w-full h-full" style={{ padding: '10px' }} ref={chartRef}>
-                  {/* Clarity - Blue */}
-                  <polyline
-                    points="20,185 120,172 220,162 320,152"
-                    fill="none"
-                    stroke="#2563eb"
-                    className="cursor-pointer"
-                    onMouseEnter={() => setHoveredChartPoint('clarity')}
-                    onMouseLeave={() => setHoveredChartPoint(null)}
-                    style={{ 
-                      strokeDasharray: chartAnimated ? "0" : "1000",
-                      strokeDashoffset: chartAnimated ? "0" : "1000",
-                      strokeWidth: hoveredChartPoint === 'clarity' ? 3 : 2,
-                      transition: 'stroke-dashoffset 1.5s ease-out, stroke-width 0.2s'
-                    }}
-                  />
-                  {/* Consistency - Teal */}
-                  <polyline
-                    points="20,190 120,178 220,168 320,158"
-                    fill="none"
-                    stroke="#14b8a6"
-                    className="cursor-pointer"
-                    onMouseEnter={() => setHoveredChartPoint('consistency')}
-                    onMouseLeave={() => setHoveredChartPoint(null)}
-                    style={{ 
-                      strokeDasharray: chartAnimated ? "0" : "1000",
-                      strokeDashoffset: chartAnimated ? "0" : "1000",
-                      strokeWidth: hoveredChartPoint === 'consistency' ? 3 : 2,
-                      transition: 'stroke-dashoffset 1.5s ease-out 0.1s, stroke-width 0.2s'
-                    }}
-                  />
-                  {/* Trust - Purple */}
-                  <polyline
-                    points="20,195 120,185 220,175 320,165"
-                    fill="none"
-                    stroke="#8b5cf6"
-                    className="cursor-pointer"
-                    onMouseEnter={() => setHoveredChartPoint('trust')}
-                    onMouseLeave={() => setHoveredChartPoint(null)}
-                    style={{ 
-                      strokeDasharray: chartAnimated ? "0" : "1000",
-                      strokeDashoffset: chartAnimated ? "0" : "1000",
-                      strokeWidth: hoveredChartPoint === 'trust' ? 3 : 2,
-                      transition: 'stroke-dashoffset 1.5s ease-out 0.2s, stroke-width 0.2s'
-                    }}
-                  />
-                  {/* Communication - Orange */}
-                  <polyline
-                    points="20,200 120,188 220,178 320,168"
-                    fill="none"
-                    stroke="#f59e0b"
-                    className="cursor-pointer"
-                    onMouseEnter={() => setHoveredChartPoint('communication')}
-                    onMouseLeave={() => setHoveredChartPoint(null)}
-                    style={{ 
-                      strokeDasharray: chartAnimated ? "0" : "1000",
-                      strokeDashoffset: chartAnimated ? "0" : "1000",
-                      strokeWidth: hoveredChartPoint === 'communication' ? 3 : 2,
-                      transition: 'stroke-dashoffset 1.5s ease-out 0.3s, stroke-width 0.2s'
-                    }}
-                  />
-                  {/* Alignment - Green */}
-                  <polyline
-                    points="20,180 120,170 220,160 320,150"
-                    fill="none"
-                    stroke="#10b981"
-                    className="cursor-pointer"
-                    onMouseEnter={() => setHoveredChartPoint('alignment')}
-                    onMouseLeave={() => setHoveredChartPoint(null)}
-                    style={{ 
-                      strokeDasharray: chartAnimated ? "0" : "1000",
-                      strokeDashoffset: chartAnimated ? "0" : "1000",
-                      strokeWidth: hoveredChartPoint === 'alignment' ? 3 : 2,
-                      transition: 'stroke-dashoffset 1.5s ease-out 0.4s, stroke-width 0.2s'
-                    }}
-                  />
-                  {/* Stability - Indigo */}
-                  <polyline
-                    points="20,192 120,180 220,170 320,160"
-                    fill="none"
-                    stroke="#6366f1"
-                    className="cursor-pointer"
-                    onMouseEnter={() => setHoveredChartPoint('stability')}
-                    onMouseLeave={() => setHoveredChartPoint(null)}
-                    style={{ 
-                      strokeDasharray: chartAnimated ? "0" : "1000",
-                      strokeDashoffset: chartAnimated ? "0" : "1000",
-                      strokeWidth: hoveredChartPoint === 'stability' ? 3 : 2,
-                      transition: 'stroke-dashoffset 1.5s ease-out 0.5s, stroke-width 0.2s'
-                    }}
-                  />
-                  {/* Leadership Alignment - Pink (reversed: higher = better) */}
-                  <polyline
-                    points="20,175 120,185 220,195 320,205"
-                    fill="none"
-                    stroke="#ec4899"
-                    className="cursor-pointer"
-                    onMouseEnter={() => setHoveredChartPoint('leadership_drift')}
-                    onMouseLeave={() => setHoveredChartPoint(null)}
-                    style={{ 
-                      strokeDasharray: chartAnimated ? "0" : "1000",
-                      strokeDashoffset: chartAnimated ? "0" : "1000",
-                      strokeWidth: hoveredChartPoint === 'leadership_drift' ? 3 : 2,
-                      transition: 'stroke-dashoffset 1.5s ease-out 0.6s, stroke-width 0.2s'
-                    }}
-                  />
-                </svg>
-                {hoveredChartPoint && (
-                  <div className="absolute top-4 right-4 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-50">
-                    {hoveredChartPoint.replace('_', ' ').charAt(0).toUpperCase() + hoveredChartPoint.replace('_', ' ').slice(1)}
-                  </div>
-                )}
-                
-                {/* X-axis labels */}
-                <div className="absolute bottom-0 left-0 right-0 flex justify-around pt-2">
-                  <div className="text-xs text-gray-600">Q4 2025</div>
-                  <div className="text-xs text-gray-600">Q1 2026</div>
-                  <div className="text-xs text-gray-600">Q2 2026</div>
-                  <div className="text-xs text-gray-600">Q1 2027</div>
-                </div>
-              </div>
-              
-              {/* Legend - All 7 patterns */}
-              <div className="flex flex-wrap gap-4 mt-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#2563eb' }}></div>
-                  <span className="text-gray-600">Clarity</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#14b8a6' }}></div>
-                  <span className="text-gray-600">Consistency</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#8b5cf6' }}></div>
-                  <span className="text-gray-600">Trust</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#f59e0b' }}></div>
-                  <span className="text-gray-600">Communication</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#10b981' }}></div>
-                  <span className="text-gray-600">Alignment</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#6366f1' }}></div>
-                  <span className="text-gray-600">Stability</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#ec4899' }}></div>
-                  <span className="text-gray-600">Leadership Alignment</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Section 7: Response Analytics */}
         <section className="mb-12">

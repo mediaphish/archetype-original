@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, ChevronDown, User, Share2, Send, ExternalLink, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, ChevronDown, User, Share2, Send, ExternalLink, HelpCircle, ChevronLeft, ChevronRight, TrendingUp, GitBranch, Target, Download, FileText, Calendar, Filter } from 'lucide-react';
 import DefinitionModal from '../../components/ali/DefinitionModal';
 import ChatApp from '../../app/ChatApp';
 
@@ -222,6 +222,78 @@ const ALIReports = () => {
           </p>
         </div>
       )
+    },
+    'comparative-analysis': {
+      title: 'Comparative Analysis',
+      content: (
+        <div>
+          <p className="mb-4">
+            Comparative Analysis helps you understand how your leadership environment has changed over time by comparing different periods.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Period Comparison:</strong> Compare any two time periods side-by-side</li>
+            <li><strong>Year-over-Year:</strong> See how the same quarter compares across years</li>
+            <li><strong>Trend Analysis:</strong> Identify acceleration or deceleration in improvements</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            Use comparisons to identify what's working and what needs attention.
+          </p>
+        </div>
+      )
+    },
+    'root-cause': {
+      title: 'Root Cause Analysis',
+      content: (
+        <div>
+          <p className="mb-4">
+            Root Cause Analysis reveals which leadership patterns influence each other, helping you understand why scores are changing.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Pattern Correlations:</strong> See which patterns move together (positive correlation) or in opposite directions (negative correlation)</li>
+            <li><strong>Strong Relationships:</strong> Patterns that consistently move together suggest shared underlying factors</li>
+            <li><strong>Inverse Relationships:</strong> Patterns that move in opposite directions help identify trade-offs or competing priorities</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            Understanding correlations helps you prioritize which patterns to focus on for maximum impact.
+          </p>
+        </div>
+      )
+    },
+    'predictive': {
+      title: 'Predictive Analytics',
+      content: (
+        <div>
+          <p className="mb-4">
+            Predictive Analytics uses your historical data to project where your leadership environment is heading.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Projections:</strong> Forecasted scores based on current trends</li>
+            <li><strong>Scenario Modeling:</strong> See how different improvement rates would affect your overall score</li>
+            <li><strong>Risk Indicators:</strong> Early warning signals for potential score declines</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            Use predictions to set realistic targets and identify risks before they become problems.
+          </p>
+        </div>
+      )
+    },
+    'action-planning': {
+      title: 'Action Planning',
+      content: (
+        <div>
+          <p className="mb-4">
+            Action Planning provides prioritized recommendations based on your data analysis.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Prioritized Recommendations:</strong> Actions ranked by impact and effort required</li>
+            <li><strong>Quick Wins:</strong> Low-effort actions with immediate positive impact</li>
+            <li><strong>Impact Estimation:</strong> Understand how each action might affect your scores</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            Click any action to chat with Archy about implementation strategies.
+          </p>
+        </div>
+      )
     }
   };
 
@@ -268,7 +340,12 @@ const ALIReports = () => {
         { period: '2026 Q1', score: 68.5, responses: 23 },
         { period: '2026 Q2', score: 70.2, responses: 21 },
         { period: '2027 Q1', score: 73.7, responses: 24 }
-      ]
+      ],
+      multiYearComparison: {
+        year1: { avg: 66.4, range: '2025 Q4 - 2026 Q1' },
+        year2: { avg: 71.1, range: '2026 Q2 - 2027 Q1' },
+        improvement: 4.7
+      }
     },
     totalResponses: {
       count: 86,
@@ -404,9 +481,65 @@ const ALIReports = () => {
         icon: Sparkles,
         iconColor: 'text-blue-600',
         title: 'Recommended Next Steps',
-        text: 'Continue quarterly surveys. ALI Overall Score has reached 73.7 (Yellow Zone). Focus on sustaining gains and addressing the communication perception gap.'
+        text: 'Continue quarterly surveys. ALI Overall Score has reached 73.7 (Yellow Zone). Focus on sustaining gains and addressing the communication perception gap.',
+        date: '2027-01-03',
+        category: 'recommendation'
       }
-    ]
+    ],
+    historicalInsights: [
+      {
+        icon: CheckCircle2,
+        iconColor: 'text-green-600',
+        title: 'Q4 2026: Strong Quarter Finish',
+        text: 'All core patterns showed improvement in Q4, with Alignment leading gains.',
+        date: '2026-12-15',
+        category: 'trend'
+      },
+      {
+        icon: AlertTriangle,
+        iconColor: 'text-yellow-600',
+        title: 'Q3 2026: Stability Dip Detected',
+        text: 'Stability score decreased by 3.2 points. Review recent organizational changes.',
+        date: '2026-09-20',
+        category: 'alert'
+      }
+    ],
+    patternCorrelations: {
+      strongest: [
+        { pattern1: 'clarity', pattern2: 'alignment', correlation: 0.87 },
+        { pattern1: 'consistency', pattern2: 'stability', correlation: 0.82 },
+        { pattern1: 'trust', pattern2: 'communication', correlation: 0.79 }
+      ],
+      weakest: [
+        { pattern1: 'leadership_drift', pattern2: 'clarity', correlation: -0.65 }
+      ]
+    },
+    predictiveInsights: {
+      projection: {
+        nextQuarter: 75.2,
+        confidence: 'high',
+        factors: ['Sustained Clarity gains', 'Improved Alignment trend']
+      },
+      scenarios: [
+        { name: 'Optimistic', score: 78.5, conditions: 'All patterns improve by 5%' },
+        { name: 'Realistic', score: 75.2, conditions: 'Current trends continue' },
+        { name: 'Conservative', score: 72.0, conditions: 'Some patterns plateau' }
+      ],
+      risks: [
+        { pattern: 'Stability', risk: 'medium', reason: 'Recent volatility in scores' }
+      ]
+    },
+    actionPlan: {
+      priority: [
+        { action: 'Maintain Clarity momentum', impact: 'High', effort: 'Low', pattern: 'clarity' },
+        { action: 'Address Communication gap', impact: 'High', effort: 'Medium', pattern: 'communication' },
+        { action: 'Strengthen Stability foundation', impact: 'Medium', effort: 'High', pattern: 'stability' }
+      ],
+      quickWins: [
+        { action: 'Send quarterly survey reminder', impact: '+2-3 points', timeframe: '1 week' },
+        { action: 'Share Clarity improvement insights', impact: 'Reinforce positive behavior', timeframe: '3 days' }
+      ]
+    }
   };
 
   // Animation on mount
@@ -552,7 +685,7 @@ const ALIReports = () => {
                   </button>
                 </div>
                 
-                <div className="flex items-baseline gap-4">
+                <div className="flex items-baseline gap-4 mb-4">
                   <div className="text-[64px] font-bold leading-none text-[#2563eb]">
                     {mockData.currentALI.score.toFixed(1)}
                   </div>
@@ -560,6 +693,32 @@ const ALIReports = () => {
                     Rolling: <span className="font-semibold text-black/[0.87]">{mockData.currentALI.rolling.toFixed(1)}</span>
                   </div>
                 </div>
+                
+                {/* Multi-Year Comparison */}
+                {mockData.currentALI.multiYearComparison && (
+                  <div className="border-t border-gray-200 pt-4 mt-4">
+                    <div className="text-xs text-gray-600 mb-2">Year-over-Year Comparison</div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <div className="text-xs text-gray-500">Year 1 Avg</div>
+                        <div className="text-lg font-semibold text-gray-700">
+                          {mockData.currentALI.multiYearComparison.year1.avg.toFixed(1)}
+                        </div>
+                        <div className="text-xs text-gray-400">{mockData.currentALI.multiYearComparison.year1.range}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500">Year 2 Avg</div>
+                        <div className="text-lg font-semibold text-green-600">
+                          {mockData.currentALI.multiYearComparison.year2.avg.toFixed(1)}
+                        </div>
+                        <div className="text-xs text-gray-400">{mockData.currentALI.multiYearComparison.year2.range}</div>
+                      </div>
+                    </div>
+                    <div className="mt-2 text-sm font-medium text-green-600">
+                      +{mockData.currentALI.multiYearComparison.improvement.toFixed(1)} point improvement
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Right: Trend Chart */}
@@ -700,15 +859,22 @@ const ALIReports = () => {
 
         {/* PRIORITY 2: Key Insights & Movement - Generated by Archy */}
         <section className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Key Insights & Movement</h2>
-            <button
-              onClick={() => setOpenDefinition('insights')}
-              className="text-gray-400 hover:text-blue-600 transition-colors"
-              aria-label="Learn about Key Insights"
-            >
-              <HelpCircle className="w-5 h-5" />
-            </button>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-semibold text-gray-900">Key Insights & Movement</h2>
+              <button
+                onClick={() => setOpenDefinition('insights')}
+                className="text-gray-400 hover:text-blue-600 transition-colors"
+                aria-label="Learn about Key Insights"
+              >
+                <HelpCircle className="w-5 h-5" />
+              </button>
+            </div>
+            {mockData.historicalInsights && mockData.historicalInsights.length > 0 && (
+              <div className="text-sm text-gray-600">
+                Showing {mockData.insights.length} current • <button className="text-blue-600 hover:text-blue-700 font-medium" onClick={() => {/* Toggle historical view */}}>View Archive ({mockData.historicalInsights.length})</button>
+              </div>
+            )}
           </div>
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="space-y-4">
@@ -725,8 +891,13 @@ const ALIReports = () => {
                   >
                     <Icon className={`w-6 h-6 mt-0.5 flex-shrink-0 ${insight.iconColor}`} />
                     <div className="flex-1">
-                      <div className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-                        {insight.title}
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {insight.title}
+                        </div>
+                        {insight.date && (
+                          <span className="text-xs text-gray-400">{insight.date}</span>
+                        )}
                       </div>
                       <div className="text-sm text-gray-700 mb-2">{insight.text}</div>
                       <button
@@ -977,6 +1148,282 @@ const ALIReports = () => {
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* Comparative Analysis Section */}
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Comparative Analysis</h2>
+            <button
+              onClick={() => setOpenDefinition('comparative-analysis')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Comparative Analysis"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Period Comparison */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Period Comparison</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-600">2025 Q4 vs 2027 Q1</span>
+                    <span className="text-lg font-bold text-green-600">+{mockData.aliImprovement.percent.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-600">Year 1 vs Year 2</span>
+                    <span className="text-lg font-bold text-green-600">+{mockData.currentALI.multiYearComparison?.improvement.toFixed(1) || '4.7'} pts</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Year-over-Year */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Year-over-Year</h3>
+                <div className="space-y-3">
+                  {mockData.currentALI.multiYearComparison && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">Year 1 Average</span>
+                        <span className="font-semibold text-gray-900">{mockData.currentALI.multiYearComparison.year1.avg.toFixed(1)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">Year 2 Average</span>
+                        <span className="font-semibold text-green-600">{mockData.currentALI.multiYearComparison.year2.avg.toFixed(1)}</span>
+                      </div>
+                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-green-600 rounded-full"
+                          style={{ width: `${(mockData.currentALI.multiYearComparison.year2.avg / 100) * 100}%` }}
+                        ></div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Root Cause Analysis Section */}
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <GitBranch className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Root Cause Analysis</h2>
+            <button
+              onClick={() => setOpenDefinition('root-cause')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Root Cause Analysis"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Pattern Correlations</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Strongest Correlations */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">Strongest Relationships</h4>
+                <div className="space-y-2">
+                  {mockData.patternCorrelations?.strongest.map((corr, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-2 bg-green-50 rounded">
+                      <span className="text-sm text-gray-700 capitalize">
+                        {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
+                      </span>
+                      <span className="text-sm font-semibold text-green-700">{corr.correlation.toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Weakest/Inverse Correlations */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">Inverse Relationships</h4>
+                <div className="space-y-2">
+                  {mockData.patternCorrelations?.weakest.map((corr, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-2 bg-orange-50 rounded">
+                      <span className="text-sm text-gray-700 capitalize">
+                        {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
+                      </span>
+                      <span className="text-sm font-semibold text-orange-700">{corr.correlation.toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <strong>Key Insight:</strong> Clarity and Alignment show the strongest positive correlation (0.87), suggesting that improving communication clarity directly enhances team alignment. Leadership Alignment (reversed drift) has an inverse relationship with Clarity, indicating that as clarity improves, drift decreases.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Predictive Analytics Section */}
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <Target className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Predictive Analytics</h2>
+            <button
+              onClick={() => setOpenDefinition('predictive')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Predictive Analytics"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Projection */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Next Quarter Projection</h3>
+                {mockData.predictiveInsights?.projection && (
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="text-3xl font-bold text-blue-600 mb-2">
+                      {mockData.predictiveInsights.projection.nextQuarter.toFixed(1)}
+                    </div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      Confidence: <span className="font-semibold text-green-600 capitalize">{mockData.predictiveInsights.projection.confidence}</span>
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      <strong>Key Factors:</strong> {mockData.predictiveInsights.projection.factors.join(', ')}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Scenarios */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Scenario Modeling</h3>
+                <div className="space-y-3">
+                  {mockData.predictiveInsights?.scenarios.map((scenario, idx) => (
+                    <div key={idx} className="p-3 border border-gray-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-semibold text-gray-900">{scenario.name}</span>
+                        <span className="text-lg font-bold text-blue-600">{scenario.score.toFixed(1)}</span>
+                      </div>
+                      <div className="text-xs text-gray-600">{scenario.conditions}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Risk Indicators */}
+            {mockData.predictiveInsights?.risks && mockData.predictiveInsights.risks.length > 0 && (
+              <div className="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <h4 className="font-semibold text-yellow-800 mb-2">Risk Indicators</h4>
+                <div className="space-y-2">
+                  {mockData.predictiveInsights.risks.map((risk, idx) => (
+                    <div key={idx} className="text-sm text-yellow-700">
+                      <strong>{risk.pattern}:</strong> {risk.reason} (Risk: {risk.risk})
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Action Planning Section */}
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <Target className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Action Planning</h2>
+            <button
+              onClick={() => setOpenDefinition('action-planning')}
+              className="text-gray-400 hover:text-blue-600 transition-colors"
+              aria-label="Learn about Action Planning"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Priority Actions */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Prioritized Recommendations</h3>
+                <div className="space-y-3">
+                  {mockData.actionPlan?.priority.map((action, idx) => (
+                    <div key={idx} className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <div className="font-semibold text-gray-900 mb-1">{action.action}</div>
+                          <div className="text-xs text-gray-600 capitalize">
+                            Pattern: {action.pattern.replace('_', ' ')} • Impact: {action.impact} • Effort: {action.effort}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setArchyInitialMessage(`Tell me more about this action: "${action.action}". How should I implement it?`);
+                            setShowArchyChat(true);
+                          }}
+                          className="ml-2 text-blue-600 hover:text-blue-700"
+                        >
+                          <MessageSquare className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Quick Wins */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Wins</h3>
+                <div className="space-y-3">
+                  {mockData.actionPlan?.quickWins.map((win, idx) => (
+                    <div key={idx} className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="font-semibold text-gray-900 mb-1">{win.action}</div>
+                      <div className="text-sm text-gray-700 mb-1">
+                        <strong>Impact:</strong> {win.impact}
+                      </div>
+                      <div className="text-xs text-gray-600">
+                        <Calendar className="w-3 h-3 inline mr-1" />
+                        {win.timeframe}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Export & Sharing Section */}
+        <section className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <Download className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Export & Share</h2>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                <FileText className="w-5 h-5 text-blue-600" />
+                <div className="text-left">
+                  <div className="font-semibold text-gray-900">Export PDF</div>
+                  <div className="text-xs text-gray-600">Full report</div>
+                </div>
+              </button>
+              <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                <Download className="w-5 h-5 text-blue-600" />
+                <div className="text-left">
+                  <div className="font-semibold text-gray-900">Export Data</div>
+                  <div className="text-xs text-gray-600">CSV/Excel</div>
+                </div>
+              </button>
+              <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                <Share2 className="w-5 h-5 text-blue-600" />
+                <div className="text-left">
+                  <div className="font-semibold text-gray-900">Share Report</div>
+                  <div className="text-xs text-gray-600">Generate link</div>
+                </div>
+              </button>
+            </div>
           </div>
         </section>
 
