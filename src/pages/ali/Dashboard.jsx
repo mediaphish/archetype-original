@@ -583,145 +583,66 @@ const ALIDashboard = () => {
           <p className="text-gray-600">24 responses this quarter • Rolling scores (4-survey average)</p>
         </div>
 
-        {/* ALI OVERALL SCORE HERO SECTION */}
-        <div className="space-y-4 mb-8">
-          {/* Panel 1: Score + Chart */}
-          <div className="bg-white rounded-lg border border-black/[0.12] p-8">
-            <div className="flex items-start justify-between gap-8">
-              
-              {/* Left: ALI Score */}
-              <div className="flex-shrink-0">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-[15px] font-semibold text-black/[0.6] uppercase tracking-wide">
-                      ALI OVERALL SCORE
-                    </h2>
-                    <button
-                      onClick={() => setOpenDefinition('ali-score')}
-                      className="text-black/[0.38] hover:text-blue-600 transition-colors"
-                      aria-label="Learn about ALI Score"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => handleNavigate('/ali/reports')}
-                    className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                  >
-                    Deep Dive Analytics →
-                  </button>
-                </div>
-                
-                <div className="flex items-baseline gap-4">
-                  <div className="text-[64px] font-bold leading-none text-[#2563eb]">
-                    {mockData.scores.ali.current.toFixed(1)}
-                  </div>
-                  <div className="text-[16px] text-black/[0.6] pb-2">
-                    Rolling: <span className="font-semibold text-black/[0.87]">{mockData.scores.ali.rolling.toFixed(1)}</span>
-                  </div>
-                </div>
+        {/* ALI OVERALL SCORE HERO SECTION - 3 Columns */}
+        <div className="mb-8">
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            
+            {/* Column 1: ALI Score */}
+            <div 
+              className="bg-white rounded-lg border border-black/[0.12] p-6 cursor-pointer hover:shadow-lg transition-all"
+              onClick={() => {
+                handleNavigate('/ali/reports');
+                // Scroll to multi-year progression after navigation
+                setTimeout(() => {
+                  const element = document.getElementById('multi-year-progression');
+                  if (element) element.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <h2 className="text-[15px] font-semibold text-black/[0.6] uppercase tracking-wide">
+                  ALI OVERALL SCORE
+                </h2>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenDefinition('ali-score');
+                  }}
+                  className="text-black/[0.38] hover:text-blue-600 transition-colors"
+                  aria-label="Learn about ALI Score"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
               </div>
-
-              {/* Right: Trend Chart */}
-              <div className="flex-1 min-w-0">
-                <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-3">
-                  4-Quarter Trend
+              
+              <div className="flex items-baseline gap-4">
+                <div className="text-[64px] font-bold leading-none text-[#2563eb]">
+                  {mockData.scores.ali.current.toFixed(1)}
                 </div>
-                
-                {/* SVG Line Chart */}
-                <div className="relative h-[140px] w-full">
-                  {/* Y-axis labels */}
-                  <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[11px] text-black/[0.38] font-medium pr-2">
-                    <span>100</span>
-                    <span>75</span>
-                    <span>50</span>
-                    <span>25</span>
-                    <span>0</span>
-                  </div>
-
-                  {/* Chart container */}
-                  <div className="ml-8 h-full relative">
-                    {/* Horizontal grid lines */}
-                    <div className="absolute inset-0 flex flex-col justify-between">
-                      <div className="h-[1px] bg-black/[0.06]" />
-                      <div className="h-[1px] bg-black/[0.12]" /> {/* 75 line - darker */}
-                      <div className="h-[1px] bg-black/[0.06]" />
-                      <div className="h-[1px] bg-black/[0.06]" />
-                      <div className="h-[1px] bg-black/[0.06]" />
-                    </div>
-
-                    {/* SVG Chart with line and dots */}
-                    <svg 
-                      viewBox="0 0 100 100" 
-                      preserveAspectRatio="none"
-                      className="absolute inset-0 w-full h-full"
-                    >
-                      {/* Connecting line - Y coordinates inverted (100 - score) */}
-                      <polyline
-                        points={mockData.scores.ali.history.map((point, idx) => {
-                          const x = 12.5 + (idx * 25); // 12.5, 37.5, 62.5, 87.5
-                          const svgY = 100 - point.score; // Invert Y-axis
-                          return `${x},${svgY}`;
-                        }).join(' ')}
-                        fill="none"
-                        stroke="#2563eb"
-                        strokeWidth="2.5"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    </svg>
-
-                    {/* Data points and labels */}
-                    <div className="absolute inset-0">
-                      {mockData.scores.ali.history.map((point, idx) => {
-                        const xPercent = 12.5 + (idx * 25); // 12.5%, 37.5%, 62.5%, 87.5%
-                        const svgY = 100 - point.score; // Inverted for SVG (top is 0, bottom is 100)
-                        const yPercent = svgY; // Position from top
-                        return (
-                          <div 
-                            key={idx} 
-                            className="absolute" 
-                            style={{ 
-                              left: `${xPercent}%`, 
-                              top: `${yPercent}%`, 
-                              transform: 'translate(-50%, -50%)' 
-                            }}
-                          >
-                            {/* Score label above dot */}
-                            <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 text-[12px] font-semibold text-[#2563eb] whitespace-nowrap">
-                              {point.score.toFixed(1)}
-                            </div>
-                            
-                            {/* Dot */}
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#2563eb] border-2 border-white shadow-sm" />
-                            
-                            {/* Quarter label below dot */}
-                            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-[11px] text-black/[0.6] whitespace-nowrap">
-                              {point.period}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                <div className="text-[16px] text-black/[0.6] pb-2">
+                  Rolling: <span className="font-semibold text-black/[0.87]">{mockData.scores.ali.rolling.toFixed(1)}</span>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Panel 2 & 3: Zone + Trajectory Side by Side */}
-          <div className="grid grid-cols-2 gap-4">
-            
-            {/* Panel 2: Current Zone */}
+            {/* Column 2: Current Zone */}
             {(() => {
               const zoneInfo = getZoneInfo(mockData.scores.ali.zone);
               return (
                 <div 
-                  className="rounded-lg border-2 p-6"
+                  className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
                   style={{
-                    backgroundColor: `${zoneInfo.color}15`, // 15 = ~8% opacity in hex
+                    backgroundColor: `${zoneInfo.color}15`,
                     borderColor: zoneInfo.color
+                  }}
+                  onClick={() => {
+                    handleNavigate('/ali/reports');
+                    setTimeout(() => {
+                      const element = document.getElementById('multi-year-progression');
+                      if (element) element.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                   }}
                 >
                   <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
@@ -740,8 +661,17 @@ const ALIDashboard = () => {
               );
             })()}
 
-            {/* Panel 3: Trajectory */}
-            <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+            {/* Column 3: Trajectory */}
+            <div 
+              className="bg-white rounded-lg border border-black/[0.12] p-6 cursor-pointer hover:shadow-lg transition-all"
+              onClick={() => {
+                handleNavigate('/ali/reports');
+                setTimeout(() => {
+                  const element = document.getElementById('multi-year-progression');
+                  if (element) element.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+            >
               <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
                 TRAJECTORY
               </div>
@@ -758,6 +688,14 @@ const ALIDashboard = () => {
               </p>
             </div>
           </div>
+
+          {/* Deep Dive Analytics Bar */}
+          <button
+            onClick={() => handleNavigate('/ali/reports')}
+            className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 font-semibold text-lg"
+          >
+            Deep Dive Analytics →
+          </button>
         </div>
 
         {/* PRIORITY 2: Key Insights & Movement - Generated by Archy */}

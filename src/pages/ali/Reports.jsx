@@ -718,7 +718,7 @@ const ALIReports = () => {
         </div>
 
         {/* MULTI-YEAR SCORE PROGRESSION - Above the Fold */}
-        <section className="mb-8">
+        <section id="multi-year-progression" className="mb-8">
           <div className="bg-white rounded-lg border border-gray-200 p-8">
             <div className="flex items-center gap-2 mb-6">
               <h2 className="text-2xl font-semibold text-gray-900">Multi-Year Score Progression</h2>
@@ -870,138 +870,6 @@ const ALIReports = () => {
           </div>
         </section>
 
-        {/* PATTERN HEALTH MATRIX & RISK INDICATORS - Side by Side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Pattern Health Matrix */}
-          <section>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Pattern Health Matrix</h2>
-                <button
-                  onClick={() => setOpenDefinition('pattern-health')}
-                  className="text-gray-400 hover:text-blue-600 transition-colors"
-                  aria-label="Learn about Pattern Health"
-                >
-                  <HelpCircle className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <div className="space-y-3">
-                {mockData.patterns.map((pattern) => {
-                  const isLeadershipDrift = pattern.name === 'leadership_drift';
-                  const displayScore = isLeadershipDrift ? getDriftAsAlignment(pattern.score) : pattern.score;
-                  const displayRolling = isLeadershipDrift ? getDriftAsAlignment(pattern.rolling) : pattern.rolling;
-                  
-                  // Determine health status
-                  let healthStatus = 'green';
-                  let healthLabel = 'Healthy';
-                  if (displayRolling < 45) {
-                    healthStatus = 'red';
-                    healthLabel = 'Critical';
-                  } else if (displayRolling < 60) {
-                    healthStatus = 'orange';
-                    healthLabel = 'Warning';
-                  } else if (displayRolling < 75) {
-                    healthStatus = 'yellow';
-                    healthLabel = 'Stable';
-                  }
-                  
-                  const healthColors = {
-                    green: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', dot: 'bg-green-500' },
-                    yellow: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', dot: 'bg-yellow-500' },
-                    orange: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', dot: 'bg-orange-500' },
-                    red: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', dot: 'bg-red-500' }
-                  };
-                  
-                  const colors = healthColors[healthStatus];
-                  const trendIcon = pattern.trendDirection === 'up' ? '↑' : pattern.trendDirection === 'down' ? '↓' : '→';
-                  const trendColor = pattern.trendDirection === 'up' ? 'text-green-600' : pattern.trendDirection === 'down' ? 'text-red-600' : 'text-gray-600';
-                  
-                  return (
-                    <div 
-                      key={pattern.name}
-                      className={`p-3 rounded-lg border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition-all`}
-                      onClick={() => {
-                        // Scroll to pattern analysis section
-                        const element = document.getElementById('pattern-analysis-section');
-                        if (element) element.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${colors.dot}`}></div>
-                          <div>
-                            <div className="font-semibold text-gray-900 capitalize text-sm">
-                              {pattern.name === 'leadership_drift' ? 'Leadership Alignment' : pattern.name.replace('_', ' ')}
-                            </div>
-                            <div className="text-xs text-gray-600">{healthLabel}</div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className={`text-lg font-bold ${colors.text}`}>
-                            {displayRolling.toFixed(1)}
-                          </div>
-                          <div className={`text-xs ${trendColor} font-medium`}>
-                            {trendIcon} {pattern.trend > 0 ? '+' : ''}{pattern.trend.toFixed(1)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          {/* Risk Indicators & Opportunities */}
-          <section>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Risk Indicators & Opportunities</h2>
-                <button
-                  onClick={() => setOpenDefinition('risk-indicators')}
-                  className="text-gray-400 hover:text-blue-600 transition-colors"
-                  aria-label="Learn about Risk Indicators"
-                >
-                  <HelpCircle className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                {/* Risks */}
-                {mockData.predictiveInsights?.risks && mockData.predictiveInsights.risks.length > 0 && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2">⚠️ Early Warnings</h3>
-                    <div className="space-y-2">
-                      {mockData.predictiveInsights.risks.map((risk, idx) => (
-                        <div key={idx} className="p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                          <div className="font-semibold text-yellow-800 text-sm mb-1">{risk.pattern}</div>
-                          <div className="text-xs text-yellow-700">{risk.reason}</div>
-                          <div className="text-xs text-yellow-600 mt-1">Risk Level: {risk.risk}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Opportunities */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">💡 Quick Wins</h3>
-                  <div className="space-y-2">
-                    {mockData.actionPlan?.quickWins.map((win, idx) => (
-                      <div key={idx} className="p-3 bg-green-50 border-l-4 border-green-400 rounded">
-                        <div className="font-semibold text-green-800 text-sm mb-1">{win.action}</div>
-                        <div className="text-xs text-green-700 mb-1">Impact: {win.impact}</div>
-                        <div className="text-xs text-green-600">Timeframe: {win.timeframe}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-
         {/* PRIORITY 2: Key Insights & Movement - Generated by Archy */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -1064,19 +932,107 @@ const ALIReports = () => {
           </div>
         </section>
 
-        {/* Leadership Pattern Analysis - Horizontal Bar Charts (EXACT IMAGE DESIGN) */}
+        {/* PATTERN ANALYSIS - All Pattern Content Together */}
         <section id="pattern-analysis-section" className="mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold text-gray-900">Leadership Pattern Analysis</h2>
-              <button
-                onClick={() => setOpenDefinition('pattern-analysis')}
-                className="text-gray-400 hover:text-blue-600 transition-colors"
-                aria-label="Learn about Pattern Analysis"
-              >
-                <HelpCircle className="w-5 h-5" />
-              </button>
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Pattern Analysis</h2>
+            <p className="text-gray-600">Comprehensive analysis of all seven leadership patterns</p>
+          </div>
+
+          {/* Pattern Health Matrix */}
+          <div className="mb-8">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-xl font-semibold text-gray-900">Pattern Health Matrix</h3>
+                <button
+                  onClick={() => setOpenDefinition('pattern-health')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Pattern Health"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {mockData.patterns.map((pattern) => {
+                  const isLeadershipDrift = pattern.name === 'leadership_drift';
+                  const displayScore = isLeadershipDrift ? getDriftAsAlignment(pattern.score) : pattern.score;
+                  const displayRolling = isLeadershipDrift ? getDriftAsAlignment(pattern.rolling) : pattern.rolling;
+                  
+                  // Determine health status
+                  let healthStatus = 'green';
+                  let healthLabel = 'Healthy';
+                  if (displayRolling < 45) {
+                    healthStatus = 'red';
+                    healthLabel = 'Critical';
+                  } else if (displayRolling < 60) {
+                    healthStatus = 'orange';
+                    healthLabel = 'Warning';
+                  } else if (displayRolling < 75) {
+                    healthStatus = 'yellow';
+                    healthLabel = 'Stable';
+                  }
+                  
+                  const healthColors = {
+                    green: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', dot: 'bg-green-500' },
+                    yellow: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', dot: 'bg-yellow-500' },
+                    orange: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', dot: 'bg-orange-500' },
+                    red: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', dot: 'bg-red-500' }
+                  };
+                  
+                  const colors = healthColors[healthStatus];
+                  const trendIcon = pattern.trendDirection === 'up' ? '↑' : pattern.trendDirection === 'down' ? '↓' : '→';
+                  const trendColor = pattern.trendDirection === 'up' ? 'text-green-600' : pattern.trendDirection === 'down' ? 'text-red-600' : 'text-gray-600';
+                  
+                  return (
+                    <div 
+                      key={pattern.name}
+                      className={`p-3 rounded-lg border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition-all`}
+                      onClick={() => {
+                        // Scroll to detailed pattern analysis
+                        const element = document.getElementById(`pattern-detail-${pattern.name}`);
+                        if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${colors.dot}`}></div>
+                          <div>
+                            <div className="font-semibold text-gray-900 capitalize text-sm">
+                              {pattern.name === 'leadership_drift' ? 'Leadership Alignment' : pattern.name.replace('_', ' ')}
+                            </div>
+                            <div className="text-xs text-gray-600">{healthLabel}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-lg font-bold ${colors.text}`}>
+                            {displayRolling.toFixed(1)}
+                          </div>
+                          <div className={`text-xs ${trendColor} font-medium`}>
+                            {trendIcon} {pattern.trend > 0 ? '+' : ''}{pattern.trend.toFixed(1)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
+          </div>
+
+          {/* Leadership Pattern Analysis - Detailed Charts */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <h3 className="text-xl font-semibold text-gray-900">Detailed Pattern Analysis</h3>
+                <button
+                  onClick={() => setOpenDefinition('pattern-analysis')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Pattern Analysis"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
             {/* Time Range Filter */}
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-600">Time Range:</label>
@@ -1136,7 +1092,7 @@ const ALIReports = () => {
               const totalQuarters = pattern.quarters.length;
 
               return (
-                <div key={pattern.name} className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
+                <div id={`pattern-detail-${pattern.name}`} key={pattern.name} className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
                   {/* Header with Icon, Title, and Subtitle */}
                   <div className="flex items-center gap-3 mb-4">
                     <div 
@@ -1294,6 +1250,60 @@ const ALIReports = () => {
               );
             })}
           </div>
+          </div>
+
+          {/* Root Cause Analysis - Pattern Correlations */}
+          <div className="mb-8">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-xl font-semibold text-gray-900">Root Cause Analysis</h3>
+                <button
+                  onClick={() => setOpenDefinition('root-cause')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Root Cause Analysis"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Pattern Correlations</h4>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Strongest Correlations */}
+                <div>
+                  <h5 className="text-sm font-medium text-gray-700 mb-3">Strongest Relationships</h5>
+                  <div className="space-y-2">
+                    {mockData.patternCorrelations?.strongest.map((corr, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-2 bg-green-50 rounded">
+                        <span className="text-sm text-gray-700 capitalize">
+                          {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
+                        </span>
+                        <span className="text-sm font-semibold text-green-700">{corr.correlation.toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Weakest/Inverse Correlations */}
+                <div>
+                  <h5 className="text-sm font-medium text-gray-700 mb-3">Inverse Relationships</h5>
+                  <div className="space-y-2">
+                    {mockData.patternCorrelations?.weakest.map((corr, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-2 bg-orange-50 rounded">
+                        <span className="text-sm text-gray-700 capitalize">
+                          {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
+                        </span>
+                        <span className="text-sm font-semibold text-orange-700">{corr.correlation.toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <p className="text-sm text-gray-700">
+                  <strong>Key Insight:</strong> Clarity and Alignment show the strongest positive correlation (0.87), suggesting that improving communication clarity directly enhances team alignment. Leadership Alignment (reversed drift) has an inverse relationship with Clarity, indicating that as clarity improves, drift decreases.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Comparative Analysis Section */}
@@ -1354,60 +1364,6 @@ const ALIReports = () => {
           </div>
         </section>
 
-        {/* Root Cause Analysis Section */}
-        <section className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <GitBranch className="w-5 h-5 text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Root Cause Analysis</h2>
-            <button
-              onClick={() => setOpenDefinition('root-cause')}
-              className="text-gray-400 hover:text-blue-600 transition-colors"
-              aria-label="Learn about Root Cause Analysis"
-            >
-              <HelpCircle className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Pattern Correlations</h3>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Strongest Correlations */}
-              <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Strongest Relationships</h4>
-                <div className="space-y-2">
-                  {mockData.patternCorrelations?.strongest.map((corr, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2 bg-green-50 rounded">
-                      <span className="text-sm text-gray-700 capitalize">
-                        {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
-                      </span>
-                      <span className="text-sm font-semibold text-green-700">{corr.correlation.toFixed(2)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Weakest/Inverse Correlations */}
-              <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Inverse Relationships</h4>
-                <div className="space-y-2">
-                  {mockData.patternCorrelations?.weakest.map((corr, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2 bg-orange-50 rounded">
-                      <span className="text-sm text-gray-700 capitalize">
-                        {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
-                      </span>
-                      <span className="text-sm font-semibold text-orange-700">{corr.correlation.toFixed(2)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-700">
-                <strong>Key Insight:</strong> Clarity and Alignment show the strongest positive correlation (0.87), suggesting that improving communication clarity directly enhances team alignment. Leadership Alignment (reversed drift) has an inverse relationship with Clarity, indicating that as clarity improves, drift decreases.
-              </p>
-            </div>
-          </div>
-        </section>
-
         {/* Predictive Analytics Section */}
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-4">
@@ -1458,19 +1414,7 @@ const ALIReports = () => {
               </div>
             </div>
             
-            {/* Risk Indicators */}
-            {mockData.predictiveInsights?.risks && mockData.predictiveInsights.risks.length > 0 && (
-              <div className="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                <h4 className="font-semibold text-yellow-800 mb-2">Risk Indicators</h4>
-                <div className="space-y-2">
-                  {mockData.predictiveInsights.risks.map((risk, idx) => (
-                    <div key={idx} className="text-sm text-yellow-700">
-                      <strong>{risk.pattern}:</strong> {risk.reason} (Risk: {risk.risk})
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Risk Indicators - Moved to Predictive Analytics */}
           </div>
         </section>
 
