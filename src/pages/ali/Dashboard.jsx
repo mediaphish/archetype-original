@@ -591,18 +591,26 @@ const ALIDashboard = () => {
               
               {/* Left: ALI Score */}
               <div className="flex-shrink-0">
-                <div className="flex items-center gap-2 mb-3">
-                  <h2 className="text-[15px] font-semibold text-black/[0.6] uppercase tracking-wide">
-                    ALI OVERALL SCORE
-                  </h2>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-[15px] font-semibold text-black/[0.6] uppercase tracking-wide">
+                      ALI OVERALL SCORE
+                    </h2>
+                    <button
+                      onClick={() => setOpenDefinition('ali-score')}
+                      className="text-black/[0.38] hover:text-blue-600 transition-colors"
+                      aria-label="Learn about ALI Score"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+                  </div>
                   <button
-                    onClick={() => setOpenDefinition('ali-score')}
-                    className="text-black/[0.38] hover:text-blue-600 transition-colors"
-                    aria-label="Learn about ALI Score"
+                    onClick={() => handleNavigate('/ali/reports')}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    Deep Dive Analytics →
                   </button>
                 </div>
                 

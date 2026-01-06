@@ -294,7 +294,67 @@ const ALIReports = () => {
           </p>
         </div>
       )
+    },
+    'multi-year-progression': {
+      title: 'Multi-Year Score Progression',
+      content: (
+        <div>
+          <p className="mb-4">
+            The Multi-Year Score Progression chart shows your complete leadership journey across all survey periods, not just the last four quarters.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Complete History:</strong> See every survey result in one view</li>
+            <li><strong>Zone Transitions:</strong> Visual markers show when you moved between zones</li>
+            <li><strong>Year-over-Year:</strong> Dashed lines show average performance by year</li>
+            <li><strong>Event Correlation:</strong> Link score changes to organizational initiatives</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            This view helps you understand long-term trends and the impact of specific actions over time.
+          </p>
+        </div>
+      )
+    },
+    'pattern-health': {
+      title: 'Pattern Health Matrix',
+      content: (
+        <div>
+          <p className="mb-4">
+            The Pattern Health Matrix provides a quick visual assessment of all seven leadership patterns at a glance.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Health Status:</strong> Color-coded indicators (Green/Yellow/Orange/Red) show current health</li>
+            <li><strong>Trend Indicators:</strong> Arrows show whether each pattern is improving, declining, or stable</li>
+            <li><strong>Click to Drill:</strong> Click any pattern to jump to detailed analysis</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            Use this matrix to quickly identify which patterns need attention and which are performing well.
+          </p>
+        </div>
+      )
+    },
+    'risk-indicators': {
+      title: 'Risk Indicators & Opportunities',
+      content: (
+        <div>
+          <p className="mb-4">
+            Risk Indicators & Opportunities provide early warning signals and highlight quick wins based on your data.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>Early Warnings:</strong> Identify patterns showing volatility or decline before they become critical</li>
+            <li><strong>Quick Wins:</strong> Low-effort actions with high potential impact</li>
+            <li><strong>Impact Estimates:</strong> Understand the potential score improvement from each action</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            This section helps you prioritize actions and address issues before they escalate.
+          </p>
+        </div>
+      )
     }
+  };
+
+  // Helper function to convert Leadership Drift to Alignment (reversed scale)
+  const getDriftAsAlignment = (driftScore) => {
+    return 100 - driftScore;
   };
 
   // Zone background colors and descriptions
@@ -662,199 +722,289 @@ const ALIReports = () => {
           </button>
         </div>
 
-        {/* ALI OVERALL SCORE HERO SECTION */}
-        <div className="space-y-4 mb-8">
-          {/* Panel 1: Score + Chart */}
-          <div className="bg-white rounded-lg border border-black/[0.12] p-8">
-            <div className="flex items-start justify-between gap-8">
-              
-              {/* Left: ALI Score */}
-              <div className="flex-shrink-0">
-                <div className="flex items-center gap-2 mb-3">
-                  <h2 className="text-[15px] font-semibold text-black/[0.6] uppercase tracking-wide">
-                    ALI OVERALL SCORE
-                  </h2>
-                  <button
-                    onClick={() => setOpenDefinition('ali-score')}
-                    className="text-black/[0.38] hover:text-blue-600 transition-colors"
-                    aria-label="Learn about ALI Score"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </button>
+        {/* MULTI-YEAR SCORE PROGRESSION - Above the Fold */}
+        <section className="mb-8">
+          <div className="bg-white rounded-lg border border-gray-200 p-8">
+            <div className="flex items-center gap-2 mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">Multi-Year Score Progression</h2>
+              <button
+                onClick={() => setOpenDefinition('multi-year-progression')}
+                className="text-gray-400 hover:text-blue-600 transition-colors"
+                aria-label="Learn about Multi-Year Progression"
+              >
+                <HelpCircle className="w-5 h-5" />
+              </button>
+            </div>
+            
+            {/* Large Multi-Year Chart */}
+            <div className="relative h-[320px] mb-6">
+              {/* Y-axis labels */}
+              <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-500 font-medium pr-3">
+                <span>100</span>
+                <span>75</span>
+                <span>50</span>
+                <span>25</span>
+                <span>0</span>
+              </div>
+
+              {/* Chart container */}
+              <div className="ml-12 h-full relative">
+                {/* Zone background bands */}
+                <div className="absolute inset-0">
+                  <div className="absolute top-0 left-0 right-0 h-[25%] bg-green-50/30 border-b border-green-200/50"></div>
+                  <div className="absolute top-[25%] left-0 right-0 h-[15%] bg-yellow-50/30 border-b border-yellow-200/50"></div>
+                  <div className="absolute top-[40%] left-0 right-0 h-[15%] bg-orange-50/30 border-b border-orange-200/50"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-[45%] bg-red-50/30"></div>
                 </div>
-                
-                <div className="flex items-baseline gap-4 mb-4">
-                  <div className="text-[64px] font-bold leading-none text-[#2563eb]">
-                    {mockData.currentALI.score.toFixed(1)}
-                  </div>
-                  <div className="text-[16px] text-black/[0.6] pb-2">
-                    Rolling: <span className="font-semibold text-black/[0.87]">{mockData.currentALI.rolling.toFixed(1)}</span>
-                  </div>
+
+                {/* Horizontal grid lines */}
+                <div className="absolute inset-0 flex flex-col justify-between">
+                  {[0, 25, 50, 75, 100].map((val) => (
+                    <div key={val} className={`h-[1px] ${val === 75 ? 'bg-gray-400' : 'bg-gray-200'}`}></div>
+                  ))}
                 </div>
-                
-                {/* Multi-Year Comparison */}
-                {mockData.currentALI.multiYearComparison && (
-                  <div className="border-t border-gray-200 pt-4 mt-4">
-                    <div className="text-xs text-gray-600 mb-2">Year-over-Year Comparison</div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <div className="text-xs text-gray-500">Year 1 Avg</div>
-                        <div className="text-lg font-semibold text-gray-700">
-                          {mockData.currentALI.multiYearComparison.year1.avg.toFixed(1)}
-                        </div>
-                        <div className="text-xs text-gray-400">{mockData.currentALI.multiYearComparison.year1.range}</div>
+
+                {/* SVG Chart - All quarters */}
+                <svg 
+                  viewBox="0 0 100 100" 
+                  preserveAspectRatio="none"
+                  className="absolute inset-0 w-full h-full"
+                >
+                  {/* Main progression line */}
+                  <polyline
+                    points={mockData.currentALI.history.map((point, idx) => {
+                      const x = (idx / (mockData.currentALI.history.length - 1)) * 90 + 5; // Spread across width
+                      const svgY = 100 - point.score; // Invert Y-axis
+                      return `${x},${svgY}`;
+                    }).join(' ')}
+                    fill="none"
+                    stroke="#2563eb"
+                    strokeWidth="3"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  
+                  {/* Year 1 average line */}
+                  {mockData.currentALI.multiYearComparison && (
+                    <line
+                      x1="5"
+                      y1={100 - mockData.currentALI.multiYearComparison.year1.avg}
+                      x2="50"
+                      y2={100 - mockData.currentALI.multiYearComparison.year1.avg}
+                      stroke="#94a3b8"
+                      strokeWidth="2"
+                      strokeDasharray="4 4"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  )}
+                  
+                  {/* Year 2 average line */}
+                  {mockData.currentALI.multiYearComparison && (
+                    <line
+                      x1="50"
+                      y1={100 - mockData.currentALI.multiYearComparison.year2.avg}
+                      x2="95"
+                      y2={100 - mockData.currentALI.multiYearComparison.year2.avg}
+                      stroke="#10b981"
+                      strokeWidth="2"
+                      strokeDasharray="4 4"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  )}
+                </svg>
+
+                {/* Data points */}
+                <div className="absolute inset-0">
+                  {mockData.currentALI.history.map((point, idx) => {
+                    const xPercent = (idx / (mockData.currentALI.history.length - 1)) * 90 + 5;
+                    const svgY = 100 - point.score;
+                    const yPercent = svgY;
+                    return (
+                      <div 
+                        key={idx} 
+                        className="absolute" 
+                        style={{ 
+                          left: `${xPercent}%`, 
+                          top: `${yPercent}%`, 
+                          transform: 'translate(-50%, -50%)' 
+                        }}
+                      >
+                        <div className="w-3 h-3 rounded-full bg-[#2563eb] border-2 border-white shadow-md"></div>
                       </div>
-                      <div>
-                        <div className="text-xs text-gray-500">Year 2 Avg</div>
-                        <div className="text-lg font-semibold text-green-600">
-                          {mockData.currentALI.multiYearComparison.year2.avg.toFixed(1)}
+                    );
+                  })}
+                </div>
+
+                {/* X-axis labels */}
+                <div className="absolute bottom-0 left-0 right-0 flex justify-between pt-2">
+                  {mockData.currentALI.history.map((point, idx) => (
+                    <div key={idx} className="text-xs text-gray-600">
+                      {point.period}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Key Metrics Row */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-6 border-t border-gray-200">
+              <div>
+                <div className="text-xs text-gray-500 mb-1">Current</div>
+                <div className="text-xl font-bold text-gray-900">{mockData.currentALI.score.toFixed(1)}</div>
+              </div>
+              {mockData.currentALI.multiYearComparison && (
+                <>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Year 1 Avg</div>
+                    <div className="text-xl font-bold text-gray-700">{mockData.currentALI.multiYearComparison.year1.avg.toFixed(1)}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Year 2 Avg</div>
+                    <div className="text-xl font-bold text-green-600">{mockData.currentALI.multiYearComparison.year2.avg.toFixed(1)}</div>
+                  </div>
+                </>
+              )}
+              <div>
+                <div className="text-xs text-gray-500 mb-1">Total Improvement</div>
+                <div className="text-xl font-bold text-green-600">+{mockData.aliImprovement.percent.toFixed(1)}%</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500 mb-1">Best Quarter</div>
+                <div className="text-xl font-bold text-gray-900">{mockData.currentALI.history[mockData.currentALI.history.length - 1].period}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* PATTERN HEALTH MATRIX & RISK INDICATORS - Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Pattern Health Matrix */}
+          <section>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Pattern Health Matrix</h2>
+                <button
+                  onClick={() => setOpenDefinition('pattern-health')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Pattern Health"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                {mockData.patterns.map((pattern) => {
+                  const isLeadershipDrift = pattern.name === 'leadership_drift';
+                  const displayScore = isLeadershipDrift ? getDriftAsAlignment(pattern.score) : pattern.score;
+                  const displayRolling = isLeadershipDrift ? getDriftAsAlignment(pattern.rolling) : pattern.rolling;
+                  
+                  // Determine health status
+                  let healthStatus = 'green';
+                  let healthLabel = 'Healthy';
+                  if (displayRolling < 45) {
+                    healthStatus = 'red';
+                    healthLabel = 'Critical';
+                  } else if (displayRolling < 60) {
+                    healthStatus = 'orange';
+                    healthLabel = 'Warning';
+                  } else if (displayRolling < 75) {
+                    healthStatus = 'yellow';
+                    healthLabel = 'Stable';
+                  }
+                  
+                  const healthColors = {
+                    green: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', dot: 'bg-green-500' },
+                    yellow: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', dot: 'bg-yellow-500' },
+                    orange: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', dot: 'bg-orange-500' },
+                    red: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', dot: 'bg-red-500' }
+                  };
+                  
+                  const colors = healthColors[healthStatus];
+                  const trendIcon = pattern.trendDirection === 'up' ? '↑' : pattern.trendDirection === 'down' ? '↓' : '→';
+                  const trendColor = pattern.trendDirection === 'up' ? 'text-green-600' : pattern.trendDirection === 'down' ? 'text-red-600' : 'text-gray-600';
+                  
+                  return (
+                    <div 
+                      key={pattern.name}
+                      className={`p-3 rounded-lg border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition-all`}
+                      onClick={() => {
+                        // Scroll to pattern analysis section
+                        const element = document.getElementById('pattern-analysis-section');
+                        if (element) element.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${colors.dot}`}></div>
+                          <div>
+                            <div className="font-semibold text-gray-900 capitalize text-sm">
+                              {pattern.name === 'leadership_drift' ? 'Leadership Alignment' : pattern.name.replace('_', ' ')}
+                            </div>
+                            <div className="text-xs text-gray-600">{healthLabel}</div>
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-400">{mockData.currentALI.multiYearComparison.year2.range}</div>
+                        <div className="text-right">
+                          <div className={`text-lg font-bold ${colors.text}`}>
+                            {displayRolling.toFixed(1)}
+                          </div>
+                          <div className={`text-xs ${trendColor} font-medium`}>
+                            {trendIcon} {pattern.trend > 0 ? '+' : ''}{pattern.trend.toFixed(1)}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="mt-2 text-sm font-medium text-green-600">
-                      +{mockData.currentALI.multiYearComparison.improvement.toFixed(1)} point improvement
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Risk Indicators & Opportunities */}
+          <section>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Risk Indicators & Opportunities</h2>
+                <button
+                  onClick={() => setOpenDefinition('risk-indicators')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Risk Indicators"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Risks */}
+                {mockData.predictiveInsights?.risks && mockData.predictiveInsights.risks.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2">⚠️ Early Warnings</h3>
+                    <div className="space-y-2">
+                      {mockData.predictiveInsights.risks.map((risk, idx) => (
+                        <div key={idx} className="p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                          <div className="font-semibold text-yellow-800 text-sm mb-1">{risk.pattern}</div>
+                          <div className="text-xs text-yellow-700">{risk.reason}</div>
+                          <div className="text-xs text-yellow-600 mt-1">Risk Level: {risk.risk}</div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
-              </div>
-
-              {/* Right: Trend Chart */}
-              <div className="flex-1 min-w-0">
-                <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-3">
-                  4-Quarter Trend
-                </div>
                 
-                {/* SVG Line Chart */}
-                <div className="relative h-[140px] w-full">
-                  {/* Y-axis labels */}
-                  <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[11px] text-black/[0.38] font-medium pr-2">
-                    <span>100</span>
-                    <span>75</span>
-                    <span>50</span>
-                    <span>25</span>
-                    <span>0</span>
-                  </div>
-
-                  {/* Chart container */}
-                  <div className="ml-8 h-full relative">
-                    {/* Horizontal grid lines */}
-                    <div className="absolute inset-0 flex flex-col justify-between">
-                      <div className="h-[1px] bg-black/[0.06]" />
-                      <div className="h-[1px] bg-black/[0.12]" /> {/* 75 line - darker */}
-                      <div className="h-[1px] bg-black/[0.06]" />
-                      <div className="h-[1px] bg-black/[0.06]" />
-                      <div className="h-[1px] bg-black/[0.06]" />
-                    </div>
-
-                    {/* SVG Chart with line and dots */}
-                    <svg 
-                      viewBox="0 0 100 100" 
-                      preserveAspectRatio="none"
-                      className="absolute inset-0 w-full h-full"
-                    >
-                      {/* Connecting line - Y coordinates inverted (100 - score) */}
-                      <polyline
-                        points={mockData.currentALI.history.map((point, idx) => {
-                          const x = 12.5 + (idx * 25); // 12.5, 37.5, 62.5, 87.5
-                          const svgY = 100 - point.score; // Invert Y-axis
-                          return `${x},${svgY}`;
-                        }).join(' ')}
-                        fill="none"
-                        stroke="#2563eb"
-                        strokeWidth="2.5"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    </svg>
-
-                    {/* Data points and labels */}
-                    <div className="absolute inset-0">
-                      {mockData.currentALI.history.map((point, idx) => {
-                        const xPercent = 12.5 + (idx * 25); // 12.5%, 37.5%, 62.5%, 87.5%
-                        const svgY = 100 - point.score; // Inverted for SVG (top is 0, bottom is 100)
-                        const yPercent = svgY; // Position from top
-                        return (
-                          <div 
-                            key={idx} 
-                            className="absolute" 
-                            style={{ 
-                              left: `${xPercent}%`, 
-                              top: `${yPercent}%`, 
-                              transform: 'translate(-50%, -50%)' 
-                            }}
-                          >
-                            {/* Score label above dot */}
-                            <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 text-[12px] font-semibold text-[#2563eb] whitespace-nowrap">
-                              {point.score.toFixed(1)}
-                            </div>
-                            
-                            {/* Dot */}
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#2563eb] border-2 border-white shadow-sm" />
-                            
-                            {/* Quarter label below dot */}
-                            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-[11px] text-black/[0.6] whitespace-nowrap">
-                              {point.period}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                {/* Opportunities */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">💡 Quick Wins</h3>
+                  <div className="space-y-2">
+                    {mockData.actionPlan?.quickWins.map((win, idx) => (
+                      <div key={idx} className="p-3 bg-green-50 border-l-4 border-green-400 rounded">
+                        <div className="font-semibold text-green-800 text-sm mb-1">{win.action}</div>
+                        <div className="text-xs text-green-700 mb-1">Impact: {win.impact}</div>
+                        <div className="text-xs text-green-600">Timeframe: {win.timeframe}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Panel 2 & 3: Zone + Trajectory Side by Side */}
-          <div className="grid grid-cols-2 gap-4">
-            
-            {/* Panel 2: Current Zone */}
-            {(() => {
-              const zoneInfo = getZoneInfo(mockData.currentALI.zone);
-              return (
-                <div 
-                  className="rounded-lg border-2 p-6"
-                  style={{
-                    backgroundColor: `${zoneInfo.color}15`, // 15 = ~8% opacity in hex
-                    borderColor: zoneInfo.color
-                  }}
-                >
-                  <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
-                    CURRENT ZONE
-                  </div>
-                  <div 
-                    className="text-[22px] font-bold mb-3"
-                    style={{ color: zoneInfo.color }}
-                  >
-                    {zoneInfo.label}
-                  </div>
-                  <p className="text-[14px] leading-relaxed" style={{ color: zoneInfo.color }}>
-                    {zoneInfo.description}
-                  </p>
-                </div>
-              );
-            })()}
-
-            {/* Panel 3: Trajectory */}
-            <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-              <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
-                TRAJECTORY
-              </div>
-              <div className="flex items-center gap-3 mb-2">
-                <svg className="w-6 h-6 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-                <span className="text-[32px] font-bold text-[#10b981]">
-                  +{(mockData.currentALI.history[mockData.currentALI.history.length - 1].score - mockData.currentALI.history[0].score).toFixed(1)}
-                </span>
-              </div>
-              <p className="text-[14px] text-black/[0.6]">
-                Total Growth
-              </p>
-            </div>
-          </div>
+          </section>
         </div>
 
         {/* PRIORITY 2: Key Insights & Movement - Generated by Archy */}
@@ -920,7 +1070,7 @@ const ALIReports = () => {
         </section>
 
         {/* Leadership Pattern Analysis - Horizontal Bar Charts (EXACT IMAGE DESIGN) */}
-        <section className="mb-12">
+        <section id="pattern-analysis-section" className="mb-12">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <h2 className="text-xl font-semibold text-gray-900">Leadership Pattern Analysis</h2>
