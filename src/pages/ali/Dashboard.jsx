@@ -504,6 +504,16 @@ const ALIDashboard = () => {
     profile_forming: 'Profile Forming'
   };
 
+  const profileDescriptions = {
+    guardian: 'High Honesty • High Clarity. The healthiest leadership model—stable, safe, aligned.',
+    aspirer: 'High Honesty • Unstable Clarity. Well-intentioned but clarity slips under stress.',
+    protector: 'Selective Honesty • High Clarity. Communicates well but edits truth to protect.',
+    producer_leader: 'Courageous Honesty • Ambiguous Clarity. Works hard, tells truth, but vague due to overload.',
+    stabilizer: 'Selective Honesty • Unstable Clarity. Keeps peace but unintentionally confuses team.',
+    operator: 'Protective Honesty • Ambiguous Clarity. Well-meaning but exhausted and unequipped.',
+    profile_forming: 'Profile still forming. Complete more surveys to see your leadership archetype.'
+  };
+
   // Profile background colors
   const getProfileColor = (profile) => {
     const colors = {
