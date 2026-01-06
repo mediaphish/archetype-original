@@ -352,11 +352,6 @@ const ALIReports = () => {
     }
   };
 
-  // Helper function to convert Leadership Drift to Alignment (reversed scale)
-  const getDriftAsAlignment = (driftScore) => {
-    return 100 - driftScore;
-  };
-
   // Zone background colors and descriptions
   const getZoneInfo = (zone) => {
     const zones = {
