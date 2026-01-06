@@ -1186,6 +1186,13 @@ const ALIDashboard = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* Profile Description */}
+                <div className="mt-6 pt-6 border-t border-purple-200">
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {profileDescriptions[mockData.leadershipProfile.profile]}
+                  </p>
+                </div>
               </div>
             </div>
 
