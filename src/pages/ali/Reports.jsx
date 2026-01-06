@@ -18,6 +18,12 @@ const ALIReports = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
+  // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
+  const getDriftAsAlignment = (driftScore) => {
+    return 100 - driftScore;
+  };
+
   // Pattern color mapping for charts ONLY
   const getPatternColor = (pattern) => {
     const colors = {
@@ -27,7 +33,7 @@ const ALIReports = () => {
       communication: '#f59e0b',
       alignment: '#10b981',
       stability: '#6366f1',
-      leadership_drift: '#ef4444'
+      leadership_drift: '#10b981' // Changed from red to green since higher is now better
     };
     return colors[pattern] || '#2563eb';
   };
@@ -146,11 +152,11 @@ const ALIReports = () => {
       title: 'Leadership Drift',
       content: (
         <div>
-          <p className="mb-4">
-            Leadership Drift measures the gap between stated and observed leadership behaviors. Lower drift means your actions match your words.
+            <p className="mb-4">
+            Leadership Alignment measures how well your actions match your stated values. Higher alignment means your actions match your words. (Displayed as 100 - drift score, where drift measures the gap between stated and observed behaviors.)
           </p>
           <p className="text-sm text-gray-600">
-            Gap between stated and observed leadership behaviors.
+            Alignment between stated and observed leadership behaviors.
           </p>
         </div>
       )
@@ -385,8 +391,8 @@ const ALIReports = () => {
       {
         icon: ArrowDown,
         iconColor: 'text-red-600',
-        title: 'Leadership Drift Reduction',
-        text: '40% decrease in Leadership Drift indicates improved alignment between stated values and actual behaviors.'
+        title: 'Leadership Alignment Improvement',
+        text: '40% increase in Leadership Alignment indicates improved consistency between stated values and actual behaviors.'
       },
       {
         icon: AlertTriangle,
@@ -424,8 +430,11 @@ const ALIReports = () => {
 
     setTimeout(() => {
       mockData.patterns.forEach((pattern, idx) => {
+        const isLeadershipDrift = pattern.name === 'leadership_drift';
         pattern.quarters.forEach((quarter, qIdx) => {
-          animateValue(`${pattern.name}_${qIdx}`, 0, quarter.score, 1200 + (idx * 100) + (qIdx * 50));
+          // For Leadership Drift, reverse the scale (100 - drift = alignment)
+          const displayScore = isLeadershipDrift ? getDriftAsAlignment(quarter.score) : quarter.score;
+          animateValue(`${pattern.name}_${qIdx}`, 0, displayScore, 1200 + (idx * 100) + (qIdx * 50));
         });
       });
     }, 100);
@@ -772,7 +781,18 @@ const ALIReports = () => {
             {mockData.patterns.map((pattern) => {
               const Icon = pattern.icon;
               const patternColor = getPatternColor(pattern.name);
-              const trendColor = pattern.trendDirection === 'up' ? 'text-green-600' : 'text-red-600';
+              const isLeadershipDrift = pattern.name === 'leadership_drift';
+              
+              // For Leadership Drift, convert to Alignment (reversed scale)
+              const displayScore = isLeadershipDrift ? getDriftAsAlignment(pattern.score) : pattern.score;
+              const displayRolling = isLeadershipDrift ? getDriftAsAlignment(pattern.rolling) : pattern.rolling;
+              
+              // For drift, trendDirection 'down' means drift decreased = alignment increased = good
+              // So we reverse the trend color logic for drift
+              const trendColor = isLeadershipDrift 
+                ? (pattern.trendDirection === 'down' ? 'text-green-600' : 'text-red-600')
+                : (pattern.trendDirection === 'up' ? 'text-green-600' : 'text-red-600');
+              
               const maxScore = 100;
               const scrollKey = pattern.name;
               const scrollPosition = patternScrollPositions[scrollKey] || 0;
@@ -811,7 +831,9 @@ const ALIReports = () => {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-semibold text-gray-900 capitalize">{pattern.name.replace('_', ' ')}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 capitalize">
+                          {pattern.name === 'leadership_drift' ? 'Leadership Alignment' : pattern.name.replace('_', ' ')}
+                        </h3>
                         <button
                           onClick={() => setOpenDefinition(`pattern-${pattern.name}`)}
                           className="text-gray-400 hover:text-blue-600 transition-colors"
@@ -832,14 +854,16 @@ const ALIReports = () => {
                   {/* Current Score - Large and Prominent */}
                   <div className="mb-2">
                     <div className="text-5xl font-bold mb-1" style={{ color: patternColor }}>
-                      {pattern.score.toFixed(1)}
+                      {displayScore.toFixed(1)}
                     </div>
-                    <div className="text-sm text-gray-600">Rolling: {pattern.rolling.toFixed(1)}</div>
+                    <div className="text-sm text-gray-600">Rolling: {displayRolling.toFixed(1)}</div>
                   </div>
 
                   {/* Trend Indicator */}
                   <div className={`flex items-center gap-1 text-sm font-medium mb-6 ${trendColor}`}>
-                    {pattern.trendDirection === 'up' ? '↑' : '↓'}
+                    {isLeadershipDrift 
+                      ? (pattern.trendDirection === 'down' ? '↑' : '↓') // Down drift = up alignment
+                      : (pattern.trendDirection === 'up' ? '↑' : '↓')}
                     <span>{pattern.trend.toFixed(1)}%</span>
                   </div>
 
@@ -891,7 +915,9 @@ const ALIReports = () => {
                       >
                         <div className="flex flex-col gap-3" style={{ minWidth: hasMoreQuarters ? 'max-content' : '100%' }}>
                           {displayQuarters.map((quarter, idx) => {
-                            const barWidth = (quarter.score / maxScore) * 100;
+                            // For Leadership Drift, convert to Alignment (reversed scale)
+                            const displayQuarterScore = isLeadershipDrift ? getDriftAsAlignment(quarter.score) : quarter.score;
+                            const barWidth = (displayQuarterScore / maxScore) * 100;
                             const animatedWidth = animatedValues[`${pattern.name}_${idx}`] 
                               ? (animatedValues[`${pattern.name}_${idx}`] / maxScore) * 100 
                               : 0;
@@ -914,7 +940,7 @@ const ALIReports = () => {
                                     }}
                                   >
                                     <span className="text-xs font-semibold text-white">
-                                      {quarter.score.toFixed(1)}
+                                      {displayQuarterScore.toFixed(1)}
                                     </span>
                                   </div>
                                 </div>

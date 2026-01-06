@@ -49,7 +49,9 @@ const ALIDashboard = () => {
       });
       
       Object.entries(mockData.scores.patterns).forEach(([key, value]) => {
-        animateValue(`pattern_${key}`, 0, value.rolling, 1200);
+        // For Leadership Drift, reverse the scale (100 - drift = alignment)
+        const displayValue = key === 'leadership_drift' ? (100 - value.rolling) : value.rolling;
+        animateValue(`pattern_${key}`, 0, displayValue, 1200);
       });
 
       animateValue('trajectory', 0, mockData.trajectory.value, 1000);
@@ -152,7 +154,7 @@ const ALIDashboard = () => {
             <li><strong>Communication:</strong> How well information flows in both directions</li>
             <li><strong>Alignment:</strong> How well your team understands and follows direction</li>
             <li><strong>Stability:</strong> How steady and reliable your leadership feels</li>
-            <li><strong>Leadership Drift:</strong> How much conditions are shifting over time (lower is better)</li>
+            <li><strong>Leadership Alignment:</strong> How well actions match stated values (higher is better, displayed as 100 - drift)</li>
           </ul>
           <p className="text-sm text-gray-600">
             These patterns are rolling averages from your last 4 surveys, showing trends over time. Each pattern tells part of the story of how your leadership is experienced.
@@ -415,6 +417,12 @@ const ALIDashboard = () => {
     ]
   };
 
+  // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
+  // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
+  const getDriftAsAlignment = (driftScore) => {
+    return 100 - driftScore;
+  };
+
   // Pattern color mapping for charts ONLY
   const getPatternColor = (pattern) => {
     const colors = {
@@ -424,7 +432,7 @@ const ALIDashboard = () => {
       communication: '#f59e0b',
       alignment: '#10b981',
       stability: '#6366f1',
-      leadership_drift: '#ef4444'
+      leadership_drift: '#10b981' // Changed from red to green since higher is now better
     };
     return colors[pattern] || '#2563eb';
   };
@@ -1155,22 +1163,22 @@ const ALIDashboard = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative overflow-visible">
               {Object.entries(mockData.scores.patterns).map(([pattern, scores]) => {
-                const trendChange = scores.current - scores.rolling;
+                const isLeadershipDrift = pattern === 'leadership_drift';
+                
+                // For Leadership Drift, convert to Alignment (reversed scale)
+                const displayCurrent = isLeadershipDrift ? getDriftAsAlignment(scores.current) : scores.current;
+                const displayRolling = isLeadershipDrift ? getDriftAsAlignment(scores.rolling) : scores.rolling;
+                
+                const trendChange = displayCurrent - displayRolling;
                 const trendDirection = trendChange > 0 ? '↑' : trendChange < 0 ? '↓' : '→';
                 const isPositive = trendChange > 0;
-                const isLeadershipDrift = pattern === 'leadership_drift';
-                // For Leadership Drift, decrease is good (lower drift = better)
-                const trendIsGood = isLeadershipDrift ? trendChange < 0 : trendChange > 0;
+                // Now all patterns follow same logic: increase is good
+                const trendIsGood = trendChange > 0;
                 const trendColor = trendIsGood ? 'text-green-600' : 'text-orange-600';
                 
-                let trendDisplay;
-                if (isLeadershipDrift && trendChange < 0) {
-                  trendDisplay = `${Math.abs(trendChange).toFixed(1)} lower`;
-                } else {
-                  trendDisplay = isPositive ? `+${trendChange.toFixed(1)}` : trendChange.toFixed(1);
-                }
+                const trendDisplay = isPositive ? `+${trendChange.toFixed(1)}` : trendChange.toFixed(1);
                 
-                const progressPercentage = Math.min(Math.max(scores.rolling, 0), 100);
+                const progressPercentage = Math.min(Math.max(displayRolling, 0), 100);
                 const patternColor = getPatternColor(pattern);
 
                 // Icon mapping
@@ -1196,7 +1204,9 @@ const ALIDashboard = () => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Icon className="w-4 h-4 transition-transform duration-200 hover:scale-110" style={{ color: patternColor }} />
-                        <div className="text-sm font-medium text-gray-600 capitalize">{pattern.replace('_', ' ')}</div>
+                        <div className="text-sm font-medium text-gray-600 capitalize">
+                          {pattern === 'leadership_drift' ? 'Leadership Alignment' : pattern.replace('_', ' ')}
+                        </div>
                       </div>
                       <div className={`flex items-center gap-1 text-sm ${trendColor}`}>
                         <span>{trendDirection}</span>
@@ -1204,7 +1214,7 @@ const ALIDashboard = () => {
                       </div>
                     </div>
                     <div className="text-4xl font-bold mb-3 transition-all duration-300" style={{ color: patternColor }}>
-                      {(animatedValues[`pattern_${pattern}`] ?? scores.rolling).toFixed(1)}
+                      {(animatedValues[`pattern_${pattern}`] ?? displayRolling).toFixed(1)}
                     </div>
                     
                     {/* Progress Bar */}
@@ -1220,7 +1230,7 @@ const ALIDashboard = () => {
                       </div>
                     </div>
                     
-                    <div className="text-xs text-gray-500">Current: {scores.current.toFixed(1)}</div>
+                    <div className="text-xs text-gray-500">Current: {displayCurrent.toFixed(1)}</div>
                     {hoveredPattern === pattern && (
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[9999] whitespace-nowrap pointer-events-none">
                         Rolling: {scores.rolling.toFixed(1)}<br/>
@@ -1466,11 +1476,11 @@ const ALIDashboard = () => {
                       transition: 'stroke-dashoffset 1.5s ease-out 0.5s, stroke-width 0.2s'
                     }}
                   />
-                  {/* Leadership Drift - Red */}
+                  {/* Leadership Drift - Green (reversed: higher = better) */}
                   <polyline
-                    points="20,205 120,195 220,185 320,175"
+                    points="20,175 120,185 220,195 320,205"
                     fill="none"
-                    stroke="#ef4444"
+                    stroke="#10b981"
                     className="cursor-pointer"
                     onMouseEnter={() => setHoveredChartPoint('leadership_drift')}
                     onMouseLeave={() => setHoveredChartPoint(null)}
@@ -1524,8 +1534,8 @@ const ALIDashboard = () => {
                   <span className="text-gray-600">Stability</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#ef4444' }}></div>
-                  <span className="text-gray-600">Leadership Drift</span>
+                  <div className="w-4 h-0.5" style={{ backgroundColor: '#10b981' }}></div>
+                  <span className="text-gray-600">Leadership Alignment</span>
                 </div>
               </div>
             </div>
