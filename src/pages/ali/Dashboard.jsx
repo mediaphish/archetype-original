@@ -432,7 +432,7 @@ const ALIDashboard = () => {
       communication: '#f59e0b',
       alignment: '#10b981',
       stability: '#6366f1',
-      leadership_drift: '#10b981' // Changed from red to green since higher is now better
+      leadership_drift: '#ec4899' // Pink - unique color for Leadership Alignment
     };
     return colors[pattern] || '#2563eb';
   };
@@ -1476,11 +1476,11 @@ const ALIDashboard = () => {
                       transition: 'stroke-dashoffset 1.5s ease-out 0.5s, stroke-width 0.2s'
                     }}
                   />
-                  {/* Leadership Drift - Green (reversed: higher = better) */}
+                  {/* Leadership Alignment - Pink (reversed: higher = better) */}
                   <polyline
                     points="20,175 120,185 220,195 320,205"
                     fill="none"
-                    stroke="#10b981"
+                    stroke="#ec4899"
                     className="cursor-pointer"
                     onMouseEnter={() => setHoveredChartPoint('leadership_drift')}
                     onMouseLeave={() => setHoveredChartPoint(null)}
@@ -1534,7 +1534,7 @@ const ALIDashboard = () => {
                   <span className="text-gray-600">Stability</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-0.5" style={{ backgroundColor: '#10b981' }}></div>
+                  <div className="w-4 h-0.5" style={{ backgroundColor: '#ec4899' }}></div>
                   <span className="text-gray-600">Leadership Alignment</span>
                 </div>
               </div>

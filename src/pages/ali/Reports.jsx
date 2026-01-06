@@ -33,7 +33,7 @@ const ALIReports = () => {
       communication: '#f59e0b',
       alignment: '#10b981',
       stability: '#6366f1',
-      leadership_drift: '#10b981' // Changed from red to green since higher is now better
+      leadership_drift: '#ec4899' // Pink - unique color for Leadership Alignment
     };
     return colors[pattern] || '#2563eb';
   };
