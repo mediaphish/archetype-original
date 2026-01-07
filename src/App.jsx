@@ -66,7 +66,7 @@ import ArchyPage from "./pages/archy/Archy";
 import FAQsPage from "./pages/FAQs";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import TermsAndConditionsPage from "./pages/TermsAndConditions";
-import ALIEULAPage from "./pages/ALIEULA";
+import ALIEULAPage from "./pages/ALIEULA.jsx";
 import EngagementInquiryPage from "./pages/EngagementInquiry";
 
 export default function App() {
