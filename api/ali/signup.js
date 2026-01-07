@@ -33,7 +33,10 @@ export default async function handler(req, res) {
       contactEmail,
       contactName,
       contactRole,
-      pilotProgram = false
+      pilotProgram = false,
+      acceptPrivacyPolicy = false,
+      acceptTermsConditions = false,
+      acceptEULA = false
     } = req.body || {};
 
     // Validation
@@ -51,6 +54,13 @@ export default async function handler(req, res) {
 
     if (!contactName || contactName.trim().length < 2) {
       return res.status(400).json({ error: 'Contact name is required (minimum 2 characters)' });
+    }
+
+    // Validate legal acceptances
+    if (!acceptPrivacyPolicy || !acceptTermsConditions || !acceptEULA) {
+      return res.status(400).json({ 
+        error: 'You must accept the Privacy Policy, Terms & Conditions, and ALI EULA to create an account' 
+      });
     }
 
     const normalizedEmail = contactEmail.trim().toLowerCase();
@@ -125,6 +135,64 @@ export default async function handler(req, res) {
         .eq('id', company.id);
       
       return res.status(500).json({ error: 'Failed to create contact' });
+    }
+
+    // Get current document version hashes
+    const getCurrentVersion = async (docType) => {
+      const { data } = await supabaseAdmin
+        .from('ali_legal_document_versions')
+        .select('version_hash')
+        .eq('document_type', docType)
+        .order('effective_date', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      return data?.version_hash || 'v1-2026-01-31'; // Fallback
+    };
+
+    const privacyVersion = await getCurrentVersion('privacy_policy');
+    const termsVersion = await getCurrentVersion('terms_conditions');
+    const eulaVersion = await getCurrentVersion('eula');
+
+    // Get IP address and user agent
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || null;
+    const userAgent = req.headers['user-agent'] || null;
+
+    // Record legal acceptances
+    const acceptances = [
+      {
+        company_id: company.id,
+        contact_id: contact.id,
+        document_type: 'privacy_policy',
+        version_hash: privacyVersion,
+        ip_address: ipAddress,
+        user_agent: userAgent
+      },
+      {
+        company_id: company.id,
+        contact_id: contact.id,
+        document_type: 'terms_conditions',
+        version_hash: termsVersion,
+        ip_address: ipAddress,
+        user_agent: userAgent
+      },
+      {
+        company_id: company.id,
+        contact_id: contact.id,
+        document_type: 'eula',
+        version_hash: eulaVersion,
+        ip_address: ipAddress,
+        user_agent: userAgent
+      }
+    ];
+
+    const { error: acceptanceError } = await supabaseAdmin
+      .from('ali_legal_acceptances')
+      .insert(acceptances);
+
+    if (acceptanceError) {
+      console.error('Error recording legal acceptances:', acceptanceError);
+      // Don't fail signup if acceptance logging fails, but log it
     }
 
     return res.status(201).json({

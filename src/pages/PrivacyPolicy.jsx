@@ -5,7 +5,7 @@ import React from 'react';
 import SEO from '../components/SEO';
 
 // Update this date whenever the Privacy Policy is modified
-const LAST_UPDATED = 'December 18, 2024';
+const LAST_UPDATED = 'January 31, 2026';
 
 export default function PrivacyPolicy() {
   return (
@@ -33,33 +33,29 @@ export default function PrivacyPolicy() {
               <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-8">
                 
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  Archetype Original ("we," "us," or "our") respects your privacy and is committed to protecting it through this Privacy Policy. This policy explains how we collect, use, and safeguard information when you visit archetypeoriginal.com.
+                  Archetype Original ("we," "us," or "our") respects your privacy and is committed to protecting it. This Privacy Policy explains how we collect, use, and safeguard information when you interact with archetypeoriginal.com and related services, including the Archetype Leadership Index (ALI).
                 </p>
 
                 <div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
                     Information We Collect
                   </h2>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-4">
-                    We may collect the following types of information:
-                  </p>
-
+                  
                   <div className="space-y-6">
                     <div>
                       <h3 className="font-bold text-xl sm:text-2xl text-[#1A1A1A] mb-3">
-                        1. Personal Information You Provide
+                        1. Information You Provide Directly
                       </h3>
                       <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
-                        You may voluntarily provide personal information such as:
+                        You may voluntarily provide information such as:
                       </p>
                       <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                         <li>Name</li>
                         <li>Email address</li>
-                        <li>Any information you submit through forms, subscriptions, or direct contact</li>
+                        <li>Company information</li>
+                        <li>Billing details (processed via Stripe)</li>
+                        <li>Information submitted through forms, surveys, or direct contact</li>
                       </ul>
-                      <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-3">
-                        We collect this information only when you choose to provide it.
-                      </p>
                     </div>
 
                     <div>
@@ -67,73 +63,98 @@ export default function PrivacyPolicy() {
                         2. Automatically Collected Information
                       </h3>
                       <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
-                        When you visit the site, we may automatically collect:
+                        When you use our site or services, we may collect:
                       </p>
                       <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                         <li>IP address</li>
                         <li>Browser type</li>
                         <li>Device information</li>
-                        <li>Pages visited and time spent on the site</li>
+                        <li>Pages visited and time spent</li>
+                        <li>Referring URLs</li>
                       </ul>
                       <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-3">
-                        This data is collected through standard analytics tools and cookies.
+                        This information is collected via cookies and standard analytics tools.
                       </p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-xl sm:text-2xl text-[#1A1A1A] mb-3">
+                        3. ALI Survey Data
+                      </h3>
+                      <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                        <li>ALI surveys are designed to be anonymous at the individual level.</li>
+                        <li>Individual survey responses are not visible to client administrators.</li>
+                        <li>Results are aggregated and reported only at the team or organizational level.</li>
+                        <li>Archetype Original does not attempt to identify individual respondents.</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
 
                 <div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    How We Use Your Information
+                    How We Use Information
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
                     We use collected information to:
                   </p>
                   <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    <li>Provide and maintain the website</li>
-                    <li>Send newsletters or updates if you subscribe</li>
-                    <li>Respond to inquiries</li>
-                    <li>Improve content, tools, and user experience</li>
-                    <li>Monitor site performance and usage trends</li>
+                    <li>Provide and operate our services</li>
+                    <li>Deliver ALI surveys and reports</li>
+                    <li>Process payments via Stripe</li>
+                    <li>Communicate with account holders</li>
+                    <li>Improve platform performance and insights</li>
+                    <li>Conduct aggregate research and benchmarking (non-identifiable)</li>
                   </ul>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-4">
-                    We do not sell, rent, or trade your personal information.
+                    We do not sell personal data.
                   </p>
                 </div>
 
                 <div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Cookies and Analytics
+                    Payments
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    We may use cookies and third-party analytics services (such as Google Analytics) to understand how visitors use the site. You can control cookies through your browser settings.
+                    Payments are processed securely by Stripe. We do not store full payment card details on our servers. Stripe's use of your data is governed by their own Privacy Policy.
                   </p>
                 </div>
 
                 <div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Email Communications
+                    Data Retention & Deletion
                   </h2>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    If you subscribe to our email list, you may receive updates, insights, or resources related to leadership and Archetype Original. You may unsubscribe at any time using the link provided in our emails.
+                  <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    <li>Survey data is retained in aggregate form to support longitudinal analysis.</li>
+                    <li>Individual survey submissions may be deleted only under defined system rules (see Terms).</li>
+                    <li>Certain records may be tombstoned (logically deleted but preserved for audit integrity).</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
+                    Super Admin Access
+                  </h2>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
+                    Authorized Archetype Original Super Admins may access company-level aggregate data only for:
+                  </p>
+                  <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    <li>System health</li>
+                    <li>Research and benchmarking</li>
+                    <li>Customer support</li>
+                    <li>Product improvement</li>
+                  </ul>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-3">
+                    Super Admins cannot access individual survey responses.
                   </p>
                 </div>
 
                 <div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Data Security
+                    Cookies & Analytics
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    We take reasonable measures to protect your information. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.
-                  </p>
-                </div>
-
-                <div>
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Third-Party Links
-                  </h2>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    This website may contain links to third-party websites. We are not responsible for the privacy practices or content of those sites.
+                    We use cookies and third-party analytics (e.g., Google Analytics). You may control cookies through your browser settings.
                   </p>
                 </div>
 
@@ -142,16 +163,16 @@ export default function PrivacyPolicy() {
                     Your Rights
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    Depending on your location, you may have rights regarding your personal information, including the right to access or request deletion of your data. You may contact us to make such requests.
+                    Depending on your jurisdiction, you may request access to or deletion of your personal account data. Aggregate and anonymized data may not be deletable where it would compromise system integrity.
                   </p>
                 </div>
 
                 <div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Changes to This Policy
+                    Changes
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    We may update this Privacy Policy from time to time. Updates will be posted on this page with a revised "Last updated" date.
+                    We may update this policy periodically. Updates will be posted with a revised date.
                   </p>
                 </div>
 

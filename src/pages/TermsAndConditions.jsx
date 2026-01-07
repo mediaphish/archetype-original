@@ -5,7 +5,7 @@ import React from 'react';
 import SEO from '../components/SEO';
 
 // Update this date whenever the Terms and Conditions are modified
-const LAST_UPDATED = 'December 18, 2024';
+const LAST_UPDATED = 'January 31, 2026';
 
 export default function TermsAndConditions() {
   return (
@@ -33,15 +33,77 @@ export default function TermsAndConditions() {
               <div className="bg-white border border-[#1A1A1A]/10 rounded-lg p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-8">
                 
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  Welcome to archetypeoriginal.com. By accessing or using this website, you agree to the following Terms and Conditions. If you do not agree, please do not use the site.
+                  By accessing or using archetypeoriginal.com or any related services (including ALI), you agree to these Terms.
                 </p>
 
                 <div>
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Use of the Website
+                    Use of Services
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    This website is provided for informational and educational purposes only. You agree to use the site lawfully and in a manner that does not infringe on the rights of others.
+                    Archetype Original provides educational tools and leadership diagnostics. You agree to use the services lawfully and without abuse, manipulation, or interference.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
+                    ALI Pilot Program
+                  </h2>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
+                    During the ALI Pilot:
+                  </p>
+                  <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    <li>Access is provided free for one year</li>
+                    <li>Features may evolve</li>
+                    <li>No guarantees are made regarding outcomes or insights</li>
+                    <li>We reserve the right to modify or end the pilot at any time.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
+                    Payments
+                  </h2>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    Paid subscriptions (when applicable) are processed through Stripe. By submitting payment details, you authorize recurring charges per your selected plan.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
+                    Acceptable Use
+                  </h2>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
+                    You may not:
+                  </p>
+                  <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    <li>Manipulate survey participation</li>
+                    <li>Seed false responses</li>
+                    <li>Attempt to deanonymize respondents</li>
+                    <li>Misrepresent organizational participation</li>
+                  </ul>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-3">
+                    Violation may result in account termination and data deletion.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
+                    Data Integrity & Deletion
+                  </h2>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
+                    Data may be deleted only, not edited.
+                  </p>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-3">
+                    Deletions are permitted only when:
+                  </p>
+                  <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    <li>Data is fraudulent, abusive, or corrupted</li>
+                    <li>A legal requirement applies</li>
+                    <li>A system integrity issue exists</li>
+                  </ul>
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-3">
+                    Some data may be tombstoned rather than fully erased.
                   </p>
                 </div>
 
@@ -49,29 +111,9 @@ export default function TermsAndConditions() {
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
                     Intellectual Property
                   </h2>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mb-4">
-                    All content on this site—including text, graphics, logos, original frameworks, and written material—is the property of Archetype Original unless otherwise stated.
+                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                    All content, frameworks, scoring models, and visualizations are the intellectual property of Archetype Original.
                   </p>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="font-bold text-xl sm:text-2xl text-[#1A1A1A] mb-3">
-                        You may:
-                      </h3>
-                      <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                        <li>View and share content for personal, non-commercial use</li>
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h3 className="font-bold text-xl sm:text-2xl text-[#1A1A1A] mb-3">
-                        You may not:
-                      </h3>
-                      <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                        <li>Copy, reproduce, distribute, or modify content for commercial purposes without written permission</li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
 
                 <div>
@@ -79,7 +121,7 @@ export default function TermsAndConditions() {
                     No Professional Advice
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    Content provided on this site is not legal, financial, medical, or professional advice. Any actions you take based on information from this site are taken at your own risk.
+                    Content and insights are informational only and do not constitute legal, medical, financial, or HR advice.
                   </p>
                 </div>
 
@@ -88,25 +130,7 @@ export default function TermsAndConditions() {
                     Limitation of Liability
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    Archetype Original is not liable for any damages arising from the use or inability to use this website, including but not limited to indirect or consequential damages.
-                  </p>
-                </div>
-
-                <div>
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Third-Party Services
-                  </h2>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    The site may reference or link to third-party tools, platforms, or services. We are not responsible for their availability, content, or policies.
-                  </p>
-                </div>
-
-                <div>
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 sm:mb-6">
-                    Modifications
-                  </h2>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    We reserve the right to modify or discontinue the website or its content at any time without notice.
+                    Archetype Original is not liable for indirect or consequential damages arising from use of the service.
                   </p>
                 </div>
 
@@ -115,7 +139,7 @@ export default function TermsAndConditions() {
                     Governing Law
                   </h2>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                    These Terms and Conditions are governed by the laws of the State of Missouri, United States, without regard to conflict-of-law principles.
+                    These Terms are governed by the laws of the State of Missouri.
                   </p>
                 </div>
 

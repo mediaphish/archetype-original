@@ -9,7 +9,9 @@ const ALISignup = () => {
     contactName: '',
     contactEmail: '',
     contactRole: '',
-    acceptTerms: false
+    acceptPrivacyPolicy: false,
+    acceptTermsConditions: false,
+    acceptEULA: false
   });
 
   const handleNavigate = (path) => {
@@ -26,10 +28,47 @@ const ALISignup = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Fake submission - navigate to verify-email
-    handleNavigate('/ali/verify-email?email=' + encodeURIComponent(formData.contactEmail));
+
+    // Validate all acceptances
+    if (!formData.acceptPrivacyPolicy || !formData.acceptTermsConditions || !formData.acceptEULA) {
+      alert('You must accept all three agreements to create an account.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/ali/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyName: formData.companyName,
+          companySize: formData.companySize,
+          industry: formData.industry,
+          website: formData.website,
+          contactName: formData.contactName,
+          contactEmail: formData.contactEmail,
+          contactRole: formData.contactRole,
+          pilotProgram: true,
+          acceptPrivacyPolicy: formData.acceptPrivacyPolicy,
+          acceptTermsConditions: formData.acceptTermsConditions,
+          acceptEULA: formData.acceptEULA
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || 'Failed to create account. Please try again.');
+        return;
+      }
+
+      // Navigate to verify-email on success
+      handleNavigate('/ali/verify-email?email=' + encodeURIComponent(formData.contactEmail));
+    } catch (error) {
+      console.error('Signup error:', error);
+      alert('An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -168,24 +207,73 @@ const ALISignup = () => {
               </div>
             </div>
 
-            {/* Terms */}
-            <div className="flex items-start">
-              <input
-                type="checkbox"
-                id="acceptTerms"
-                name="acceptTerms"
-                checked={formData.acceptTerms}
-                onChange={handleChange}
-                className="mt-1 mr-3"
-                required
-              />
-              <label htmlFor="acceptTerms" className="text-sm text-gray-700">
-                I agree to the{' '}
-                <a href="/terms-and-conditions" className="text-blue-600 hover:underline">Terms of Service</a>
-                {' '}and{' '}
-                <a href="/privacy-policy" className="text-blue-600 hover:underline">Privacy Policy</a>
-                <span className="text-gray-600">*</span>
-              </label>
+            {/* Legal Acceptances */}
+            <div className="space-y-4 border-t border-gray-200 pt-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Legal Agreements</h2>
+              
+              {/* Privacy Policy */}
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="acceptPrivacyPolicy"
+                  name="acceptPrivacyPolicy"
+                  checked={formData.acceptPrivacyPolicy}
+                  onChange={handleChange}
+                  className="mt-1 mr-3"
+                  required
+                />
+                <label htmlFor="acceptPrivacyPolicy" className="text-sm text-gray-700">
+                  I have read and agree to the{' '}
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    Privacy Policy
+                  </a>
+                  <span className="text-red-600">*</span>
+                </label>
+              </div>
+
+              {/* Terms & Conditions */}
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="acceptTermsConditions"
+                  name="acceptTermsConditions"
+                  checked={formData.acceptTermsConditions}
+                  onChange={handleChange}
+                  className="mt-1 mr-3"
+                  required
+                />
+                <label htmlFor="acceptTermsConditions" className="text-sm text-gray-700">
+                  I have read and agree to the{' '}
+                  <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    Terms & Conditions
+                  </a>
+                  <span className="text-red-600">*</span>
+                </label>
+              </div>
+
+              {/* ALI EULA */}
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="acceptEULA"
+                  name="acceptEULA"
+                  checked={formData.acceptEULA}
+                  onChange={handleChange}
+                  className="mt-1 mr-3"
+                  required
+                />
+                <label htmlFor="acceptEULA" className="text-sm text-gray-700">
+                  I have read and agree to the{' '}
+                  <a href="/ali-eula" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    ALI End User License Agreement (EULA)
+                  </a>
+                  <span className="text-red-600">*</span>
+                </label>
+              </div>
+
+              <p className="text-xs text-gray-500 mt-2">
+                All three agreements must be accepted to create your ALI account. Links open in a new tab.
+              </p>
             </div>
 
             {/* Submit */}
