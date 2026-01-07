@@ -1,9 +1,9 @@
 ---
 title: "Mean People Suck (Especially When We Put Them in Charge)"
 slug: "mean-people-suck"
-publish_date: "2026-02-10"
-created_at: "2026-02-10"
-updated_at: "2026-02-10"
+publish_date: "2026-01-06"
+created_at: "2026-01-06"
+updated_at: "2026-01-06"
 summary: "A first-person editorial reflection on how meanness is tolerated—and even rewarded—in leadership, and why authoritarian and narcissistic behavior corrodes organizations from the inside out."
 categories: ["editorial", "leadership", "power", "culture", "authoritarianism"]
 featured_image: "../images/mean-people-suck.jpg"
