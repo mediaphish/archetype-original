@@ -20,9 +20,7 @@ const SuperAdminNav = ({ activeTab }) => {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#2563eb] flex items-center justify-center">
-              <span className="text-white text-[14px] font-bold">A</span>
-            </div>
+            <img src="/brand/ao-logo.svg" alt="Archetype Original" className="w-8 h-8" />
             <span className="text-[18px] font-semibold text-black/[0.87]">ALI Super Admin</span>
           </div>
           <div className="flex items-center gap-6">
