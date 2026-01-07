@@ -98,6 +98,14 @@ const SuperAdminOverview = () => {
     return colors[zone] || colors.yellow;
   };
 
+  const getResponseRateColor = (rate) => {
+    // Color scale: < 60% red, 60-70% orange, 70-80% yellow, >= 80% green
+    if (rate >= 80) return '#10b981'; // green - excellent
+    if (rate >= 70) return '#f59e0b'; // yellow - good
+    if (rate >= 60) return '#fb923c'; // orange - fair
+    return '#ef4444'; // red - poor
+  };
+
   return (
     <div className="min-h-screen bg-[#fafafa] ali-system">
       <SuperAdminNav activeTab="overview" />
@@ -111,7 +119,7 @@ const SuperAdminOverview = () => {
 
         {/* Section 1: Platform Overview Metrics (4 cards) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Companies Card */}
+          {/* Companies Card - Blue icon */}
           <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-lg bg-[#2563eb]/10 flex items-center justify-center">
@@ -127,11 +135,11 @@ const SuperAdminOverview = () => {
             </div>
           </div>
 
-          {/* Leaders Card */}
+          {/* Leaders Card - Purple icon */}
           <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-[#2563eb]/10 flex items-center justify-center">
-                <Crown className="w-5 h-5 text-[#2563eb]" />
+              <div className="w-10 h-10 rounded-lg bg-[#8b5cf6]/10 flex items-center justify-center">
+                <Crown className="w-5 h-5 text-[#8b5cf6]" />
               </div>
               <span className="text-[13px] font-semibold text-black/[0.6]">Leaders</span>
             </div>
@@ -143,11 +151,11 @@ const SuperAdminOverview = () => {
             </div>
           </div>
 
-          {/* Surveys Card */}
+          {/* Surveys Card - Green icon */}
           <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-[#2563eb]/10 flex items-center justify-center">
-                <ClipboardCheck className="w-5 h-5 text-[#2563eb]" />
+              <div className="w-10 h-10 rounded-lg bg-[#10b981]/10 flex items-center justify-center">
+                <ClipboardCheck className="w-5 h-5 text-[#10b981]" />
               </div>
               <span className="text-[13px] font-semibold text-black/[0.6]">Surveys</span>
             </div>
@@ -159,15 +167,15 @@ const SuperAdminOverview = () => {
             </div>
           </div>
 
-          {/* Avg ALI Score Card */}
+          {/* Avg ALI Score Card - Yellow icon */}
           <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-[#2563eb]/10 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-[#2563eb]" />
+              <div className="w-10 h-10 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-[#f59e0b]" />
               </div>
               <span className="text-[13px] font-semibold text-black/[0.6]">Avg ALI Score</span>
             </div>
-            <div className="text-[42px] font-bold text-[#f59e0b] leading-none mb-2">
+            <div className="text-[42px] font-bold text-black/[0.87] leading-none mb-2">
               {displayData.metrics.avgALIScore}
             </div>
             <div className="text-[13px] text-black/[0.6]">
@@ -185,14 +193,18 @@ const SuperAdminOverview = () => {
               return (
                 <div
                   key={zone.zone}
-                  className="rounded-lg p-4"
-                  style={{ backgroundColor: colors.bg, borderColor: colors.border, borderWidth: '1px' }}
+                  className="rounded-lg p-5 border-2"
+                  style={{ 
+                    backgroundColor: colors.bg, 
+                    borderColor: colors.border
+                  }}
                 >
                   <div className="text-[14px] font-semibold mb-2" style={{ color: colors.text }}>
-                    {zone.zone.charAt(0).toUpperCase() + zone.zone.slice(1)} Zone ({zone.range})
+                    {zone.zone.charAt(0).toUpperCase() + zone.zone.slice(1)} Zone
                   </div>
-                  <div className="text-[24px] font-bold mb-2" style={{ color: colors.text }}>
-                    {zone.count} companies
+                  <div className="text-[13px] text-black/[0.6] mb-1">{zone.range}</div>
+                  <div className="text-[24px] font-bold mb-1" style={{ color: colors.text }}>
+                    {zone.count}
                   </div>
                   <div className="text-[13px] text-black/[0.6] mb-3">{zone.percent}%</div>
                   <div className="w-full h-2 bg-white/50 rounded-full overflow-hidden">
@@ -254,7 +266,12 @@ const SuperAdminOverview = () => {
             <div className="space-y-4">
               <div>
                 <div className="text-[13px] text-black/[0.6] mb-1">Response Rate</div>
-                <div className="text-[20px] font-semibold text-black/[0.87]">{displayData.engagement.responseRate}% average</div>
+                <div 
+                  className="text-[20px] font-semibold"
+                  style={{ color: getResponseRateColor(displayData.engagement.responseRate) }}
+                >
+                  {displayData.engagement.responseRate}%
+                </div>
               </div>
               <div>
                 <div className="text-[13px] text-black/[0.6] mb-1">Completion Time</div>
