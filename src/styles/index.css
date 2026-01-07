@@ -98,3 +98,8 @@ html {
 .btn-secondary {
   @apply bg-transparent text-[#C85A3C] px-6 py-3 rounded-lg font-semibold border-2 border-[#C85A3C] hover:bg-[#C85A3C] hover:text-white transition-all duration-200;
 }
+
+/* ALI System Font Stack */
+.ali-system {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+}

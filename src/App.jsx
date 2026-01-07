@@ -50,6 +50,11 @@ import ALISettings from "./pages/ali/Settings";
 import ALIBilling from "./pages/ali/Billing";
 import ALIReports from "./pages/ali/Reports";
 import ALISurvey from "./pages/ali/Survey";
+import SuperAdminOverview from "./pages/ali/SuperAdminOverview";
+import SuperAdminIntelligence from "./pages/ali/SuperAdminIntelligence";
+import SuperAdminTenants from "./pages/ali/SuperAdminTenants";
+import SuperAdminDeletions from "./pages/ali/SuperAdminDeletions";
+import SuperAdminAuditLog from "./pages/ali/SuperAdminAuditLog";
 import ContactPage from "./pages/Contact";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
@@ -61,6 +66,7 @@ import ArchyPage from "./pages/archy/Archy";
 import FAQsPage from "./pages/FAQs";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import TermsAndConditionsPage from "./pages/TermsAndConditions";
+import ALIEULAPage from "./pages/ALIEULA";
 import EngagementInquiryPage from "./pages/EngagementInquiry";
 
 export default function App() {
@@ -76,6 +82,7 @@ export default function App() {
     if (path === '/engagement-inquiry') return 'engagement-inquiry';
     if (path === '/privacy-policy' || path === '/privacy') return 'privacy-policy';
     if (path === '/terms-and-conditions' || path === '/terms' || path === '/terms-of-service') return 'terms-and-conditions';
+    if (path === '/ali-eula' || path === '/eula') return 'ali-eula';
     // Standalone ALI SaaS routes (not under culture-science)
     if (path === '/ali') {
       return 'ali-landing';
@@ -91,6 +98,15 @@ export default function App() {
       if (path === '/ali/billing') return 'ali-billing';
       if (path === '/ali/reports') return 'ali-reports';
       if (path.startsWith('/ali/survey/')) return 'ali-survey';
+      if (path.startsWith('/ali/super-admin/')) {
+        if (path === '/ali/super-admin/overview') return 'ali-super-admin-overview';
+        if (path === '/ali/super-admin/intelligence') return 'ali-super-admin-intelligence';
+        if (path === '/ali/super-admin/tenants') return 'ali-super-admin-tenants';
+        if (path === '/ali/super-admin/deletions') return 'ali-super-admin-deletions';
+        if (path === '/ali/super-admin/audit-log') return 'ali-super-admin-audit-log';
+        // Default Super Admin route to overview
+        return 'ali-super-admin-overview';
+      }
       // Unknown /ali/* route - redirect to landing
       return 'ali-landing';
     }
@@ -162,6 +178,22 @@ export default function App() {
           setCurrentPage('ali-reports');
         } else if (path.startsWith('/ali/survey/')) {
           setCurrentPage('ali-survey');
+        } else if (path.startsWith('/ali/super-admin/')) {
+          if (path === '/ali/super-admin/overview') {
+            setCurrentPage('ali-super-admin-overview');
+          } else if (path === '/ali/super-admin/intelligence') {
+            setCurrentPage('ali-super-admin-intelligence');
+          } else if (path === '/ali/super-admin/tenants') {
+            setCurrentPage('ali-super-admin-tenants');
+          } else if (path === '/ali/super-admin/deletions') {
+            setCurrentPage('ali-super-admin-deletions');
+          } else if (path === '/ali/super-admin/audit-log') {
+            setCurrentPage('ali-super-admin-audit-log');
+          } else {
+            // Default Super Admin route to overview
+            window.history.replaceState({}, '', '/ali/super-admin/overview');
+            setCurrentPage('ali-super-admin-overview');
+          }
         } else {
           // Unknown /ali/* route - redirect to landing
           window.history.replaceState({}, '', '/ali');
@@ -694,6 +726,26 @@ export default function App() {
     return <ALISurvey />;
   }
 
+  if (currentPage === 'ali-super-admin-overview') {
+    return <SuperAdminOverview />;
+  }
+
+  if (currentPage === 'ali-super-admin-intelligence') {
+    return <SuperAdminIntelligence />;
+  }
+
+  if (currentPage === 'ali-super-admin-tenants') {
+    return <SuperAdminTenants />;
+  }
+
+  if (currentPage === 'ali-super-admin-deletions') {
+    return <SuperAdminDeletions />;
+  }
+
+  if (currentPage === 'ali-super-admin-audit-log') {
+    return <SuperAdminAuditLog />;
+  }
+
   // Render ALI Dashboard page (elevated design) - OLD route under culture-science
   if (currentPage === 'ali-dashboard-old') {
     return (
@@ -748,6 +800,18 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <TermsAndConditionsPage />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Render ALI EULA page
+  if (currentPage === 'ali-eula') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <ALIEULAPage />
         <Footer />
         <FloatingArchyButton />
       </main>
