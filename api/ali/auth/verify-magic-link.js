@@ -115,15 +115,20 @@ export default async function handler(req, res) {
       .from('ali_super_admins')
       .select('user_id, email, role')
       .eq('email', emailLower)
-      .single());
+      .maybeSingle()); // Use maybeSingle() instead of single() to avoid error if not found
 
     // If not found, try old table for backward compatibility
-    if (superAdminError || !superAdmin) {
+    if ((superAdminError && superAdminError.code !== 'PGRST116') || !superAdmin) {
       ({ data: superAdmin, error: superAdminError } = await supabaseAdmin
         .from('ali_super_admin_users')
         .select('id as user_id, email, role')
         .eq('email', emailLower)
-        .single());
+        .maybeSingle());
+    }
+
+    // Log for debugging
+    if (superAdminError && superAdminError.code !== 'PGRST116') {
+      console.error('Super Admin lookup error:', superAdminError);
     }
 
     if (superAdmin && !superAdminError) {
