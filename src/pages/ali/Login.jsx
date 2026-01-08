@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const ALILogin = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, sending, sent, error
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -10,15 +11,37 @@ const ALILogin = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !email.includes('@')) {
+      return;
+    }
     
     setStatus('sending');
-    // Fake magic link send
-    setTimeout(() => {
-      setStatus('sent');
-    }, 1000);
+    
+    try {
+      const response = await fetch('/api/ali/auth/send-magic-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.ok || response.ok) {
+        setStatus('sent');
+        setErrorMessage('');
+      } else {
+        setStatus('error');
+        setErrorMessage(data.error || 'Failed to send magic link. Please try again.');
+      }
+    } catch (err) {
+      console.error('Magic link request error:', err);
+      setStatus('error');
+      setErrorMessage('Network error. Please try again.');
+    }
   };
 
   return (
@@ -51,6 +74,7 @@ const ALILogin = () => {
                 onClick={() => {
                   setStatus('idle');
                   setEmail('');
+                  setErrorMessage('');
                 }}
                 className="text-blue-600 hover:underline"
               >
@@ -81,6 +105,12 @@ const ALILogin = () => {
               >
                 {status === 'sending' ? 'Sending...' : 'Send Magic Link'}
               </button>
+              
+              {status === 'error' && errorMessage && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  {errorMessage}
+                </div>
+              )}
             </form>
           )}
 
