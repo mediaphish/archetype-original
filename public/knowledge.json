@@ -1,7 +1,29 @@
 {
-  "generated_at": "2026-01-08T06:32:22.207Z",
+  "generated_at": "2026-01-08T07:23:22.839Z",
   "count": 282,
   "docs": [
+    {
+      "title": "Why do culture initiatives sometimes backfire?",
+      "slug": "culture-efforts-backfire",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.838Z",
+      "updated_at": "2026-01-08T07:23:22.838Z",
+      "summary": "When leaders do not change first, initiatives feel performative.\n\nTeams respond with skepticism rather than engagement....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "When leaders do not change first, initiatives feel performative.\n\nTeams respond with skepticism rather than engagement."
+    },
     {
       "title": "Why do cultures usually fail late rather than early?",
       "slug": "cultures-fail-late",
@@ -13,8 +35,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.206Z",
-      "updated_at": "2026-01-08T06:32:22.206Z",
+      "created_at": "2026-01-08T07:23:22.838Z",
+      "updated_at": "2026-01-08T07:23:22.838Z",
       "summary": "Early warning signals are often ignored or normalized.\n\nCollapse happens only after long periods of unmanaged drift....",
       "featured": false,
       "featured_on": [],
@@ -35,8 +57,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.206Z",
-      "updated_at": "2026-01-08T06:32:22.206Z",
+      "created_at": "2026-01-08T07:23:22.838Z",
+      "updated_at": "2026-01-08T07:23:22.838Z",
       "summary": "Drift happens incrementally.\n\nLeaders acclimate to it long before they recognize the damage....",
       "featured": false,
       "featured_on": [],
@@ -57,8 +79,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.206Z",
-      "updated_at": "2026-01-08T06:32:22.206Z",
+      "created_at": "2026-01-08T07:23:22.838Z",
+      "updated_at": "2026-01-08T07:23:22.838Z",
       "summary": "Intent without discipline collapses under pressure.\n\nCulture Science emphasizes practiced behavior over internal conviction....",
       "featured": false,
       "featured_on": [],
@@ -79,8 +101,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.206Z",
-      "updated_at": "2026-01-08T06:32:22.206Z",
+      "created_at": "2026-01-08T07:23:22.838Z",
+      "updated_at": "2026-01-08T07:23:22.838Z",
       "summary": "Avoidance often signals overload, not malice.\n\nCulture Science treats avoidance as a signal requiring support or correction....",
       "featured": false,
       "featured_on": [],
@@ -101,8 +123,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.206Z",
-      "updated_at": "2026-01-08T06:32:22.206Z",
+      "created_at": "2026-01-08T07:23:22.838Z",
+      "updated_at": "2026-01-08T07:23:22.838Z",
       "summary": "Rest preserves judgment.\n\nWithout recovery, leaders trade discernment for speed and clarity for reactivity....",
       "featured": false,
       "featured_on": [],
@@ -123,8 +145,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.206Z",
-      "updated_at": "2026-01-08T06:32:22.206Z",
+      "created_at": "2026-01-08T07:23:22.838Z",
+      "updated_at": "2026-01-08T07:23:22.838Z",
       "summary": "Servant leadership creates stability.\n\nWhen leaders carry responsibility instead of exporting pressure, teams perform better, trust grows, and cultures last.\n\nArchetype Original teaches servant leade...",
       "featured": false,
       "featured_on": [],
@@ -145,8 +167,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
+      "created_at": "2026-01-08T07:23:22.837Z",
+      "updated_at": "2026-01-08T07:23:22.837Z",
       "summary": "Archetype Original helps leaders address:\n\ncultural drift  \nloss of trust  \nlow accountability  \nburnout  \nmisaligned leadership behavior  \n\nThe work focuses on root causes, not surface symptoms....",
       "featured": false,
       "featured_on": [],
@@ -167,8 +189,8 @@
         "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
+      "created_at": "2026-01-08T07:23:22.837Z",
+      "updated_at": "2026-01-08T07:23:22.837Z",
       "summary": "Archy is the interpretive intelligence inside the Archetype Original ecosystem.\n\nHe is trained exclusively on the Archetype Original canon, including Culture Science, leadership doctrine, and lived e...",
       "featured": false,
       "featured_on": [],
@@ -189,8 +211,8 @@
         "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
+      "created_at": "2026-01-08T07:23:22.837Z",
+      "updated_at": "2026-01-08T07:23:22.837Z",
       "summary": "Bart Paden is the founder of Archetype Original.\n\nHe is a builder, operator, and servant leader with over three decades of real-world leadership experience across business, technology, and fitness....",
       "featured": false,
       "featured_on": [],
@@ -211,8 +233,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
+      "created_at": "2026-01-08T07:23:22.837Z",
+      "updated_at": "2026-01-08T07:23:22.837Z",
       "summary": "It is for leaders responsible for people, outcomes, and culture—especially under pressure....",
       "featured": false,
       "featured_on": [],
@@ -233,8 +255,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
+      "created_at": "2026-01-08T07:23:22.837Z",
+      "updated_at": "2026-01-08T07:23:22.837Z",
       "summary": "Archetype Original is for leaders who carry responsibility and want to lead well without sacrificing people.\n\nMost clients are founders, executives, and senior leaders in small to mid-sized organizat...",
       "featured": false,
       "featured_on": [],
@@ -255,8 +277,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
+      "created_at": "2026-01-08T07:23:22.837Z",
+      "updated_at": "2026-01-08T07:23:22.837Z",
       "summary": "Accountability fails when fear replaces clarity.\n\nCulture Science treats fear as a leadership signal, not a discipline tool....",
       "featured": false,
       "featured_on": [],
@@ -277,8 +299,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
+      "created_at": "2026-01-08T07:23:22.837Z",
+      "updated_at": "2026-01-08T07:23:22.837Z",
       "summary": "Because decisions are made inside conditions.\n\nLeaders shape outcomes indirectly by shaping the environment decisions are made in....",
       "featured": false,
       "featured_on": [],
@@ -287,28 +309,6 @@
         "original_source": "site-content"
       },
       "body": "Because decisions are made inside conditions.\n\nLeaders shape outcomes indirectly by shaping the environment decisions are made in."
-    },
-    {
-      "title": "Why do culture initiatives sometimes backfire?",
-      "slug": "culture-efforts-backfire",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.205Z",
-      "updated_at": "2026-01-08T06:32:22.205Z",
-      "summary": "When leaders do not change first, initiatives feel performative.\n\nTeams respond with skepticism rather than engagement....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "When leaders do not change first, initiatives feel performative.\n\nTeams respond with skepticism rather than engagement."
     },
     {
       "title": "How does urgency distort leadership judgment?",
@@ -321,8 +321,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.204Z",
-      "updated_at": "2026-01-08T06:32:22.204Z",
+      "created_at": "2026-01-08T07:23:22.836Z",
+      "updated_at": "2026-01-08T07:23:22.836Z",
       "summary": "Urgency narrows perception.\n\nUnder pressure, leaders default to habits—not values. Culture Science focuses on strengthening habits before pressure arrives....",
       "featured": false,
       "featured_on": [],
@@ -345,8 +345,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.204Z",
-      "updated_at": "2026-01-08T06:32:22.204Z",
+      "created_at": "2026-01-08T07:23:22.836Z",
+      "updated_at": "2026-01-08T07:23:22.836Z",
       "summary": "ALI is a leadership diagnostic system.\n\nIt measures behavioral signals that predict cultural health, stability, or drift—often long before leaders notice a problem.\n\nALI makes the invisible visible s...",
       "featured": false,
       "featured_on": [],
@@ -367,8 +367,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.204Z",
-      "updated_at": "2026-01-08T06:32:22.204Z",
+      "created_at": "2026-01-08T07:23:22.836Z",
+      "updated_at": "2026-01-08T07:23:22.836Z",
       "summary": "Archetype Original is a leadership consultancy and knowledge system.\n\nIt exists to help leaders build cultures that are stable, accountable, and human.\n\nThe work focuses on behavior, tone, trust, and...",
       "featured": false,
       "featured_on": [],
@@ -389,8 +389,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.204Z",
-      "updated_at": "2026-01-08T06:32:22.204Z",
+      "created_at": "2026-01-08T07:23:22.836Z",
+      "updated_at": "2026-01-08T07:23:22.836Z",
       "summary": "Culture Science is the research-backed, reality-tested foundation of Archetype Original.\n\nIt combines organizational research, behavioral patterns, and lived leadership experience to explain how cult...",
       "featured": false,
       "featured_on": [],
@@ -411,8 +411,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.204Z",
-      "updated_at": "2026-01-08T06:32:22.204Z",
+      "created_at": "2026-01-08T07:23:22.836Z",
+      "updated_at": "2026-01-08T07:23:22.836Z",
       "summary": "Drift is the gradual separation between stated values and lived behavior.\n\nIt rarely happens intentionally and almost always starts small....",
       "featured": false,
       "featured_on": [],
@@ -433,8 +433,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.204Z",
-      "updated_at": "2026-01-08T06:32:22.204Z",
+      "created_at": "2026-01-08T07:23:22.836Z",
+      "updated_at": "2026-01-08T07:23:22.836Z",
       "summary": "Stability is the capacity to absorb pressure without exporting it.\n\nStable cultures slow chaos.\nUnstable cultures accelerate it....",
       "featured": false,
       "featured_on": [],
@@ -455,8 +455,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.204Z",
-      "updated_at": "2026-01-08T06:32:22.204Z",
+      "created_at": "2026-01-08T07:23:22.836Z",
+      "updated_at": "2026-01-08T07:23:22.836Z",
       "summary": "Avoidance indicates risk.\n\nWhen topics become taboo, systems adapt around them rather than addressing them....",
       "featured": false,
       "featured_on": [],
@@ -477,8 +477,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Signals are early indicators.\nSymptoms are late-stage consequences.\n\nCulture Science trains leaders to respond to signals....",
       "featured": false,
       "featured_on": [],
@@ -499,8 +499,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Silence is rarely neutrality.\n\nWhen teams stop speaking, it often signals learned futility, fear of consequences, or exhaustion from being unheard.\n\nCulture Science trains leaders to investigate sile...",
       "featured": false,
       "featured_on": [],
@@ -521,8 +521,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Stress does not create behavior.\nIt reveals it.\n\nLeadership patterns under calm conditions are amplified when pressure increases....",
       "featured": false,
       "featured_on": [],
@@ -543,8 +543,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Strength without restraint creates volatility.\n\nCulture Science distinguishes between power and regulated leadership capacity....",
       "featured": false,
       "featured_on": [],
@@ -565,8 +565,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Sustainability requires regulated pressure, clear responsibility, and consistent behavior.\n\nShort-term performance without these foundations always extracts long-term cost....",
       "featured": false,
       "featured_on": [],
@@ -587,8 +587,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Teams live inside the system leaders create.\n\nThey experience the friction, ambiguity, and pressure long before it surfaces in metrics or results....",
       "featured": false,
       "featured_on": [],
@@ -609,8 +609,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Tone determines psychological safety.\n\nLeaders set the emotional temperature of the organization whether they intend to or not....",
       "featured": false,
       "featured_on": [],
@@ -631,8 +631,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.203Z",
-      "updated_at": "2026-01-08T06:32:22.203Z",
+      "created_at": "2026-01-08T07:23:22.835Z",
+      "updated_at": "2026-01-08T07:23:22.835Z",
       "summary": "Trust is produced by consistent leadership behavior.\n\nIt cannot be demanded, announced, or rushed....",
       "featured": false,
       "featured_on": [],
@@ -641,94 +641,6 @@
         "original_source": "site-content"
       },
       "body": "Trust is produced by consistent leadership behavior.\n\nIt cannot be demanded, announced, or rushed."
-    },
-    {
-      "title": "Why does cultural repair take time even after change begins?",
-      "slug": "repair-requires-time",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.202Z",
-      "updated_at": "2026-01-08T06:32:22.202Z",
-      "summary": "Teams wait for patterns to prove real.\n\nTime allows new behaviors to displace old expectations....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Teams wait for patterns to prove real.\n\nTime allows new behaviors to displace old expectations."
-    },
-    {
-      "title": "Why don’t replacement cycles fix broken cultures?",
-      "slug": "replacement-cycles",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.202Z",
-      "updated_at": "2026-01-08T06:32:22.202Z",
-      "summary": "Replacing people without changing conditions resets the same outcome.\n\nCulture Science focuses on system repair, not personnel churn....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Replacing people without changing conditions resets the same outcome.\n\nCulture Science focuses on system repair, not personnel churn."
-    },
-    {
-      "title": "How does Culture Science define leadership responsibility?",
-      "slug": "responsibility-not-control",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.202Z",
-      "updated_at": "2026-01-08T06:32:22.202Z",
-      "summary": "Responsibility is not control.\n\nIt is the willingness to absorb consequences, regulate pressure, and protect clarity for others....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Responsibility is not control.\n\nIt is the willingness to absorb consequences, regulate pressure, and protect clarity for others."
-    },
-    {
-      "title": "Why does self-awareness often break down at higher levels of leadership?",
-      "slug": "self-awareness-breakdown",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.202Z",
-      "updated_at": "2026-01-08T06:32:22.202Z",
-      "summary": "Power reduces corrective feedback.\n\nWithout intentional reflection systems, leaders lose accurate mirrors....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Power reduces corrective feedback.\n\nWithout intentional reflection systems, leaders lose accurate mirrors."
     },
     {
       "title": "How does the leader’s shadow create fear without words?",
@@ -741,8 +653,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.202Z",
-      "updated_at": "2026-01-08T06:32:22.202Z",
+      "created_at": "2026-01-08T07:23:22.834Z",
+      "updated_at": "2026-01-08T07:23:22.834Z",
       "summary": "Fear emerges from unpredictability.\n\nWhen leaders react inconsistently, teams self-protect instead of executing....",
       "featured": false,
       "featured_on": [],
@@ -763,8 +675,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.202Z",
-      "updated_at": "2026-01-08T06:32:22.202Z",
+      "created_at": "2026-01-08T07:23:22.834Z",
+      "updated_at": "2026-01-08T07:23:22.834Z",
       "summary": "The leader’s shadow forms immediately.\n\nPeople calibrate expectations based on early reactions, tone, and tolerance—long before formal systems are in place....",
       "featured": false,
       "featured_on": [],
@@ -785,8 +697,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.202Z",
-      "updated_at": "2026-01-08T06:32:22.202Z",
+      "created_at": "2026-01-08T07:23:22.834Z",
+      "updated_at": "2026-01-08T07:23:22.834Z",
       "summary": "Intent is private.\nShadow is experienced.\n\nCulture responds to what leaders consistently project, not what they internally mean....",
       "featured": false,
       "featured_on": [],
@@ -795,28 +707,6 @@
         "original_source": "site-content"
       },
       "body": "Intent is private.\nShadow is experienced.\n\nCulture responds to what leaders consistently project, not what they internally mean."
-    },
-    {
-      "title": "Why does this philosophy talk so much about pressure?",
-      "slug": "philosophy-why-pressure",
-      "type": "faq",
-      "tags": [
-        "philosophy"
-      ],
-      "categories": [
-        "philosophy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.201Z",
-      "updated_at": "2026-01-08T06:32:22.201Z",
-      "summary": "Because pressure reveals truth.\n\nUnder pressure, patterns surface and values are tested instead of discussed.\n\n[Explore our philosophy](/philosophy) and [how Culture Science studies pressure flow](/c...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Because pressure reveals truth.\n\nUnder pressure, patterns surface and values are tested instead of discussed.\n\n[Explore our philosophy](/philosophy) and [how Culture Science studies pressure flow](/culture-science)."
     },
     {
       "title": "Why put so much emphasis on responsibility?",
@@ -829,8 +719,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.201Z",
-      "updated_at": "2026-01-08T06:32:22.201Z",
+      "created_at": "2026-01-08T07:23:22.833Z",
+      "updated_at": "2026-01-08T07:23:22.833Z",
       "summary": "Because leadership always has consequences.\n\nLeaders don't just make decisions for themselves. They make decisions that ripple outward into how people experience work.\n\n[Read more about our philosoph...",
       "featured": false,
       "featured_on": [],
@@ -851,8 +741,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.201Z",
-      "updated_at": "2026-01-08T06:32:22.201Z",
+      "created_at": "2026-01-08T07:23:22.833Z",
+      "updated_at": "2026-01-08T07:23:22.833Z",
       "summary": "Because leadership is not primarily about authority—it's about responsibility.\n\nServant leadership is the practice of carrying what others cannot carry yet: pressure, complexity, and consequence. Whe...",
       "featured": false,
       "featured_on": [],
@@ -873,8 +763,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.201Z",
-      "updated_at": "2026-01-08T06:32:22.201Z",
+      "created_at": "2026-01-08T07:23:22.833Z",
+      "updated_at": "2026-01-08T07:23:22.833Z",
       "summary": "Pressure transmission occurs when leaders pass stress downward instead of carrying it.\n\nCulture Science treats pressure as a leadership responsibility....",
       "featured": false,
       "featured_on": [],
@@ -885,48 +775,92 @@
       "body": "Pressure transmission occurs when leaders pass stress downward instead of carrying it.\n\nCulture Science treats pressure as a leadership responsibility."
     },
     {
-      "title": "Is this philosophy soft on people?",
-      "slug": "philosophy-soft",
+      "title": "Why does cultural repair take time even after change begins?",
+      "slug": "repair-requires-time",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
-      "summary": "No. It’s disciplined.\n\nClarity, restraint, and consistency are harder than force....",
+      "created_at": "2026-01-08T07:23:22.833Z",
+      "updated_at": "2026-01-08T07:23:22.833Z",
+      "summary": "Teams wait for patterns to prove real.\n\nTime allows new behaviors to displace old expectations....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "No. It’s disciplined.\n\nClarity, restraint, and consistency are harder than force."
+      "body": "Teams wait for patterns to prove real.\n\nTime allows new behaviors to displace old expectations."
     },
     {
-      "title": "How does this philosophy view trust?",
-      "slug": "philosophy-trust",
+      "title": "Why don’t replacement cycles fix broken cultures?",
+      "slug": "replacement-cycles",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
-      "summary": "Trust is built through predictability, not promises.\n\n[Explore our philosophy](/philosophy) and [learn how ALI measures trust](/culture-science/ali)....",
+      "created_at": "2026-01-08T07:23:22.833Z",
+      "updated_at": "2026-01-08T07:23:22.833Z",
+      "summary": "Replacing people without changing conditions resets the same outcome.\n\nCulture Science focuses on system repair, not personnel churn....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Trust is built through predictability, not promises.\n\n[Explore our philosophy](/philosophy) and [learn how ALI measures trust](/culture-science/ali)."
+      "body": "Replacing people without changing conditions resets the same outcome.\n\nCulture Science focuses on system repair, not personnel churn."
+    },
+    {
+      "title": "How does Culture Science define leadership responsibility?",
+      "slug": "responsibility-not-control",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.833Z",
+      "updated_at": "2026-01-08T07:23:22.833Z",
+      "summary": "Responsibility is not control.\n\nIt is the willingness to absorb consequences, regulate pressure, and protect clarity for others....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Responsibility is not control.\n\nIt is the willingness to absorb consequences, regulate pressure, and protect clarity for others."
+    },
+    {
+      "title": "Why does self-awareness often break down at higher levels of leadership?",
+      "slug": "self-awareness-breakdown",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.833Z",
+      "updated_at": "2026-01-08T07:23:22.833Z",
+      "summary": "Power reduces corrective feedback.\n\nWithout intentional reflection systems, leaders lose accurate mirrors....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Power reduces corrective feedback.\n\nWithout intentional reflection systems, leaders lose accurate mirrors."
     },
     {
       "title": "What’s the ultimate aim of this philosophy?",
@@ -939,8 +873,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
+      "created_at": "2026-01-08T07:23:22.832Z",
+      "updated_at": "2026-01-08T07:23:22.832Z",
       "summary": "To help leaders create environments where people can think clearly and work without fear.\n\n[Explore our philosophy](/philosophy) and [learn how ALI measures these environments](/culture-science/ali)....",
       "featured": false,
       "featured_on": [],
@@ -961,8 +895,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
+      "created_at": "2026-01-08T07:23:22.832Z",
+      "updated_at": "2026-01-08T07:23:22.832Z",
       "summary": "Archetype Original is a leadership philosophy built around responsibility, clarity, and long-term cultural health.\n\nRather than focusing on tactics, trends, or surface-level fixes, it looks at how le...",
       "featured": false,
       "featured_on": [],
@@ -983,8 +917,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
+      "created_at": "2026-01-08T07:23:22.832Z",
+      "updated_at": "2026-01-08T07:23:22.832Z",
       "summary": "Most leadership philosophies focus on what leaders should say or decide. Archetype Original focuses on what leaders consistently transmit.\n\nTone, behavior, consistency, and what is tolerated day afte...",
       "featured": false,
       "featured_on": [],
@@ -1005,8 +939,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
+      "created_at": "2026-01-08T07:23:22.832Z",
+      "updated_at": "2026-01-08T07:23:22.832Z",
       "summary": "This philosophy is not for leaders looking for shortcuts, scripts, or image management.\n\nIf the goal is to appear strong without doing the work of self-regulation and responsibility, this approach wi...",
       "featured": false,
       "featured_on": [],
@@ -1027,8 +961,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
+      "created_at": "2026-01-08T07:23:22.832Z",
+      "updated_at": "2026-01-08T07:23:22.832Z",
       "summary": "Because behavior is what people actually experience.\n\nIntentions matter, but people don't work inside a leader's intent. They work inside patterns: how decisions are made, how mistakes are handled, h...",
       "featured": false,
       "featured_on": [],
@@ -1049,8 +983,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.200Z",
-      "updated_at": "2026-01-08T06:32:22.200Z",
+      "created_at": "2026-01-08T07:23:22.832Z",
+      "updated_at": "2026-01-08T07:23:22.832Z",
       "summary": "Because ambiguity is expensive.\n\nWhen people aren't sure what matters, they fill in the gaps themselves.\n\n[Learn more about our philosophy](/philosophy) and [how ALI measures clarity](/culture-scienc...",
       "featured": false,
       "featured_on": [],
@@ -1061,8 +995,8 @@
       "body": "Because ambiguity is expensive.\n\nWhen people aren't sure what matters, they fill in the gaps themselves.\n\n[Learn more about our philosophy](/philosophy) and [how ALI measures clarity](/culture-science/ali)."
     },
     {
-      "title": "Is this just another leadership philosophy?",
-      "slug": "philosophy-another-philosophy",
+      "title": "Why does this philosophy talk so much about pressure?",
+      "slug": "philosophy-why-pressure",
       "type": "faq",
       "tags": [
         "philosophy"
@@ -1071,38 +1005,16 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.199Z",
-      "updated_at": "2026-01-08T06:32:22.199Z",
-      "summary": "No—and that distinction matters.\n\nThis isn't a set of ideals meant to sound good in theory. It's a framework built from observing what actually happens inside organizations over time.\n\nArchetype Orig...",
+      "created_at": "2026-01-08T07:23:22.832Z",
+      "updated_at": "2026-01-08T07:23:22.832Z",
+      "summary": "Because pressure reveals truth.\n\nUnder pressure, patterns surface and values are tested instead of discussed.\n\n[Explore our philosophy](/philosophy) and [how Culture Science studies pressure flow](/c...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "No—and that distinction matters.\n\nThis isn't a set of ideals meant to sound good in theory. It's a framework built from observing what actually happens inside organizations over time.\n\nArchetype Original isn't trying to compete with other philosophies. It's trying to explain why many of them fail once pressure enters the system.\n\n[Explore our philosophy](/philosophy) and [learn about Culture Science](/culture-science) to understand how this framework works in practice."
-    },
-    {
-      "title": "What does Archetype Original actually believe about leadership?",
-      "slug": "philosophy-believe-about-leadership",
-      "type": "faq",
-      "tags": [
-        "philosophy"
-      ],
-      "categories": [
-        "philosophy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.199Z",
-      "updated_at": "2026-01-08T06:32:22.199Z",
-      "summary": "At its core, Archetype Original believes leadership is less about control and more about responsibility.\n\nMost leadership models focus on authority, influence, or output. This work focuses on the env...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "At its core, Archetype Original believes leadership is less about control and more about responsibility.\n\nMost leadership models focus on authority, influence, or output. This work focuses on the environment leaders create—often unintentionally—and how that environment shapes behavior, trust, and long-term performance.\n\nLeadership is not neutral. Every decision, reaction, and habit is teaching people what is safe, what is valued, and what is expected.\n\n[Read more about our philosophy](/philosophy) and [how Culture Science studies these environments](/culture-science)."
+      "body": "Because pressure reveals truth.\n\nUnder pressure, patterns surface and values are tested instead of discussed.\n\n[Explore our philosophy](/philosophy) and [how Culture Science studies pressure flow](/culture-science)."
     },
     {
       "title": "Do results matter in this philosophy?",
@@ -1115,8 +1027,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.199Z",
-      "updated_at": "2026-01-08T06:32:22.199Z",
+      "created_at": "2026-01-08T07:23:22.831Z",
+      "updated_at": "2026-01-08T07:23:22.831Z",
       "summary": "Yes. Results matter—but they are not the only thing that matters.\n\nEvery result has a hidden cost or benefit attached to it: trust, fatigue, clarity, stability, or fear. Archetype Original is concern...",
       "featured": false,
       "featured_on": [],
@@ -1137,8 +1049,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.199Z",
-      "updated_at": "2026-01-08T06:32:22.199Z",
+      "created_at": "2026-01-08T07:23:22.831Z",
+      "updated_at": "2026-01-08T07:23:22.831Z",
       "summary": "Archetype Original is values-driven, not doctrine-driven.\n\nYou'll feel moral gravity in the work—responsibility, dignity, restraint, truth—but it's designed to be useful to leaders regardless of beli...",
       "featured": false,
       "featured_on": [],
@@ -1159,8 +1071,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.199Z",
-      "updated_at": "2026-01-08T06:32:22.199Z",
+      "created_at": "2026-01-08T07:23:22.831Z",
+      "updated_at": "2026-01-08T07:23:22.831Z",
       "summary": "No.\n\nWhat matters isn’t perfection—it’s pattern correction....",
       "featured": false,
       "featured_on": [],
@@ -1181,8 +1093,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.199Z",
-      "updated_at": "2026-01-08T06:32:22.199Z",
+      "created_at": "2026-01-08T07:23:22.831Z",
+      "updated_at": "2026-01-08T07:23:22.831Z",
       "summary": "Performance-driven leadership isn't wrong—it's incomplete.\n\nWhen performance becomes the only lens, leaders often export pressure instead of carrying it.\n\n[Learn more about our philosophy](/philosoph...",
       "featured": false,
       "featured_on": [],
@@ -1203,8 +1115,8 @@
         "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.199Z",
-      "updated_at": "2026-01-08T06:32:22.199Z",
+      "created_at": "2026-01-08T07:23:22.831Z",
+      "updated_at": "2026-01-08T07:23:22.831Z",
       "summary": "No. It's disciplined leadership.\n\nSoft leadership avoids hard conversations and accountability. Unrestrained leadership creates volatility, fear, and burnout. Archetype Original sits between the two—...",
       "featured": false,
       "featured_on": [],
@@ -1215,48 +1127,48 @@
       "body": "No. It's disciplined leadership.\n\nSoft leadership avoids hard conversations and accountability. Unrestrained leadership creates volatility, fear, and burnout. Archetype Original sits between the two—strength under control.\n\nIt asks leaders to regulate themselves under pressure, to correct problems without exporting stress, and to lead in ways that hold up over time rather than creating short-term compliance.\n\n[Read more about our philosophy](/philosophy) and [our methods](/methods)."
     },
     {
-      "title": "Is this a program I implement, or a way I lead?",
-      "slug": "methods-program-or-way-you-lead",
+      "title": "Is this philosophy soft on people?",
+      "slug": "philosophy-soft",
       "type": "faq",
       "tags": [
-        "methods"
+        "philosophy"
       ],
       "categories": [
-        "methods"
+        "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.198Z",
-      "updated_at": "2026-01-08T06:32:22.198Z",
-      "summary": "It's a way you lead.\n\nPrograms can help create momentum, but they don't sustain culture on their own. The methods at Archetype Original are designed to change how leaders think, notice, and respond—e...",
+      "created_at": "2026-01-08T07:23:22.831Z",
+      "updated_at": "2026-01-08T07:23:22.831Z",
+      "summary": "No. It’s disciplined.\n\nClarity, restraint, and consistency are harder than force....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "It's a way you lead.\n\nPrograms can help create momentum, but they don't sustain culture on their own. The methods at Archetype Original are designed to change how leaders think, notice, and respond—especially when things don't go as planned.\n\nWhen leadership behavior changes consistently, systems tend to follow.\n\n[Explore our methods](/methods) and [learn about our philosophy](/philosophy)."
+      "body": "No. It’s disciplined.\n\nClarity, restraint, and consistency are harder than force."
     },
     {
-      "title": "Are there specific tools or frameworks you use?",
-      "slug": "methods-tools-frameworks",
+      "title": "How does this philosophy view trust?",
+      "slug": "philosophy-trust",
       "type": "faq",
       "tags": [
-        "methods"
+        "philosophy"
       ],
       "categories": [
-        "methods"
+        "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.198Z",
-      "updated_at": "2026-01-08T06:32:22.198Z",
-      "summary": "Yes—but they're intentionally simple.\n\nThe methods used here focus on helping leaders see patterns: how decisions are being made, how pressure is moving through the organization, and what behaviors a...",
+      "created_at": "2026-01-08T07:23:22.831Z",
+      "updated_at": "2026-01-08T07:23:22.831Z",
+      "summary": "Trust is built through predictability, not promises.\n\n[Explore our philosophy](/philosophy) and [learn how ALI measures trust](/culture-science/ali)....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes—but they're intentionally simple.\n\nThe methods used here focus on helping leaders see patterns: how decisions are being made, how pressure is moving through the organization, and what behaviors are being reinforced over time. Tools exist to support that clarity, not to replace judgment.\n\nIf a tool creates dependence or obscures responsibility, it doesn't belong here.\n\n[Learn more about our methods](/methods) and [explore ALI as a diagnostic tool](/culture-science/ali)."
+      "body": "Trust is built through predictability, not promises.\n\n[Explore our philosophy](/philosophy) and [learn how ALI measures trust](/culture-science/ali)."
     },
     {
       "title": "How do these methods work under real pressure?",
@@ -1269,8 +1181,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.198Z",
-      "updated_at": "2026-01-08T06:32:22.198Z",
+      "created_at": "2026-01-08T07:23:22.830Z",
+      "updated_at": "2026-01-08T07:23:22.830Z",
       "summary": "That's where they matter most.\n\nUnder pressure, leaders default to habits. These methods are designed to slow leaders down just enough to recognize what's happening before reacting. Not to remove urg...",
       "featured": false,
       "featured_on": [],
@@ -1291,8 +1203,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.198Z",
-      "updated_at": "2026-01-08T06:32:22.198Z",
+      "created_at": "2026-01-08T07:23:22.830Z",
+      "updated_at": "2026-01-08T07:23:22.830Z",
       "summary": "Methods are how the philosophy shows up in real leadership situations.\n\nThis isn't a fixed program or a step-by-step system meant to be applied the same way everywhere. Methods here are principles-in...",
       "featured": false,
       "featured_on": [],
@@ -1313,8 +1225,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.198Z",
-      "updated_at": "2026-01-08T06:32:22.198Z",
+      "created_at": "2026-01-08T07:23:22.830Z",
+      "updated_at": "2026-01-08T07:23:22.830Z",
       "summary": "Blame assigns fault.\nOwnership accepts obligation.\n\nCulture Science treats ownership as a stabilizing force....",
       "featured": false,
       "featured_on": [],
@@ -1335,8 +1247,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.198Z",
-      "updated_at": "2026-01-08T06:32:22.198Z",
+      "created_at": "2026-01-08T07:23:22.830Z",
+      "updated_at": "2026-01-08T07:23:22.830Z",
       "summary": "When results are demanded without environmental stability, leaders increase pressure.\n\nThis accelerates burnout and erodes trust....",
       "featured": false,
       "featured_on": [],
@@ -1347,48 +1259,48 @@
       "body": "When results are demanded without environmental stability, leaders increase pressure.\n\nThis accelerates burnout and erodes trust."
     },
     {
-      "title": "Do these methods require buy-in from the whole team?",
-      "slug": "methods-buy-in",
+      "title": "Is this just another leadership philosophy?",
+      "slug": "philosophy-another-philosophy",
       "type": "faq",
       "tags": [
-        "methods"
+        "philosophy"
       ],
       "categories": [
-        "methods"
+        "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.197Z",
-      "updated_at": "2026-01-08T06:32:22.197Z",
-      "summary": "Not at first.\n\nMost meaningful change starts with leadership. When leaders adjust how they carry pressure, make decisions, and respond to problems, teams feel it immediately—even before anything is f...",
+      "created_at": "2026-01-08T07:23:22.830Z",
+      "updated_at": "2026-01-08T07:23:22.830Z",
+      "summary": "No—and that distinction matters.\n\nThis isn't a set of ideals meant to sound good in theory. It's a framework built from observing what actually happens inside organizations over time.\n\nArchetype Orig...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Not at first.\n\nMost meaningful change starts with leadership. When leaders adjust how they carry pressure, make decisions, and respond to problems, teams feel it immediately—even before anything is formally explained.\n\nBuy-in grows when people experience consistency, not when they're asked for agreement.\n\n[Learn more about our methods](/methods) and [our philosophy](/philosophy)."
+      "body": "No—and that distinction matters.\n\nThis isn't a set of ideals meant to sound good in theory. It's a framework built from observing what actually happens inside organizations over time.\n\nArchetype Original isn't trying to compete with other philosophies. It's trying to explain why many of them fail once pressure enters the system.\n\n[Explore our philosophy](/philosophy) and [learn about Culture Science](/culture-science) to understand how this framework works in practice."
     },
     {
-      "title": "How do these methods relate to culture change?",
-      "slug": "methods-culture-change",
+      "title": "What does Archetype Original actually believe about leadership?",
+      "slug": "philosophy-believe-about-leadership",
       "type": "faq",
       "tags": [
-        "methods"
+        "philosophy"
       ],
       "categories": [
-        "methods"
+        "philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.197Z",
-      "updated_at": "2026-01-08T06:32:22.197Z",
-      "summary": "They are culture change—just not in name.\n\nCulture doesn't shift because leaders announce a change. It shifts when people experience new patterns consistently over time. These methods focus on the be...",
+      "created_at": "2026-01-08T07:23:22.830Z",
+      "updated_at": "2026-01-08T07:23:22.830Z",
+      "summary": "At its core, Archetype Original believes leadership is less about control and more about responsibility.\n\nMost leadership models focus on authority, influence, or output. This work focuses on the env...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "They are culture change—just not in name.\n\nCulture doesn't shift because leaders announce a change. It shifts when people experience new patterns consistently over time. These methods focus on the behaviors that quietly reshape expectations, norms, and trust.\n\nThat kind of change is slower—but far more durable.\n\n[Learn more about our methods](/methods) and [how Culture Science studies these patterns](/culture-science)."
+      "body": "At its core, Archetype Original believes leadership is less about control and more about responsibility.\n\nMost leadership models focus on authority, influence, or output. This work focuses on the environment leaders create—often unintentionally—and how that environment shapes behavior, trust, and long-term performance.\n\nLeadership is not neutral. Every decision, reaction, and habit is teaching people what is safe, what is valued, and what is expected.\n\n[Read more about our philosophy](/philosophy) and [how Culture Science studies these environments](/culture-science)."
     },
     {
       "title": "Are these methods compatible with different leadership styles?",
@@ -1401,8 +1313,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.197Z",
-      "updated_at": "2026-01-08T06:32:22.197Z",
+      "created_at": "2026-01-08T07:23:22.829Z",
+      "updated_at": "2026-01-08T07:23:22.829Z",
       "summary": "Yes, because they're grounded in behavior, not personality.\n\nDifferent leaders will apply these methods differently. What stays consistent is the focus on clarity, restraint, and responsibility. The...",
       "featured": false,
       "featured_on": [],
@@ -1423,8 +1335,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.197Z",
-      "updated_at": "2026-01-08T06:32:22.197Z",
+      "created_at": "2026-01-08T07:23:22.829Z",
+      "updated_at": "2026-01-08T07:23:22.829Z",
       "summary": "Some changes are felt quickly. Others take time.\n\nTone, clarity, and decision-making often improve first. Trust and engagement take longer because people watch patterns before believing them. These m...",
       "featured": false,
       "featured_on": [],
@@ -1445,8 +1357,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.197Z",
-      "updated_at": "2026-01-08T06:32:22.197Z",
+      "created_at": "2026-01-08T07:23:22.829Z",
+      "updated_at": "2026-01-08T07:23:22.829Z",
       "summary": "Pay attention to the signals.\n\nAre conversations more honest? Are decisions clearer? Is accountability calmer? Is there less reactivity under pressure? These signals usually appear before metrics cha...",
       "featured": false,
       "featured_on": [],
@@ -1467,8 +1379,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.197Z",
-      "updated_at": "2026-01-08T06:32:22.197Z",
+      "created_at": "2026-01-08T07:23:22.829Z",
+      "updated_at": "2026-01-08T07:23:22.829Z",
       "summary": "These methods still apply—but expectations matter.\n\nWhen trust is already thin, leaders need to move more carefully, not more forcefully. The methods here emphasize steadiness, consistency, and visib...",
       "featured": false,
       "featured_on": [],
@@ -1489,8 +1401,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.197Z",
-      "updated_at": "2026-01-08T06:32:22.197Z",
+      "created_at": "2026-01-08T07:23:22.829Z",
+      "updated_at": "2026-01-08T07:23:22.829Z",
       "summary": "They correct them—openly and consistently.\n\nNo method here assumes perfection. Leaders will misjudge situations. What matters is how quickly they notice, acknowledge, and adjust. That pattern of corr...",
       "featured": false,
       "featured_on": [],
@@ -1501,26 +1413,48 @@
       "body": "They correct them—openly and consistently.\n\nNo method here assumes perfection. Leaders will misjudge situations. What matters is how quickly they notice, acknowledge, and adjust. That pattern of correction builds trust far more effectively than pretending mistakes didn't happen.\n\nMethods that don't allow for correction aren't realistic.\n\n[Learn more about our methods](/methods) and [our philosophy](/philosophy)."
     },
     {
-      "title": "What does Bart believe most leaders misunderstand about leadership?",
-      "slug": "meet-bart-what-leaders-miss",
+      "title": "Is this a program I implement, or a way I lead?",
+      "slug": "methods-program-or-way-you-lead",
       "type": "faq",
       "tags": [
-        "meet-bart"
+        "methods"
       ],
       "categories": [
-        "meet-bart"
+        "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.196Z",
-      "updated_at": "2026-01-08T06:32:22.196Z",
-      "summary": "Most leaders think leadership is primarily about decisions, direction, and outcomes.\n\nThose things matter—but they're only part of the picture. Long before a decision shows up in results, it has alre...",
+      "created_at": "2026-01-08T07:23:22.829Z",
+      "updated_at": "2026-01-08T07:23:22.829Z",
+      "summary": "It's a way you lead.\n\nPrograms can help create momentum, but they don't sustain culture on their own. The methods at Archetype Original are designed to change how leaders think, notice, and respond—e...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Most leaders think leadership is primarily about decisions, direction, and outcomes.\n\nThose things matter—but they're only part of the picture. Long before a decision shows up in results, it has already shaped the environment people are working inside. Tone, consistency, emotional regulation, and what gets tolerated day after day quietly determine whether people feel safe enough to think clearly or pressured into self-protection.\n\nWhat leaders often miss is that they are always teaching through behavior whether they intend to or not. This work focuses on that invisible layer, because that's where cultures are either stabilized or slowly eroded.\n\nExplore [our philosophy](/philosophy) and [Culture Science](/culture-science) to understand these patterns more deeply."
+      "body": "It's a way you lead.\n\nPrograms can help create momentum, but they don't sustain culture on their own. The methods at Archetype Original are designed to change how leaders think, notice, and respond—especially when things don't go as planned.\n\nWhen leadership behavior changes consistently, systems tend to follow.\n\n[Explore our methods](/methods) and [learn about our philosophy](/philosophy)."
+    },
+    {
+      "title": "Are there specific tools or frameworks you use?",
+      "slug": "methods-tools-frameworks",
+      "type": "faq",
+      "tags": [
+        "methods"
+      ],
+      "categories": [
+        "methods"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.829Z",
+      "updated_at": "2026-01-08T07:23:22.829Z",
+      "summary": "Yes—but they're intentionally simple.\n\nThe methods used here focus on helping leaders see patterns: how decisions are being made, how pressure is moving through the organization, and what behaviors a...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Yes—but they're intentionally simple.\n\nThe methods used here focus on helping leaders see patterns: how decisions are being made, how pressure is moving through the organization, and what behaviors are being reinforced over time. Tools exist to support that clarity, not to replace judgment.\n\nIf a tool creates dependence or obscures responsibility, it doesn't belong here.\n\n[Learn more about our methods](/methods) and [explore ALI as a diagnostic tool](/culture-science/ali)."
     },
     {
       "title": "Who is Bart Paden?",
@@ -1533,8 +1467,8 @@
         "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.196Z",
-      "updated_at": "2026-01-08T06:32:22.196Z",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
       "summary": "If you're asking this, you're probably trying to decide whether what you're reading here is theoretical—or earned.\n\nBart Paden is a founder, operator, and long-time leader who has spent decades insid...",
       "featured": false,
       "featured_on": [],
@@ -1555,8 +1489,8 @@
         "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.196Z",
-      "updated_at": "2026-01-08T06:32:22.196Z",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
       "summary": "Leaders who are willing to slow down long enough to see clearly.\n\nThat doesn’t mean passive leaders or hesitant leaders. It means leaders who are carrying real responsibility and recognize that pushi...",
       "featured": false,
       "featured_on": [],
@@ -1577,8 +1511,8 @@
         "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.196Z",
-      "updated_at": "2026-01-08T06:32:22.196Z",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
       "summary": "Most leaders don't fail because they don't care. They fail because no one ever taught them what leadership is actually doing beneath the surface.\n\nBart created Archetype Original after watching the s...",
       "featured": false,
       "featured_on": [],
@@ -1599,8 +1533,8 @@
         "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.196Z",
-      "updated_at": "2026-01-08T06:32:22.196Z",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
       "summary": "You shouldn’t trust it because it sounds polished or confident. You should trust it if it explains your experience more accurately than what you’ve been told before.\n\nMost leaders arrive here because...",
       "featured": false,
       "featured_on": [],
@@ -1621,8 +1555,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.196Z",
-      "updated_at": "2026-01-08T06:32:22.196Z",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
       "summary": "Meetings are managed environments.\n\nCulture reveals itself in informal conversations, hallway decisions, and what goes unsaid....",
       "featured": false,
       "featured_on": [],
@@ -1643,8 +1577,8 @@
         "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.196Z",
-      "updated_at": "2026-01-08T06:32:22.196Z",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
       "summary": "By making accountability predictable and fair.\n\nAccountability here isn't about punishment or performance theater. It's about clarity: clear expectations, clear feedback, and clear follow-through. Wh...",
       "featured": false,
       "featured_on": [],
@@ -1653,6 +1587,50 @@
         "original_source": "site-content"
       },
       "body": "By making accountability predictable and fair.\n\nAccountability here isn't about punishment or performance theater. It's about clarity: clear expectations, clear feedback, and clear follow-through. When people know what matters and what will happen if standards aren't met, accountability stops feeling personal.\n\nGood methods reduce fear instead of increasing it.\n\n[Learn more about our methods](/methods) and [how ALI measures accountability](/culture-science/ali)."
+    },
+    {
+      "title": "Do these methods require buy-in from the whole team?",
+      "slug": "methods-buy-in",
+      "type": "faq",
+      "tags": [
+        "methods"
+      ],
+      "categories": [
+        "methods"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
+      "summary": "Not at first.\n\nMost meaningful change starts with leadership. When leaders adjust how they carry pressure, make decisions, and respond to problems, teams feel it immediately—even before anything is f...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Not at first.\n\nMost meaningful change starts with leadership. When leaders adjust how they carry pressure, make decisions, and respond to problems, teams feel it immediately—even before anything is formally explained.\n\nBuy-in grows when people experience consistency, not when they're asked for agreement.\n\n[Learn more about our methods](/methods) and [our philosophy](/philosophy)."
+    },
+    {
+      "title": "How do these methods relate to culture change?",
+      "slug": "methods-culture-change",
+      "type": "faq",
+      "tags": [
+        "methods"
+      ],
+      "categories": [
+        "methods"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.828Z",
+      "updated_at": "2026-01-08T07:23:22.828Z",
+      "summary": "They are culture change—just not in name.\n\nCulture doesn't shift because leaders announce a change. It shifts when people experience new patterns consistently over time. These methods focus on the be...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "They are culture change—just not in name.\n\nCulture doesn't shift because leaders announce a change. It shifts when people experience new patterns consistently over time. These methods focus on the behaviors that quietly reshape expectations, norms, and trust.\n\nThat kind of change is slower—but far more durable.\n\n[Learn more about our methods](/methods) and [how Culture Science studies these patterns](/culture-science)."
     },
     {
       "title": "What should I use Archy for?",
@@ -1665,8 +1643,8 @@
         "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.195Z",
-      "updated_at": "2026-01-08T06:32:22.195Z",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
       "summary": "Archy is especially useful when you're trying to understand leadership topics specifically, but he has a breadth of knowledge that can also help navigate other business related ideas....",
       "featured": false,
       "featured_on": [],
@@ -1687,8 +1665,8 @@
         "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.195Z",
-      "updated_at": "2026-01-08T06:32:22.195Z",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
       "summary": "Start with real questions, not polished ones.\n\nArchy works best when you bring the thing you're actually wrestling with—especially when the question still feels half-formed. Leadership questions usua...",
       "featured": false,
       "featured_on": [],
@@ -1709,8 +1687,8 @@
         "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.195Z",
-      "updated_at": "2026-01-08T06:32:22.195Z",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
       "summary": "Archy is the interpretive intelligence inside Archetype Original.\n\nHe isn't meant to replace leadership thinking or tell people what to do. His role is to help readers navigate the ideas, language, a...",
       "featured": false,
       "featured_on": [],
@@ -1731,8 +1709,8 @@
         "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.195Z",
-      "updated_at": "2026-01-08T06:32:22.195Z",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
       "summary": "Because tools shape how people relate to them.\n\nNaming Archy is a reminder that this isn’t neutral information. It’s guided, bounded, and accountable. There’s a philosophy behind it, a body of work b...",
       "featured": false,
       "featured_on": [],
@@ -1753,8 +1731,8 @@
         "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.195Z",
-      "updated_at": "2026-01-08T06:32:22.195Z",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
       "summary": "Because clarity scales better than memory.\n\nAs the body of work behind Archetype Original grows, it becomes harder for people to hold all the language, distinctions, and principles in their heads at...",
       "featured": false,
       "featured_on": [],
@@ -1775,8 +1753,8 @@
         "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.195Z",
-      "updated_at": "2026-01-08T06:32:22.195Z",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
       "summary": "Teaching. Building. Helping bring real change.\n\nMotivation is easy to sell, and it can be helpful in short bursts. But motivation fades quickly when pressure shows up, when decisions get heavier, and...",
       "featured": false,
       "featured_on": [],
@@ -1797,8 +1775,8 @@
         "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.195Z",
-      "updated_at": "2026-01-08T06:32:22.195Z",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
       "summary": "No. And that distinction matters.\n\nArchetype Original isn’t centered on personality or visibility. It’s centered on responsibility. Bart’s name is attached to the work because leadership requires own...",
       "featured": false,
       "featured_on": [],
@@ -1809,290 +1787,26 @@
       "body": "No. And that distinction matters.\n\nArchetype Original isn’t centered on personality or visibility. It’s centered on responsibility. Bart’s name is attached to the work because leadership requires ownership—someone willing to stand behind the ideas and be accountable for them.\n\nBut the aim isn’t attention. It’s usefulness. The frameworks, language, and tools here are meant to stand on their own and be used by leaders long after they’ve moved on from any one voice or season.\n\nIf anything, this work pushes against ego-driven leadership rather than feeding it."
     },
     {
-      "title": "What happens when leaders stop being human under pressure?",
-      "slug": "leaders-stop-being-human",
+      "title": "What does Bart believe most leaders misunderstand about leadership?",
+      "slug": "meet-bart-what-leaders-miss",
       "type": "faq",
       "tags": [
-        "culture-science"
+        "meet-bart"
       ],
       "categories": [
-        "culture-science"
+        "meet-bart"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.194Z",
-      "updated_at": "2026-01-08T06:32:22.194Z",
-      "summary": "Emotional suppression creates distance.\n\nWhen leaders disconnect from their own limits, teams compensate by disengaging....",
+      "created_at": "2026-01-08T07:23:22.827Z",
+      "updated_at": "2026-01-08T07:23:22.827Z",
+      "summary": "Most leaders think leadership is primarily about decisions, direction, and outcomes.\n\nThose things matter—but they're only part of the picture. Long before a decision shows up in results, it has alre...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Emotional suppression creates distance.\n\nWhen leaders disconnect from their own limits, teams compensate by disengaging."
-    },
-    {
-      "title": "How does Archy stay aligned with Bart’s thinking?",
-      "slug": "meet-archy-alignment",
-      "type": "faq",
-      "tags": [
-        "meet-archy"
-      ],
-      "categories": [
-        "meet-archy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.194Z",
-      "updated_at": "2026-01-08T06:32:22.194Z",
-      "summary": "Through constraint and continuity.\n\nArchy operates inside clearly defined boundaries. He doesn’t invent new frameworks, soften hard truths, or chase novelty. His job is to reflect the work as it exis...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Through constraint and continuity.\n\nArchy operates inside clearly defined boundaries. He doesn’t invent new frameworks, soften hard truths, or chase novelty. His job is to reflect the work as it exists—not to reinterpret it for convenience.\n\nThat alignment matters because leadership language drifts easily when it’s repeated without care."
-    },
-    {
-      "title": "Can Archy challenge my thinking?",
-      "slug": "meet-archy-can-archy-challenge-me",
-      "type": "faq",
-      "tags": [
-        "meet-archy"
-      ],
-      "categories": [
-        "meet-archy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.194Z",
-      "updated_at": "2026-01-08T06:32:22.194Z",
-      "summary": "Yes—but not by arguing with you.\n\nThe challenge comes from clarity. When ideas are explained cleanly and consistently, contradictions tend to surface on their own. Archy helps by making the logic vis...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Yes—but not by arguing with you.\n\nThe challenge comes from clarity. When ideas are explained cleanly and consistently, contradictions tend to surface on their own. Archy helps by making the logic visible, so you can see where your assumptions might be misaligned with reality.\n\nThe goal isn’t to win an argument. It’s to help you see more clearly."
-    },
-    {
-      "title": "How should Archy be used alongside the rest of the site?",
-      "slug": "meet-archy-how-to-use-alongside-site",
-      "type": "faq",
-      "tags": [
-        "meet-archy"
-      ],
-      "categories": [
-        "meet-archy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.194Z",
-      "updated_at": "2026-01-08T06:32:22.194Z",
-      "summary": "Archy works best as a companion, not a destination.\n\nRead what resonates. Sit with what challenges you. Then use Archy to explore what you don't yet fully understand, or to sharpen the language for w...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Archy works best as a companion, not a destination.\n\nRead what resonates. Sit with what challenges you. Then use Archy to explore what you don't yet fully understand, or to sharpen the language for what you're already noticing.\n\nThe goal isn't speed. It's depth.\n\nLearn more about [Archy](/archy) and explore [our philosophy](/philosophy) and [methods](/methods)."
-    },
-    {
-      "title": "Is Archy always right?",
-      "slug": "meet-archy-is-archy-always-right",
-      "type": "faq",
-      "tags": [
-        "meet-archy"
-      ],
-      "categories": [
-        "meet-archy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.194Z",
-      "updated_at": "2026-01-08T06:32:22.194Z",
-      "summary": "No—and he shouldn’t be.\n\nArchy reflects the canon faithfully, but leadership always requires discernment. Context matters. People matter. Consequences matter. Archy supports thinking; he does not rep...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "No—and he shouldn’t be.\n\nArchy reflects the canon faithfully, but leadership always requires discernment. Context matters. People matter. Consequences matter. Archy supports thinking; he does not replace judgment.\n\nIf you’re expecting certainty, you’ll be disappointed. If you’re looking for clarity that helps you make better decisions, he’ll be useful."
-    },
-    {
-      "title": "Is Archy just another leadership chatbot?",
-      "slug": "meet-archy-not-just-another-chatbot",
-      "type": "faq",
-      "tags": [
-        "meet-archy"
-      ],
-      "categories": [
-        "meet-archy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.194Z",
-      "updated_at": "2026-01-08T06:32:22.194Z",
-      "summary": "No—and that difference matters.\n\nMost leadership chatbots are designed to sound helpful by generating something quickly. Archy is designed to be helpful by staying constrained. He works inside define...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "No—and that difference matters.\n\nMost leadership chatbots are designed to sound helpful by generating something quickly. Archy is designed to be helpful by staying constrained. He works inside defined language, concepts, and boundaries so that the answers reinforce clarity instead of creating confusion.\n\nThat restraint is intentional. It’s what keeps the work coherent rather than diluted."
-    },
-    {
-      "title": "What shouldn’t I use Archy for?",
-      "slug": "meet-archy-what-not-to-use-for",
-      "type": "faq",
-      "tags": [
-        "meet-archy"
-      ],
-      "categories": [
-        "meet-archy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.194Z",
-      "updated_at": "2026-01-08T06:32:22.194Z",
-      "summary": "Archy is not a substitute for leadership responsibility.\n\nHe’s not here to make decisions for you, validate avoidance, give you a script to hide behind, or reduce leadership to formulas.\n\nIf you’re l...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Archy is not a substitute for leadership responsibility.\n\nHe’s not here to make decisions for you, validate avoidance, give you a script to hide behind, or reduce leadership to formulas.\n\nIf you’re looking for certainty without ownership, Archy will frustrate you. That’s by design."
-    },
-    {
-      "title": "Why does execution follow environment, not motivation?",
-      "slug": "execution-follows-environment",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
-      "summary": "People execute best in environments that are predictable, fair, and calm.\n\nMotivation cannot overcome chaotic conditions....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "People execute best in environments that are predictable, fair, and calm.\n\nMotivation cannot overcome chaotic conditions."
-    },
-    {
-      "title": "Why does honest feedback disappear before trust collapses?",
-      "slug": "feedback-dries-up",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
-      "summary": "Feedback disappears when the cost of honesty outweighs the benefit.\n\nCulture Science treats the absence of feedback as a warning signal—not a success....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Feedback disappears when the cost of honesty outweighs the benefit.\n\nCulture Science treats the absence of feedback as a warning signal—not a success."
-    },
-    {
-      "title": "How does Archetype Original work with leaders and teams?",
-      "slug": "how-do-you-work-with-clients",
-      "type": "faq",
-      "tags": [
-        "methods"
-      ],
-      "categories": [
-        "methods"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
-      "summary": "Work typically includes diagnostics, coaching, teaching, and cultural assessment.\n\nEngagements are designed to build clarity, accountability, and long-term leadership health—not dependency....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Work typically includes diagnostics, coaching, teaching, and cultural assessment.\n\nEngagements are designed to build clarity, accountability, and long-term leadership health—not dependency."
-    },
-    {
-      "title": "How is Archetype Original different from other leadership firms?",
-      "slug": "how-is-ao-different",
-      "type": "faq",
-      "tags": [
-        "philosophy"
-      ],
-      "categories": [
-        "philosophy"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
-      "summary": "Archetype Original is built from lived leadership, not theory alone.\n\nThe work is grounded in responsibility, restraint, and long-term cultural health.\n\nThere is no hype, no motivational performance,...",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Archetype Original is built from lived leadership, not theory alone.\n\nThe work is grounded in responsibility, restraint, and long-term cultural health.\n\nThere is no hype, no motivational performance, and no borrowed language."
-    },
-    {
-      "title": "How long does it take to change cultural conditions?",
-      "slug": "culture-change-timeline",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
-      "summary": "Conditions begin shifting as soon as leadership behavior changes.\n\nTrust and stability compound over time....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Conditions begin shifting as soon as leadership behavior changes.\n\nTrust and stability compound over time."
-    },
-    {
-      "title": "How does leadership identity change under pressure?",
-      "slug": "identity-shifts-under-pressure",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
-      "summary": "Pressure compresses identity.\n\nLeaders often default to control, speed, or self-protection when their internal anchors are stressed....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Pressure compresses identity.\n\nLeaders often default to control, speed, or self-protection when their internal anchors are stressed."
+      "body": "Most leaders think leadership is primarily about decisions, direction, and outcomes.\n\nThose things matter—but they're only part of the picture. Long before a decision shows up in results, it has already shaped the environment people are working inside. Tone, consistency, emotional regulation, and what gets tolerated day after day quietly determine whether people feel safe enough to think clearly or pressured into self-protection.\n\nWhat leaders often miss is that they are always teaching through behavior whether they intend to or not. This work focuses on that invisible layer, because that's where cultures are either stabilized or slowly eroded.\n\nExplore [our philosophy](/philosophy) and [Culture Science](/culture-science) to understand these patterns more deeply."
     },
     {
       "title": "What is the difference between leadership image and responsibility?",
@@ -2105,8 +1819,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
       "summary": "Image focuses on perception.\nResponsibility focuses on consequence.\n\nCulture Science prioritizes the latter....",
       "featured": false,
       "featured_on": [],
@@ -2127,8 +1841,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.193Z",
-      "updated_at": "2026-01-08T06:32:22.193Z",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
       "summary": "The leader’s shadow is the unspoken influence of their behavior, reactions, and habits.\n\nPeople organize themselves around it....",
       "featured": false,
       "featured_on": [],
@@ -2139,114 +1853,158 @@
       "body": "The leader’s shadow is the unspoken influence of their behavior, reactions, and habits.\n\nPeople organize themselves around it."
     },
     {
-      "title": "Can Bart help us fix a struggling organization?",
-      "slug": "engagement-fix-struggling-organization",
+      "title": "What happens when leaders stop being human under pressure?",
+      "slug": "leaders-stop-being-human",
       "type": "faq",
       "tags": [
-        "engagement"
+        "culture-science"
       ],
       "categories": [
-        "engagement"
+        "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.192Z",
-      "updated_at": "2026-01-08T06:32:22.192Z",
-      "summary": "Possibly—but only if leadership is willing to be involved.\n\nStruggling organizations rarely need better ideas. They need clearer responsibility, steadier leadership under pressure, and fewer mixed si...",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
+      "summary": "Emotional suppression creates distance.\n\nWhen leaders disconnect from their own limits, teams compensate by disengaging....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Possibly—but only if leadership is willing to be involved.\n\nStruggling organizations rarely need better ideas. They need clearer responsibility, steadier leadership under pressure, and fewer mixed signals. Bart can help diagnose what's actually happening beneath the surface and identify where instability is coming from.\n\nWhat he won't do is implement cosmetic fixes or carry responsibility that belongs to leadership. If the expectation is that culture can be repaired without leaders changing how they show up, this won't be the right fit.\n\nWhen leaders are willing to engage honestly, meaningful repair is possible.\n\nLearn more about [our consulting approach](/methods/consulting) and [Culture Science](/culture-science)."
+      "body": "Emotional suppression creates distance.\n\nWhen leaders disconnect from their own limits, teams compensate by disengaging."
     },
     {
-      "title": "Can I hire Bart to work directly with me as a leader?",
-      "slug": "engagement-hire-bart-one-on-one",
+      "title": "How does Archy stay aligned with Bart’s thinking?",
+      "slug": "meet-archy-alignment",
       "type": "faq",
       "tags": [
-        "engagement"
+        "meet-archy"
       ],
       "categories": [
-        "engagement"
+        "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.192Z",
-      "updated_at": "2026-01-08T06:32:22.192Z",
-      "summary": "Yes—and this is where the work often goes deepest.\n\nBart works one-on-one with leaders who are carrying real responsibility and want space to think clearly, honestly, and without performance. These e...",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
+      "summary": "Through constraint and continuity.\n\nArchy operates inside clearly defined boundaries. He doesn’t invent new frameworks, soften hard truths, or chase novelty. His job is to reflect the work as it exis...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes—and this is where the work often goes deepest.\n\nBart works one-on-one with leaders who are carrying real responsibility and want space to think clearly, honestly, and without performance. These engagements are not coaching in the traditional sense. There's no script, no cheerleading, and no pressure to present a version of yourself that sounds good.\n\nThe focus is on helping you see patterns—in your decisions, your reactions, and your leadership under pressure—and understanding how those patterns are shaping the people around you.\n\nThis work is especially helpful for leaders who feel the weight of their role but don't have a place to process it thoughtfully.\n\nLearn more about [mentorship](/methods/mentorship) and [how Bart works with leaders](/meet-bart)."
+      "body": "Through constraint and continuity.\n\nArchy operates inside clearly defined boundaries. He doesn’t invent new frameworks, soften hard truths, or chase novelty. His job is to reflect the work as it exists—not to reinterpret it for convenience.\n\nThat alignment matters because leadership language drifts easily when it’s repeated without care."
     },
     {
-      "title": "Can I hire Bart to speak to my team?",
-      "slug": "engagement-hire-bart-speak",
+      "title": "Can Archy challenge my thinking?",
+      "slug": "meet-archy-can-archy-challenge-me",
       "type": "faq",
       "tags": [
-        "engagement"
+        "meet-archy"
       ],
       "categories": [
-        "engagement"
+        "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.192Z",
-      "updated_at": "2026-01-08T06:32:22.192Z",
-      "summary": "Yes—if the goal is clarity, not hype.\n\nBart does speak to teams, leadership groups, and organizations, but the focus is never on motivation for its own sake. These sessions are designed to help peopl...",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
+      "summary": "Yes—but not by arguing with you.\n\nThe challenge comes from clarity. When ideas are explained cleanly and consistently, contradictions tend to surface on their own. Archy helps by making the logic vis...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes—if the goal is clarity, not hype.\n\nBart does speak to teams, leadership groups, and organizations, but the focus is never on motivation for its own sake. These sessions are designed to help people understand what leadership is actually doing to their environment and why certain patterns keep repeating.\n\nIf you're looking for a high-energy keynote meant to entertain or temporarily inspire, this likely isn't the right fit. If you want a room to leave with shared language, clearer responsibility, and a better understanding of how pressure, tone, and behavior affect execution, then speaking engagements can be a strong starting point.\n\nMany organizations use these sessions as a reset—not an ending.\n\nLearn more about [speaking and seminars](/methods/speaking-seminars)."
+      "body": "Yes—but not by arguing with you.\n\nThe challenge comes from clarity. When ideas are explained cleanly and consistently, contradictions tend to surface on their own. Archy helps by making the logic visible, so you can see where your assumptions might be misaligned with reality.\n\nThe goal isn’t to win an argument. It’s to help you see more clearly."
     },
     {
-      "title": "Can Bart help with team or culture issues?",
-      "slug": "engagement-hire-bart-team-culture",
+      "title": "How should Archy be used alongside the rest of the site?",
+      "slug": "meet-archy-how-to-use-alongside-site",
       "type": "faq",
       "tags": [
-        "engagement"
+        "meet-archy"
       ],
       "categories": [
-        "engagement"
+        "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.192Z",
-      "updated_at": "2026-01-08T06:32:22.192Z",
-      "summary": "Yes—but not by treating culture as a surface problem.\n\nCulture work here doesn't start with values exercises or morale programs. It starts with leadership behavior and the conditions people are worki...",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
+      "summary": "Archy works best as a companion, not a destination.\n\nRead what resonates. Sit with what challenges you. Then use Archy to explore what you don't yet fully understand, or to sharpen the language for w...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes—but not by treating culture as a surface problem.\n\nCulture work here doesn't start with values exercises or morale programs. It starts with leadership behavior and the conditions people are working inside every day. That often means working first with senior leaders before involving the broader team.\n\nIn some cases, Bart will work directly with leadership teams. In others, the work begins quietly, helping a founder or executive understand what they are unintentionally reinforcing—and how to correct course without creating fear or instability.\n\nCulture improves when leadership behavior changes consistently. Everything else follows from that.\n\nLearn more about [Culture Science](/culture-science) and [our consulting approach](/methods/consulting)."
+      "body": "Archy works best as a companion, not a destination.\n\nRead what resonates. Sit with what challenges you. Then use Archy to explore what you don't yet fully understand, or to sharpen the language for what you're already noticing.\n\nThe goal isn't speed. It's depth.\n\nLearn more about [Archy](/archy) and explore [our philosophy](/philosophy) and [methods](/methods)."
     },
     {
-      "title": "How do I know if this is the right fit?",
-      "slug": "engagement-how-to-know-fit",
+      "title": "Is Archy always right?",
+      "slug": "meet-archy-is-archy-always-right",
       "type": "faq",
       "tags": [
-        "engagement"
+        "meet-archy"
       ],
       "categories": [
-        "engagement"
+        "meet-archy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.192Z",
-      "updated_at": "2026-01-08T06:32:22.192Z",
-      "summary": "If you're asking that question, it usually means something already feels unresolved.\n\nLeaders who benefit most from this work aren't looking for answers they can repeat. They're looking for understan...",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
+      "summary": "No—and he shouldn’t be.\n\nArchy reflects the canon faithfully, but leadership always requires discernment. Context matters. People matter. Consequences matter. Archy supports thinking; he does not rep...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "If you're asking that question, it usually means something already feels unresolved.\n\nLeaders who benefit most from this work aren't looking for answers they can repeat. They're looking for understanding that changes how they lead day to day. They want fewer surprises, fewer breakdowns, and fewer moments where pressure causes unintended harm.\n\nIf you want a framework that makes you look good, you won't like this. If you want one that makes you better, you're in the right place.\n\nLearn more about [who this work is for](/meet-bart) and [our philosophy](/philosophy)."
+      "body": "No—and he shouldn’t be.\n\nArchy reflects the canon faithfully, but leadership always requires discernment. Context matters. People matter. Consequences matter. Archy supports thinking; he does not replace judgment.\n\nIf you’re expecting certainty, you’ll be disappointed. If you’re looking for clarity that helps you make better decisions, he’ll be useful."
+    },
+    {
+      "title": "Is Archy just another leadership chatbot?",
+      "slug": "meet-archy-not-just-another-chatbot",
+      "type": "faq",
+      "tags": [
+        "meet-archy"
+      ],
+      "categories": [
+        "meet-archy"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
+      "summary": "No—and that difference matters.\n\nMost leadership chatbots are designed to sound helpful by generating something quickly. Archy is designed to be helpful by staying constrained. He works inside define...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "No—and that difference matters.\n\nMost leadership chatbots are designed to sound helpful by generating something quickly. Archy is designed to be helpful by staying constrained. He works inside defined language, concepts, and boundaries so that the answers reinforce clarity instead of creating confusion.\n\nThat restraint is intentional. It’s what keeps the work coherent rather than diluted."
+    },
+    {
+      "title": "What shouldn’t I use Archy for?",
+      "slug": "meet-archy-what-not-to-use-for",
+      "type": "faq",
+      "tags": [
+        "meet-archy"
+      ],
+      "categories": [
+        "meet-archy"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.826Z",
+      "updated_at": "2026-01-08T07:23:22.826Z",
+      "summary": "Archy is not a substitute for leadership responsibility.\n\nHe’s not here to make decisions for you, validate avoidance, give you a script to hide behind, or reduce leadership to formulas.\n\nIf you’re l...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Archy is not a substitute for leadership responsibility.\n\nHe’s not here to make decisions for you, validate avoidance, give you a script to hide behind, or reduce leadership to formulas.\n\nIf you’re looking for certainty without ownership, Archy will frustrate you. That’s by design."
     },
     {
       "title": "Can Bart help us scale without losing our culture?",
@@ -2259,8 +2017,8 @@
         "engagement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.192Z",
-      "updated_at": "2026-01-08T06:32:22.192Z",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
       "summary": "Yes—and this is one of the most common reasons leaders reach out.\n\nGrowth introduces pressure. Pressure exposes patterns. Without clarity, teams default to speed, control, and short-term fixes that s...",
       "featured": false,
       "featured_on": [],
@@ -2281,8 +2039,8 @@
         "engagement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.192Z",
-      "updated_at": "2026-01-08T06:32:22.192Z",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
       "summary": "This matters just as much as what he does.\n\nBart does not:\n\n- provide motivational-only speaking\n- sell leadership programs disconnected from reality\n- act as a shield so leaders can avoid accountabi...",
       "featured": false,
       "featured_on": [],
@@ -2293,8 +2051,8 @@
       "body": "This matters just as much as what he does.\n\nBart does not:\n\n- provide motivational-only speaking\n- sell leadership programs disconnected from reality\n- act as a shield so leaders can avoid accountability\n- implement culture change without leadership involvement\n\nThis work is about clarity, not comfort.\n\nLearn more about [our philosophy](/philosophy) and [what makes us different](/methods)."
     },
     {
-      "title": "Why don’t perks and morale programs fix culture?",
-      "slug": "culture-not-perks",
+      "title": "Why does execution follow environment, not motivation?",
+      "slug": "execution-follows-environment",
       "type": "faq",
       "tags": [
         "culture-science"
@@ -2303,20 +2061,20 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.191Z",
-      "updated_at": "2026-01-08T06:32:22.191Z",
-      "summary": "Perks operate at the surface.\nCulture operates at the behavioral level.\n\nWhen leadership behavior remains misaligned, morale programs become compensators rather than correctives....",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
+      "summary": "People execute best in environments that are predictable, fair, and calm.\n\nMotivation cannot overcome chaotic conditions....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Perks operate at the surface.\nCulture operates at the behavioral level.\n\nWhen leadership behavior remains misaligned, morale programs become compensators rather than correctives."
+      "body": "People execute best in environments that are predictable, fair, and calm.\n\nMotivation cannot overcome chaotic conditions."
     },
     {
-      "title": "Why doesn’t Culture Science start with values statements?",
-      "slug": "culture-not-values-statements",
+      "title": "Why does honest feedback disappear before trust collapses?",
+      "slug": "feedback-dries-up",
       "type": "faq",
       "tags": [
         "culture-science"
@@ -2325,42 +2083,64 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.191Z",
-      "updated_at": "2026-01-08T06:32:22.191Z",
-      "summary": "Values statements describe intent.\nCulture reveals reality.\n\nOrganizations often mistake articulated values for lived behavior. Culture Science begins where intent meets pressure—because that is wher...",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
+      "summary": "Feedback disappears when the cost of honesty outweighs the benefit.\n\nCulture Science treats the absence of feedback as a warning signal—not a success....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Values statements describe intent.\nCulture reveals reality.\n\nOrganizations often mistake articulated values for lived behavior. Culture Science begins where intent meets pressure—because that is where values are either upheld or abandoned."
+      "body": "Feedback disappears when the cost of honesty outweighs the benefit.\n\nCulture Science treats the absence of feedback as a warning signal—not a success."
     },
     {
-      "title": "Is Culture Science just soft leadership theory?",
-      "slug": "culture-science-not-soft",
+      "title": "How does Archetype Original work with leaders and teams?",
+      "slug": "how-do-you-work-with-clients",
       "type": "faq",
       "tags": [
-        "culture-science"
+        "methods"
       ],
       "categories": [
-        "culture-science"
+        "methods"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.191Z",
-      "updated_at": "2026-01-08T06:32:22.191Z",
-      "summary": "No.\n\nCulture Science is operational.\nIt deals with execution, pressure, accountability, and outcomes.\n\nHuman-centered does not mean low standards....",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
+      "summary": "Work typically includes diagnostics, coaching, teaching, and cultural assessment.\n\nEngagements are designed to build clarity, accountability, and long-term leadership health—not dependency....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "No.\n\nCulture Science is operational.\nIt deals with execution, pressure, accountability, and outcomes.\n\nHuman-centered does not mean low standards."
+      "body": "Work typically includes diagnostics, coaching, teaching, and cultural assessment.\n\nEngagements are designed to build clarity, accountability, and long-term leadership health—not dependency."
     },
     {
-      "title": "What does Archetype Original mean by Culture Science?",
-      "slug": "culture-science-what-it-is",
+      "title": "How is Archetype Original different from other leadership firms?",
+      "slug": "how-is-ao-different",
+      "type": "faq",
+      "tags": [
+        "philosophy"
+      ],
+      "categories": [
+        "philosophy"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
+      "summary": "Archetype Original is built from lived leadership, not theory alone.\n\nThe work is grounded in responsibility, restraint, and long-term cultural health.\n\nThere is no hype, no motivational performance,...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Archetype Original is built from lived leadership, not theory alone.\n\nThe work is grounded in responsibility, restraint, and long-term cultural health.\n\nThere is no hype, no motivational performance, and no borrowed language."
+    },
+    {
+      "title": "How long does it take to change cultural conditions?",
+      "slug": "culture-change-timeline",
       "type": "faq",
       "tags": [
         "culture-science"
@@ -2369,16 +2149,38 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.191Z",
-      "updated_at": "2026-01-08T06:32:22.191Z",
-      "summary": "Culture Science is the disciplined study of how leadership behavior creates conditions.\n\nIt explains why cultures stabilize, drift, or fracture based on what leaders consistently do—not what they say...",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
+      "summary": "Conditions begin shifting as soon as leadership behavior changes.\n\nTrust and stability compound over time....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Culture Science is the disciplined study of how leadership behavior creates conditions.\n\nIt explains why cultures stabilize, drift, or fracture based on what leaders consistently do—not what they say they value."
+      "body": "Conditions begin shifting as soon as leadership behavior changes.\n\nTrust and stability compound over time."
+    },
+    {
+      "title": "How does leadership identity change under pressure?",
+      "slug": "identity-shifts-under-pressure",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.825Z",
+      "updated_at": "2026-01-08T07:23:22.825Z",
+      "summary": "Pressure compresses identity.\n\nLeaders often default to control, speed, or self-protection when their internal anchors are stressed....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Pressure compresses identity.\n\nLeaders often default to control, speed, or self-protection when their internal anchors are stressed."
     },
     {
       "title": "Why was Culture Science created?",
@@ -2391,8 +2193,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.191Z",
-      "updated_at": "2026-01-08T06:32:22.191Z",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
       "summary": "Culture Science exists because most leadership failures are misdiagnosed.\n\nOrganizations treat symptoms—turnover, conflict, burnout—while ignoring the behavioral conditions that caused them....",
       "featured": false,
       "featured_on": [],
@@ -2413,8 +2215,8 @@
         "engagement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.191Z",
-      "updated_at": "2026-01-08T06:32:22.191Z",
+      "created_at": "2026-01-08T07:23:22.824Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
       "summary": "Yes, when the goal is alignment and responsibility—not politics.\n\nThese conversations are often about surfacing unspoken assumptions, conflicting pressures, and leadership dynamics that are affecting...",
       "featured": false,
       "featured_on": [],
@@ -2435,8 +2237,8 @@
         "engagement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.191Z",
-      "updated_at": "2026-01-08T06:32:22.191Z",
+      "created_at": "2026-01-08T07:23:22.824Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
       "summary": "Start by reaching out.\n\nMost engagements begin with a conversation—not a proposal—to understand what's actually happening and whether this work makes sense for your situation. There's no pressure to...",
       "featured": false,
       "featured_on": [],
@@ -2447,100 +2249,114 @@
       "body": "Start by reaching out.\n\nMost engagements begin with a conversation—not a proposal—to understand what's actually happening and whether this work makes sense for your situation. There's no pressure to move forward, and no obligation to fit into a predefined package.\n\nThe goal is clarity first. Everything else follows from that.\n\nLearn more about [our methods](/methods) and [how we work with clients](/methods)."
     },
     {
-      "title": "Why is ALI quarterly instead of annual?",
-      "slug": "ali-why-quarterly-instead-of-annual",
+      "title": "Can Bart help us fix a struggling organization?",
+      "slug": "engagement-fix-struggling-organization",
       "type": "faq",
       "tags": [
-        "ali",
-        "culture-science",
-        "leadership-measurement",
-        "cadence"
+        "engagement"
       ],
       "categories": [
-        "ali",
-        "culture-science",
-        "leadership-measurement",
-        "cadence"
+        "engagement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
-      "summary": "Annual surveys are obsolete before the results are presented.\n\nSmall and mid-sized organizations shift quickly:\n\n- new hires change chemistry  \n- seasonality affects tone  \n- stress cycles impact con...",
-      "featured": true,
-      "featured_on": [
-        "ali"
-      ],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "Annual surveys are obsolete before the results are presented.\n\nSmall and mid-sized organizations shift quickly:\n\n- new hires change chemistry  \n- seasonality affects tone  \n- stress cycles impact consistency  \n- growth shifts clarity and alignment  \n- leaders drift when overwhelmed  \n\nQuarterly measurement captures **movement**, not snapshots.\n\nLeadership doesn’t change annually.  \nIt changes weekly.\n\nALI detects quarterly patterns so leaders can respond while change is still manageable."
-    },
-    {
-      "title": "How does leadership behavior create cultural conditions?",
-      "slug": "behavior-creates-conditions",
-      "type": "faq",
-      "tags": [
-        "culture-science"
-      ],
-      "categories": [
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
-      "summary": "Every repeated leadership behavior sends a signal.\n\nThose signals compound into conditions that either enable focus and trust—or create fear and instability....",
+      "created_at": "2026-01-08T07:23:22.824Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
+      "summary": "Possibly—but only if leadership is willing to be involved.\n\nStruggling organizations rarely need better ideas. They need clearer responsibility, steadier leadership under pressure, and fewer mixed si...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Every repeated leadership behavior sends a signal.\n\nThose signals compound into conditions that either enable focus and trust—or create fear and instability."
+      "body": "Possibly—but only if leadership is willing to be involved.\n\nStruggling organizations rarely need better ideas. They need clearer responsibility, steadier leadership under pressure, and fewer mixed signals. Bart can help diagnose what's actually happening beneath the surface and identify where instability is coming from.\n\nWhat he won't do is implement cosmetic fixes or carry responsibility that belongs to leadership. If the expectation is that culture can be repaired without leaders changing how they show up, this won't be the right fit.\n\nWhen leaders are willing to engage honestly, meaningful repair is possible.\n\nLearn more about [our consulting approach](/methods/consulting) and [Culture Science](/culture-science)."
     },
     {
-      "title": "Why does Culture Science treat burnout as a leadership signal?",
-      "slug": "burnout-as-signal",
+      "title": "Can I hire Bart to work directly with me as a leader?",
+      "slug": "engagement-hire-bart-one-on-one",
       "type": "faq",
       "tags": [
-        "culture-science"
+        "engagement"
       ],
       "categories": [
-        "culture-science"
+        "engagement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
-      "summary": "Burnout reflects sustained pressure without recovery.\n\nIt indicates systemic imbalance, not individual weakness....",
+      "created_at": "2026-01-08T07:23:22.824Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
+      "summary": "Yes—and this is where the work often goes deepest.\n\nBart works one-on-one with leaders who are carrying real responsibility and want space to think clearly, honestly, and without performance. These e...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Burnout reflects sustained pressure without recovery.\n\nIt indicates systemic imbalance, not individual weakness."
+      "body": "Yes—and this is where the work often goes deepest.\n\nBart works one-on-one with leaders who are carrying real responsibility and want space to think clearly, honestly, and without performance. These engagements are not coaching in the traditional sense. There's no script, no cheerleading, and no pressure to present a version of yourself that sounds good.\n\nThe focus is on helping you see patterns—in your decisions, your reactions, and your leadership under pressure—and understanding how those patterns are shaping the people around you.\n\nThis work is especially helpful for leaders who feel the weight of their role but don't have a place to process it thoughtfully.\n\nLearn more about [mentorship](/methods/mentorship) and [how Bart works with leaders](/meet-bart)."
     },
     {
-      "title": "Why is calm considered a leadership capability?",
-      "slug": "calm-as-capability",
+      "title": "Can I hire Bart to speak to my team?",
+      "slug": "engagement-hire-bart-speak",
       "type": "faq",
       "tags": [
-        "culture-science"
+        "engagement"
       ],
       "categories": [
-        "culture-science"
+        "engagement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
-      "summary": "Calm allows discernment, not delay.\n\nCulture Science treats emotional regulation as a prerequisite for sound leadership decisions....",
+      "created_at": "2026-01-08T07:23:22.824Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
+      "summary": "Yes—if the goal is clarity, not hype.\n\nBart does speak to teams, leadership groups, and organizations, but the focus is never on motivation for its own sake. These sessions are designed to help peopl...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Calm allows discernment, not delay.\n\nCulture Science treats emotional regulation as a prerequisite for sound leadership decisions."
+      "body": "Yes—if the goal is clarity, not hype.\n\nBart does speak to teams, leadership groups, and organizations, but the focus is never on motivation for its own sake. These sessions are designed to help people understand what leadership is actually doing to their environment and why certain patterns keep repeating.\n\nIf you're looking for a high-energy keynote meant to entertain or temporarily inspire, this likely isn't the right fit. If you want a room to leave with shared language, clearer responsibility, and a better understanding of how pressure, tone, and behavior affect execution, then speaking engagements can be a strong starting point.\n\nMany organizations use these sessions as a reset—not an ending.\n\nLearn more about [speaking and seminars](/methods/speaking-seminars)."
+    },
+    {
+      "title": "Can Bart help with team or culture issues?",
+      "slug": "engagement-hire-bart-team-culture",
+      "type": "faq",
+      "tags": [
+        "engagement"
+      ],
+      "categories": [
+        "engagement"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.824Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
+      "summary": "Yes—but not by treating culture as a surface problem.\n\nCulture work here doesn't start with values exercises or morale programs. It starts with leadership behavior and the conditions people are worki...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Yes—but not by treating culture as a surface problem.\n\nCulture work here doesn't start with values exercises or morale programs. It starts with leadership behavior and the conditions people are working inside every day. That often means working first with senior leaders before involving the broader team.\n\nIn some cases, Bart will work directly with leadership teams. In others, the work begins quietly, helping a founder or executive understand what they are unintentionally reinforcing—and how to correct course without creating fear or instability.\n\nCulture improves when leadership behavior changes consistently. Everything else follows from that.\n\nLearn more about [Culture Science](/culture-science) and [our consulting approach](/methods/consulting)."
+    },
+    {
+      "title": "How do I know if this is the right fit?",
+      "slug": "engagement-how-to-know-fit",
+      "type": "faq",
+      "tags": [
+        "engagement"
+      ],
+      "categories": [
+        "engagement"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.824Z",
+      "updated_at": "2026-01-08T07:23:22.824Z",
+      "summary": "If you're asking that question, it usually means something already feels unresolved.\n\nLeaders who benefit most from this work aren't looking for answers they can repeat. They're looking for understan...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "If you're asking that question, it usually means something already feels unresolved.\n\nLeaders who benefit most from this work aren't looking for answers they can repeat. They're looking for understanding that changes how they lead day to day. They want fewer surprises, fewer breakdowns, and fewer moments where pressure causes unintended harm.\n\nIf you want a framework that makes you look good, you won't like this. If you want one that makes you better, you're in the right place.\n\nLearn more about [who this work is for](/meet-bart) and [our philosophy](/philosophy)."
     },
     {
       "title": "Can damaged cultures actually be repaired?",
@@ -2553,8 +2369,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
       "summary": "Yes—but repair begins with leadership behavior change, not messaging.\n\nTrust rebuilds through consistency, not explanation....",
       "featured": false,
       "featured_on": [],
@@ -2575,8 +2391,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
       "summary": "Yes, it can be learned.\n\nCulture Science treats leadership as a practiced discipline, not a fixed trait....",
       "featured": false,
       "featured_on": [],
@@ -2597,8 +2413,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
       "summary": "Events are visible moments.\nConditions are the environment those moments emerge from.\n\nCulture Science teaches leaders to work upstream....",
       "featured": false,
       "featured_on": [],
@@ -2619,8 +2435,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.190Z",
-      "updated_at": "2026-01-08T06:32:22.190Z",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
       "summary": "Control often masquerades as protection or urgency.\n\nCulture Science examines motive through behavior, not explanation....",
       "featured": false,
       "featured_on": [],
@@ -2631,52 +2447,92 @@
       "body": "Control often masquerades as protection or urgency.\n\nCulture Science examines motive through behavior, not explanation."
     },
     {
-      "title": "Does ALI work if leaders think their culture is already strong?",
-      "slug": "ali-strong-culture",
+      "title": "Why don’t perks and morale programs fix culture?",
+      "slug": "culture-not-perks",
       "type": "faq",
       "tags": [
-        "ali",
         "culture-science"
       ],
       "categories": [
-        "ali",
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.189Z",
-      "updated_at": "2026-01-08T06:32:22.189Z",
-      "summary": "Yes.\n\nThe strongest leaders use ALI to:\n\nprevent blind spots\nsustain momentum during growth\navoid drift during change\ndeepen consistency\nmodel servant leadership\nimprove tone stability\nincrease clari...",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
+      "summary": "Perks operate at the surface.\nCulture operates at the behavioral level.\n\nWhen leadership behavior remains misaligned, morale programs become compensators rather than correctives....",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes.\n\nThe strongest leaders use ALI to:\n\nprevent blind spots\nsustain momentum during growth\navoid drift during change\ndeepen consistency\nmodel servant leadership\nimprove tone stability\nincrease clarity as complexity rises\n\nStrong cultures drift fastest when leaders assume they are immune."
+      "body": "Perks operate at the surface.\nCulture operates at the behavioral level.\n\nWhen leadership behavior remains misaligned, morale programs become compensators rather than correctives."
     },
     {
-      "title": "Can ALI prevent turnover?",
-      "slug": "ali-turnover",
+      "title": "Why doesn’t Culture Science start with values statements?",
+      "slug": "culture-not-values-statements",
       "type": "faq",
       "tags": [
-        "ali",
         "culture-science"
       ],
       "categories": [
-        "ali",
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.189Z",
-      "updated_at": "2026-01-08T06:32:22.189Z",
-      "summary": "Yes—because turnover is the last stage of a long drift cycle.\n\nALI reveals:\n\ntrust erosion\nsafety decline\nemotional compression\nrelational distance\nquiet disengagement\n\nfar before someone updates the...",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
+      "summary": "Values statements describe intent.\nCulture reveals reality.\n\nOrganizations often mistake articulated values for lived behavior. Culture Science begins where intent meets pressure—because that is wher...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes—because turnover is the last stage of a long drift cycle.\n\nALI reveals:\n\ntrust erosion\nsafety decline\nemotional compression\nrelational distance\nquiet disengagement\n\nfar before someone updates their résumé."
+      "body": "Values statements describe intent.\nCulture reveals reality.\n\nOrganizations often mistake articulated values for lived behavior. Culture Science begins where intent meets pressure—because that is where values are either upheld or abandoned."
+    },
+    {
+      "title": "Is Culture Science just soft leadership theory?",
+      "slug": "culture-science-not-soft",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
+      "summary": "No.\n\nCulture Science is operational.\nIt deals with execution, pressure, accountability, and outcomes.\n\nHuman-centered does not mean low standards....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "No.\n\nCulture Science is operational.\nIt deals with execution, pressure, accountability, and outcomes.\n\nHuman-centered does not mean low standards."
+    },
+    {
+      "title": "What does Archetype Original mean by Culture Science?",
+      "slug": "culture-science-what-it-is",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.823Z",
+      "updated_at": "2026-01-08T07:23:22.823Z",
+      "summary": "Culture Science is the disciplined study of how leadership behavior creates conditions.\n\nIt explains why cultures stabilize, drift, or fracture based on what leaders consistently do—not what they say...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Culture Science is the disciplined study of how leadership behavior creates conditions.\n\nIt explains why cultures stabilize, drift, or fracture based on what leaders consistently do—not what they say they value."
     },
     {
       "title": "How should I use ALI results as a leader?",
@@ -2691,8 +2547,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.189Z",
-      "updated_at": "2026-01-08T06:32:22.189Z",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
       "summary": "Use ALI to:\n\nidentify your true leadership priorities\nstabilize your team before performance declines\nunderstand where communication is breaking down\nsee how tone affects safety\nrecognize inconsisten...",
       "featured": false,
       "featured_on": [],
@@ -2717,8 +2573,8 @@
         "leadership-measurement"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.189Z",
-      "updated_at": "2026-01-08T06:32:22.189Z",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
       "summary": "ALI measures the leadership conditions people work inside every day—**Clarity, Trust, Communication, Consistency, Safety, and Emotional Tone**.\n\nThese conditions determine:\n\n- how teams think  \n- how...",
       "featured": true,
       "featured_on": [
@@ -2747,8 +2603,8 @@
         "employee-surveys"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.189Z",
-      "updated_at": "2026-01-08T06:32:22.189Z",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
       "summary": "Because sentiment is unreliable.\n\nPeople can feel frustrated even in a strong leadership environment.  \nPeople can feel content even while conditions are quietly eroding.\n\nSentiment fluctuates with s...",
       "featured": true,
       "featured_on": [
@@ -2773,8 +2629,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.189Z",
-      "updated_at": "2026-01-08T06:32:22.189Z",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
       "summary": "Because:\n\nteams tolerate instability less\ncommunication channels are noisy\nhybrid work weakens clarity\nburnout increases tone volatility\nleaders are stretched thin\ndrift accelerates under pressure\ntu...",
       "featured": false,
       "featured_on": [],
@@ -2785,49 +2641,25 @@
       "body": "Because:\n\nteams tolerate instability less\ncommunication channels are noisy\nhybrid work weakens clarity\nburnout increases tone volatility\nleaders are stretched thin\ndrift accelerates under pressure\nturnover is expensive\naccountability expectations are rising\n\nALI gives leaders visibility when stakes are highest."
     },
     {
-      "title": "Is ALI difficult for teams to understand or use?",
-      "slug": "ali-ease",
-      "type": "faq",
-      "tags": [
-        "ali",
-        "culture-science"
-      ],
-      "categories": [
-        "ali",
-        "culture-science"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.188Z",
-      "updated_at": "2026-01-08T06:32:22.188Z",
-      "summary": "No.\n\nALI was designed to be:\n\nintuitive\nsimple\nclear\nfast\nnon-invasive\nnon-corporate\nrelatable\neasy to complete\neasy to read\n\nThe sophistication lives in the interpretation, not the experience....",
-      "featured": false,
-      "featured_on": [],
-      "source": {
-        "kind": "faq",
-        "original_source": "site-content"
-      },
-      "body": "No.\n\nALI was designed to be:\n\nintuitive\nsimple\nclear\nfast\nnon-invasive\nnon-corporate\nrelatable\neasy to complete\neasy to read\n\nThe sophistication lives in the interpretation, not the experience."
-    },
-    {
-      "title": "How does ALI reveal leadership drift before leaders see it?",
-      "slug": "ali-how-ali-reveals-leadership-drift",
+      "title": "Why is ALI quarterly instead of annual?",
+      "slug": "ali-why-quarterly-instead-of-annual",
       "type": "faq",
       "tags": [
         "ali",
         "culture-science",
-        "leadership-drift",
-        "early-warning"
+        "leadership-measurement",
+        "cadence"
       ],
       "categories": [
         "ali",
         "culture-science",
-        "leadership-drift",
-        "early-warning"
+        "leadership-measurement",
+        "cadence"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.188Z",
-      "updated_at": "2026-01-08T06:32:22.188Z",
-      "summary": "Leadership drift is predictable.\n\nEvery drift cycle begins with:\n\n- rising silence  \n- expectation gaps  \n- minor inconsistencies  \n- early communication distortion  \n- emotional compression  \n- tens...",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
+      "summary": "Annual surveys are obsolete before the results are presented.\n\nSmall and mid-sized organizations shift quickly:\n\n- new hires change chemistry  \n- seasonality affects tone  \n- stress cycles impact con...",
       "featured": true,
       "featured_on": [
         "ali"
@@ -2836,7 +2668,73 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Leadership drift is predictable.\n\nEvery drift cycle begins with:\n\n- rising silence  \n- expectation gaps  \n- minor inconsistencies  \n- early communication distortion  \n- emotional compression  \n- tension avoidance  \n\nThese signals appear **months before** cultural breakdown or performance problems.\n\nALI’s questions, indicators, and pattern logic are built to detect these shifts early—when leaders can still correct them without major damage.\n\nDrift rarely announces itself.  \nALI is designed to see it anyway."
+      "body": "Annual surveys are obsolete before the results are presented.\n\nSmall and mid-sized organizations shift quickly:\n\n- new hires change chemistry  \n- seasonality affects tone  \n- stress cycles impact consistency  \n- growth shifts clarity and alignment  \n- leaders drift when overwhelmed  \n\nQuarterly measurement captures **movement**, not snapshots.\n\nLeadership doesn’t change annually.  \nIt changes weekly.\n\nALI detects quarterly patterns so leaders can respond while change is still manageable."
+    },
+    {
+      "title": "How does leadership behavior create cultural conditions?",
+      "slug": "behavior-creates-conditions",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
+      "summary": "Every repeated leadership behavior sends a signal.\n\nThose signals compound into conditions that either enable focus and trust—or create fear and instability....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Every repeated leadership behavior sends a signal.\n\nThose signals compound into conditions that either enable focus and trust—or create fear and instability."
+    },
+    {
+      "title": "Why does Culture Science treat burnout as a leadership signal?",
+      "slug": "burnout-as-signal",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
+      "summary": "Burnout reflects sustained pressure without recovery.\n\nIt indicates systemic imbalance, not individual weakness....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Burnout reflects sustained pressure without recovery.\n\nIt indicates systemic imbalance, not individual weakness."
+    },
+    {
+      "title": "Why is calm considered a leadership capability?",
+      "slug": "calm-as-capability",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.822Z",
+      "updated_at": "2026-01-08T07:23:22.822Z",
+      "summary": "Calm allows discernment, not delay.\n\nCulture Science treats emotional regulation as a prerequisite for sound leadership decisions....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Calm allows discernment, not delay.\n\nCulture Science treats emotional regulation as a prerequisite for sound leadership decisions."
     },
     {
       "title": "Why do leaders struggle to see drift without ALI?",
@@ -2851,8 +2749,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.188Z",
-      "updated_at": "2026-01-08T06:32:22.188Z",
+      "created_at": "2026-01-08T07:23:22.821Z",
+      "updated_at": "2026-01-08T07:23:22.821Z",
       "summary": "Leaders struggle to see drift because they sit inside the system they're trying to evaluate.\n\nFrom inside, it feels normal.\nFrom outside, the pattern is obvious.\n\nTeams adapt quietly.\nLeaders interpr...",
       "featured": false,
       "featured_on": [],
@@ -2875,8 +2773,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.188Z",
-      "updated_at": "2026-01-08T06:32:22.188Z",
+      "created_at": "2026-01-08T07:23:22.821Z",
+      "updated_at": "2026-01-08T07:23:22.821Z",
       "summary": "Nearly all leadership problems trace back to one or more weakened conditions:\n\nmisalignment → Clarity\nconflict → Communication or Safety\nturnover → Trust, Tone, or Safety\nslow execution → Clarity or...",
       "featured": false,
       "featured_on": [],
@@ -2899,8 +2797,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.188Z",
-      "updated_at": "2026-01-08T06:32:22.188Z",
+      "created_at": "2026-01-08T07:23:22.821Z",
+      "updated_at": "2026-01-08T07:23:22.821Z",
       "summary": "Yes.\n\nIn fact, drift appears faster in remote environments:\n\nsilence increases sooner\ntone becomes harder to read\nclarity becomes more critical\nalignment fractures more easily\ncommunication distortio...",
       "featured": false,
       "featured_on": [],
@@ -2923,8 +2821,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.188Z",
-      "updated_at": "2026-01-08T06:32:22.188Z",
+      "created_at": "2026-01-08T07:23:22.821Z",
+      "updated_at": "2026-01-08T07:23:22.821Z",
       "summary": "It depends on:\n\nleadership willingness\ndepth of drift\nconsistency of corrections\nenvironmental pressure\ncommunication alignment\ntone stability\n\nSmall corrections often create immediate stabilization...",
       "featured": false,
       "featured_on": [],
@@ -2947,8 +2845,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.188Z",
-      "updated_at": "2026-01-08T06:32:22.188Z",
+      "created_at": "2026-01-08T07:23:22.821Z",
+      "updated_at": "2026-01-08T07:23:22.821Z",
       "summary": "ALI reveals:\n\nwhether the team is ready for change\nwhether clarity supports new responsibility\nwhether trust allows transparency\nwhether tone can handle pressure\nwhether consistency enables execution...",
       "featured": false,
       "featured_on": [],
@@ -2959,8 +2857,8 @@
       "body": "ALI reveals:\n\nwhether the team is ready for change\nwhether clarity supports new responsibility\nwhether trust allows transparency\nwhether tone can handle pressure\nwhether consistency enables execution\n\nStrategy requires conditions.\nALI shows whether those conditions exist."
     },
     {
-      "title": "Is ALI anonymous? Why does that matter?",
-      "slug": "ali-anonymity",
+      "title": "Does ALI work if leaders think their culture is already strong?",
+      "slug": "ali-strong-culture",
       "type": "faq",
       "tags": [
         "ali",
@@ -2971,16 +2869,40 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.187Z",
-      "updated_at": "2026-01-08T06:32:22.187Z",
-      "summary": "Yes, ALI is fully anonymous.\n\nWithout anonymity:\n\nsafety becomes impossible\npeople filter their answers\ntone and trust cannot be measured honestly\ndrift in leadership behavior becomes invisible\n\nAnon...",
+      "created_at": "2026-01-08T07:23:22.821Z",
+      "updated_at": "2026-01-08T07:23:22.821Z",
+      "summary": "Yes.\n\nThe strongest leaders use ALI to:\n\nprevent blind spots\nsustain momentum during growth\navoid drift during change\ndeepen consistency\nmodel servant leadership\nimprove tone stability\nincrease clari...",
       "featured": false,
       "featured_on": [],
       "source": {
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes, ALI is fully anonymous.\n\nWithout anonymity:\n\nsafety becomes impossible\npeople filter their answers\ntone and trust cannot be measured honestly\ndrift in leadership behavior becomes invisible\n\nAnonymity is required to measure the real conditions inside the culture—not the story people feel pressured to tell."
+      "body": "Yes.\n\nThe strongest leaders use ALI to:\n\nprevent blind spots\nsustain momentum during growth\navoid drift during change\ndeepen consistency\nmodel servant leadership\nimprove tone stability\nincrease clarity as complexity rises\n\nStrong cultures drift fastest when leaders assume they are immune."
+    },
+    {
+      "title": "Can ALI prevent turnover?",
+      "slug": "ali-turnover",
+      "type": "faq",
+      "tags": [
+        "ali",
+        "culture-science"
+      ],
+      "categories": [
+        "ali",
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.821Z",
+      "updated_at": "2026-01-08T07:23:22.821Z",
+      "summary": "Yes—because turnover is the last stage of a long drift cycle.\n\nALI reveals:\n\ntrust erosion\nsafety decline\nemotional compression\nrelational distance\nquiet disengagement\n\nfar before someone updates the...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Yes—because turnover is the last stage of a long drift cycle.\n\nALI reveals:\n\ntrust erosion\nsafety decline\nemotional compression\nrelational distance\nquiet disengagement\n\nfar before someone updates their résumé."
     },
     {
       "title": "How does Archy increase the value of ALI?",
@@ -2995,8 +2917,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.187Z",
-      "updated_at": "2026-01-08T06:32:22.187Z",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
       "summary": "Archy turns measurement into mastery.\n\nArchy:\n\ninterprets ALI’s patterns\nconnects conditions\nidentifies causes\nhighlights risks\nsuggests leadership focus areas\nexplains drift without blame\nclarifies...",
       "featured": false,
       "featured_on": [],
@@ -3019,8 +2941,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.187Z",
-      "updated_at": "2026-01-08T06:32:22.187Z",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
       "summary": "ALI is not a tool for blame.\n\nBut it does show:\n\nwhich conditions are drifting\nwhich indicators are active\nwhich leadership behaviors typically cause these patterns\n\nPatterns always point to root cau...",
       "featured": false,
       "featured_on": [],
@@ -3043,8 +2965,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.187Z",
-      "updated_at": "2026-01-08T06:32:22.187Z",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
       "summary": "ALI provides:\n\na shared language\na shared framework\nshared visibility\nshared understanding of what’s working\nshared awareness of drift\n\nInstead of debating feelings, teams can discuss conditions.\n\nTh...",
       "featured": false,
       "featured_on": [],
@@ -3067,8 +2989,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.187Z",
-      "updated_at": "2026-01-08T06:32:22.187Z",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
       "summary": "Yes.\n\nChange amplifies:\n\ntone variability\ncommunication distortion\nclarity loss\ntrust fragility\nsafety shrinkage\n\nALI reveals how fast conditions are shifting so leaders can stabilize the environment...",
       "featured": false,
       "featured_on": [],
@@ -3091,8 +3013,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.187Z",
-      "updated_at": "2026-01-08T06:32:22.187Z",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
       "summary": "The dashboard reveals:\n\nwhich conditions are stable\nwhich are drifting\nhow fast they’re drifting\nwhich early warning indicators are active\nwhich leadership behaviors are contributing\nhow the environm...",
       "featured": false,
       "featured_on": [],
@@ -3119,8 +3041,8 @@
         "leadership-philosophy"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.187Z",
-      "updated_at": "2026-01-08T06:32:22.187Z",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
       "summary": "Yes.\n\nALI is built on the structural truths of servant leadership:\n\n- leaders create conditions  \n- conditions shape people  \n- people shape outcomes  \n- leaders are responsible for the wake they cre...",
       "featured": true,
       "featured_on": [
@@ -3133,6 +3055,60 @@
       "body": "Yes.\n\nALI is built on the structural truths of servant leadership:\n\n- leaders create conditions  \n- conditions shape people  \n- people shape outcomes  \n- leaders are responsible for the wake they create  \n\nALI is not a philosophical tool.  \nIt is a **measurement system for servant leadership in practice**.\n\nIt gives servant leaders visibility into whether their leadership is actually creating the conditions they intend."
     },
     {
+      "title": "Is ALI difficult for teams to understand or use?",
+      "slug": "ali-ease",
+      "type": "faq",
+      "tags": [
+        "ali",
+        "culture-science"
+      ],
+      "categories": [
+        "ali",
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
+      "summary": "No.\n\nALI was designed to be:\n\nintuitive\nsimple\nclear\nfast\nnon-invasive\nnon-corporate\nrelatable\neasy to complete\neasy to read\n\nThe sophistication lives in the interpretation, not the experience....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "No.\n\nALI was designed to be:\n\nintuitive\nsimple\nclear\nfast\nnon-invasive\nnon-corporate\nrelatable\neasy to complete\neasy to read\n\nThe sophistication lives in the interpretation, not the experience."
+    },
+    {
+      "title": "How does ALI reveal leadership drift before leaders see it?",
+      "slug": "ali-how-ali-reveals-leadership-drift",
+      "type": "faq",
+      "tags": [
+        "ali",
+        "culture-science",
+        "leadership-drift",
+        "early-warning"
+      ],
+      "categories": [
+        "ali",
+        "culture-science",
+        "leadership-drift",
+        "early-warning"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.820Z",
+      "updated_at": "2026-01-08T07:23:22.820Z",
+      "summary": "Leadership drift is predictable.\n\nEvery drift cycle begins with:\n\n- rising silence  \n- expectation gaps  \n- minor inconsistencies  \n- early communication distortion  \n- emotional compression  \n- tens...",
+      "featured": true,
+      "featured_on": [
+        "ali"
+      ],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Leadership drift is predictable.\n\nEvery drift cycle begins with:\n\n- rising silence  \n- expectation gaps  \n- minor inconsistencies  \n- early communication distortion  \n- emotional compression  \n- tension avoidance  \n\nThese signals appear **months before** cultural breakdown or performance problems.\n\nALI’s questions, indicators, and pattern logic are built to detect these shifts early—when leaders can still correct them without major damage.\n\nDrift rarely announces itself.  \nALI is designed to see it anyway."
+    },
+    {
       "title": "What does it mean for leaders to absorb pressure?",
       "slug": "absorbing-pressure",
       "type": "faq",
@@ -3143,8 +3119,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.186Z",
-      "updated_at": "2026-01-08T06:32:22.186Z",
+      "created_at": "2026-01-08T07:23:22.819Z",
+      "updated_at": "2026-01-08T07:23:22.819Z",
       "summary": "Absorbing pressure means leaders regulate their tone, reactions, and decisions under stress.\n\nIt is a learned discipline, not a personality trait....",
       "featured": false,
       "featured_on": [],
@@ -3165,8 +3141,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.186Z",
-      "updated_at": "2026-01-08T06:32:22.186Z",
+      "created_at": "2026-01-08T07:23:22.819Z",
+      "updated_at": "2026-01-08T07:23:22.819Z",
       "summary": "Accountability is clarity plus ownership.\n\nIt focuses on responsibility and correction—not blame....",
       "featured": false,
       "featured_on": [],
@@ -3189,8 +3165,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.186Z",
-      "updated_at": "2026-01-08T06:32:22.186Z",
+      "created_at": "2026-01-08T07:23:22.819Z",
+      "updated_at": "2026-01-08T07:23:22.819Z",
       "summary": "ALI gives leaders:\n\nvisibility into their own patterns\nvisibility into how behavior impacts conditions\nvisibility into how stability or drift affects execution\nvisibility into how tone influences the...",
       "featured": false,
       "featured_on": [],
@@ -3213,8 +3189,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.186Z",
-      "updated_at": "2026-01-08T06:32:22.186Z",
+      "created_at": "2026-01-08T07:23:22.819Z",
+      "updated_at": "2026-01-08T07:23:22.819Z",
       "summary": "ALI’s accuracy comes from three things:\n\nIt measures conditions, not emotions.\nIt tracks patterns over time, not isolated responses.\nIt uses early warning indicators to interpret drift, not sentiment...",
       "featured": false,
       "featured_on": [],
@@ -3237,8 +3213,8 @@
         "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.186Z",
-      "updated_at": "2026-01-08T06:32:22.186Z",
+      "created_at": "2026-01-08T07:23:22.819Z",
+      "updated_at": "2026-01-08T07:23:22.819Z",
       "summary": "Three things:\n\nInterpretation  \nArchy explains what the patterns mean.\n\nApplication  \nLeaders choose where to stabilize conditions.\n\nAdjustment  \nLeadership behavior shifts based on environmental nee...",
       "featured": false,
       "featured_on": [],
@@ -3249,32 +3225,28 @@
       "body": "Three things:\n\nInterpretation  \nArchy explains what the patterns mean.\n\nApplication  \nLeaders choose where to stabilize conditions.\n\nAdjustment  \nLeadership behavior shifts based on environmental needs.\n\nALI doesn’t prescribe programs.\nIt reveals truth.\nLeaders act on that truth with intention."
     },
     {
-      "title": "Rest as an Act of Trust",
-      "slug": "rest-as-an-act-of-trust",
-      "type": "devotional",
-      "tags": [],
+      "title": "Is ALI anonymous? Why does that matter?",
+      "slug": "ali-anonymity",
+      "type": "faq",
+      "tags": [
+        "ali",
+        "culture-science"
+      ],
       "categories": [
-        "servant-leadership",
-        "devotional"
+        "ali",
+        "culture-science"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.165Z",
-      "updated_at": "2026-01-08T06:32:22.165Z",
-      "publish_date": "2026-01-07",
-      "date": "2026-01-07",
-      "summary": "Rest is a leadership discipline rooted in trust.",
-      "email_summary": "Rest is a leadership discipline rooted in trust.",
-      "image": null,
-      "scripture_reference": "Mark 2:27",
+      "created_at": "2026-01-08T07:23:22.819Z",
+      "updated_at": "2026-01-08T07:23:22.819Z",
+      "summary": "Yes, ALI is fully anonymous.\n\nWithout anonymity:\n\nsafety becomes impossible\npeople filter their answers\ntone and trust cannot be measured honestly\ndrift in leadership behavior becomes invisible\n\nAnon...",
+      "featured": false,
+      "featured_on": [],
       "source": {
-        "kind": "devotional",
-        "original_source": null,
-        "original_url": null
+        "kind": "faq",
+        "original_source": "site-content"
       },
-      "takeaways": [],
-      "applications": [],
-      "related": [],
-      "body": "## Scripture\n\n**Mark 2:27**\n\n---\n\n## Reflection\n\nRest is often treated as a reward for productivity rather than a requirement for faithfulness. Scripture reframes rest as something given *for* people, not something that limits them. For leaders, this challenges the belief that constant availability and output are signs of commitment.\n\nServant leadership recognizes that exhaustion distorts judgment. When leaders ignore rest, they often lead reactively instead of wisely. Rest becomes an act of trust—trust that the work does not depend entirely on personal effort and that stepping back does not equal abandonment of responsibility.\n\nRenewal includes learning when to stop.\n\n---\n\n## Practical Application\n\n- Identify one place where overwork is masquerading as faithfulness.\n- Establish a boundary today that protects margin or recovery.\n- Practice rest as obedience, not indulgence.\n\n---\n\n## Takeaways\n\n- Rest is a leadership discipline, not a luxury.\n- Sustainable leadership requires trust beyond effort.\n\n---\n\n## Closing Thought\n\nToday I honor God and those I lead by choosing healthy rest."
+      "body": "Yes, ALI is fully anonymous.\n\nWithout anonymity:\n\nsafety becomes impossible\npeople filter their answers\ntone and trust cannot be measured honestly\ndrift in leadership behavior becomes invisible\n\nAnonymity is required to measure the real conditions inside the culture—not the story people feel pressured to tell."
     },
     {
       "title": "Redefining Authority",
@@ -3286,8 +3258,8 @@
         "devotional"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.165Z",
-      "updated_at": "2026-01-08T06:32:22.165Z",
+      "created_at": "2026-01-08T07:23:22.801Z",
+      "updated_at": "2026-01-08T07:23:22.801Z",
       "publish_date": "2026-01-08",
       "date": "2026-01-08",
       "summary": "Authority exists for service, not status.",
@@ -3305,34 +3277,6 @@
       "body": "## Scripture\n\n**Mark 10:42–45**\n\n---\n\n## Reflection\n\nAuthority is often misunderstood as the right to command. Scripture presents authority as responsibility directed toward service. Jesus does not remove authority from leaders—he redefines its purpose. Power is not meant to elevate the leader above others but to lift others up.\n\nServant leadership changes how authority is experienced. Instead of being feared, authority becomes protective. Instead of controlling, it becomes clarifying. Leaders who understand this stop asking how to maintain power and start asking how power can serve the good of those entrusted to them.\n\n---\n\n## Practical Application\n\n- Reflect on how people experience your authority today.\n- Identify one way to use influence to serve rather than control.\n- Clarify expectations in a way that supports others’ success.\n\n---\n\n## Takeaways\n\n- Authority exists for service, not status.\n- Healthy leadership makes power safe.\n\n---\n\n## Closing Thought\n\nToday I will use authority to serve, not to elevate myself."
     },
     {
-      "title": "Trust Before Clarity",
-      "slug": "trust-before-clarity",
-      "type": "devotional",
-      "tags": [],
-      "categories": [
-        "servant-leadership",
-        "devotional"
-      ],
-      "status": "published",
-      "created_at": "2026-01-08T06:32:22.164Z",
-      "updated_at": "2026-01-08T06:32:22.164Z",
-      "publish_date": "2026-01-05",
-      "date": "2026-01-05",
-      "summary": "Trust often precedes clarity.",
-      "email_summary": "Trust often precedes clarity.",
-      "image": null,
-      "scripture_reference": "Proverbs 3:5–6",
-      "source": {
-        "kind": "devotional",
-        "original_source": null,
-        "original_url": null
-      },
-      "takeaways": [],
-      "applications": [],
-      "related": [],
-      "body": "## Scripture\n\n**Proverbs 3:5–6**\n\n---\n\n## Reflection\n\nLeaders often want certainty before commitment. Scripture presents the opposite pattern: trust first, direction later. This does not excuse irresponsibility, but it does challenge the belief that leaders must see everything before they move. Dependence, not certainty, becomes the foundation for faithful leadership.\n\nServant leadership accepts that clarity often unfolds after obedience. Leaders who insist on total understanding before acting frequently stall progress or default to control. Trust reframes leadership from managing outcomes to stewarding decisions—doing the next right thing without demanding the full picture.\n\n---\n\n## Practical Application\n\n- Identify a decision you are delaying in search of certainty.\n- Clarify what you already know to be wise and responsible.\n- Take the next faithful step without demanding full resolution.\n\n---\n\n## Takeaways\n\n- Trust often precedes clarity.\n- Dependence reduces fear-driven leadership.\n\n---\n\n## Closing Thought\n\nToday I will trust God with what I cannot see and act faithfully on what I can."
-    },
-    {
       "title": "Strength Under Control",
       "slug": "strength-under-control",
       "type": "devotional",
@@ -3342,8 +3286,8 @@
         "devotional"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.164Z",
-      "updated_at": "2026-01-08T06:32:22.164Z",
+      "created_at": "2026-01-08T07:23:22.800Z",
+      "updated_at": "2026-01-08T07:23:22.800Z",
       "publish_date": "2026-01-06",
       "date": "2026-01-06",
       "summary": "Humility redirects strength toward service.",
@@ -3361,6 +3305,34 @@
       "body": "## Scripture\n\n**James 4:6**\n\n---\n\n## Reflection\n\nStrength without humility eventually becomes harmful. Scripture does not reject strength—it redirects it. Humility is not weakness; it is strength exercised with awareness and restraint. Leaders who resist humility often confuse authority with infallibility, creating distance between themselves and those they lead.\n\nServant leadership requires strength that serves rather than dominates. When leaders embrace humility, they gain credibility, invite feedback, and create space for growth. Strength under control protects people instead of intimidating them.\n\n---\n\n## Practical Application\n\n- Identify where you may be asserting strength instead of practicing humility.\n- Invite one piece of honest feedback from a trusted voice.\n- Use your authority today to protect or elevate someone else.\n\n---\n\n## Takeaways\n\n- Humility strengthens leadership credibility.\n- Controlled strength builds trust.\n\n---\n\n## Closing Thought\n\nToday I will lead with strength that serves, not strength that demands."
     },
     {
+      "title": "Rest as an Act of Trust",
+      "slug": "rest-as-an-act-of-trust",
+      "type": "devotional",
+      "tags": [],
+      "categories": [
+        "servant-leadership",
+        "devotional"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.800Z",
+      "updated_at": "2026-01-08T07:23:22.800Z",
+      "publish_date": "2026-01-07",
+      "date": "2026-01-07",
+      "summary": "Rest is a leadership discipline rooted in trust.",
+      "email_summary": "Rest is a leadership discipline rooted in trust.",
+      "image": null,
+      "scripture_reference": "Mark 2:27",
+      "source": {
+        "kind": "devotional",
+        "original_source": null,
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "body": "## Scripture\n\n**Mark 2:27**\n\n---\n\n## Reflection\n\nRest is often treated as a reward for productivity rather than a requirement for faithfulness. Scripture reframes rest as something given *for* people, not something that limits them. For leaders, this challenges the belief that constant availability and output are signs of commitment.\n\nServant leadership recognizes that exhaustion distorts judgment. When leaders ignore rest, they often lead reactively instead of wisely. Rest becomes an act of trust—trust that the work does not depend entirely on personal effort and that stepping back does not equal abandonment of responsibility.\n\nRenewal includes learning when to stop.\n\n---\n\n## Practical Application\n\n- Identify one place where overwork is masquerading as faithfulness.\n- Establish a boundary today that protects margin or recovery.\n- Practice rest as obedience, not indulgence.\n\n---\n\n## Takeaways\n\n- Rest is a leadership discipline, not a luxury.\n- Sustainable leadership requires trust beyond effort.\n\n---\n\n## Closing Thought\n\nToday I honor God and those I lead by choosing healthy rest."
+    },
+    {
       "title": "God Is Doing a New Thing",
       "slug": "god-is-doing-a-new-thing",
       "type": "devotional",
@@ -3370,8 +3342,8 @@
         "devotional"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.163Z",
-      "updated_at": "2026-01-08T06:32:22.163Z",
+      "created_at": "2026-01-08T07:23:22.799Z",
+      "updated_at": "2026-01-08T07:23:22.799Z",
       "publish_date": "2026-01-03",
       "date": "2026-01-03",
       "summary": "New beginnings require perception and trust.",
@@ -3398,8 +3370,8 @@
         "devotional"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.163Z",
-      "updated_at": "2026-01-08T06:32:22.163Z",
+      "created_at": "2026-01-08T07:23:22.799Z",
+      "updated_at": "2026-01-08T07:23:22.799Z",
       "publish_date": "2026-01-04",
       "date": "2026-01-04",
       "summary": "Leadership flows from identity, not performance.",
@@ -3417,6 +3389,34 @@
       "body": "## Scripture\n\n**Ephesians 2:10**\n\n---\n\n## Reflection\n\nA renewed season doesn’t begin with striving—it begins with remembering purpose. Scripture frames good work as something prepared in advance, not something leaders must invent or prove. That matters because leadership pressure often turns calling into performance. When that happens, leaders begin chasing validation instead of serving people.\n\nServant leadership flows from identity, not insecurity. Leaders who understand they were created for meaningful work can release the need to control outcomes or impress others. They stop asking, How do I look? and start asking, Who does this serve? Renewal, in this sense, is not about doing more—it’s about returning to why you lead at all.\n\n---\n\n## Practical Application\n\n- Identify one area where you’ve been performing instead of stewarding.\n- Ask what work you may be forcing rather than faithfully carrying.\n- Choose one action today that aligns with purpose rather than pressure.\n\n---\n\n## Takeaways\n\n- Purpose precedes performance.\n- Leadership rooted in identity produces healthier outcomes.\n\n---\n\n## Closing Thought\n\nToday I lead from calling, not from the need to prove myself."
     },
     {
+      "title": "Trust Before Clarity",
+      "slug": "trust-before-clarity",
+      "type": "devotional",
+      "tags": [],
+      "categories": [
+        "servant-leadership",
+        "devotional"
+      ],
+      "status": "published",
+      "created_at": "2026-01-08T07:23:22.799Z",
+      "updated_at": "2026-01-08T07:23:22.799Z",
+      "publish_date": "2026-01-05",
+      "date": "2026-01-05",
+      "summary": "Trust often precedes clarity.",
+      "email_summary": "Trust often precedes clarity.",
+      "image": null,
+      "scripture_reference": "Proverbs 3:5–6",
+      "source": {
+        "kind": "devotional",
+        "original_source": null,
+        "original_url": null
+      },
+      "takeaways": [],
+      "applications": [],
+      "related": [],
+      "body": "## Scripture\n\n**Proverbs 3:5–6**\n\n---\n\n## Reflection\n\nLeaders often want certainty before commitment. Scripture presents the opposite pattern: trust first, direction later. This does not excuse irresponsibility, but it does challenge the belief that leaders must see everything before they move. Dependence, not certainty, becomes the foundation for faithful leadership.\n\nServant leadership accepts that clarity often unfolds after obedience. Leaders who insist on total understanding before acting frequently stall progress or default to control. Trust reframes leadership from managing outcomes to stewarding decisions—doing the next right thing without demanding the full picture.\n\n---\n\n## Practical Application\n\n- Identify a decision you are delaying in search of certainty.\n- Clarify what you already know to be wise and responsible.\n- Take the next faithful step without demanding full resolution.\n\n---\n\n## Takeaways\n\n- Trust often precedes clarity.\n- Dependence reduces fear-driven leadership.\n\n---\n\n## Closing Thought\n\nToday I will trust God with what I cannot see and act faithfully on what I can."
+    },
+    {
       "title": "Made New",
       "slug": "made-new",
       "type": "devotional",
@@ -3426,8 +3426,8 @@
         "devotional"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.162Z",
-      "updated_at": "2026-01-08T06:32:22.162Z",
+      "created_at": "2026-01-08T07:23:22.798Z",
+      "updated_at": "2026-01-08T07:23:22.798Z",
       "publish_date": "2026-01-01",
       "date": "2026-01-01",
       "summary": "Renewal begins with perspective, not behavior.",
@@ -3454,8 +3454,8 @@
         "devotional"
       ],
       "status": "published",
-      "created_at": "2026-01-08T06:32:22.162Z",
-      "updated_at": "2026-01-08T06:32:22.162Z",
+      "created_at": "2026-01-08T07:23:22.798Z",
+      "updated_at": "2026-01-08T07:23:22.798Z",
       "publish_date": "2026-01-02",
       "date": "2026-01-02",
       "summary": "Renewal begins upstream, not at the surface.",
@@ -3478,8 +3478,8 @@
       "type": "article",
       "tags": [],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.158Z",
-      "updated_at": "2026-01-08T06:32:22.158Z",
+      "created_at": "2026-01-08T07:23:22.794Z",
+      "updated_at": "2026-01-08T07:23:22.794Z",
       "summary": "",
       "source": {
         "kind": "internal"
@@ -3501,8 +3501,8 @@
         "leadership-patterns"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.150Z",
-      "updated_at": "2026-01-08T06:32:22.150Z",
+      "created_at": "2026-01-08T07:23:22.786Z",
+      "updated_at": "2026-01-08T07:23:22.786Z",
       "summary": "How independent cultural distortion patterns—The Anti-Projects—interact with ALI, Archy, and the entire Culture Science corpus without ever becoming diagnostic labels.",
       "source": {
         "kind": "internal"
@@ -3521,8 +3521,8 @@
       "type": "article",
       "tags": [],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.149Z",
-      "updated_at": "2026-01-08T06:32:22.149Z",
+      "created_at": "2026-01-08T07:23:22.785Z",
+      "updated_at": "2026-01-08T07:23:22.785Z",
       "summary": "",
       "source": {
         "kind": "internal"
@@ -3543,8 +3543,8 @@
         "diagnostics"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.147Z",
-      "updated_at": "2026-01-08T06:32:22.147Z",
+      "created_at": "2026-01-08T07:23:22.783Z",
+      "updated_at": "2026-01-08T07:23:22.783Z",
       "summary": "How ALI’s 10-question quarterly rhythm creates the clearest, most stable picture of leadership reality in small and mid-sized businesses.",
       "source": {
         "kind": "internal"
@@ -3572,8 +3572,8 @@
         "leadership"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.136Z",
-      "updated_at": "2026-01-08T06:32:22.136Z",
+      "created_at": "2026-01-08T07:23:22.773Z",
+      "updated_at": "2026-01-08T07:23:22.773Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3596,8 +3596,8 @@
         "operations"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.136Z",
-      "updated_at": "2026-01-08T06:32:22.136Z",
+      "created_at": "2026-01-08T07:23:22.773Z",
+      "updated_at": "2026-01-08T07:23:22.773Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3618,8 +3618,8 @@
         "systems"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.135Z",
-      "updated_at": "2026-01-08T06:32:22.135Z",
+      "created_at": "2026-01-08T07:23:22.772Z",
+      "updated_at": "2026-01-08T07:23:22.772Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3641,8 +3641,8 @@
         "stewardship"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.135Z",
-      "updated_at": "2026-01-08T06:32:22.135Z",
+      "created_at": "2026-01-08T07:23:22.772Z",
+      "updated_at": "2026-01-08T07:23:22.772Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3664,8 +3664,8 @@
         "servant-leadership"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.135Z",
-      "updated_at": "2026-01-08T06:32:22.135Z",
+      "created_at": "2026-01-08T07:23:22.772Z",
+      "updated_at": "2026-01-08T07:23:22.772Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3685,8 +3685,8 @@
         "servant-leadership"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.134Z",
-      "updated_at": "2026-01-08T06:32:22.134Z",
+      "created_at": "2026-01-08T07:23:22.771Z",
+      "updated_at": "2026-01-08T07:23:22.771Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3706,8 +3706,8 @@
         "servant-leadership"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.134Z",
-      "updated_at": "2026-01-08T06:32:22.134Z",
+      "created_at": "2026-01-08T07:23:22.771Z",
+      "updated_at": "2026-01-08T07:23:22.771Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3726,8 +3726,8 @@
         "retention"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.133Z",
-      "updated_at": "2026-01-08T06:32:22.133Z",
+      "created_at": "2026-01-08T07:23:22.770Z",
+      "updated_at": "2026-01-08T07:23:22.770Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3746,8 +3746,8 @@
         "decision-rights"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.132Z",
-      "updated_at": "2026-01-08T06:32:22.132Z",
+      "created_at": "2026-01-08T07:23:22.769Z",
+      "updated_at": "2026-01-08T07:23:22.769Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3765,8 +3765,8 @@
         "ownership"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.132Z",
-      "updated_at": "2026-01-08T06:32:22.132Z",
+      "created_at": "2026-01-08T07:23:22.769Z",
+      "updated_at": "2026-01-08T07:23:22.769Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3785,8 +3785,8 @@
         "moral-authority"
       ],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.132Z",
-      "updated_at": "2026-01-08T06:32:22.132Z",
+      "created_at": "2026-01-08T07:23:22.769Z",
+      "updated_at": "2026-01-08T07:23:22.769Z",
       "summary": "",
       "source": "user-verbatim",
       "takeaways": [],
@@ -3800,8 +3800,8 @@
       "type": "article",
       "tags": [],
       "status": "draft",
-      "created_at": "2026-01-08T06:32:22.126Z",
-      "updated_at": "2026-01-08T06:32:22.126Z",
+      "created_at": "2026-01-08T07:23:22.762Z",
+      "updated_at": "2026-01-08T07:23:22.762Z",
       "summary": "",
       "source": {
         "kind": "internal"
