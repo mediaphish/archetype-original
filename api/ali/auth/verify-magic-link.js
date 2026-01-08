@@ -132,42 +132,26 @@ export default async function handler(req, res) {
     }
 
     if (superAdmin && !superAdminError) {
-      // Super Admin found - check if they also have a contact record for tenant access
+      // Super Admin found - always redirect to Super Admin overview first
+      // They can navigate to tenant dashboard if they have a contact record
       const { data: contact } = await supabaseAdmin
         .from('ali_contacts')
         .select('id, email, company_id, permission_level, full_name')
         .eq('email', emailLower)
         .maybeSingle();
 
-      if (contact) {
-        // Super Admin with contact record - redirect to tenant dashboard (they can navigate to Super Admin)
-        const { data: company } = await supabaseAdmin
-          .from('ali_companies')
-          .select('id, name, subscription_status')
-          .eq('id', contact.company_id)
-          .single();
-
-        redirectPath = `/ali/dashboard?email=${encodeURIComponent(emailLower)}`;
-        userInfo = {
-          id: contact.id,
-          email: contact.email,
-          company_id: contact.company_id,
-          company_name: company?.name || '',
-          permission_level: contact.permission_level,
-          subscription_status: company?.subscription_status || null,
-          isSuperAdmin: true,
-          superAdminId: superAdmin.user_id
-        };
-      } else {
-        // Super Admin only - redirect to Super Admin overview
-        redirectPath = `/ali/super-admin/overview?email=${encodeURIComponent(emailLower)}`;
-        userInfo = {
-          id: superAdmin.user_id,
-          email: superAdmin.email,
-          role: superAdmin.role,
-          isSuperAdmin: true
-        };
-      }
+      // Always redirect Super Admins to Super Admin overview
+      redirectPath = `/ali/super-admin/overview?email=${encodeURIComponent(emailLower)}`;
+      userInfo = {
+        id: superAdmin.user_id,
+        email: superAdmin.email,
+        role: superAdmin.role,
+        isSuperAdmin: true,
+        // Include contact info if they have it, so they can access tenant dashboard too
+        hasContactRecord: !!contact,
+        contactId: contact?.id || null,
+        companyId: contact?.company_id || null
+      };
     } else {
       // Check if regular contact
       const { data: contact, error: contactError } = await supabaseAdmin

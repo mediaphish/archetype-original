@@ -41,11 +41,15 @@ const SuperAdminNav = ({ activeTab }) => {
               href="/ali/dashboard"
               onClick={(e) => {
                 e.preventDefault();
-                handleNavigate('/ali/dashboard');
+                // Get email from URL params to pass to tenant dashboard
+                const urlParams = new URLSearchParams(window.location.search);
+                const email = urlParams.get('email');
+                const dashboardUrl = email ? `/ali/dashboard?email=${encodeURIComponent(email)}` : '/ali/dashboard';
+                handleNavigate(dashboardUrl);
               }}
               className="text-[14px] text-[#2563eb] font-semibold hover:text-[#1d4ed8] transition-colors"
             >
-              Exit to Dashboard
+              View as Tenant
             </a>
           </div>
         </div>
