@@ -107,22 +107,62 @@ export default async function handler(req, res) {
     let redirectPath = '/ali/dashboard';
     let userInfo = {};
 
-    // Check if Super Admin
-    const { data: superAdmin } = await supabaseAdmin
+    // Check if Super Admin (check both tables for compatibility)
+    let superAdmin = null;
+    let superAdminError = null;
+    
+    ({ data: superAdmin, error: superAdminError } = await supabaseAdmin
       .from('ali_super_admins')
       .select('user_id, email, role')
       .eq('email', emailLower)
-      .single();
+      .single());
 
-    if (superAdmin) {
-      // Redirect to Super Admin overview
-      redirectPath = `/ali/super-admin/overview?email=${encodeURIComponent(emailLower)}`;
-      userInfo = {
-        id: superAdmin.user_id,
-        email: superAdmin.email,
-        role: superAdmin.role,
-        isSuperAdmin: true
-      };
+    // If not found, try old table for backward compatibility
+    if (superAdminError || !superAdmin) {
+      ({ data: superAdmin, error: superAdminError } = await supabaseAdmin
+        .from('ali_super_admin_users')
+        .select('id as user_id, email, role')
+        .eq('email', emailLower)
+        .single());
+    }
+
+    if (superAdmin && !superAdminError) {
+      // Super Admin found - check if they also have a contact record for tenant access
+      const { data: contact } = await supabaseAdmin
+        .from('ali_contacts')
+        .select('id, email, company_id, permission_level, full_name')
+        .eq('email', emailLower)
+        .single();
+
+      if (contact) {
+        // Super Admin with contact record - redirect to tenant dashboard (they can navigate to Super Admin)
+        const { data: company } = await supabaseAdmin
+          .from('ali_companies')
+          .select('id, name, subscription_status')
+          .eq('id', contact.company_id)
+          .single();
+
+        redirectPath = `/ali/dashboard?email=${encodeURIComponent(emailLower)}`;
+        userInfo = {
+          id: contact.id,
+          email: contact.email,
+          company_id: contact.company_id,
+          company_name: company?.name || '',
+          permission_level: contact.permission_level,
+          subscription_status: company?.subscription_status || null,
+          isSuperAdmin: true,
+          superAdminId: superAdmin.user_id
+        };
+      } else {
+        // Super Admin only - redirect to Super Admin overview
+        redirectPath = `/ali/super-admin/overview?email=${encodeURIComponent(emailLower)}`;
+        userInfo = {
+          id: superAdmin.user_id,
+          email: superAdmin.email,
+          role: superAdmin.role,
+          isSuperAdmin: true
+        };
+      }
     } else {
       // Check if regular contact
       const { data: contact, error: contactError } = await supabaseAdmin
