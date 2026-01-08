@@ -137,7 +137,7 @@ export default async function handler(req, res) {
         .from('ali_contacts')
         .select('id, email, company_id, permission_level, full_name')
         .eq('email', emailLower)
-        .single();
+        .maybeSingle();
 
       if (contact) {
         // Super Admin with contact record - redirect to tenant dashboard (they can navigate to Super Admin)
@@ -174,7 +174,7 @@ export default async function handler(req, res) {
         .from('ali_contacts')
         .select('id, email, company_id, permission_level, full_name')
         .eq('email', emailLower)
-        .single();
+        .maybeSingle();
 
       if (contactError || !contact) {
         return res.status(400).send(`
