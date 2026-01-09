@@ -5,7 +5,6 @@ import ChatApp from '../../app/ChatApp';
 
 const ALIReports = () => {
   const [animatedValues, setAnimatedValues] = useState({});
-  const [latestDropdownOpen, setLatestDropdownOpen] = useState(false);
   const [openDefinition, setOpenDefinition] = useState(null);
   const [showArchyChat, setShowArchyChat] = useState(false);
   const [archyInitialMessage, setArchyInitialMessage] = useState(null);
@@ -643,13 +642,13 @@ const ALIReports = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-gray-900">Archetype Leadership Index</div>
+            <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-6">
               <button
                 onClick={() => handleNavigate('/ali/dashboard')}
                 className="text-gray-600 hover:text-gray-900"
               >
-                Overview
+                Dashboard
               </button>
               <button
                 onClick={() => handleNavigate('/ali/reports')}
@@ -669,34 +668,18 @@ const ALIReports = () => {
               >
                 Settings
               </button>
-              <div className="flex items-center gap-4">
-                <button className="text-gray-600 hover:text-gray-900 text-sm">Refer</button>
-                <button className="text-gray-600 hover:text-gray-900 text-sm">Share</button>
-                <button className="text-gray-600 hover:text-gray-900 text-sm">Publish</button>
-                <div className="relative">
-                  <button
-                    onClick={() => setLatestDropdownOpen(!latestDropdownOpen)}
-                    className="flex items-center gap-1 text-gray-600 hover:text-gray-900 text-sm"
-                  >
-                    Latest
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                  {latestDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                      <div className="py-1">
-                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">2027 Q1</button>
-                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">2026 Q2</button>
-                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">2026 Q1</button>
-                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">2025 Q4</button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <a href="/" className="text-gray-600 hover:text-gray-900 text-sm">Exit to Main Site</a>
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm">
-                  JD
-                </div>
-              </div>
+              <button
+                onClick={() => handleNavigate('/ali/billing')}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Billing
+              </button>
+              <button
+                onClick={() => handleNavigate('/ali/login')}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Log Out
+              </button>
             </nav>
           </div>
         </div>

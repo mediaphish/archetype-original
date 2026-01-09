@@ -558,6 +558,12 @@ const ALIDashboard = () => {
                 Dashboard
               </button>
               <button
+                onClick={() => handleNavigate('/ali/reports')}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Reports
+              </button>
+              <button
                 onClick={() => handleNavigate('/ali/deploy')}
                 className="text-gray-600 hover:text-gray-900"
               >
@@ -576,7 +582,7 @@ const ALIDashboard = () => {
                 Billing
               </button>
               <button
-                onClick={() => handleNavigate('/ali')}
+                onClick={() => handleNavigate('/ali/login')}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Log Out
