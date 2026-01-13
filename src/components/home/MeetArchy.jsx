@@ -18,21 +18,19 @@ export default function MeetArchy() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const handleInputFocus = () => {
-    setIsChatOpen(true);
-  };
-
-  const handleInputKeyPress = (e) => {
-    if (e.key === 'Enter' && inputValue.trim()) {
-      e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputValue.trim()) {
       setInitialMessage(inputValue.trim());
       setIsChatOpen(true);
       setInputValue('');
     }
   };
 
-  const handleInputClick = () => {
-    setIsChatOpen(true);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e);
+    }
   };
 
   return (
@@ -104,29 +102,36 @@ export default function MeetArchy() {
                 <div className="h-px bg-[#1A1A1A]/10 mb-6 sm:mb-8"></div>
                 
                 {/* Input field */}
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onFocus={handleInputFocus}
-                  onClick={handleInputClick}
-                  onKeyPress={handleInputKeyPress}
-                  placeholder="Ask Archy anything..."
-                  className="w-full bg-[#FAFAF9] border border-[#1A1A1A]/10 px-4 sm:px-6 py-3 sm:py-4 text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]/30 transition-colors text-sm sm:text-base"
-                />
+                <form onSubmit={handleSubmit} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask Archy anything..."
+                    className="flex-1 bg-[#FAFAF9] border border-[#1A1A1A]/10 px-4 sm:px-6 py-3 sm:py-4 text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]/30 transition-colors text-sm sm:text-base"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!inputValue.trim()}
+                    className="bg-[#1A1A1A] text-white px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base font-medium hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Send
+                  </button>
+                </form>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Chat Overlay - Opens when input is focused or Enter is pressed */}
+      {/* Chat Overlay - Opens when form is submitted */}
       {isChatOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-end p-4 md:p-8 pointer-events-none">
-          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/50 pointer-events-auto">
+          <div className="w-full md:w-[55%] h-[85vh] max-h-[800px] pointer-events-auto flex flex-col">
             <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0 bg-white">
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
                     <img
@@ -146,7 +151,7 @@ export default function MeetArchy() {
                     setInitialMessage('');
                     setInputValue('');
                   }}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
+                  className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors p-2 rounded-lg"
                   aria-label="Close chat"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
