@@ -3,7 +3,7 @@
  * Editorial Minimal Design - 2-column layout with chat preview
  */
 import React, { useState } from 'react';
-import ChatApp from '../app/ChatApp';
+import ChatApp from '../../app/ChatApp';
 
 export default function MeetArchy() {
   const [isChatOpen, setIsChatOpen] = useState(false);
