@@ -84,8 +84,15 @@ export default function MeetArchy() {
               <input
                 type="text"
                 placeholder="Ask Archy anything..."
-                className="w-full bg-[#FAFAF9] border border-[#1A1A1A]/10 px-4 sm:px-6 py-3 sm:py-4 text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]/30 transition-colors text-sm sm:text-base"
-                readOnly
+                className="w-full bg-[#FAFAF9] border border-[#1A1A1A]/10 px-4 sm:px-6 py-3 sm:py-4 text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]/30 transition-colors text-sm sm:text-base cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLinkClick(e, '/archy/ask');
+                }}
+                onFocus={(e) => {
+                  e.preventDefault();
+                  handleLinkClick(e, '/archy/ask');
+                }}
               />
             </div>
           </div>
