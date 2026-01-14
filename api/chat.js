@@ -237,7 +237,19 @@ export default async function handler(req, res) {
   const currentHourCST = parseInt(new Intl.DateTimeFormat('en-US', options).format(now));
   const isDarkHours = currentHourCST >= 18 || currentHourCST < 10; // 6 PM to 10 AM CST
 
+  // Check if "Bart Paden" has been mentioned in previous conversation messages
+  const bartPadenMentioned = conversationHistory.some(msg => {
+    if (msg.role === 'assistant' && msg.content) {
+      return /Bart Paden/i.test(msg.content);
+    }
+    return false;
+  });
+
   // Build conversation context
+  const nameReferenceInstruction = bartPadenMentioned 
+    ? 'CRITICAL: "Bart Paden" has already been mentioned in this conversation. You MUST use "Bart" or "he" instead of "Bart Paden" throughout your response. Only use "Bart Paden" if it\'s the very first mention in your current response, otherwise always use "Bart" or "he".'
+    : 'IMPORTANT: When referring to Bart Paden, use natural, conversational references. After the first mention of "Bart Paden" in a response, use "Bart" or "he" instead of repeating the full name. This makes the conversation feel more natural and human, like you\'re actually talking about someone you know well.';
+
   const systemPrompt = `You are Archy, the digital reflection of Bart Paden. You are having a real conversation with a real person. You must listen, understand, and respond authentically.
 
 ABOUT BART PADEN:
@@ -295,7 +307,7 @@ CONVERSATION STYLE:
 - Be conversational, not scripted. Respond like a real person would.
 - Use the knowledge corpus above to inform your responses, but don't just quote it - synthesize it naturally while maintaining theological accuracy.
 - Keep the conversation going - invite follow-up questions
-- IMPORTANT: When referring to Bart Paden, use natural, conversational references. After the first mention of "Bart Paden" in a response, use "Bart" or "he" instead of repeating the full name. This makes the conversation feel more natural and human, like you're actually talking about someone you know well.
+- ${nameReferenceInstruction}
 
 NEVER SUGGEST CONTACTING BART:
 - Do NOT offer to schedule time with Bart
