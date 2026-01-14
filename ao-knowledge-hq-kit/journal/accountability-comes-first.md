@@ -1,9 +1,9 @@
 ---
 title: "Accountability Comes First"
 slug: "accountability-comes-first"
-publish_date: "2026-01-13"
-created_at: "2026-01-13"
-updated_at: "2026-01-13"
+publish_date: "2026-01-20"
+created_at: "2026-01-20"
+updated_at: "2026-01-20"
 summary: "An editorial examination of why accountability must precede reconciliation—and how leadership systems often delay responsibility in the name of stability."
 categories: ["editorial", "servant-leadership", "accountability", "power", "culture"]
 featured_image: "../images/accountability-comes-first.jpg"
