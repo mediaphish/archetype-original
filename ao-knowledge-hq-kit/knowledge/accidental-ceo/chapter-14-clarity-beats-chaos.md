@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["clarity","communication","alignment","decision-rights"]
 ---
 
-Chapter 14: Clarity Beats Chaos
-
 Theology
 
 Communication as a Form of Service
@@ -55,7 +53,7 @@ By 50 people, you can’t assume everyone hears it firsthand. You’re now depen
 
 At 104 employees, I learned this lesson the hard way. By then, clarity wasn’t optional—it had to be built into every layer of the business. Communication was no longer just what you said in meetings—it was what you documented, what you repeated, and what you reinforced. People weren’t looking for more words; they were looking for alignment. And when they didn’t get it, the cracks showed.
 
-That’s exactly what happened. One leader was saying “growth at all costs,” while I was saying “stability first.” The two visions collided, and chaos took root. Employees didn’t know which message to follow. If metrics and updates didn’t match the speeches, trust eroded even further. That difference in both vision and approach is, in many ways, the single biggest factor in why I’m writing this book today instead of still leading in that business.
+That’s exactly what happened. As the company grew, the pace of expansion began outstripping the systems, margins, and rhythms that once kept everything aligned. What used to be clear started feeling scattered, not because of any one person’s decisions, but because the organization was maturing faster than its internal structure could support. Employees felt that strain. Messages that once landed cleanly now landed with weight. Expectations shifted faster than the business could absorb, and trust eroded as stability gave way to speed. That growing imbalance—in vision, pace, and operating reality—showed me what happens when clarity slips, and why I now treat it as a non-negotiable standard in every environment I lead.
 
 At 150 people, the principle only intensifies. Anthropologist Robin Dunbar suggested that humans can only hold about 150 stable relationships at once. Whether or not you buy the exact number, the principle is true—beyond a certain point, leaders can’t rely on personal connection alone. You need clear systems. Rituals. Rhythms that carry the message when you can’t.
 

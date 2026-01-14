@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "servant-leadership", "faith", "resilience"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   From collapse came clarity. This chapter tells how pain, risk, and redemption formed the foundation of both a family and a leadership philosophy rooted in service and faith.
 source:
@@ -78,4 +78,3 @@ He gave me a path.
 And all I had to do was walk it—even when I couldn’t see more than a few steps ahead.
 
 That’s how leadership started for me—not at the summit, but on the shaky path out of ruin.
----

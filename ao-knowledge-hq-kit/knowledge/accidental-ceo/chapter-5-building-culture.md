@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "servant-leadership", "culture", "rhythms", "transparency", "health"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   How culture moved from values-on-paper to lived practice: rhythms, ceremonies, MWI Cares, the 80/20 rule, health and wellness, and transparency that built trust strong enough to hold in harder seasons.
 source:
@@ -93,4 +93,3 @@ Looking back, I don’t see these decisions as extras. They were the culture. Da
 None of these practices were glamorous. They didn’t make headlines. But they became the strength of our team. They made it possible for people to thrive, not just produce. They created a foundation we would need when the harder seasons came.
 
 Culture isn’t built in crisis. It’s revealed there. And because we built it here, when the weight showed up later—in moments of grief, conflict, and strain—we weren’t crushed by it. The culture held.
----

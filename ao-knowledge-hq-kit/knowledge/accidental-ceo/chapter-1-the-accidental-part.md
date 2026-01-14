@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "leadership", "origin-story"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   The beginning of the journey — how curiosity, risk, and a willingness to care more than most sparked a leadership path that was never planned.
 source:
@@ -68,4 +68,3 @@ This book isn’t here to show off the polished version of that journey. It’s 
 So if you’ve ever felt like you’re figuring it out as you go, welcome. You’re not alone.
 
 This is the story of how I accidentally became a CEO—and how I grew, over time, into someone worth following.
----

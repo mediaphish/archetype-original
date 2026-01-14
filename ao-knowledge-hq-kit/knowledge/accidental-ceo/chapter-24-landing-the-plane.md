@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["stewardship","standards","systems","trust","feedback","capacity","summary","operations"]
 ---
 
-Chapter 24: Landing the Plane
-
 I didn’t write this to prove I made it through. I wrote it so the next leader in the room has something they can do.
 
 The thesis of this book is simple: leadership is stewardship.
@@ -123,35 +121,56 @@ This isn’t stepping back from responsibility. It’s stepping toward it with a
 
 What I’d Have You Carry
 
-Signal over spotlight. If it doesn’t serve the mission, it doesn’t get the mic.
+Signal over spotlight.
+If it doesn’t serve the mission, it doesn’t get the mic.
 
-Own the standard; free the operators. Write it, teach it, enforce it—then step back.
+Standards over personalities.
+Write them, teach them, enforce them — then let the work become the authority instead of the leader.
 
-Standards change cultures; names reveal them. Keep names out of it. Keep villains vapor.
+Not everyone in the room will choose the standard,
+but the standard must still stand.
+Don’t amplify the dysfunction — reinforce the rule.
+When the rule is clear, the noise eventually has nowhere to root itself.
 
-Culture heals faster when you stop feeding its villains. Withdraw oxygen from spectacle; pour oxygen on standards.
+You don’t protect culture by wrestling with every disruption.
+You protect culture by anchoring it so deeply that disruption can only skim the surface.
+Correct privately. Uphold publicly.
+Let the standard, not the storyteller, shape the room.
 
-Rhythm beats heroics. Sleep, move, pray, think—so you can show up again tomorrow.
-Capacity is an asset. Steward it.
+Presence over performance.
+Show up steady. Show up clear. Show up again tomorrow.
+Rhythm beats heroics every time.
 
-These aren’t slogans. They are rails. They keep you from drifting when the weather turns.
+Guard the capacity that keeps you whole.
+Sleep, move, pray, think. Protect the well so it never runs dry.
+Capacity isn’t comfort — it’s stewardship.
+
+These aren’t slogans.
+They’re rails.
+They keep you from drifting when the weather turns.
 
 The Close
 
-If you’ve read this far, you already know the truth: most rooms don’t need a larger-than-life founder. They need a leader who lasts.
+If you’re still here, then you already understand the truth:
+cultures aren’t built by larger-than-life founders.
+They’re built by leaders who stay steady long enough to make the work real.
 
-So here’s the ask—simple and exacting:
+So here’s the charge—simple, demanding, and entirely within your reach:
 
-Write the standard your team can keep without you.
+Write a standard your team can trust.
+Build lanes that let the work run without you.
+Tell the truth quickly and kindly.
+Guard your capacity so tomorrow has a leader.
 
-Build the lanes that make it possible.
+Do those things on repeat and you’ll create a room where people can breathe, work, and grow—
+not because of your personality,
+not because of your intensity,
+but because the structure you steward makes it safe to do good work.
 
-Tell the truth, even when it stings.
+That is the quiet power of stewardship.
+It removes the spotlight, strengthens the spine,
+and makes it possible for the mission to outlive the moment.
 
-Guard your capacity so you can keep doing those three tomorrow.
-
-Do that and you’ll build a place where people can breathe, work, and grow—without spectacle, without fear, without you at the center of every scene. Do that and you’ll have done the real work of leadership: stewardship with a spine.
-
-That’s how we lead.
-
-That’s how we last.
+This is the work.
+This is the way we lead.
+This is how we last.

@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "culture-drift", "stewardship", "burnout", "pocket-rules"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   2019–2021: wins on paper, fractures underneath. A shift toward revenue over care, the weight of culture drift, and the personal toll that followed.
 source:
@@ -22,17 +22,17 @@ The Drift Beneath the Wins
 
 Our town never really saw the pandemic the way the news made it sound. Life kept moving, but fear still ruled the day. Everywhere you turned, people were uncertain if their businesses or jobs would survive. Years of fear-based messaging trained people to look inward and protect their own. That crevasse we now see between employees and “the man” widened quickly during this season. The data backs it up: surveys from 2020–2021 showed steep declines in employee trust of leadership and a surge in expectations that companies should prove they cared about people, not just profits. The “self-first” mindset had momentum, and it created chaos inside and outside the business.
 
-I noticed the cracks most clearly in myself. I had always been deeply connected to the rhythms of our work — from client meetings to team culture to how we showed up in the community. I knew the beat of our company like a musician knows the tempo of a song. But during those years, my role in the forward-facing side of the business shrank almost overnight.
+I noticed the cracks most clearly in myself. I had always been deeply connected to the rhythms of our work — from client meetings to team culture to how we showed up in the community. I knew the beat of our company like a musician knows the tempo of a song. But during those years, the pressure and pace of the season pulled me away from the forward-facing side of the business almost overnight.
 
-One moment stands out. We had delivered strong work for a client for years. When their own team created a mess, I called it out directly and fairly. Their leader didn’t like that. He pulled us into a meeting, forcing us to drive forty minutes each way without an agenda, and blamed me for their mistakes before firing us in a very disrespectful way. I didn’t mind being fired — I knew the work had been excellent. What bothered me was the absence of care. I expected someone to stand shoulder to shoulder with me in that moment. Instead, silence. It took days before I heard a word. Something broke then. It wasn’t just about losing a client. It was the beginning of a larger shift — a tilt away from care toward revenue.
+One moment stands out. We had delivered strong work for a client for years. When their own team created a mess, I called it out directly and fairly. Their leader didn’t like that. He pulled us into a meeting, forcing us to drive forty minutes each way without an agenda, and blamed me for their mistakes before firing us in a very disrespectful way. I didn’t mind being fired — I knew the work had been excellent. What bothered me was the absence of care. I expected someone to stand shoulder to shoulder with me in that moment. Instead, silence. It took days before I heard a word. Something broke then. It wasn’t just about losing a client. It was the moment I recognized, more clearly than ever, that when relational fallout hit, I was still the one expected to absorb it — and the silence around me simply confirmed what had already been true for years.
 
 That fracture left me less visible on the outside, but it pushed me deeper into what I loved most: serving my people. I poured myself into the team. My energy went toward creating stability in a season when fear and division were everywhere. In a way, that shift planted the seed for this book. After the sale, I would go from leading everything to leading very little. But here, I was still in the fight — still protecting what mattered.
 
 Cracks in the Foundation
 
-Not every loss was abstract. Some cut deep. I remember a meeting where we debated new maternity and paternity leave policies. The conversation turned toward replacing the words “mother” and “father” with “birthing person.” I couldn’t go there. For me, that debate wasn’t about policy; it was about a growing distance between the values I held and the values being prioritized.
+Not every loss was abstract. Some cut deep. I remember a meeting where we debated new maternity and paternity leave policies. The conversation turned toward replacing the words ‘mother’ and ‘father’ with ‘birthing person.’ I couldn’t go there. For me, that moment highlighted a tension I felt growing inside myself — a sense that what mattered most to me in leadership no longer aligned with the direction some conversations were beginning to take.
 
-Another wound came when my marketing team was reassigned. I had handpicked them — sharp, teachable, passionate young women who gave everything and more. Watching them thrive was one of my greatest joys. Losing them to someone with talent but little ability to lead was a gut punch. They weren’t just colleagues; they were an extension of me.
+Another wound came when my marketing team was reassigned. I had handpicked them — sharp, teachable, passionate young women who gave everything and more. Watching them thrive was one of my greatest joys. When restructuring moved them under different leadership, it hit harder than I expected. They weren’t just colleagues; they were an extension of me.
 
 Looking back, the cracks weren’t dramatic explosions. They were quiet shifts — in language, in decisions, in how people were treated. But leadership is sensitive to the subtle. A song only needs to lose tempo by a beat or two before the whole band feels off.
 
@@ -40,19 +40,19 @@ Pocket rule: Revenue without relationship is erosion.
 
 Lineage callout: This was Sinek’s truth in motion — profit is a result, not a purpose.
 
-The cracks that started beneath the surface didn’t stay hidden for long. They grew into patterns I couldn’t ignore. What had once been a culture built on care and trust began leaning toward numbers, transactions, and efficiency. On paper it looked like maturity — bigger projects, more revenue, new policies. But underneath, it felt hollow.
+The cracks that started beneath the surface didn’t stay hidden for long. They grew into patterns I couldn’t ignore. What had once been a culture built on care and trust began to feel the pull of increasing demands — more projects, more expectations, more urgency. On paper it looked like maturity — bigger projects, more revenue, new policies. But underneath, it felt hollow.
 
-Culture rarely changes with one big decision. It shifts in the small things: a word chosen in a meeting, a policy written without heart, a client prioritized because of their budget instead of their fit. One by one, those decisions stacked until the tone of the business was different.
+Culture rarely changes with one big decision. It shifts in the small things: a word chosen in a meeting, a policy written without heart, a client taken on because the pace of the moment made it easier to say yes than to slow down and evaluate the fit. One by one, those decisions stacked until the tone of the business was different.
 
-I had always believed that growth and care could coexist. In fact, that was the foundation of servant leadership. But I started to see that the two don’t live in balance by accident. If you don’t fight for care, growth will smother it. Fear accelerates the drift. With the world shouting about survival, our culture bent toward revenue as if it were the only proof of life.
+I had always believed that growth and care could coexist. In fact, that was the foundation of servant leadership. But I started to see that the two don’t live in balance by accident. If you don’t fight for care, growth will smother it. Fear accelerates the drift. With the world shouting about survival, the pressures around us pulled the culture toward revenue as if it were the only proof of life.
 
-I felt the weight of it most in the way people carried themselves. Conversations with staff that once felt open and energized now felt guarded. Huddles and rhythms that used to breathe life into the team started to feel like obligations. People still worked hard, but you could sense the atmosphere tightening. They were waiting to be measured, not cared for.
+I felt the weight of it most in the way people carried themselves. Conversations with staff that once felt open and energized now felt guarded. Huddles and rhythms that used to breathe life into the team started to feel like obligations. People still worked hard, but you could sense the atmosphere tightening. It was as if the pace of the season made everyone brace for evaluation rather than connection.
 
-This is what Robert Greenleaf meant when he wrote about stewardship. Leaders aren’t just responsible for producing results; they’re responsible for how those results are achieved and what happens to people in the process. A company can win contracts and still lose its soul.
+This is what Robert Greenleaf meant when he wrote about stewardship, a concept he pioneered as the father of modern servant leadership. Leaders aren’t just responsible for producing results; they’re responsible for how those results are achieved and what happens to people in the process. A company can win contracts and still lose its soul.
 
 Pocket rule: Culture doesn’t collapse overnight — it drifts degree by degree until no one recognizes the room they’re in.
 
-The business was still functioning. We weren’t falling apart, but the pace was relentless. Decisions grew colder, the drive for revenue more obvious, and people were asked to give more than they had. They delivered, but you could see the wear setting in.
+The business was still functioning. We weren’t falling apart, but the pace was relentless. As the workload intensified, the choices being made naturally leaned toward speed and efficiency, and people were asked to give more than they had. They delivered, but you could see the wear setting in.
 
 So I turned inward—back to what I could still protect.
 
@@ -99,4 +99,3 @@ Pocket rule: Leadership isn’t free. If you don’t set the terms of the cost, 
 That emptiness — that imbalance — would follow me into Midwestern Built (MWB). The same exhaustion that hollowed me out at MWI was waiting on the other side, only this time it wasn’t a warning. It was a reality I couldn’t escape. My life was closing in on me, and it would continue to do so for way too long.
 
 I helped found Midwestern Built as an investor in a friend’s dream back in 2016. My part was capital, counsel, and guardrails—just as far as he’d let me. I wasn’t the operator; I was the quiet partner financing and advising from the sidelines. For years it stayed in the background while I ran Midwestern Interactive, but that early partnership would later test everything I believed about stewardship and trust.
----

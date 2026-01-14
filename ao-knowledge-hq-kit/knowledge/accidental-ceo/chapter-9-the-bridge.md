@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "transition", "stewardship", "culture-repair", "handoff"]
 status: final
 created_at: 2025-10-28
-updated_at: 2025-10-28
+updated_at: 2026-01-14
 summary: >
   Silence by design, taking sole ownership, resetting the center, reestablishing floor standards, pricing after service, and completing a dignified handoff in March 2025.
 source:
@@ -16,11 +16,9 @@ applications: []
 related: []
 ---
 
-Chapter 9 — The Bridge
-
 Silence on Purpose
 
-From late July until late October of 2023, I couldn’t even step into the gym I owned seventy-five percent of. I wasn’t welcome, but I was still locked in on the goal. Attorneys carried the communication. My job was to stay disciplined and let the process play out.
+From late July until late October of 2023, I couldn’t step into the gym I owned seventy-five percent of. The process required distance, and I stayed locked in on the goal. Attorneys carried the communication. My job was to stay disciplined and let the process play out.
 
 So I went quiet on purpose. I dug deeper into the numbers. I listened when people came with questions and concerns, but I only answered what I could confirm. Anything else, I left alone. Silence wasn’t withdrawal—it was stewardship. It was giving the process time to do its work without adding more sparks.
 
@@ -76,7 +74,7 @@ The Handoff
 
 In late October 2024, Carie and I sat with our financial advisor. The cash burn was crushing our future. We made a simple, hard call: eight more months. If the business didn’t turn by then, we would sell or shut it down.
 
-In early November 2024, a message landed from Mica, who owned another gym in town: would we consider selling? I wasn’t ready, but it read like an answer to a quiet prayer. I brought it to the board. They agreed—unanimously. We started negotiations. They ran through March 2025. It wasn’t easy. There were influences that made it more complicated than it needed to be. We stayed with the process and finished.
+In early November 2024, a message landed from Mica, who owned another gym in town: would we consider selling? I wasn’t ready, but it read like an answer to a quiet prayer. I brought it to the board. They agreed—unanimously. We started negotiations. They ran through March 2025. It wasn’t easy. There were normal complexities that made it take longer than expected. We stayed with the process and finished.
 
 By early 2025 it was clear I wasn’t rebuilding to stay. Months earlier, Carie and I had already decided to give the gym eight more months to turn around before we’d have to sell or shut down. I was building a bridge. My job wasn’t to prove I could hold the reins forever; it was to deliver something survivable to the next steward.
 
@@ -85,4 +83,3 @@ One Thursday in January, the gym was quiet—the kind of quiet that lets truth s
 The sale finalized in March 2025. No confetti. No speech. I signed, shook hands, and walked to the door. I was tired. I was at peace—the kind of peace you get when you keep promises other people can’t verify but you. We protected the center. We reset standards. We told the truth early. We used process over performance. We priced last, and only after service led. We refused to feed the drama. We finished with dignity and ended with clarity.
 
 Bridges don’t get spotlights. They get people safely across. That’s enough.
----

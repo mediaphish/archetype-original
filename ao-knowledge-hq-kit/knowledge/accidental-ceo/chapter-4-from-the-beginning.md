@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "servant-leadership", "culture", "accountability", "protection", "community"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   The early years that defined culture and servant leadership—through disaster response, protection, and accountability. These stories mark where leadership shifted from theory to lived conviction.
 source:
@@ -84,4 +84,3 @@ Years later, Mike approached me and apologized. It had taken time, but he eventu
 The culture I was shaping wasn’t defined by one big moment. It was formed by dozens of decisions like these. Protecting when it was right. Exposing when it was needed. Stepping into the gaps, whether for a community shattered by disaster or an employee who needed the weight of accountability.
 
 That is the essence of servant leadership. Not theory. Not slogans. Just a steady posture of service, justice, truth, and care — lived out in real moments with real people.
----

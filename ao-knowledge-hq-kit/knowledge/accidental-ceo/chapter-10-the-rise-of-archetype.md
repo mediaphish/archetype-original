@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "archetype-fitness", "rebrand", "servant-leadership", "culture"]
 status: final
 created_at: 2025-10-28
-updated_at: 2025-10-28
+updated_at: 2026-01-14
 summary: >
   The rebrand to Archetype Fitness Company, the standards behind it, and the quiet rebuild of both the gym and the leader.
 source:
@@ -15,8 +15,6 @@ takeaways: []
 applications: []
 related: []
 ---
-
-Chapter 10 — The Rise of Archetype
 
 I didn’t get relief; I got room to breathe. Not in Joplin—in Carthage. The sale closed one story there; the work changed shape here. No victory lap. No speech. Just a little space back.
 
@@ -112,4 +110,3 @@ Peace is coming back the way exhaustion arrived—quietly. You notice it when an
 I don’t confuse peace with arrival. It’s a green light: keep going. Fewer public battles, more private repair. Fewer declarations, more decisions. Less “watch me,” more “let me watch you do it.”
 
 That’s the part of my story I can tell and I’m sticking to it.
----

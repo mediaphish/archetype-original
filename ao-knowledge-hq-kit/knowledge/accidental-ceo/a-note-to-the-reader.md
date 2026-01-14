@@ -5,7 +5,7 @@ type: preface
 tags: ["accidental-ceo", "introduction", "leadership-journey"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   A candid introduction to the heart of Accidental CEO — not a manual, but a story-driven reflection on stumbling into leadership and learning through imperfection.
 source:
@@ -27,4 +27,3 @@ Why? Because I wish someone had told me these stories when I was a few steps beh
 If you’re looking for bullet-point perfection, you might be in the wrong place. But if you don’t mind a little self-deprecating humor and some painfully honest moments, I think you’ll find something valuable here. Whether you’re running a company, leading a team, or just trying to figure out what’s next—this book is about the messy, meaningful process of becoming someone worth following.
 
 Let’s start at the beginning… or, at least, my beginning.
----

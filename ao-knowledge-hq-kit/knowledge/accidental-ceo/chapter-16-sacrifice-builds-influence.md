@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["sacrifice","influence","trust","moral-authority"]
 ---
 
-Chapter 16: Sacrifice Builds Influence
-
 Theology
 
 Authority Is Earned by What You Give Up
@@ -65,7 +63,7 @@ The other failure is when leaders refuse to sacrifice at all. They guard their c
 
 True sacrifice is different. It’s not transactional. It has no IOUs.
 
-Robert K. Greenleaf’s original servant-leadership essays observed that genuine service—given with no expectation of return—creates what he called “moral authority.” Modern data echo it: Deloitte’s Human Capital Trends 2023 found organizations where leaders model altruistic decision-making are 2.6× more likely to earn “high trust" scores from employees. Influence born from cost outlasts influence bought with rewards.
+Robert K. Greenleaf’s original servant-leadership essays observed that genuine service—given with no expectation of return—creates what he called “moral authority.” Modern data echo it: Deloitte’s Human Capital Trends 2023 found organizations where leaders model altruistic decision-making are 2.6× more likely to earn “high trust” scores from employees. Influence born from cost outlasts influence bought with rewards.
 
 Pocket rule: No return expected—just results earned.
 

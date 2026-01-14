@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "transition", "grief", "stewardship", "pocket-rules"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   The sale of MWI promised margin and rest but became a crucible—silence, a hollow COO role, aftershocks, and the full weight of MWB—testing stewardship, dignity, and resolve.
 source:
@@ -26,7 +26,7 @@ I bought my mom a van. It was a thank-you for the life she and my father had giv
 
 But on the inside, I was crushed.
 
-Some of the people I had spent years in the trenches with — people who had shared boardrooms, deadlines, and vision-casting sessions with me — acted as if I was no longer welcome. Whether they hated me or not wasn’t the point. The message was clear: I wasn’t wanted anymore.
+Some of the people I had spent years in the trenches with — people who had shared boardrooms, deadlines, and vision-casting sessions with me — began to treat my presence as optional. Whether they hated me or not wasn’t the point. What became clear was that as my role shifted from partner to COO, the space I once occupied in the room shifted too.
 
 That dissonance nearly tore me in two. Outwardly, I was thriving. Inwardly, I was grieving.
 
@@ -42,7 +42,7 @@ July 9, 2022, it was gone.
 
 Nine days of breathing room turned into “all in” on the next mess. Screw being healthy. Screw resting. The bridge I thought might be space to recover became nothing more than a handoff into another battle.
 
-That season taught me something about servant leadership I hadn’t seen as clearly before: kindness is often misread as weakness. I had chosen the noble way out at MWI. I hadn’t fought for scraps of authority. I had let go with dignity. But in the eyes of others, that restraint looked like permission. It was time to take advantage of me.
+That season taught me something about servant leadership I hadn’t seen as clearly before: in power-driven environments, kindness is often misunderstood — not because it’s weak, but because it asks more of a leader than dominance ever will. I had chosen the noble way out at MWI. I hadn’t fought for scraps of authority. I had let go with dignity. But in the eyes of others, that restraint looked like permission. It was easy to treat it like permission.
 
 Pocket rule: Servant leadership is not submission — it is sacrifice with strength intact.
 
@@ -50,7 +50,7 @@ I wasn’t weak. I had always led by giving people the benefit of the doubt. Tha
 
 Pocket rule: Sometimes the kindest thing a leader can do is draw a hard line.
 
-The silence after MWI wasn’t rest. It was the moment before another storm.
+The stillness after MWI wasn’t rest. It was the moment before another storm.
 
 The Hollow Role
 
@@ -78,7 +78,7 @@ I was sitting on a plane bound for Arizona, ready for a CrossFit competition, wh
 
 There was nowhere to go, nowhere to hide. My head hit my hands. The tears came. Right there in public, on that plane, I felt helpless.
 
-The sting ran deeper because the shift hadn’t been sudden. A year earlier, I had already seen that team handed off in a way that troubled me. They were placed under someone who, though skilled in design and fluent in marketing theory, lacked the experience to truly lead people. What mattered most in that moment wasn’t protecting culture, but aligning with profit and direction. That choice spoke volumes about what kind of leadership was being elevated — and what kind was being left behind.
+The sting ran deeper because the shift hadn’t been sudden. A year earlier, I had seen that team reassigned in a way that troubled me. They were placed under someone whose strengths weren’t centered on leading people, and the transition signaled a shift in priorities I couldn’t ignore. In that moment, culture felt secondary to direction, and the change revealed how differently leadership value was being interpreted across the organization.
 
 So when the call came, it wasn’t just the shock of their departure. It was the final blow in a story I had already watched unfold in slow motion.
 
@@ -93,6 +93,8 @@ By December, the full weight of the gym had landed squarely on my shoulders. The
 And the weight wasn’t one-dimensional.
 
 On one side was survival. The mortgage had to be paid. Payroll was non-negotiable. Equipment, utilities, insurance — the bills didn’t care about culture, they demanded cash. From July of 2022 until March of 2025, we were losing between eight and ten thousand dollars every single month. I know that number because I wrote the check. Thirty-four months in a row. Each one carving away a little more of my margin, my reserves, my strength.
+
+By this point, I was the sole leader of the gym. Every decision, every conflict, and every pressure in this season belonged to me alone.
 
 It wasn’t just the math. It was the dysfunction piled on top of it — decisions that made no sense, energy wasted in conflict instead of building, constant fires that drained more than they produced. The weight wasn’t only financial, it was cultural.
 
@@ -109,4 +111,3 @@ Pocket rule: Sometimes the heaviest weight a leader carries isn’t the numbers,
 The bridge wasn’t a pause. It wasn’t a chance to rest. It was a crucible — a place where everything I had left was tested.
 
 Lineage callout: This was Greenleaf’s “stewardship” under fire — the test of whether I would protect both the mission and the people, even when it cost me everything.
----

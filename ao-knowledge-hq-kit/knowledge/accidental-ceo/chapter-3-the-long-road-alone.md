@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "grind", "faith", "discipline", "humility"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   The years between 2004 and 2010 defined the grind that forged discipline, humility, and faith. Through exhaustion, precision, and dependence on God’s provision, the foundation for servant leadership began to take shape.
 source:
@@ -48,4 +48,3 @@ Those years also taught me a truth I’ve never let go of: I’m not special bec
 I could never look back at those years and pretend I had done it all myself. God was carrying me and my family the whole way. That reality put me in a posture of service. Leadership was never about power, ego, or even financial gain. It was about building something greater than myself — not just a company, but a culture.
 
 To this day, when I see someone achieve a dream, win a championship, or even notch a small victory in life, I celebrate it. Even if they beat me, good for them. That posture — choosing to celebrate others instead of centering myself — became the reason I existed as a leader. And I believe it’s also why I found so much success in what some would call a short timeline.
----

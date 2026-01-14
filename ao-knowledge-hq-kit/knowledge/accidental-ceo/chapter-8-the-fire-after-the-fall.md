@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "midwestern-built", "stewardship", "sacrifice", "pocket-rules"]
 status: final
 created_at: 2025-10-27
-updated_at: 2025-10-27
+updated_at: 2026-01-14
 summary: >
   After MWI’s sale, the fight shifted to saving Midwestern Built. Financial losses, cultural collapse, and personal decline forced a deeper test of stewardship, health, and strength.
 source:
@@ -50,15 +50,15 @@ Cultural Defense
 
 From the beginning, my vision for Midwestern Built was never just about fitness. It was about people. It was about creating a place where anyone — any age, gender, fitness level, or background — could belong and succeed.
 
-That vision was buried under the rubble of dysfunction. Conversations about the current state of the business were one-sided. It’s easy to lose focus on the mission in times of testing; treat members as numbers, coaches as cogs, and culture as expendable. The conflict is without these things, there is no business to keep alive. Unfortunately, that’s where we were living.
+But in that season, the vision that had driven us from the start felt buried under the sheer weight of strain. Conversations about the state of the business were strained and scattered, often shaped more by the pressure of the moment than by the clarity we all needed. In times of pressure, any organization can drift toward metrics, urgency, and survival mode—treating members as numbers, coaches as operators, and culture as something that can be rebuilt later. The danger is that even well-intentioned teams can slip into that pattern without noticing. For a stretch of time, that was the current we were trying to fight our way through.
 
 I couldn’t let that happen.
 
-So I showed up every day, not just to pay the bills, but to protect the soul of the gym. I stood between dysfunction and the people it threatened to wound. I shielded coaches from decisions that would have crushed morale. I fought to preserve an environment where members didn’t just come to work out, but to heal, grow, and belong.
+So I showed up every day, not just to pay the bills, but to protect the soul of the gym. The strain of the season had created currents that pulled people in different directions, and my work was to steady the middle. I focused on supporting coaches when the pressure around us made the room feel heavy. I fought to preserve an environment where members didn’t just come to work out, but to heal, grow, and belong.
 
 Basic things mattered again: classes starting on time; warm-ups that prepared people, not just filled minutes; whiteboard briefs that sounded like an invitation, not a test. It wasn’t glamorous leadership. There were no press releases, no applause. It was daily defense. It was absorbing blows so others didn’t have to.
 
-I also changed the way we communicated. Transparency hadn’t been the norm. People learned in the dark and repeated what they didn’t know. I flipped it. In those first months I wrote often — emails to members, notes on social channels — short and direct: what was changing, why it was changing, and what people could count on. I wasn’t trying to win an argument. I was building trust. Questions went up at first, as they should. But the volume of rumor went down. Clarity does that.
+I also changed the way we communicated. By the time I stepped into full responsibility, communication had become fragmented and people were filling gaps with whatever information they could find. I corrected that. In those first months I wrote often — emails to members, notes on social channels — short and direct: what was changing, why it was changing, and what people could count on. I wasn’t trying to win an argument. I was building trust. Questions went up at first, as they should. But the volume of rumor went down. Clarity does that.
 
 And I kept the center in view — the middle of the room where everyone lives. Progress was small and ordinary: people returning after setbacks, relearning movements, and showing up when life was heavy. No highlight reel—just steady work. That was the point.
 
@@ -84,7 +84,7 @@ Fighting Back
 
 I’ve always led by giving people the benefit of the doubt. That reflex — assume the best, extend grace, trust first — didn’t change. But inside the gym, that grace was misread as weakness.
 
-In a meeting with several witnesses, I heard the statement, ‘You got yours. Now I’m getting mine.’ In that moment, I was no longer a friend or partner, I was reduced to a bank. I was already covering losses, already financing survival, and now I was expected to fund his climb to the next opportunity as well. That’s the opposite of servant leadership. A servant leader doesn’t take from the mission when it’s bleeding; they protect the whole so the people inside it can survive. When the rest of the team gets theirs, ours follows.
+In a meeting with several witnesses, I heard the statement, ‘You got yours. Now I’m getting mine.’ In that moment, I wasn’t seen as a colleague or teammate — I was reduced to a bank. I was already covering losses, already financing survival, and now I was expected to fund his climb to the next opportunity as well. That’s the opposite of servant leadership. A servant leader doesn’t take from the mission when it’s bleeding; they protect the whole so the people inside it can survive. When the rest of the team gets theirs, ours follows.
 
 Staying servant-led didn’t mean passivity. It meant stewardship with a spine: no guaranteed payouts while the business bled; no terms that put an individual ahead of the mission; no decisions that rewarded ego at the expense of the room. I gathered proofs, moved through process, and acted — not for ego or control, but for the people the gym existed to serve.
 
@@ -103,4 +103,3 @@ I didn’t need to be the closer. I needed to be faithful. That meant finishing 
 The months that followed were heavy but clear. The bridge had to be built before it could be crossed.
 
 The next chapter tells how we crossed that bridge.
----

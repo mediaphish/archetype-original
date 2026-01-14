@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["feedback","ecosystem","upward-feedback","psychological-safety","servant-leadership","systems"]
 ---
 
-Chapter 20: Feedback Ecosystem — Truth in Every Direction
-
 Theology
 
 Truth Is a System, Not a Speech
@@ -65,7 +63,7 @@ The Challenger’s Seat — Dissent as Duty
 
 Most leaders say they want honesty, but what they really mean is feedback that doesn’t sting. The test comes when someone pushes back in a way that feels like defiance.
 
-I’ll never forget one situation where an employee looked like he was flat-out refusing to do his job. From the outside, it seemed like negligence, even insubordination. I was told to fire him. Instead, I sat down to hear his side. What surfaced wasn’t laziness — it was a client mistreating him and ignoring their own commitments. His “no” wasn’t rebellion; it was courage to draw a line where we hadn’t yet. Had I ended his journey without listening, we would have lost a good man and failed to see the deeper truth.
+I’ll never forget one situation where an employee looked like he was flat-out refusing to do his job. From the outside, it seemed like negligence, even insubordination. I was told to fire him. Instead, I sat down to hear his side. What surfaced wasn’t laziness — it was a pattern of misalignment between what had been promised and what was being asked of him. His “no” wasn’t rebellion; it was courage to draw a line where we hadn’t yet. Had I ended his journey without listening, we would have lost a good man and failed to see the deeper truth.
 
 That experience reinforced something for me: leaders need dissent. But they also need to know how to respond when it shows up. If dissent is punished, people go silent. They stop raising concerns, stop pointing out risks, and stop telling the truth. Silence isn’t loyalty; it’s retreat. And when the room goes quiet, the leader’s blind spots grow wider until the whole team is in danger.
 
@@ -83,9 +81,9 @@ Piercing the Bubble — Upward Feedback
 
 One of the most dangerous dynamics in leadership is the bubble. The higher you climb, the less unfiltered truth reaches you. People hesitate to tell the boss what’s really happening, especially if the news is bad. Even well-meaning employees filter their words. The result is that leaders can feel informed while actually being blind.
 
-I lived this tension early on. As the work got more complex and technical, I found myself in over my head. My engineers were making decisions I couldn’t always evaluate. If they sugarcoated results or hid friction, I had no way of knowing. Feedback from them wasn’t optional — it was my compass back to reality.
+I lived this tension early on. As the work got more complex and technical, I found myself in over my head. My engineers were making decisions I couldn’t always evaluate. If communication wasn’t clear or complete, I had no way of knowing. Feedback from them wasn’t optional — it was my compass back to reality.
 
-Most organizations never build safe ways for truth to travel upward. People learn to tell leaders what they want to hear, not what they need to know. That’s why leaders have to create intentional structures. For me, that meant making time to sit down with people all across the company — not just my direct reports. It meant creating space for pushback and showing I could handle negative feedback when it was fair and constructive. I relied on surveys and one-on-ones to keep a pulse on the culture, and I don’t think anyone on my team was afraid to tell me hard things.
+Most organizations never build safe ways for truth to travel upward. People learn to tell leaders what they want to hear, not what they need to know. That’s why leaders have to create intentional structures. For me, that meant making time to sit down with people all across the company — not just my direct reports. It meant creating space for pushback and showing I could handle negative feedback when it was fair and constructive. I relied on surveys and one-on-ones to keep a pulse on the culture, and we worked hard to build an environment where people felt safe telling the truth upward.
 
 The research confirms how critical this is. A 2021 MIT Sloan Management Review study found that leaders consistently rate themselves much higher on openness than their employees do. That gap is a warning sign: the bubble is real. SHRM estimates that workplace silence and miscommunication cost organizations over half a trillion dollars annually in lost productivity. Harvard Business Review also shows that weak upward feedback loops correlate with higher turnover and “toxic” Glassdoor ratings. Silence isn’t neutral; it’s expensive.
 

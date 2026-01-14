@@ -5,7 +5,7 @@ type: chapter
 tags: ["accidental-ceo", "fundamentals", "servant-leadership", "standards", "stewardship", "presence"]
 status: final
 created_at: 2025-10-28
-updated_at: 2025-10-28
+updated_at: 2026-01-14
 summary: >
   Pivot from memoir to the transferable leadership patterns—standards, stewardship, and presence—that held under pressure, with research touchpoints (Google Project Aristotle, Edmondson, Deloitte).
 source:
@@ -15,8 +15,6 @@ takeaways: []
 applications: []
 related: []
 ---
-
-Chapter 11: Introduction to the Fundamentals
 
 Part One of this book was about the fire. The crossings. The weight of what leadership cost me, and the reality of what it gave back. I told you stories—some raw, some still tender—because leadership isn’t theory. It is lived.
 
@@ -109,11 +107,10 @@ What’s Ahead
 
 I can’t tell you exactly how these fundamentals will land in your world. Your load is different from mine. But I can tell you this: they held me.
 
-They held when a company I poured a decade into turned. They held when culture cracked in a gym I inherited. They held when my health gave out and I had to lead from weakness instead of strength.
+They held when a company I poured a decade into changed in ways I could no longer anchor. They held when culture cracked in a gym I inherited. They held when my health gave out and I had to lead from weakness instead of strength.
 
 That’s the gift of fundamentals—they are transferable. They’re not bound to one business model or one industry. They live wherever people gather and expect someone to lead.
 
 In the chapters ahead, you’ll see them one by one. First, Do the Work—a reminder that credibility comes from receipts, not rhetoric. Then, Protect the Culture—because without oxygen, nothing else matters.
 
 Those two are the foundation. The rest will build from there.
----

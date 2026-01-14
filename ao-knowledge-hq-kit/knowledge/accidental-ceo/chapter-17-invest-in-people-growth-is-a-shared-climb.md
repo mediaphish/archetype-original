@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["people-investment","development","multiplication","retention"]
 ---
 
-Chapter 17: Invest in People: Growth Is a Shared Climb
-
 Theology
 
 Investment in People
@@ -80,21 +78,35 @@ But here’s the hard part: once the torch is passed, the responsibility also sh
 Bad leaders try to solve this by clinging to control. They hold onto their role like it’s oxygen, afraid that if someone else steps up, they’ll lose their importance. And in doing so, they ensure that everything crumbles the moment they walk away. Servant leaders take a different path. They risk letting go, knowing the culture might not hold perfectly, but believing it’s still worth investing, still worth passing on. Because the alternative—never raising anyone else—is far worse.
 The Boat Metaphor
 
-Growth is often pictured as a ladder, with the leader at the top pulling others up one rung at a time. I’ve never liked that image. It makes leadership feel like a hierarchy—one person higher, everyone else below. To me, growth is more like a boat.
+Growth is often presented as a ladder, with the leader at the top pulling others up one rung at a time. I’ve never liked that image. It makes leadership feel like a hierarchy of power—one person above, everyone else below. That isn’t how servant leadership works. Leaders don’t stand over their teams; they stand with them.
 
-When you invest in the people around you, it doesn’t just raise them individually. It raises the whole boat. Elevating one person creates lift for the entire team. A ship riding higher in the water meets less resistance, handles rough seas better, and sails more efficiently toward the future. That’s what investment does: it reduces drag, increases speed, and gives the whole organization momentum it could never generate if everyone stayed at the same level.
+To me, growth is more like a boat.
 
-But here’s where the metaphor deepens: leaders have to be very careful with phrases like, “We’re all in the same boat.” Because the truth is, sometimes people fall out of the boat—or get pushed out. Then what? Do you throw them a rope? Do you row on without them? Do you stop and figure out why they went overboard in the first place?
+When you invest in the people around you, it doesn’t just raise them individually. It raises the whole boat. Developing people evenly raises the stability of the entire system. A ship riding higher in the water meets less resistance, handles rough seas better, and moves more efficiently toward its destination. That’s what shared development does: it reduces drag, lowers error, and creates momentum the organization could never generate if growth were isolated or uneven.
 
-This isn’t theoretical for me. My wife and I lived through it. In a community we loved, surrounded by people we thought were rowing with us, conflict hit hard. Decisions were made, lines were drawn, and before long we found ourselves out of the boat. We weren’t perfect in that season—no one ever is—but we begged for clarity, for accountability, for someone to say what was right and what was wrong. Instead, leadership chose passivity. They didn’t protect the truth. They didn’t call out what needed to be called out. They just let us drift.
+But this is where the metaphor needs honesty. Leaders have to be careful with phrases like, “We’re all in the same boat.” Because the truth is, sometimes people fall out of the boat—or get pushed out. And when that happens, the question isn’t rhetorical. Do you throw them a rope? Do you keep rowing and hope the distance closes on its own? Or do you stop long enough to ask why they went overboard in the first place?
 
-That experience left a mark. It taught me that good leaders don’t take the easy way out when conflict arises on the boat. They don’t look away or hope the waves calm down on their own. Servant leadership isn’t about being endlessly agreeable. It’s about setting and holding the standard. It’s about protecting the integrity of the boat and the people in it.
+This isn’t theoretical for me. My wife and I lived through it.
 
-Sometimes people need to be out of the boat—that’s true. A team can’t carry unrepentant toxicity or constant sabotage. But if someone goes overboard unjustly, or if conflict drives good people apart, then the leader’s responsibility is clear: create a path back in. Throw the rope. Call out truth loudly. Help resolve what can be resolved. Because a boat that sheds people through silence and avoidance is a boat destined to sink.
+In a community we loved—one that preached “We’re all in the same boat” as a defining identity—conflict hit hard. Decisions were made. Lines were drawn. And before long, we found ourselves outside the very boat we were told we belonged to. We weren’t perfect in that season—no one ever is—but we asked for clarity, for accountability, for someone to name what was actually happening.
 
-I’ve also seen the opposite. Maritime law has a simple principle: leave no one behind. Twenty years ago, my wife and I were on a cruise ship in the Caribbean. In the middle of the night, we were jolted awake as the ship leaned hard to starboard—something you don’t normally feel on a vessel that size. Later we learned why. The captain had made a decision to turn the entire ship around to rescue a group of Haitians adrift on a failing raft. Thousands of people were inconvenienced. Schedules were disrupted. But none of that mattered, because the priority was clear: no one gets left behind.
+Instead, leadership chose distance. Not neutrality—self-protection. Telling the truth would have required confronting failures that threatened image and momentum. So rather than engage, they let us drift. We were the safer loss.
 
-That moment stuck with me. It reminded me that leadership is not just about the people comfortably seated on deck. It’s about the ones clinging to the edges, the ones at risk of being lost altogether. Good leaders will always be judged, not by how they treat the strong, but by how they respond to the vulnerable. Sometimes that means slowing down the whole ship. Sometimes that means turning it around entirely. But the message it sends—to those inside and outside the boat—is unforgettable.
+That experience marked me. It taught me that good leaders don’t avoid conflict when it destabilizes the boat. Servant leadership isn’t endless agreeability. It’s the courage to set and hold a standard, even when doing so costs you comfort or approval. It’s protecting the integrity of the boat and the people in it.
+
+Sometimes people do need to be out of the boat. A team cannot carry unrepentant toxicity or sustained sabotage. But when good people are pushed out unjustly—or when silence allows conflict to fracture trust—the leader’s responsibility is clear: create a path back in. Throw the rope. Tell the truth plainly. Do the work required to restore what can be restored.
+
+Because a boat that sheds people through avoidance isn’t strong. It’s hollow. And hollow boats don’t survive rough water.
+
+I’ve also seen the opposite.
+
+Maritime law carries a simple principle: leave no one behind. Years ago, my wife and I were on a cruise ship in the Caribbean when, in the middle of the night, we were jolted awake by the ship leaning hard to starboard. That doesn’t happen on a vessel that size. Later we learned why. The captain had turned the entire ship around to rescue a group of Haitians adrift on a failing raft.
+
+Thousands of passengers were inconvenienced. Schedules were disrupted. None of that mattered. The priority was clear: no one gets left behind.
+
+That moment stayed with me. Leadership isn’t only about the people safely on deck. It’s about the ones at the edges—the ones at risk of being lost. Good leaders aren’t judged by how they treat the strong. They’re judged by how they respond to the vulnerable. Sometimes that means slowing the whole ship. Sometimes it means turning it around entirely.
+
+But the message it sends—to everyone watching—is unmistakable.
 
 Takeaways
 

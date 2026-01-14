@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["trust","credibility","psychological-safety","leadership","servant-leadership"]
 ---
 
-Chapter 18: Trust is the Currency — Earn It Daily
-
 Theology
 
 Leadership rises and falls on trust. You can have vision, strategy, and a plan, but if your people don’t trust you, it’s all just noise. Without trust, even good ideas feel like a threat. Without trust, standards feel like control. Without trust, change feels like betrayal. Leaders who don’t understand this try to compensate with pressure. They push harder, grow louder, or hide behind policy. It doesn’t work. When trust is thin, people protect themselves. When trust is strong, they protect the mission. Without it, a team will endure just long enough to find the exit. With it, they’ll endure when the pressure hits. With it, they’ll move mountains.
@@ -64,7 +62,7 @@ Sevie was my project, my right hand in the design world, and my friend. She died
 
 Moments like these are where trust either fractures or forges. Ours forged. I didn’t have to pretend I was strong. I didn’t have to perform. We showed up for each other. We were present. The work continued because the work had purpose—not in spite of the loss, but because our trust was already deep. And in the aftermath, it only grew deeper.
 
-I hesitate to call it family, because that word is thrown around too easily in business. It can become a manipulative way to demand loyalty without earning it. What we had was different. We had a culture where trust pulled the best out of people and sent it out into the world. A place where the standard is high, but the grace is higher. Where the point isn’t to keep you forever but to grow you into someone who outgrows the room and teaches your potential, so you can go out and change the world.
+I hesitate to call it family, because that word is thrown around too easily in business. It can become a manipulative way to demand loyalty without earning it. What we had was different. Trust pulled the best out of people and helped them rise. Some stayed, others carried what they learned into new seasons of their lives. That was never a loss to me—it was the point. We built a place where standards were high, grace was higher, and growth was the natural outcome of people being trusted to develop at their pace and in their direction.
 
 At scale, that language has to shift. I only had 104 people at our largest, so we could still build trust through presence. In larger organizations, you need rituals and systems that carry trust beyond proximity. At that point, the leader’s job is to turn personal posture into a cultural expectation, not just the owner’s personal posture.
 

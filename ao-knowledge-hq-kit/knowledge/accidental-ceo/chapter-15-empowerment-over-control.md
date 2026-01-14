@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["empowerment","psychological-safety","ownership"]
 ---
 
-Chapter 15: Empowerment Over Control
-
 Theology
 
 Trust People to Grow; Don’t Trap Them
@@ -71,7 +69,7 @@ Pocket rule: Teach decisions, not dependence.
 
 If I hold all the information, all the authority, and all the decision-making power, then nothing can go wrong without my say-so. On the surface, that looks like strong leadership. In reality, it’s just fear disguised as order.
 
-I’ve seen this fear play out in its most extreme form. Instead of empowering people to grow, a so-called leader literally sat down at their staff’s desks and took over their projects. Think about that for a second. Instead of teaching, guiding, or correcting, they just did the work themselves. That’s not leadership—it’s ego. No one gets better in that environment. There’s no growth, no scale, and no future. The only thing that gets fed is the leader’s pride.
+I’ve seen the worst version of control up close. Instead of empowering people to grow, a leader stepped into roles that weren’t theirs and literally took work out of their team’s hands. They didn’t guide, mentor, or teach—they just sat down and did the work themselves. That wasn’t leadership; it was fear dressed up as authority. Nothing healthy grows in that kind of environment. It shrinks people, kills initiative, and teaches teams to stop trying because their contribution will be overridden anyway.
 
 Empowerment takes the opposite posture. It requires risk. It means trusting people with real responsibility, knowing full well they might stumble. But it also creates loyalty, energy, and long-term strength. People who are empowered don’t just do the work—they own it. They find better ways, they innovate, and they bring their whole selves to the table.
 

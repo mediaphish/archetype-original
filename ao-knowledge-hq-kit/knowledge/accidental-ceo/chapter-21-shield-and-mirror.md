@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["protection","self-reflection","capacity","resilience","servant-leadership","boundaries","stewardship"]
 ---
 
-Chapter 21 — The Shield & the Mirror
-
 Theology
 
 Why this matters
@@ -75,13 +73,13 @@ The cost was real and compound. There was the immediate financial cost—stabili
 
 All of those costs required hard accounting. Not in a spreadsheet for the reader, but in reality: how long could we keep absorbing before the shield itself broke? That’s the question leaders rarely like to answer, but it’s the most strategic one you’ll face when protection is required.
 
-Deloitte’s 2023 Human Capital Trends report found that leaders who performed regular “capacity audits” of time, budget, and well-being were 2.4 times more likely to sustain organizational trust through financial stress and 30 percent more likely to meet strategic goals on schedule. The lesson was simple: tracking costs isn’t about numbers—it’s about truth. When leaders face the math honestly, they make decisions that preserve both people and mission.
+Deloitte’s 2023 Human Capital Trends report found that leaders who performed regular “capacity audits” of time, budget, and well-being were 2.4 times more likely to sustain organizational trust through financial stress and 30 percent more likely to meet strategic goals on schedule. The point wasn’t bookkeeping—it was clarity. When leaders stay honest about what protection actually requires, they make decisions that strengthen both the people they serve and the structure that supports them.
 
 Servant leadership doesn’t hide the bill; it pays it openly so others learn what the work really costs.
 
 Pocket rule: Unmeasured costs become unintended losses.
 
-This was a callback to the mirror. The labs from 2021 didn’t vanish; they were part of every decision I made while defending the place in 2023. The shield and the mirror had to coexist; otherwise the work failed in one direction or the other. That is the hard mechanical work of stewardship—enacting protection while managing capacity.
+This was a callback to the mirror. The labs from 2021 didn’t vanish; they were part of every decision I made while defending the place in 2023. Protection only worked when paired with honest self-assessment. Without that balance, the effort either collapsed from overextension or stalled from hesitation. That is the hard mechanical work of stewardship—enacting protection while managing capacity.
 
 Takeaways
 

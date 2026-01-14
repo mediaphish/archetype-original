@@ -13,8 +13,6 @@ version: "2025-10-28"
 tags: ["feedback","growth","clarity","psychological-safety","servant-leadership"]
 ---
 
-Chapter 19: Feedback Fuels Growth — Say the Hard Things Well
-
 Theology
 
 The Hardest Part of Leadership
