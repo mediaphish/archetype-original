@@ -49,7 +49,7 @@ const SuperAdminNav = ({ activeTab }) => {
               }}
               className="text-[14px] text-[#2563eb] font-semibold hover:text-[#1d4ed8] transition-colors"
             >
-              View as Tenant
+              View as Client
             </a>
           </div>
         </div>

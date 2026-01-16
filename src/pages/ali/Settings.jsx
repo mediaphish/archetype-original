@@ -9,6 +9,19 @@ const ALISettings = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  // Preserve magic-link email across ALI app navigation (used for role-aware links)
+  const urlParams = new URLSearchParams(window.location.search);
+  const emailParam = urlParams.get('email');
+  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+  const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
+  const withEmail = (path) => {
+    if (!email) return path;
+    if (!path || typeof path !== 'string') return path;
+    if (path.includes('email=')) return path;
+    const joiner = path.includes('?') ? '&' : '?';
+    return `${path}${joiner}email=${encodeURIComponent(email)}`;
+  };
+
   // Mock data
   const [companyData, setCompanyData] = useState({
     name: 'Acme Corporation',
@@ -40,29 +53,43 @@ const ALISettings = () => {
             <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-6">
               <button
-                onClick={() => handleNavigate('/ali/dashboard')}
+                onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Dashboard
               </button>
               <button
-                onClick={() => handleNavigate('/ali/deploy')}
+                onClick={() => handleNavigate(withEmail('/ali/reports'))}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Reports
+              </button>
+              <button
+                onClick={() => handleNavigate(withEmail('/ali/deploy'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
-                onClick={() => handleNavigate('/ali/settings')}
+                onClick={() => handleNavigate(withEmail('/ali/settings'))}
                 className="text-blue-600 font-semibold"
               >
                 Settings
               </button>
               <button
-                onClick={() => handleNavigate('/ali/billing')}
+                onClick={() => handleNavigate(withEmail('/ali/billing'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Billing
               </button>
+              {isSuperAdminUser && (
+                <button
+                  onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
+                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
+                >
+                  Super Admin
+                </button>
+              )}
               <button
                 onClick={() => handleNavigate('/ali')}
                 className="text-gray-600 hover:text-gray-800"

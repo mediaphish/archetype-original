@@ -17,6 +17,19 @@ const ALIReports = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  // Preserve magic-link email across ALI app navigation (used for role-aware links)
+  const urlParams = new URLSearchParams(window.location.search);
+  const emailParam = urlParams.get('email');
+  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+  const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
+  const withEmail = (path) => {
+    if (!email) return path;
+    if (!path || typeof path !== 'string') return path;
+    if (path.includes('email=')) return path;
+    const joiner = path.includes('?') ? '&' : '?';
+    return `${path}${joiner}email=${encodeURIComponent(email)}`;
+  };
+
   // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
   // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
   const getDriftAsAlignment = (driftScore) => {
@@ -645,35 +658,43 @@ const ALIReports = () => {
             <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-6">
               <button
-                onClick={() => handleNavigate('/ali/dashboard')}
+                onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Dashboard
               </button>
               <button
-                onClick={() => handleNavigate('/ali/reports')}
+                onClick={() => handleNavigate(withEmail('/ali/reports'))}
                 className="text-blue-600 font-semibold"
               >
                 Reports
               </button>
               <button
-                onClick={() => handleNavigate('/ali/deploy')}
+                onClick={() => handleNavigate(withEmail('/ali/deploy'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
-                onClick={() => handleNavigate('/ali/settings')}
+                onClick={() => handleNavigate(withEmail('/ali/settings'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Settings
               </button>
               <button
-                onClick={() => handleNavigate('/ali/billing')}
+                onClick={() => handleNavigate(withEmail('/ali/billing'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Billing
               </button>
+              {isSuperAdminUser && (
+                <button
+                  onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
+                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
+                >
+                  Super Admin
+                </button>
+              )}
               <button
                 onClick={() => handleNavigate('/ali/login')}
                 className="text-gray-600 hover:text-gray-900"
@@ -693,7 +714,7 @@ const ALIReports = () => {
             <p className="text-gray-600">Multi-year progression analysis 2025 Q4 - 2027 Q1</p>
           </div>
           <button
-            onClick={() => handleNavigate('/ali/dashboard')}
+            onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
             className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           >
             ← Back to Dashboard

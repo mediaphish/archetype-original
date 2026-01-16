@@ -22,6 +22,19 @@ const ALIDashboard = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  // Preserve magic-link email across ALI app navigation (used for role-aware links)
+  const urlParams = new URLSearchParams(window.location.search);
+  const emailParam = urlParams.get('email');
+  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+  const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
+  const withEmail = (path) => {
+    if (!email) return path;
+    if (!path || typeof path !== 'string') return path;
+    if (path.includes('email=')) return path;
+    const joiner = path.includes('?') ? '&' : '?';
+    return `${path}${joiner}email=${encodeURIComponent(email)}`;
+  };
+
   // Animation on mount
   useEffect(() => {
     // Animate progress bars and numbers
@@ -552,35 +565,43 @@ const ALIDashboard = () => {
             <div className="text-xl font-bold text-gray-900">ALI</div>
             <nav className="flex items-center gap-6">
               <button
-                onClick={() => handleNavigate('/ali/dashboard')}
+                onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
                 className="text-blue-600 font-semibold"
               >
                 Dashboard
               </button>
               <button
-                onClick={() => handleNavigate('/ali/reports')}
+                onClick={() => handleNavigate(withEmail('/ali/reports'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Reports
               </button>
               <button
-                onClick={() => handleNavigate('/ali/deploy')}
+                onClick={() => handleNavigate(withEmail('/ali/deploy'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
-                onClick={() => handleNavigate('/ali/settings')}
+                onClick={() => handleNavigate(withEmail('/ali/settings'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Settings
               </button>
               <button
-                onClick={() => handleNavigate('/ali/billing')}
+                onClick={() => handleNavigate(withEmail('/ali/billing'))}
                 className="text-gray-600 hover:text-gray-900"
               >
                 Billing
               </button>
+              {isSuperAdminUser && (
+                <button
+                  onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
+                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
+                >
+                  Super Admin
+                </button>
+              )}
               <button
                 onClick={() => handleNavigate('/ali/login')}
                 className="text-gray-600 hover:text-gray-900"
@@ -607,7 +628,7 @@ const ALIDashboard = () => {
             <div 
               className="bg-white rounded-lg border border-black/[0.12] p-6 cursor-pointer hover:shadow-lg transition-all"
               onClick={() => {
-                handleNavigate('/ali/reports');
+                handleNavigate(withEmail('/ali/reports'));
                 // Scroll to multi-year progression after navigation
                 setTimeout(() => {
                   const element = document.getElementById('multi-year-progression');
@@ -654,7 +675,7 @@ const ALIDashboard = () => {
                     borderColor: zoneInfo.color
                   }}
                   onClick={() => {
-                    handleNavigate('/ali/reports');
+                    handleNavigate(withEmail('/ali/reports'));
                     setTimeout(() => {
                       const element = document.getElementById('multi-year-progression');
                       if (element) element.scrollIntoView({ behavior: 'smooth' });
@@ -681,7 +702,7 @@ const ALIDashboard = () => {
             <div 
               className="bg-white rounded-lg border border-black/[0.12] p-6 cursor-pointer hover:shadow-lg transition-all"
               onClick={() => {
-                handleNavigate('/ali/reports');
+                handleNavigate(withEmail('/ali/reports'));
                 setTimeout(() => {
                   const element = document.getElementById('multi-year-progression');
                   if (element) element.scrollIntoView({ behavior: 'smooth' });
@@ -1381,7 +1402,7 @@ const ALIDashboard = () => {
               Total Responses: <span className="font-semibold text-gray-700">{Math.round(animatedValues.response_overall ?? mockData.responseCounts.overall)}</span> across all surveys
             </div>
             <button
-              onClick={() => handleNavigate('/ali/reports')}
+              onClick={() => handleNavigate(withEmail('/ali/reports'))}
               className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
             >
               View Full Analytics →
