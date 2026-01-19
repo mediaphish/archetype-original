@@ -1298,8 +1298,9 @@ const ALIDashboard = () => {
               <svg className="absolute inset-0 w-full h-full pointer-events-none">
                 <polyline
                   points={[
-                    ...mockData.experienceMap.previous.map((p) => `${p.x}%,${100 - p.y}%`),
-                    `${dashboardData.experienceMap.current.x}%,${100 - dashboardData.experienceMap.current.y}%`,
+                    // SVG "points" expects raw numbers; % signs will crash rendering.
+                    ...mockData.experienceMap.previous.map((p) => `${p.x},${100 - p.y}`),
+                    `${dashboardData.experienceMap.current.x},${100 - dashboardData.experienceMap.current.y}`,
                   ].join(" ")}
                   fill="none"
                   stroke="rgba(0,0,0,0.15)"
@@ -1485,27 +1486,30 @@ const ALIDashboard = () => {
                 const severity = dashboardData.leadershipMirror.severity[metric];
                 const leaderScore = dashboardData.leadershipMirror.leaderScores[metric];
                 const teamScore = dashboardData.leadershipMirror.teamScores[metric];
-                const maxScore = Math.max(leaderScore, teamScore, 100);
+                const safeLeader = typeof leaderScore === 'number' && Number.isFinite(leaderScore) ? leaderScore : null;
+                const safeTeam = typeof teamScore === 'number' && Number.isFinite(teamScore) ? teamScore : null;
+                const safeGap = typeof gap === 'number' && Number.isFinite(gap) ? gap : null;
+                const maxScore = Math.max(safeLeader ?? 0, safeTeam ?? 0, 100);
 
                 return (
                   <div key={metric} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
                     <div className="flex items-center justify-between mb-2">
                       <div className="text-sm font-medium text-gray-900 capitalize">{metric === 'ali' ? 'ALI Overall' : metric}</div>
                       <div className="text-sm font-semibold text-gray-600 capitalize">
-                        Gap: {gap.toFixed(1)} ({severity})
+                        Gap: {safeGap === null ? '—' : safeGap.toFixed(1)} ({severity})
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
                         <div className="text-xs text-gray-500 mb-1">Leader</div>
-                        <div className="h-8 bg-blue-600 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(leaderScore / maxScore) * 100}%` }}>
-                          <span className="text-xs font-semibold text-white">{leaderScore.toFixed(1)}</span>
+                        <div className="h-8 bg-blue-600 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(((safeLeader ?? 0) / maxScore) * 100)}%` }}>
+                          <span className="text-xs font-semibold text-white">{safeLeader === null ? '—' : safeLeader.toFixed(1)}</span>
                         </div>
                       </div>
                       <div className="flex-1">
                         <div className="text-xs text-gray-500 mb-1">Team</div>
-                        <div className="h-8 bg-green-600 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(teamScore / maxScore) * 100}%` }}>
-                          <span className="text-xs font-semibold text-white">{teamScore.toFixed(1)}</span>
+                        <div className="h-8 bg-green-600 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(((safeTeam ?? 0) / maxScore) * 100)}%` }}>
+                          <span className="text-xs font-semibold text-white">{safeTeam === null ? '—' : safeTeam.toFixed(1)}</span>
                         </div>
                       </div>
                     </div>
