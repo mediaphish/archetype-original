@@ -6,106 +6,52 @@ const ALISurvey = () => {
   const [respondentRole, setRespondentRole] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [submitMessage, setSubmitMessage] = useState('');
 
   // Get token from URL
   const token = window.location.pathname.split('/').pop();
 
   useEffect(() => {
-    // Mock questions - in real app, fetch from API
-    const mockQuestions = [
-      {
-        stable_id: 'Q-CLARITY-001',
-        question_text: 'I communicate the top priorities clearly enough that people can act without guessing.',
-        pattern: 'clarity',
-        role: 'leader',
-        is_negative: false,
-        is_anchor: true,
-        order: 1
-      },
-      {
-        stable_id: 'Q-CONSISTENCY-001',
-        question_text: 'I respond to similar situations in similar ways, even when I\'m under pressure.',
-        pattern: 'consistency',
-        role: 'leader',
-        is_negative: false,
-        is_anchor: false,
-        order: 2
-      },
-      {
-        stable_id: 'Q-TRUST-002',
-        question_text: 'I can speak honestly about issues that matter without worrying about negative consequences.',
-        pattern: 'trust',
-        role: 'team_member',
-        is_negative: false,
-        is_anchor: true,
-        order: 3
-      },
-      {
-        stable_id: 'Q-COMMUNICATION-001',
-        question_text: 'I share decisions with enough context that people can act confidently.',
-        pattern: 'communication',
-        role: 'leader',
-        is_negative: false,
-        is_anchor: false,
-        order: 4
-      },
-      {
-        stable_id: 'Q-ALIGNMENT-001',
-        question_text: 'I reinforce the behaviors that match what we say matters most.',
-        pattern: 'alignment',
-        role: 'leader',
-        is_negative: false,
-        is_anchor: false,
-        order: 5
-      },
-      {
-        stable_id: 'Q-STABILITY-001',
-        question_text: 'I maintain stable expectations even when circumstances change.',
-        pattern: 'stability',
-        role: 'leader',
-        is_negative: false,
-        is_anchor: false,
-        order: 6
-      },
-      {
-        stable_id: 'Q-CLARITY-004',
-        question_text: 'Important expectations are implied instead of stated in a way people can repeat back.',
-        pattern: 'clarity',
-        role: 'leader',
-        is_negative: true,
-        is_anchor: false,
-        order: 7
-      },
-      {
-        stable_id: 'Q-CONSISTENCY-008',
-        question_text: 'The way issues are handled depends on timing, mood, or who is involved.',
-        pattern: 'consistency',
-        role: 'team_member',
-        is_negative: true,
-        is_anchor: false,
-        order: 8
-      },
-      {
-        stable_id: 'Q-TRUST-007',
-        question_text: 'People hold back information because they are unsure how it will be received.',
-        pattern: 'trust',
-        role: 'team_member',
-        is_negative: true,
-        is_anchor: false,
-        order: 9
-      },
-      {
-        stable_id: 'Q-COMMUNICATION-007',
-        question_text: 'I often have to rely on unofficial channels to understand what is happening.',
-        pattern: 'communication',
-        role: 'team_member',
-        is_negative: true,
-        is_anchor: false,
-        order: 10
-      }
-    ];
+    async function loadSurvey() {
+      setLoading(true);
+      setLoadError('');
 
-    setQuestions(mockQuestions.sort((a, b) => a.order - b.order));
+      if (!token) {
+        setLoadError('Survey link is missing a token.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const r = await fetch(`/api/ali/survey/${encodeURIComponent(token)}`);
+        const j = await r.json().catch(() => ({}));
+
+        if (!r.ok) {
+          setLoadError(j?.error || 'Failed to load survey.');
+          setLoading(false);
+          return;
+        }
+
+        const normalized = (j.questions || []).map((q) => ({
+          stable_id: q.id,
+          question_text: q.question_text,
+          pattern: q.pattern,
+          is_negative: !!q.is_negative,
+          is_anchor: !!q.is_anchor,
+          order: q.order
+        }));
+
+        setQuestions(normalized.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+      } catch (e) {
+        setLoadError(e?.message || 'Failed to load survey.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadSurvey();
   }, []);
 
   const handleResponseChange = (stableId, value) => {
@@ -129,20 +75,67 @@ const ALISurvey = () => {
     }
 
     setSubmitting(true);
+    setSubmitMessage('');
 
-    // In real implementation, submit to API with respondentRole
-    // const submitData = {
-    //   deploymentToken: token,
-    //   respondentRole: respondentRole,
-    //   responses: responses
-    // };
+    // Simple device type hint
+    const deviceType =
+      window.innerWidth < 640 ? 'mobile' :
+      window.innerWidth < 1024 ? 'tablet' :
+      'desktop';
 
-    // Fake submission
-    setTimeout(() => {
+    try {
+      const r = await fetch('/api/ali/submit-response', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deploymentToken: token,
+          respondentRole,
+          responses,
+          deviceType
+        })
+      });
+
+      const j = await r.json().catch(() => ({}));
+
+      if (!r.ok) {
+        setSubmitting(false);
+        setSubmitMessage(j?.error || 'Failed to submit response.');
+        return;
+      }
+
       setSubmitting(false);
+      setSubmitMessage(j?.message || 'Response submitted successfully.');
       setSubmitted(true);
-    }, 1500);
+    } catch (err) {
+      setSubmitting(false);
+      setSubmitMessage(err?.message || 'Failed to submit response.');
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading survey…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Survey Unavailable</h1>
+            <p className="text-gray-600 mb-4">{loadError}</p>
+            <p className="text-sm text-gray-500">If you believe this is a mistake, request a new link.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
@@ -156,7 +149,7 @@ const ALISurvey = () => {
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h1>
             <p className="text-gray-600 mb-6">
-              Your response has been submitted successfully. Your feedback helps improve leadership conditions.
+              {submitMessage || 'Your response has been submitted successfully. Your feedback helps improve leadership conditions.'}
             </p>
             <p className="text-sm text-gray-500">
               Your responses are anonymous and will be aggregated with other team members' responses.
@@ -225,6 +218,11 @@ const ALISurvey = () => {
             <p className="text-sm text-gray-600 mb-4">
               Please answer each question on a scale of 1 (Strongly Disagree) to 5 (Strongly Agree).
             </p>
+            {submitMessage && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {submitMessage}
+              </div>
+            )}
           </div>
 
           <div className="space-y-8 mb-8">

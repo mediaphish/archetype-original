@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ALIDeploy = () => {
   const [selectedDivision, setSelectedDivision] = useState('all');
   const [generatedToken, setGeneratedToken] = useState(null);
+  const [generatedSurveyUrl, setGeneratedSurveyUrl] = useState(null);
+  const [nextSurvey, setNextSurvey] = useState({
+    index: '—',
+    availableOn: '—',
+    baselineDate: '—',
+    canDeploy: false,
+    reason: null
+  });
+  const [loadingNext, setLoadingNext] = useState(true);
+  const [deploying, setDeploying] = useState(false);
+  const [deployError, setDeployError] = useState('');
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -23,12 +34,60 @@ const ALIDeploy = () => {
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
 
-  // Mock data
-  const nextSurvey = {
-    index: 'S2',
-    availableOn: '2024-04-15',
-    baselineDate: '2024-01-15'
-  };
+  useEffect(() => {
+    async function loadNext() {
+      setLoadingNext(true);
+      setDeployError('');
+
+      if (!email) {
+        setNextSurvey({
+          index: '—',
+          availableOn: '—',
+          baselineDate: '—',
+          canDeploy: false,
+          reason: 'Missing email in URL. Please re-login via magic link.'
+        });
+        setLoadingNext(false);
+        return;
+      }
+
+      try {
+        const r = await fetch(`/api/ali/deploy/next?email=${encodeURIComponent(email)}`);
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          setNextSurvey({
+            index: '—',
+            availableOn: '—',
+            baselineDate: '—',
+            canDeploy: false,
+            reason: j?.error || 'Failed to load next survey info.'
+          });
+          setLoadingNext(false);
+          return;
+        }
+
+        setNextSurvey({
+          index: j.next_survey_index || '—',
+          availableOn: j.available_on || '—',
+          baselineDate: j.baseline_date || '—',
+          canDeploy: !!j.can_deploy,
+          reason: j.reason || null
+        });
+      } catch (e) {
+        setNextSurvey({
+          index: '—',
+          availableOn: '—',
+          baselineDate: '—',
+          canDeploy: false,
+          reason: e?.message || 'Failed to load next survey info.'
+        });
+      } finally {
+        setLoadingNext(false);
+      }
+    }
+
+    loadNext();
+  }, [email]);
 
   const activeDeployments = [
     {
@@ -42,14 +101,47 @@ const ALIDeploy = () => {
     }
   ];
 
-  const handleGenerateLink = () => {
-    // Fake generation
-    const fakeToken = 'survey-' + Math.random().toString(36).substr(2, 9);
-    setGeneratedToken(fakeToken);
+  const handleGenerateLink = async () => {
+    setDeployError('');
+    setDeploying(true);
+    setGeneratedToken(null);
+    setGeneratedSurveyUrl(null);
+
+    try {
+      const r = await fetch('/api/ali/deploy-survey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          instrumentVersion: 'v1.0',
+          // Division support is coming soon. For now, only company-wide.
+          divisionId: null,
+          minimumResponses: 5
+        })
+      });
+      const j = await r.json().catch(() => ({}));
+
+      if (!r.ok) {
+        setDeployError(j?.error || j?.details || 'Failed to create deployment.');
+        setDeploying(false);
+        return;
+      }
+
+      const surveyUrl = j?.deployment?.surveyUrl || null;
+      setGeneratedSurveyUrl(surveyUrl);
+
+      // Extract token from URL for display/back-compat
+      const tokenMatch = typeof surveyUrl === 'string' ? surveyUrl.split('/').pop() : null;
+      setGeneratedToken(tokenMatch || null);
+    } catch (e) {
+      setDeployError(e?.message || 'Failed to create deployment.');
+    } finally {
+      setDeploying(false);
+    }
   };
 
   const handleCopyLink = () => {
-    const url = `${window.location.origin}/ali/survey/${generatedToken}`;
+    const url = generatedSurveyUrl || `${window.location.origin}/ali/survey/${generatedToken}`;
     navigator.clipboard.writeText(url);
     alert('Link copied to clipboard!');
   };
@@ -129,7 +221,7 @@ const ALIDeploy = () => {
               </label>
               <input
                 type="text"
-                value={nextSurvey.index}
+                value={loadingNext ? 'Loading…' : nextSurvey.index}
                 readOnly
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
               />
@@ -142,11 +234,14 @@ const ALIDeploy = () => {
               </label>
               <input
                 type="text"
-                value={nextSurvey.availableOn}
+                value={loadingNext ? 'Loading…' : nextSurvey.availableOn}
                 readOnly
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
               />
-              <p className="text-xs text-gray-500 mt-1">Auto-calculated from baseline date ({nextSurvey.baselineDate})</p>
+              <p className="text-xs text-gray-500 mt-1">Auto-calculated from baseline date ({loadingNext ? '…' : nextSurvey.baselineDate})</p>
+              {!loadingNext && nextSurvey.reason && (
+                <p className="text-xs text-gray-500 mt-1">{nextSurvey.reason}</p>
+              )}
             </div>
 
             <div>
@@ -157,31 +252,37 @@ const ALIDeploy = () => {
                 value={selectedDivision}
                 onChange={(e) => setSelectedDivision(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                disabled
               >
                 <option value="all">Company-wide</option>
-                <option value="sales">Sales</option>
-                <option value="engineering">Engineering</option>
-                <option value="operations">Operations</option>
               </select>
+              <p className="text-xs text-gray-500 mt-1">Division targeting will be enabled once divisions are connected to real data.</p>
             </div>
 
             <button
               onClick={handleGenerateLink}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
+              disabled={deploying || loadingNext || !nextSurvey.canDeploy}
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Generate Deployment Link
+              {deploying ? 'Generating…' : 'Generate Deployment Link'}
             </button>
+
+            {deployError && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {deployError}
+              </div>
+            )}
           </div>
         </section>
 
         {/* Generated Link Display */}
-        {generatedToken && (
+        {generatedSurveyUrl && (
           <section className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Deployment Link Generated</h3>
             <div className="bg-white rounded border border-gray-200 p-4 mb-4">
               <div className="text-sm text-gray-600 mb-2">Survey URL:</div>
               <div className="font-mono text-sm break-all text-gray-900">
-                {window.location.origin}/ali/survey/{generatedToken}
+                {generatedSurveyUrl}
               </div>
             </div>
             <div className="flex gap-4">

@@ -15,10 +15,27 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { companyId } = req.query;
+    const { companyId: companyIdParam, email: emailParam } = req.query;
+
+    // Allow resolving companyId via email for the current lightweight auth approach
+    let companyId = companyIdParam;
+    if (!companyId && emailParam) {
+      const email = String(emailParam).toLowerCase().trim();
+      const { data: contact, error: contactError } = await supabaseAdmin
+        .from('ali_contacts')
+        .select('company_id')
+        .eq('email', email)
+        .maybeSingle();
+
+      if (contactError) {
+        console.error('Error resolving company by email:', contactError);
+      }
+
+      companyId = contact?.company_id || null;
+    }
 
     if (!companyId) {
-      return res.status(400).json({ error: 'companyId is required' });
+      return res.status(400).json({ error: 'companyId is required (or provide email)' });
     }
 
     // Get company info
@@ -93,6 +110,7 @@ export default async function handler(req, res) {
       quarter,
       year,
       available_on: availableOn,
+      baseline_date: company.baseline_date,
       can_deploy: canDeploy,
       reason
     });
