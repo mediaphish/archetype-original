@@ -187,13 +187,15 @@ export default async function handler(req, res) {
         id,
         survey_index,
         snapshot_id,
-        deployed_at,
+        available_at,
+        opens_at,
+        created_at,
         closes_at,
         status
       `)
       .eq('company_id', companyId)
       .in('status', ['active', 'completed'])
-      .order('deployed_at', { ascending: true });
+      .order('created_at', { ascending: true });
 
     if (deploymentsError) {
       console.error('Error fetching deployments:', deploymentsError);
@@ -483,13 +485,15 @@ export default async function handler(req, res) {
     // Build surveys array
     const surveysArray = deployments.map(deployment => {
       const deploymentResponseCount = responsesByDeployment[deployment.id]?.length || 0;
+      const deploymentDate = deployment.available_at || deployment.opens_at || deployment.created_at;
       return {
         survey_index: deployment.survey_index,
-        year: new Date(deployment.deployed_at).getFullYear(),
-        quarter: getQuarterFromDate(deployment.deployed_at),
+        year: deploymentDate ? new Date(deploymentDate).getFullYear() : null,
+        quarter: deploymentDate ? getQuarterFromDate(deploymentDate) : null,
         status: deployment.status,
         response_count: deploymentResponseCount,
-        deployed_at: deployment.deployed_at,
+        // Back-compat: older clients used deployed_at. Our DB doesn't have it, so expose the best available date.
+        deployed_at: deploymentDate,
         closes_at: deployment.closes_at
       };
     });
@@ -497,8 +501,9 @@ export default async function handler(req, res) {
     // Build historical trends
     const historicalTrends = historicalScores.map((score, index) => {
       const deployment = deployments[index];
+      const deploymentDate = deployment.available_at || deployment.opens_at || deployment.created_at;
       return {
-        period: `${new Date(deployment.deployed_at).getFullYear()}-${getQuarterFromDate(deployment.deployed_at)}`,
+        period: deploymentDate ? `${new Date(deploymentDate).getFullYear()}-${getQuarterFromDate(deploymentDate)}` : null,
         ali: score.ali.current,
         alignment: score.patterns.alignment?.current,
         stability: score.patterns.stability?.current,

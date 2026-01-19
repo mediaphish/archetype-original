@@ -126,12 +126,14 @@ export default async function handler(req, res) {
       .select(`
         id,
         survey_index,
-        deployed_at,
+        available_at,
+        opens_at,
+        created_at,
         status
       `)
       .eq('company_id', companyId)
       .eq('status', 'completed')
-      .order('deployed_at', { ascending: true });
+      .order('created_at', { ascending: true });
 
     if (deploymentsError) {
       console.error('Error fetching deployments:', deploymentsError);
@@ -224,8 +226,9 @@ export default async function handler(req, res) {
         anchors: scores.anchors
       });
 
-      const year = new Date(deployment.deployed_at).getFullYear();
-      const quarter = getQuarterFromDate(deployment.deployed_at);
+      const deploymentDate = deployment.available_at || deployment.opens_at || deployment.created_at;
+      const year = deploymentDate ? new Date(deploymentDate).getFullYear() : null;
+      const quarter = deploymentDate ? getQuarterFromDate(deploymentDate) : null;
 
       overallTrend.push({
         survey_index: deployment.survey_index,
