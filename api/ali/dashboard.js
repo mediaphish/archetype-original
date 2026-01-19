@@ -288,7 +288,7 @@ export default async function handler(req, res) {
     const deploymentIds = deployments.map(d => d.id);
     const { data: allResponses, error: responsesError } = await supabaseAdmin
       .from('ali_survey_responses')
-      .select('id, deployment_id, responses, completed_at')
+      .select('id, deployment_id, responses, completed_at, respondent_role')
       .in('deployment_id', deploymentIds)
       .order('completed_at', { ascending: true });
 
@@ -328,14 +328,16 @@ export default async function handler(req, res) {
       // Transform all responses for this deployment
       const transformedForDeployment = [];
       deploymentResponses.forEach(response => {
-        // Determine role heuristically (check if response contains leader-role questions)
-        // This is a simplification - ideally role would be stored in response or contact
-        let isLeader = false;
-        for (const stableId of Object.keys(response.responses || {})) {
-          const question = questionBank[stableId];
-          if (question && question.role === 'leader') {
-            isLeader = true;
-            break;
+        // Prefer stored respondent_role (we capture this at submission time).
+        // Fallback to heuristic only if missing.
+        let isLeader = response.respondent_role === 'leader';
+        if (response.respondent_role !== 'leader' && response.respondent_role !== 'team_member') {
+          for (const stableId of Object.keys(response.responses || {})) {
+            const question = questionBank[stableId];
+            if (question && question.role === 'leader') {
+              isLeader = true;
+              break;
+            }
           }
         }
 

@@ -531,7 +531,9 @@ const ALIDashboard = () => {
     }
   };
 
-  // Live dashboard overlay (replace mock values with real values where available)
+  // Live dashboard overlay
+  // IMPORTANT: When live data is present but incomplete (e.g., first survey / <10 org responses),
+  // we should NOT show fake historical metrics. In that case we prefer showing "—" / neutral states.
   const dashboardData = (() => {
     if (!liveDashboard) return mockData;
 
@@ -539,33 +541,37 @@ const ALIDashboard = () => {
     const liveALI = liveScores.ali || {};
     const liveAnchors = liveScores.anchors || {};
     const livePatterns = liveScores.patterns || {};
+    const liveDataQuality = liveDashboard.dataQuality || {};
+
+    const liveMode = true;
+    const dqOrgOk = !!liveDataQuality.meets_minimum_n_org;
 
     const getPattern = (key) => {
       const lp = livePatterns[key] || {};
       return {
-        current: pickNumber(lp.current, mockData.scores.patterns[key]?.current),
-        rolling: pickNumber(lp.rolling, mockData.scores.patterns[key]?.rolling)
+        current: liveMode ? (typeof lp.current === 'number' ? lp.current : null) : pickNumber(lp.current, mockData.scores.patterns[key]?.current),
+        rolling: liveMode ? (typeof lp.rolling === 'number' ? lp.rolling : null) : pickNumber(lp.rolling, mockData.scores.patterns[key]?.rolling)
       };
     };
 
-    const aliCurrent = pickNumber(liveALI.current, mockData.scores.ali.current);
-    const aliRolling = pickNumber(liveALI.rolling, mockData.scores.ali.rolling);
-    const aliZone = liveALI.zone || mockData.scores.ali.zone;
+    const aliCurrent = liveMode ? (typeof liveALI.current === 'number' ? liveALI.current : null) : pickNumber(liveALI.current, mockData.scores.ali.current);
+    const aliRolling = liveMode ? (typeof liveALI.rolling === 'number' ? liveALI.rolling : null) : pickNumber(liveALI.rolling, mockData.scores.ali.rolling);
+    const aliZone = liveMode ? (liveALI.zone || null) : (liveALI.zone || mockData.scores.ali.zone);
 
     const history = Array.isArray(liveDashboard.historicalTrends) && liveDashboard.historicalTrends.length > 0
       ? liveDashboard.historicalTrends
           .filter(p => !!p?.period)
           .map((p) => ({
             period: String(p.period).replace('-', ' '),
-            score: pickNumber(p.ali, aliCurrent),
+            score: (typeof p.ali === 'number' ? p.ali : (aliCurrent ?? 0)),
             responses: 0
           }))
-      : mockData.scores.ali.history;
+      : (liveMode ? [] : mockData.scores.ali.history);
 
     const liveCore = liveDashboard.coreScores || {};
-    const coreAlignmentRolling = pickNumber(liveCore.alignment, mockData.coreScores.alignment.rolling);
-    const coreStabilityRolling = pickNumber(liveCore.stability, mockData.coreScores.stability.rolling);
-    const coreClarityRolling = pickNumber(liveCore.clarity, mockData.coreScores.clarity.rolling);
+    const coreAlignmentRolling = liveMode ? (typeof liveCore.alignment === 'number' ? liveCore.alignment : null) : pickNumber(liveCore.alignment, mockData.coreScores.alignment.rolling);
+    const coreStabilityRolling = liveMode ? (typeof liveCore.stability === 'number' ? liveCore.stability : null) : pickNumber(liveCore.stability, mockData.coreScores.stability.rolling);
+    const coreClarityRolling = liveMode ? (typeof liveCore.clarity === 'number' ? liveCore.clarity : null) : pickNumber(liveCore.clarity, mockData.coreScores.clarity.rolling);
 
     const patternAlignment = getPattern('alignment');
     const patternStability = getPattern('stability');
@@ -574,11 +580,11 @@ const ALIDashboard = () => {
     const exp = liveDashboard.experienceMap || null;
     const expCurrent = exp && typeof exp === 'object'
       ? {
-          x: pickNumber(exp.x, mockData.experienceMap.current.x),
-          y: pickNumber(exp.y, mockData.experienceMap.current.y),
-          zone: exp.zone || mockData.experienceMap.current.zone
+          x: (typeof exp.x === 'number' ? exp.x : null),
+          y: (typeof exp.y === 'number' ? exp.y : null),
+          zone: exp.zone || null
         }
-      : mockData.experienceMap.current;
+      : (liveMode ? { x: null, y: null, zone: null } : mockData.experienceMap.current);
 
     const lp = liveDashboard.leadershipProfile || {};
     const lm = liveDashboard.leadershipMirror || {};
@@ -603,8 +609,8 @@ const ALIDashboard = () => {
         },
         anchors: {
           ...mockData.scores.anchors,
-          current: pickNumber(liveAnchors.current, mockData.scores.anchors.current),
-          rolling: pickNumber(liveAnchors.rolling, mockData.scores.anchors.rolling)
+          current: (typeof liveAnchors.current === 'number' ? liveAnchors.current : null),
+          rolling: (typeof liveAnchors.rolling === 'number' ? liveAnchors.rolling : null)
         },
         patterns: {
           ...mockData.scores.patterns,
@@ -622,50 +628,64 @@ const ALIDashboard = () => {
         alignment: {
           rolling: coreAlignmentRolling,
           current: patternAlignment.current,
-          trend: pickNumber(patternAlignment.current, coreAlignmentRolling) - coreAlignmentRolling
+          trend: (typeof patternAlignment.current === 'number' && typeof coreAlignmentRolling === 'number')
+            ? (patternAlignment.current - coreAlignmentRolling)
+            : null
         },
         stability: {
           rolling: coreStabilityRolling,
           current: patternStability.current,
-          trend: pickNumber(patternStability.current, coreStabilityRolling) - coreStabilityRolling
+          trend: (typeof patternStability.current === 'number' && typeof coreStabilityRolling === 'number')
+            ? (patternStability.current - coreStabilityRolling)
+            : null
         },
         clarity: {
           rolling: coreClarityRolling,
           current: patternClarity.current,
-          trend: pickNumber(patternClarity.current, coreClarityRolling) - coreClarityRolling
+          trend: (typeof patternClarity.current === 'number' && typeof coreClarityRolling === 'number')
+            ? (patternClarity.current - coreClarityRolling)
+            : null
         }
       },
       trajectory: {
         ...mockData.trajectory,
-        value: pickNumber(trajectory.value, mockData.trajectory.value),
-        direction: trajectory.direction || mockData.trajectory.direction,
-        magnitude: pickNumber(trajectory.magnitude, mockData.trajectory.magnitude),
-        method: trajectory.method || mockData.trajectory.method
+        value: (typeof trajectory.value === 'number' ? trajectory.value : null),
+        direction: trajectory.direction || null,
+        magnitude: (typeof trajectory.magnitude === 'number' ? trajectory.magnitude : null),
+        method: trajectory.method || null
       },
       experienceMap: {
         ...mockData.experienceMap,
         current: expCurrent,
-        previous: mockData.experienceMap.previous
+        previous: []
       },
       leadershipProfile: {
         ...mockData.leadershipProfile,
-        profile: lp.profile || mockData.leadershipProfile.profile,
+        profile: lp.profile || 'profile_forming',
         honesty: {
-          score: pickNumber(lp?.honesty?.score, mockData.leadershipProfile.honesty.score),
-          state: lp?.honesty?.state || mockData.leadershipProfile.honesty.state
+          score: (typeof lp?.honesty?.score === 'number' ? lp.honesty.score : null),
+          state: lp?.honesty?.state || null
         },
         clarity: {
-          level: pickNumber(lp?.clarity?.level, mockData.leadershipProfile.clarity.level),
-          stddev: pickNumber(lp?.clarity?.stddev, mockData.leadershipProfile.clarity.stddev),
-          state: lp?.clarity?.state || mockData.leadershipProfile.clarity.state
+          level: (typeof lp?.clarity?.level === 'number' ? lp.clarity.level : null),
+          stddev: (typeof lp?.clarity?.stddev === 'number' ? lp.clarity.stddev : null),
+          state: lp?.clarity?.state || null
         }
       },
       leadershipMirror: {
         ...mockData.leadershipMirror,
-        gaps: lm.gaps || mockData.leadershipMirror.gaps,
-        severity: lm.severity || mockData.leadershipMirror.severity,
-        leaderScores: lm.leaderScores || mockData.leadershipMirror.leaderScores,
-        teamScores: lm.teamScores || mockData.leadershipMirror.teamScores
+        gaps: lm.gaps || {},
+        severity: lm.severity || {},
+        leaderScores: lm.leaderScores || {},
+        teamScores: lm.teamScores || {}
+      },
+      dataQuality: {
+        ...mockData.dataQuality,
+        meets_minimum_n_org: dqOrgOk,
+        meets_minimum_n_team: !!liveDataQuality.meets_minimum_n_team,
+        meets_minimum_n: !!liveDataQuality.meets_minimum_n,
+        response_count: typeof liveDataQuality.response_count === 'number' ? liveDataQuality.response_count : null,
+        data_quality_banner: !!liveDataQuality.data_quality_banner
       }
     };
   })();
@@ -775,6 +795,8 @@ const ALIDashboard = () => {
     hazard: { label: 'Hazard', color: '#ef4444' }
   };
   const currentZone = dashboardData.experienceMap.current.zone;
+  const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
+  const fmtSigned1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? `${v >= 0 ? '+' : ''}${v.toFixed(1)}` : '—');
 
   return (
     <div className="min-h-screen bg-white">
@@ -889,23 +911,23 @@ const ALIDashboard = () => {
               
               <div className="flex items-baseline gap-4">
                 <div className="text-[64px] font-bold leading-none text-[#2563eb]">
-                  {dashboardData.scores.ali.current.toFixed(1)}
+                  {fmt1(dashboardData.scores.ali.current)}
                 </div>
                 <div className="text-[16px] text-black/[0.6] pb-2">
-                  Rolling: <span className="font-semibold text-black/[0.87]">{dashboardData.scores.ali.rolling.toFixed(1)}</span>
+                  Rolling: <span className="font-semibold text-black/[0.87]">{fmt1(dashboardData.scores.ali.rolling)}</span>
                 </div>
               </div>
             </div>
 
             {/* Column 2: Current Zone */}
             {(() => {
-              const zoneInfo = getZoneInfo(dashboardData.scores.ali.zone);
+              const zoneInfo = dashboardData.scores.ali.zone ? getZoneInfo(dashboardData.scores.ali.zone) : null;
               return (
                 <div 
                   className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
                   style={{
-                    backgroundColor: `${zoneInfo.color}15`,
-                    borderColor: zoneInfo.color
+                    backgroundColor: zoneInfo ? `${zoneInfo.color}15` : 'rgba(0,0,0,0.04)',
+                    borderColor: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.12)'
                   }}
                   onClick={() => {
                     handleNavigate(withEmail('/ali/reports'));
@@ -920,12 +942,12 @@ const ALIDashboard = () => {
                   </div>
                   <div 
                     className="text-[22px] font-bold mb-3"
-                    style={{ color: zoneInfo.color }}
+                    style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}
                   >
-                    {zoneInfo.label}
+                    {zoneInfo ? zoneInfo.label : '—'}
                   </div>
-                  <p className="text-[14px] leading-relaxed" style={{ color: zoneInfo.color }}>
-                    {zoneInfo.description}
+                  <p className="text-[14px] leading-relaxed" style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}>
+                    {zoneInfo ? zoneInfo.description : 'Zone will appear once enough data is available.'}
                   </p>
                 </div>
               );
@@ -950,11 +972,11 @@ const ALIDashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 <span className="text-[32px] font-bold text-[#10b981]">
-                  +{dashboardData.trajectory.value.toFixed(1)}
+                  {fmtSigned1(dashboardData.trajectory.value)}
                 </span>
               </div>
               <p className="text-[14px] text-black/[0.6]">
-                {dashboardData.trajectory.direction === 'improving' ? 'Improving' : 'Declining'} Momentum
+                {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving' : dashboardData.trajectory.direction === 'declining' ? 'Declining' : 'Stable') : '—'} Momentum
               </p>
             </div>
           </div>
@@ -974,7 +996,12 @@ const ALIDashboard = () => {
           </div>
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="space-y-4">
-              {mockData.insights.map((insight) => {
+              {liveDashboard ? (
+                <div className="text-sm text-gray-600">
+                  Insights will appear after more data is available (multiple survey cycles and a larger response set).
+                </div>
+              ) : null}
+              {!liveDashboard ? mockData.insights.map((insight) => {
                 const Icon = insight.icon;
                 return (
                   <div 
@@ -1005,13 +1032,13 @@ const ALIDashboard = () => {
                     </div>
                   </div>
                 );
-              })}
+              }) : null}
             </div>
           </div>
         </section>
 
         {/* Status Alert Panel */}
-        {mockData.alerts && mockData.alerts.length > 0 && (
+        {!liveDashboard && mockData.alerts && mockData.alerts.length > 0 && (
           <section className="mb-8">
             <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-lg p-4">
               <div className="flex items-start">
@@ -1055,11 +1082,11 @@ const ALIDashboard = () => {
                 <div className="text-sm font-medium text-gray-600">Alignment</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
                   <span>↑</span>
-                  <span>+{dashboardData.coreScores.alignment.trend.toFixed(1)}</span>
+                  <span>{fmtSigned1(dashboardData.coreScores.alignment.trend)}</span>
                 </div>
               </div>
               <div className="text-4xl font-bold mb-2 text-orange-500 transition-all duration-300">
-                {(animatedValues.core_alignment ?? dashboardData.coreScores.alignment.rolling).toFixed(1)}
+                {fmt1(animatedValues.core_alignment ?? dashboardData.coreScores.alignment.rolling)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -1069,12 +1096,12 @@ const ALIDashboard = () => {
                   ></div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500">Current: {dashboardData.coreScores.alignment.current.toFixed(1)}</div>
+              <div className="text-xs text-gray-500">Current: {fmt1(dashboardData.coreScores.alignment.current)}</div>
               {hoveredMetric === 'alignment' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {dashboardData.coreScores.alignment.rolling.toFixed(1)}<br/>
-                  Current: {dashboardData.coreScores.alignment.current.toFixed(1)}<br/>
-                  Trend: +{dashboardData.coreScores.alignment.trend.toFixed(1)}
+                  Rolling: {fmt1(dashboardData.coreScores.alignment.rolling)}<br/>
+                  Current: {fmt1(dashboardData.coreScores.alignment.current)}<br/>
+                  Trend: {fmtSigned1(dashboardData.coreScores.alignment.trend)}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                 </div>
               )}
@@ -1090,11 +1117,11 @@ const ALIDashboard = () => {
                 <div className="text-sm font-medium text-gray-600">Stability</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
                   <span>↑</span>
-                  <span>+{dashboardData.coreScores.stability.trend.toFixed(1)}</span>
+                  <span>{fmtSigned1(dashboardData.coreScores.stability.trend)}</span>
                 </div>
               </div>
               <div className="text-4xl font-bold mb-2 text-yellow-500 transition-all duration-300">
-                {(animatedValues.core_stability ?? dashboardData.coreScores.stability.rolling).toFixed(1)}
+                {fmt1(animatedValues.core_stability ?? dashboardData.coreScores.stability.rolling)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -1104,12 +1131,12 @@ const ALIDashboard = () => {
                   ></div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500">Current: {dashboardData.coreScores.stability.current.toFixed(1)}</div>
+              <div className="text-xs text-gray-500">Current: {fmt1(dashboardData.coreScores.stability.current)}</div>
               {hoveredMetric === 'stability' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {dashboardData.coreScores.stability.rolling.toFixed(1)}<br/>
-                  Current: {dashboardData.coreScores.stability.current.toFixed(1)}<br/>
-                  Trend: +{dashboardData.coreScores.stability.trend.toFixed(1)}
+                  Rolling: {fmt1(dashboardData.coreScores.stability.rolling)}<br/>
+                  Current: {fmt1(dashboardData.coreScores.stability.current)}<br/>
+                  Trend: {fmtSigned1(dashboardData.coreScores.stability.trend)}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                 </div>
               )}
@@ -1125,11 +1152,11 @@ const ALIDashboard = () => {
                 <div className="text-sm font-medium text-gray-600">Clarity</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
                   <span>↑</span>
-                  <span>+{dashboardData.coreScores.clarity.trend.toFixed(1)}</span>
+                  <span>{fmtSigned1(dashboardData.coreScores.clarity.trend)}</span>
                 </div>
               </div>
               <div className="text-4xl font-bold mb-2 text-green-500 transition-all duration-300">
-                {(animatedValues.core_clarity ?? dashboardData.coreScores.clarity.rolling).toFixed(1)}
+                {fmt1(animatedValues.core_clarity ?? dashboardData.coreScores.clarity.rolling)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -1139,12 +1166,12 @@ const ALIDashboard = () => {
                   ></div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500">Current: {dashboardData.coreScores.clarity.current.toFixed(1)}</div>
+              <div className="text-xs text-gray-500">Current: {fmt1(dashboardData.coreScores.clarity.current)}</div>
               {hoveredMetric === 'clarity' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {dashboardData.coreScores.clarity.rolling.toFixed(1)}<br/>
-                  Current: {dashboardData.coreScores.clarity.current.toFixed(1)}<br/>
-                  Trend: +{dashboardData.coreScores.clarity.trend.toFixed(1)}
+                  Rolling: {fmt1(dashboardData.coreScores.clarity.rolling)}<br/>
+                  Current: {fmt1(dashboardData.coreScores.clarity.current)}<br/>
+                  Trend: {fmtSigned1(dashboardData.coreScores.clarity.trend)}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                 </div>
               )}
@@ -1203,9 +1230,13 @@ const ALIDashboard = () => {
                     <HelpCircle className="w-5 h-5" />
                   </button>
                 </div>
-                <p className="text-[13px] text-black/[0.6]">Current position in {ZONES[currentZone].label} Zone</p>
+                <p className="text-[13px] text-black/[0.6]">
+                  {dashboardData.dataQuality?.meets_minimum_n_org && currentZone
+                    ? `Current position in ${ZONES[currentZone]?.label || '—'} Zone`
+                    : 'Neutral view: not enough responses yet'}
+                </p>
               </div>
-              {!mockData.dataQuality.meets_minimum_n_org && (
+              {!dashboardData.dataQuality?.meets_minimum_n_org && (
                 <div className="px-3 py-1.5 bg-[#f59e0b]/10 rounded-md text-[12px] font-medium text-[#f59e0b]">
                   Neutral view: &lt;10 responses
                 </div>
@@ -1216,7 +1247,7 @@ const ALIDashboard = () => {
             <div className="relative w-full aspect-square max-w-[600px] mx-auto">
               
               {/* Quadrant backgrounds - EXACT COLORS AND POSITIONS */}
-              {mockData.dataQuality.meets_minimum_n_org && (
+              {dashboardData.dataQuality?.meets_minimum_n_org && (
                 <>
                   {/* Top-right: Harmony - Light teal */}
                   <div
@@ -1310,21 +1341,23 @@ const ALIDashboard = () => {
               </svg>
 
               {/* Current position - LARGE DOT WITH ZONE COLOR */}
-              <div
-                className="absolute w-6 h-6 rounded-full shadow-lg z-10 flex items-center justify-center"
-                style={{
-                  left: `${dashboardData.experienceMap.current.x}%`,
-                  bottom: `${dashboardData.experienceMap.current.y}%`,
-                  transform: "translate(-50%, 50%)",
-                  backgroundColor: ZONES[currentZone].color,
-                }}
-              >
-                {/* White center dot */}
-                <div className="w-3 h-3 rounded-full bg-white" />
-              </div>
+              {dashboardData.dataQuality?.meets_minimum_n_org && typeof dashboardData.experienceMap.current.x === 'number' && typeof dashboardData.experienceMap.current.y === 'number' && currentZone ? (
+                <div
+                  className="absolute w-6 h-6 rounded-full shadow-lg z-10 flex items-center justify-center"
+                  style={{
+                    left: `${dashboardData.experienceMap.current.x}%`,
+                    bottom: `${dashboardData.experienceMap.current.y}%`,
+                    transform: "translate(-50%, 50%)",
+                    backgroundColor: ZONES[currentZone].color,
+                  }}
+                >
+                  {/* White center dot */}
+                  <div className="w-3 h-3 rounded-full bg-white" />
+                </div>
+              ) : null}
 
               {/* Zone labels - POSITIONED IN EACH QUADRANT CENTER */}
-              {mockData.dataQuality.meets_minimum_n_org && (
+              {dashboardData.dataQuality?.meets_minimum_n_org && (
                 <>
                   {/* Harmony - Top-right quadrant */}
                   <div
@@ -1381,10 +1414,10 @@ const ALIDashboard = () => {
             {/* Coordinates display below map */}
             <div className="mt-6 flex items-center justify-center gap-8 text-[13px] text-black/[0.6]">
               <div>
-                Clarity: <span className="font-bold text-black/[0.87]">{dashboardData.experienceMap.current.x.toFixed(1)}</span>
+                Clarity: <span className="font-bold text-black/[0.87]">{fmt1(dashboardData.experienceMap.current.x)}</span>
               </div>
               <div>
-                (Stability + Trust) / 2: <span className="font-bold text-black/[0.87]">{dashboardData.experienceMap.current.y.toFixed(1)}</span>
+                (Stability + Trust) / 2: <span className="font-bold text-black/[0.87]">{fmt1(dashboardData.experienceMap.current.y)}</span>
               </div>
             </div>
           </div>
@@ -1431,7 +1464,7 @@ const ALIDashboard = () => {
                       <div className="flex-1">
                         <div className="text-sm font-medium text-gray-600 mb-2">Honesty</div>
                         <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                          {(animatedValues.honesty ?? dashboardData.leadershipProfile.honesty.score).toFixed(1)}
+                          {fmt1(animatedValues.honesty ?? dashboardData.leadershipProfile.honesty.score)}
                         </div>
                       </div>
                       <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
@@ -1445,7 +1478,7 @@ const ALIDashboard = () => {
                       <div className="flex-1">
                         <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
                         <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                          {(animatedValues.clarity_level ?? dashboardData.leadershipProfile.clarity.level).toFixed(1)}
+                          {fmt1(animatedValues.clarity_level ?? dashboardData.leadershipProfile.clarity.level)}
                         </div>
                       </div>
                       <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
@@ -1453,7 +1486,7 @@ const ALIDashboard = () => {
                       </div>
                     </div>
                     <div className="text-xs text-gray-500 mt-2">
-                      Stddev: {dashboardData.leadershipProfile.clarity.stddev.toFixed(1)}
+                      Stddev: {fmt1(dashboardData.leadershipProfile.clarity.stddev)}
                     </div>
                   </div>
                 </div>
@@ -1574,7 +1607,11 @@ const ALIDashboard = () => {
                 <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
               </div>
               <div className="space-y-3">
-                {mockData.recentActivity.map((activity) => (
+                {liveDashboard ? (
+                  <div className="text-sm text-gray-600">
+                    Recent Activity will populate as surveys are deployed and completed over time.
+                  </div>
+                ) : mockData.recentActivity.map((activity) => (
                   <div key={activity.id} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
                     <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 flex-shrink-0"></div>
                     <div className="flex-1 min-w-0">
@@ -1617,14 +1654,14 @@ const ALIDashboard = () => {
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">Avg. Completion</div>
                 <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                  {(animatedValues.response_completion ?? mockData.responseCounts.avgCompletion).toFixed(1)}
+                  {liveDashboard ? '—' : (animatedValues.response_completion ?? mockData.responseCounts.avgCompletion).toFixed(1)}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">min</div>
               </div>
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">Response Rate</div>
                 <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                  {Math.round(animatedValues.response_rate ?? mockData.responseCounts.responseRate)}
+                  {liveDashboard ? '—' : Math.round(animatedValues.response_rate ?? mockData.responseCounts.responseRate)}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">%</div>
               </div>
