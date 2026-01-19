@@ -71,36 +71,72 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to load survey questions' });
     }
 
-    // Get question details from question bank
-    const { data: questions, error: questionsError } = await supabaseAdmin
-      .from('ali_question_bank')
-      .select('stable_id, question_text, pattern, is_negative, is_anchor')
-      .in('stable_id', snapshot.question_stable_ids);
+    // Prefer serving immutable question wording from the snapshot itself.
+    // This ensures editing the question bank later does NOT change already-issued survey links.
+    const snapshotOrder = snapshot.question_order;
 
-    if (questionsError || !questions) {
-      return res.status(500).json({ error: 'Failed to load question details' });
+    const isObjectArray =
+      Array.isArray(snapshotOrder) &&
+      snapshotOrder.length > 0 &&
+      typeof snapshotOrder[0] === 'object' &&
+      snapshotOrder[0] !== null &&
+      Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'stable_id');
+
+    let orderedQuestions = [];
+
+    if (isObjectArray) {
+      // New format: question_order is an array of objects with question_text captured at generation time
+      orderedQuestions = snapshotOrder
+        .slice()
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        .map((q, idx) => ({
+          id: q.stable_id,
+          question_text: q.question_text,
+          pattern: q.pattern,
+          is_negative: !!q.is_negative,
+          is_anchor: !!q.is_anchor,
+          order: q.order ?? (idx + 1)
+        }))
+        .filter(q => !!q.id && !!q.question_text);
+    } else {
+      // Back-compat: if snapshots were stored with question_order as stable_id[] (older data),
+      // fetch question text from the bank and order by that stable_id list.
+      const stableIdList = Array.isArray(snapshotOrder) && snapshotOrder.length > 0
+        ? snapshotOrder
+        : snapshot.question_stable_ids;
+
+      const { data: questions, error: questionsError } = await supabaseAdmin
+        .from('ali_question_bank')
+        .select('stable_id, question_text, pattern, is_negative, is_anchor')
+        .in('stable_id', stableIdList);
+
+      if (questionsError || !questions) {
+        return res.status(500).json({ error: 'Failed to load question details' });
+      }
+
+      orderedQuestions = stableIdList
+        .map((stableId, index) => {
+          const question = questions.find(q => q.stable_id === stableId);
+          if (!question) return null;
+          return {
+            id: question.stable_id,
+            question_text: question.question_text,
+            pattern: question.pattern,
+            is_negative: question.is_negative,
+            is_anchor: question.is_anchor,
+            order: index + 1
+          };
+        })
+        .filter(Boolean);
     }
 
-    // Order questions according to snapshot's question_order
-    const orderedQuestions = snapshot.question_order.map((stableId, index) => {
-      const question = questions.find(q => q.stable_id === stableId);
-      if (!question) {
-        return null;
-      }
-      return {
-        id: question.stable_id,
-        question_text: question.question_text,
-        pattern: question.pattern,
-        is_negative: question.is_negative,
-        is_anchor: question.is_anchor,
-        order: index + 1
-      };
-    }).filter(q => q !== null);
-
-    if (orderedQuestions.length !== snapshot.question_stable_ids.length) {
+    // Defensive check: if snapshot has stable_ids, ensure we didn't drop anything unexpectedly
+    if (Array.isArray(snapshot.question_stable_ids) && orderedQuestions.length !== snapshot.question_stable_ids.length) {
       console.error('Question count mismatch:', {
         expected: snapshot.question_stable_ids.length,
-        found: orderedQuestions.length
+        found: orderedQuestions.length,
+        deployment_id: deployment.id,
+        snapshot_id: deployment.snapshot_id
       });
       return res.status(500).json({ error: 'Survey configuration error' });
     }
