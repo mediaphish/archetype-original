@@ -10,6 +10,8 @@ const ALIReports = () => {
   const [archyInitialMessage, setArchyInitialMessage] = useState(null);
   const [patternScrollPositions, setPatternScrollPositions] = useState({});
   const [timeRangeFilter, setTimeRangeFilter] = useState('last-4'); // 'last-4', 'last-8', 'last-year', 'all'
+  const [liveReports, setLiveReports] = useState(null);
+  const [liveReportsError, setLiveReportsError] = useState(null);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -29,6 +31,30 @@ const ALIReports = () => {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
+
+  // Fetch live reports (used to validate wiring; UI below is still mock-heavy)
+  useEffect(() => {
+    let isMounted = true;
+    const run = async () => {
+      if (!email) return;
+      try {
+        setLiveReportsError(null);
+        const resp = await fetch(`/api/ali/reports?email=${encodeURIComponent(email)}`);
+        const json = await resp.json();
+        if (!resp.ok) throw new Error(json?.error || 'Failed to load reports');
+        if (!isMounted) return;
+        setLiveReports(json);
+      } catch (err) {
+        if (!isMounted) return;
+        setLiveReports(null);
+        setLiveReportsError(err?.message || 'Failed to load reports');
+      }
+    };
+    run();
+    return () => {
+      isMounted = false;
+    };
+  }, [email]);
 
   // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
   // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
@@ -712,6 +738,11 @@ const ALIReports = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Trends & Analytics</h1>
             <p className="text-gray-600">Multi-year progression analysis 2025 Q4 - 2027 Q1</p>
+            {liveReportsError ? (
+              <p className="text-xs text-red-600 mt-1">(live data unavailable: {liveReportsError})</p>
+            ) : liveReports ? (
+              <p className="text-xs text-green-600 mt-1">(live)</p>
+            ) : null}
           </div>
           <button
             onClick={() => handleNavigate(withEmail('/ali/dashboard'))}

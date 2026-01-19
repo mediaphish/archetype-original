@@ -14,6 +14,8 @@ const ALIDashboard = () => {
   const [openDefinition, setOpenDefinition] = useState(null);
   const [showArchyChat, setShowArchyChat] = useState(false);
   const [archyInitialMessage, setArchyInitialMessage] = useState(null);
+  const [liveDashboard, setLiveDashboard] = useState(null);
+  const [liveDashboardError, setLiveDashboardError] = useState(null);
   const chartRef = useRef(null);
 
   const handleNavigate = (path) => {
@@ -34,6 +36,77 @@ const ALIDashboard = () => {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
+
+  // Fallback counts (match the embedded mock data below) so we can safely compute
+  // display values before the big mock object is initialized.
+  const FALLBACK_RESPONSE_COUNTS = {
+    overall: 86,
+    thisQuarter: 24
+  };
+
+  // Lightweight number animation helper (used when live data loads)
+  const animateNumber = (key, start, end, duration = 800) => {
+    const startTime = performance.now();
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const current = start + (end - start) * easeOutQuart;
+      setAnimatedValues(prev => ({ ...prev, [key]: current }));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  };
+
+  // Fetch live dashboard data (fallback to mock if email is missing or API errors)
+  useEffect(() => {
+    let isMounted = true;
+    const run = async () => {
+      if (!email) return;
+      try {
+        setLiveDashboardError(null);
+        const resp = await fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`);
+        const json = await resp.json();
+        if (!resp.ok) {
+          throw new Error(json?.error || 'Failed to load dashboard');
+        }
+        if (!isMounted) return;
+        setLiveDashboard(json);
+      } catch (err) {
+        if (!isMounted) return;
+        setLiveDashboard(null);
+        setLiveDashboardError(err?.message || 'Failed to load dashboard');
+      }
+    };
+    run();
+    return () => {
+      isMounted = false;
+    };
+  }, [email]);
+
+  // Derive live counts (what the user is currently validating)
+  const getQuarterFromDate = (d) => {
+    const month = d.getMonth() + 1;
+    if (month >= 1 && month <= 3) return 'Q1';
+    if (month >= 4 && month <= 6) return 'Q2';
+    if (month >= 7 && month <= 9) return 'Q3';
+    return 'Q4';
+  };
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentQuarter = getQuarterFromDate(now);
+
+  const liveThisQuarterResponses = (() => {
+    const surveys = liveDashboard?.surveys;
+    if (!Array.isArray(surveys)) return null;
+    return surveys
+      .filter(s => s?.year === currentYear && s?.quarter === currentQuarter)
+      .reduce((sum, s) => sum + (Number(s?.response_count) || 0), 0);
+  })();
+
+  const responseOverallTarget = liveDashboard?.responseCounts?.overall ?? FALLBACK_RESPONSE_COUNTS.overall;
+  const responseThisQuarterTarget = liveThisQuarterResponses ?? FALLBACK_RESPONSE_COUNTS.thisQuarter;
 
   // Animation on mount
   useEffect(() => {
@@ -70,8 +143,8 @@ const ALIDashboard = () => {
       animateValue('trajectory', 0, mockData.trajectory.value, 1000);
       animateValue('honesty', 0, mockData.leadershipProfile.honesty.score, 1000);
       animateValue('clarity_level', 0, mockData.leadershipProfile.clarity.level, 1000);
-      animateValue('response_overall', 0, mockData.responseCounts.overall, 800);
-      animateValue('response_quarter', 0, mockData.responseCounts.thisQuarter, 800);
+      animateValue('response_overall', 0, responseOverallTarget, 800);
+      animateValue('response_quarter', 0, responseThisQuarterTarget, 800);
       animateValue('response_completion', 0, mockData.responseCounts.avgCompletion, 800);
       animateValue('response_rate', 0, mockData.responseCounts.responseRate, 800);
     }, 100);
@@ -88,6 +161,16 @@ const ALIDashboard = () => {
       setChartAnimated(true);
     }, 300);
   }, []);
+
+  // When live counts arrive, re-animate the response counters to the real values
+  useEffect(() => {
+    if (!liveDashboard) return;
+    const currentOverall = Number(animatedValues.response_overall ?? FALLBACK_RESPONSE_COUNTS.overall);
+    const currentQuarterCount = Number(animatedValues.response_quarter ?? FALLBACK_RESPONSE_COUNTS.thisQuarter);
+    animateNumber('response_overall', currentOverall, Number(responseOverallTarget), 700);
+    animateNumber('response_quarter', currentQuarterCount, Number(responseThisQuarterTarget), 700);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [liveDashboard, responseOverallTarget, responseThisQuarterTarget]);
 
   // Definition content for each section
   const definitions = {
@@ -617,7 +700,14 @@ const ALIDashboard = () => {
         {/* Page Title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Dashboard</h1>
-          <p className="text-gray-600">24 responses this quarter • Rolling scores (4-survey average)</p>
+          <p className="text-gray-600">
+            {Math.round(animatedValues.response_quarter ?? responseThisQuarterTarget)} responses this quarter • Rolling scores (4-survey average)
+            {liveDashboardError ? (
+              <span className="ml-2 text-xs text-red-600">(live data unavailable: {liveDashboardError})</span>
+            ) : liveDashboard ? (
+              <span className="ml-2 text-xs text-green-600">(live)</span>
+            ) : null}
+          </p>
         </div>
 
         {/* ALI OVERALL SCORE HERO SECTION - 3 Columns */}
@@ -1374,7 +1464,7 @@ const ALIDashboard = () => {
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">This Quarter</div>
                 <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                  {Math.round(animatedValues.response_quarter ?? mockData.responseCounts.thisQuarter)}
+                  {Math.round(animatedValues.response_quarter ?? responseThisQuarterTarget)}
                 </div>
               </div>
               <div className="bg-white rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg">
@@ -1399,7 +1489,7 @@ const ALIDashboard = () => {
         <div className="mt-12 pt-6 border-t border-gray-200">
           <div className="flex items-center justify-between text-sm text-gray-500">
             <div>
-              Total Responses: <span className="font-semibold text-gray-700">{Math.round(animatedValues.response_overall ?? mockData.responseCounts.overall)}</span> across all surveys
+              Total Responses: <span className="font-semibold text-gray-700">{Math.round(animatedValues.response_overall ?? responseOverallTarget)}</span> across all surveys
             </div>
             <button
               onClick={() => handleNavigate(withEmail('/ali/reports'))}
