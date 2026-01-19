@@ -44,6 +44,10 @@ const ALIDashboard = () => {
     thisQuarter: 24
   };
 
+  const pickNumber = (value, fallback) => {
+    return (typeof value === 'number' && Number.isFinite(value)) ? value : fallback;
+  };
+
   // Lightweight number animation helper (used when live data loads)
   const animateNumber = (key, start, end, duration = 800) => {
     const startTime = performance.now();
@@ -527,6 +531,145 @@ const ALIDashboard = () => {
     }
   };
 
+  // Live dashboard overlay (replace mock values with real values where available)
+  const dashboardData = (() => {
+    if (!liveDashboard) return mockData;
+
+    const liveScores = liveDashboard.scores || {};
+    const liveALI = liveScores.ali || {};
+    const liveAnchors = liveScores.anchors || {};
+    const livePatterns = liveScores.patterns || {};
+
+    const getPattern = (key) => {
+      const lp = livePatterns[key] || {};
+      return {
+        current: pickNumber(lp.current, mockData.scores.patterns[key]?.current),
+        rolling: pickNumber(lp.rolling, mockData.scores.patterns[key]?.rolling)
+      };
+    };
+
+    const aliCurrent = pickNumber(liveALI.current, mockData.scores.ali.current);
+    const aliRolling = pickNumber(liveALI.rolling, mockData.scores.ali.rolling);
+    const aliZone = liveALI.zone || mockData.scores.ali.zone;
+
+    const history = Array.isArray(liveDashboard.historicalTrends) && liveDashboard.historicalTrends.length > 0
+      ? liveDashboard.historicalTrends
+          .filter(p => !!p?.period)
+          .map((p) => ({
+            period: String(p.period).replace('-', ' '),
+            score: pickNumber(p.ali, aliCurrent),
+            responses: 0
+          }))
+      : mockData.scores.ali.history;
+
+    const liveCore = liveDashboard.coreScores || {};
+    const coreAlignmentRolling = pickNumber(liveCore.alignment, mockData.coreScores.alignment.rolling);
+    const coreStabilityRolling = pickNumber(liveCore.stability, mockData.coreScores.stability.rolling);
+    const coreClarityRolling = pickNumber(liveCore.clarity, mockData.coreScores.clarity.rolling);
+
+    const patternAlignment = getPattern('alignment');
+    const patternStability = getPattern('stability');
+    const patternClarity = getPattern('clarity');
+
+    const exp = liveDashboard.experienceMap || null;
+    const expCurrent = exp && typeof exp === 'object'
+      ? {
+          x: pickNumber(exp.x, mockData.experienceMap.current.x),
+          y: pickNumber(exp.y, mockData.experienceMap.current.y),
+          zone: exp.zone || mockData.experienceMap.current.zone
+        }
+      : mockData.experienceMap.current;
+
+    const lp = liveDashboard.leadershipProfile || {};
+    const lm = liveDashboard.leadershipMirror || {};
+    const trajectory = liveDashboard.trajectory || {};
+
+    return {
+      ...mockData,
+      company: {
+        ...mockData.company,
+        id: liveDashboard.company?.id || mockData.company.id,
+        name: liveDashboard.company?.name || mockData.company.name,
+        subscription_status: liveDashboard.company?.subscription_status || mockData.company.subscription_status
+      },
+      scores: {
+        ...mockData.scores,
+        ali: {
+          ...mockData.scores.ali,
+          current: aliCurrent,
+          rolling: aliRolling,
+          zone: aliZone,
+          history
+        },
+        anchors: {
+          ...mockData.scores.anchors,
+          current: pickNumber(liveAnchors.current, mockData.scores.anchors.current),
+          rolling: pickNumber(liveAnchors.rolling, mockData.scores.anchors.rolling)
+        },
+        patterns: {
+          ...mockData.scores.patterns,
+          clarity: getPattern('clarity'),
+          consistency: getPattern('consistency'),
+          trust: getPattern('trust'),
+          communication: getPattern('communication'),
+          alignment: getPattern('alignment'),
+          stability: getPattern('stability'),
+          leadership_drift: getPattern('leadership_drift')
+        }
+      },
+      coreScores: {
+        ...mockData.coreScores,
+        alignment: {
+          rolling: coreAlignmentRolling,
+          current: patternAlignment.current,
+          trend: pickNumber(patternAlignment.current, coreAlignmentRolling) - coreAlignmentRolling
+        },
+        stability: {
+          rolling: coreStabilityRolling,
+          current: patternStability.current,
+          trend: pickNumber(patternStability.current, coreStabilityRolling) - coreStabilityRolling
+        },
+        clarity: {
+          rolling: coreClarityRolling,
+          current: patternClarity.current,
+          trend: pickNumber(patternClarity.current, coreClarityRolling) - coreClarityRolling
+        }
+      },
+      trajectory: {
+        ...mockData.trajectory,
+        value: pickNumber(trajectory.value, mockData.trajectory.value),
+        direction: trajectory.direction || mockData.trajectory.direction,
+        magnitude: pickNumber(trajectory.magnitude, mockData.trajectory.magnitude),
+        method: trajectory.method || mockData.trajectory.method
+      },
+      experienceMap: {
+        ...mockData.experienceMap,
+        current: expCurrent,
+        previous: mockData.experienceMap.previous
+      },
+      leadershipProfile: {
+        ...mockData.leadershipProfile,
+        profile: lp.profile || mockData.leadershipProfile.profile,
+        honesty: {
+          score: pickNumber(lp?.honesty?.score, mockData.leadershipProfile.honesty.score),
+          state: lp?.honesty?.state || mockData.leadershipProfile.honesty.state
+        },
+        clarity: {
+          level: pickNumber(lp?.clarity?.level, mockData.leadershipProfile.clarity.level),
+          stddev: pickNumber(lp?.clarity?.stddev, mockData.leadershipProfile.clarity.stddev),
+          state: lp?.clarity?.state || mockData.leadershipProfile.clarity.state
+        }
+      },
+      leadershipMirror: {
+        ...mockData.leadershipMirror,
+        gaps: lm.gaps || mockData.leadershipMirror.gaps,
+        severity: lm.severity || mockData.leadershipMirror.severity,
+        leaderScores: lm.leaderScores || mockData.leadershipMirror.leaderScores,
+        teamScores: lm.teamScores || mockData.leadershipMirror.teamScores
+      }
+    };
+  })();
+
   // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
   // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
   const getDriftAsAlignment = (driftScore) => {
@@ -631,7 +774,7 @@ const ALIDashboard = () => {
     stress: { label: 'Stress', color: '#fb923c' },
     hazard: { label: 'Hazard', color: '#ef4444' }
   };
-  const currentZone = mockData.experienceMap.current.zone;
+  const currentZone = dashboardData.experienceMap.current.zone;
 
   return (
     <div className="min-h-screen bg-white">
@@ -746,17 +889,17 @@ const ALIDashboard = () => {
               
               <div className="flex items-baseline gap-4">
                 <div className="text-[64px] font-bold leading-none text-[#2563eb]">
-                  {mockData.scores.ali.current.toFixed(1)}
+                  {dashboardData.scores.ali.current.toFixed(1)}
                 </div>
                 <div className="text-[16px] text-black/[0.6] pb-2">
-                  Rolling: <span className="font-semibold text-black/[0.87]">{mockData.scores.ali.rolling.toFixed(1)}</span>
+                  Rolling: <span className="font-semibold text-black/[0.87]">{dashboardData.scores.ali.rolling.toFixed(1)}</span>
                 </div>
               </div>
             </div>
 
             {/* Column 2: Current Zone */}
             {(() => {
-              const zoneInfo = getZoneInfo(mockData.scores.ali.zone);
+              const zoneInfo = getZoneInfo(dashboardData.scores.ali.zone);
               return (
                 <div 
                   className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
@@ -807,11 +950,11 @@ const ALIDashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 <span className="text-[32px] font-bold text-[#10b981]">
-                  +{mockData.trajectory.value.toFixed(1)}
+                  +{dashboardData.trajectory.value.toFixed(1)}
                 </span>
               </div>
               <p className="text-[14px] text-black/[0.6]">
-                {mockData.trajectory.direction === 'improving' ? 'Improving' : 'Declining'} Momentum
+                {dashboardData.trajectory.direction === 'improving' ? 'Improving' : 'Declining'} Momentum
               </p>
             </div>
           </div>
@@ -912,11 +1055,11 @@ const ALIDashboard = () => {
                 <div className="text-sm font-medium text-gray-600">Alignment</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
                   <span>↑</span>
-                  <span>+{mockData.coreScores.alignment.trend.toFixed(1)}</span>
+                  <span>+{dashboardData.coreScores.alignment.trend.toFixed(1)}</span>
                 </div>
               </div>
               <div className="text-4xl font-bold mb-2 text-orange-500 transition-all duration-300">
-                {(animatedValues.core_alignment ?? mockData.coreScores.alignment.rolling).toFixed(1)}
+                {(animatedValues.core_alignment ?? dashboardData.coreScores.alignment.rolling).toFixed(1)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -926,12 +1069,12 @@ const ALIDashboard = () => {
                   ></div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500">Current: {mockData.coreScores.alignment.current.toFixed(1)}</div>
+              <div className="text-xs text-gray-500">Current: {dashboardData.coreScores.alignment.current.toFixed(1)}</div>
               {hoveredMetric === 'alignment' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {mockData.coreScores.alignment.rolling.toFixed(1)}<br/>
-                  Current: {mockData.coreScores.alignment.current.toFixed(1)}<br/>
-                  Trend: +{mockData.coreScores.alignment.trend.toFixed(1)}
+                  Rolling: {dashboardData.coreScores.alignment.rolling.toFixed(1)}<br/>
+                  Current: {dashboardData.coreScores.alignment.current.toFixed(1)}<br/>
+                  Trend: +{dashboardData.coreScores.alignment.trend.toFixed(1)}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                 </div>
               )}
@@ -947,11 +1090,11 @@ const ALIDashboard = () => {
                 <div className="text-sm font-medium text-gray-600">Stability</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
                   <span>↑</span>
-                  <span>+{mockData.coreScores.stability.trend.toFixed(1)}</span>
+                  <span>+{dashboardData.coreScores.stability.trend.toFixed(1)}</span>
                 </div>
               </div>
               <div className="text-4xl font-bold mb-2 text-yellow-500 transition-all duration-300">
-                {(animatedValues.core_stability ?? mockData.coreScores.stability.rolling).toFixed(1)}
+                {(animatedValues.core_stability ?? dashboardData.coreScores.stability.rolling).toFixed(1)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -961,12 +1104,12 @@ const ALIDashboard = () => {
                   ></div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500">Current: {mockData.coreScores.stability.current.toFixed(1)}</div>
+              <div className="text-xs text-gray-500">Current: {dashboardData.coreScores.stability.current.toFixed(1)}</div>
               {hoveredMetric === 'stability' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {mockData.coreScores.stability.rolling.toFixed(1)}<br/>
-                  Current: {mockData.coreScores.stability.current.toFixed(1)}<br/>
-                  Trend: +{mockData.coreScores.stability.trend.toFixed(1)}
+                  Rolling: {dashboardData.coreScores.stability.rolling.toFixed(1)}<br/>
+                  Current: {dashboardData.coreScores.stability.current.toFixed(1)}<br/>
+                  Trend: +{dashboardData.coreScores.stability.trend.toFixed(1)}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                 </div>
               )}
@@ -982,11 +1125,11 @@ const ALIDashboard = () => {
                 <div className="text-sm font-medium text-gray-600">Clarity</div>
                 <div className="flex items-center gap-1 text-sm text-green-600">
                   <span>↑</span>
-                  <span>+{mockData.coreScores.clarity.trend.toFixed(1)}</span>
+                  <span>+{dashboardData.coreScores.clarity.trend.toFixed(1)}</span>
                 </div>
               </div>
               <div className="text-4xl font-bold mb-2 text-green-500 transition-all duration-300">
-                {(animatedValues.core_clarity ?? mockData.coreScores.clarity.rolling).toFixed(1)}
+                {(animatedValues.core_clarity ?? dashboardData.coreScores.clarity.rolling).toFixed(1)}
               </div>
               <div className="mb-3">
                 <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -996,12 +1139,12 @@ const ALIDashboard = () => {
                   ></div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500">Current: {mockData.coreScores.clarity.current.toFixed(1)}</div>
+              <div className="text-xs text-gray-500">Current: {dashboardData.coreScores.clarity.current.toFixed(1)}</div>
               {hoveredMetric === 'clarity' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {mockData.coreScores.clarity.rolling.toFixed(1)}<br/>
-                  Current: {mockData.coreScores.clarity.current.toFixed(1)}<br/>
-                  Trend: +{mockData.coreScores.clarity.trend.toFixed(1)}
+                  Rolling: {dashboardData.coreScores.clarity.rolling.toFixed(1)}<br/>
+                  Current: {dashboardData.coreScores.clarity.current.toFixed(1)}<br/>
+                  Trend: +{dashboardData.coreScores.clarity.trend.toFixed(1)}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                 </div>
               )}
@@ -1156,7 +1299,7 @@ const ALIDashboard = () => {
                 <polyline
                   points={[
                     ...mockData.experienceMap.previous.map((p) => `${p.x}%,${100 - p.y}%`),
-                    `${mockData.experienceMap.current.x}%,${100 - mockData.experienceMap.current.y}%`,
+                    `${dashboardData.experienceMap.current.x}%,${100 - dashboardData.experienceMap.current.y}%`,
                   ].join(" ")}
                   fill="none"
                   stroke="rgba(0,0,0,0.15)"
@@ -1169,8 +1312,8 @@ const ALIDashboard = () => {
               <div
                 className="absolute w-6 h-6 rounded-full shadow-lg z-10 flex items-center justify-center"
                 style={{
-                  left: `${mockData.experienceMap.current.x}%`,
-                  bottom: `${mockData.experienceMap.current.y}%`,
+                  left: `${dashboardData.experienceMap.current.x}%`,
+                  bottom: `${dashboardData.experienceMap.current.y}%`,
                   transform: "translate(-50%, 50%)",
                   backgroundColor: ZONES[currentZone].color,
                 }}
@@ -1237,10 +1380,10 @@ const ALIDashboard = () => {
             {/* Coordinates display below map */}
             <div className="mt-6 flex items-center justify-center gap-8 text-[13px] text-black/[0.6]">
               <div>
-                Clarity: <span className="font-bold text-black/[0.87]">{mockData.experienceMap.current.x.toFixed(1)}</span>
+                Clarity: <span className="font-bold text-black/[0.87]">{dashboardData.experienceMap.current.x.toFixed(1)}</span>
               </div>
               <div>
-                (Stability + Trust) / 2: <span className="font-bold text-black/[0.87]">{mockData.experienceMap.current.y.toFixed(1)}</span>
+                (Stability + Trust) / 2: <span className="font-bold text-black/[0.87]">{dashboardData.experienceMap.current.y.toFixed(1)}</span>
               </div>
             </div>
           </div>
@@ -1277,7 +1420,7 @@ const ALIDashboard = () => {
               </div>
               <div className="bg-purple-100 rounded-lg border border-purple-200 p-6">
                 <div className="text-2xl font-bold text-gray-900 mb-2 capitalize">
-                  {profileNames[mockData.leadershipProfile.profile]}
+                  {profileNames[dashboardData.leadershipProfile.profile]}
                 </div>
                 <div className="text-sm text-gray-600 mb-6">Based on 4 completed surveys</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1287,11 +1430,11 @@ const ALIDashboard = () => {
                       <div className="flex-1">
                         <div className="text-sm font-medium text-gray-600 mb-2">Honesty</div>
                         <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                          {(animatedValues.honesty ?? mockData.leadershipProfile.honesty.score).toFixed(1)}
+                          {(animatedValues.honesty ?? dashboardData.leadershipProfile.honesty.score).toFixed(1)}
                         </div>
                       </div>
                       <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
-                        {mockData.leadershipProfile.honesty.state}
+                        {dashboardData.leadershipProfile.honesty.state}
                       </div>
                     </div>
                   </div>
@@ -1301,15 +1444,15 @@ const ALIDashboard = () => {
                       <div className="flex-1">
                         <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
                         <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                          {(animatedValues.clarity_level ?? mockData.leadershipProfile.clarity.level).toFixed(1)}
+                          {(animatedValues.clarity_level ?? dashboardData.leadershipProfile.clarity.level).toFixed(1)}
                         </div>
                       </div>
                       <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
-                        {mockData.leadershipProfile.clarity.state}
+                        {dashboardData.leadershipProfile.clarity.state}
                       </div>
                     </div>
                     <div className="text-xs text-gray-500 mt-2">
-                      Stddev: {mockData.leadershipProfile.clarity.stddev.toFixed(1)}
+                      Stddev: {dashboardData.leadershipProfile.clarity.stddev.toFixed(1)}
                     </div>
                   </div>
                 </div>
@@ -1317,7 +1460,7 @@ const ALIDashboard = () => {
                 {/* Profile Description */}
                 <div className="mt-6 pt-6 border-t border-purple-200">
                   <p className="text-sm text-gray-700 leading-relaxed">
-                    {profileDescriptions[mockData.leadershipProfile.profile]}
+                    {profileDescriptions[dashboardData.leadershipProfile.profile]}
                   </p>
                 </div>
               </div>
@@ -1338,10 +1481,10 @@ const ALIDashboard = () => {
               <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
             <div className="space-y-6">
               {(['ali', 'alignment', 'stability', 'clarity']).map((metric) => {
-                const gap = mockData.leadershipMirror.gaps[metric];
-                const severity = mockData.leadershipMirror.severity[metric];
-                const leaderScore = mockData.leadershipMirror.leaderScores[metric];
-                const teamScore = mockData.leadershipMirror.teamScores[metric];
+                const gap = dashboardData.leadershipMirror.gaps[metric];
+                const severity = dashboardData.leadershipMirror.severity[metric];
+                const leaderScore = dashboardData.leadershipMirror.leaderScores[metric];
+                const teamScore = dashboardData.leadershipMirror.teamScores[metric];
                 const maxScore = Math.max(leaderScore, teamScore, 100);
 
                 return (
