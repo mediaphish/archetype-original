@@ -69,36 +69,6 @@ const ALIReports = () => {
 
   // Avoid demo-data flash: if email is present, wait for live fetch before rendering.
   const isLoadingLive = !!email && !liveLoadedOnce;
-  if (isLoadingLive) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="text-xl font-bold text-gray-900">ALI</div>
-              <nav className="flex items-center gap-6">
-                <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">Dashboard</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-blue-600 font-semibold">Reports</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">Deploy</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">Settings</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">Billing</button>
-                {isSuperAdminUser && (
-                  <button onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))} className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]">
-                    Super Admin
-                  </button>
-                )}
-                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">Log Out</button>
-              </nav>
-            </div>
-          </div>
-        </header>
-        <main className="container mx-auto px-4 py-10 max-w-7xl">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Trends & Analytics</h1>
-          <p className="text-gray-600">Loading your live report…</p>
-        </main>
-      </div>
-    );
-  }
 
   // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
   // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
@@ -818,6 +788,38 @@ const ALIReports = () => {
       });
     }, 100);
   }, []);
+
+  // IMPORTANT: do NOT return early before hooks have run (prevents React hook order crashes in prod).
+  if (isLoadingLive) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold text-gray-900">ALI</div>
+              <nav className="flex items-center gap-6">
+                <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">Dashboard</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-blue-600 font-semibold">Reports</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">Deploy</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">Settings</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">Billing</button>
+                {isSuperAdminUser && (
+                  <button onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))} className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]">
+                    Super Admin
+                  </button>
+                )}
+                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">Log Out</button>
+              </nav>
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 py-10 max-w-7xl">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Trends & Analytics</h1>
+          <p className="text-gray-600">Loading your live report…</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
