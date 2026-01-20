@@ -506,86 +506,7 @@ export default function ReportsZones() {
           </button>
         </div>
 
-        {/* How zones work */}
-        <div className="mb-6 bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-start gap-3">
-            <Info className="w-5 h-5 text-gray-500 mt-0.5" />
-            <div>
-              <div className="text-sm font-semibold text-gray-900">How zones work</div>
-              <div className="text-sm text-gray-700 leading-relaxed mt-1">
-                Your <span className="font-semibold text-gray-900">ALI score</span> summarizes the seven primary tests below. Your zone is determined by
-                your ALI score (rolling score when available; otherwise current).
-              </div>
-              <div className="text-sm text-gray-700 leading-relaxed mt-2">
-                <span className="font-semibold text-gray-900">Why we call them zones:</span> We group your overall score into simple “zones” because
-                it’s easier to understand a leadership environment as a range (healthy → warning → high risk) than as a single number. Your zone is a
-                quick read on “where things are right now,” and the tests below show what’s driving it.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Primary tests (all 7) — moved up for stronger visual hierarchy */}
-        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <div className="text-sm font-semibold text-gray-900">Primary tests (what we measure)</div>
-              <div className="text-sm text-gray-600 mt-1">
-                These are the seven tests that roll up into your ALI score and ultimately drive your zone.
-              </div>
-            </div>
-            <div className="text-xs text-gray-500">Scores are 0–100.</div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-            {TEST_ORDER.map((k) => (
-              <TestCard key={k} testKey={k} />
-            ))}
-          </div>
-        </section>
-
-        {/* All zones */}
-        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <div className="text-sm font-semibold text-gray-900">All zones</div>
-              <div className="text-sm text-gray-600 mt-1">
-                Zones are score bands. They tell you what kind of leadership environment your team is experiencing right now.
-              </div>
-            </div>
-            <div className="text-sm text-gray-700">
-              Your current zone:{' '}
-              <span className="font-semibold" style={{ color: zoneInfo.color }}>
-                {zoneInfo.label}
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-5">
-            {ZONE_GUIDE.map((z) => {
-              const zi = getZoneInfo(z.key);
-              const isCurrent = zi.key === zoneInfo.key;
-              return (
-                <div key={z.key} className="rounded-xl border p-5" style={{ backgroundColor: z.bg, borderColor: z.border }}>
-                  <div className="flex items-center justify-between">
-                    <div className="text-lg font-bold" style={{ color: zi.color }}>
-                      {zi.label}
-                    </div>
-                    {isCurrent ? (
-                      <div className="text-xs font-semibold px-2 py-1 rounded-full bg-white/70 border border-black/[0.12]">
-                        You are here
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="text-xs text-gray-600 mt-1">Range: {z.range}</div>
-                  <div className="text-sm text-gray-800 leading-relaxed mt-3">{zi.meaning}</div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Current zone + evidence + first move */}
+        {/* Current zone + evidence + first move (top of the page) */}
         <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Current Zone (no duplicated evidence) */}
@@ -721,7 +642,84 @@ export default function ReportsZones() {
           </div>
         </section>
 
-        {/* Primary tests moved above for better hierarchy */}
+        {/* How zones work */}
+        <div className="mb-6 bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 text-gray-500 mt-0.5" />
+            <div>
+              <div className="text-sm font-semibold text-gray-900">How zones work</div>
+              <div className="text-sm text-gray-700 leading-relaxed mt-1">
+                Your <span className="font-semibold text-gray-900">ALI score</span> summarizes the seven primary tests below. Your zone is determined by
+                your ALI score (rolling score when available; otherwise current).
+              </div>
+              <div className="text-sm text-gray-700 leading-relaxed mt-2">
+                <span className="font-semibold text-gray-900">Why we call them zones:</span> We group your overall score into simple “zones” because
+                it’s easier to understand a leadership environment as a range (healthy → warning → high risk) than as a single number. Your zone is a
+                quick read on “where things are right now,” and the tests below show what’s driving it.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* All zones */}
+        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-sm font-semibold text-gray-900">All zones</div>
+              <div className="text-sm text-gray-600 mt-1">
+                Zones are score bands. They tell you what kind of leadership environment your team is experiencing right now.
+              </div>
+            </div>
+            <div className="text-sm text-gray-700">
+              Your current zone:{' '}
+              <span className="font-semibold" style={{ color: zoneInfo.color }}>
+                {zoneInfo.label}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-5">
+            {ZONE_GUIDE.map((z) => {
+              const zi = getZoneInfo(z.key);
+              const isCurrent = zi.key === zoneInfo.key;
+              return (
+                <div key={z.key} className="rounded-xl border p-5" style={{ backgroundColor: z.bg, borderColor: z.border }}>
+                  <div className="flex items-center justify-between">
+                    <div className="text-lg font-bold" style={{ color: zi.color }}>
+                      {zi.label}
+                    </div>
+                    {isCurrent ? (
+                      <div className="text-xs font-semibold px-2 py-1 rounded-full bg-white/70 border border-black/[0.12]">
+                        You are here
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">Range: {z.range}</div>
+                  <div className="text-sm text-gray-800 leading-relaxed mt-3">{zi.meaning}</div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Primary tests (granular charts) */}
+        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-sm font-semibold text-gray-900">Primary tests (what we measure)</div>
+              <div className="text-sm text-gray-600 mt-1">
+                These are the seven tests that roll up into your ALI score and ultimately drive your zone.
+              </div>
+            </div>
+            <div className="text-xs text-gray-500">Scores are 0–100.</div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            {TEST_ORDER.map((k) => (
+              <TestCard key={k} testKey={k} />
+            ))}
+          </div>
+        </section>
       </main>
       <AliFooter />
 
