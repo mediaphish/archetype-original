@@ -32,7 +32,15 @@ const ALIDashboard = () => {
   // Preserve magic-link email across ALI app navigation (used for role-aware links)
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
-  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+  const storedEmail = (() => {
+    try {
+      return localStorage.getItem('ali_email') || '';
+    } catch {
+      return '';
+    }
+  })();
+  const emailRaw = (emailParam || storedEmail || '').toString();
+  const email = emailRaw ? emailRaw.toLowerCase().trim() : '';
   const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
   const withEmail = (path) => {
     if (!email) return path;
@@ -41,6 +49,17 @@ const ALIDashboard = () => {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
+
+  // Persist email so deep-links like /ali/dashboard (without query params) still load live data
+  useEffect(() => {
+    if (!emailParam) return;
+    try {
+      if (email) localStorage.setItem('ali_email', email);
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailParam]);
 
   // Fallback counts (match the embedded mock data below) so we can safely compute
   // display values before the big mock object is initialized.
@@ -879,6 +898,35 @@ const ALIDashboard = () => {
   // If email is present, we wait for the live fetch before rendering the full dashboard.
   const isLoadingLive = !!email && !liveDashboardLoadedOnce;
 
+  // If email is missing entirely, do not show demo/sample dashboard.
+  // Prompt user to log in via magic link.
+  if (!email) {
+    return (
+      <div className="min-h-screen bg-white">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold text-gray-900">ALI</div>
+              <nav className="flex items-center gap-6">
+                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">Log In</button>
+              </nav>
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 py-10 max-w-2xl">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Dashboard</h1>
+          <p className="text-gray-600 mb-6">Please log in via magic link to view your live dashboard.</p>
+          <button
+            onClick={() => handleNavigate('/ali/login')}
+            className="inline-flex items-center justify-center px-5 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+          >
+            Go to Login
+          </button>
+        </main>
+      </div>
+    );
+  }
+
   if (isLoadingLive) {
     return (
       <div className="min-h-screen bg-white">
@@ -1043,7 +1091,7 @@ const ALIDashboard = () => {
                     borderColor: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.12)'
                   }}
                   onClick={() => {
-                    setShowZoneDetails(true);
+                    handleNavigate(withEmail('/ali/reports/zones'));
                   }}
                 >
                   <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
@@ -1059,7 +1107,7 @@ const ALIDashboard = () => {
                     {zoneInfo ? zoneInfo.description : 'Zone will appear once enough data is available.'}
                   </p>
                   <div className="mt-3 text-[12px] text-black/[0.6]">
-                    Click to see why this zone was assigned and what to do next →
+                    Open your Zone report →
                   </div>
                 </div>
               );
