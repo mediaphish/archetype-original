@@ -805,6 +805,14 @@ const ALIDashboard = () => {
   const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
   const fmtSigned1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? `${v >= 0 ? '+' : ''}${v.toFixed(1)}` : '—');
 
+  // If trajectory is not available in live mode (Survey 1), ensure we don't show a stale animated value.
+  useEffect(() => {
+    if (!liveDashboard) return;
+    if (typeof dashboardData?.trajectory?.value === 'number') return;
+    setAnimatedValues(prev => ({ ...prev, trajectory: undefined }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [liveDashboard]);
+
   // Stop the confusing “demo data flash”:
   // If email is present, we wait for the live fetch before rendering the full dashboard.
   const isLoadingLive = !!email && !liveDashboardLoadedOnce;
@@ -1273,10 +1281,12 @@ const ALIDashboard = () => {
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-4xl text-green-600 transition-transform duration-300 hover:scale-110">↑</span>
                 <span className="text-4xl font-bold text-green-600 transition-all duration-300">
-                  {fmtSigned1(animatedValues.trajectory ?? dashboardData.trajectory.value)}
+                  {fmtSigned1(dashboardData.trajectory.value)}
                 </span>
               </div>
-              <div className="text-sm font-medium text-green-600">Improving Momentum</div>
+              <div className="text-sm font-medium text-green-600">
+                {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving Momentum' : dashboardData.trajectory.direction === 'declining' ? 'Declining Momentum' : 'Stable') : '—'}
+              </div>
               {hoveredMetric === 'trajectory' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
                   Value: {fmtSigned1(dashboardData.trajectory.value)}<br/>
