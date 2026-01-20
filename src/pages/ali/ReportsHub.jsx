@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import AliHeader from '../../components/ali/AliHeader';
+import AliFooter from '../../components/ali/AliFooter';
 
 const ReportsHub = () => {
   const handleNavigate = (path) => {
@@ -18,6 +20,17 @@ const ReportsHub = () => {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
+
+  // Persist email so /ali/reports works without query params after first login
+  useEffect(() => {
+    if (!emailParam) return;
+    try {
+      if (email) localStorage.setItem('ali_email', email);
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailParam]);
 
   const Card = ({ title, description, onClick, disabled }) => (
     <button
@@ -40,41 +53,7 @@ const ReportsHub = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-gray-900">ALI</div>
-            <nav className="flex items-center gap-6">
-              <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">
-                Dashboard
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-blue-600 font-semibold">
-                Reports
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">
-                Deploy
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">
-                Settings
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">
-                Billing
-              </button>
-              {isSuperAdminUser && (
-                <button
-                  onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
-                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
-                >
-                  Super Admin
-                </button>
-              )}
-              <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">
-                Log Out
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <AliHeader active="reports" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
@@ -113,6 +92,7 @@ const ReportsHub = () => {
           />
         </div>
       </main>
+      <AliFooter />
     </div>
   );
 };

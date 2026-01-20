@@ -1,10 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MessageSquare, Info } from 'lucide-react';
+import { MessageSquare, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import ChatApp from '../../app/ChatApp';
+import AliHeader from '../../components/ali/AliHeader';
+import AliFooter from '../../components/ali/AliFooter';
 
 function fmt1(n) {
   if (typeof n !== 'number' || !Number.isFinite(n)) return '—';
   return n.toFixed(1);
+}
+
+function displayTestScore(testKey, rawScore) {
+  if (typeof rawScore !== 'number' || !Number.isFinite(rawScore)) return null;
+  // leadership_drift is measured as "drift" in the data model (higher = worse).
+  // We display it to users as "Leadership Alignment" (higher = better).
+  if (testKey === 'leadership_drift') return 100 - rawScore;
+  return rawScore;
 }
 
 function keyToLabel(k) {
@@ -114,6 +124,7 @@ const TEST_ORDER = [
 export default function ReportsZones() {
   const [showArchyChat, setShowArchyChat] = useState(false);
   const [archyInitialMessage, setArchyInitialMessage] = useState(null);
+  const [showAllHistoryByTest, setShowAllHistoryByTest] = useState({});
 
   const [liveDashboardSummary, setLiveDashboardSummary] = useState(null);
   const [liveDashboardError, setLiveDashboardError] = useState(null);
@@ -198,10 +209,12 @@ export default function ReportsZones() {
 
   const patterns = liveDashboardSummary?.scores?.patterns || {};
   const mirrorGaps = liveDashboardSummary?.leadershipMirror?.gaps || {};
+  const patternTrends = liveDashboardSummary?.patternTrends || {};
+  const surveys = Array.isArray(liveDashboardSummary?.surveys) ? liveDashboardSummary.surveys : [];
 
   const evidence = useMemo(() => {
     const lowest = Object.entries(patterns)
-      .map(([k, v]) => [k, v?.current])
+      .map(([k, v]) => [k, displayTestScore(k, v?.current)])
       .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
       .sort((a, b) => a[1] - b[1])
       .slice(0, 2)
@@ -268,18 +281,7 @@ export default function ReportsZones() {
   if (!email) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="text-xl font-bold text-gray-900">ALI</div>
-              <nav className="flex items-center gap-6">
-                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">
-                  Log In
-                </button>
-              </nav>
-            </div>
-          </div>
-        </header>
+        <AliHeader active="reports" email="" isSuperAdminUser={false} onNavigate={handleNavigate} />
         <main className="container mx-auto px-4 py-10 max-w-2xl">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Zones</h1>
           <p className="text-gray-600 mb-6">Please log in via magic link to view your live Zones guide.</p>
@@ -290,6 +292,7 @@ export default function ReportsZones() {
             Go to Login
           </button>
         </main>
+        <AliFooter />
       </div>
     );
   }
@@ -297,53 +300,38 @@ export default function ReportsZones() {
   if (isLoadingLive) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="text-xl font-bold text-gray-900">ALI</div>
-              <nav className="flex items-center gap-6">
-                <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">
-                  Dashboard
-                </button>
-                <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-blue-600 font-semibold">
-                  Reports
-                </button>
-                <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">
-                  Deploy
-                </button>
-                <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">
-                  Settings
-                </button>
-                <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">
-                  Billing
-                </button>
-                {isSuperAdminUser && (
-                  <button
-                    onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
-                    className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
-                  >
-                    Super Admin
-                  </button>
-                )}
-                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">
-                  Log Out
-                </button>
-              </nav>
-            </div>
-          </div>
-        </header>
+        <AliHeader active="reports" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
         <main className="container mx-auto px-4 py-10 max-w-7xl">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Zones</h1>
           <p className="text-gray-600">Loading your live Zone guide…</p>
         </main>
+        <AliFooter />
       </div>
     );
   }
 
   const TestCard = ({ testKey }) => {
     const meta = TEST_META[testKey] || { label: keyToLabel(testKey), what: '—', why: '—' };
-    const current = patterns?.[testKey]?.current;
-    const rolling = patterns?.[testKey]?.rolling;
+    const currentRaw = patterns?.[testKey]?.current;
+    const rollingRaw = patterns?.[testKey]?.rolling;
+    const current = displayTestScore(testKey, currentRaw);
+    const rolling = displayTestScore(testKey, rollingRaw);
+    const showAll = !!showAllHistoryByTest[testKey];
+
+    const historyPointsRaw = Array.isArray(patternTrends?.[testKey]) ? patternTrends[testKey] : [];
+    const historyPoints = historyPointsRaw
+      .map((p) => {
+        const survey = surveys.find((s) => s?.survey_index === p?.survey_index);
+        const period = survey?.year && survey?.quarter
+          ? `${survey.year} ${survey.quarter}`
+          : (typeof p?.survey_index === 'number' ? `Survey ${p.survey_index}` : '—');
+        const responses = typeof survey?.response_count === 'number' ? survey.response_count : null;
+        const score = displayTestScore(testKey, p?.score);
+        return { period, responses, score };
+      })
+      .filter((p) => typeof p.score === 'number' && Number.isFinite(p.score));
+
+    const displayHistory = showAll ? historyPoints : historyPoints.slice(-4);
 
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
@@ -364,6 +352,50 @@ export default function ReportsZones() {
           </div>
           <div className="text-sm text-gray-700 leading-relaxed">
             <span className="font-semibold text-gray-900">Why it matters:</span> {meta.why}
+          </div>
+        </div>
+
+        {/* Full bar chart history (from previous Reports view pattern charts) */}
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between gap-3">
+            <div className="text-sm font-semibold text-gray-900">Survey history</div>
+            {historyPoints.length > 4 ? (
+              <button
+                type="button"
+                onClick={() => setShowAllHistoryByTest((prev) => ({ ...prev, [testKey]: !showAll }))}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
+              >
+                {showAll ? 'Show less' : 'Show all'}
+                {showAll ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            ) : null}
+          </div>
+
+          <div className="mt-3 space-y-3">
+            {displayHistory.length ? (
+              displayHistory.map((p, idx) => {
+                const barWidth = Math.max(Math.min((p.score / 100) * 100, 100), 2);
+                return (
+                  <div key={`${p.period}-${idx}`} className="flex items-center gap-3">
+                    <div className="w-24 text-xs text-gray-600 font-medium flex-shrink-0">{p.period}</div>
+                    <div className="flex-1 relative h-8 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full flex items-center justify-end pr-2"
+                        style={{ width: `${barWidth}%`, backgroundColor: '#2563eb', minWidth: '40px' }}
+                        title={`${meta.label}: ${p.score.toFixed(1)}${p.responses !== null ? ` • ${p.responses} responses` : ''}`}
+                      >
+                        <span className="text-xs font-semibold text-white">{p.score.toFixed(1)}</span>
+                      </div>
+                    </div>
+                    <div className="w-24 text-xs text-gray-500 flex-shrink-0 text-right">
+                      {p.responses !== null ? `${p.responses} resp` : '—'}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-sm text-gray-600">Survey history will appear after multiple survey cycles.</div>
+            )}
           </div>
         </div>
 
@@ -388,41 +420,7 @@ export default function ReportsZones() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-gray-900">ALI</div>
-            <nav className="flex items-center gap-6">
-              <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">
-                Dashboard
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-blue-600 font-semibold">
-                Reports
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">
-                Deploy
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">
-                Settings
-              </button>
-              <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">
-                Billing
-              </button>
-              {isSuperAdminUser && (
-                <button
-                  onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
-                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
-                >
-                  Super Admin
-                </button>
-              )}
-              <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">
-                Log Out
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <AliHeader active="reports" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
@@ -432,10 +430,10 @@ export default function ReportsZones() {
             {liveDashboardError ? <p className="text-xs text-red-600 mt-1">(live data unavailable: {liveDashboardError})</p> : null}
           </div>
           <button
-            onClick={() => handleNavigate(withEmail('/ali/reports'))}
+            onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
             className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           >
-            ← Back to Reports
+            ← Back to Dashboard
           </button>
         </div>
 
@@ -654,6 +652,7 @@ export default function ReportsZones() {
           </div>
         </section>
       </main>
+      <AliFooter />
 
       {/* Archy Chat Overlay */}
       {showArchyChat && (

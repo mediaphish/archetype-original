@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon, Bell, Zap, Activity, TrendingUp, Send, Share2, Calendar, Clock } from 'lucide-react';
 import DefinitionModal from '../../components/ali/DefinitionModal';
 import ChatApp from '../../app/ChatApp';
+import AliHeader from '../../components/ali/AliHeader';
+import AliFooter from '../../components/ali/AliFooter';
 
 const ALIDashboard = () => {
   const [expandedZone, setExpandedZone] = useState(null);
@@ -845,16 +847,7 @@ const ALIDashboard = () => {
   if (!email) {
     return (
       <div className="min-h-screen bg-white">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="text-xl font-bold text-gray-900">ALI</div>
-              <nav className="flex items-center gap-6">
-                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">Log In</button>
-              </nav>
-            </div>
-          </div>
-        </header>
+        <AliHeader active="dashboard" email="" isSuperAdminUser={false} onNavigate={handleNavigate} />
         <main className="container mx-auto px-4 py-10 max-w-2xl">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Dashboard</h1>
           <p className="text-gray-600 mb-6">Please log in via magic link to view your live dashboard.</p>
@@ -865,6 +858,7 @@ const ALIDashboard = () => {
             Go to Login
           </button>
         </main>
+        <AliFooter />
       </div>
     );
   }
@@ -872,31 +866,13 @@ const ALIDashboard = () => {
   if (isLoadingLive) {
     return (
       <div className="min-h-screen bg-white">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="text-xl font-bold text-gray-900">ALI</div>
-              <nav className="flex items-center gap-6">
-                <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-blue-600 font-semibold">Dashboard</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-gray-600 hover:text-gray-900">Reports</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">Deploy</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">Settings</button>
-                <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">Billing</button>
-                {isSuperAdminUser && (
-                  <button onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))} className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]">
-                    Super Admin
-                  </button>
-                )}
-                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">Log Out</button>
-              </nav>
-            </div>
-          </div>
-        </header>
+        <AliHeader active="dashboard" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
 
         <main className="container mx-auto px-4 py-10 max-w-7xl">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Dashboard</h1>
           <p className="text-gray-600">Loading your live dashboard…</p>
         </main>
+        <AliFooter />
       </div>
     );
   }
@@ -909,60 +885,7 @@ const ALIDashboard = () => {
           50% { opacity: 0.7; }
         }
       `}</style>
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-gray-900">ALI</div>
-            <nav className="flex items-center gap-6">
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
-                className="text-blue-600 font-semibold"
-              >
-                Dashboard
-              </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/reports'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Reports
-              </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/deploy'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Deploy
-              </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/settings'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Settings
-              </button>
-              <button
-                onClick={() => handleNavigate(withEmail('/ali/billing'))}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Billing
-              </button>
-              {isSuperAdminUser && (
-                <button
-                  onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
-                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
-                >
-                  Super Admin
-                </button>
-              )}
-              <button
-                onClick={() => handleNavigate('/ali/login')}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Log Out
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <AliHeader active="dashboard" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Page Title */}
@@ -1837,6 +1760,7 @@ const ALIDashboard = () => {
           </div>
         </div>
       </main>
+      <AliFooter />
 
       {/* Definition Modals */}
       {openDefinition && definitions[openDefinition] && (
