@@ -1,5 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MessageSquare, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  MessageSquare,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  Lightbulb,
+  Shield,
+  Handshake,
+  MessagesSquare,
+  Target,
+  Compass,
+  Activity
+} from 'lucide-react';
 import ChatApp from '../../app/ChatApp';
 import AliHeader from '../../components/ali/AliHeader';
 import AliFooter from '../../components/ali/AliFooter';
@@ -76,39 +88,56 @@ const ZONE_GUIDE = [
 const TEST_META = {
   clarity: {
     label: 'Clarity',
+    blurb: 'How clear priorities and expectations feel.',
     what: 'How clear priorities, expectations, and “what good looks like” feel to the team.',
     why: 'Low clarity creates rework, guessing, and hesitation—people stall because they’re not sure what matters most.'
   },
   consistency: {
     label: 'Consistency',
+    blurb: 'How reliably leadership follows through.',
     what: 'How reliably leadership follows through (habits, decisions, accountability, and standards).',
     why: 'Low consistency makes the environment unpredictable—people stop trusting priorities because they change or aren’t reinforced.'
   },
   trust: {
     label: 'Trust',
+    blurb: 'How safe it feels to be honest and raise issues.',
     what: 'How safe it feels to be honest, ask questions, and raise issues without punishment.',
     why: 'Low trust causes silence and “workarounds.” Problems stay hidden until they become expensive.'
   },
   communication: {
     label: 'Communication',
+    blurb: 'How well context and decisions are communicated.',
     what: 'How well information flows: context, updates, and the “why” behind decisions.',
     why: 'Low communication creates rumors, misalignment, and duplicated work because people fill gaps with assumptions.'
   },
   alignment: {
     label: 'Alignment',
+    blurb: 'How aligned the team is on priorities and direction.',
     what: 'How aligned people are on direction: priorities, tradeoffs, and what the team is optimizing for.',
     why: 'Low alignment looks like teams pulling in different directions—even high effort won’t compound if it’s not pointed at the same target.'
   },
   stability: {
     label: 'Stability',
+    blurb: 'How stable the operating environment feels.',
     what: 'How stable the operating environment feels: pace, pressure, chaos, and ability to plan.',
     why: 'Low stability burns energy on firefighting. People default to survival behaviors instead of improvement.'
   },
   leadership_drift: {
     label: 'Leadership Alignment',
+    blurb: 'Gap between stated and observed leadership behaviors.',
     what: 'A signal of drift: how often leadership behavior and the team’s lived experience feel out of sync.',
     why: 'Drift is where confusion and resentment grow—leaders think they’re doing one thing, while the team experiences another.'
   }
+};
+
+const TEST_VISUALS = {
+  clarity: { Icon: Lightbulb, color: '#2563eb' },
+  consistency: { Icon: Shield, color: '#14b8a6' },
+  trust: { Icon: Handshake, color: '#8b5cf6' },
+  communication: { Icon: MessagesSquare, color: '#f59e0b' },
+  alignment: { Icon: Target, color: '#10b981' },
+  stability: { Icon: Compass, color: '#6366f1' },
+  leadership_drift: { Icon: Activity, color: '#ec4899' }
 };
 
 const TEST_ORDER = [
@@ -312,6 +341,9 @@ export default function ReportsZones() {
 
   const TestCard = ({ testKey }) => {
     const meta = TEST_META[testKey] || { label: keyToLabel(testKey), what: '—', why: '—' };
+    const visual = TEST_VISUALS[testKey] || { Icon: Activity, color: '#2563eb' };
+    const Icon = visual.Icon;
+    const color = visual.color;
     const currentRaw = patterns?.[testKey]?.current;
     const rollingRaw = patterns?.[testKey]?.rolling;
     const current = displayTestScore(testKey, currentRaw);
@@ -333,20 +365,101 @@ export default function ReportsZones() {
 
     const displayHistory = showAll ? historyPoints : historyPoints.slice(-4);
 
+    const trend = (() => {
+      if (historyPoints.length < 2) return null;
+      const prev = historyPoints[historyPoints.length - 2]?.score;
+      const last = historyPoints[historyPoints.length - 1]?.score;
+      if (typeof prev !== 'number' || typeof last !== 'number' || !Number.isFinite(prev) || !Number.isFinite(last)) return null;
+      const delta = last - prev;
+      const pct = prev !== 0 ? (delta / prev) * 100 : null;
+      return { delta, pct };
+    })();
+
+    const trendUp = trend ? trend.delta > 0 : null;
+
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        {/* Header row: icon + title + (optional) show all */}
         <div className="flex items-start justify-between gap-3">
-          <div className="text-lg font-semibold text-gray-900">{meta.label}</div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${color}20` }}>
+              <Icon className="w-5 h-5" style={{ color }} />
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-gray-900">{meta.label}</div>
+              <div className="text-xs text-gray-500">{meta.blurb}</div>
+            </div>
+          </div>
+
+          {historyPoints.length > 4 ? (
+            <button
+              type="button"
+              onClick={() => setShowAllHistoryByTest((prev) => ({ ...prev, [testKey]: !showAll }))}
+              className="text-xs font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
+            >
+              {showAll ? 'Show less' : 'Show all'}
+              {showAll ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          ) : null}
+        </div>
+
+        {/* Big score + rolling + trend */}
+        <div className="mt-4 flex items-end justify-between gap-4">
+          <div>
+            <div className="text-5xl font-bold leading-none" style={{ color }}>
+              {fmt1(current)}
+            </div>
+            <div className="text-sm text-gray-600 mt-2">
+              Rolling: <span className="font-semibold text-gray-900">{fmt1(rolling)}</span>
+            </div>
+          </div>
           <div className="text-right">
-            <div className="text-xs text-gray-500 uppercase tracking-wide">Current</div>
-            <div className="text-2xl font-bold text-gray-900 leading-none">{fmt1(current)}</div>
+            {trend ? (
+              <div className={`text-sm font-semibold ${trendUp ? 'text-green-700' : trendUp === false ? 'text-red-700' : 'text-gray-600'}`}>
+                {trendUp ? '↑' : '↓'} {trend.pct !== null ? `${Math.abs(trend.pct).toFixed(1)}%` : `${trend.delta.toFixed(1)}`}
+              </div>
+            ) : (
+              <div className="text-sm font-semibold text-gray-400">—</div>
+            )}
             <div className="text-xs text-gray-500 mt-1">
-              Rolling: <span className="font-semibold text-gray-700">{fmt1(rolling)}</span>
+              {historyPoints.length ? `${historyPoints.length} survey cycle(s)` : 'No history yet'}
             </div>
           </div>
         </div>
 
-        <div className="mt-3 space-y-2">
+        {/* Larger, central bar chart */}
+        <div className="mt-5">
+          <div className="text-sm font-semibold text-gray-900 mb-3">Survey history</div>
+          {displayHistory.length ? (
+            <div className="space-y-3">
+              {displayHistory.map((p, idx) => {
+                const barWidth = Math.max(Math.min((p.score / 100) * 100, 100), 2);
+                return (
+                  <div key={`${p.period}-${idx}`} className="flex items-center gap-3">
+                    <div className="w-20 text-xs text-gray-600 font-medium flex-shrink-0">{p.period}</div>
+                    <div className="flex-1 relative h-10 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full flex items-center justify-end pr-3"
+                        style={{ width: `${barWidth}%`, backgroundColor: color, minWidth: '56px' }}
+                        title={`${meta.label}: ${p.score.toFixed(1)}${p.responses !== null ? ` • ${p.responses} responses` : ''}`}
+                      >
+                        <span className="text-sm font-semibold text-white">{p.score.toFixed(1)}</span>
+                      </div>
+                    </div>
+                    <div className="w-20 text-xs text-gray-500 flex-shrink-0 text-right">
+                      {p.responses !== null ? `${p.responses} responses` : '—'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-sm text-gray-600">Survey history will appear after multiple survey cycles.</div>
+          )}
+        </div>
+
+        {/* Definitions (still present, but visually secondary) */}
+        <div className="mt-5 pt-4 border-t border-gray-100 space-y-2">
           <div className="text-sm text-gray-700 leading-relaxed">
             <span className="font-semibold text-gray-900">What this is:</span> {meta.what}
           </div>
@@ -355,51 +468,7 @@ export default function ReportsZones() {
           </div>
         </div>
 
-        {/* Full bar chart history (from previous Reports view pattern charts) */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-semibold text-gray-900">Survey history</div>
-            {historyPoints.length > 4 ? (
-              <button
-                type="button"
-                onClick={() => setShowAllHistoryByTest((prev) => ({ ...prev, [testKey]: !showAll }))}
-                className="text-xs font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
-              >
-                {showAll ? 'Show less' : 'Show all'}
-                {showAll ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-            ) : null}
-          </div>
-
-          <div className="mt-3 space-y-3">
-            {displayHistory.length ? (
-              displayHistory.map((p, idx) => {
-                const barWidth = Math.max(Math.min((p.score / 100) * 100, 100), 2);
-                return (
-                  <div key={`${p.period}-${idx}`} className="flex items-center gap-3">
-                    <div className="w-24 text-xs text-gray-600 font-medium flex-shrink-0">{p.period}</div>
-                    <div className="flex-1 relative h-8 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full flex items-center justify-end pr-2"
-                        style={{ width: `${barWidth}%`, backgroundColor: '#2563eb', minWidth: '40px' }}
-                        title={`${meta.label}: ${p.score.toFixed(1)}${p.responses !== null ? ` • ${p.responses} responses` : ''}`}
-                      >
-                        <span className="text-xs font-semibold text-white">{p.score.toFixed(1)}</span>
-                      </div>
-                    </div>
-                    <div className="w-24 text-xs text-gray-500 flex-shrink-0 text-right">
-                      {p.responses !== null ? `${p.responses} resp` : '—'}
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="text-sm text-gray-600">Survey history will appear after multiple survey cycles.</div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-4">
+        <div className="mt-5">
           <button
             type="button"
             onClick={() => {
@@ -455,6 +524,25 @@ export default function ReportsZones() {
             </div>
           </div>
         </div>
+
+        {/* Primary tests (all 7) — moved up for stronger visual hierarchy */}
+        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-sm font-semibold text-gray-900">Primary tests (what we measure)</div>
+              <div className="text-sm text-gray-600 mt-1">
+                These are the seven tests that roll up into your ALI score and ultimately drive your zone.
+              </div>
+            </div>
+            <div className="text-xs text-gray-500">Scores are 0–100.</div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            {TEST_ORDER.map((k) => (
+              <TestCard key={k} testKey={k} />
+            ))}
+          </div>
+        </section>
 
         {/* All zones */}
         <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
@@ -633,24 +721,7 @@ export default function ReportsZones() {
           </div>
         </section>
 
-        {/* Primary tests (all 7) */}
-        <section className="bg-white rounded-lg border border-gray-200 p-8">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <div className="text-sm font-semibold text-gray-900">Primary tests (what we measure)</div>
-              <div className="text-sm text-gray-600 mt-1">
-                These are the seven tests that roll up into your ALI score and ultimately drive your zone.
-              </div>
-            </div>
-            <div className="text-xs text-gray-500">Scores are 0–100.</div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-5">
-            {TEST_ORDER.map((k) => (
-              <TestCard key={k} testKey={k} />
-            ))}
-          </div>
-        </section>
+        {/* Primary tests moved above for better hierarchy */}
       </main>
       <AliFooter />
 

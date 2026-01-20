@@ -205,7 +205,7 @@ const ALIReports = () => {
       )
     },
     'pattern-leadership_drift': {
-      title: 'Leadership Drift',
+      title: 'Leadership Alignment',
       content: (
         <div>
             <p className="mb-4">
