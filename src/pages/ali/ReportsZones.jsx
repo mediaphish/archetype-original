@@ -449,6 +449,11 @@ export default function ReportsZones() {
                 Your <span className="font-semibold text-gray-900">ALI score</span> summarizes the seven primary tests below. Your zone is determined by
                 your ALI score (rolling score when available; otherwise current).
               </div>
+              <div className="text-sm text-gray-700 leading-relaxed mt-2">
+                <span className="font-semibold text-gray-900">Why we call them zones:</span> We group your overall score into simple “zones” because
+                it’s easier to understand a leadership environment as a range (healthy → warning → high risk) than as a single number. Your zone is a
+                quick read on “where things are right now,” and the tests below show what’s driving it.
+              </div>
             </div>
           </div>
         </div>
