@@ -2008,17 +2008,21 @@ const ALIDashboard = () => {
                   </div>
 
                   <div className="bg-white rounded-xl border border-gray-200 p-4">
-                    <div className="text-sm font-semibold text-gray-900 mb-2">What to do next</div>
-                    <ol className="text-sm text-gray-700 space-y-2 list-decimal pl-5">
-                      <li>Pick the lowest pattern and run one small behavioral experiment this week.</li>
-                      <li>Use Archy to translate the data into concrete actions your team will feel.</li>
-                      <li>Get more responses (pilot accuracy improves quickly from 5 → 10+).</li>
-                    </ol>
+                    <div className="text-sm font-semibold text-gray-900 mb-2">Why this zone (your data)</div>
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      Your zone is driven by the lowest patterns and the largest perception gap below. Use the recommended first move to create a
+                      repeatable habit that closes the gap.
+                    </p>
                   </div>
                 </div>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                  <div className="text-sm font-semibold text-gray-900 mb-2">Suggested first move (Archy)</div>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900">Suggested first move (Archy)</div>
+                      <div className="text-xs text-gray-600 mt-1">A concrete experiment + script you can run this week based on your data.</div>
+                    </div>
+                  </div>
                   {zoneRecoLoading ? (
                     <div className="text-sm text-gray-700">Generating a specific first move…</div>
                   ) : zoneRecoError ? (
@@ -2033,16 +2037,34 @@ const ALIDashboard = () => {
                   ) : (
                     <div className="text-sm text-gray-700">—</div>
                   )}
-                </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-                  <div className="flex gap-3">
+                  <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
                     <button
                       onClick={() => {
                         const label = dashboardData.scores.ali.zone ? getZoneInfo(dashboardData.scores.ali.zone).label : 'Current Zone';
                         const ali = fmt1(dashboardData.scores.ali.current);
+                        const lowest = (() => {
+                          const entries = Object.entries(dashboardData.scores.patterns || {})
+                            .map(([k, v]) => [k, v?.current])
+                            .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+                            .sort((a, b) => a[1] - b[1]);
+                          const a = entries[0];
+                          const b = entries[1];
+                          if (!a) return 'unknown';
+                          if (!b) return `${a[0]} (${a[1].toFixed(1)})`;
+                          return `${a[0]} (${a[1].toFixed(1)}), ${b[0]} (${b[1].toFixed(1)})`;
+                        })();
+                        const gap = (() => {
+                          const gaps = dashboardData.leadershipMirror?.gaps || {};
+                          const entries = Object.entries(gaps)
+                            .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+                            .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+                          const top = entries[0];
+                          if (!top) return 'unknown';
+                          return `${top[0]} (${Math.abs(top[1]).toFixed(1)}pt)`;
+                        })();
                         setArchyInitialMessage(
-                          `I'm looking at my ${label}. My ALI score is ${ali}. Explain what this zone means in plain language, why I might be here, and what 3 actions I should take next week.`
+                          `I'm looking at my ${label}. My ALI score is ${ali}.\n\nLowest patterns: ${lowest}\nLargest perception gap: ${gap}\n\nExplain what this zone means in plain language, why my data suggests I'm here, and give me 2 script-ready options I can try this week.`
                         );
                         setShowArchyChat(true);
                         setShowZoneDetails(false);
@@ -2056,17 +2078,17 @@ const ALIDashboard = () => {
                     <button
                       onClick={() => {
                         setShowZoneDetails(false);
-                        handleNavigate(withEmail('/ali/reports?focus=zone'));
+                        handleNavigate(withEmail('/ali/reports/zones'));
                       }}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 font-semibold hover:bg-gray-50 transition-colors whitespace-nowrap"
                     >
-                      Go deeper →
+                      Open Zone report →
                     </button>
                   </div>
+                </div>
 
-                  <div className="text-xs text-gray-500">
-                    Evidence-based guidance improves as more data accumulates.
-                  </div>
+                <div className="text-xs text-gray-500">
+                  Evidence-based guidance improves as more data accumulates.
                 </div>
               </div>
             </div>
