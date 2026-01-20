@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Info } from 'lucide-react';
 import ChatApp from '../../app/ChatApp';
 
 function fmt1(n) {
@@ -7,27 +7,38 @@ function fmt1(n) {
   return n.toFixed(1);
 }
 
+function keyToLabel(k) {
+  if (!k) return '—';
+  if (k === 'leadership_drift') return 'Leadership Alignment';
+  if (k === 'ali') return 'ALI Overall';
+  return String(k).replace(/_/g, ' ');
+}
+
 function getZoneInfo(zone) {
   const zones = {
     green: {
+      key: 'green',
       color: '#10b981',
       label: 'Green Zone',
       meaning:
         'Healthy, stable leadership environment. Your team likely experiences clarity and follow-through as consistent.'
     },
     yellow: {
+      key: 'yellow',
       color: '#f59e0b',
       label: 'Yellow Zone',
       meaning:
         'Stable but inconsistent in moments that matter. Small gaps are showing up—fixable with focused habits.'
     },
     orange: {
+      key: 'orange',
       color: '#f97316',
       label: 'Orange Zone',
       meaning:
         'Early warning signs of drift. The team experiences inconsistency and/or unclear priorities often enough to create friction.'
     },
     red: {
+      key: 'red',
       color: '#ef4444',
       label: 'Red Zone',
       meaning:
@@ -44,6 +55,61 @@ function zoneBand(score) {
   if (score >= 45) return { zone: 'orange', range: '45–59.9' };
   return { zone: 'red', range: '0–44.9' };
 }
+
+const ZONE_GUIDE = [
+  { key: 'green', range: '75–100', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.45)' },
+  { key: 'yellow', range: '60–74.9', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.50)' },
+  { key: 'orange', range: '45–59.9', bg: 'rgba(249,115,22,0.10)', border: 'rgba(249,115,22,0.50)' },
+  { key: 'red', range: '0–44.9', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.45)' }
+];
+
+const TEST_META = {
+  clarity: {
+    label: 'Clarity',
+    what: 'How clear priorities, expectations, and “what good looks like” feel to the team.',
+    why: 'Low clarity creates rework, guessing, and hesitation—people stall because they’re not sure what matters most.'
+  },
+  consistency: {
+    label: 'Consistency',
+    what: 'How reliably leadership follows through (habits, decisions, accountability, and standards).',
+    why: 'Low consistency makes the environment unpredictable—people stop trusting priorities because they change or aren’t reinforced.'
+  },
+  trust: {
+    label: 'Trust',
+    what: 'How safe it feels to be honest, ask questions, and raise issues without punishment.',
+    why: 'Low trust causes silence and “workarounds.” Problems stay hidden until they become expensive.'
+  },
+  communication: {
+    label: 'Communication',
+    what: 'How well information flows: context, updates, and the “why” behind decisions.',
+    why: 'Low communication creates rumors, misalignment, and duplicated work because people fill gaps with assumptions.'
+  },
+  alignment: {
+    label: 'Alignment',
+    what: 'How aligned people are on direction: priorities, tradeoffs, and what the team is optimizing for.',
+    why: 'Low alignment looks like teams pulling in different directions—even high effort won’t compound if it’s not pointed at the same target.'
+  },
+  stability: {
+    label: 'Stability',
+    what: 'How stable the operating environment feels: pace, pressure, chaos, and ability to plan.',
+    why: 'Low stability burns energy on firefighting. People default to survival behaviors instead of improvement.'
+  },
+  leadership_drift: {
+    label: 'Leadership Alignment',
+    what: 'A signal of drift: how often leadership behavior and the team’s lived experience feel out of sync.',
+    why: 'Drift is where confusion and resentment grow—leaders think they’re doing one thing, while the team experiences another.'
+  }
+};
+
+const TEST_ORDER = [
+  'clarity',
+  'consistency',
+  'trust',
+  'communication',
+  'alignment',
+  'stability',
+  'leadership_drift'
+];
 
 export default function ReportsZones() {
   const [showArchyChat, setShowArchyChat] = useState(false);
@@ -65,7 +131,18 @@ export default function ReportsZones() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
-  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+
+  const storedEmail = (() => {
+    try {
+      return localStorage.getItem('ali_email') || '';
+    } catch {
+      return '';
+    }
+  })();
+
+  const emailRaw = (emailParam || storedEmail || '').toString();
+  const email = emailRaw ? emailRaw.toLowerCase().trim() : '';
+
   const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
   const withEmail = (path) => {
     if (!email) return path;
@@ -74,6 +151,17 @@ export default function ReportsZones() {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
+
+  // Persist email so /ali/reports/zones works without query params after first login
+  useEffect(() => {
+    if (!emailParam) return;
+    try {
+      if (email) localStorage.setItem('ali_email', email);
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailParam]);
 
   useEffect(() => {
     let isMounted = true;
@@ -102,8 +190,16 @@ export default function ReportsZones() {
 
   const isLoadingLive = !!email && !liveLoadedOnce;
 
+  const zone = liveDashboardSummary?.scores?.ali?.zone || '';
+  const aliScore = liveDashboardSummary?.scores?.ali?.current;
+  const respCount = liveDashboardSummary?.responseCounts?.overall;
+  const zoneInfo = getZoneInfo(zone || 'yellow');
+  const band = zoneBand(aliScore);
+
+  const patterns = liveDashboardSummary?.scores?.patterns || {};
+  const mirrorGaps = liveDashboardSummary?.leadershipMirror?.gaps || {};
+
   const evidence = useMemo(() => {
-    const patterns = liveDashboardSummary?.scores?.patterns || {};
     const lowest = Object.entries(patterns)
       .map(([k, v]) => [k, v?.current])
       .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
@@ -111,8 +207,7 @@ export default function ReportsZones() {
       .slice(0, 2)
       .map(([k, v]) => ({ key: k, value: v }));
 
-    const gaps = liveDashboardSummary?.leadershipMirror?.gaps || {};
-    const gapEntries = Object.entries(gaps)
+    const gapEntries = Object.entries(mirrorGaps)
       .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
       .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
     const topGap = gapEntries[0];
@@ -121,13 +216,7 @@ export default function ReportsZones() {
       lowestPatterns: lowest,
       largestGap: topGap ? { key: topGap[0], value: topGap[1] } : null
     };
-  }, [liveDashboardSummary]);
-
-  const zone = liveDashboardSummary?.scores?.ali?.zone || '';
-  const aliScore = liveDashboardSummary?.scores?.ali?.current;
-  const respCount = liveDashboardSummary?.responseCounts?.overall;
-  const zoneInfo = getZoneInfo(zone || 'yellow');
-  const band = zoneBand(aliScore);
+  }, [patterns, mirrorGaps]);
 
   useEffect(() => {
     let isMounted = true;
@@ -135,12 +224,13 @@ export default function ReportsZones() {
       if (!email) return;
       if (!zone) return;
       if (!liveDashboardSummary) return;
+
       try {
         setZoneRecoLoading(true);
         setZoneRecoError(null);
         setZoneReco(null);
 
-        const lowestPatterns = (evidence.lowestPatterns || []).map(p => `${p.key}:${p.value.toFixed(1)}`);
+        const lowestPatterns = (evidence.lowestPatterns || []).map((p) => `${p.key}:${p.value.toFixed(1)}`);
         const largestGap = evidence.largestGap
           ? `${evidence.largestGap.key}:${Math.abs(evidence.largestGap.value).toFixed(1)}pt`
           : '';
@@ -174,6 +264,35 @@ export default function ReportsZones() {
       isMounted = false;
     };
   }, [email, zone, aliScore, respCount, liveDashboardSummary, evidence]);
+
+  if (!email) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold text-gray-900">ALI</div>
+              <nav className="flex items-center gap-6">
+                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">
+                  Log In
+                </button>
+              </nav>
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 py-10 max-w-2xl">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Zones</h1>
+          <p className="text-gray-600 mb-6">Please log in via magic link to view your live Zones guide.</p>
+          <button
+            onClick={() => handleNavigate('/ali/login')}
+            className="inline-flex items-center justify-center px-5 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+          >
+            Go to Login
+          </button>
+        </main>
+      </div>
+    );
+  }
 
   if (isLoadingLive) {
     return (
@@ -215,11 +334,57 @@ export default function ReportsZones() {
         </header>
         <main className="container mx-auto px-4 py-10 max-w-7xl">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Zones</h1>
-          <p className="text-gray-600">Loading your live zone report…</p>
+          <p className="text-gray-600">Loading your live Zone guide…</p>
         </main>
       </div>
     );
   }
+
+  const TestCard = ({ testKey }) => {
+    const meta = TEST_META[testKey] || { label: keyToLabel(testKey), what: '—', why: '—' };
+    const current = patterns?.[testKey]?.current;
+    const rolling = patterns?.[testKey]?.rolling;
+
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div className="flex items-start justify-between gap-3">
+          <div className="text-lg font-semibold text-gray-900">{meta.label}</div>
+          <div className="text-right">
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Current</div>
+            <div className="text-2xl font-bold text-gray-900 leading-none">{fmt1(current)}</div>
+            <div className="text-xs text-gray-500 mt-1">
+              Rolling: <span className="font-semibold text-gray-700">{fmt1(rolling)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3 space-y-2">
+          <div className="text-sm text-gray-700 leading-relaxed">
+            <span className="font-semibold text-gray-900">What this is:</span> {meta.what}
+          </div>
+          <div className="text-sm text-gray-700 leading-relaxed">
+            <span className="font-semibold text-gray-900">Why it matters:</span> {meta.why}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={() => {
+              setArchyInitialMessage(
+                `I'm reviewing my ALI Zones guide.\n\nTest: ${meta.label}\nCurrent score: ${fmt1(current)}\nRolling score: ${fmt1(rolling)}\n\nExplain what this test means in plain language, what low vs high typically looks like, and give me 2 script-ready actions I can run this week to improve it.`
+              );
+              setShowArchyChat(true);
+            }}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700"
+          >
+            <MessageSquare className="w-4 h-4" />
+            Ask Archy about {meta.label}
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -263,7 +428,7 @@ export default function ReportsZones() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Zones</h1>
-            <p className="text-gray-600">Plain-language meaning, evidence, and a concrete first move.</p>
+            <p className="text-gray-600">A complete guide to the four zones and the seven primary tests that drive them.</p>
             {liveDashboardError ? <p className="text-xs text-red-600 mt-1">(live data unavailable: {liveDashboardError})</p> : null}
           </div>
           <button
@@ -274,9 +439,65 @@ export default function ReportsZones() {
           </button>
         </div>
 
-        <section className="bg-white rounded-lg border border-gray-200 p-8">
+        {/* How zones work */}
+        <div className="mb-6 bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 text-gray-500 mt-0.5" />
+            <div>
+              <div className="text-sm font-semibold text-gray-900">How zones work</div>
+              <div className="text-sm text-gray-700 leading-relaxed mt-1">
+                Your <span className="font-semibold text-gray-900">ALI score</span> summarizes the seven primary tests below. Your zone is determined by
+                your ALI score (rolling score when available; otherwise current).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* All zones */}
+        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-sm font-semibold text-gray-900">All zones</div>
+              <div className="text-sm text-gray-600 mt-1">
+                Zones are score bands. They tell you what kind of leadership environment your team is experiencing right now.
+              </div>
+            </div>
+            <div className="text-sm text-gray-700">
+              Your current zone:{' '}
+              <span className="font-semibold" style={{ color: zoneInfo.color }}>
+                {zoneInfo.label}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-5">
+            {ZONE_GUIDE.map((z) => {
+              const zi = getZoneInfo(z.key);
+              const isCurrent = zi.key === zoneInfo.key;
+              return (
+                <div key={z.key} className="rounded-xl border p-5" style={{ backgroundColor: z.bg, borderColor: z.border }}>
+                  <div className="flex items-center justify-between">
+                    <div className="text-lg font-bold" style={{ color: zi.color }}>
+                      {zi.label}
+                    </div>
+                    {isCurrent ? (
+                      <div className="text-xs font-semibold px-2 py-1 rounded-full bg-white/70 border border-black/[0.12]">
+                        You are here
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">Range: {z.range}</div>
+                  <div className="text-sm text-gray-800 leading-relaxed mt-3">{zi.meaning}</div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Current zone + evidence + first move */}
+        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Zone Summary Card (approved A) */}
+            {/* Current Zone (no duplicated evidence) */}
             <div
               className="rounded-xl border p-6 h-full"
               style={{ backgroundColor: 'rgba(249,115,22,0.10)', borderColor: 'rgba(249,115,22,0.50)' }}
@@ -289,9 +510,7 @@ export default function ReportsZones() {
                 </div>
                 <div className="mt-4">
                   <div className="text-xs text-black/[0.38] uppercase tracking-wide">ALI score</div>
-                  <div className="text-5xl font-bold text-black/[0.87] leading-none mt-1">
-                    {fmt1(aliScore)}
-                  </div>
+                  <div className="text-5xl font-bold text-black/[0.87] leading-none mt-1">{fmt1(aliScore)}</div>
                   <div className="text-sm text-black/[0.6] mt-3">
                     Based on {typeof respCount === 'number' ? respCount : '—'} response(s).
                     {band?.range ? <span className="text-black/[0.38]"> • {band.range}</span> : null}
@@ -302,9 +521,7 @@ export default function ReportsZones() {
               <div className="mt-6 pt-5 border-t border-black/[0.12] space-y-4">
                 <div>
                   <div className="text-sm font-semibold text-black/[0.87]">What {zone || 'this zone'} means</div>
-                  <div className="text-sm text-black/[0.6] leading-relaxed mt-1">
-                    {zoneInfo.meaning}
-                  </div>
+                  <div className="text-sm text-black/[0.6] leading-relaxed mt-1">{zoneInfo.meaning}</div>
                 </div>
 
                 <div>
@@ -313,37 +530,18 @@ export default function ReportsZones() {
                     {band?.zone ? (
                       <>
                         Your ALI score of <span className="font-semibold text-black/[0.87]">{fmt1(aliScore)}</span> falls in the{' '}
-                        <span className="font-semibold text-black/[0.87]">{band.zone}</span> band ({band.range}). Your lowest patterns and largest
-                        perception gap show where the drift is coming from.
+                        <span className="font-semibold text-black/[0.87]">{band.zone}</span> band ({band.range}). The Evidence snapshot highlights which
+                        tests are most limiting right now and where leader/team experience differs most.
                       </>
                     ) : (
                       'We’ll show the score band and narrative once your score is available.'
                     )}
                   </div>
-
-                  <div className="mt-3 space-y-2 text-sm">
-                    <div className="text-black/[0.6]">
-                      <span className="text-black/[0.38] uppercase tracking-wide text-xs block">Lowest patterns</span>
-                      <span className="font-semibold text-black/[0.87]">
-                        {evidence.lowestPatterns?.length
-                          ? evidence.lowestPatterns.map(p => `${p.key} (${p.value.toFixed(1)})`).join(', ')
-                          : '—'}
-                      </span>
-                    </div>
-                    <div className="text-black/[0.6]">
-                      <span className="text-black/[0.38] uppercase tracking-wide text-xs block">Largest perception gap</span>
-                      <span className="font-semibold text-black/[0.87]">
-                        {evidence.largestGap
-                          ? `${evidence.largestGap.key} (${Math.abs(evidence.largestGap.value).toFixed(1)}pt)`
-                          : '—'}
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Evidence + Suggested first move (approved B + C) */}
+            {/* Evidence + Suggested first move */}
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-xl border border-gray-200 p-6">
                 <div className="text-sm font-semibold text-gray-900 mb-2">Evidence snapshot</div>
@@ -352,16 +550,28 @@ export default function ReportsZones() {
                     <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Lowest patterns</div>
                     <div className="text-sm font-semibold text-gray-900">
                       {evidence.lowestPatterns?.length
-                        ? evidence.lowestPatterns.map(p => `${p.key} (${p.value.toFixed(1)})`).join(', ')
+                        ? evidence.lowestPatterns.map((p) => `${keyToLabel(p.key)} (${p.value.toFixed(1)})`).join(', ')
                         : '—'}
+                    </div>
+                    <div className="mt-3 text-sm text-gray-700 leading-relaxed">
+                      <span className="font-semibold text-gray-900">What this is:</span> The 1–2 lowest-scoring of the seven primary tests.
+                    </div>
+                    <div className="mt-1 text-sm text-gray-700 leading-relaxed">
+                      <span className="font-semibold text-gray-900">Why it matters:</span> Improving the lowest test is usually the fastest way to move
+                      the overall system—because constraints cap everything else.
                     </div>
                   </div>
                   <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
                     <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Largest perception gap</div>
                     <div className="text-sm font-semibold text-gray-900">
-                      {evidence.largestGap
-                        ? `${evidence.largestGap.key} (${Math.abs(evidence.largestGap.value).toFixed(1)}pt)`
-                        : '—'}
+                      {evidence.largestGap ? `${keyToLabel(evidence.largestGap.key)} (${Math.abs(evidence.largestGap.value).toFixed(1)}pt)` : '—'}
+                    </div>
+                    <div className="mt-3 text-sm text-gray-700 leading-relaxed">
+                      <span className="font-semibold text-gray-900">What this is:</span> The area where leader and team responses differ most.
+                    </div>
+                    <div className="mt-1 text-sm text-gray-700 leading-relaxed">
+                      <span className="font-semibold text-gray-900">Why it matters:</span> Gaps predict friction: leaders think it’s going fine while the
+                      team experiences it differently. Closing gaps reduces misunderstandings fast.
                     </div>
                   </div>
                 </div>
@@ -371,9 +581,7 @@ export default function ReportsZones() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="text-sm font-semibold text-gray-900 mb-1">Suggested first move (Archy)</div>
-                    <div className="text-xs text-gray-600">
-                      A concrete experiment + script you can run this week based on your data.
-                    </div>
+                    <div className="text-xs text-gray-600">A concrete experiment + script you can run this week based on your data.</div>
                   </div>
                 </div>
 
@@ -385,15 +593,9 @@ export default function ReportsZones() {
                   ) : zoneReco ? (
                     <div className="space-y-3 text-sm text-gray-800">
                       <div className="text-lg font-semibold text-gray-900">{zoneReco.title}</div>
-                      <div>
-                        <span className="font-semibold">Behavior experiment:</span> {zoneReco.behavior_experiment}
-                      </div>
-                      <div>
-                        <span className="font-semibold">Team script:</span> {zoneReco.team_script}
-                      </div>
-                      <div>
-                        <span className="font-semibold">Watch for:</span> {zoneReco.watch_for}
-                      </div>
+                      <div><span className="font-semibold">Behavior experiment:</span> {zoneReco.behavior_experiment}</div>
+                      <div><span className="font-semibold">Team script:</span> {zoneReco.team_script}</div>
+                      <div><span className="font-semibold">Watch for:</span> {zoneReco.watch_for}</div>
                     </div>
                   ) : (
                     <div className="text-sm text-gray-700">—</div>
@@ -405,13 +607,13 @@ export default function ReportsZones() {
                     type="button"
                     onClick={() => {
                       const lowest = evidence.lowestPatterns?.length
-                        ? evidence.lowestPatterns.map(p => `${p.key} (${p.value.toFixed(1)})`).join(', ')
+                        ? evidence.lowestPatterns.map((p) => `${keyToLabel(p.key)} (${p.value.toFixed(1)})`).join(', ')
                         : 'unknown';
                       const gap = evidence.largestGap
-                        ? `${evidence.largestGap.key} (${Math.abs(evidence.largestGap.value).toFixed(1)}pt)`
+                        ? `${keyToLabel(evidence.largestGap.key)} (${Math.abs(evidence.largestGap.value).toFixed(1)}pt)`
                         : 'unknown';
                       setArchyInitialMessage(
-                        `I'm looking at my ALI Zone report.\n\nCurrent zone: ${zone}\nALI score: ${fmt1(aliScore)}\nLowest patterns: ${lowest}\nLargest perception gap: ${gap}\nResponses: ${typeof respCount === 'number' ? respCount : 'unknown'}\n\nExplain (1) why this zone happens in plain language, (2) what my data suggests is driving it, and (3) give me 2 additional script-ready options beyond the suggested first move.`
+                        `I'm looking at my ALI Zones guide.\n\nCurrent zone: ${zone}\nALI score: ${fmt1(aliScore)}\nLowest tests: ${lowest}\nLargest perception gap: ${gap}\nResponses: ${typeof respCount === 'number' ? respCount : 'unknown'}\n\nExplain (1) why this zone happens in plain language, (2) what my data suggests is driving it, and (3) give me 2 additional script-ready options beyond the suggested first move.`
                       );
                       setShowArchyChat(true);
                     }}
@@ -421,12 +623,29 @@ export default function ReportsZones() {
                     Ask Archy
                   </button>
 
-                  <div className="text-xs text-gray-600">
-                    Best results once you have 10+ responses and multiple quarters.
-                  </div>
+                  <div className="text-xs text-gray-600">Best results once you have 10+ responses and multiple quarters.</div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Primary tests (all 7) */}
+        <section className="bg-white rounded-lg border border-gray-200 p-8">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-sm font-semibold text-gray-900">Primary tests (what we measure)</div>
+              <div className="text-sm text-gray-600 mt-1">
+                These are the seven tests that roll up into your ALI score and ultimately drive your zone.
+              </div>
+            </div>
+            <div className="text-xs text-gray-500">Scores are 0–100.</div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-5">
+            {TEST_ORDER.map((k) => (
+              <TestCard key={k} testKey={k} />
+            ))}
           </div>
         </section>
       </main>
@@ -468,7 +687,7 @@ export default function ReportsZones() {
                   context="ali-reports-zones"
                   initialMessage={
                     archyInitialMessage ||
-                    "I'm looking at my ALI Zones report. Help me understand what my zone means and what to do next."
+                    "I'm looking at my ALI Zones guide. Help me understand what my zone means and what to do next."
                   }
                 />
               </div>
