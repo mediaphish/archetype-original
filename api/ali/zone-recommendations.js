@@ -159,7 +159,8 @@ export default async function handler(req, res) {
       knowledgeContext
     ].join('\n');
 
-    const openaiKey = requireEnv('OPENAI_API_KEY');
+    // This project uses OPEN_API_KEY (see `api/chat.js`)
+    const openaiKey = requireEnv('OPEN_API_KEY');
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
