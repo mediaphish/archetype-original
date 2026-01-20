@@ -135,6 +135,92 @@ function calculateScoresForResponses(allResponses, questionBank, historicalScore
   };
 }
 
+/**
+ * Compute an individual Team Experience Map point for a single respondent response set.
+ * We use per-respondent pattern scores (clarity, stability, trust) as coordinates.
+ *
+ * @returns {{x:number,y:number,zone:string}|null}
+ */
+function computeExperiencePointForSingleResponse(transformedResponses, questionBank) {
+  if (!Array.isArray(transformedResponses) || transformedResponses.length === 0) return null;
+
+  const clarity = calculatePatternScore(transformedResponses, 'clarity');
+  const stability = calculatePatternScore(transformedResponses, 'stability');
+  const trust = calculatePatternScore(transformedResponses, 'trust');
+
+  if (clarity === null || stability === null || trust === null) return null;
+
+  // Use the same coordinate system as the Team Experience Map:
+  // X: clarity
+  // Y: (stability + trust) / 2
+  return calculateTeamExperienceMapCoordinates(clarity, stability, trust);
+}
+
+/**
+ * Generate lightweight insights from current scores even with small N (pilot).
+ * These are deterministic and do not require multi-quarter history.
+ */
+function generatePilotInsights({ overallScores, leadershipMirror, responseCounts, dataQuality }) {
+  const insights = [];
+
+  const patterns = overallScores?.patterns || {};
+  const patternEntries = Object.entries(patterns)
+    .map(([k, v]) => [k, v?.current])
+    .filter(([, v]) => typeof v === 'number' && Number.isFinite(v));
+
+  if (patternEntries.length > 0) {
+    const sorted = patternEntries.slice().sort((a, b) => a[1] - b[1]);
+    const [lowestKey, lowestVal] = sorted[0];
+    const [highestKey, highestVal] = sorted[sorted.length - 1];
+
+    const niceName = (k) => (k === 'leadership_drift' ? 'Leadership Alignment' : k.replace('_', ' '));
+
+    insights.push({
+      id: 'pilot-insight-1',
+      title: `Strongest signal: ${niceName(highestKey)}`,
+      text: `Your highest-scoring pattern right now is ${niceName(highestKey)} (${highestVal.toFixed(1)}). Protect what’s working here—this is your current strength.`,
+      priority: 'high'
+    });
+
+    insights.push({
+      id: 'pilot-insight-2',
+      title: `Biggest opportunity: ${niceName(lowestKey)}`,
+      text: `Your lowest-scoring pattern right now is ${niceName(lowestKey)} (${lowestVal.toFixed(1)}). This is the most direct place to focus for near-term improvement.`,
+      priority: 'high'
+    });
+  }
+
+  const gaps = leadershipMirror?.gaps || {};
+  const gapEntries = Object.entries(gaps)
+    .filter(([, v]) => typeof v === 'number' && Number.isFinite(v));
+
+  if (gapEntries.length > 0) {
+    // Biggest absolute gap
+    const [gapKey, gapVal] = gapEntries.slice().sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))[0];
+    const label = gapKey === 'ali' ? 'ALI Overall' : gapKey;
+    insights.push({
+      id: 'pilot-insight-3',
+      title: `Perception gap to watch: ${label}`,
+      text: `There is a ${Math.abs(gapVal).toFixed(1)}pt perception gap on ${label}. This is often where misunderstanding and frustration build fastest.`,
+      priority: 'medium'
+    });
+  }
+
+  // Data quality / pilot note (always include, but keep it short)
+  const total = typeof responseCounts?.overall === 'number' ? responseCounts.overall : null;
+  const meetsOrg = !!dataQuality?.meets_minimum_n_org;
+  insights.push({
+    id: 'pilot-insight-meta',
+    title: 'Pilot note',
+    text: total !== null
+      ? `These insights are based on ${total} responses. They will sharpen as more people respond and as additional quarters are completed.`
+      : `These insights will sharpen as more people respond and as additional quarters are completed.`,
+    priority: 'low'
+  });
+
+  return insights;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -319,6 +405,7 @@ export default async function handler(req, res) {
     // Process each deployment's responses
     const historicalScores = [];
     const historicalClarityScores = [];
+    const experienceMapPoints = [];
 
     for (const deployment of deployments) {
       const deploymentResponses = responsesByDeployment[deployment.id] || [];
@@ -348,6 +435,17 @@ export default async function handler(req, res) {
         );
 
         transformedForDeployment.push(...transformed);
+        // Individual experience-map point (one per respondent)
+        const point = computeExperiencePointForSingleResponse(transformed, questionBank);
+        if (point) {
+          experienceMapPoints.push({
+            x: point.x,
+            y: point.y,
+            zone: point.zone,
+            role: isLeader ? 'leader' : 'team_member',
+            completed_at: response.completed_at || null
+          });
+        }
         
         if (isLeader) {
           leaderCount++;
@@ -455,20 +553,29 @@ export default async function handler(req, res) {
     );
 
     // Trajectory (prefer DriftIndex, fallback to qoq_delta)
-    const trajectory = {
-      value: overallScores.drift.drift_index !== null 
-        ? overallScores.drift.drift_index 
-        : overallScores.drift.delta_ali,
-      direction: overallScores.drift.drift_index !== null
-        ? (overallScores.drift.drift_index > 2 ? 'improving' : overallScores.drift.drift_index < -2 ? 'declining' : 'stable')
-        : (overallScores.drift.delta_ali !== null 
-          ? (overallScores.drift.delta_ali > 2 ? 'improving' : overallScores.drift.delta_ali < -2 ? 'declining' : 'stable')
-          : 'stable'),
-      magnitude: overallScores.drift.drift_index !== null
-        ? Math.abs(overallScores.drift.drift_index)
-        : (overallScores.drift.delta_ali !== null ? Math.abs(overallScores.drift.delta_ali) : 0),
-      method: overallScores.drift.drift_index !== null ? 'drift_index' : 'qoq_delta'
-    };
+    const drift = { ...(overallScores.drift || {}) };
+    // If this is Survey 1 (no historical cycles), do not show movement.
+    if (deployments.length < 2) {
+      drift.delta_ali = null;
+      drift.drift_index = null;
+    }
+
+    const trajectory = deployments.length < 2
+      ? { value: null, direction: null, magnitude: null, method: null }
+      : {
+          value: drift.drift_index !== null 
+            ? drift.drift_index 
+            : drift.delta_ali,
+          direction: drift.drift_index !== null
+            ? (drift.drift_index > 2 ? 'improving' : drift.drift_index < -2 ? 'declining' : 'stable')
+            : (drift.delta_ali !== null 
+              ? (drift.delta_ali > 2 ? 'improving' : drift.delta_ali < -2 ? 'declining' : 'stable')
+              : null),
+          magnitude: drift.drift_index !== null
+            ? Math.abs(drift.drift_index)
+            : (drift.delta_ali !== null ? Math.abs(drift.delta_ali) : null),
+          method: drift.drift_index !== null ? 'drift_index' : (drift.delta_ali !== null ? 'qoq_delta' : null)
+        };
 
     // Data quality checks
     const totalResponses = allResponses?.length || 0;
@@ -522,6 +629,39 @@ export default async function handler(req, res) {
       })).filter(item => item.score !== null && item.score !== undefined);
     });
 
+    const responseCounts = {
+      overall: totalResponses,
+      leader: leaderCount,
+      team_member: teamMemberCount
+    };
+
+    const dataQuality = {
+      meets_minimum_n: meetsMinimumOrg,
+      meets_minimum_n_team: meetsMinimumTeam,
+      meets_minimum_n_org: meetsMinimumOrg,
+      response_count: totalResponses,
+      standard_deviation: standardDeviation,
+      data_quality_banner: dataQualityBanner
+    };
+
+    const insights = generatePilotInsights({
+      overallScores,
+      leadershipMirror,
+      responseCounts,
+      dataQuality
+    });
+
+    // Simple recent activity for pilots (avoid fake years)
+    const mostRecent = allResponses && allResponses.length > 0 ? allResponses[allResponses.length - 1] : null;
+    const recentActivity = mostRecent ? [
+      {
+        id: 'activity-1',
+        type: 'response_collected',
+        message: `${totalResponses} response(s) collected`,
+        timestamp: mostRecent.completed_at ? new Date(mostRecent.completed_at).toLocaleString() : 'recently'
+      }
+    ] : [];
+
     return res.status(200).json({
       company: {
         id: company.id,
@@ -531,6 +671,7 @@ export default async function handler(req, res) {
       scores: overallScores,
       coreScores,
       experienceMap,
+      experienceMapPoints,
       leadershipProfile: {
         profile: leadershipProfile?.profile || 'profile_forming',
         honesty: {
@@ -545,24 +686,15 @@ export default async function handler(req, res) {
         }
       },
       leadershipMirror,
-      drift: overallScores.drift,
+      drift,
       trajectory,
-      responseCounts: {
-        overall: totalResponses,
-        leader: leaderCount,
-        team_member: teamMemberCount
-      },
-      dataQuality: {
-        meets_minimum_n: meetsMinimumOrg,
-        meets_minimum_n_team: meetsMinimumTeam,
-        meets_minimum_n_org: meetsMinimumOrg,
-        response_count: totalResponses,
-        standard_deviation: standardDeviation,
-        data_quality_banner: dataQualityBanner
-      },
+      responseCounts,
+      dataQuality,
       surveys: surveysArray,
       historicalTrends,
-      patternTrends
+      patternTrends,
+      insights,
+      recentActivity
     });
 
   } catch (err) {

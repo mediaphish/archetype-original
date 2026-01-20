@@ -16,6 +16,7 @@ const ALIDashboard = () => {
   const [archyInitialMessage, setArchyInitialMessage] = useState(null);
   const [liveDashboard, setLiveDashboard] = useState(null);
   const [liveDashboardError, setLiveDashboardError] = useState(null);
+  const [liveDashboardLoadedOnce, setLiveDashboardLoadedOnce] = useState(false);
   const chartRef = useRef(null);
 
   const handleNavigate = (path) => {
@@ -76,10 +77,12 @@ const ALIDashboard = () => {
         }
         if (!isMounted) return;
         setLiveDashboard(json);
+        setLiveDashboardLoadedOnce(true);
       } catch (err) {
         if (!isMounted) return;
         setLiveDashboard(null);
         setLiveDashboardError(err?.message || 'Failed to load dashboard');
+        setLiveDashboardLoadedOnce(true);
       }
     };
     run();
@@ -144,7 +147,11 @@ const ALIDashboard = () => {
         animateValue(`pattern_${key}`, 0, displayValue, 1200);
       });
 
-      animateValue('trajectory', 0, mockData.trajectory.value, 1000);
+      // Trajectory is only meaningful after more than one survey cycle.
+      // We'll animate it only if live data provides a value; otherwise leave as "—".
+      if (typeof dashboardData?.trajectory?.value === 'number') {
+        animateValue('trajectory', 0, dashboardData.trajectory.value, 1000);
+      }
       animateValue('honesty', 0, mockData.leadershipProfile.honesty.score, 1000);
       animateValue('clarity_level', 0, mockData.leadershipProfile.clarity.level, 1000);
       animateValue('response_overall', 0, responseOverallTarget, 800);
@@ -798,6 +805,42 @@ const ALIDashboard = () => {
   const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
   const fmtSigned1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? `${v >= 0 ? '+' : ''}${v.toFixed(1)}` : '—');
 
+  // Stop the confusing “demo data flash”:
+  // If email is present, we wait for the live fetch before rendering the full dashboard.
+  const isLoadingLive = !!email && !liveDashboardLoadedOnce;
+
+  if (isLoadingLive) {
+    return (
+      <div className="min-h-screen bg-white">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold text-gray-900">ALI</div>
+              <nav className="flex items-center gap-6">
+                <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-blue-600 font-semibold">Dashboard</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-gray-600 hover:text-gray-900">Reports</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">Deploy</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">Settings</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">Billing</button>
+                {isSuperAdminUser && (
+                  <button onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))} className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]">
+                    Super Admin
+                  </button>
+                )}
+                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">Log Out</button>
+              </nav>
+            </div>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-10 max-w-7xl">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Dashboard</h1>
+          <p className="text-gray-600">Loading your live dashboard…</p>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <style>{`
@@ -996,11 +1039,27 @@ const ALIDashboard = () => {
           </div>
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="space-y-4">
-              {liveDashboard ? (
-                <div className="text-sm text-gray-600">
-                  Insights will appear after more data is available (multiple survey cycles and a larger response set).
-                </div>
-              ) : null}
+              {(liveDashboard?.insights && liveDashboard.insights.length > 0) ? liveDashboard.insights.map((insight) => {
+                const title = insight.title || 'Insight';
+                const text = insight.text || '';
+                return (
+                  <div
+                    key={insight.id || title}
+                    className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 mb-1">
+                        {title}
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        {text}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }) : null}
+
               {!liveDashboard ? mockData.insights.map((insight) => {
                 const Icon = insight.icon;
                 return (
@@ -1199,15 +1258,15 @@ const ALIDashboard = () => {
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-4xl text-green-600 transition-transform duration-300 hover:scale-110">↑</span>
                 <span className="text-4xl font-bold text-green-600 transition-all duration-300">
-                  +{(animatedValues.trajectory ?? mockData.trajectory.value).toFixed(1)}
+                  {fmtSigned1(animatedValues.trajectory ?? dashboardData.trajectory.value)}
                 </span>
               </div>
               <div className="text-sm font-medium text-green-600">Improving Momentum</div>
               {hoveredMetric === 'trajectory' && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Value: +{mockData.trajectory.value.toFixed(1)}<br/>
-                  Direction: {mockData.trajectory.direction}<br/>
-                  Method: {mockData.trajectory.method}
+                  Value: {fmtSigned1(dashboardData.trajectory.value)}<br/>
+                  Direction: {dashboardData.trajectory.direction || '—'}<br/>
+                  Method: {dashboardData.trajectory.method || '—'}
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                 </div>
               )}
@@ -1247,8 +1306,8 @@ const ALIDashboard = () => {
             <div className="relative w-full aspect-square max-w-[600px] mx-auto">
               
               {/* Quadrant backgrounds - EXACT COLORS AND POSITIONS */}
-              {dashboardData.dataQuality?.meets_minimum_n_org && (
-                <>
+              {/* Always show quadrant backgrounds; this is useful even in pilot */}
+              <>
                   {/* Top-right: Harmony - Light teal */}
                   <div
                     className="absolute top-0 right-0 w-1/2 h-1/2"
@@ -1269,8 +1328,7 @@ const ALIDashboard = () => {
                     className="absolute bottom-0 right-0 w-1/2 h-1/2"
                     style={{ backgroundColor: "rgba(239, 68, 68, 0.08)" }}
                   />
-                </>
-              )}
+              </>
 
               {/* Grid lines - EXACT BORDER WIDTH AND COLOR */}
               <div className="absolute inset-0 border-2 border-black/[0.12] rounded-lg">
@@ -1341,7 +1399,28 @@ const ALIDashboard = () => {
               </svg>
 
               {/* Current position - LARGE DOT WITH ZONE COLOR */}
-              {dashboardData.dataQuality?.meets_minimum_n_org && typeof dashboardData.experienceMap.current.x === 'number' && typeof dashboardData.experienceMap.current.y === 'number' && currentZone ? (
+              {/* Individual respondent points (pilot “heat map”) */}
+              {Array.isArray(liveDashboard?.experienceMapPoints) && liveDashboard.experienceMapPoints.map((p, idx) => {
+                if (typeof p?.x !== 'number' || typeof p?.y !== 'number') return null;
+                const color = p.role === 'leader' ? '#2563eb' : '#10b981';
+                return (
+                  <div
+                    key={`p-${idx}`}
+                    className="absolute w-2.5 h-2.5 rounded-full"
+                    style={{
+                      left: `${p.x}%`,
+                      bottom: `${p.y}%`,
+                      transform: "translate(-50%, 50%)",
+                      backgroundColor: color,
+                      opacity: 0.28
+                    }}
+                    title={`${p.role || 'respondent'}: (${p.x.toFixed(1)}, ${p.y.toFixed(1)})`}
+                  />
+                );
+              })}
+
+              {/* Current (aggregate) position dot */}
+              {typeof dashboardData.experienceMap.current.x === 'number' && typeof dashboardData.experienceMap.current.y === 'number' && currentZone ? (
                 <div
                   className="absolute w-6 h-6 rounded-full shadow-lg z-10 flex items-center justify-center"
                   style={{
@@ -1357,8 +1436,7 @@ const ALIDashboard = () => {
               ) : null}
 
               {/* Zone labels - POSITIONED IN EACH QUADRANT CENTER */}
-              {dashboardData.dataQuality?.meets_minimum_n_org && (
-                <>
+              <>
                   {/* Harmony - Top-right quadrant */}
                   <div
                     className="absolute text-[14px] font-bold"
@@ -1407,8 +1485,7 @@ const ALIDashboard = () => {
                   >
                     Hazard
                   </div>
-                </>
-              )}
+              </>
             </div>
 
             {/* Coordinates display below map */}
