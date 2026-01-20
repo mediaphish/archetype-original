@@ -14,6 +14,7 @@ const ALIReports = () => {
   const [liveReportsError, setLiveReportsError] = useState(null);
   const [liveDashboardSummary, setLiveDashboardSummary] = useState(null);
   const [liveLoadedOnce, setLiveLoadedOnce] = useState(false);
+  const [focusSection, setFocusSection] = useState(null);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -675,10 +676,12 @@ const ALIReports = () => {
 
     const last = history.length ? history[history.length - 1] : null;
     const first = history.length ? history[0] : null;
-    const scoreNow = last?.score ?? null;
+    const scoreNow =
+      last?.score ??
+      (typeof liveDashboardSummary?.scores?.ali?.current === 'number' ? liveDashboardSummary.scores.ali.current : null);
     const rollingNow = (overallTrend.length && typeof overallTrend[overallTrend.length - 1].rolling_score === 'number')
       ? overallTrend[overallTrend.length - 1].rolling_score
-      : null;
+      : (typeof liveDashboardSummary?.scores?.ali?.rolling === 'number' ? liveDashboardSummary.scores.ali.rolling : null);
 
     const aliImprovementPercent = (first && last && first.score)
       ? ((last.score - first.score) / first.score) * 100
@@ -737,7 +740,8 @@ const ALIReports = () => {
         ...DEMO_DATA.currentALI,
         score: typeof scoreNow === 'number' ? scoreNow : 0,
         rolling: typeof rollingNow === 'number' ? rollingNow : (typeof scoreNow === 'number' ? scoreNow : 0),
-        history: history.length ? history : DEMO_DATA.currentALI.history
+        // IMPORTANT: authenticated views should not fall back to demo history
+        history: history
       },
       totalResponses: {
         count: totalResponses ?? 0,
@@ -757,6 +761,24 @@ const ALIReports = () => {
   };
 
   const data = email ? buildFromLive() : DEMO_DATA;
+
+  // Focus deep-linking (from Dashboard)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const focus = params.get('focus');
+    if (focus) setFocusSection(focus);
+  }, []);
+
+  useEffect(() => {
+    if (!focusSection) return;
+    if (isLoadingLive) return;
+    const targetId = focusSection === 'zone' ? 'zone-breakdown' : null;
+    if (!targetId) return;
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [focusSection, isLoadingLive]);
 
   // Animation on mount
   useEffect(() => {
@@ -892,7 +914,7 @@ const ALIReports = () => {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Trends & Analytics</h1>
-            <p className="text-gray-600">Multi-year progression analysis 2025 Q4 - 2027 Q1</p>
+            <p className="text-gray-600">High-level summary and deeper dives by section</p>
             {liveReportsError ? (
               <p className="text-xs text-red-600 mt-1">(live data unavailable: {liveReportsError})</p>
             ) : liveReports ? (
@@ -906,6 +928,106 @@ const ALIReports = () => {
             ← Back to Dashboard
           </button>
         </div>
+
+        {/* Zone Breakdown (deep-linked from Dashboard) */}
+        <section
+          id="zone-breakdown"
+          className={`mb-8 ${focusSection === 'zone' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-xl' : ''}`}
+        >
+          <div className="bg-white rounded-lg border border-gray-200 p-8">
+            {focusSection === 'zone' && (
+              <div className="mb-4 text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                You came here from your <strong>Current Zone</strong>. This section explains what it means and why it was assigned.
+              </div>
+            )}
+
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-900">Zone Breakdown</h2>
+                <p className="text-gray-600 mt-1">
+                  Plain-language meaning, evidence, and what to do next.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  const zone = liveDashboardSummary?.scores?.ali?.zone;
+                  const ali = liveDashboardSummary?.scores?.ali?.current;
+                  setArchyInitialMessage(
+                    `I'm on the Zone Breakdown. My current zone is ${zone || 'unknown'} and my ALI score is ${typeof ali === 'number' ? ali.toFixed(1) : 'unknown'}. Explain what this means in plain language and what actions to take next.`
+                  );
+                  setShowArchyChat(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Ask Archy
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                <div className="text-xs text-gray-500 uppercase tracking-wide">Current Zone</div>
+                <div className="text-lg font-semibold text-gray-900 mt-1">
+                  {liveDashboardSummary?.scores?.ali?.zone || '—'}
+                </div>
+                <div className="text-sm text-gray-700 mt-2">
+                  ALI score: <span className="font-semibold">{typeof liveDashboardSummary?.scores?.ali?.current === 'number' ? liveDashboardSummary.scores.ali.current.toFixed(1) : '—'}</span>
+                </div>
+                <div className="text-xs text-gray-500 mt-2">
+                  Based on {typeof liveDashboardSummary?.responseCounts?.overall === 'number' ? liveDashboardSummary.responseCounts.overall : '—'} response(s).
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-gray-200 p-4 md:col-span-2">
+                <div className="text-sm font-semibold text-gray-900 mb-2">Why this zone (evidence)</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
+                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                    <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Lowest patterns</div>
+                    <div className="font-semibold">
+                      {(() => {
+                        const patterns = liveDashboardSummary?.scores?.patterns || {};
+                        const entries = Object.entries(patterns)
+                          .map(([k, v]) => [k, v?.current])
+                          .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+                          .sort((a, b) => a[1] - b[1]);
+                        const nice = (k) => (k === 'leadership_drift' ? 'Leadership Alignment' : k.replace('_', ' '));
+                        const a = entries[0];
+                        const b = entries[1];
+                        if (!a) return '—';
+                        if (!b) return `${nice(a[0])} (${a[1].toFixed(1)})`;
+                        return `${nice(a[0])} (${a[1].toFixed(1)}), ${nice(b[0])} (${b[1].toFixed(1)})`;
+                      })()}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                    <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Largest perception gap</div>
+                    <div className="font-semibold">
+                      {(() => {
+                        const gaps = liveDashboardSummary?.leadershipMirror?.gaps || {};
+                        const entries = Object.entries(gaps)
+                          .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+                          .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+                        const top = entries[0];
+                        if (!top) return '—';
+                        const label = top[0] === 'ali' ? 'ALI Overall' : top[0];
+                        return `${label} (${Math.abs(top[1]).toFixed(1)}pt)`;
+                      })()}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-sm text-gray-700">
+                  <div className="font-semibold mb-1">What to do next</div>
+                  <ol className="list-decimal pl-5 space-y-1">
+                    <li>Pick the lowest pattern and run one small behavior change this week.</li>
+                    <li>Use Archy to turn the data into scripts and actions your team will feel.</li>
+                    <li>Collect more responses to improve confidence (pilot moves quickly at 10+).</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* MULTI-YEAR SCORE PROGRESSION - Above the Fold */}
         <section id="multi-year-progression" className="mb-8">
@@ -922,6 +1044,14 @@ const ALIReports = () => {
             </div>
             
             {/* Large Multi-Year Chart */}
+            {data.currentALI.history.length < 2 ? (
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <div className="text-sm font-semibold text-gray-900 mb-1">Pilot snapshot</div>
+                <div className="text-sm text-gray-700">
+                  Multi-quarter progression will appear after at least 2 completed survey cycles. Right now, your dashboard reflects a single-cycle baseline.
+                </div>
+              </div>
+            ) : (
             <div className="relative h-[320px] mb-6">
               {/* Y-axis labels */}
               <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-500 font-medium pr-3">
@@ -1029,6 +1159,7 @@ const ALIReports = () => {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Key Metrics Row */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-6 border-t border-gray-200">

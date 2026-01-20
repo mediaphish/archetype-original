@@ -17,6 +17,7 @@ const ALIDashboard = () => {
   const [liveDashboard, setLiveDashboard] = useState(null);
   const [liveDashboardError, setLiveDashboardError] = useState(null);
   const [liveDashboardLoadedOnce, setLiveDashboardLoadedOnce] = useState(false);
+  const [showZoneDetails, setShowZoneDetails] = useState(false);
   const chartRef = useRef(null);
 
   const handleNavigate = (path) => {
@@ -981,11 +982,7 @@ const ALIDashboard = () => {
                     borderColor: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.12)'
                   }}
                   onClick={() => {
-                    handleNavigate(withEmail('/ali/reports'));
-                    setTimeout(() => {
-                      const element = document.getElementById('multi-year-progression');
-                      if (element) element.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
+                    setShowZoneDetails(true);
                   }}
                 >
                   <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
@@ -1000,6 +997,9 @@ const ALIDashboard = () => {
                   <p className="text-[14px] leading-relaxed" style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}>
                     {zoneInfo ? zoneInfo.description : 'Zone will appear once enough data is available.'}
                   </p>
+                  <div className="mt-3 text-[12px] text-black/[0.6]">
+                    Click to see why this zone was assigned and what to do next →
+                  </div>
                 </div>
               );
             })()}
@@ -1861,6 +1861,134 @@ const ALIDashboard = () => {
                   context="ali-dashboard" 
                   initialMessage={archyInitialMessage || "I'm looking at my ALI dashboard. Can you help me interpret what I'm seeing and answer questions about my leadership data?"}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Zone Details Modal */}
+      {showZoneDetails && (
+        <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4 md:p-8 bg-black/50">
+          <div className="w-full max-w-3xl">
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-black/[0.12]">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                <div>
+                  <div className="text-xs text-gray-500 uppercase tracking-wide">Current Zone</div>
+                  <div className="text-lg font-semibold text-gray-900">
+                    {dashboardData.scores.ali.zone ? getZoneInfo(dashboardData.scores.ali.zone).label : '—'}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowZoneDetails(false)}
+                  className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full p-2 transition-colors"
+                  aria-label="Close zone details"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <div className="text-sm font-semibold text-gray-900">What this means</div>
+                  <div className="text-sm text-gray-700 leading-relaxed">
+                    {dashboardData.scores.ali.zone
+                      ? getZoneInfo(dashboardData.scores.ali.zone).description
+                      : 'Zone classification will appear once enough data is available.'}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Pilot note: This is an early signal based on {liveDashboard?.responseCounts?.overall ?? '—'} response(s). It becomes more reliable as more people respond and as additional quarters are completed.
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                    <div className="text-sm font-semibold text-gray-900 mb-2">Why you’re in this zone</div>
+                    <ul className="text-sm text-gray-700 space-y-2">
+                      <li>
+                        <span className="text-gray-500">ALI score:</span>{' '}
+                        <span className="font-semibold">{fmt1(dashboardData.scores.ali.current)}</span>
+                      </li>
+                      <li>
+                        <span className="text-gray-500">Lowest patterns:</span>{' '}
+                        <span className="font-semibold">
+                          {(() => {
+                            const entries = Object.entries(dashboardData.scores.patterns || {})
+                              .map(([k, v]) => [k, v?.current])
+                              .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+                              .sort((a, b) => a[1] - b[1]);
+                            const nice = (k) => (k === 'leadership_drift' ? 'Leadership Alignment' : k.replace('_', ' '));
+                            const a = entries[0];
+                            const b = entries[1];
+                            if (!a) return '—';
+                            if (!b) return `${nice(a[0])} (${a[1].toFixed(1)})`;
+                            return `${nice(a[0])} (${a[1].toFixed(1)}), ${nice(b[0])} (${b[1].toFixed(1)})`;
+                          })()}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="text-gray-500">Largest perception gap:</span>{' '}
+                        <span className="font-semibold">
+                          {(() => {
+                            const gaps = dashboardData.leadershipMirror?.gaps || {};
+                            const entries = Object.entries(gaps)
+                              .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+                              .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+                            const top = entries[0];
+                            if (!top) return '—';
+                            const label = top[0] === 'ali' ? 'ALI Overall' : top[0];
+                            return `${label} (${Math.abs(top[1]).toFixed(1)}pt)`;
+                          })()}
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-white rounded-xl border border-gray-200 p-4">
+                    <div className="text-sm font-semibold text-gray-900 mb-2">What to do next</div>
+                    <ol className="text-sm text-gray-700 space-y-2 list-decimal pl-5">
+                      <li>Pick the lowest pattern and run one small behavioral experiment this week.</li>
+                      <li>Use Archy to translate the data into concrete actions your team will feel.</li>
+                      <li>Get more responses (pilot accuracy improves quickly from 5 → 10+).</li>
+                    </ol>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        const label = dashboardData.scores.ali.zone ? getZoneInfo(dashboardData.scores.ali.zone).label : 'Current Zone';
+                        const ali = fmt1(dashboardData.scores.ali.current);
+                        setArchyInitialMessage(
+                          `I'm looking at my ${label}. My ALI score is ${ali}. Explain what this zone means in plain language, why I might be here, and what 3 actions I should take next week.`
+                        );
+                        setShowArchyChat(true);
+                        setShowZoneDetails(false);
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+                    >
+                      <MessageSquareIcon className="w-4 h-4" />
+                      Ask Archy about this zone
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowZoneDetails(false);
+                        handleNavigate(withEmail('/ali/reports?focus=zone'));
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 font-semibold hover:bg-gray-50 transition-colors"
+                    >
+                      Go deeper →
+                    </button>
+                  </div>
+
+                  <div className="text-xs text-gray-500">
+                    Evidence-based guidance improves as more data accumulates.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
