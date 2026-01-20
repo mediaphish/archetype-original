@@ -18,6 +18,9 @@ const ALIDashboard = () => {
   const [liveDashboardError, setLiveDashboardError] = useState(null);
   const [liveDashboardLoadedOnce, setLiveDashboardLoadedOnce] = useState(false);
   const [showZoneDetails, setShowZoneDetails] = useState(false);
+  const [zoneReco, setZoneReco] = useState(null);
+  const [zoneRecoLoading, setZoneRecoLoading] = useState(false);
+  const [zoneRecoError, setZoneRecoError] = useState(null);
   const chartRef = useRef(null);
 
   const handleNavigate = (path) => {
@@ -813,6 +816,64 @@ const ALIDashboard = () => {
     setAnimatedValues(prev => ({ ...prev, trajectory: undefined }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveDashboard]);
+
+  // Fetch Archy-generated recommended first move for the current zone (corpus-aware)
+  useEffect(() => {
+    let isMounted = true;
+    const run = async () => {
+      if (!showZoneDetails) return;
+      if (!email || !liveDashboard) return;
+
+      try {
+        setZoneRecoLoading(true);
+        setZoneRecoError(null);
+        setZoneReco(null);
+
+        const patterns = dashboardData?.scores?.patterns || {};
+        const lowest = Object.entries(patterns)
+          .map(([k, v]) => [k, v?.current])
+          .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+          .sort((a, b) => a[1] - b[1])
+          .slice(0, 2)
+          .map(([k, v]) => `${k}:${v.toFixed(1)}`);
+
+        const gaps = dashboardData?.leadershipMirror?.gaps || {};
+        const gapEntries = Object.entries(gaps)
+          .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+          .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+        const topGap = gapEntries[0];
+        const largestGap = topGap ? `${topGap[0]}:${Math.abs(topGap[1]).toFixed(1)}pt` : '';
+
+        const resp = await fetch('/api/ali/zone-recommendations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            zone: dashboardData?.scores?.ali?.zone || '',
+            aliScore: dashboardData?.scores?.ali?.current,
+            lowestPatterns: lowest,
+            largestGap,
+            responseCount: liveDashboard?.responseCounts?.overall
+          })
+        });
+        const json = await resp.json();
+        if (!resp.ok) throw new Error(json?.error || 'Failed to generate recommendation');
+        if (!isMounted) return;
+        setZoneReco(json?.recommendation || null);
+      } catch (err) {
+        if (!isMounted) return;
+        setZoneRecoError(err?.message || 'Failed to generate recommendation');
+      } finally {
+        if (!isMounted) return;
+        setZoneRecoLoading(false);
+      }
+    };
+    run();
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showZoneDetails]);
 
   // Stop the confusing “demo data flash”:
   // If email is present, we wait for the live fetch before rendering the full dashboard.
@@ -1956,6 +2017,24 @@ const ALIDashboard = () => {
                   </div>
                 </div>
 
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                  <div className="text-sm font-semibold text-gray-900 mb-2">Suggested first move (Archy)</div>
+                  {zoneRecoLoading ? (
+                    <div className="text-sm text-gray-700">Generating a specific first move…</div>
+                  ) : zoneRecoError ? (
+                    <div className="text-sm text-red-700">Couldn’t generate a recommendation yet.</div>
+                  ) : zoneReco ? (
+                    <div className="space-y-3 text-sm text-gray-800">
+                      <div className="font-semibold">{zoneReco.title}</div>
+                      <div><span className="font-semibold">Behavior experiment:</span> {zoneReco.behavior_experiment}</div>
+                      <div><span className="font-semibold">Team script:</span> {zoneReco.team_script}</div>
+                      <div><span className="font-semibold">Watch for:</span> {zoneReco.watch_for}</div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-700">—</div>
+                  )}
+                </div>
+
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
                   <div className="flex gap-3">
                     <button
@@ -1968,10 +2047,10 @@ const ALIDashboard = () => {
                         setShowArchyChat(true);
                         setShowZoneDetails(false);
                       }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
                     >
                       <MessageSquareIcon className="w-4 h-4" />
-                      Ask Archy about this zone
+                      Ask Archy
                     </button>
 
                     <button
@@ -1979,7 +2058,7 @@ const ALIDashboard = () => {
                         setShowZoneDetails(false);
                         handleNavigate(withEmail('/ali/reports?focus=zone'));
                       }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 font-semibold hover:bg-gray-50 transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 font-semibold hover:bg-gray-50 transition-colors whitespace-nowrap"
                     >
                       Go deeper →
                     </button>

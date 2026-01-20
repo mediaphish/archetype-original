@@ -15,6 +15,9 @@ const ALIReports = () => {
   const [liveDashboardSummary, setLiveDashboardSummary] = useState(null);
   const [liveLoadedOnce, setLiveLoadedOnce] = useState(false);
   const [focusSection, setFocusSection] = useState(null);
+  const [zoneReco, setZoneReco] = useState(null);
+  const [zoneRecoLoading, setZoneRecoLoading] = useState(false);
+  const [zoneRecoError, setZoneRecoError] = useState(null);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -783,6 +786,60 @@ const ALIReports = () => {
     }
   }, [focusSection, isLoadingLive]);
 
+  // Fetch Archy zone recommendation (corpus-aware) for Zone Breakdown
+  useEffect(() => {
+    let isMounted = true;
+    const run = async () => {
+      if (!email) return;
+      if (!liveDashboardSummary) return;
+      try {
+        setZoneRecoLoading(true);
+        setZoneRecoError(null);
+        setZoneReco(null);
+
+        const patterns = liveDashboardSummary?.scores?.patterns || {};
+        const lowest = Object.entries(patterns)
+          .map(([k, v]) => [k, v?.current])
+          .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+          .sort((a, b) => a[1] - b[1])
+          .slice(0, 2)
+          .map(([k, v]) => `${k}:${v.toFixed(1)}`);
+
+        const gaps = liveDashboardSummary?.leadershipMirror?.gaps || {};
+        const gapEntries = Object.entries(gaps)
+          .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
+          .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+        const topGap = gapEntries[0];
+        const largestGap = topGap ? `${topGap[0]}:${Math.abs(topGap[1]).toFixed(1)}pt` : '';
+
+        const resp = await fetch('/api/ali/zone-recommendations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            zone: liveDashboardSummary?.scores?.ali?.zone || '',
+            aliScore: liveDashboardSummary?.scores?.ali?.current,
+            lowestPatterns: lowest,
+            largestGap,
+            responseCount: liveDashboardSummary?.responseCounts?.overall
+          })
+        });
+        const json = await resp.json();
+        if (!resp.ok) throw new Error(json?.error || 'Failed to generate recommendation');
+        if (!isMounted) return;
+        setZoneReco(json?.recommendation || null);
+      } catch (err) {
+        if (!isMounted) return;
+        setZoneRecoError(err?.message || 'Failed to generate recommendation');
+      } finally {
+        if (!isMounted) return;
+        setZoneRecoLoading(false);
+      }
+    };
+    run();
+    return () => { isMounted = false; };
+  }, [email, liveDashboardSummary]);
+
   // Animation on mount
   useEffect(() => {
     const animateValue = (key, start, end, duration = 1000) => {
@@ -968,10 +1025,11 @@ const ALIReports = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+              <div className="rounded-xl border p-4"
+                   style={{ backgroundColor: 'rgba(249,115,22,0.10)', borderColor: 'rgba(249,115,22,0.50)' }}>
                 <div className="text-xs text-gray-500 uppercase tracking-wide">Current Zone</div>
-                <div className="text-lg font-semibold text-gray-900 mt-1">
-                  {liveDashboardSummary?.scores?.ali?.zone || '—'}
+                <div className="text-lg font-semibold mt-1" style={{ color: '#f97316' }}>
+                  {liveDashboardSummary?.scores?.ali?.zone ? `${liveDashboardSummary.scores.ali.zone}` : '—'}
                 </div>
                 <div className="text-sm text-gray-700 mt-2">
                   ALI score: <span className="font-semibold">{typeof liveDashboardSummary?.scores?.ali?.current === 'number' ? liveDashboardSummary.scores.ali.current.toFixed(1) : '—'}</span>
@@ -1026,6 +1084,24 @@ const ALIReports = () => {
                     <li>Use Archy to turn the data into scripts and actions your team will feel.</li>
                     <li>Collect more responses to improve confidence (pilot moves quickly at 10+).</li>
                   </ol>
+                </div>
+
+                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-gray-900 mb-2">Suggested first move (Archy)</div>
+                  {zoneRecoLoading ? (
+                    <div className="text-sm text-gray-700">Generating a specific first move…</div>
+                  ) : zoneRecoError ? (
+                    <div className="text-sm text-red-700">Couldn’t generate a recommendation yet.</div>
+                  ) : zoneReco ? (
+                    <div className="space-y-2 text-sm text-gray-800">
+                      <div className="font-semibold">{zoneReco.title}</div>
+                      <div><span className="font-semibold">Behavior experiment:</span> {zoneReco.behavior_experiment}</div>
+                      <div><span className="font-semibold">Team script:</span> {zoneReco.team_script}</div>
+                      <div><span className="font-semibold">Watch for:</span> {zoneReco.watch_for}</div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-700">—</div>
+                  )}
                 </div>
               </div>
             </div>
