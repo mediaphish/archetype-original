@@ -761,6 +761,9 @@ const ALIReports = () => {
   };
 
   const data = email ? buildFromLive() : DEMO_DATA;
+  const hasHistoryPoint = Array.isArray(data.currentALI?.history) && data.currentALI.history.length > 0;
+  const hasHistoryTrend = Array.isArray(data.currentALI?.history) && data.currentALI.history.length >= 2;
+  const bestQuarterLabel = hasHistoryPoint ? data.currentALI.history[data.currentALI.history.length - 1]?.period : '—';
 
   // Focus deep-linking (from Dashboard)
   useEffect(() => {
@@ -1044,7 +1047,7 @@ const ALIReports = () => {
             </div>
             
             {/* Large Multi-Year Chart */}
-            {data.currentALI.history.length < 2 ? (
+            {!hasHistoryTrend ? (
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
                 <div className="text-sm font-semibold text-gray-900 mb-1">Pilot snapshot</div>
                 <div className="text-sm text-gray-700">
@@ -1167,7 +1170,7 @@ const ALIReports = () => {
                 <div className="text-xs text-gray-500 mb-1">Current</div>
                 <div className="text-xl font-bold text-gray-900">{data.currentALI.score.toFixed(1)}</div>
               </div>
-              {data.currentALI.multiYearComparison && (
+              {hasHistoryTrend && data.currentALI.multiYearComparison && (
                 <>
                   <div>
                     <div className="text-xs text-gray-500 mb-1">Year 1 Avg</div>
@@ -1185,7 +1188,7 @@ const ALIReports = () => {
               </div>
               <div>
                 <div className="text-xs text-gray-500 mb-1">Best Quarter</div>
-                <div className="text-xl font-bold text-gray-900">{data.currentALI.history[data.currentALI.history.length - 1].period}</div>
+                <div className="text-xl font-bold text-gray-900">{bestQuarterLabel}</div>
               </div>
             </div>
           </div>
