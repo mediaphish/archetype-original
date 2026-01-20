@@ -200,10 +200,12 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error('zone-recommendations error:', err);
-    return res.status(500).json({
-      error: 'Server error. Please try again.',
-      detail: err?.message || String(err)
-    });
+    const includeDetail = process.env.NODE_ENV !== 'production';
+    return res.status(500).json(
+      includeDetail
+        ? { error: 'Server error. Please try again.', detail: err?.message || String(err) }
+        : { error: 'Server error. Please try again.' }
+    );
   }
 }
 
