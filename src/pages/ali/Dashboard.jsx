@@ -1045,7 +1045,11 @@ const ALIDashboard = () => {
                 return (
                   <div
                     key={insight.id || title}
-                    className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all"
+                    className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all cursor-pointer group"
+                    onClick={() => {
+                      setArchyInitialMessage(`I'm looking at this insight: "${title}". ${text} Can you help me understand what this means and what I should do about it?`);
+                      setShowArchyChat(true);
+                    }}
                   >
                     <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 flex-shrink-0"></div>
                     <div className="flex-1">
@@ -1055,6 +1059,17 @@ const ALIDashboard = () => {
                       <div className="text-sm text-gray-700">
                         {text}
                       </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setArchyInitialMessage(`Tell me more about: "${title}". ${text}`);
+                          setShowArchyChat(true);
+                        }}
+                        className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        <MessageSquareIcon className="w-3 h-3" />
+                        Ask Archy about this
+                      </button>
                     </div>
                   </div>
                 );
@@ -1121,7 +1136,7 @@ const ALIDashboard = () => {
         {/* Section 1: Four Core Score Cards - MOVED UP */}
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Leadership Dashboard</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Core Scores</h2>
             <button
               onClick={() => setOpenDefinition('core-scores')}
               className="text-gray-400 hover:text-blue-600 transition-colors"
@@ -1369,8 +1384,8 @@ const ALIDashboard = () => {
                 70
               </div>
 
-              {/* Previous positions (trail) - SMALL GRAY DOTS */}
-              {mockData.experienceMap.previous.map((point, idx) => (
+              {/* Previous positions (trail) - only for demo mode */}
+              {!liveDashboard && mockData.experienceMap.previous.map((point, idx) => (
                 <div
                   key={idx}
                   className="absolute w-3 h-3 rounded-full bg-black/[0.2]"
@@ -1388,7 +1403,7 @@ const ALIDashboard = () => {
                 <polyline
                   points={[
                     // SVG "points" expects raw numbers; % signs will crash rendering.
-                    ...mockData.experienceMap.previous.map((p) => `${p.x},${100 - p.y}`),
+                    ...(!liveDashboard ? mockData.experienceMap.previous.map((p) => `${p.x},${100 - p.y}`) : []),
                     `${dashboardData.experienceMap.current.x},${100 - dashboardData.experienceMap.current.y}`,
                   ].join(" ")}
                   fill="none"

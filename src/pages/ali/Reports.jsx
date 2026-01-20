@@ -12,6 +12,8 @@ const ALIReports = () => {
   const [timeRangeFilter, setTimeRangeFilter] = useState('last-4'); // 'last-4', 'last-8', 'last-year', 'all'
   const [liveReports, setLiveReports] = useState(null);
   const [liveReportsError, setLiveReportsError] = useState(null);
+  const [liveDashboardSummary, setLiveDashboardSummary] = useState(null);
+  const [liveLoadedOnce, setLiveLoadedOnce] = useState(false);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -39,15 +41,24 @@ const ALIReports = () => {
       if (!email) return;
       try {
         setLiveReportsError(null);
-        const resp = await fetch(`/api/ali/reports?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        if (!resp.ok) throw new Error(json?.error || 'Failed to load reports');
+        const [reportsResp, dashResp] = await Promise.all([
+          fetch(`/api/ali/reports?email=${encodeURIComponent(email)}`),
+          fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`)
+        ]);
+        const reportsJson = await reportsResp.json();
+        const dashJson = await dashResp.json();
+        if (!reportsResp.ok) throw new Error(reportsJson?.error || 'Failed to load reports');
+        if (!dashResp.ok) throw new Error(dashJson?.error || 'Failed to load dashboard');
         if (!isMounted) return;
-        setLiveReports(json);
+        setLiveReports(reportsJson);
+        setLiveDashboardSummary(dashJson);
+        setLiveLoadedOnce(true);
       } catch (err) {
         if (!isMounted) return;
         setLiveReports(null);
+        setLiveDashboardSummary(null);
         setLiveReportsError(err?.message || 'Failed to load reports');
+        setLiveLoadedOnce(true);
       }
     };
     run();
@@ -55,6 +66,39 @@ const ALIReports = () => {
       isMounted = false;
     };
   }, [email]);
+
+  // Avoid demo-data flash: if email is present, wait for live fetch before rendering.
+  const isLoadingLive = !!email && !liveLoadedOnce;
+  if (isLoadingLive) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xl font-bold text-gray-900">ALI</div>
+              <nav className="flex items-center gap-6">
+                <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="text-gray-600 hover:text-gray-900">Dashboard</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="text-blue-600 font-semibold">Reports</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/deploy'))} className="text-gray-600 hover:text-gray-900">Deploy</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/settings'))} className="text-gray-600 hover:text-gray-900">Settings</button>
+                <button onClick={() => handleNavigate(withEmail('/ali/billing'))} className="text-gray-600 hover:text-gray-900">Billing</button>
+                {isSuperAdminUser && (
+                  <button onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))} className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]">
+                    Super Admin
+                  </button>
+                )}
+                <button onClick={() => handleNavigate('/ali/login')} className="text-gray-600 hover:text-gray-900">Log Out</button>
+              </nav>
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 py-10 max-w-7xl">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Trends & Analytics</h1>
+          <p className="text-gray-600">Loading your live report…</p>
+        </main>
+      </div>
+    );
+  }
 
   // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
   // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
@@ -417,8 +461,8 @@ const ALIReports = () => {
     return zones[zone] || zones.yellow;
   };
 
-  // Mock data matching the image exactly
-  const mockData = {
+  // Demo data (used only when not authenticated / no email)
+  const DEMO_DATA = {
     aliImprovement: {
       percent: 14.6,
       from: 64.3,
@@ -635,6 +679,115 @@ const ALIReports = () => {
     }
   };
 
+  // Build live-backed data in the same shape as the demo structure
+  const buildFromLive = () => {
+    if (!liveReports) return DEMO_DATA;
+
+    const overallTrend = Array.isArray(liveReports.overall_trend) ? liveReports.overall_trend : [];
+    const bySurveyIndex = {};
+    overallTrend.forEach((t) => {
+      if (!t?.survey_index) return;
+      bySurveyIndex[t.survey_index] = {
+        period: `${t.year} ${t.quarter}`,
+        score: typeof t.current_score === 'number' ? t.current_score : null,
+        rolling: typeof t.rolling_score === 'number' ? t.rolling_score : null,
+        responses: 0
+      };
+    });
+
+    const history = overallTrend
+      .map(t => ({
+        period: `${t.year} ${t.quarter}`,
+        score: typeof t.current_score === 'number' ? t.current_score : null,
+        responses: 0
+      }))
+      .filter(p => typeof p.score === 'number');
+
+    const last = history.length ? history[history.length - 1] : null;
+    const first = history.length ? history[0] : null;
+    const scoreNow = last?.score ?? null;
+    const rollingNow = (overallTrend.length && typeof overallTrend[overallTrend.length - 1].rolling_score === 'number')
+      ? overallTrend[overallTrend.length - 1].rolling_score
+      : null;
+
+    const aliImprovementPercent = (first && last && first.score)
+      ? ((last.score - first.score) / first.score) * 100
+      : null;
+
+    const patternsOrder = ['clarity','consistency','trust','communication','alignment','stability','leadership_drift'];
+    const patternTrends = liveReports.pattern_trends || {};
+
+    const patternCards = patternsOrder.map((name) => {
+      const points = Array.isArray(patternTrends[name]) ? patternTrends[name] : [];
+      const quarters = points
+        .map((p) => {
+          const meta = bySurveyIndex[p.survey_index] || null;
+          return {
+            period: meta?.period || p.survey_index,
+            score: typeof p.score === 'number' ? p.score : null,
+            responses: 0
+          };
+        })
+        .filter(q => typeof q.score === 'number');
+
+      const pFirst = quarters.length ? quarters[0].score : null;
+      const pLast = quarters.length ? quarters[quarters.length - 1].score : null;
+      const trend = (typeof pFirst === 'number' && typeof pLast === 'number' && pFirst !== 0)
+        ? ((pLast - pFirst) / pFirst) * 100
+        : 0;
+
+      return {
+        name,
+        icon: DEMO_DATA.patterns.find(p => p.name === name)?.icon || Lightbulb,
+        score: typeof liveDashboardSummary?.scores?.patterns?.[name]?.current === 'number'
+          ? liveDashboardSummary.scores.patterns[name].current
+          : (pLast ?? 0),
+        rolling: typeof liveDashboardSummary?.scores?.patterns?.[name]?.rolling === 'number'
+          ? liveDashboardSummary.scores.patterns[name].rolling
+          : (pLast ?? 0),
+        trend: Math.abs(trend),
+        trendDirection: trend >= 0 ? 'up' : 'down',
+        description: DEMO_DATA.patterns.find(p => p.name === name)?.description || '',
+        quarters
+      };
+    });
+
+    const totalResponses = typeof liveDashboardSummary?.responseCounts?.overall === 'number'
+      ? liveDashboardSummary.responseCounts.overall
+      : null;
+
+    return {
+      ...DEMO_DATA,
+      aliImprovement: {
+        percent: typeof aliImprovementPercent === 'number' ? aliImprovementPercent : 0,
+        from: first?.score ?? 0,
+        to: last?.score ?? 0
+      },
+      currentALI: {
+        ...DEMO_DATA.currentALI,
+        score: typeof scoreNow === 'number' ? scoreNow : 0,
+        rolling: typeof rollingNow === 'number' ? rollingNow : (typeof scoreNow === 'number' ? scoreNow : 0),
+        history: history.length ? history : DEMO_DATA.currentALI.history
+      },
+      totalResponses: {
+        count: totalResponses ?? 0,
+        surveys: overallTrend.length || 0
+      },
+      patterns: patternCards,
+      // Use live insights if present; otherwise keep demo
+      insights: Array.isArray(liveReports.key_insights) && liveReports.key_insights.length > 0
+        ? liveReports.key_insights.map((k, idx) => ({
+            icon: Sparkles,
+            iconColor: 'text-blue-600',
+            title: k.title || `Insight ${idx + 1}`,
+            text: k.text || k.message || String(k)
+          }))
+        : DEMO_DATA.insights
+    };
+  };
+
+  const data = email ? buildFromLive() : DEMO_DATA;
+
   // Animation on mount
   useEffect(() => {
     const animateValue = (key, start, end, duration = 1000) => {
@@ -655,7 +808,7 @@ const ALIReports = () => {
     };
 
     setTimeout(() => {
-      mockData.patterns.forEach((pattern, idx) => {
+      data.patterns.forEach((pattern, idx) => {
         const isLeadershipDrift = pattern.name === 'leadership_drift';
         pattern.quarters.forEach((quarter, qIdx) => {
           // For Leadership Drift, reverse the scale (100 - drift = alignment)
@@ -802,8 +955,8 @@ const ALIReports = () => {
                 >
                   {/* Main progression line */}
                   <polyline
-                    points={mockData.currentALI.history.map((point, idx) => {
-                      const x = (idx / (mockData.currentALI.history.length - 1)) * 90 + 5; // Spread across width
+                    points={data.currentALI.history.map((point, idx) => {
+                      const x = (idx / (data.currentALI.history.length - 1)) * 90 + 5; // Spread across width
                       const svgY = 100 - point.score; // Invert Y-axis
                       return `${x},${svgY}`;
                     }).join(' ')}
@@ -814,12 +967,12 @@ const ALIReports = () => {
                   />
                   
                   {/* Year 1 average line */}
-                  {mockData.currentALI.multiYearComparison && (
+                  {data.currentALI.multiYearComparison && (
                     <line
                       x1="5"
-                      y1={100 - mockData.currentALI.multiYearComparison.year1.avg}
+                      y1={100 - data.currentALI.multiYearComparison.year1.avg}
                       x2="50"
-                      y2={100 - mockData.currentALI.multiYearComparison.year1.avg}
+                      y2={100 - data.currentALI.multiYearComparison.year1.avg}
                       stroke="#94a3b8"
                       strokeWidth="2"
                       strokeDasharray="4 4"
@@ -828,12 +981,12 @@ const ALIReports = () => {
                   )}
                   
                   {/* Year 2 average line */}
-                  {mockData.currentALI.multiYearComparison && (
+                  {data.currentALI.multiYearComparison && (
                     <line
                       x1="50"
-                      y1={100 - mockData.currentALI.multiYearComparison.year2.avg}
+                      y1={100 - data.currentALI.multiYearComparison.year2.avg}
                       x2="95"
-                      y2={100 - mockData.currentALI.multiYearComparison.year2.avg}
+                      y2={100 - data.currentALI.multiYearComparison.year2.avg}
                       stroke="#10b981"
                       strokeWidth="2"
                       strokeDasharray="4 4"
@@ -844,8 +997,8 @@ const ALIReports = () => {
 
                 {/* Data points */}
                 <div className="absolute inset-0">
-                  {mockData.currentALI.history.map((point, idx) => {
-                    const xPercent = (idx / (mockData.currentALI.history.length - 1)) * 90 + 5;
+                  {data.currentALI.history.map((point, idx) => {
+                    const xPercent = (idx / (data.currentALI.history.length - 1)) * 90 + 5;
                     const svgY = 100 - point.score;
                     const yPercent = svgY;
                     return (
@@ -866,7 +1019,7 @@ const ALIReports = () => {
 
                 {/* X-axis labels */}
                 <div className="absolute bottom-0 left-0 right-0 flex justify-between pt-2">
-                  {mockData.currentALI.history.map((point, idx) => (
+                  {data.currentALI.history.map((point, idx) => (
                     <div key={idx} className="text-xs text-gray-600">
                       {point.period}
                     </div>
@@ -879,27 +1032,27 @@ const ALIReports = () => {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 pt-6 border-t border-gray-200">
               <div>
                 <div className="text-xs text-gray-500 mb-1">Current</div>
-                <div className="text-xl font-bold text-gray-900">{mockData.currentALI.score.toFixed(1)}</div>
+                <div className="text-xl font-bold text-gray-900">{data.currentALI.score.toFixed(1)}</div>
               </div>
-              {mockData.currentALI.multiYearComparison && (
+              {data.currentALI.multiYearComparison && (
                 <>
                   <div>
                     <div className="text-xs text-gray-500 mb-1">Year 1 Avg</div>
-                    <div className="text-xl font-bold text-gray-700">{mockData.currentALI.multiYearComparison.year1.avg.toFixed(1)}</div>
+                    <div className="text-xl font-bold text-gray-700">{data.currentALI.multiYearComparison.year1.avg.toFixed(1)}</div>
                   </div>
                   <div>
                     <div className="text-xs text-gray-500 mb-1">Year 2 Avg</div>
-                    <div className="text-xl font-bold text-green-600">{mockData.currentALI.multiYearComparison.year2.avg.toFixed(1)}</div>
+                    <div className="text-xl font-bold text-green-600">{data.currentALI.multiYearComparison.year2.avg.toFixed(1)}</div>
                   </div>
                 </>
               )}
               <div>
                 <div className="text-xs text-gray-500 mb-1">Total Improvement</div>
-                <div className="text-xl font-bold text-green-600">+{mockData.aliImprovement.percent.toFixed(1)}%</div>
+                <div className="text-xl font-bold text-green-600">+{data.aliImprovement.percent.toFixed(1)}%</div>
               </div>
               <div>
                 <div className="text-xs text-gray-500 mb-1">Best Quarter</div>
-                <div className="text-xl font-bold text-gray-900">{mockData.currentALI.history[mockData.currentALI.history.length - 1].period}</div>
+                <div className="text-xl font-bold text-gray-900">{data.currentALI.history[data.currentALI.history.length - 1].period}</div>
               </div>
             </div>
           </div>
@@ -918,15 +1071,15 @@ const ALIReports = () => {
                 <HelpCircle className="w-5 h-5" />
               </button>
             </div>
-            {mockData.historicalInsights && mockData.historicalInsights.length > 0 && (
+            {DEMO_DATA.historicalInsights && DEMO_DATA.historicalInsights.length > 0 && !liveReports && (
               <div className="text-sm text-gray-600">
-                Showing {mockData.insights.length} current • <button className="text-blue-600 hover:text-blue-700 font-medium" onClick={() => {/* Toggle historical view */}}>View Archive ({mockData.historicalInsights.length})</button>
+                Showing {DEMO_DATA.insights.length} current • <button className="text-blue-600 hover:text-blue-700 font-medium" onClick={() => {/* Toggle historical view */}}>View Archive ({DEMO_DATA.historicalInsights.length})</button>
               </div>
             )}
           </div>
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="space-y-4">
-              {mockData.insights.map((insight, idx) => {
+              {data.insights.map((insight, idx) => {
                 const Icon = insight.icon;
                 return (
                   <div 
@@ -989,7 +1142,7 @@ const ALIReports = () => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {mockData.patterns.map((pattern) => {
+                {data.patterns.map((pattern) => {
                   const isLeadershipDrift = pattern.name === 'leadership_drift';
                   const displayScore = isLeadershipDrift ? getDriftAsAlignment(pattern.score) : pattern.score;
                   const displayRolling = isLeadershipDrift ? getDriftAsAlignment(pattern.rolling) : pattern.rolling;
@@ -1085,7 +1238,7 @@ const ALIReports = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {mockData.patterns.map((pattern) => {
+            {data.patterns.map((pattern) => {
               const Icon = pattern.icon;
               const patternColor = getPatternColor(pattern.name);
               const isLeadershipDrift = pattern.name === 'leadership_drift';
@@ -1306,7 +1459,7 @@ const ALIReports = () => {
                 <div>
                   <h5 className="text-sm font-medium text-gray-700 mb-3">Strongest Relationships</h5>
                   <div className="space-y-2">
-                    {mockData.patternCorrelations?.strongest.map((corr, idx) => (
+                    {DEMO_DATA.patternCorrelations?.strongest.map((corr, idx) => (
                       <div key={idx} className="flex items-center justify-between p-2 bg-green-50 rounded">
                         <span className="text-sm text-gray-700 capitalize">
                           {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
@@ -1321,7 +1474,7 @@ const ALIReports = () => {
                 <div>
                   <h5 className="text-sm font-medium text-gray-700 mb-3">Inverse Relationships</h5>
                   <div className="space-y-2">
-                    {mockData.patternCorrelations?.weakest.map((corr, idx) => (
+                    {DEMO_DATA.patternCorrelations?.weakest.map((corr, idx) => (
                       <div key={idx} className="flex items-center justify-between p-2 bg-orange-50 rounded">
                         <span className="text-sm text-gray-700 capitalize">
                           {corr.pattern1.replace('_', ' ')} ↔ {corr.pattern2.replace('_', ' ')}
@@ -1362,11 +1515,11 @@ const ALIReports = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="text-sm text-gray-600">2025 Q4 vs 2027 Q1</span>
-                    <span className="text-lg font-bold text-green-600">+{mockData.aliImprovement.percent.toFixed(1)}%</span>
+                    <span className="text-lg font-bold text-green-600">+{data.aliImprovement.percent.toFixed(1)}%</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="text-sm text-gray-600">Year 1 vs Year 2</span>
-                    <span className="text-lg font-bold text-green-600">+{mockData.currentALI.multiYearComparison?.improvement.toFixed(1) || '4.7'} pts</span>
+                    <span className="text-lg font-bold text-green-600">+{(data.currentALI.multiYearComparison?.improvement ?? 0).toFixed(1)} pts</span>
                   </div>
                 </div>
               </div>
@@ -1375,20 +1528,20 @@ const ALIReports = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Year-over-Year</h3>
                 <div className="space-y-3">
-                  {mockData.currentALI.multiYearComparison && (
+                  {data.currentALI.multiYearComparison && (
                     <>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Year 1 Average</span>
-                        <span className="font-semibold text-gray-900">{mockData.currentALI.multiYearComparison.year1.avg.toFixed(1)}</span>
+                        <span className="font-semibold text-gray-900">{data.currentALI.multiYearComparison.year1.avg.toFixed(1)}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Year 2 Average</span>
-                        <span className="font-semibold text-green-600">{mockData.currentALI.multiYearComparison.year2.avg.toFixed(1)}</span>
+                        <span className="font-semibold text-green-600">{data.currentALI.multiYearComparison.year2.avg.toFixed(1)}</span>
                       </div>
                       <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div 
                           className="h-full bg-green-600 rounded-full"
-                          style={{ width: `${(mockData.currentALI.multiYearComparison.year2.avg / 100) * 100}%` }}
+                          style={{ width: `${(data.currentALI.multiYearComparison.year2.avg / 100) * 100}%` }}
                         ></div>
                       </div>
                     </>
@@ -1417,16 +1570,16 @@ const ALIReports = () => {
               {/* Projection */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Next Quarter Projection</h3>
-                {mockData.predictiveInsights?.projection && (
+                {!liveReports && DEMO_DATA.predictiveInsights?.projection && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <div className="text-3xl font-bold text-blue-600 mb-2">
-                      {mockData.predictiveInsights.projection.nextQuarter.toFixed(1)}
+                      {DEMO_DATA.predictiveInsights.projection.nextQuarter.toFixed(1)}
                     </div>
                     <div className="text-sm text-gray-600 mb-2">
-                      Confidence: <span className="font-semibold text-green-600 capitalize">{mockData.predictiveInsights.projection.confidence}</span>
+                      Confidence: <span className="font-semibold text-green-600 capitalize">{DEMO_DATA.predictiveInsights.projection.confidence}</span>
                     </div>
                     <div className="text-xs text-gray-600">
-                      <strong>Key Factors:</strong> {mockData.predictiveInsights.projection.factors.join(', ')}
+                      <strong>Key Factors:</strong> {DEMO_DATA.predictiveInsights.projection.factors.join(', ')}
                     </div>
                   </div>
                 )}
@@ -1436,7 +1589,7 @@ const ALIReports = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Scenario Modeling</h3>
                 <div className="space-y-3">
-                  {mockData.predictiveInsights?.scenarios.map((scenario, idx) => (
+                  {!liveReports ? DEMO_DATA.predictiveInsights?.scenarios.map((scenario, idx) => (
                     <div key={idx} className="p-3 border border-gray-200 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-semibold text-gray-900">{scenario.name}</span>
@@ -1444,7 +1597,9 @@ const ALIReports = () => {
                       </div>
                       <div className="text-xs text-gray-600">{scenario.conditions}</div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-sm text-gray-600">Predictive analytics will appear after additional quarters are completed.</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1472,7 +1627,7 @@ const ALIReports = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Prioritized Recommendations</h3>
                 <div className="space-y-3">
-                  {mockData.actionPlan?.priority.map((action, idx) => (
+                  {!liveReports ? DEMO_DATA.actionPlan?.priority.map((action, idx) => (
                     <div key={idx} className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
@@ -1492,7 +1647,9 @@ const ALIReports = () => {
                         </button>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-sm text-gray-600">Action planning will appear after more trend data is available.</div>
+                  )}
                 </div>
               </div>
               
@@ -1500,7 +1657,7 @@ const ALIReports = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Wins</h3>
                 <div className="space-y-3">
-                  {mockData.actionPlan?.quickWins.map((win, idx) => (
+                  {!liveReports ? DEMO_DATA.actionPlan?.quickWins.map((win, idx) => (
                     <div key={idx} className="p-4 bg-green-50 border border-green-200 rounded-lg">
                       <div className="font-semibold text-gray-900 mb-1">{win.action}</div>
                       <div className="text-sm text-gray-700 mb-1">
@@ -1511,7 +1668,7 @@ const ALIReports = () => {
                         {win.timeframe}
                       </div>
                     </div>
-                  ))}
+                  )) : null}
                 </div>
               </div>
             </div>

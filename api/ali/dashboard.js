@@ -554,13 +554,14 @@ export default async function handler(req, res) {
 
     // Trajectory (prefer DriftIndex, fallback to qoq_delta)
     const drift = { ...(overallScores.drift || {}) };
-    // If this is Survey 1 (no historical cycles), do not show movement.
-    if (deployments.length < 2) {
+    const deploymentsWithResponses = deployments.filter(d => (responsesByDeployment[d.id]?.length || 0) > 0);
+    // If we only have one completed cycle with responses, do not show movement.
+    if (deploymentsWithResponses.length < 2) {
       drift.delta_ali = null;
       drift.drift_index = null;
     }
 
-    const trajectory = deployments.length < 2
+    const trajectory = deploymentsWithResponses.length < 2
       ? { value: null, direction: null, magnitude: null, method: null }
       : {
           value: drift.drift_index !== null 
