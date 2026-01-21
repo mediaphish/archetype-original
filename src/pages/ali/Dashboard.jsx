@@ -1618,8 +1618,9 @@ const ALIDashboard = () => {
                   const leaderScores = mirror?.leaderScores || {};
                   const teamScores = mirror?.teamScores || {};
                   const severity = mirror?.severity || {};
-                  const leaderN = typeof dashboardData?.responseCounts?.leader === 'number' ? dashboardData.responseCounts.leader : null;
-                  const teamN = typeof dashboardData?.responseCounts?.team_member === 'number' ? dashboardData.responseCounts.team_member : null;
+                  const counts = (liveDashboard && liveDashboard.responseCounts) ? liveDashboard.responseCounts : (dashboardData?.responseCounts || {});
+                  const leaderN = typeof counts?.leader === 'number' ? counts.leader : null;
+                  const teamN = typeof counts?.team_member === 'number' ? counts.team_member : null;
 
                   const severityToBadge = (sev) => {
                     const s = String(sev || '').toLowerCase();
