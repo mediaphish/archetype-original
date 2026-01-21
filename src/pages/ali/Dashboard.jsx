@@ -809,22 +809,30 @@ const ALIDashboard = () => {
       green: {
         color: '#10b981',
         label: 'Green Zone',
-        description: 'Healthy, thriving leadership environment. Maintain consistency to sustain this level.'
+        description: 'Healthy, thriving leadership environment. Maintain consistency to sustain this level.',
+        narrative: 'Your leadership patterns show strong alignment between intention and impact. Teams experience clarity, trust, and stability. Continue reinforcing what\'s working—consistency is key to maintaining this level of health.',
+        focus: 'Maintain consistency. Protect what\'s working. Monitor for early signs of drift.'
       },
       yellow: {
         color: '#f59e0b',
         label: 'Yellow Zone',
-        description: 'Stable leadership with room for improvement. Focus on strengthening core patterns to move toward Green Zone.'
+        description: 'Stable leadership with room for improvement. Focus on strengthening core patterns to move toward Green Zone.',
+        narrative: 'You\'re operating in a stable range, but there\'s clear opportunity to strengthen core patterns. Small, consistent improvements in clarity, alignment, or stability can move you into the Green Zone where teams thrive.',
+        focus: 'Strengthen core patterns. Identify your lowest-scoring test and commit to one small behavior change this week.'
       },
       orange: {
         color: '#f97316',
         label: 'Orange Zone',
-        description: 'Warning signs of drift and instability. Address core patterns to prevent further decline.'
+        description: 'Warning signs of drift and instability. Address core patterns to prevent further decline.',
+        narrative: 'Your leadership patterns show warning signs of drift. The gap between how you see yourself and how your team experiences you is widening. This isn\'t about blame—it\'s about recognizing that patterns are shifting and taking deliberate action to stabilize before they decline further.',
+        focus: 'Address core patterns immediately. Start with your lowest-scoring test. Rebuild trust through consistent, clear communication. Consider seeking external perspective or support.'
       },
       red: {
         color: '#ef4444',
         label: 'Red Zone',
-        description: 'Critical issues requiring immediate attention. Focus on rebuilding trust and clarity.'
+        description: 'Critical issues requiring immediate attention. Focus on rebuilding trust and clarity.',
+        narrative: 'Your leadership patterns indicate critical issues that require immediate attention. Teams are experiencing significant gaps between what you intend and what they experience. This is a moment for honest assessment and deliberate action to rebuild trust, restore clarity, and stabilize core patterns.',
+        focus: 'Immediate action required. Rebuild trust through transparency. Restore clarity through consistent communication. Consider external support or coaching to accelerate recovery.'
       }
     };
     return zones[zone] || zones.yellow;
@@ -1180,9 +1188,30 @@ const ALIDashboard = () => {
                   >
                     {zoneInfo ? zoneInfo.label : '—'}
                   </div>
-                  <p className="text-[14px] leading-relaxed mb-3" style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}>
-                    {zoneInfo ? zoneInfo.description : 'Zone will appear once enough data is available.'}
-                  </p>
+                  {zoneInfo ? (
+                    <>
+                      <p className="text-[14px] leading-relaxed mb-4" style={{ color: zoneInfo.color }}>
+                        {zoneInfo.description}
+                      </p>
+                      <div className="mb-4 pt-4 border-t" style={{ borderColor: `${zoneInfo.color}40` }}>
+                        <p className="text-[13px] leading-relaxed mb-3" style={{ color: 'rgba(0,0,0,0.87)' }}>
+                          {zoneInfo.narrative}
+                        </p>
+                        <div className="bg-white/60 rounded-md p-3 border" style={{ borderColor: `${zoneInfo.color}30` }}>
+                          <div className="text-[11px] font-semibold uppercase tracking-wide mb-1" style={{ color: zoneInfo.color }}>
+                            Focus Area
+                          </div>
+                          <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(0,0,0,0.87)' }}>
+                            {zoneInfo.focus}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-[14px] leading-relaxed mb-3" style={{ color: 'rgba(0,0,0,0.6)' }}>
+                      Zone will appear once enough data is available.
+                    </p>
+                  )}
                   <div className="text-[12px] font-semibold text-[#2563eb]">
                     Open Zones guide →
                   </div>
