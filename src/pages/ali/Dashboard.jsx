@@ -1603,6 +1603,15 @@ const ALIDashboard = () => {
                       right: "25%",
                       transform: "translate(50%, 50%)",
                       color: "#ef4444"
+                    }}
+                  >
+                    Hazard
+                  </div>
+              </>
+            </div>
+          </div>
+        </section>
+
         {/* Section 4 & 5: Leadership Profile and Mirror - Side by Side */}
         <section className="mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
