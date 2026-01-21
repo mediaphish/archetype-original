@@ -640,26 +640,43 @@ export default function ReportsZones() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-5 border-t border-black/[0.12] space-y-4">
-                <div>
-                  <div className="text-sm font-semibold text-black/[0.87]">What {zone || 'this zone'} means</div>
-                  <div className="text-sm text-black/[0.6] leading-relaxed mt-1">{zoneInfo.meaning}</div>
+              <div className="mt-6 pt-5 border-t border-black/[0.12] space-y-3">
+                <div className="text-sm font-semibold text-black/[0.87]">
+                  What {zone || 'this zone'} means (and why you’re here)
                 </div>
 
-                <div>
-                  <div className="text-sm font-semibold text-black/[0.87]">Why {zone || 'this zone'}</div>
-                  <div className="text-sm text-black/[0.6] leading-relaxed mt-1">
-                    {band?.zone ? (
-                      <>
-                        Your ALI score of <span className="font-semibold text-black/[0.87]">{fmt1(aliScore)}</span> falls in the{' '}
-                        <span className="font-semibold text-black/[0.87]">{band.zone}</span> band ({band.range}). The Evidence snapshot highlights which
-                        tests are most limiting right now.
-                      </>
-                    ) : (
-                      'We’ll show the score band and narrative once your score is available.'
-                    )}
+                {band?.zone ? (
+                  <div className="text-sm text-black/[0.6] leading-relaxed">
+                    Your ALI score is <span className="font-semibold text-black/[0.87]">{fmt1(aliScore)}</span>, which places you in the{' '}
+                    <span className="font-semibold text-black/[0.87]">{band.zone}</span> band ({band.range}). In plain language,{' '}
+                    <span className="font-semibold text-black/[0.87]">{zoneInfo.meaning}</span>
                   </div>
-                </div>
+                ) : (
+                  <div className="text-sm text-black/[0.6] leading-relaxed">
+                    We’ll show a score-based explanation once your score is available.
+                  </div>
+                )}
+
+                {(evidence.lowestPatterns || []).length ? (
+                  <div className="text-sm text-black/[0.6] leading-relaxed">
+                    What’s driving this most right now are your lowest tests:{' '}
+                    <span className="font-semibold text-black/[0.87]">
+                      {keyToLabel(evidence.lowestPatterns[0].key)} ({evidence.lowestPatterns[0].value.toFixed(1)})
+                    </span>
+                    {evidence.lowestPatterns[1]
+                      ? (
+                        <>
+                          {' '}and{' '}
+                          <span className="font-semibold text-black/[0.87]">
+                            {keyToLabel(evidence.lowestPatterns[1].key)} ({evidence.lowestPatterns[1].value.toFixed(1)})
+                          </span>
+                          .
+                        </>
+                      )
+                      : '.'}
+                    {' '}Improving these tends to move the overall zone the fastest.
+                  </div>
+                ) : null}
               </div>
             </div>
 
