@@ -1409,10 +1409,175 @@ const ALIDashboard = () => {
               const teamRows = respondents.filter((r) => r?.role === 'team_member');
               const makeRowLabel = (role, idx) => (role === 'leader' ? `Leader ${idx + 1}` : `Team ${idx + 1}`);
 
-              const fmt0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : null);
+              // --- ALI score breakdown (flagship narrative) ---
+              const patternKeysForALI = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+              const aliCurrentScore = dashboardData?.scores?.ali?.current ?? null;
+              const anchorCurrentScore = dashboardData?.scores?.anchors?.current ?? null;
+              const patternRaw = patternKeysForALI.reduce((acc, k) => {
+                const v = dashboardData?.scores?.patterns?.[k]?.current ?? null;
+                acc[k] = (typeof v === 'number' && Number.isFinite(v)) ? v : null;
+                return acc;
+              }, {});
+
+              const mean = (arr) => {
+                const v = arr.filter((x) => typeof x === 'number' && Number.isFinite(x));
+                if (!v.length) return null;
+                return v.reduce((a, b) => a + b, 0) / v.length;
+              };
+
+              const driftRaw = patternRaw.leadership_drift;
+              const driftInverted = (typeof driftRaw === 'number' && Number.isFinite(driftRaw)) ? (100 - driftRaw) : null;
+
+              const patternMeanRaw = mean(patternKeysForALI.map((k) => patternRaw[k]));
+              const patternMeanInverted = mean(patternKeysForALI.map((k) => (k === 'leadership_drift' ? driftInverted : patternRaw[k])));
+
+              const aliFromRaw =
+                (typeof anchorCurrentScore === 'number' && typeof patternMeanRaw === 'number')
+                  ? (0.30 * anchorCurrentScore) + (0.70 * patternMeanRaw)
+                  : null;
+              const aliFromInverted =
+                (typeof anchorCurrentScore === 'number' && typeof patternMeanInverted === 'number')
+                  ? (0.30 * anchorCurrentScore) + (0.70 * patternMeanInverted)
+                  : null;
+
+              const prefersInvertedDrift =
+                (typeof aliCurrentScore === 'number' && typeof aliFromInverted === 'number' && typeof aliFromRaw === 'number')
+                  ? (Math.abs(aliCurrentScore - aliFromInverted) < Math.abs(aliCurrentScore - aliFromRaw))
+                  : false;
+
+              const driftDisplayKey = prefersInvertedDrift ? 'leadership_alignment' : 'leadership_drift';
+              const driftDisplayLabel = prefersInvertedDrift ? 'Leadership Alignment' : 'Leadership Drift';
+              const driftDisplayValue = prefersInvertedDrift ? driftInverted : driftRaw;
+              const driftDirectionCopy = prefersInvertedDrift ? 'higher is healthier' : 'lower is healthier';
+
+              const patternMeanUsed = prefersInvertedDrift ? patternMeanInverted : patternMeanRaw;
+              const aliComputedUsed = prefersInvertedDrift ? aliFromInverted : aliFromRaw;
+
+              const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
+              const fmt0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? String(Math.round(v)) : '—');
+
+              const breakdownRows = [
+                { key: 'clarity', label: 'Clarity', value: patternRaw.clarity, color: '#2563eb' },
+                { key: 'consistency', label: 'Consistency', value: patternRaw.consistency, color: '#14b8a6' },
+                { key: 'trust', label: 'Trust', value: patternRaw.trust, color: '#8b5cf6' },
+                { key: 'communication', label: 'Communication', value: patternRaw.communication, color: '#f59e0b' },
+                { key: 'alignment', label: 'Alignment', value: patternRaw.alignment, color: '#10b981' },
+                { key: 'stability', label: 'Stability', value: patternRaw.stability, color: '#6366f1' },
+                { key: driftDisplayKey, label: driftDisplayLabel, value: driftDisplayValue, color: '#fb923c' }
+              ];
+
+              const lowestTwo = breakdownRows
+                .filter((r) => typeof r.value === 'number' && Number.isFinite(r.value))
+                .slice()
+                .sort((a, b) => (a.value ?? 999) - (b.value ?? 999))
+                .slice(0, 2);
+
+              const highestTwo = breakdownRows
+                .filter((r) => typeof r.value === 'number' && Number.isFinite(r.value))
+                .slice()
+                .sort((a, b) => (b.value ?? -999) - (a.value ?? -999))
+                .slice(0, 2);
 
               return (
                 <div className="grid grid-cols-1 gap-6">
+                  {/* Flagship: ALI Score Breakdown */}
+                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+                    <div className="flex items-start justify-between gap-6">
+                      <div>
+                        <div className="text-[18px] font-semibold text-black/[0.87]">ALI Score Breakdown</div>
+                        <div className="text-[13px] text-black/[0.6] mt-1">
+                          How your 7 tests (70%) + anchors (30%) combine into your ALI score.
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">ALI score</div>
+                        <div className="text-[42px] font-bold leading-none text-[#2563eb]">{fmt1(aliCurrentScore)}</div>
+                        <div className="text-[12px] text-black/[0.6] mt-1">0–100 (higher is healthier)</div>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* 7 tests */}
+                      <div className="lg:col-span-2">
+                        <div className="flex items-center justify-between">
+                          <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
+                          <div className="text-[12px] text-black/[0.6]">
+                            Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
+                          </div>
+                        </div>
+                        <div className="mt-3 space-y-2">
+                          {breakdownRows.map((r) => {
+                            const v = r.value;
+                            const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
+                            return (
+                              <div key={r.key} className="flex items-center gap-3">
+                                <div className="w-[160px] text-[13px] text-black/[0.6]">{r.label}</div>
+                                <div className="flex-1">
+                                  <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
+                                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
+                                  </div>
+                                </div>
+                                <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
+                          <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
+                          <div className="flex flex-wrap gap-x-6 gap-y-1">
+                            <div>
+                              <span className="text-black/[0.6]">Top strengths:</span>{' '}
+                              <span className="font-semibold text-black/[0.87]">
+                                {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-black/[0.6]">Top constraints:</span>{' '}
+                              <span className="font-semibold text-black/[0.87]">
+                                {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                              </span>
+                            </div>
+                          </div>
+                          {driftDisplayKey === 'leadership_drift' ? (
+                            <div className="mt-2 text-[12px] text-black/[0.6]">
+                              Note: {driftDisplayLabel} is shown as “{driftDirectionCopy}” in this breakdown.
+                            </div>
+                          ) : (
+                            <div className="mt-2 text-[12px] text-black/[0.6]">
+                              Note: {driftDisplayLabel} is shown as “{driftDirectionCopy}” in this breakdown.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Anchors + formula */}
+                      <div className="lg:col-span-1">
+                        <div className="text-[13px] font-semibold text-black/[0.87]">Anchors (30%)</div>
+                        <div className="mt-2 rounded-lg border border-black/[0.12] p-4">
+                          <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">Anchor score</div>
+                          <div className="text-[28px] font-bold text-black/[0.87] leading-none mt-1">{fmt1(anchorCurrentScore)}</div>
+                          <div className="text-[12px] text-black/[0.6] mt-2">
+                            Anchors stabilize the score across quarters.
+                          </div>
+                        </div>
+
+                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
+                          <div className="text-[12px] font-semibold text-black/[0.87] mb-2">The math (transparent)</div>
+                          <div className="text-[13px] text-black/[0.6] leading-relaxed">
+                            ALI = <span className="font-semibold text-black/[0.87]">0.30</span> × Anchors ({fmt1(anchorCurrentScore)}){' '}
+                            + <span className="font-semibold text-black/[0.87]">0.70</span> × 7‑test mean ({fmt1(patternMeanUsed)})
+                          </div>
+                          <div className="mt-2 text-[13px] text-black/[0.6]">
+                            Computed: <span className="font-semibold text-black/[0.87]">{fmt1(aliComputedUsed)}</span>
+                            {typeof aliCurrentScore === 'number' && typeof aliComputedUsed === 'number' ? (
+                              <span className="text-black/[0.38]"> • Δ {Math.abs(aliCurrentScore - aliComputedUsed).toFixed(2)}</span>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   {/* Radar summary */}
                   <div className="bg-white rounded-lg border border-black/[0.12] p-6">
                     <div className="flex items-end justify-between gap-4 mb-4">
@@ -1552,21 +1717,34 @@ const ALIDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Diagnostic: distributions (scales to hundreds, no table scroll) */}
-                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                      <div>
-                        <div className="text-[16px] font-semibold text-black/[0.87]">Leader vs Team: Response Spread</div>
-                        <div className="text-[13px] text-black/[0.6] mt-1">
-                          Each dot is a response. Colored ticks are group averages. Blue dashed tick is the overall average.
+                  {/* Advanced diagnostic (optional) */}
+                  <details className="bg-white rounded-lg border border-black/[0.12] p-6">
+                    <summary className="cursor-pointer select-none">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <div className="text-[16px] font-semibold text-black/[0.87]">Advanced: response distribution</div>
+                          <div className="text-[13px] text-black/[0.6] mt-1">
+                            See spread + clustering by metric (useful for analysts; not required to interpret your ALI score).
+                          </div>
                         </div>
+                        <div className="text-[11px] text-black/[0.38]">Optional</div>
                       </div>
-                      <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
-                    </div>
+                    </summary>
 
-                    {respondents.length ? (
-                      <div className="rounded-xl border border-black/[0.12] bg-black/[0.02] p-4">
-                        {(() => {
+                    <div className="mt-4">
+                      <div className="flex items-start justify-between gap-4 mb-4">
+                        <div>
+                          <div className="text-[14px] font-semibold text-black/[0.87]">Leader vs Team: Response Spread</div>
+                          <div className="text-[13px] text-black/[0.6] mt-1">
+                            Dots are responses. Colored ticks are group averages. Blue dashed tick is the overall average.
+                          </div>
+                        </div>
+                        <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
+                      </div>
+
+                      {respondents.length ? (
+                        <div className="rounded-xl border border-black/[0.12] bg-black/[0.02] p-4">
+                          {(() => {
                           const mean = (arr) => {
                             if (!arr.length) return null;
                             return arr.reduce((a, b) => a + b, 0) / arr.length;
@@ -1658,7 +1836,7 @@ const ALIDashboard = () => {
                             <div>
                               <div className="flex items-start justify-between gap-6">
                                 <div className="text-[12px] text-black/[0.6]">
-                                  <div className="font-semibold text-black/[0.87] text-[13px]">What this shows (in your data)</div>
+                                  <div className="font-semibold text-black/[0.87] text-[13px]">Signals from the distribution</div>
                                   <div className="mt-2 space-y-1">
                                     <div>
                                       <span className="font-semibold text-black/[0.87]">Biggest leader/team difference:</span>{' '}
@@ -1874,13 +2052,14 @@ const ALIDashboard = () => {
                             </div>
                           );
                         })()}
-                      </div>
-                    ) : (
-                      <div className="text-[13px] text-black/[0.6]">
-                        This diagnostic view appears once responses are available.
-                      </div>
-                    )}
-                  </div>
+                        </div>
+                      ) : (
+                        <div className="text-[13px] text-black/[0.6]">
+                          This diagnostic view appears once responses are available.
+                        </div>
+                      )}
+                    </div>
+                  </details>
                 </div>
               );
             })()}
