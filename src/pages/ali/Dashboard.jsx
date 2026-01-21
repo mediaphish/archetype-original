@@ -1038,13 +1038,33 @@ const ALIDashboard = () => {
 
           return (
             <div className="mb-8 space-y-6">
-              {/* HERO: ALI Score Breakdown (full width, ALI Score is #1 focus) */}
+              {/* HERO: ALI Score + Trajectory (2-column) */}
               <div className="bg-white rounded-lg border border-black/[0.12] p-8">
-                {/* ALI Score - Hero (top center, massive) */}
-                <div className="text-center mb-8">
-                  <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Your ALI Score</div>
-                  <div className="text-[72px] font-bold leading-none text-[#2563eb] mb-2">{fmt1(aliCurrentScore)}</div>
-                  <div className="text-[14px] text-black/[0.6]">0–100 (higher is healthier)</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  {/* Left: ALI Score */}
+                  <div>
+                    <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Your ALI Score</div>
+                    <div className="text-[72px] font-bold leading-none text-[#2563eb] mb-2">{fmt1(aliCurrentScore)}</div>
+                    <div className="text-[14px] text-black/[0.6]">0–100 (higher is healthier)</div>
+                  </div>
+                  
+                  {/* Right: Trajectory (only if 2+ surveys) */}
+                  {typeof dashboardData.trajectory.value === 'number' && Number.isFinite(dashboardData.trajectory.value) ? (
+                    <div>
+                      <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Trajectory</div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <svg className="w-6 h-6 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span className="text-[48px] font-bold text-[#10b981] leading-none">
+                          {fmtSigned1(dashboardData.trajectory.value)}
+                        </span>
+                      </div>
+                      <p className="text-[14px] text-black/[0.6]">
+                        {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving' : dashboardData.trajectory.direction === 'declining' ? 'Declining' : 'Stable') : '—'} Momentum
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Breakdown title */}
@@ -1132,8 +1152,8 @@ const ALIDashboard = () => {
                 </div>
               </div>
 
-              {/* SECOND ROW: Zone / Mirror / Trajectory */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* SECOND ROW: Zone / Mirror / Core Patterns */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Current Zone */}
                 <div 
                   className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
@@ -1200,32 +1220,67 @@ const ALIDashboard = () => {
                   )}
                 </div>
 
-                {/* Trajectory */}
-                <div 
-                  className="bg-white rounded-lg border border-black/[0.12] p-6"
-                >
-                  <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
-                    TRAJECTORY
+                {/* Core Patterns (Alignment, Stability, Clarity) */}
+                <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-[15px] font-semibold text-black/[0.87]">Core Patterns</div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNavigate(withEmail('/ali/reports'));
+                      }}
+                      className="text-[12px] font-semibold text-[#2563eb] hover:text-[#2563eb]/80"
+                    >
+                      View all 7 →
+                    </button>
                   </div>
-                  {dashboardData.trajectory.value !== null ? (
-                    <>
-                      <div className="flex items-center gap-3 mb-2">
-                        <svg className="w-6 h-6 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        <span className="text-[32px] font-bold text-[#10b981]">
-                          {fmtSigned1(dashboardData.trajectory.value)}
-                        </span>
+                  <div className="space-y-3">
+                    {/* Alignment */}
+                    <div className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="text-[13px] font-medium text-black/[0.87]">Alignment</div>
+                        {typeof dashboardData.coreScores.alignment.trend === 'number' ? (
+                          <div className={`flex items-center gap-1 text-[11px] font-semibold ${dashboardData.coreScores.alignment.trend >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
+                            <span>{dashboardData.coreScores.alignment.trend >= 0 ? '↑' : '↓'}</span>
+                            <span>{fmtSigned1(dashboardData.coreScores.alignment.trend)}</span>
+                          </div>
+                        ) : null}
                       </div>
-                      <p className="text-[14px] text-black/[0.6]">
-                        {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving' : dashboardData.trajectory.direction === 'declining' ? 'Declining' : 'Stable') : '—'} Momentum
-                      </p>
-                    </>
-                  ) : (
-                    <div className="text-[14px] text-black/[0.6]">
-                      — (Survey 1)
+                      <div className="text-[20px] font-bold text-[#10b981]">
+                        {fmt1(dashboardData.coreScores.alignment.current ?? dashboardData.coreScores.alignment.rolling)}
+                      </div>
                     </div>
-                  )}
+                    {/* Stability */}
+                    <div className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="text-[13px] font-medium text-black/[0.87]">Stability</div>
+                        {typeof dashboardData.coreScores.stability.trend === 'number' ? (
+                          <div className={`flex items-center gap-1 text-[11px] font-semibold ${dashboardData.coreScores.stability.trend >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
+                            <span>{dashboardData.coreScores.stability.trend >= 0 ? '↑' : '↓'}</span>
+                            <span>{fmtSigned1(dashboardData.coreScores.stability.trend)}</span>
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="text-[20px] font-bold text-[#6366f1]">
+                        {fmt1(dashboardData.coreScores.stability.current ?? dashboardData.coreScores.stability.rolling)}
+                      </div>
+                    </div>
+                    {/* Clarity */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="text-[13px] font-medium text-black/[0.87]">Clarity</div>
+                        {typeof dashboardData.coreScores.clarity.trend === 'number' ? (
+                          <div className={`flex items-center gap-1 text-[11px] font-semibold ${dashboardData.coreScores.clarity.trend >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
+                            <span>{dashboardData.coreScores.clarity.trend >= 0 ? '↑' : '↓'}</span>
+                            <span>{fmtSigned1(dashboardData.coreScores.clarity.trend)}</span>
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="text-[20px] font-bold text-[#2563eb]">
+                        {fmt1(dashboardData.coreScores.clarity.current ?? dashboardData.coreScores.clarity.rolling)}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1340,902 +1395,8 @@ const ALIDashboard = () => {
           </section>
         )}
 
-        {/* Section 1: Four Core Score Cards - MOVED UP */}
-        <section className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Core Scores</h2>
-            <button
-              onClick={() => setOpenDefinition('core-scores')}
-              className="text-gray-400 hover:text-blue-600 transition-colors"
-              aria-label="Learn about Core Scores"
-            >
-              <HelpCircle className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Alignment Score Card */}
-            <div 
-              className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
-              onMouseEnter={() => setHoveredMetric('alignment')}
-              onMouseLeave={() => setHoveredMetric(null)}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-medium text-gray-600">Alignment</div>
-                <div className="flex items-center gap-1 text-sm text-green-600">
-                  <span>↑</span>
-                  <span>{fmtSigned1(dashboardData.coreScores.alignment.trend)}</span>
-                </div>
-              </div>
-              <div className="text-4xl font-bold mb-2 text-orange-500 transition-all duration-300">
-                {fmt1(animatedValues.core_alignment ?? dashboardData.coreScores.alignment.rolling)}
-              </div>
-              <div className="mb-3">
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-orange-500 transition-all duration-1000 ease-out"
-                    style={{ width: `${Math.min(Math.max(animatedValues.core_alignment ?? 0, 0), 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="text-xs text-gray-500">Current: {fmt1(dashboardData.coreScores.alignment.current)}</div>
-              {hoveredMetric === 'alignment' && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {fmt1(dashboardData.coreScores.alignment.rolling)}<br/>
-                  Current: {fmt1(dashboardData.coreScores.alignment.current)}<br/>
-                  Trend: {fmtSigned1(dashboardData.coreScores.alignment.trend)}
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                </div>
-              )}
-            </div>
-
-            {/* Stability Score Card */}
-            <div 
-              className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
-              onMouseEnter={() => setHoveredMetric('stability')}
-              onMouseLeave={() => setHoveredMetric(null)}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-medium text-gray-600">Stability</div>
-                <div className="flex items-center gap-1 text-sm text-green-600">
-                  <span>↑</span>
-                  <span>{fmtSigned1(dashboardData.coreScores.stability.trend)}</span>
-                </div>
-              </div>
-              <div className="text-4xl font-bold mb-2 text-yellow-500 transition-all duration-300">
-                {fmt1(animatedValues.core_stability ?? dashboardData.coreScores.stability.rolling)}
-              </div>
-              <div className="mb-3">
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-yellow-500 transition-all duration-1000 ease-out"
-                    style={{ width: `${Math.min(Math.max(animatedValues.core_stability ?? 0, 0), 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="text-xs text-gray-500">Current: {fmt1(dashboardData.coreScores.stability.current)}</div>
-              {hoveredMetric === 'stability' && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {fmt1(dashboardData.coreScores.stability.rolling)}<br/>
-                  Current: {fmt1(dashboardData.coreScores.stability.current)}<br/>
-                  Trend: {fmtSigned1(dashboardData.coreScores.stability.trend)}
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                </div>
-              )}
-            </div>
-
-            {/* Clarity Score Card */}
-            <div 
-              className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
-              onMouseEnter={() => setHoveredMetric('clarity')}
-              onMouseLeave={() => setHoveredMetric(null)}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-medium text-gray-600">Clarity</div>
-                <div className="flex items-center gap-1 text-sm text-green-600">
-                  <span>↑</span>
-                  <span>{fmtSigned1(dashboardData.coreScores.clarity.trend)}</span>
-                </div>
-              </div>
-              <div className="text-4xl font-bold mb-2 text-green-500 transition-all duration-300">
-                {fmt1(animatedValues.core_clarity ?? dashboardData.coreScores.clarity.rolling)}
-              </div>
-              <div className="mb-3">
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-green-500 transition-all duration-1000 ease-out"
-                    style={{ width: `${Math.min(Math.max(animatedValues.core_clarity ?? 0, 0), 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="text-xs text-gray-500">Current: {fmt1(dashboardData.coreScores.clarity.current)}</div>
-              {hoveredMetric === 'clarity' && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Rolling: {fmt1(dashboardData.coreScores.clarity.rolling)}<br/>
-                  Current: {fmt1(dashboardData.coreScores.clarity.current)}<br/>
-                  Trend: {fmtSigned1(dashboardData.coreScores.clarity.trend)}
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                </div>
-              )}
-            </div>
-
-            {/* Trajectory Score Card */}
-            <div 
-              className="bg-green-50 rounded-lg border border-green-200 p-6 transition-all duration-200 hover:transform hover:-translate-y-1 hover:shadow-lg relative"
-              onMouseEnter={() => setHoveredMetric('trajectory')}
-              onMouseLeave={() => setHoveredMetric(null)}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="text-sm font-medium text-gray-600">Trajectory</div>
-                  <button
-                    onClick={() => setOpenDefinition('trajectory')}
-                    className="text-gray-400 hover:text-blue-600 transition-colors"
-                    aria-label="Learn about Trajectory"
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="text-xs text-gray-500">DRIFTINDEX</div>
-              </div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-4xl text-green-600 transition-transform duration-300 hover:scale-110">↑</span>
-                <span className="text-4xl font-bold text-green-600 transition-all duration-300">
-                  {fmtSigned1(dashboardData.trajectory.value)}
-                </span>
-              </div>
-              <div className="text-sm font-medium text-green-600">
-                {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving Momentum' : dashboardData.trajectory.direction === 'declining' ? 'Declining Momentum' : 'Stable') : '—'}
-              </div>
-              {hoveredMetric === 'trajectory' && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg z-[100] whitespace-nowrap">
-                  Value: {fmtSigned1(dashboardData.trajectory.value)}<br/>
-                  Direction: {dashboardData.trajectory.direction || '—'}<br/>
-                  Method: {dashboardData.trajectory.method || '—'}
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* Section 2: Leadership System Map (capstone) */}
-        <section className="mb-12">
-          <div className="bg-white rounded-lg border border-black/[0.12] p-8">
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-[22px] font-semibold text-black/[0.87]">Leadership System Map</h2>
-                  <button
-                    onClick={() => setOpenDefinition('leadership-system-map')}
-                    className="text-gray-400 hover:text-blue-600 transition-colors"
-                    aria-label="Learn about Leadership System Map"
-                  >
-                    <HelpCircle className="w-5 h-5" />
-                  </button>
-                </div>
-                <p className="text-[13px] text-black/[0.6]">
-                  The full 7-test diagnostic view (summary shape + individual response pattern).
-                </p>
-              </div>
-              {!dashboardData.dataQuality?.meets_minimum_n_org && (
-                <div className="px-3 py-1.5 bg-[#f59e0b]/10 rounded-md text-[12px] font-medium text-[#f59e0b]">
-                  Early signal: &lt;10 responses
-                </div>
-              )}
-            </div>
-
-            {(() => {
-              const liveSystem = liveDashboard?.systemMap || null;
-              const summary = liveSystem?.summary || null;
-              const respondents = Array.isArray(liveSystem?.respondents) ? liveSystem.respondents : [];
-
-              const fallbackSummary = {
-                overall: {
-                  clarity: dashboardData.scores.patterns.clarity?.current ?? null,
-                  consistency: dashboardData.scores.patterns.consistency?.current ?? null,
-                  trust: dashboardData.scores.patterns.trust?.current ?? null,
-                  communication: dashboardData.scores.patterns.communication?.current ?? null,
-                  alignment: dashboardData.scores.patterns.alignment?.current ?? null,
-                  stability: dashboardData.scores.patterns.stability?.current ?? null,
-                  leadership_drift: (typeof dashboardData.scores.patterns.leadership_drift?.current === 'number')
-                    ? (100 - dashboardData.scores.patterns.leadership_drift.current)
-                    : null
-                },
-                leader: null,
-                team_member: null
-              };
-
-              const s = summary || fallbackSummary;
-              const overall = s?.overall || {};
-              const leader = s?.leader || {};
-              const team = s?.team_member || {};
-
-              // --- Radar geometry ---
-              const W = 320;
-              const H = 260;
-              const cx = 160;
-              const cy = 130;
-              const rMax = 95;
-              const toPoint = (idx, value) => {
-                const angle = (-Math.PI / 2) + (idx * (2 * Math.PI / SYSTEM_KEYS.length));
-                const v = (typeof value === 'number' && Number.isFinite(value)) ? Math.max(0, Math.min(100, value)) : 0;
-                const rr = (v / 100) * rMax;
-                return { x: cx + rr * Math.cos(angle), y: cy + rr * Math.sin(angle) };
-              };
-              const toAxis = (idx, rr) => {
-                const angle = (-Math.PI / 2) + (idx * (2 * Math.PI / SYSTEM_KEYS.length));
-                return { x: cx + rr * Math.cos(angle), y: cy + rr * Math.sin(angle) };
-              };
-              const polyPoints = (obj) => SYSTEM_KEYS.map((k, i) => {
-                const p = toPoint(i, obj?.[k]);
-                return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
-              }).join(' ');
-
-              const hasLeaderTeam = SYSTEM_KEYS.some((k) => typeof leader?.[k] === 'number') && SYSTEM_KEYS.some((k) => typeof team?.[k] === 'number');
-
-              // --- Heatmap rows ---
-              const leaderRows = respondents.filter((r) => r?.role === 'leader');
-              const teamRows = respondents.filter((r) => r?.role === 'team_member');
-              const makeRowLabel = (role, idx) => (role === 'leader' ? `Leader ${idx + 1}` : `Team ${idx + 1}`);
-
-              // --- ALI score breakdown (flagship narrative) ---
-              const patternKeysForALI = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
-              const aliCurrentScore = dashboardData?.scores?.ali?.current ?? null;
-              const anchorCurrentScore = dashboardData?.scores?.anchors?.current ?? null;
-              const patternRaw = patternKeysForALI.reduce((acc, k) => {
-                const v = dashboardData?.scores?.patterns?.[k]?.current ?? null;
-                acc[k] = (typeof v === 'number' && Number.isFinite(v)) ? v : null;
-                return acc;
-              }, {});
-
-              const mean = (arr) => {
-                const v = arr.filter((x) => typeof x === 'number' && Number.isFinite(x));
-                if (!v.length) return null;
-                return v.reduce((a, b) => a + b, 0) / v.length;
-              };
-
-              const driftRaw = patternRaw.leadership_drift;
-              const driftInverted = (typeof driftRaw === 'number' && Number.isFinite(driftRaw)) ? (100 - driftRaw) : null;
-
-              const patternMeanRaw = mean(patternKeysForALI.map((k) => patternRaw[k]));
-              const patternMeanInverted = mean(patternKeysForALI.map((k) => (k === 'leadership_drift' ? driftInverted : patternRaw[k])));
-
-              const aliFromRaw =
-                (typeof anchorCurrentScore === 'number' && typeof patternMeanRaw === 'number')
-                  ? (0.30 * anchorCurrentScore) + (0.70 * patternMeanRaw)
-                  : null;
-              const aliFromInverted =
-                (typeof anchorCurrentScore === 'number' && typeof patternMeanInverted === 'number')
-                  ? (0.30 * anchorCurrentScore) + (0.70 * patternMeanInverted)
-                  : null;
-
-              const prefersInvertedDrift =
-                (typeof aliCurrentScore === 'number' && typeof aliFromInverted === 'number' && typeof aliFromRaw === 'number')
-                  ? (Math.abs(aliCurrentScore - aliFromInverted) < Math.abs(aliCurrentScore - aliFromRaw))
-                  : false;
-
-              const driftDisplayKey = prefersInvertedDrift ? 'leadership_alignment' : 'leadership_drift';
-              const driftDisplayLabel = prefersInvertedDrift ? 'Leadership Alignment' : 'Leadership Drift';
-              const driftDisplayValue = prefersInvertedDrift ? driftInverted : driftRaw;
-              const driftDirectionCopy = prefersInvertedDrift ? 'higher is healthier' : 'lower is healthier';
-
-              const patternMeanUsed = prefersInvertedDrift ? patternMeanInverted : patternMeanRaw;
-              const aliComputedUsed = prefersInvertedDrift ? aliFromInverted : aliFromRaw;
-
-              const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
-              const fmt0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? String(Math.round(v)) : '—');
-
-              const breakdownRows = [
-                { key: 'clarity', label: 'Clarity', value: patternRaw.clarity, color: '#2563eb' },
-                { key: 'consistency', label: 'Consistency', value: patternRaw.consistency, color: '#14b8a6' },
-                { key: 'trust', label: 'Trust', value: patternRaw.trust, color: '#8b5cf6' },
-                { key: 'communication', label: 'Communication', value: patternRaw.communication, color: '#f59e0b' },
-                { key: 'alignment', label: 'Alignment', value: patternRaw.alignment, color: '#10b981' },
-                { key: 'stability', label: 'Stability', value: patternRaw.stability, color: '#6366f1' },
-                { key: driftDisplayKey, label: driftDisplayLabel, value: driftDisplayValue, color: '#fb923c' }
-              ];
-
-              const lowestTwo = breakdownRows
-                .filter((r) => typeof r.value === 'number' && Number.isFinite(r.value))
-                .slice()
-                .sort((a, b) => (a.value ?? 999) - (b.value ?? 999))
-                .slice(0, 2);
-
-              const highestTwo = breakdownRows
-                .filter((r) => typeof r.value === 'number' && Number.isFinite(r.value))
-                .slice()
-                .sort((a, b) => (b.value ?? -999) - (a.value ?? -999))
-                .slice(0, 2);
-
-              return (
-                <div className="grid grid-cols-1 gap-6">
-                  {/* Flagship: ALI Score Breakdown */}
-                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-                    <div className="flex items-start justify-between gap-6">
-                      <div>
-                        <div className="text-[18px] font-semibold text-black/[0.87]">ALI Score Breakdown</div>
-                        <div className="text-[13px] text-black/[0.6] mt-1">
-                          How your 7 tests (70%) + anchors (30%) combine into your ALI score.
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">ALI score</div>
-                        <div className="text-[42px] font-bold leading-none text-[#2563eb]">{fmt1(aliCurrentScore)}</div>
-                        <div className="text-[12px] text-black/[0.6] mt-1">0–100 (higher is healthier)</div>
-                      </div>
-                    </div>
-
-                    <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {/* 7 tests */}
-                      <div className="lg:col-span-2">
-                        <div className="flex items-center justify-between">
-                          <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
-                          <div className="text-[12px] text-black/[0.6]">
-                            Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
-                          </div>
-                        </div>
-                        <div className="mt-3 space-y-2">
-                          {breakdownRows.map((r) => {
-                            const v = r.value;
-                            const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
-                            return (
-                              <div key={r.key} className="flex items-center gap-3">
-                                <div className="w-[160px] text-[13px] text-black/[0.6]">{r.label}</div>
-                                <div className="flex-1">
-                                  <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
-                                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
-                                  </div>
-                                </div>
-                                <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
-                          <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
-                          <div className="flex flex-wrap gap-x-6 gap-y-1">
-                            <div>
-                              <span className="text-black/[0.6]">Top strengths:</span>{' '}
-                              <span className="font-semibold text-black/[0.87]">
-                                {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-black/[0.6]">Top constraints:</span>{' '}
-                              <span className="font-semibold text-black/[0.87]">
-                                {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                              </span>
-                            </div>
-                          </div>
-                          {driftDisplayKey === 'leadership_drift' ? (
-                            <div className="mt-2 text-[12px] text-black/[0.6]">
-                              Note: {driftDisplayLabel} is shown as “{driftDirectionCopy}” in this breakdown.
-                            </div>
-                          ) : (
-                            <div className="mt-2 text-[12px] text-black/[0.6]">
-                              Note: {driftDisplayLabel} is shown as “{driftDirectionCopy}” in this breakdown.
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Anchors + formula */}
-                      <div className="lg:col-span-1">
-                        <div className="text-[13px] font-semibold text-black/[0.87]">Anchors (30%)</div>
-                        <div className="mt-2 rounded-lg border border-black/[0.12] p-4">
-                          <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">Anchor score</div>
-                          <div className="text-[28px] font-bold text-black/[0.87] leading-none mt-1">{fmt1(anchorCurrentScore)}</div>
-                          <div className="text-[12px] text-black/[0.6] mt-2">
-                            Anchors stabilize the score across quarters.
-                          </div>
-                        </div>
-
-                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
-                          <div className="text-[12px] font-semibold text-black/[0.87] mb-2">The math (transparent)</div>
-                          <div className="text-[13px] text-black/[0.6] leading-relaxed">
-                            ALI = <span className="font-semibold text-black/[0.87]">0.30</span> × Anchors ({fmt1(anchorCurrentScore)}){' '}
-                            + <span className="font-semibold text-black/[0.87]">0.70</span> × 7‑test mean ({fmt1(patternMeanUsed)})
-                          </div>
-                          <div className="mt-2 text-[13px] text-black/[0.6]">
-                            Computed: <span className="font-semibold text-black/[0.87]">{fmt1(aliComputedUsed)}</span>
-                            {typeof aliCurrentScore === 'number' && typeof aliComputedUsed === 'number' ? (
-                              <span className="text-black/[0.38]"> • Δ {Math.abs(aliCurrentScore - aliComputedUsed).toFixed(2)}</span>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Radar summary */}
-                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-                    <div className="flex items-end justify-between gap-4 mb-4">
-                      <div>
-                        <div className="text-[16px] font-semibold text-black/[0.87]">7‑Test Snapshot</div>
-                        <div className="text-[13px] text-black/[0.6] mt-1">Overall vs Leader vs Team (0–100; higher is healthier).</div>
-                      </div>
-                      <div className="text-[11px] text-black/[0.38]">Center = 0 • Outer ring = 100</div>
-                    </div>
-
-                    <div className="flex items-center justify-center">
-                      <svg className="w-full max-w-[560px] h-auto" viewBox={`0 0 ${W} ${H}`}>
-                        {/* Rings */}
-                        {[20, 40, 60, 80, 100].map((t) => (
-                          <circle
-                            key={t}
-                            cx={cx}
-                            cy={cy}
-                            r={(t / 100) * rMax}
-                            fill="none"
-                            stroke="rgba(0,0,0,0.14)"
-                            strokeWidth="1.5"
-                          />
-                        ))}
-
-                        {/* Axes + labels */}
-                        {SYSTEM_KEYS.map((k, i) => {
-                          const end = toAxis(i, rMax + 18);
-                          const axisEnd = toAxis(i, rMax);
-                          const label = systemKeyToLabel(k);
-                          const textAnchor = end.x < cx - 20 ? 'end' : end.x > cx + 20 ? 'start' : 'middle';
-                          const dy = end.y < cy - 20 ? -4 : end.y > cy + 20 ? 12 : 4;
-                          // Prevent label clipping (e.g., "Leadership Alignment" on the far-left).
-                          const safeX =
-                            textAnchor === 'end' ? Math.max(16, end.x) : textAnchor === 'start' ? Math.min(W - 16, end.x) : end.x;
-                          const safeY = Math.max(14, Math.min(H - 10, end.y + dy));
-                          return (
-                            <g key={k}>
-                              <line
-                                x1={cx}
-                                y1={cy}
-                                x2={axisEnd.x}
-                                y2={axisEnd.y}
-                                stroke="rgba(0,0,0,0.16)"
-                                strokeWidth="1.5"
-                              />
-                              <text
-                                x={safeX}
-                                y={safeY}
-                                fontSize="12"
-                                fill="rgba(0,0,0,0.72)"
-                                textAnchor={textAnchor}
-                              >
-                                {label === 'Leadership Alignment' ? (
-                                  <>
-                                    <tspan x={safeX} dy="0">Leadership</tspan>
-                                    <tspan x={safeX} dy="12">Alignment</tspan>
-                                  </>
-                                ) : (
-                                  label
-                                )}
-                              </text>
-                            </g>
-                          );
-                        })}
-
-                        {/* Polygons */}
-                        {/* Overall */}
-                        <polygon
-                          points={polyPoints(overall)}
-                          fill="rgba(37, 99, 235, 0.14)"
-                          stroke="#2563eb"
-                          strokeWidth="2.5"
-                        />
-
-                        {hasLeaderTeam ? (
-                          <>
-                            {/* Leader */}
-                            <polygon
-                              points={polyPoints(leader)}
-                              fill="rgba(16, 185, 129, 0.10)"
-                              stroke="#10b981"
-                              strokeWidth="2.5"
-                            />
-                            {/* Team */}
-                            <polygon
-                              points={polyPoints(team)}
-                              fill="rgba(245, 158, 11, 0.10)"
-                              stroke="#f59e0b"
-                              strokeWidth="2.5"
-                            />
-                          </>
-                        ) : null}
-                      </svg>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-[12px] text-black/[0.6]">
-                      <div className="inline-flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(37,99,235,0.25)', border: '2px solid #2563eb' }} />
-                        Overall
-                      </div>
-                      <div className="inline-flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.20)', border: '2px solid #10b981' }} />
-                        Leader
-                      </div>
-                      <div className="inline-flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(245,158,11,0.22)', border: '2px solid #f59e0b' }} />
-                        Team
-                      </div>
-                      <div className="text-[12px] text-black/[0.6]">
-                        Further out = healthier
-                      </div>
-                    </div>
-
-                    {/* Quick numeric readout so users don't have to decode the radar */}
-                    <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
-                      <div className="text-[12px] font-semibold text-black/[0.87] mb-2">Quick read (this snapshot)</div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {SYSTEM_KEYS.map((k) => {
-                          const o = fmt0(overall?.[k]);
-                          const l = fmt0(leader?.[k]);
-                          const t = fmt0(team?.[k]);
-                          return (
-                            <div key={`snap-${k}`} className="flex items-center justify-between gap-3">
-                              <div className="text-[12px] text-black/[0.6]">{systemKeyToLabel(k)}</div>
-                              <div className="text-[12px] text-black/[0.87] font-semibold whitespace-nowrap">
-                                <span className="text-[#2563eb]">O</span> {o ?? '—'}
-                                <span className="text-black/[0.38]">  </span>
-                                <span className="text-[#10b981]">L</span> {l ?? '—'}
-                                <span className="text-black/[0.38]">  </span>
-                                <span className="text-[#f59e0b]">T</span> {t ?? '—'}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Advanced diagnostic (optional) */}
-                  <details className="bg-white rounded-lg border border-black/[0.12] p-6">
-                    <summary className="cursor-pointer select-none">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <div className="text-[16px] font-semibold text-black/[0.87]">Advanced: response distribution</div>
-                          <div className="text-[13px] text-black/[0.6] mt-1">
-                            See spread + clustering by metric (useful for analysts; not required to interpret your ALI score).
-                          </div>
-                        </div>
-                        <div className="text-[11px] text-black/[0.38]">Optional</div>
-                      </div>
-                    </summary>
-
-                    <div className="mt-4">
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <div>
-                          <div className="text-[14px] font-semibold text-black/[0.87]">Leader vs Team: Response Spread</div>
-                          <div className="text-[13px] text-black/[0.6] mt-1">
-                            Dots are responses. Colored ticks are group averages. Blue dashed tick is the overall average.
-                          </div>
-                        </div>
-                        <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
-                      </div>
-
-                      {respondents.length ? (
-                        <div className="rounded-xl border border-black/[0.12] bg-black/[0.02] p-4">
-                          {(() => {
-                          const mean = (arr) => {
-                            if (!arr.length) return null;
-                            return arr.reduce((a, b) => a + b, 0) / arr.length;
-                          };
-
-                          // Deterministic jitter in [-1,1] based on index (stable across renders)
-                          const jitter01 = (idx) => {
-                            const x = Math.sin((idx + 1) * 9973) * 10000;
-                            return (x - Math.floor(x)) * 2 - 1;
-                          };
-
-                          // Use the saturated ALI palette (these are used across ALI)
-                          const leaderColor = '#10b981'; // green
-                          const teamColor = '#f59e0b'; // yellow
-                          const overallColor = '#2563eb'; // blue
-
-                          const leaderN = leaderRows.length;
-                          const teamN = teamRows.length;
-
-                          const W = 820;
-                          const padLeft = 120;
-                          // Reserve space for per-lane summaries on the right
-                          const padRight = 160;
-                          const padTop = 16;
-                          const padBottom = 28;
-                          const laneH = 52; // more visual weight + more touch-friendly on mobile
-                          const H = padTop + padBottom + SYSTEM_KEYS.length * laneH;
-                          const plotW = W - padLeft - padRight;
-
-                          const xForScore = (v) => {
-                            const vv = Math.max(0, Math.min(100, v));
-                            return padLeft + (vv / 100) * plotW;
-                          };
-
-                          const laneY = (i) => padTop + i * laneH + laneH / 2;
-                          const leaderY = (i) => laneY(i) - 10;
-                          const teamY = (i) => laneY(i) + 10;
-
-                          const healthyFrom = 70;
-                          const healthyX = xForScore(healthyFrom);
-
-                          const perKey = SYSTEM_KEYS.map((k) => {
-                            const leaderVals = leaderRows
-                              .map((r) => r?.scores?.[k])
-                              .filter((v) => typeof v === 'number' && Number.isFinite(v));
-                            const teamVals = teamRows
-                              .map((r) => r?.scores?.[k])
-                              .filter((v) => typeof v === 'number' && Number.isFinite(v));
-                            const allVals = [...leaderVals, ...teamVals];
-                            return {
-                              key: k,
-                              leaderVals,
-                              teamVals,
-                              leaderMean: mean(leaderVals),
-                              teamMean: mean(teamVals),
-                              overallMean: mean(allVals),
-                            };
-                          });
-
-                          const spread = (arr) => {
-                            if (!arr.length) return 0;
-                            const sorted = [...arr].sort((a, b) => a - b);
-                            const lo = sorted[Math.floor(sorted.length * 0.2)];
-                            const hi = sorted[Math.floor(sorted.length * 0.8)];
-                            return (typeof hi === 'number' && typeof lo === 'number') ? (hi - lo) : 0;
-                          };
-
-                          const rowsWithSignals = perKey.map((row) => {
-                            const gap = (typeof row.leaderMean === 'number' && typeof row.teamMean === 'number') ? (row.leaderMean - row.teamMean) : null;
-                            const allVals = [...row.leaderVals, ...row.teamVals];
-                            return {
-                              ...row,
-                              gap,
-                              spread80: spread(allVals),
-                            };
-                          });
-
-                          const biggestGapRow = rowsWithSignals
-                            .filter((r) => typeof r.gap === 'number')
-                            .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap))[0] || null;
-                          const lowestTeamRow = rowsWithSignals
-                            .filter((r) => typeof r.teamMean === 'number')
-                            .sort((a, b) => (a.teamMean ?? 999) - (b.teamMean ?? 999))[0] || null;
-                          const widestSpreadRow = rowsWithSignals
-                            .slice()
-                            .sort((a, b) => (b.spread80 ?? 0) - (a.spread80 ?? 0))[0] || null;
-
-                          return (
-                            <div>
-                              <div className="flex items-start justify-between gap-6">
-                                <div className="text-[12px] text-black/[0.6]">
-                                  <div className="font-semibold text-black/[0.87] text-[13px]">Signals from the distribution</div>
-                                  <div className="mt-2 space-y-1">
-                                    <div>
-                                      <span className="font-semibold text-black/[0.87]">Biggest leader/team difference:</span>{' '}
-                                      {biggestGapRow ? (
-                                        <>
-                                          {systemKeyToLabel(biggestGapRow.key)} ({Math.round(biggestGapRow.leaderMean ?? 0)} vs {Math.round(biggestGapRow.teamMean ?? 0)}; Δ {Math.round(biggestGapRow.gap ?? 0)})
-                                        </>
-                                      ) : (
-                                        '—'
-                                      )}
-                                    </div>
-                                    <div>
-                                      <span className="font-semibold text-black/[0.87]">Lowest team signal:</span>{' '}
-                                      {lowestTeamRow ? (
-                                        <>
-                                          {systemKeyToLabel(lowestTeamRow.key)} (team avg {Math.round(lowestTeamRow.teamMean ?? 0)})
-                                        </>
-                                      ) : (
-                                        '—'
-                                      )}
-                                    </div>
-                                    <div>
-                                      <span className="font-semibold text-black/[0.87]">Most mixed experiences (widest spread):</span>{' '}
-                                      {widestSpreadRow ? (
-                                        <>
-                                          {systemKeyToLabel(widestSpreadRow.key)} (spread ~{Math.round(widestSpreadRow.spread80)}pts)
-                                        </>
-                                      ) : (
-                                        '—'
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-[12px] text-black/[0.6]">
-                                  <div className="inline-flex items-center gap-2">
-                                    <span className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: leaderColor }} />
-                                    Leader (n={leaderN})
-                                  </div>
-                                  <div className="inline-flex items-center gap-2">
-                                    <span className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: teamColor }} />
-                                    Team (n={teamN})
-                                  </div>
-                                  <div className="inline-flex items-center gap-2">
-                                    <span className="w-8 h-[3px]" style={{ backgroundColor: overallColor }} />
-                                    Overall mean
-                                  </div>
-                                  <div className="inline-flex items-center gap-2">
-                                    <span className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.14)', border: '2px solid rgba(16,185,129,0.35)' }} />
-                                    Healthy band (70–100)
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="mt-4">
-                                <svg className="w-full h-[520px] md:h-[580px]" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="System Spread (7 lanes)">
-                                  {/* Healthy band */}
-                                  <rect
-                                    x={healthyX}
-                                    y={padTop - 6}
-                                    width={W - padRight - healthyX}
-                                    height={H - padTop - padBottom + 12}
-                                    fill="rgba(16,185,129,0.14)"
-                                    stroke="rgba(16,185,129,0.35)"
-                                    strokeWidth="2"
-                                    rx="8"
-                                    vectorEffect="non-scaling-stroke"
-                                  />
-
-                                  {/* X grid + labels */}
-                                  {[0, 50, 70, 100].map((t) => {
-                                    const x = xForScore(t);
-                                    const is70 = t === 70;
-                                    return (
-                                      <g key={`x-${t}`}>
-                                        <line
-                                          x1={x}
-                                          x2={x}
-                                          y1={padTop - 6}
-                                          y2={H - padBottom + 6}
-                                          stroke={is70 ? 'rgba(16,185,129,0.55)' : 'rgba(0,0,0,0.12)'}
-                                          strokeWidth={is70 ? '3' : '1.5'}
-                                          vectorEffect="non-scaling-stroke"
-                                        />
-                                        <text
-                                          x={x}
-                                          y={H - 8}
-                                          fontSize="12"
-                                          fill={is70 ? '#10b981' : 'rgba(0,0,0,0.55)'}
-                                          textAnchor="middle"
-                                        >
-                                          {t}
-                                        </text>
-                                      </g>
-                                    );
-                                  })}
-
-                                  {/* Lanes */}
-                                  {perKey.map((row, i) => {
-                                    const yMid = laneY(i);
-                                    const yL = leaderY(i);
-                                    const yT = teamY(i);
-                                    const leaderSummary = typeof row.leaderMean === 'number' ? Math.round(row.leaderMean) : null;
-                                    const teamSummary = typeof row.teamMean === 'number' ? Math.round(row.teamMean) : null;
-
-                                    return (
-                                      <g key={`lane-${row.key}`}>
-                                        {/* lane baseline */}
-                                        <line
-                                          x1={padLeft}
-                                          x2={W - padRight}
-                                          y1={yMid}
-                                          y2={yMid}
-                                          stroke="rgba(0,0,0,0.18)"
-                                          strokeWidth="1.5"
-                                          vectorEffect="non-scaling-stroke"
-                                        />
-
-                                        {/* lane label */}
-                                        <text x={padLeft - 10} y={yMid + 5} fontSize="13" fill="rgba(0,0,0,0.78)" textAnchor="end">
-                                          {systemKeyToLabel(row.key)}
-                                        </text>
-
-                                        {/* overall mean marker (dashed tick) */}
-                                        {typeof row.overallMean === 'number' ? (
-                                          <line
-                                            x1={xForScore(row.overallMean)}
-                                            x2={xForScore(row.overallMean)}
-                                            y1={yMid - 12}
-                                            y2={yMid + 12}
-                                            stroke={overallColor}
-                                            strokeWidth="3"
-                                            strokeDasharray="7 6"
-                                            vectorEffect="non-scaling-stroke"
-                                          />
-                                        ) : null}
-
-                                        {/* leader mean marker */}
-                                        {typeof row.leaderMean === 'number' ? (
-                                          <line
-                                            x1={xForScore(row.leaderMean)}
-                                            x2={xForScore(row.leaderMean)}
-                                            y1={yL - 10}
-                                            y2={yL + 10}
-                                            stroke={leaderColor}
-                                            strokeWidth="4"
-                                            strokeLinecap="round"
-                                            vectorEffect="non-scaling-stroke"
-                                          />
-                                        ) : null}
-
-                                        {/* team mean marker */}
-                                        {typeof row.teamMean === 'number' ? (
-                                          <line
-                                            x1={xForScore(row.teamMean)}
-                                            x2={xForScore(row.teamMean)}
-                                            y1={yT - 10}
-                                            y2={yT + 10}
-                                            stroke={teamColor}
-                                            strokeWidth="4"
-                                            strokeLinecap="round"
-                                            vectorEffect="non-scaling-stroke"
-                                          />
-                                        ) : null}
-
-                                        {/* leader dots */}
-                                        {row.leaderVals.map((v, idx) => (
-                                          <circle
-                                            key={`l-${row.key}-${idx}`}
-                                            cx={xForScore(v)}
-                                            cy={yL + jitter01(idx) * 5}
-                                            r="4.5"
-                                            fill={leaderColor}
-                                            fillOpacity="0.9"
-                                            stroke="white"
-                                            strokeWidth="1"
-                                            vectorEffect="non-scaling-stroke"
-                                          />
-                                        ))}
-
-                                        {/* team dots */}
-                                        {row.teamVals.map((v, idx) => (
-                                          <circle
-                                            key={`t-${row.key}-${idx}`}
-                                            cx={xForScore(v)}
-                                            cy={yT + jitter01(idx + 1000) * 5}
-                                            r="4.5"
-                                            fill={teamColor}
-                                            fillOpacity="0.9"
-                                            stroke="white"
-                                            strokeWidth="1"
-                                            vectorEffect="non-scaling-stroke"
-                                          />
-                                        ))}
-
-                                        {/* per-lane summaries */}
-                                        <text x={W - padRight + 18} y={yMid + 5} fontSize="12" fill="rgba(0,0,0,0.60)">
-                                          <tspan fill={leaderColor} fontWeight="700">L</tspan>
-                                          <tspan fill="rgba(0,0,0,0.60)">{leaderSummary !== null ? ` ${leaderSummary}` : ' —'}</tspan>
-                                          <tspan fill="rgba(0,0,0,0.38)">  </tspan>
-                                          <tspan fill={teamColor} fontWeight="700">T</tspan>
-                                          <tspan fill="rgba(0,0,0,0.60)">{teamSummary !== null ? ` ${teamSummary}` : ' —'}</tspan>
-                                        </text>
-                                      </g>
-                                    );
-                                  })}
-
-                                  {/* Axis label */}
-                                  <text x={(padLeft + (W - padRight)) / 2} y={H - 8} fontSize="11" fill="rgba(0,0,0,0.38)" textAnchor="middle">
-                                    Score (0–100)
-                                  </text>
-                                </svg>
-                              </div>
-                            </div>
-                          );
-                        })()}
-                        </div>
-                      ) : (
-                        <div className="text-[13px] text-black/[0.6]">
-                          This diagnostic view appears once responses are available.
-                        </div>
-                      )}
-                    </div>
-                  </details>
-                </div>
-              );
-            })()}
-          </div>
-        </section>
-
-        {/* Section 3: Team Experience Map - EXACT V0 SPECIFICATION */}
+        {/* Section 2: Leadership System Map (capstone) - REMOVED (moved to Reports) */}
+        {/* Section 3: View Full Analytics - Link to Reports - REMOVED (redundant) */}
         <section className="mb-12">
           <div className="bg-white rounded-lg border border-black/[0.12] p-8">
             <div className="flex items-start justify-between mb-6">
@@ -2442,39 +1603,6 @@ const ALIDashboard = () => {
                       right: "25%",
                       transform: "translate(50%, 50%)",
                       color: "#ef4444"
-                    }}
-                  >
-                    Hazard
-                  </div>
-              </>
-            </div>
-
-            {/* Coordinates display below map */}
-            <div className="mt-6 flex items-center justify-center gap-8 text-[13px] text-black/[0.6]">
-              <div>
-                Clarity: <span className="font-bold text-black/[0.87]">{fmt1(dashboardData.experienceMap.current.x)}</span>
-              </div>
-              <div>
-                (Stability + Trust) / 2: <span className="font-bold text-black/[0.87]">{fmt1(dashboardData.experienceMap.current.y)}</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 3: View Full Analytics - Link to Reports */}
-        <section className="mb-12">
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200 p-8 text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Deep Dive Analytics Available</h2>
-            <p className="text-gray-600 mb-6">Explore detailed pattern analysis, comparative insights, root cause analysis, and predictive analytics</p>
-            <button
-              onClick={() => handleNavigate('/ali/reports')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              View Full Analytics →
-            </button>
-          </div>
-        </section>
-
         {/* Section 4 & 5: Leadership Profile and Mirror - Side by Side */}
         <section className="mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
