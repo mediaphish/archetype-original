@@ -157,6 +157,34 @@ function computeExperiencePointForSingleResponse(transformedResponses, questionB
 }
 
 /**
+ * Compute a 7-test "system vector" for a single respondent.
+ * This is used for the Leadership System Map (radar + heatmap).
+ *
+ * Notes:
+ * - We present leadership_drift as "Leadership Alignment" (higher = better) by inverting drift: 100 - drift.
+ *
+ * @returns {Object|null} scores keyed by pattern name (0–100) or null if insufficient data
+ */
+function computeSystemVectorForSingleResponse(transformedResponses) {
+  if (!Array.isArray(transformedResponses) || transformedResponses.length === 0) return null;
+
+  const patterns = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+  const scores = {};
+  patterns.forEach((pattern) => {
+    scores[pattern] = calculatePatternScore(transformedResponses, pattern);
+  });
+
+  // Invert drift into alignment for display (higher is better)
+  if (typeof scores.leadership_drift === 'number' && Number.isFinite(scores.leadership_drift)) {
+    scores.leadership_drift = 100 - scores.leadership_drift;
+  } else {
+    scores.leadership_drift = null;
+  }
+
+  return scores;
+}
+
+/**
  * Generate lightweight insights from current scores even with small N (pilot).
  * These are deterministic and do not require multi-quarter history.
  */
@@ -406,6 +434,7 @@ export default async function handler(req, res) {
     const historicalScores = [];
     const historicalClarityScores = [];
     const experienceMapPoints = [];
+    const systemMapRespondents = [];
 
     for (const deployment of deployments) {
       const deploymentResponses = responsesByDeployment[deployment.id] || [];
@@ -444,6 +473,16 @@ export default async function handler(req, res) {
             zone: point.zone,
             role: isLeader ? 'leader' : 'team_member',
             completed_at: response.completed_at || null
+          });
+        }
+
+        // Individual 7-test system vector (one per respondent)
+        const vector = computeSystemVectorForSingleResponse(transformed);
+        if (vector) {
+          systemMapRespondents.push({
+            role: isLeader ? 'leader' : 'team_member',
+            completed_at: response.completed_at || null,
+            scores: vector
           });
         }
         
@@ -568,6 +607,41 @@ export default async function handler(req, res) {
 
     const leadershipMirror = calculateLeadershipMirror(leaderMirrorScores, teamMirrorScores);
 
+    // Leadership System Map summary (7 tests + leader/team/overall)
+    // Use rolling if available, otherwise current.
+    const pickScore = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
+    const pickPattern = (scores, key) => pickScore(scores?.patterns?.[key]?.rolling ?? scores?.patterns?.[key]?.current);
+
+    const systemMapSummary = {
+      overall: {
+        clarity: pickPattern(overallScores, 'clarity'),
+        consistency: pickPattern(overallScores, 'consistency'),
+        trust: pickPattern(overallScores, 'trust'),
+        communication: pickPattern(overallScores, 'communication'),
+        alignment: pickPattern(overallScores, 'alignment'),
+        stability: pickPattern(overallScores, 'stability'),
+        leadership_drift: driftToAlignment(pickPattern(overallScores, 'leadership_drift'))
+      },
+      leader: {
+        clarity: pickPattern(leaderRollingScores, 'clarity'),
+        consistency: pickPattern(leaderRollingScores, 'consistency'),
+        trust: pickPattern(leaderRollingScores, 'trust'),
+        communication: pickPattern(leaderRollingScores, 'communication'),
+        alignment: pickPattern(leaderRollingScores, 'alignment'),
+        stability: pickPattern(leaderRollingScores, 'stability'),
+        leadership_drift: driftToAlignment(pickPattern(leaderRollingScores, 'leadership_drift'))
+      },
+      team_member: {
+        clarity: pickPattern(teamRollingScores, 'clarity'),
+        consistency: pickPattern(teamRollingScores, 'consistency'),
+        trust: pickPattern(teamRollingScores, 'trust'),
+        communication: pickPattern(teamRollingScores, 'communication'),
+        alignment: pickPattern(teamRollingScores, 'alignment'),
+        stability: pickPattern(teamRollingScores, 'stability'),
+        leadership_drift: driftToAlignment(pickPattern(teamRollingScores, 'leadership_drift'))
+      }
+    };
+
     // Trajectory (prefer DriftIndex, fallback to qoq_delta)
     const drift = { ...(overallScores.drift || {}) };
     const deploymentsWithResponses = deployments.filter(d => (responsesByDeployment[d.id]?.length || 0) > 0);
@@ -689,6 +763,10 @@ export default async function handler(req, res) {
       coreScores,
       experienceMap,
       experienceMapPoints,
+      systemMap: {
+        summary: systemMapSummary,
+        respondents: systemMapRespondents
+      },
       leadershipProfile: {
         profile: leadershipProfile?.profile || 'profile_forming',
         honesty: {
