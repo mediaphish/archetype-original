@@ -8,6 +8,7 @@ import AliFooter from '../../components/ali/AliFooter';
 const ALIDashboard = () => {
   const [expandedZone, setExpandedZone] = useState(null);
   const [expandedProfile, setExpandedProfile] = useState(false);
+  const [mirrorShowAll, setMirrorShowAll] = useState(false);
   const [hoveredPattern, setHoveredPattern] = useState(null);
   const [hoveredMetric, setHoveredMetric] = useState(null);
   const [hoveredChartPoint, setHoveredChartPoint] = useState(null);
@@ -70,6 +71,20 @@ const ALIDashboard = () => {
   const pickNumber = (value, fallback) => {
     return (typeof value === 'number' && Number.isFinite(value)) ? value : fallback;
   };
+
+  // Leadership Mirror helpers (keep consistent with /ali/reports/mirror and Zones naming)
+  const mirrorKeyToLabel = (k) => {
+    if (!k) return '—';
+    if (k === 'leadership_drift') return 'Leadership Alignment';
+    if (k === 'ali') return 'ALI Overall';
+    const words = String(k)
+      .replace(/_/g, ' ')
+      .split(' ')
+      .filter(Boolean);
+    return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  };
+
+  const MIRROR_METRIC_ORDER = ['ali', 'clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
 
   // Lightweight number animation helper (used when live data loads)
   const animateNumber = (key, start, end, duration = 800) => {
@@ -1597,44 +1612,128 @@ const ALIDashboard = () => {
                 </button>
               </div>
               <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
-            <div className="space-y-6">
-              {(['ali', 'alignment', 'stability', 'clarity']).map((metric) => {
-                const gap = dashboardData.leadershipMirror.gaps[metric];
-                const severity = dashboardData.leadershipMirror.severity[metric];
-                const leaderScore = dashboardData.leadershipMirror.leaderScores[metric];
-                const teamScore = dashboardData.leadershipMirror.teamScores[metric];
-                const safeLeader = typeof leaderScore === 'number' && Number.isFinite(leaderScore) ? leaderScore : null;
-                const safeTeam = typeof teamScore === 'number' && Number.isFinite(teamScore) ? teamScore : null;
-                const safeGap = typeof gap === 'number' && Number.isFinite(gap) ? gap : null;
-                const maxScore = Math.max(safeLeader ?? 0, safeTeam ?? 0, 100);
+                {(() => {
+                  const mirror = dashboardData?.leadershipMirror || {};
+                  const gaps = mirror?.gaps || {};
+                  const leaderScores = mirror?.leaderScores || {};
+                  const teamScores = mirror?.teamScores || {};
+                  const severity = mirror?.severity || {};
+                  const leaderN = typeof dashboardData?.responseCounts?.leader === 'number' ? dashboardData.responseCounts.leader : null;
+                  const teamN = typeof dashboardData?.responseCounts?.team_member === 'number' ? dashboardData.responseCounts.team_member : null;
 
-                return (
-                  <div key={metric} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="text-sm font-medium text-gray-900 capitalize">{metric === 'ali' ? 'ALI Overall' : metric}</div>
-                      <div className="text-sm font-semibold text-gray-600 capitalize">
-                        Gap: {safeGap === null ? '—' : safeGap.toFixed(1)} ({severity})
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500 mb-1">Leader</div>
-                        <div className="h-8 bg-blue-600 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(((safeLeader ?? 0) / maxScore) * 100)}%` }}>
-                          <span className="text-xs font-semibold text-white">{safeLeader === null ? '—' : safeLeader.toFixed(1)}</span>
+                  const severityToBadge = (sev) => {
+                    const s = String(sev || '').toLowerCase();
+                    if (s === 'critical') return { label: 'Critical', cls: 'bg-red-50 border-red-200 text-red-800' };
+                    if (s === 'caution') return { label: 'Caution', cls: 'bg-orange-50 border-orange-200 text-orange-800' };
+                    if (s === 'neutral') return { label: 'Neutral', cls: 'bg-gray-50 border-gray-200 text-gray-700' };
+                    return { label: '—', cls: 'bg-gray-50 border-gray-200 text-gray-700' };
+                  };
+
+                  const orderedKeys = MIRROR_METRIC_ORDER.filter((k) => (
+                    Object.prototype.hasOwnProperty.call(gaps, k) ||
+                    Object.prototype.hasOwnProperty.call(leaderScores, k) ||
+                    Object.prototype.hasOwnProperty.call(teamScores, k)
+                  ));
+
+                  const rows = orderedKeys.map((k) => {
+                    const gap = (typeof gaps?.[k] === 'number' && Number.isFinite(gaps[k])) ? gaps[k] : null;
+                    const leaderScore = (typeof leaderScores?.[k] === 'number' && Number.isFinite(leaderScores[k])) ? leaderScores[k] : null;
+                    const teamScore = (typeof teamScores?.[k] === 'number' && Number.isFinite(teamScores[k])) ? teamScores[k] : null;
+                    return {
+                      key: k,
+                      label: mirrorKeyToLabel(k),
+                      gap,
+                      abs: gap === null ? null : Math.abs(gap),
+                      severity: severity?.[k],
+                      leaderScore,
+                      teamScore
+                    };
+                  });
+
+                  const sortable = rows.filter((r) => r.abs !== null);
+                  const topByGap = [...sortable].sort((a, b) => (b.abs ?? 0) - (a.abs ?? 0)).slice(0, 3);
+                  const visibleRows = mirrorShowAll ? rows : (topByGap.length ? topByGap : rows.slice(0, 3));
+                  const hasAny = rows.some((r) => r.leaderScore !== null || r.teamScore !== null || r.gap !== null);
+
+                  return (
+                    <div className="space-y-5">
+                      {(leaderN !== null || teamN !== null) ? (
+                        <div className="text-xs text-gray-600 flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4 text-gray-400" />
+                          Based on {leaderN ?? '—'} leader response(s) and {teamN ?? '—'} team response(s).
                         </div>
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500 mb-1">Team</div>
-                        <div className="h-8 bg-green-600 rounded flex items-center justify-end pr-2 transition-all duration-1000 ease-out" style={{ width: `${(((safeTeam ?? 0) / maxScore) * 100)}%` }}>
-                          <span className="text-xs font-semibold text-white">{safeTeam === null ? '—' : safeTeam.toFixed(1)}</span>
+                      ) : null}
+
+                      {!hasAny ? (
+                        <div className="text-sm text-gray-600">
+                          Mirror data will appear once both a leader and team members have responded.
                         </div>
-                      </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {visibleRows.map((row) => {
+                            const maxScore = Math.max(row.leaderScore ?? 0, row.teamScore ?? 0, 100);
+                            const badge = severityToBadge(row.severity);
+                            return (
+                              <div key={row.key} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
+                                <div className="flex items-start justify-between gap-3 mb-2">
+                                  <div className="min-w-0">
+                                    <div className="text-sm font-medium text-gray-900">{row.label}</div>
+                                    <div className="text-xs text-gray-500 mt-0.5">
+                                      Gap (leader − team):{' '}
+                                      <span className="font-semibold text-gray-700">{row.gap === null ? '—' : row.gap.toFixed(1)}</span>pt
+                                    </div>
+                                  </div>
+                                  <span className={`shrink-0 inline-flex items-center px-2 py-1 rounded-full border text-xs font-semibold ${badge.cls}`}>
+                                    {badge.label}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center gap-4">
+                                  <div className="flex-1">
+                                    <div className="text-xs text-gray-500 mb-1">Leader</div>
+                                    <div
+                                      className="h-7 bg-blue-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
+                                      style={{ width: `${(((row.leaderScore ?? 0) / maxScore) * 100)}%` }}
+                                    >
+                                      <span className="text-xs font-semibold text-white">
+                                        {row.leaderScore === null ? '—' : row.leaderScore.toFixed(1)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="text-xs text-gray-500 mb-1">Team</div>
+                                    <div
+                                      className="h-7 bg-green-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
+                                      style={{ width: `${(((row.teamScore ?? 0) / maxScore) * 100)}%` }}
+                                    >
+                                      <span className="text-xs font-semibold text-white">
+                                        {row.teamScore === null ? '—' : row.teamScore.toFixed(1)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                          <div className="flex items-center justify-between pt-2">
+                            <button
+                              type="button"
+                              onClick={() => setMirrorShowAll((v) => !v)}
+                              className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                            >
+                              {mirrorShowAll ? 'Show top gaps' : 'Show all metrics'}
+                            </button>
+                            <div className="text-xs text-gray-500">
+                              {mirrorShowAll ? 'All 7 tests + ALI overall' : 'Top 3 gaps'}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })()}
               </div>
-            </div>
           </div>
           </div>
         </section>
