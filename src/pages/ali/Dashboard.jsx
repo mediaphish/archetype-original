@@ -1409,18 +1409,18 @@ const ALIDashboard = () => {
               const teamRows = respondents.filter((r) => r?.role === 'team_member');
               const makeRowLabel = (role, idx) => (role === 'leader' ? `Leader ${idx + 1}` : `Team ${idx + 1}`);
 
+              const fmt0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : null);
+
               return (
                 <div className="grid grid-cols-1 gap-6">
                   {/* Radar summary */}
                   <div className="bg-white rounded-lg border border-black/[0.12] p-6">
                     <div className="flex items-end justify-between gap-4 mb-4">
                       <div>
-                        <div className="text-[13px] font-semibold text-black/[0.6]">System profile (summary)</div>
-                        <div className="text-[13px] text-black/[0.6] mt-1">
-                          Leader vs Team vs Overall across 7 tests.
-                        </div>
+                        <div className="text-[16px] font-semibold text-black/[0.87]">7‑Test Snapshot</div>
+                        <div className="text-[13px] text-black/[0.6] mt-1">Overall vs Leader vs Team (0–100; higher is healthier).</div>
                       </div>
-                      <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
+                      <div className="text-[11px] text-black/[0.38]">Center = 0 • Outer ring = 100</div>
                     </div>
 
                     <div className="flex items-center justify-center">
@@ -1445,6 +1445,10 @@ const ALIDashboard = () => {
                           const label = systemKeyToLabel(k);
                           const textAnchor = end.x < cx - 20 ? 'end' : end.x > cx + 20 ? 'start' : 'middle';
                           const dy = end.y < cy - 20 ? -4 : end.y > cy + 20 ? 12 : 4;
+                          // Prevent label clipping (e.g., "Leadership Alignment" on the far-left).
+                          const safeX =
+                            textAnchor === 'end' ? Math.max(16, end.x) : textAnchor === 'start' ? Math.min(W - 16, end.x) : end.x;
+                          const safeY = Math.max(14, Math.min(H - 10, end.y + dy));
                           return (
                             <g key={k}>
                               <line
@@ -1456,13 +1460,20 @@ const ALIDashboard = () => {
                                 strokeWidth="1.5"
                               />
                               <text
-                                x={end.x}
-                                y={end.y + dy}
+                                x={safeX}
+                                y={safeY}
                                 fontSize="12"
                                 fill="rgba(0,0,0,0.72)"
                                 textAnchor={textAnchor}
                               >
-                                {label}
+                                {label === 'Leadership Alignment' ? (
+                                  <>
+                                    <tspan x={safeX} dy="0">Leadership</tspan>
+                                    <tspan x={safeX} dy="12">Alignment</tspan>
+                                  </>
+                                ) : (
+                                  label
+                                )}
                               </text>
                             </g>
                           );
@@ -1474,7 +1485,7 @@ const ALIDashboard = () => {
                           points={polyPoints(overall)}
                           fill="rgba(37, 99, 235, 0.14)"
                           stroke="#2563eb"
-                          strokeWidth="3.5"
+                          strokeWidth="2.5"
                         />
 
                         {hasLeaderTeam ? (
@@ -1484,21 +1495,21 @@ const ALIDashboard = () => {
                               points={polyPoints(leader)}
                               fill="rgba(16, 185, 129, 0.10)"
                               stroke="#10b981"
-                              strokeWidth="3.5"
+                              strokeWidth="2.5"
                             />
                             {/* Team */}
                             <polygon
                               points={polyPoints(team)}
                               fill="rgba(245, 158, 11, 0.10)"
                               stroke="#f59e0b"
-                              strokeWidth="3.5"
+                              strokeWidth="2.5"
                             />
                           </>
                         ) : null}
                       </svg>
                     </div>
 
-                    <div className="mt-4 flex flex-wrap items-center gap-3 text-[12px] text-black/[0.6]">
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-[12px] text-black/[0.6]">
                       <div className="inline-flex items-center gap-2">
                         <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(37,99,235,0.25)', border: '2px solid #2563eb' }} />
                         Overall
@@ -1511,6 +1522,33 @@ const ALIDashboard = () => {
                         <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(245,158,11,0.22)', border: '2px solid #f59e0b' }} />
                         Team
                       </div>
+                      <div className="text-[12px] text-black/[0.6]">
+                        Further out = healthier
+                      </div>
+                    </div>
+
+                    {/* Quick numeric readout so users don't have to decode the radar */}
+                    <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
+                      <div className="text-[12px] font-semibold text-black/[0.87] mb-2">Quick read (this snapshot)</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {SYSTEM_KEYS.map((k) => {
+                          const o = fmt0(overall?.[k]);
+                          const l = fmt0(leader?.[k]);
+                          const t = fmt0(team?.[k]);
+                          return (
+                            <div key={`snap-${k}`} className="flex items-center justify-between gap-3">
+                              <div className="text-[12px] text-black/[0.6]">{systemKeyToLabel(k)}</div>
+                              <div className="text-[12px] text-black/[0.87] font-semibold whitespace-nowrap">
+                                <span className="text-[#2563eb]">O</span> {o ?? '—'}
+                                <span className="text-black/[0.38]">  </span>
+                                <span className="text-[#10b981]">L</span> {l ?? '—'}
+                                <span className="text-black/[0.38]">  </span>
+                                <span className="text-[#f59e0b]">T</span> {t ?? '—'}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
@@ -1518,17 +1556,9 @@ const ALIDashboard = () => {
                   <div className="bg-white rounded-lg border border-black/[0.12] p-6">
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div>
-                        <div className="text-[13px] font-semibold text-black/[0.6]">Individual response pattern (diagnostic)</div>
+                        <div className="text-[16px] font-semibold text-black/[0.87]">Leader vs Team: Response Spread</div>
                         <div className="text-[13px] text-black/[0.6] mt-1">
-                          Each dot is a response. This reveals spread, clusters, and mismatches—without turning into a spreadsheet.
-                        </div>
-                        <div className="mt-3 text-[12px] text-black/[0.6]">
-                          <div className="font-semibold text-black/[0.87] mb-1">How to read</div>
-                          <ul className="list-disc pl-4 space-y-1">
-                            <li>Each row is a metric (Clarity → Leadership Alignment).</li>
-                            <li><span className="font-semibold text-[#10b981]">Green</span> dots are leader responses (above). <span className="font-semibold text-[#f59e0b]">Yellow</span> dots are team responses (below).</li>
-                            <li>Thick ticks are averages; the shaded band (70–100) is the healthy range.</li>
-                          </ul>
+                          Each dot is a response. Colored ticks are group averages. Blue dashed tick is the overall average.
                         </div>
                       </div>
                       <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
@@ -1596,12 +1626,71 @@ const ALIDashboard = () => {
                             };
                           });
 
+                          const spread = (arr) => {
+                            if (!arr.length) return 0;
+                            const sorted = [...arr].sort((a, b) => a - b);
+                            const lo = sorted[Math.floor(sorted.length * 0.2)];
+                            const hi = sorted[Math.floor(sorted.length * 0.8)];
+                            return (typeof hi === 'number' && typeof lo === 'number') ? (hi - lo) : 0;
+                          };
+
+                          const rowsWithSignals = perKey.map((row) => {
+                            const gap = (typeof row.leaderMean === 'number' && typeof row.teamMean === 'number') ? (row.leaderMean - row.teamMean) : null;
+                            const allVals = [...row.leaderVals, ...row.teamVals];
+                            return {
+                              ...row,
+                              gap,
+                              spread80: spread(allVals),
+                            };
+                          });
+
+                          const biggestGapRow = rowsWithSignals
+                            .filter((r) => typeof r.gap === 'number')
+                            .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap))[0] || null;
+                          const lowestTeamRow = rowsWithSignals
+                            .filter((r) => typeof r.teamMean === 'number')
+                            .sort((a, b) => (a.teamMean ?? 999) - (b.teamMean ?? 999))[0] || null;
+                          const widestSpreadRow = rowsWithSignals
+                            .slice()
+                            .sort((a, b) => (b.spread80 ?? 0) - (a.spread80 ?? 0))[0] || null;
+
                           return (
                             <div>
                               <div className="flex items-start justify-between gap-6">
                                 <div className="text-[12px] text-black/[0.6]">
-                                  <div className="font-semibold text-black/[0.87]">System Spread</div>
-                                  <div className="mt-1">7 lanes. Each dot is a response. Leader dots sit above the lane, team dots below.</div>
+                                  <div className="font-semibold text-black/[0.87] text-[13px]">What this shows (in your data)</div>
+                                  <div className="mt-2 space-y-1">
+                                    <div>
+                                      <span className="font-semibold text-black/[0.87]">Biggest leader/team difference:</span>{' '}
+                                      {biggestGapRow ? (
+                                        <>
+                                          {systemKeyToLabel(biggestGapRow.key)} ({Math.round(biggestGapRow.leaderMean ?? 0)} vs {Math.round(biggestGapRow.teamMean ?? 0)}; Δ {Math.round(biggestGapRow.gap ?? 0)})
+                                        </>
+                                      ) : (
+                                        '—'
+                                      )}
+                                    </div>
+                                    <div>
+                                      <span className="font-semibold text-black/[0.87]">Lowest team signal:</span>{' '}
+                                      {lowestTeamRow ? (
+                                        <>
+                                          {systemKeyToLabel(lowestTeamRow.key)} (team avg {Math.round(lowestTeamRow.teamMean ?? 0)})
+                                        </>
+                                      ) : (
+                                        '—'
+                                      )}
+                                    </div>
+                                    <div>
+                                      <span className="font-semibold text-black/[0.87]">Most mixed experiences (widest spread):</span>{' '}
+                                      {widestSpreadRow ? (
+                                        <>
+                                          {systemKeyToLabel(widestSpreadRow.key)} (spread ~{Math.round(widestSpreadRow.spread80)}pts)
+                                        </>
+                                      ) : (
+                                        '—'
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                                 <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-[12px] text-black/[0.6]">
                                   <div className="inline-flex items-center gap-2">
@@ -1650,7 +1739,7 @@ const ALIDashboard = () => {
                                           y1={padTop - 6}
                                           y2={H - padBottom + 6}
                                           stroke={is70 ? 'rgba(16,185,129,0.55)' : 'rgba(0,0,0,0.12)'}
-                                          strokeWidth={is70 ? '4' : '2'}
+                                          strokeWidth={is70 ? '3' : '1.5'}
                                           vectorEffect="non-scaling-stroke"
                                         />
                                         <text
@@ -1683,7 +1772,7 @@ const ALIDashboard = () => {
                                           y1={yMid}
                                           y2={yMid}
                                           stroke="rgba(0,0,0,0.18)"
-                                          strokeWidth="2"
+                                          strokeWidth="1.5"
                                           vectorEffect="non-scaling-stroke"
                                         />
 
@@ -1700,8 +1789,8 @@ const ALIDashboard = () => {
                                             y1={yMid - 12}
                                             y2={yMid + 12}
                                             stroke={overallColor}
-                                            strokeWidth="4"
-                                            strokeDasharray="8 6"
+                                            strokeWidth="3"
+                                            strokeDasharray="7 6"
                                             vectorEffect="non-scaling-stroke"
                                           />
                                         ) : null}
@@ -1714,7 +1803,7 @@ const ALIDashboard = () => {
                                             y1={yL - 10}
                                             y2={yL + 10}
                                             stroke={leaderColor}
-                                            strokeWidth="7"
+                                            strokeWidth="4"
                                             strokeLinecap="round"
                                             vectorEffect="non-scaling-stroke"
                                           />
@@ -1728,7 +1817,7 @@ const ALIDashboard = () => {
                                             y1={yT - 10}
                                             y2={yT + 10}
                                             stroke={teamColor}
-                                            strokeWidth="7"
+                                            strokeWidth="4"
                                             strokeLinecap="round"
                                             vectorEffect="non-scaling-stroke"
                                           />
@@ -1740,11 +1829,11 @@ const ALIDashboard = () => {
                                             key={`l-${row.key}-${idx}`}
                                             cx={xForScore(v)}
                                             cy={yL + jitter01(idx) * 5}
-                                            r="6"
+                                            r="4.5"
                                             fill={leaderColor}
                                             fillOpacity="0.9"
                                             stroke="white"
-                                            strokeWidth="1.5"
+                                            strokeWidth="1"
                                             vectorEffect="non-scaling-stroke"
                                           />
                                         ))}
@@ -1755,11 +1844,11 @@ const ALIDashboard = () => {
                                             key={`t-${row.key}-${idx}`}
                                             cx={xForScore(v)}
                                             cy={yT + jitter01(idx + 1000) * 5}
-                                            r="6"
+                                            r="4.5"
                                             fill={teamColor}
                                             fillOpacity="0.9"
                                             stroke="white"
-                                            strokeWidth="1.5"
+                                            strokeWidth="1"
                                             vectorEffect="non-scaling-stroke"
                                           />
                                         ))}
