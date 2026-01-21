@@ -13,14 +13,18 @@ function keyToLabel(k) {
   if (!k) return '—';
   if (k === 'leadership_drift') return 'Leadership Alignment';
   if (k === 'ali') return 'ALI Overall';
-  return String(k).replace(/_/g, ' ');
+  const words = String(k)
+    .replace(/_/g, ' ')
+    .split(' ')
+    .filter(Boolean);
+  return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
 function severityToCopy(sev) {
   const s = String(sev || '').toLowerCase();
-  if (s === 'high') return { label: 'High', cls: 'bg-red-50 border-red-200 text-red-800' };
-  if (s === 'medium') return { label: 'Medium', cls: 'bg-orange-50 border-orange-200 text-orange-800' };
-  if (s === 'low') return { label: 'Low', cls: 'bg-yellow-50 border-yellow-200 text-yellow-800' };
+  if (s === 'critical') return { label: 'Critical', cls: 'bg-red-50 border-red-200 text-red-800' };
+  if (s === 'caution') return { label: 'Caution', cls: 'bg-orange-50 border-orange-200 text-orange-800' };
+  if (s === 'neutral') return { label: 'Neutral', cls: 'bg-gray-50 border-gray-200 text-gray-700' };
   return { label: '—', cls: 'bg-gray-50 border-gray-200 text-gray-700' };
 }
 
