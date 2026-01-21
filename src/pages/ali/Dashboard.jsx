@@ -723,6 +723,16 @@ const ALIDashboard = () => {
         leaderScores: lm.leaderScores || {},
         teamScores: lm.teamScores || {}
       },
+      responseCounts: {
+        ...mockData.responseCounts,
+        overall: typeof liveDashboard?.responseCounts?.overall === 'number' ? liveDashboard.responseCounts.overall : null,
+        // For pilots (single deployment), "this quarter" is equivalent to overall responses returned by the API.
+        thisQuarter: typeof liveDashboard?.responseCounts?.overall === 'number' ? liveDashboard.responseCounts.overall : null,
+        leader: typeof liveDashboard?.responseCounts?.leader === 'number' ? liveDashboard.responseCounts.leader : null,
+        team_member: typeof liveDashboard?.responseCounts?.team_member === 'number' ? liveDashboard.responseCounts.team_member : null,
+        avgCompletion: null,
+        responseRate: null
+      },
       dataQuality: {
         ...mockData.dataQuality,
         meets_minimum_n_org: dqOrgOk,
