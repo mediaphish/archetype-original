@@ -1037,198 +1037,195 @@ const ALIDashboard = () => {
           const zoneInfo = dashboardData.scores.ali.zone ? getZoneInfo(dashboardData.scores.ali.zone) : null;
 
           return (
-            <div className="mb-8">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* LEFT COLUMN: ALI Score Breakdown (2/3 width on desktop) */}
-                <div className="lg:col-span-2">
-                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-                    <div className="flex items-start justify-between gap-6 mb-5">
-                      <div>
-                        <div className="text-[18px] font-semibold text-black/[0.87]">ALI Score Breakdown</div>
-                        <div className="text-[13px] text-black/[0.6] mt-1">
-                          How your 7 tests (70%) + anchors (30%) combine into your ALI score.
+            <div className="mb-8 space-y-6">
+              {/* HERO: ALI Score Breakdown (full width, ALI Score is #1 focus) */}
+              <div className="bg-white rounded-lg border border-black/[0.12] p-8">
+                {/* ALI Score - Hero (top center, massive) */}
+                <div className="text-center mb-8">
+                  <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Your ALI Score</div>
+                  <div className="text-[72px] font-bold leading-none text-[#2563eb] mb-2">{fmt1(aliCurrentScore)}</div>
+                  <div className="text-[14px] text-black/[0.6]">0–100 (higher is healthier)</div>
+                </div>
+
+                {/* Breakdown title */}
+                <div className="mb-6">
+                  <div className="text-[18px] font-semibold text-black/[0.87] mb-1">How your score is calculated</div>
+                  <div className="text-[13px] text-black/[0.6]">
+                    Your 7 tests (70%) + anchors (30%) combine into your ALI score.
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* 7 tests */}
+                  <div className="lg:col-span-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
+                      <div className="text-[12px] text-black/[0.6]">
+                        Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
+                      </div>
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      {breakdownRows.map((r) => {
+                        const v = r.value;
+                        const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
+                        return (
+                          <div key={r.key} className="flex items-center gap-3">
+                            <div className="w-[140px] text-[13px] text-black/[0.6]">{r.label}</div>
+                            <div className="flex-1">
+                              <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
+                                <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
+                              </div>
+                            </div>
+                            <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
+                      <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
+                      <div className="flex flex-wrap gap-x-6 gap-y-1">
+                        <div>
+                          <span className="text-black/[0.6]">Top strengths:</span>{' '}
+                          <span className="font-semibold text-black/[0.87]">
+                            {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-black/[0.6]">Top constraints:</span>{' '}
+                          <span className="font-semibold text-black/[0.87]">
+                            {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                          </span>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">ALI score</div>
-                        <div className="text-[42px] font-bold leading-none text-[#2563eb]">{fmt1(aliCurrentScore)}</div>
-                        <div className="text-[12px] text-black/[0.6] mt-1">0–100 (higher is healthier)</div>
+                      <div className="mt-2 text-[12px] text-black/[0.6]">
+                        Note: {driftDisplayLabel} is shown as "{driftDirectionCopy}" in this breakdown.
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Anchors + formula */}
+                  <div className="lg:col-span-1">
+                    <div className="text-[13px] font-semibold text-black/[0.87]">Anchors (30%)</div>
+                    <div className="mt-2 rounded-lg border border-black/[0.12] p-4">
+                      <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">Anchor score</div>
+                      <div className="text-[28px] font-bold text-black/[0.87] leading-none mt-1">{fmt1(anchorCurrentScore)}</div>
+                      <div className="text-[12px] text-black/[0.6] mt-2">
+                        Anchors stabilize the score across quarters.
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {/* 7 tests */}
-                      <div className="lg:col-span-2">
-                        <div className="flex items-center justify-between">
-                          <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
-                          <div className="text-[12px] text-black/[0.6]">
-                            Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
-                          </div>
-                        </div>
-                        <div className="mt-3 space-y-2">
-                          {breakdownRows.map((r) => {
-                            const v = r.value;
-                            const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
-                            return (
-                              <div key={r.key} className="flex items-center gap-3">
-                                <div className="w-[140px] text-[13px] text-black/[0.6]">{r.label}</div>
-                                <div className="flex-1">
-                                  <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
-                                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
-                                  </div>
-                                </div>
-                                <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
-                          <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
-                          <div className="flex flex-wrap gap-x-6 gap-y-1">
-                            <div>
-                              <span className="text-black/[0.6]">Top strengths:</span>{' '}
-                              <span className="font-semibold text-black/[0.87]">
-                                {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-black/[0.6]">Top constraints:</span>{' '}
-                              <span className="font-semibold text-black/[0.87]">
-                                {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="mt-2 text-[12px] text-black/[0.6]">
-                            Note: {driftDisplayLabel} is shown as "{driftDirectionCopy}" in this breakdown.
-                          </div>
-                        </div>
+                    <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
+                      <div className="text-[12px] font-semibold text-black/[0.87] mb-2">The math (transparent)</div>
+                      <div className="text-[13px] text-black/[0.6] leading-relaxed">
+                        ALI = <span className="font-semibold text-black/[0.87]">0.30</span> × Anchors ({fmt1(anchorCurrentScore)}){' '}
+                        + <span className="font-semibold text-black/[0.87]">0.70</span> × 7‑test mean ({fmt1(patternMeanUsed)})
                       </div>
-
-                      {/* Anchors + formula */}
-                      <div className="lg:col-span-1">
-                        <div className="text-[13px] font-semibold text-black/[0.87]">Anchors (30%)</div>
-                        <div className="mt-2 rounded-lg border border-black/[0.12] p-4">
-                          <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">Anchor score</div>
-                          <div className="text-[28px] font-bold text-black/[0.87] leading-none mt-1">{fmt1(anchorCurrentScore)}</div>
-                          <div className="text-[12px] text-black/[0.6] mt-2">
-                            Anchors stabilize the score across quarters.
-                          </div>
-                        </div>
-
-                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
-                          <div className="text-[12px] font-semibold text-black/[0.87] mb-2">The math (transparent)</div>
-                          <div className="text-[13px] text-black/[0.6] leading-relaxed">
-                            ALI = <span className="font-semibold text-black/[0.87]">0.30</span> × Anchors ({fmt1(anchorCurrentScore)}){' '}
-                            + <span className="font-semibold text-black/[0.87]">0.70</span> × 7‑test mean ({fmt1(patternMeanUsed)})
-                          </div>
-                          <div className="mt-2 text-[13px] text-black/[0.6]">
-                            Computed: <span className="font-semibold text-black/[0.87]">{fmt1(aliComputedUsed)}</span>
-                            {typeof aliCurrentScore === 'number' && typeof aliComputedUsed === 'number' ? (
-                              <span className="text-black/[0.38]"> • Δ {Math.abs(aliCurrentScore - aliComputedUsed).toFixed(2)}</span>
-                            ) : null}
-                          </div>
-                        </div>
+                      <div className="mt-2 text-[13px] text-black/[0.6]">
+                        Computed: <span className="font-semibold text-black/[0.87]">{fmt1(aliComputedUsed)}</span>
+                        {typeof aliCurrentScore === 'number' && typeof aliComputedUsed === 'number' ? (
+                          <span className="text-black/[0.38]"> • Δ {Math.abs(aliCurrentScore - aliComputedUsed).toFixed(2)}</span>
+                        ) : null}
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* RIGHT COLUMN: Zone / Mirror / Trajectory (1/3 width, stacked) */}
-                <div className="lg:col-span-1 space-y-4">
-                  {/* Current Zone */}
+              {/* SECOND ROW: Zone / Mirror / Trajectory */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Current Zone */}
+                <div 
+                  className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
+                  style={{
+                    backgroundColor: zoneInfo ? `${zoneInfo.color}15` : 'rgba(0,0,0,0.04)',
+                    borderColor: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.12)'
+                  }}
+                  onClick={() => handleNavigate(withEmail('/ali/reports/zones'))}
+                >
+                  <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
+                    CURRENT ZONE
+                  </div>
                   <div 
-                    className="rounded-lg border-2 p-5 cursor-pointer hover:shadow-lg transition-all"
-                    style={{
-                      backgroundColor: zoneInfo ? `${zoneInfo.color}15` : 'rgba(0,0,0,0.04)',
-                      borderColor: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.12)'
-                    }}
-                    onClick={() => handleNavigate(withEmail('/ali/reports/zones'))}
+                    className="text-[22px] font-bold mb-3"
+                    style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}
                   >
-                    <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
-                      CURRENT ZONE
-                    </div>
-                    <div 
-                      className="text-[20px] font-bold mb-2"
-                      style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}
+                    {zoneInfo ? zoneInfo.label : '—'}
+                  </div>
+                  <p className="text-[14px] leading-relaxed mb-3" style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}>
+                    {zoneInfo ? zoneInfo.description : 'Zone will appear once enough data is available.'}
+                  </p>
+                  <div className="text-[12px] font-semibold text-[#2563eb]">
+                    Open Zones guide →
+                  </div>
+                </div>
+
+                {/* Leadership Mirror (Top 3 gaps) */}
+                <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-[15px] font-semibold text-black/[0.87]">Leadership Mirror</div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNavigate(withEmail('/ali/reports/mirror'));
+                      }}
+                      className="text-[12px] font-semibold text-[#2563eb] hover:text-[#2563eb]/80"
                     >
-                      {zoneInfo ? zoneInfo.label : '—'}
-                    </div>
-                    <p className="text-[13px] leading-relaxed mb-3" style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}>
-                      {zoneInfo ? zoneInfo.description : 'Zone will appear once enough data is available.'}
-                    </p>
-                    <div className="text-[12px] font-semibold text-[#2563eb]">
-                      Open Zones guide →
-                    </div>
+                      Open Mirror →
+                    </button>
                   </div>
-
-                  {/* Leadership Mirror (Top 3 gaps) */}
-                  <div className="bg-white rounded-lg border border-black/[0.12] p-5">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="text-[13px] font-semibold text-black/[0.87]">Leadership Mirror</div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleNavigate(withEmail('/ali/reports/mirror'));
-                        }}
-                        className="text-[12px] font-semibold text-[#2563eb] hover:text-[#2563eb]/80"
-                      >
-                        Open Mirror →
-                      </button>
-                    </div>
-                    {top3Gaps.length > 0 ? (
-                      <div className="space-y-3">
-                        {top3Gaps.map((row) => {
-                          const badge = severityToBadge(row.severity);
-                          return (
-                            <div key={row.key} className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
-                              <div className="flex items-start justify-between gap-2 mb-1">
-                                <div className="text-[12px] font-medium text-black/[0.87]">{row.label}</div>
-                                <span className={`shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${badge.cls}`}>
-                                  {badge.label}
-                                </span>
-                              </div>
-                              <div className="text-[11px] text-black/[0.6]">
-                                Gap: <span className="font-semibold text-black/[0.87]">{row.gap === null ? '—' : row.gap.toFixed(1)}pt</span>
-                              </div>
+                  {top3Gaps.length > 0 ? (
+                    <div className="space-y-3">
+                      {top3Gaps.map((row) => {
+                        const badge = severityToBadge(row.severity);
+                        return (
+                          <div key={row.key} className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
+                            <div className="flex items-start justify-between gap-2 mb-1">
+                              <div className="text-[13px] font-medium text-black/[0.87]">{row.label}</div>
+                              <span className={`shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${badge.cls}`}>
+                                {badge.label}
+                              </span>
                             </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="text-[12px] text-black/[0.6]">
-                        Mirror data will appear once both a leader and team members have responded.
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Trajectory */}
-                  <div 
-                    className="bg-white rounded-lg border border-black/[0.12] p-5"
-                  >
-                    <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
-                      TRAJECTORY
+                            <div className="text-[12px] text-black/[0.6]">
+                              Gap: <span className="font-semibold text-black/[0.87]">{row.gap === null ? '—' : row.gap.toFixed(1)}pt</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                    {dashboardData.trajectory.value !== null ? (
-                      <>
-                        <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                          <span className="text-[24px] font-bold text-[#10b981]">
-                            {fmtSigned1(dashboardData.trajectory.value)}
-                          </span>
-                        </div>
-                        <p className="text-[13px] text-black/[0.6]">
-                          {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving' : dashboardData.trajectory.direction === 'declining' ? 'Declining' : 'Stable') : '—'} Momentum
-                        </p>
-                      </>
-                    ) : (
-                      <div className="text-[13px] text-black/[0.6]">
-                        — (Survey 1)
-                      </div>
-                    )}
+                  ) : (
+                    <div className="text-[13px] text-black/[0.6]">
+                      Mirror data will appear once both a leader and team members have responded.
+                    </div>
+                  )}
+                </div>
+
+                {/* Trajectory */}
+                <div 
+                  className="bg-white rounded-lg border border-black/[0.12] p-6"
+                >
+                  <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
+                    TRAJECTORY
                   </div>
+                  {dashboardData.trajectory.value !== null ? (
+                    <>
+                      <div className="flex items-center gap-3 mb-2">
+                        <svg className="w-6 h-6 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span className="text-[32px] font-bold text-[#10b981]">
+                          {fmtSigned1(dashboardData.trajectory.value)}
+                        </span>
+                      </div>
+                      <p className="text-[14px] text-black/[0.6]">
+                        {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving' : dashboardData.trajectory.direction === 'declining' ? 'Declining' : 'Stable') : '—'} Momentum
+                      </p>
+                    </>
+                  ) : (
+                    <div className="text-[14px] text-black/[0.6]">
+                      — (Survey 1)
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
