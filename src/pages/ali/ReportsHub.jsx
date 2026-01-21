@@ -81,9 +81,9 @@ const ReportsHub = () => {
             disabled
           />
           <Card
-            title="Perception Gaps"
-            description="See where leaders and team experience differ most—and how to close the gap."
-            disabled
+            title="Leadership Mirror"
+            description="See where leader and team experience differ most—and how to close the gap."
+            onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
           />
           <Card
             title="Trajectory"

@@ -537,20 +537,36 @@ export default async function handler(req, res) {
     });
 
     // Leadership Mirror - use rolling scores where available, fallback to current
-    const leadershipMirror = calculateLeadershipMirror(
-      {
-        ali: leaderRollingScores.ali?.rolling || leaderRollingScores.ali?.current,
-        alignment: leaderRollingScores.patterns.alignment?.rolling || leaderRollingScores.patterns.alignment?.current,
-        stability: leaderRollingScores.patterns.stability?.rolling || leaderRollingScores.patterns.stability?.current,
-        clarity: leaderRollingScores.patterns.clarity?.rolling || leaderRollingScores.patterns.clarity?.current
-      },
-      {
-        ali: teamRollingScores.ali?.rolling || teamRollingScores.ali?.current,
-        alignment: teamRollingScores.patterns.alignment?.rolling || teamRollingScores.patterns.alignment?.current,
-        stability: teamRollingScores.patterns.stability?.rolling || teamRollingScores.patterns.stability?.current,
-        clarity: teamRollingScores.patterns.clarity?.rolling || teamRollingScores.patterns.clarity?.current
-      }
-    );
+    const driftToAlignment = (v) => (typeof v === 'number' && Number.isFinite(v) ? 100 - v : null);
+
+    const leaderMirrorScores = {
+      ali: leaderRollingScores.ali?.rolling || leaderRollingScores.ali?.current,
+      clarity: leaderRollingScores.patterns.clarity?.rolling || leaderRollingScores.patterns.clarity?.current,
+      consistency: leaderRollingScores.patterns.consistency?.rolling || leaderRollingScores.patterns.consistency?.current,
+      trust: leaderRollingScores.patterns.trust?.rolling || leaderRollingScores.patterns.trust?.current,
+      communication: leaderRollingScores.patterns.communication?.rolling || leaderRollingScores.patterns.communication?.current,
+      alignment: leaderRollingScores.patterns.alignment?.rolling || leaderRollingScores.patterns.alignment?.current,
+      stability: leaderRollingScores.patterns.stability?.rolling || leaderRollingScores.patterns.stability?.current,
+      // leadership_drift is stored as drift (higher=worse); present as alignment (higher=better) for mirror comparisons
+      leadership_drift: driftToAlignment(
+        leaderRollingScores.patterns.leadership_drift?.rolling || leaderRollingScores.patterns.leadership_drift?.current
+      )
+    };
+
+    const teamMirrorScores = {
+      ali: teamRollingScores.ali?.rolling || teamRollingScores.ali?.current,
+      clarity: teamRollingScores.patterns.clarity?.rolling || teamRollingScores.patterns.clarity?.current,
+      consistency: teamRollingScores.patterns.consistency?.rolling || teamRollingScores.patterns.consistency?.current,
+      trust: teamRollingScores.patterns.trust?.rolling || teamRollingScores.patterns.trust?.current,
+      communication: teamRollingScores.patterns.communication?.rolling || teamRollingScores.patterns.communication?.current,
+      alignment: teamRollingScores.patterns.alignment?.rolling || teamRollingScores.patterns.alignment?.current,
+      stability: teamRollingScores.patterns.stability?.rolling || teamRollingScores.patterns.stability?.current,
+      leadership_drift: driftToAlignment(
+        teamRollingScores.patterns.leadership_drift?.rolling || teamRollingScores.patterns.leadership_drift?.current
+      )
+    };
+
+    const leadershipMirror = calculateLeadershipMirror(leaderMirrorScores, teamMirrorScores);
 
     // Trajectory (prefer DriftIndex, fallback to qoq_delta)
     const drift = { ...(overallScores.drift || {}) };

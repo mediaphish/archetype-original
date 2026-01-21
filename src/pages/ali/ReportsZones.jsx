@@ -140,6 +140,65 @@ const TEST_VISUALS = {
   leadership_drift: { Icon: Activity, color: '#ec4899' }
 };
 
+const CONSTRAINT_ACTIONS = {
+  clarity: {
+    why_concerning:
+      'Low clarity forces people to guess. Guessing turns into hesitation, rework, and “busy” work that doesn’t compound.',
+    try_this_week:
+      'Publish “Top 3 priorities this week” and what to ignore.',
+    micro_script:
+      '“This week our top 3 priorities are A, B, C. If something doesn’t support these, we’ll pause it or park it.”'
+  },
+  consistency: {
+    why_concerning:
+      'Low consistency makes the system feel unpredictable. When follow-through is uneven, people stop trusting priorities and standards.',
+    try_this_week:
+      'Pick one standard you will enforce for 7 days (and make it visible).',
+    micro_script:
+      '“For the next 7 days, we’re going to be consistent about X. If we miss it, we’ll name it and correct it the same day.”'
+  },
+  trust: {
+    why_concerning:
+      'Low trust reduces truth. People protect themselves by staying quiet, so risks arrive late and expensive.',
+    try_this_week:
+      'Run a 10-minute “what’s hard right now?” round and thank the first person who’s honest.',
+    micro_script:
+      '“What’s one thing that feels harder than it should right now? No fixing today—just naming it so we can see reality.”'
+  },
+  communication: {
+    why_concerning:
+      'Low communication creates rumor and misalignment. People fill gaps with assumptions and duplicate work.',
+    try_this_week:
+      'Add a weekly 5-sentence update: what changed, why, and what to do next.',
+    micro_script:
+      '“Here’s what changed this week, why it changed, and what I need you to do differently because of it.”'
+  },
+  alignment: {
+    why_concerning:
+      'Low alignment looks like high effort with low compounding. Teams pull in different directions and tradeoffs get fuzzy.',
+    try_this_week:
+      'Do a 15-minute alignment check-in: “What are you prioritizing, and why?”',
+    micro_script:
+      '“Before we start: what is each of us prioritizing today, and how does it connect to the team goal?”'
+  },
+  stability: {
+    why_concerning:
+      'Low stability triggers firefighting. People optimize for survival instead of improvement, and quality erodes.',
+    try_this_week:
+      'Create one “protected block” (no meetings) for deep work or recovery.',
+    micro_script:
+      '“We’re protecting X hours this week for deep work. If we break it, we’ll be explicit about why.”'
+  },
+  leadership_drift: {
+    why_concerning:
+      'Low leadership alignment means the team’s lived experience doesn’t match what leadership believes is happening. That mismatch breeds resentment.',
+    try_this_week:
+      'Pick one value you say you live and name one observable behavior that proves it.',
+    micro_script:
+      '“We say we value X. This week you’ll see it in Y behavior from me. If you don’t see it, tell me directly.”'
+  }
+};
+
 const TEST_ORDER = [
   'clarity',
   'consistency',
@@ -237,7 +296,6 @@ export default function ReportsZones() {
   const band = zoneBand(aliScore);
 
   const patterns = liveDashboardSummary?.scores?.patterns || {};
-  const mirrorGaps = liveDashboardSummary?.leadershipMirror?.gaps || {};
   const patternTrends = liveDashboardSummary?.patternTrends || {};
   const surveys = Array.isArray(liveDashboardSummary?.surveys) ? liveDashboardSummary.surveys : [];
 
@@ -249,16 +307,10 @@ export default function ReportsZones() {
       .slice(0, 2)
       .map(([k, v]) => ({ key: k, value: v }));
 
-    const gapEntries = Object.entries(mirrorGaps)
-      .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
-      .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
-    const topGap = gapEntries[0];
-
     return {
-      lowestPatterns: lowest,
-      largestGap: topGap ? { key: topGap[0], value: topGap[1] } : null
+      lowestPatterns: lowest
     };
-  }, [patterns, mirrorGaps]);
+  }, [patterns]);
 
   useEffect(() => {
     let isMounted = true;
@@ -273,9 +325,6 @@ export default function ReportsZones() {
         setZoneReco(null);
 
         const lowestPatterns = (evidence.lowestPatterns || []).map((p) => `${p.key}:${p.value.toFixed(1)}`);
-        const largestGap = evidence.largestGap
-          ? `${evidence.largestGap.key}:${Math.abs(evidence.largestGap.value).toFixed(1)}pt`
-          : '';
 
         const resp = await fetch(`/api/ali/zone-recommendations?ts=${Date.now()}`, {
           method: 'POST',
@@ -285,7 +334,7 @@ export default function ReportsZones() {
             zone,
             aliScore,
             lowestPatterns,
-            largestGap,
+            largestGap: '',
             responseCount: respCount
           })
         });
@@ -378,7 +427,7 @@ export default function ReportsZones() {
     const trendUp = trend ? trend.delta > 0 : null;
 
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <div id={`test-${testKey}`} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm scroll-mt-28">
         {/* Header row: icon + title + (optional) show all */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -487,6 +536,75 @@ export default function ReportsZones() {
     );
   };
 
+  const scrollToTest = (testKey) => {
+    const el = document.getElementById(`test-${testKey}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const ConstraintCard = ({ testKey, score }) => {
+    const meta = TEST_META[testKey] || { label: keyToLabel(testKey), blurb: '', what: '—', why: '—' };
+    const visual = TEST_VISUALS[testKey] || { Icon: Activity, color: '#2563eb' };
+    const Icon = visual.Icon;
+    const color = visual.color;
+    const actions = CONSTRAINT_ACTIONS[testKey] || null;
+
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${color}20` }}>
+              <Icon className="w-5 h-5" style={{ color }} />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-gray-900">{meta.label}</div>
+              <div className="text-xs text-gray-500">{meta.blurb}</div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Score</div>
+            <div className="text-2xl font-bold leading-none" style={{ color }}>{fmt1(score)}</div>
+          </div>
+        </div>
+
+        <div className="mt-3 text-sm text-gray-700 leading-relaxed">
+          <span className="font-semibold text-gray-900">Why this is constraining:</span>{' '}
+          {actions?.why_concerning || meta.why}
+        </div>
+
+        <div className="mt-3 text-sm text-gray-700 leading-relaxed">
+          <span className="font-semibold text-gray-900">Try this week:</span>{' '}
+          {actions?.try_this_week || 'Run one small experiment to improve this score.'}
+        </div>
+
+        {actions?.micro_script ? (
+          <div className="mt-2 text-sm text-gray-700 leading-relaxed">
+            <span className="font-semibold text-gray-900">Micro-script:</span>{' '}
+            <span className="italic">{actions.micro_script}</span>
+          </div>
+        ) : null}
+
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => scrollToTest(testKey)}
+            className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+          >
+            See full chart →
+          </button>
+          <button
+            type="button"
+            onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
+            className="text-sm font-semibold text-gray-600 hover:text-gray-900"
+            title="Leadership Mirror (perception gaps)"
+          >
+            Open Mirror →
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AliHeader active="reports" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
@@ -543,7 +661,7 @@ export default function ReportsZones() {
                       <>
                         Your ALI score of <span className="font-semibold text-black/[0.87]">{fmt1(aliScore)}</span> falls in the{' '}
                         <span className="font-semibold text-black/[0.87]">{band.zone}</span> band ({band.range}). The Evidence snapshot highlights which
-                        tests are most limiting right now and where leader/team experience differs most.
+                        tests are most limiting right now. (Leader/team perception gaps live in the Leadership Mirror.)
                       </>
                     ) : (
                       'We’ll show the score band and narrative once your score is available.'
@@ -553,39 +671,33 @@ export default function ReportsZones() {
               </div>
             </div>
 
-            {/* Evidence + Suggested first move */}
+            {/* Constraints + Suggested first move */}
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <div className="text-sm font-semibold text-gray-900 mb-2">Evidence snapshot</div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                    <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Lowest patterns</div>
-                    <div className="text-sm font-semibold text-gray-900">
-                      {evidence.lowestPatterns?.length
-                        ? evidence.lowestPatterns.map((p) => `${keyToLabel(p.key)} (${p.value.toFixed(1)})`).join(', ')
-                        : '—'}
-                    </div>
-                    <div className="mt-3 text-sm text-gray-700 leading-relaxed">
-                      <span className="font-semibold text-gray-900">What this is:</span> The 1–2 lowest-scoring of the seven primary tests.
-                    </div>
-                    <div className="mt-1 text-sm text-gray-700 leading-relaxed">
-                      <span className="font-semibold text-gray-900">Why it matters:</span> Improving the lowest test is usually the fastest way to move
-                      the overall system—because constraints cap everything else.
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900">Two constraints driving your zone</div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      These are your lowest-scoring tests. Improving them is usually the fastest way to move the overall system.
                     </div>
                   </div>
-                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                    <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Largest perception gap</div>
-                    <div className="text-sm font-semibold text-gray-900">
-                      {evidence.largestGap ? `${keyToLabel(evidence.largestGap.key)} (${Math.abs(evidence.largestGap.value).toFixed(1)}pt)` : '—'}
-                    </div>
-                    <div className="mt-3 text-sm text-gray-700 leading-relaxed">
-                      <span className="font-semibold text-gray-900">What this is:</span> The area where leader and team responses differ most.
-                    </div>
-                    <div className="mt-1 text-sm text-gray-700 leading-relaxed">
-                      <span className="font-semibold text-gray-900">Why it matters:</span> Gaps predict friction: leaders think it’s going fine while the
-                      team experiences it differently. Closing gaps reduces misunderstandings fast.
-                    </div>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
+                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 whitespace-nowrap"
+                  >
+                    Open Leadership Mirror →
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  {(evidence.lowestPatterns || []).length ? (
+                    evidence.lowestPatterns.map((p) => (
+                      <ConstraintCard key={p.key} testKey={p.key} score={p.value} />
+                    ))
+                  ) : (
+                    <div className="text-sm text-gray-600">Constraints will appear once your scores are available.</div>
+                  )}
                 </div>
               </div>
 
@@ -621,11 +733,8 @@ export default function ReportsZones() {
                       const lowest = evidence.lowestPatterns?.length
                         ? evidence.lowestPatterns.map((p) => `${keyToLabel(p.key)} (${p.value.toFixed(1)})`).join(', ')
                         : 'unknown';
-                      const gap = evidence.largestGap
-                        ? `${keyToLabel(evidence.largestGap.key)} (${Math.abs(evidence.largestGap.value).toFixed(1)}pt)`
-                        : 'unknown';
                       setArchyInitialMessage(
-                        `I'm looking at my ALI Zones guide.\n\nCurrent zone: ${zone}\nALI score: ${fmt1(aliScore)}\nLowest tests: ${lowest}\nLargest perception gap: ${gap}\nResponses: ${typeof respCount === 'number' ? respCount : 'unknown'}\n\nExplain (1) why this zone happens in plain language, (2) what my data suggests is driving it, and (3) give me 2 additional script-ready options beyond the suggested first move.`
+                        `I'm looking at my ALI Zones guide.\n\nCurrent zone: ${zone}\nALI score: ${fmt1(aliScore)}\nLowest tests (constraints): ${lowest}\nResponses: ${typeof respCount === 'number' ? respCount : 'unknown'}\n\nExplain (1) why this zone happens in plain language, (2) what my data suggests is driving it, and (3) give me 2 additional script-ready options that specifically target the two lowest tests.`
                       );
                       setShowArchyChat(true);
                     }}
