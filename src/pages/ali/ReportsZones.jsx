@@ -704,7 +704,7 @@ export default function ReportsZones() {
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-gray-900 mb-1">Suggested first move (Archy)</div>
+                    <div className="text-sm font-semibold text-gray-900 mb-1">Suggested first move</div>
                     <div className="text-xs text-gray-600">A concrete experiment + script you can run this week based on your data.</div>
                   </div>
                 </div>
@@ -831,6 +831,25 @@ export default function ReportsZones() {
         </section>
       </main>
       <AliFooter />
+
+      {/* Archy Chat Floating Button */}
+      <button
+        onClick={() => {
+          setArchyInitialMessage(null);
+          setShowArchyChat(!showArchyChat);
+        }}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
+        aria-label="Chat with Archy about your Zones guide"
+      >
+        <img
+          src="/images/archy-avatar.png"
+          alt="Archy"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      </button>
 
       {/* Archy Chat Overlay */}
       {showArchyChat && (

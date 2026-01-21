@@ -323,6 +323,25 @@ export default function ReportsMirror() {
 
       <AliFooter />
 
+      {/* Archy Chat Floating Button */}
+      <button
+        onClick={() => {
+          setArchyInitialMessage('');
+          setShowArchyChat(!showArchyChat);
+        }}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
+        aria-label="Chat with Archy about your Leadership Mirror"
+      >
+        <img
+          src="/images/archy-avatar.png"
+          alt="Archy"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      </button>
+
       {showArchyChat && (
         <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
           <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">

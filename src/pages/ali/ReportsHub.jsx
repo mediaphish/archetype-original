@@ -1,8 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import ChatApp from '../../app/ChatApp';
 import AliHeader from '../../components/ali/AliHeader';
 import AliFooter from '../../components/ali/AliFooter';
 
 const ReportsHub = () => {
+  const [showArchyChat, setShowArchyChat] = useState(false);
+  const [archyInitialMessage, setArchyInitialMessage] = useState(null);
+
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -93,6 +97,71 @@ const ReportsHub = () => {
         </div>
       </main>
       <AliFooter />
+
+      {/* Archy Chat Floating Button */}
+      <button
+        onClick={() => {
+          setArchyInitialMessage(null);
+          setShowArchyChat(!showArchyChat);
+        }}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
+        aria-label="Chat with Archy about your reports"
+      >
+        <img
+          src="/images/archy-avatar.png"
+          alt="Archy"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      </button>
+
+      {/* Archy Chat Overlay */}
+      {showArchyChat && (
+        <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
+          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
+            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-10 h-10">
+                    <img
+                      src="/images/archy-avatar.png"
+                      alt="Archy"
+                      className="w-10 h-10 rounded-full border-0"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
+                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowArchyChat(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
+                  aria-label="Close chat"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                <ChatApp
+                  context="ali-reports-hub"
+                  initialMessage={
+                    archyInitialMessage ||
+                    "I'm on the ALI Reports hub. Help me choose which report to open, and explain what each report is best for."
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
