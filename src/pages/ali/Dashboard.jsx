@@ -795,19 +795,6 @@ const ALIDashboard = () => {
     return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
-  const scoreToHeatStyle = (score) => {
-    if (typeof score !== 'number' || !Number.isFinite(score)) {
-      return { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.08)', color: 'rgba(0,0,0,0.60)' };
-    }
-    // 0 -> red, 100 -> green
-    const hue = Math.max(0, Math.min(120, (score / 100) * 120));
-    return {
-      backgroundColor: `hsl(${hue} 70% 92%)`,
-      borderColor: `hsl(${hue} 45% 70%)`,
-      color: 'rgba(0,0,0,0.75)'
-    };
-  };
-
   // Zone colors for score displays ONLY
   const getScoreColor = (score) => {
     if (score >= 75) return 'text-green-500';
@@ -1527,50 +1514,151 @@ const ALIDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Heatmap diagnostic */}
+                  {/* Diagnostic: distributions (scales to hundreds, no table scroll) */}
                   <div className="bg-white rounded-lg border border-black/[0.12] p-6">
                     <div className="flex items-end justify-between gap-4 mb-4">
                       <div>
                         <div className="text-[13px] font-semibold text-black/[0.6]">Individual response pattern (diagnostic)</div>
                         <div className="text-[13px] text-black/[0.6] mt-1">
-                          Each row is a response. This reveals spread, clusters, and mismatches.
+                          Each dot is a response. This reveals spread, clusters, and mismatches—without turning into a spreadsheet.
                         </div>
                       </div>
-                      <div className="text-[11px] text-black/[0.38]">Darker = stronger</div>
+                      <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
                     </div>
 
                     {respondents.length ? (
-                      <div className="overflow-x-auto">
-                        <div className="min-w-[560px]">
-                          <div className="grid grid-cols-8 gap-2 mb-2">
-                            <div className="text-[11px] font-medium text-black/[0.38] uppercase tracking-wide">Respondent</div>
-                            {SYSTEM_KEYS.map((k) => (
-                              <div key={k} className="text-[11px] font-medium text-black/[0.38] uppercase tracking-wide text-center">
-                                {systemKeyToLabel(k)}
-                              </div>
-                            ))}
-                          </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {SYSTEM_KEYS.map((k) => {
+                          const leaderVals = leaderRows
+                            .map((r) => r?.scores?.[k])
+                            .filter((v) => typeof v === 'number' && Number.isFinite(v));
+                          const teamVals = teamRows
+                            .map((r) => r?.scores?.[k])
+                            .filter((v) => typeof v === 'number' && Number.isFinite(v));
+                          const allVals = [...leaderVals, ...teamVals];
 
-                          {[...leaderRows.map((r, idx) => ({ ...r, _label: makeRowLabel('leader', idx) })), ...teamRows.map((r, idx) => ({ ...r, _label: makeRowLabel('team_member', idx) }))].map((row, idx) => (
-                            <div key={`row-${idx}`} className="grid grid-cols-8 gap-2 mb-2">
-                              <div className="text-[12px] text-black/[0.6] whitespace-nowrap">{row._label}</div>
-                              {SYSTEM_KEYS.map((k) => {
-                                const v = row?.scores?.[k];
-                                const style = scoreToHeatStyle(v);
-                                return (
-                                  <div
-                                    key={`${idx}-${k}`}
-                                    className="h-8 rounded-md border flex items-center justify-center text-[12px] font-semibold"
-                                    style={style}
-                                    title={`${row._label} • ${systemKeyToLabel(k)}: ${typeof v === 'number' ? v.toFixed(1) : '—'}`}
-                                  >
-                                    {typeof v === 'number' && Number.isFinite(v) ? v.toFixed(0) : '—'}
-                                  </div>
-                                );
-                              })}
+                          const mean = (arr) => {
+                            if (!arr.length) return null;
+                            return arr.reduce((a, b) => a + b, 0) / arr.length;
+                          };
+
+                          const leaderMean = mean(leaderVals);
+                          const teamMean = mean(teamVals);
+                          const overallMean = mean(allVals);
+
+                          // Deterministic jitter in [-1,1] based on index
+                          const jitter = (idx) => {
+                            const x = Math.sin((idx + 1) * 999) * 10000;
+                            return (x - Math.floor(x)) * 2 - 1;
+                          };
+
+                          const W = 320;
+                          const H = 140;
+                          const padTop = 10;
+                          const padBottom = 16;
+                          const padLeft = 18;
+                          const padRight = 10;
+                          const plotH = H - padTop - padBottom;
+                          const yForScore = (v) => {
+                            const vv = Math.max(0, Math.min(100, v));
+                            return padTop + (1 - vv / 100) * plotH;
+                          };
+
+                          const xLeader = padLeft + (W - padLeft - padRight) * 0.33;
+                          const xTeam = padLeft + (W - padLeft - padRight) * 0.67;
+                          const jitterPx = 14;
+
+                          const leaderColor = 'rgba(16,185,129,0.45)'; // teal
+                          const teamColor = 'rgba(245,158,11,0.45)'; // amber
+                          const overallLine = 'rgba(37,99,235,0.45)'; // blue
+
+                          return (
+                            <div key={k} className="rounded-lg border border-black/[0.12] p-4">
+                              <div className="flex items-center justify-between gap-4">
+                                <div className="text-[13px] font-semibold text-black/[0.87]">{systemKeyToLabel(k)}</div>
+                                <div className="text-[11px] text-black/[0.38]">
+                                  Leader n={leaderVals.length} • Team n={teamVals.length}
+                                </div>
+                              </div>
+
+                              <div className="mt-3">
+                                <svg className="w-full h-[140px]" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${systemKeyToLabel(k)} distribution`}>
+                                  {/* grid */}
+                                  {[0, 50, 100].map((t) => {
+                                    const y = yForScore(t);
+                                    return (
+                                      <g key={t}>
+                                        <line x1={padLeft} y1={y} x2={W - padRight} y2={y} stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
+                                        <text x={2} y={y + 4} fontSize="10" fill="rgba(0,0,0,0.38)">{t}</text>
+                                      </g>
+                                    );
+                                  })}
+
+                                  {/* overall mean line */}
+                                  {typeof overallMean === 'number' ? (
+                                    <line
+                                      x1={padLeft}
+                                      x2={W - padRight}
+                                      y1={yForScore(overallMean)}
+                                      y2={yForScore(overallMean)}
+                                      stroke={overallLine}
+                                      strokeWidth="2"
+                                      strokeDasharray="4 3"
+                                    />
+                                  ) : null}
+
+                                  {/* leader/team mean lines */}
+                                  {typeof leaderMean === 'number' ? (
+                                    <line
+                                      x1={xLeader - 26}
+                                      x2={xLeader + 26}
+                                      y1={yForScore(leaderMean)}
+                                      y2={yForScore(leaderMean)}
+                                      stroke="rgba(16,185,129,0.75)"
+                                      strokeWidth="3"
+                                      strokeLinecap="round"
+                                    />
+                                  ) : null}
+                                  {typeof teamMean === 'number' ? (
+                                    <line
+                                      x1={xTeam - 26}
+                                      x2={xTeam + 26}
+                                      y1={yForScore(teamMean)}
+                                      y2={yForScore(teamMean)}
+                                      stroke="rgba(245,158,11,0.75)"
+                                      strokeWidth="3"
+                                      strokeLinecap="round"
+                                    />
+                                  ) : null}
+
+                                  {/* points */}
+                                  {leaderVals.map((v, idx) => (
+                                    <circle
+                                      key={`l-${idx}`}
+                                      cx={xLeader + jitter(idx) * jitterPx}
+                                      cy={yForScore(v)}
+                                      r="2.2"
+                                      fill={leaderColor}
+                                    />
+                                  ))}
+                                  {teamVals.map((v, idx) => (
+                                    <circle
+                                      key={`t-${idx}`}
+                                      cx={xTeam + jitter(idx + 1000) * jitterPx}
+                                      cy={yForScore(v)}
+                                      r="2.2"
+                                      fill={teamColor}
+                                    />
+                                  ))}
+
+                                  {/* x labels */}
+                                  <text x={xLeader} y={H - 4} fontSize="11" fill="rgba(0,0,0,0.60)" textAnchor="middle">Leader</text>
+                                  <text x={xTeam} y={H - 4} fontSize="11" fill="rgba(0,0,0,0.60)" textAnchor="middle">Team</text>
+                                </svg>
+                              </div>
                             </div>
-                          ))}
-                        </div>
+                          );
+                        })}
                       </div>
                     ) : (
                       <div className="text-[13px] text-black/[0.6]">
