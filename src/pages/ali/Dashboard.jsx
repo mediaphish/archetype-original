@@ -1036,124 +1036,132 @@ const ALIDashboard = () => {
           // Zone info
           const zoneInfo = dashboardData.scores.ali.zone ? getZoneInfo(dashboardData.scores.ali.zone) : null;
 
+          // Full Leadership Mirror data (for the expanded version) - reuse existing variables
+          const sortableMirror = rows.filter((r) => r.abs !== null);
+          const topByGap = [...sortableMirror].sort((a, b) => (b.abs ?? 0) - (a.abs ?? 0)).slice(0, 3);
+          const visibleMirrorRows = mirrorShowAll ? rows : (topByGap.length ? topByGap : rows.slice(0, 3));
+          const hasAnyMirror = rows.some((r) => r.leaderScore !== null || r.teamScore !== null || r.gap !== null);
+
           return (
             <div className="mb-8 space-y-6">
-              {/* HERO: ALI Score + Trajectory (2-column) */}
+              {/* HERO: 25% ALI Score Panel + 75% How it's calculated */}
               <div className="bg-white rounded-lg border border-black/[0.12] p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                  {/* Left: ALI Score */}
-                  <div>
-                    <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Your ALI Score</div>
-                    <div className="text-[72px] font-bold leading-none text-[#2563eb] mb-2">{fmt1(aliCurrentScore)}</div>
-                    <div className="text-[14px] text-black/[0.6]">0–100 (higher is healthier)</div>
-                  </div>
-                  
-                  {/* Right: Trajectory (only if 2+ surveys) */}
-                  {typeof dashboardData.trajectory.value === 'number' && Number.isFinite(dashboardData.trajectory.value) ? (
-                    <div>
-                      <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Trajectory</div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <svg className="w-6 h-6 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        <span className="text-[48px] font-bold text-[#10b981] leading-none">
-                          {fmtSigned1(dashboardData.trajectory.value)}
-                        </span>
-                      </div>
-                      <p className="text-[14px] text-black/[0.6]">
-                        {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving' : dashboardData.trajectory.direction === 'declining' ? 'Declining' : 'Stable') : '—'} Momentum
-                      </p>
-                    </div>
-                  ) : null}
-                </div>
-
-                {/* Breakdown title */}
-                <div className="mb-6">
-                  <div className="text-[18px] font-semibold text-black/[0.87] mb-1">How your score is calculated</div>
-                  <div className="text-[13px] text-black/[0.6]">
-                    Your 7 tests (70%) + anchors (30%) combine into your ALI score.
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* 7 tests */}
-                  <div className="lg:col-span-2">
-                    <div className="flex items-center justify-between">
-                      <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
-                      <div className="text-[12px] text-black/[0.6]">
-                        Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
-                      </div>
-                    </div>
-                    <div className="mt-3 space-y-2">
-                      {breakdownRows.map((r) => {
-                        const v = r.value;
-                        const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
-                        return (
-                          <div key={r.key} className="flex items-center gap-3">
-                            <div className="w-[140px] text-[13px] text-black/[0.6]">{r.label}</div>
-                            <div className="flex-1">
-                              <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
-                                <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
-                              </div>
-                            </div>
-                            <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
-                      <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
-                      <div className="flex flex-wrap gap-x-6 gap-y-1">
-                        <div>
-                          <span className="text-black/[0.6]">Top strengths:</span>{' '}
-                          <span className="font-semibold text-black/[0.87]">
-                            {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-black/[0.6]">Top constraints:</span>{' '}
-                          <span className="font-semibold text-black/[0.87]">
-                            {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="mt-2 text-[12px] text-black/[0.6]">
-                        Note: {driftDisplayLabel} is shown as "{driftDirectionCopy}" in this breakdown.
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Anchors + formula */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                  {/* Left: ALI Score Panel (25%) */}
                   <div className="lg:col-span-1">
-                    <div className="text-[13px] font-semibold text-black/[0.87]">Anchors (30%)</div>
-                    <div className="mt-2 rounded-lg border border-black/[0.12] p-4">
-                      <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">Anchor score</div>
-                      <div className="text-[28px] font-bold text-black/[0.87] leading-none mt-1">{fmt1(anchorCurrentScore)}</div>
-                      <div className="text-[12px] text-black/[0.6] mt-2">
-                        Anchors stabilize the score across quarters.
+                    <div className="bg-[#2563eb]/5 rounded-lg border-2 border-[#2563eb]/20 p-6">
+                      <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Your ALI Score</div>
+                      <div className="text-[64px] font-bold leading-none text-[#2563eb] mb-2">{fmt1(aliCurrentScore)}</div>
+                      <div className="text-[13px] text-black/[0.6] mb-4">0–100 (higher is healthier)</div>
+                      {typeof dashboardData.trajectory.value === 'number' && Number.isFinite(dashboardData.trajectory.value) ? (
+                        <div className="pt-4 border-t border-[#2563eb]/20">
+                          <div className="text-[11px] text-black/[0.6] uppercase tracking-wide mb-1">Trajectory</div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <svg className="w-5 h-5 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            <span className="text-[32px] font-bold text-[#10b981] leading-none">
+                              {fmtSigned1(dashboardData.trajectory.value)}
+                            </span>
+                          </div>
+                          <p className="text-[12px] text-black/[0.6]">
+                            {dashboardData.trajectory.direction ? (dashboardData.trajectory.direction === 'improving' ? 'Improving' : dashboardData.trajectory.direction === 'declining' ? 'Declining' : 'Stable') : '—'} Momentum
+                          </p>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  {/* Right: How it's calculated (75%) */}
+                  <div className="lg:col-span-3">
+                    <div className="mb-6">
+                      <div className="text-[18px] font-semibold text-black/[0.87] mb-1">How your score is calculated</div>
+                      <div className="text-[13px] text-black/[0.6]">
+                        Your 7 tests (70%) + anchors (30%) combine into your ALI score.
                       </div>
                     </div>
 
-                    <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
-                      <div className="text-[12px] font-semibold text-black/[0.87] mb-2">The math (transparent)</div>
-                      <div className="text-[13px] text-black/[0.6] leading-relaxed">
-                        ALI = <span className="font-semibold text-black/[0.87]">0.30</span> × Anchors ({fmt1(anchorCurrentScore)}){' '}
-                        + <span className="font-semibold text-black/[0.87]">0.70</span> × 7‑test mean ({fmt1(patternMeanUsed)})
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {/* 7 tests */}
+                      <div className="lg:col-span-2">
+                        <div className="flex items-center justify-between">
+                          <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
+                          <div className="text-[12px] text-black/[0.6]">
+                            Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
+                          </div>
+                        </div>
+                        <div className="mt-3 space-y-2">
+                          {breakdownRows.map((r) => {
+                            const v = r.value;
+                            const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
+                            return (
+                              <div key={r.key} className="flex items-center gap-3">
+                                <div className="w-[140px] text-[13px] text-black/[0.6]">{r.label}</div>
+                                <div className="flex-1">
+                                  <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
+                                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
+                                  </div>
+                                </div>
+                                <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
+                          <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
+                          <div className="flex flex-wrap gap-x-6 gap-y-1">
+                            <div>
+                              <span className="text-black/[0.6]">Top strengths:</span>{' '}
+                              <span className="font-semibold text-black/[0.87]">
+                                {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-black/[0.6]">Top constraints:</span>{' '}
+                              <span className="font-semibold text-black/[0.87]">
+                                {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="mt-2 text-[12px] text-black/[0.6]">
+                            Note: {driftDisplayLabel} is shown as "{driftDirectionCopy}" in this breakdown.
+                          </div>
+                        </div>
                       </div>
-                      <div className="mt-2 text-[13px] text-black/[0.6]">
-                        Computed: <span className="font-semibold text-black/[0.87]">{fmt1(aliComputedUsed)}</span>
-                        {typeof aliCurrentScore === 'number' && typeof aliComputedUsed === 'number' ? (
-                          <span className="text-black/[0.38]"> • Δ {Math.abs(aliCurrentScore - aliComputedUsed).toFixed(2)}</span>
-                        ) : null}
+
+                      {/* Anchors + formula */}
+                      <div className="lg:col-span-1">
+                        <div className="text-[13px] font-semibold text-black/[0.87]">Anchors (30%)</div>
+                        <div className="mt-2 rounded-lg border border-black/[0.12] p-4">
+                          <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">Anchor score</div>
+                          <div className="text-[28px] font-bold text-black/[0.87] leading-none mt-1">{fmt1(anchorCurrentScore)}</div>
+                          <div className="text-[12px] text-black/[0.6] mt-2">
+                            Anchors stabilize the score across quarters.
+                          </div>
+                        </div>
+
+                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
+                          <div className="text-[12px] font-semibold text-black/[0.87] mb-2">The math (transparent)</div>
+                          <div className="text-[13px] text-black/[0.6] leading-relaxed">
+                            ALI = <span className="font-semibold text-black/[0.87]">0.30</span> × Anchors ({fmt1(anchorCurrentScore)}){' '}
+                            + <span className="font-semibold text-black/[0.87]">0.70</span> × 7‑test mean ({fmt1(patternMeanUsed)})
+                          </div>
+                          <div className="mt-2 text-[13px] text-black/[0.6]">
+                            Computed: <span className="font-semibold text-black/[0.87]">{fmt1(aliComputedUsed)}</span>
+                            {typeof aliCurrentScore === 'number' && typeof aliComputedUsed === 'number' ? (
+                              <span className="text-black/[0.38]"> • Δ {Math.abs(aliCurrentScore - aliComputedUsed).toFixed(2)}</span>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* SECOND ROW: Zone / Mirror / Core Patterns */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* SECOND ROW: Zone + Full Leadership Mirror */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Current Zone */}
                 <div 
                   className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
@@ -1180,10 +1188,19 @@ const ALIDashboard = () => {
                   </div>
                 </div>
 
-                {/* Leadership Mirror (Top 3 gaps) */}
+                {/* Full Leadership Mirror */}
                 <div className="bg-white rounded-lg border border-black/[0.12] p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="text-[15px] font-semibold text-black/[0.87]">Leadership Mirror</div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-[18px] font-semibold text-black/[0.87]">Leadership Mirror</h2>
+                      <button
+                        onClick={() => setOpenDefinition('leadership-mirror')}
+                        className="text-gray-400 hover:text-blue-600 transition-colors"
+                        aria-label="Learn about Leadership Mirror"
+                      >
+                        <HelpCircle className="w-5 h-5" />
+                      </button>
+                    </div>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1194,93 +1211,86 @@ const ALIDashboard = () => {
                       Open Mirror →
                     </button>
                   </div>
-                  {top3Gaps.length > 0 ? (
-                    <div className="space-y-3">
-                      {top3Gaps.map((row) => {
-                        const badge = severityToBadge(row.severity);
-                        return (
-                          <div key={row.key} className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
-                            <div className="flex items-start justify-between gap-2 mb-1">
-                              <div className="text-[13px] font-medium text-black/[0.87]">{row.label}</div>
-                              <span className={`shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${badge.cls}`}>
-                                {badge.label}
-                              </span>
-                            </div>
-                            <div className="text-[12px] text-black/[0.6]">
-                              Gap: <span className="font-semibold text-black/[0.87]">{row.gap === null ? '—' : row.gap.toFixed(1)}pt</span>
-                            </div>
+                  
+                  {(() => {
+                    return (
+                      <div className="space-y-5">
+                        {(leaderN !== null || teamN !== null) ? (
+                          <div className="text-xs text-gray-600 flex items-center gap-2">
+                            <AlertTriangle className="w-4 h-4 text-gray-400" />
+                            Based on {leaderN ?? '—'} leader response(s) and {teamN ?? '—'} team response(s).
                           </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="text-[13px] text-black/[0.6]">
-                      Mirror data will appear once both a leader and team members have responded.
-                    </div>
-                  )}
-                </div>
+                        ) : null}
 
-                {/* Core Patterns (Alignment, Stability, Clarity) */}
-                <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-[15px] font-semibold text-black/[0.87]">Core Patterns</div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNavigate(withEmail('/ali/reports'));
-                      }}
-                      className="text-[12px] font-semibold text-[#2563eb] hover:text-[#2563eb]/80"
-                    >
-                      View all 7 →
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {/* Alignment */}
-                    <div className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="text-[13px] font-medium text-black/[0.87]">Alignment</div>
-                        {typeof dashboardData.coreScores.alignment.trend === 'number' ? (
-                          <div className={`flex items-center gap-1 text-[11px] font-semibold ${dashboardData.coreScores.alignment.trend >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
-                            <span>{dashboardData.coreScores.alignment.trend >= 0 ? '↑' : '↓'}</span>
-                            <span>{fmtSigned1(dashboardData.coreScores.alignment.trend)}</span>
+                        {!hasAnyMirror ? (
+                          <div className="text-sm text-gray-600">
+                            Mirror data will appear once both a leader and team members have responded.
                           </div>
-                        ) : null}
-                      </div>
-                      <div className="text-[20px] font-bold text-[#10b981]">
-                        {fmt1(dashboardData.coreScores.alignment.current ?? dashboardData.coreScores.alignment.rolling)}
-                      </div>
-                    </div>
-                    {/* Stability */}
-                    <div className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="text-[13px] font-medium text-black/[0.87]">Stability</div>
-                        {typeof dashboardData.coreScores.stability.trend === 'number' ? (
-                          <div className={`flex items-center gap-1 text-[11px] font-semibold ${dashboardData.coreScores.stability.trend >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
-                            <span>{dashboardData.coreScores.stability.trend >= 0 ? '↑' : '↓'}</span>
-                            <span>{fmtSigned1(dashboardData.coreScores.stability.trend)}</span>
+                        ) : (
+                          <div className="space-y-4">
+                            {visibleMirrorRows.map((row) => {
+                              const maxScore = Math.max(row.leaderScore ?? 0, row.teamScore ?? 0, 100);
+                              const badge = severityToBadge(row.severity);
+                              return (
+                                <div key={row.key} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
+                                  <div className="flex items-start justify-between gap-3 mb-2">
+                                    <div className="min-w-0">
+                                      <div className="text-sm font-medium text-gray-900">{row.label}</div>
+                                      <div className="text-xs text-gray-500 mt-0.5">
+                                        Gap (leader − team):{' '}
+                                        <span className="font-semibold text-gray-700">{row.gap === null ? '—' : row.gap.toFixed(1)}</span>pt
+                                      </div>
+                                    </div>
+                                    <span className={`shrink-0 inline-flex items-center px-2 py-1 rounded-full border text-xs font-semibold ${badge.cls}`}>
+                                      {badge.label}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-4">
+                                    <div className="flex-1">
+                                      <div className="text-xs text-gray-500 mb-1">Leader</div>
+                                      <div
+                                        className="h-7 bg-blue-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
+                                        style={{ width: `${(((row.leaderScore ?? 0) / maxScore) * 100)}%` }}
+                                      >
+                                        <span className="text-xs font-semibold text-white">
+                                          {row.leaderScore === null ? '—' : row.leaderScore.toFixed(1)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="flex-1">
+                                      <div className="text-xs text-gray-500 mb-1">Team</div>
+                                      <div
+                                        className="h-7 bg-green-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
+                                        style={{ width: `${(((row.teamScore ?? 0) / maxScore) * 100)}%` }}
+                                      >
+                                        <span className="text-xs font-semibold text-white">
+                                          {row.teamScore === null ? '—' : row.teamScore.toFixed(1)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+
+                            <div className="flex items-center justify-between pt-2">
+                              <button
+                                type="button"
+                                onClick={() => setMirrorShowAll((v) => !v)}
+                                className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                              >
+                                {mirrorShowAll ? 'Show top gaps' : 'Show all metrics'}
+                              </button>
+                              <div className="text-xs text-gray-500">
+                                {mirrorShowAll ? 'All 7 tests + ALI overall' : 'Top 3 gaps'}
+                              </div>
+                            </div>
                           </div>
-                        ) : null}
+                        )}
                       </div>
-                      <div className="text-[20px] font-bold text-[#6366f1]">
-                        {fmt1(dashboardData.coreScores.stability.current ?? dashboardData.coreScores.stability.rolling)}
-                      </div>
-                    </div>
-                    {/* Clarity */}
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="text-[13px] font-medium text-black/[0.87]">Clarity</div>
-                        {typeof dashboardData.coreScores.clarity.trend === 'number' ? (
-                          <div className={`flex items-center gap-1 text-[11px] font-semibold ${dashboardData.coreScores.clarity.trend >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
-                            <span>{dashboardData.coreScores.clarity.trend >= 0 ? '↑' : '↓'}</span>
-                            <span>{fmtSigned1(dashboardData.coreScores.clarity.trend)}</span>
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="text-[20px] font-bold text-[#2563eb]">
-                        {fmt1(dashboardData.coreScores.clarity.current ?? dashboardData.coreScores.clarity.rolling)}
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

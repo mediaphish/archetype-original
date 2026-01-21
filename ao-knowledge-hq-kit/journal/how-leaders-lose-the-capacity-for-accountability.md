@@ -1,9 +1,9 @@
 ---
 title: "How Leaders Lose the Capacity for Accountability"
 slug: "how-leaders-lose-the-capacity-for-accountability"
-publish_date: "2026-01-28"
-created_at: "2026-01-28"
-updated_at: "2026-01-28"
+publish_date: "2026-01-22"
+created_at: "2026-01-22"
+updated_at: "2026-01-22"
 summary: "A science-backed editorial examining how unchecked power reshapes perception, erodes accountability, and enables leaders to move from negligence to intentional harm without ever announcing the shift."
 categories: ["editorial", "servant-leadership", "accountability", "power", "organizational-psychology", "neuroscience"]
 featured_image: "../images/how-leaders-lose-the-capacity-for-accountability.jpg"
