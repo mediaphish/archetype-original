@@ -592,14 +592,6 @@ export default function ReportsZones() {
           >
             See full chart →
           </button>
-          <button
-            type="button"
-            onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
-            className="text-sm font-semibold text-gray-600 hover:text-gray-900"
-            title="Leadership Mirror (perception gaps)"
-          >
-            Open Mirror →
-          </button>
         </div>
       </div>
     );
@@ -655,13 +647,13 @@ export default function ReportsZones() {
                 </div>
 
                 <div>
-                  <div className="text-sm font-semibold text-black/[0.87]">Why {zone || 'this zone'} (your data)</div>
+                  <div className="text-sm font-semibold text-black/[0.87]">Why {zone || 'this zone'}</div>
                   <div className="text-sm text-black/[0.6] leading-relaxed mt-1">
                     {band?.zone ? (
                       <>
                         Your ALI score of <span className="font-semibold text-black/[0.87]">{fmt1(aliScore)}</span> falls in the{' '}
                         <span className="font-semibold text-black/[0.87]">{band.zone}</span> band ({band.range}). The Evidence snapshot highlights which
-                        tests are most limiting right now. (Leader/team perception gaps live in the Leadership Mirror.)
+                        tests are most limiting right now.
                       </>
                     ) : (
                       'We’ll show the score band and narrative once your score is available.'
@@ -671,7 +663,7 @@ export default function ReportsZones() {
               </div>
             </div>
 
-            {/* Constraints + Suggested first move */}
+            {/* Constraints */}
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-xl border border-gray-200 p-6">
                 <div className="flex items-start justify-between gap-4">
@@ -681,13 +673,6 @@ export default function ReportsZones() {
                       These are your lowest-scoring tests. Improving them is usually the fastest way to move the overall system.
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 whitespace-nowrap"
-                  >
-                    Open Leadership Mirror →
-                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -700,53 +685,56 @@ export default function ReportsZones() {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-sm font-semibold text-gray-900 mb-1">Suggested first move</div>
-                    <div className="text-xs text-gray-600">A concrete experiment + script you can run this week based on your data.</div>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  {zoneRecoLoading ? (
-                    <div className="text-sm text-gray-700">Generating a specific first move…</div>
-                  ) : zoneRecoError ? (
-                    <div className="text-sm text-red-700">Couldn’t generate a recommendation yet.</div>
-                  ) : zoneReco ? (
-                    <div className="space-y-3 text-sm text-gray-800">
-                      <div className="text-lg font-semibold text-gray-900">{zoneReco.title}</div>
-                      <div><span className="font-semibold">Behavior experiment:</span> {zoneReco.behavior_experiment}</div>
-                      <div><span className="font-semibold">Team script:</span> {zoneReco.team_script}</div>
-                      <div><span className="font-semibold">Watch for:</span> {zoneReco.watch_for}</div>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-gray-700">—</div>
-                  )}
-                </div>
-
-                <div className="mt-5 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const lowest = evidence.lowestPatterns?.length
-                        ? evidence.lowestPatterns.map((p) => `${keyToLabel(p.key)} (${p.value.toFixed(1)})`).join(', ')
-                        : 'unknown';
-                      setArchyInitialMessage(
-                        `I'm looking at my ALI Zones guide.\n\nCurrent zone: ${zone}\nALI score: ${fmt1(aliScore)}\nLowest tests (constraints): ${lowest}\nResponses: ${typeof respCount === 'number' ? respCount : 'unknown'}\n\nExplain (1) why this zone happens in plain language, (2) what my data suggests is driving it, and (3) give me 2 additional script-ready options that specifically target the two lowest tests.`
-                      );
-                      setShowArchyChat(true);
-                    }}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    Ask Archy
-                  </button>
-
-                  <div className="text-xs text-gray-600">Best results once you have 10+ responses and multiple quarters.</div>
-                </div>
+        {/* Suggested first move (standalone, directly beneath hero) */}
+        <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">Suggested first move</div>
+                <div className="text-xs text-gray-600">A concrete experiment + script you can run this week based on your data.</div>
               </div>
+            </div>
+
+            <div className="mt-4">
+              {zoneRecoLoading ? (
+                <div className="text-sm text-gray-700">Generating a specific first move…</div>
+              ) : zoneRecoError ? (
+                <div className="text-sm text-red-700">Couldn’t generate a recommendation yet.</div>
+              ) : zoneReco ? (
+                <div className="space-y-3 text-sm text-gray-800">
+                  <div className="text-lg font-semibold text-gray-900">{zoneReco.title}</div>
+                  <div><span className="font-semibold">Behavior experiment:</span> {zoneReco.behavior_experiment}</div>
+                  <div><span className="font-semibold">Team script:</span> {zoneReco.team_script}</div>
+                  <div><span className="font-semibold">Watch for:</span> {zoneReco.watch_for}</div>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-700">—</div>
+              )}
+            </div>
+
+            <div className="mt-5 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+              <button
+                type="button"
+                onClick={() => {
+                  const lowest = evidence.lowestPatterns?.length
+                    ? evidence.lowestPatterns.map((p) => `${keyToLabel(p.key)} (${p.value.toFixed(1)})`).join(', ')
+                    : 'unknown';
+                  setArchyInitialMessage(
+                    `I'm looking at my ALI Zones guide.\n\nCurrent zone: ${zone}\nALI score: ${fmt1(aliScore)}\nLowest tests (constraints): ${lowest}\nResponses: ${typeof respCount === 'number' ? respCount : 'unknown'}\n\nExplain (1) why this zone happens in plain language, (2) what my data suggests is driving it, and (3) give me 2 additional script-ready options that specifically target the two lowest tests.`
+                  );
+                  setShowArchyChat(true);
+                }}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Ask Archy
+              </button>
+
+              <div className="text-xs text-gray-600">Best results once you have 10+ responses and multiple quarters.</div>
             </div>
           </div>
         </section>

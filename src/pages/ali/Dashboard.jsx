@@ -1579,7 +1579,15 @@ const ALIDashboard = () => {
             {/* Leadership Mirror - No pale colors */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Leadership Mirror</h2>
+                <div className="flex items-center justify-between w-full">
+                  <h2 className="text-xl font-semibold text-gray-900">Leadership Mirror</h2>
+                  <button
+                    onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
+                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors whitespace-nowrap"
+                  >
+                    Open Mirror →
+                  </button>
+                </div>
                 <button
                   onClick={() => setOpenDefinition('leadership-mirror')}
                   className="text-gray-400 hover:text-blue-600 transition-colors"
