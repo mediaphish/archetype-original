@@ -82,13 +82,13 @@ const SuperAdminOverview = () => {
           <h1 className="text-[28px] font-semibold text-black/[0.87] mb-1">Platform Overview</h1>
         </div>
 
-        {/* HERO: Platform-wide Average ALI Score + Breakdown */}
+        {/* HERO: Platform Avg ALI (25%) + Platform Health (75%) */}
         <div className="bg-white rounded-lg border border-black/[0.12] p-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Left: Platform Average ALI Score (25%) */}
             <div className="lg:col-span-1">
+              <div className="text-[18px] font-semibold text-black/[0.87] mb-4">Platform Avg ALI</div>
               <div className="bg-[#2563eb]/5 rounded-lg border-2 border-[#2563eb]/20 p-6">
-                <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Platform Avg ALI</div>
                 <div className="text-[64px] font-bold leading-none text-[#2563eb] mb-2">
                   {fmt1(data.metrics.avgALIScore)}
                 </div>
@@ -96,58 +96,58 @@ const SuperAdminOverview = () => {
               </div>
             </div>
 
-            {/* Right: Platform Metrics Breakdown (75%) */}
+            {/* Right: Platform Health Panel (75%) */}
             <div className="lg:col-span-3">
-              <div className="mb-6">
-                <div className="text-[18px] font-semibold text-black/[0.87] mb-1">Platform Health</div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Companies */}
-                <div className="bg-white rounded-lg border border-black/[0.12] p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#2563eb]/10 flex items-center justify-center">
-                      <Users className="w-5 h-5 text-[#2563eb]" />
+              <div className="text-[18px] font-semibold text-black/[0.87] mb-4">Platform Health</div>
+              
+              <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Companies */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#2563eb]/10 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-[#2563eb]" />
+                      </div>
+                      <span className="text-[13px] font-semibold text-black/[0.6]">Companies</span>
                     </div>
-                    <span className="text-[13px] font-semibold text-black/[0.6]">Companies</span>
-                  </div>
-                  <div className="text-[36px] font-bold text-black/[0.87] leading-none mb-2">
-                    {data.metrics.companies.total}
-                  </div>
-                  <div className="text-[13px] text-black/[0.6]">
-                    {data.metrics.companies.active} active • {data.metrics.companies.inactive} inactive
-                  </div>
-                </div>
-
-                {/* Leaders */}
-                <div className="bg-white rounded-lg border border-black/[0.12] p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#8b5cf6]/10 flex items-center justify-center">
-                      <Crown className="w-5 h-5 text-[#8b5cf6]" />
+                    <div className="text-[36px] font-bold text-black/[0.87] leading-none mb-2">
+                      {data.metrics.companies.total}
                     </div>
-                    <span className="text-[13px] font-semibold text-black/[0.6]">Leaders</span>
-                  </div>
-                  <div className="text-[36px] font-bold text-black/[0.87] leading-none mb-2">
-                    {data.metrics.leaders.total}
-                  </div>
-                  <div className="text-[13px] text-black/[0.6]">
-                    {data.metrics.leaders.active} active ({fmt1(data.metrics.leaders.activePercent)}%)
-                  </div>
-                </div>
-
-                {/* Surveys */}
-                <div className="bg-white rounded-lg border border-black/[0.12] p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#10b981]/10 flex items-center justify-center">
-                      <ClipboardCheck className="w-5 h-5 text-[#10b981]" />
+                    <div className="text-[13px] text-black/[0.6]">
+                      Total companies on the platform
                     </div>
-                    <span className="text-[13px] font-semibold text-black/[0.6]">Surveys</span>
                   </div>
-                  <div className="text-[36px] font-bold text-black/[0.87] leading-none mb-2">
-                    {data.metrics.surveys.total}
+
+                  {/* Surveys */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#10b981]/10 flex items-center justify-center">
+                        <ClipboardCheck className="w-5 h-5 text-[#10b981]" />
+                      </div>
+                      <span className="text-[13px] font-semibold text-black/[0.6]">Surveys</span>
+                    </div>
+                    <div className="text-[36px] font-bold text-black/[0.87] leading-none mb-2">
+                      {data.metrics.surveys.total}
+                    </div>
+                    <div className="text-[13px] text-black/[0.6]">
+                      Total surveys sent out
+                    </div>
                   </div>
-                  <div className="text-[13px] text-black/[0.6]">
-                    {data.metrics.surveys.thisMonth} this month • {data.metrics.surveys.thisQuarter} this quarter
+
+                  {/* Respondents */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#8b5cf6]/10 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-[#8b5cf6]" />
+                      </div>
+                      <span className="text-[13px] font-semibold text-black/[0.6]">Respondents</span>
+                    </div>
+                    <div className="text-[36px] font-bold text-black/[0.87] leading-none mb-2">
+                      {data.metrics.respondents?.total || 0}
+                    </div>
+                    <div className="text-[13px] text-black/[0.6]">
+                      Total completed surveys
+                    </div>
                   </div>
                 </div>
               </div>

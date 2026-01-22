@@ -465,6 +465,9 @@ export default async function handler(req, res) {
             thisMonth: thisMonthDeployments.length, 
             thisQuarter: thisQuarterDeployments.length 
           },
+          respondents: {
+            total: totalResponses
+          },
           avgALIScore: avgALIScore
         },
         zoneDistribution,
