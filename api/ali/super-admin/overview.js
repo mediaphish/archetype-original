@@ -144,10 +144,56 @@ export default async function handler(req, res) {
     
     console.log(`[SUPER ADMIN] Found ${deployments?.length || 0} total deployments`);
     
+    // Get all responses first to determine which companies have actual responses
+    const allDeploymentIds = deployments?.map(d => d.id) || [];
+    let allResponses = [];
+    let responsesError = null;
+    
+    // Create deployment_id -> company_id map
+    const deploymentToCompanyMap = {};
+    deployments?.forEach(d => {
+      deploymentToCompanyMap[d.id] = d.company_id;
+    });
+    
+    if (allDeploymentIds.length > 0) {
+      const response = await supabaseAdmin
+        .from('ali_survey_responses')
+        .select('id, deployment_id, responses, completed_at, respondent_role, created_at')
+        .in('deployment_id', allDeploymentIds)
+        .order('completed_at', { ascending: true });
+      
+      allResponses = response.data || [];
+      responsesError = response.error;
+    }
+
+    if (responsesError) {
+      console.error('Error fetching responses:', responsesError);
+      return res.status(500).json({ ok: false, error: 'Failed to fetch responses', detail: responsesError.message });
+    }
+    
+    // Determine which companies have actual responses
+    const companiesWithResponses = new Set();
+    allResponses?.forEach(response => {
+      const companyId = deploymentToCompanyMap[response.deployment_id];
+      if (companyId) {
+        companiesWithResponses.add(companyId);
+      }
+    });
+    
     // Only count deployments from companies that have actual responses
     const realDeployments = deployments?.filter(d => companiesWithResponses.has(d.company_id)) || [];
     console.log(`[SUPER ADMIN] Deployments from companies with responses: ${realDeployments.length}`);
-
+    
+    // Count actual responses by role
+    const leaderResponseCount = allResponses?.filter(r => r.respondent_role === 'leader').length || 0;
+    const teamMemberResponseCount = allResponses?.filter(r => r.respondent_role === 'team_member').length || 0;
+    
+    console.log(`[SUPER ADMIN] Found ${allResponses?.length || 0} total responses (${leaderResponseCount} leader responses, ${teamMemberResponseCount} team member responses)`);
+    
+    // Count unique leaders who responded (if we have email in responses, use that; otherwise use response count as proxy)
+    // For now, use the number of leader responses as the leader count
+    const actualLeaderCount = leaderResponseCount;
+    
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -163,43 +209,6 @@ export default async function handler(req, res) {
       const q = Math.floor(created.getMonth() / 3);
       return q === currentQuarter && created.getFullYear() === currentYear;
     });
-
-    // Get all responses (only from real deployments)
-    const deploymentIds = realDeployments.map(d => d.id);
-    let allResponses = [];
-    let responsesError = null;
-    
-    // Create deployment_id -> company_id map (only for real deployments)
-    const deploymentToCompanyMap = {};
-    realDeployments.forEach(d => {
-      deploymentToCompanyMap[d.id] = d.company_id;
-    });
-    
-    if (deploymentIds.length > 0) {
-      const response = await supabaseAdmin
-        .from('ali_survey_responses')
-        .select('id, deployment_id, responses, completed_at, respondent_role, created_at')
-        .in('deployment_id', deploymentIds)
-        .order('completed_at', { ascending: true });
-      
-      allResponses = response.data || [];
-      responsesError = response.error;
-    }
-
-    if (responsesError) {
-      console.error('Error fetching responses:', responsesError);
-      return res.status(500).json({ ok: false, error: 'Failed to fetch responses', detail: responsesError.message });
-    }
-    
-    // Count actual responses by role
-    const leaderResponseCount = allResponses?.filter(r => r.respondent_role === 'leader').length || 0;
-    const teamMemberResponseCount = allResponses?.filter(r => r.respondent_role === 'team_member').length || 0;
-    
-    console.log(`[SUPER ADMIN] Found ${allResponses?.length || 0} total responses (${leaderResponseCount} leader responses, ${teamMemberResponseCount} team member responses)`);
-    
-    // Count unique leaders who responded (if we have email in responses, use that; otherwise use response count as proxy)
-    // For now, use the number of leader responses as the leader count
-    const actualLeaderCount = leaderResponseCount;
 
     // Calculate company scores for zone distribution
     const companyScores = [];
