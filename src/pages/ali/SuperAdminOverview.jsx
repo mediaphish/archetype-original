@@ -11,8 +11,11 @@ const SuperAdminOverview = () => {
       try {
         const response = await fetch('/api/ali/super-admin/overview');
         const result = await response.json();
-        if (result.ok) {
+        console.log('Super Admin Overview API response:', result);
+        if (result.ok && result.overview) {
           setData(result.overview);
+        } else {
+          console.error('API returned error or missing data:', result);
         }
       } catch (error) {
         console.error('Error fetching overview:', error);

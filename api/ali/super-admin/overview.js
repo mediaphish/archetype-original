@@ -75,7 +75,8 @@ export default async function handler(req, res) {
       .eq('status', 'active');
 
     if (qbError || !questionBankData) {
-      return res.status(500).json({ error: 'Failed to load question bank' });
+      console.error('Error loading question bank:', qbError);
+      return res.status(500).json({ ok: false, error: 'Failed to load question bank', detail: qbError?.message });
     }
 
     const questionBank = {};
@@ -95,23 +96,34 @@ export default async function handler(req, res) {
       .order('created_at', { ascending: false });
 
     if (companiesError) {
-      return res.status(500).json({ error: 'Failed to fetch companies' });
+      console.error('Error fetching companies:', companiesError);
+      return res.status(500).json({ ok: false, error: 'Failed to fetch companies', detail: companiesError.message });
     }
 
     const activeCompanies = companies?.filter(c => c.status === 'active' || !c.status) || [];
     const inactiveCompanies = companies?.filter(c => c.status === 'inactive') || [];
 
     // Get all contacts (leaders)
-    const { data: contacts, error: contactsError } = await supabaseAdmin
-      .from('ali_contacts')
-      .select('id, company_id, email, role, status, created_at')
-      .in('company_id', companies?.map(c => c.id) || []);
-
-    if (contactsError) {
-      return res.status(500).json({ error: 'Failed to fetch contacts' });
+    let contacts = [];
+    let contactsError = null;
+    
+    if (companies && companies.length > 0) {
+      const companyIds = companies.map(c => c.id);
+      const response = await supabaseAdmin
+        .from('ali_contacts')
+        .select('id, company_id, email, role, status, created_at')
+        .in('company_id', companyIds);
+      
+      contacts = response.data || [];
+      contactsError = response.error;
     }
 
-    const leaders = contacts?.filter(c => c.role === 'leader') || [];
+    if (contactsError) {
+      console.error('Error fetching contacts:', contactsError);
+      return res.status(500).json({ ok: false, error: 'Failed to fetch contacts', detail: contactsError.message });
+    }
+
+    const leaders = contacts.filter(c => c.role === 'leader') || [];
     const activeLeaders = leaders.filter(l => l.status === 'active' || !l.status);
     const activeLeaderPercent = leaders.length > 0 ? (activeLeaders.length / leaders.length) * 100 : 0;
 
@@ -123,7 +135,8 @@ export default async function handler(req, res) {
       .order('created_at', { ascending: false });
 
     if (deploymentsError) {
-      return res.status(500).json({ error: 'Failed to fetch deployments' });
+      console.error('Error fetching deployments:', deploymentsError);
+      return res.status(500).json({ ok: false, error: 'Failed to fetch deployments', detail: deploymentsError.message });
     }
 
     const now = new Date();
@@ -144,14 +157,23 @@ export default async function handler(req, res) {
 
     // Get all responses
     const deploymentIds = deployments?.map(d => d.id) || [];
-    const { data: allResponses, error: responsesError } = await supabaseAdmin
-      .from('ali_survey_responses')
-      .select('id, deployment_id, company_id, responses, completed_at, respondent_role, created_at')
-      .in('deployment_id', deploymentIds.length > 0 ? deploymentIds : ['00000000-0000-0000-0000-000000000000'])
-      .order('completed_at', { ascending: true });
+    let allResponses = [];
+    let responsesError = null;
+    
+    if (deploymentIds.length > 0) {
+      const response = await supabaseAdmin
+        .from('ali_survey_responses')
+        .select('id, deployment_id, company_id, responses, completed_at, respondent_role, created_at')
+        .in('deployment_id', deploymentIds)
+        .order('completed_at', { ascending: true });
+      
+      allResponses = response.data || [];
+      responsesError = response.error;
+    }
 
     if (responsesError) {
-      return res.status(500).json({ error: 'Failed to fetch responses' });
+      console.error('Error fetching responses:', responsesError);
+      return res.status(500).json({ ok: false, error: 'Failed to fetch responses', detail: responsesError.message });
     }
 
     // Calculate company scores for zone distribution
@@ -397,6 +419,12 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Super Admin Overview error:', error);
-    return res.status(500).json({ error: 'Failed to generate overview' });
+    console.error('Error stack:', error.stack);
+    return res.status(500).json({ 
+      ok: false, 
+      error: 'Failed to generate overview', 
+      detail: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 }
