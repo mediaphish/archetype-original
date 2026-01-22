@@ -142,32 +142,36 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: 'Failed to fetch deployments', detail: deploymentsError.message });
     }
     
-    console.log(`[SUPER ADMIN] Found ${deployments?.length || 0} deployments`);
+    console.log(`[SUPER ADMIN] Found ${deployments?.length || 0} total deployments`);
+    
+    // Only count deployments from companies that have actual responses
+    const realDeployments = deployments?.filter(d => companiesWithResponses.has(d.company_id)) || [];
+    console.log(`[SUPER ADMIN] Deployments from companies with responses: ${realDeployments.length}`);
 
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
     const currentQuarter = Math.floor(currentMonth / 3);
 
-    const thisMonthDeployments = deployments?.filter(d => {
+    const thisMonthDeployments = realDeployments.filter(d => {
       const created = new Date(d.created_at);
       return created.getMonth() === currentMonth && created.getFullYear() === currentYear;
-    }) || [];
+    });
 
-    const thisQuarterDeployments = deployments?.filter(d => {
+    const thisQuarterDeployments = realDeployments.filter(d => {
       const created = new Date(d.created_at);
       const q = Math.floor(created.getMonth() / 3);
       return q === currentQuarter && created.getFullYear() === currentYear;
-    }) || [];
+    });
 
-    // Get all responses
-    const deploymentIds = deployments?.map(d => d.id) || [];
+    // Get all responses (only from real deployments)
+    const deploymentIds = realDeployments.map(d => d.id);
     let allResponses = [];
     let responsesError = null;
     
-    // Create deployment_id -> company_id map
+    // Create deployment_id -> company_id map (only for real deployments)
     const deploymentToCompanyMap = {};
-    deployments?.forEach(d => {
+    realDeployments.forEach(d => {
       deploymentToCompanyMap[d.id] = d.company_id;
     });
     
@@ -200,11 +204,14 @@ export default async function handler(req, res) {
     // Calculate company scores for zone distribution
     const companyScores = [];
     const companyResponseMap = {};
+    const companiesWithResponses = new Set();
 
     // Group responses by company (using deployment_id -> company_id map)
     allResponses?.forEach(response => {
       const companyId = deploymentToCompanyMap[response.deployment_id];
       if (!companyId) return; // Skip if deployment not found
+      
+      companiesWithResponses.add(companyId);
       
       if (!companyResponseMap[companyId]) {
         companyResponseMap[companyId] = [];
@@ -219,6 +226,13 @@ export default async function handler(req, res) {
         companyScores.push({ companyId, score });
       }
     });
+    
+    // Only count companies that have actual survey responses
+    const realCompanies = companies?.filter(c => companiesWithResponses.has(c.id)) || [];
+    const realActiveCompanies = realCompanies.filter(c => c.status === 'active' || !c.status);
+    const realInactiveCompanies = realCompanies.filter(c => c.status === 'inactive');
+    
+    console.log(`[SUPER ADMIN] Companies with responses: ${realCompanies.length} (${realActiveCompanies.length} active, ${realInactiveCompanies.length} inactive)`);
 
     // Zone distribution
     const zoneCounts = { green: 0, yellow: 0, orange: 0, red: 0 };
@@ -272,7 +286,7 @@ export default async function handler(req, res) {
     }
 
     quarters.forEach(({ year, quarter, label }) => {
-      const quarterDeployments = deployments?.filter(d => {
+      const quarterDeployments = realDeployments.filter(d => {
         const created = new Date(d.created_at);
         const q = Math.floor(created.getMonth() / 3) + 1;
         return q === quarter && created.getFullYear() === year;
@@ -308,7 +322,7 @@ export default async function handler(req, res) {
       const prevQuarter = quarters[quarters.indexOf({ year, quarter, label }) - 1];
       const changes = {};
       if (prevQuarter) {
-        const prevQuarterDeployments = deployments?.filter(d => {
+        const prevQuarterDeployments = realDeployments.filter(d => {
           const created = new Date(d.created_at);
           const q = Math.floor(created.getMonth() / 3) + 1;
           return q === prevQuarter.quarter && created.getFullYear() === prevQuarter.year;
@@ -331,7 +345,7 @@ export default async function handler(req, res) {
 
     // Engagement metrics
     const totalResponses = allResponses?.length || 0;
-    const totalDeployments = deployments?.length || 0;
+    const totalDeployments = realDeployments.length;
     
     // Response rate: total responses / (expected responses)
     // Expected = number of leaders * number of deployments (assuming each leader should respond to each survey)
@@ -354,8 +368,8 @@ export default async function handler(req, res) {
       ? completionTimes.reduce((sum, t) => sum + t, 0) / completionTimes.length
       : 0;
 
-    const surveysPerCompany = activeCompanies.length > 0 
-      ? totalDeployments / activeCompanies.length 
+    const surveysPerCompany = realActiveCompanies.length > 0 
+      ? totalDeployments / realActiveCompanies.length 
       : 0;
 
     const responsesPerSurvey = totalDeployments > 0 
@@ -403,7 +417,7 @@ export default async function handler(req, res) {
       .map(({ companyId, score }) => {
         const company = companies?.find(c => c.id === companyId);
         const companyLeaders = leaders.filter(l => l.company_id === companyId);
-        const companyDeployments = deployments?.filter(d => d.company_id === companyId) || [];
+        const companyDeployments = realDeployments.filter(d => d.company_id === companyId);
         return {
           name: company?.name || 'Unknown',
           leaders: companyLeaders.length,
@@ -418,9 +432,9 @@ export default async function handler(req, res) {
       overview: {
         metrics: {
           companies: { 
-            total: companies?.length || 0, 
-            active: activeCompanies.length, 
-            inactive: inactiveCompanies.length 
+            total: realCompanies.length, 
+            active: realActiveCompanies.length, 
+            inactive: realInactiveCompanies.length 
           },
           leaders: { 
             total: actualLeaderCount || leaders.length, 
@@ -428,7 +442,7 @@ export default async function handler(req, res) {
             activePercent: actualLeaderCount > 0 ? 100 : 0 
           },
           surveys: { 
-            total: deployments?.length || 0, 
+            total: realDeployments.length, 
             thisMonth: thisMonthDeployments.length, 
             thisQuarter: thisQuarterDeployments.length 
           },
