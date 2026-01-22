@@ -111,7 +111,7 @@ export default async function handler(req, res) {
       const companyIds = companies.map(c => c.id);
       const response = await supabaseAdmin
         .from('ali_contacts')
-        .select('id, company_id, email, role, status, created_at')
+        .select('id, company_id, email, role, created_at')
         .in('company_id', companyIds);
       
       contacts = response.data || [];
@@ -124,8 +124,9 @@ export default async function handler(req, res) {
     }
 
     const leaders = contacts.filter(c => c.role === 'leader') || [];
-    const activeLeaders = leaders.filter(l => l.status === 'active' || !l.status);
-    const activeLeaderPercent = leaders.length > 0 ? (activeLeaders.length / leaders.length) * 100 : 0;
+    // All leaders are considered active (no status field in ali_contacts)
+    const activeLeaders = leaders;
+    const activeLeaderPercent = leaders.length > 0 ? 100 : 0;
 
     // Get all survey deployments
     const { data: deployments, error: deploymentsError } = await supabaseAdmin
