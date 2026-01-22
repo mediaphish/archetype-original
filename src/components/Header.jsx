@@ -109,45 +109,43 @@ export default function Header() {
             </a>
 
             {/* Desktop Navigation - Right Side with Proper Alignment */}
-            <div className="hidden md:flex items-center gap-6 lg:gap-8">
-              {/* Navigation Container - Stacked Layout */}
-              <div className="flex flex-col items-end gap-1.5 justify-center">
-                {/* Secondary Navigation - Top Row */}
-                <div className="flex items-center gap-4 text-sm">
-                  <a 
-                    href="/faqs" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
-                    className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/faqs') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span className="text-xs">FAQs</span>
-                  </a>
-                  <a 
-                    href="/journal" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/journal'); }}
-                    className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/journal') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                    <span className="text-xs">Journal</span>
-                  </a>
-                  <a 
-                    href="/contact" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
-                    className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/contact') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-xs">Contact</span>
-                  </a>
-                </div>
+            <div className="hidden md:flex items-center gap-6 lg:gap-8 relative">
+              {/* Secondary Navigation - Top Row (Positioned absolutely above primary nav) */}
+              <div className="absolute -top-5 right-0 flex items-center gap-4 text-sm">
+                <a 
+                  href="/faqs" 
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
+                  className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/faqs') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-xs">FAQs</span>
+                </a>
+                <a 
+                  href="/journal" 
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/journal'); }}
+                  className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/journal') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  <span className="text-xs">Journal</span>
+                </a>
+                <a 
+                  href="/contact" 
+                  onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
+                  className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/contact') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-xs">Contact</span>
+                </a>
+              </div>
 
-                {/* Primary Navigation - Bottom Row, Aligned with Logo Baseline */}
-                <div className="flex items-center gap-3 lg:gap-5 xl:gap-6">
+              {/* Primary Navigation - Aligned with Logo Baseline */}
+              <div className="flex items-center gap-3 lg:gap-5 xl:gap-6">
                   <a 
                     href="/meet-bart" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
@@ -330,7 +328,6 @@ export default function Header() {
                   >
                     Work Together
                   </a>
-                </div>
               </div>
             </div>
 
