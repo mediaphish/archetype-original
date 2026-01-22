@@ -333,7 +333,6 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            </div>
 
             {/* Mobile Menu Button - Animated Hamburger to X */}
             <button 
