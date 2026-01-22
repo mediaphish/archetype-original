@@ -204,14 +204,11 @@ export default async function handler(req, res) {
     // Calculate company scores for zone distribution
     const companyScores = [];
     const companyResponseMap = {};
-    const companiesWithResponses = new Set();
 
     // Group responses by company (using deployment_id -> company_id map)
     allResponses?.forEach(response => {
       const companyId = deploymentToCompanyMap[response.deployment_id];
       if (!companyId) return; // Skip if deployment not found
-      
-      companiesWithResponses.add(companyId);
       
       if (!companyResponseMap[companyId]) {
         companyResponseMap[companyId] = [];
