@@ -161,10 +161,16 @@ export default async function handler(req, res) {
     let allResponses = [];
     let responsesError = null;
     
+    // Create deployment_id -> company_id map
+    const deploymentToCompanyMap = {};
+    deployments?.forEach(d => {
+      deploymentToCompanyMap[d.id] = d.company_id;
+    });
+    
     if (deploymentIds.length > 0) {
       const response = await supabaseAdmin
         .from('ali_survey_responses')
-        .select('id, deployment_id, company_id, responses, completed_at, respondent_role, created_at')
+        .select('id, deployment_id, responses, completed_at, respondent_role, created_at')
         .in('deployment_id', deploymentIds)
         .order('completed_at', { ascending: true });
       
@@ -181,12 +187,15 @@ export default async function handler(req, res) {
     const companyScores = [];
     const companyResponseMap = {};
 
-    // Group responses by company
+    // Group responses by company (using deployment_id -> company_id map)
     allResponses?.forEach(response => {
-      if (!companyResponseMap[response.company_id]) {
-        companyResponseMap[response.company_id] = [];
+      const companyId = deploymentToCompanyMap[response.deployment_id];
+      if (!companyId) return; // Skip if deployment not found
+      
+      if (!companyResponseMap[companyId]) {
+        companyResponseMap[companyId] = [];
       }
-      companyResponseMap[response.company_id].push(response);
+      companyResponseMap[companyId].push(response);
     });
 
     // Calculate score for each company
@@ -267,7 +276,11 @@ export default async function handler(req, res) {
       // Calculate average score for this quarter
       const quarterCompanyScores = [];
       quarterCompanyIds.forEach(companyId => {
-        const companyResponses = quarterResponses.filter(r => r.company_id === companyId);
+        // Filter responses by company using deployment_id -> company_id map
+        const companyResponses = quarterResponses.filter(r => {
+          const respCompanyId = deploymentToCompanyMap[r.deployment_id];
+          return respCompanyId === companyId;
+        });
         const score = calculateCompanyScore(companyResponses, questionBank);
         if (score !== null) {
           quarterCompanyScores.push(score);
