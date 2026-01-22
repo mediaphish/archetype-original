@@ -331,6 +331,8 @@ export default function Header() {
                     Work Together
                   </a>
                 </div>
+              </div>
+            </div>
             </div>
 
             {/* Mobile Menu Button - Animated Hamburger to X */}
