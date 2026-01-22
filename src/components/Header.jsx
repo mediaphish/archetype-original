@@ -67,11 +67,11 @@ export default function Header() {
       <nav className="sticky top-0 z-50 bg-white border-b border-[#1A1A1A]/10 backdrop-blur-sm bg-white/95">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Logo */}
+            {/* Logo - Left Side */}
             <a 
               href="/" 
               onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
-              className="flex items-center"
+              className="flex items-center shrink-0"
             >
               <svg 
                 id="Layer_1" 
@@ -108,10 +108,11 @@ export default function Header() {
               </svg>
             </a>
 
-            {/* Desktop Navigation - Right Aligned */}
-            <div className="hidden md:flex items-center">
-              <div className="flex flex-col items-end gap-2">
-                {/* Secondary Navigation - Stacked Above */}
+            {/* Desktop Navigation - Right Side with Proper Alignment */}
+            <div className="hidden md:flex items-center gap-6 lg:gap-8">
+              {/* Navigation Container - Stacked Layout */}
+              <div className="flex flex-col items-end gap-1.5">
+                {/* Secondary Navigation - Top Row */}
                 <div className="flex items-center gap-4 text-sm">
                   <a 
                     href="/faqs" 
@@ -145,12 +146,12 @@ export default function Header() {
                   </a>
                 </div>
 
-                {/* Primary Navigation */}
-                <div className="flex items-center gap-4 lg:gap-6 xl:gap-8">
+                {/* Primary Navigation - Bottom Row, Aligned with Logo Baseline */}
+                <div className="flex items-center gap-3 lg:gap-5 xl:gap-6">
                   <a 
                     href="/meet-bart" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
-                    className={`${navLinkClass('/meet-bart')} whitespace-nowrap text-sm md:text-sm lg:text-base`}
+                    className={`${navLinkClass('/meet-bart')} whitespace-nowrap text-sm lg:text-base`}
                   >
                     Meet Bart
                   </a>
@@ -158,7 +159,7 @@ export default function Header() {
                   <a 
                     href="/archy" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
-                    className={`${navLinkClass('/archy')} whitespace-nowrap text-sm md:text-sm lg:text-base`}
+                    className={`${navLinkClass('/archy')} whitespace-nowrap text-sm lg:text-base`}
                   >
                     Meet Archy
                   </a>
@@ -166,7 +167,7 @@ export default function Header() {
                   <a 
                     href="/philosophy" 
                     onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
-                    className={`${navLinkClass('/philosophy')} whitespace-nowrap text-sm md:text-sm lg:text-base`}
+                    className={`${navLinkClass('/philosophy')} whitespace-nowrap text-sm lg:text-base`}
                   >
                     Philosophy
                   </a>
@@ -325,12 +326,11 @@ export default function Header() {
                   <a
                     href="/engagement-inquiry"
                     onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
-                    className="ml-4 px-4 lg:px-6 py-2 bg-[#C85A3C] text-white font-medium rounded-lg hover:bg-[#B54A32] transition-all duration-200 whitespace-nowrap"
+                    className="ml-2 lg:ml-4 px-4 lg:px-6 py-2 bg-[#C85A3C] text-white font-medium rounded-lg hover:bg-[#B54A32] transition-all duration-200 whitespace-nowrap"
                   >
                     Work Together
                   </a>
                 </div>
-              </div>
             </div>
 
             {/* Mobile Menu Button - Animated Hamburger to X */}
