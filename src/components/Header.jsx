@@ -111,7 +111,7 @@ export default function Header() {
             {/* Desktop Navigation - Right Side with Proper Alignment */}
             <div className="hidden md:flex items-center gap-6 lg:gap-8">
               {/* Navigation Container - Stacked Layout */}
-              <div className="flex flex-col items-end gap-1.5">
+              <div className="flex flex-col items-end gap-1.5 justify-center">
                 {/* Secondary Navigation - Top Row */}
                 <div className="flex items-center gap-4 text-sm">
                   <a 
