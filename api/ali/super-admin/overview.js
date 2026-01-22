@@ -102,6 +102,8 @@ export default async function handler(req, res) {
 
     const activeCompanies = companies?.filter(c => c.status === 'active' || !c.status) || [];
     const inactiveCompanies = companies?.filter(c => c.status === 'inactive') || [];
+    
+    console.log(`[SUPER ADMIN] Found ${companies?.length || 0} companies (${activeCompanies.length} active, ${inactiveCompanies.length} inactive)`);
 
     // Get all contacts (leaders)
     let contacts = [];
@@ -139,6 +141,8 @@ export default async function handler(req, res) {
       console.error('Error fetching deployments:', deploymentsError);
       return res.status(500).json({ ok: false, error: 'Failed to fetch deployments', detail: deploymentsError.message });
     }
+    
+    console.log(`[SUPER ADMIN] Found ${deployments?.length || 0} deployments`);
 
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -182,6 +186,16 @@ export default async function handler(req, res) {
       console.error('Error fetching responses:', responsesError);
       return res.status(500).json({ ok: false, error: 'Failed to fetch responses', detail: responsesError.message });
     }
+    
+    // Count actual responses by role
+    const leaderResponseCount = allResponses?.filter(r => r.respondent_role === 'leader').length || 0;
+    const teamMemberResponseCount = allResponses?.filter(r => r.respondent_role === 'team_member').length || 0;
+    
+    console.log(`[SUPER ADMIN] Found ${allResponses?.length || 0} total responses (${leaderResponseCount} leader responses, ${teamMemberResponseCount} team member responses)`);
+    
+    // Count unique leaders who responded (if we have email in responses, use that; otherwise use response count as proxy)
+    // For now, use the number of leader responses as the leader count
+    const actualLeaderCount = leaderResponseCount;
 
     // Calculate company scores for zone distribution
     const companyScores = [];
@@ -318,11 +332,13 @@ export default async function handler(req, res) {
     // Engagement metrics
     const totalResponses = allResponses?.length || 0;
     const totalDeployments = deployments?.length || 0;
-    const uniqueCompaniesWithResponses = new Set(allResponses?.map(r => r.company_id) || []).size;
     
-    const responseRate = activeLeaders.length > 0 
-      ? (totalResponses / (activeLeaders.length * totalDeployments)) * 100 
-      : 0;
+    // Response rate: total responses / (expected responses)
+    // Expected = number of leaders * number of deployments (assuming each leader should respond to each survey)
+    // But since we're counting actual leader responses, let's use a simpler calculation
+    const responseRate = totalDeployments > 0 && actualLeaderCount > 0
+      ? Math.min(100, (totalResponses / (actualLeaderCount * totalDeployments)) * 100)
+      : totalResponses > 0 ? 100 : 0;
 
     // Calculate average completion time (if we have that data)
     const completionTimes = allResponses?.map(r => {
@@ -407,9 +423,9 @@ export default async function handler(req, res) {
             inactive: inactiveCompanies.length 
           },
           leaders: { 
-            total: leaders.length, 
-            active: activeLeaders.length, 
-            activePercent: activeLeaderPercent 
+            total: actualLeaderCount || leaders.length, 
+            active: actualLeaderCount || activeLeaders.length, 
+            activePercent: actualLeaderCount > 0 ? 100 : 0 
           },
           surveys: { 
             total: deployments?.length || 0, 
