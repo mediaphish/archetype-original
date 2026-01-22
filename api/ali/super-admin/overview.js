@@ -184,9 +184,9 @@ export default async function handler(req, res) {
       }
     });
     
-    // Only count deployments from companies that have actual responses
+    // Count ALL deployments from companies that have responses (not just deployments with responses)
     const realDeployments = deployments?.filter(d => companiesWithResponses.has(d.company_id)) || [];
-    console.log(`[SUPER ADMIN] Deployments from companies with responses: ${realDeployments.length}`);
+    console.log(`[SUPER ADMIN] Total deployments from companies with responses: ${realDeployments.length}`);
     
     // Count actual responses by role
     const leaderResponseCount = allResponses?.filter(r => r.respondent_role === 'leader').length || 0;
@@ -194,9 +194,12 @@ export default async function handler(req, res) {
     
     console.log(`[SUPER ADMIN] Found ${allResponses?.length || 0} total responses (${leaderResponseCount} leader responses, ${teamMemberResponseCount} team member responses)`);
     
-    // Count unique leaders who responded (if we have email in responses, use that; otherwise use response count as proxy)
-    // For now, use the number of leader responses as the leader count
-    const actualLeaderCount = leaderResponseCount;
+    // Count unique leaders from contacts (not from responses, since responses are anonymous)
+    // Only count leaders from companies that have actual responses
+    const realLeaderContacts = leaders.filter(l => companiesWithResponses.has(l.company_id));
+    const actualLeaderCount = realLeaderContacts.length;
+    
+    console.log(`[SUPER ADMIN] Unique leaders from companies with responses: ${actualLeaderCount}`);
     
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -447,8 +450,8 @@ export default async function handler(req, res) {
             inactive: realInactiveCompanies.length 
           },
           leaders: { 
-            total: actualLeaderCount || leaders.length, 
-            active: actualLeaderCount || activeLeaders.length, 
+            total: actualLeaderCount, 
+            active: actualLeaderCount, 
             activePercent: actualLeaderCount > 0 ? 100 : 0 
           },
           surveys: { 
