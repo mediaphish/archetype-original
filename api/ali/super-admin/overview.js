@@ -177,7 +177,26 @@ export default async function handler(req, res) {
       allResponses = [];
     }
     
-    // Determine which companies have actual responses
+    // Count ALL deployments (not filtered by responses)
+    const realDeployments = deployments || [];
+    console.log(`[SUPER ADMIN] Total deployments to show: ${realDeployments.length}`);
+    
+    // Count actual responses by role
+    const leaderResponses = allResponses?.filter(r => r.respondent_role === 'leader') || [];
+    const teamMemberResponses = allResponses?.filter(r => r.respondent_role === 'team_member') || [];
+    const leaderResponseCount = leaderResponses.length;
+    const teamMemberResponseCount = teamMemberResponses.length;
+    
+    console.log(`[SUPER ADMIN] Found ${allResponses?.length || 0} total responses (${leaderResponseCount} leader responses, ${teamMemberResponseCount} team member responses)`);
+    
+    // Count unique leaders from survey responses (respondent_role = 'leader')
+    // Since responses are anonymous, we count the number of leader responses as the leader count
+    // The user wants to see how many leaders responded, not how many are in contacts
+    const actualLeaderCount = leaderResponseCount;
+    
+    console.log(`[SUPER ADMIN] Leader count from responses: ${actualLeaderCount}`);
+    
+    // Determine which companies have actual responses (for company filtering)
     const companiesWithResponses = new Set();
     allResponses?.forEach(response => {
       const companyId = deploymentToCompanyMap[response.deployment_id];
@@ -187,33 +206,6 @@ export default async function handler(req, res) {
     });
     
     console.log(`[SUPER ADMIN] Companies with responses:`, Array.from(companiesWithResponses));
-    console.log(`[SUPER ADMIN] All company IDs from deployments:`, [...new Set(deployments?.map(d => d.company_id) || [])]);
-    
-    // If we have responses, only show companies with responses. Otherwise, show all companies.
-    // This ensures we show real data when it exists, but don't hide everything if there's no data yet
-    const companiesToShow = companiesWithResponses.size > 0 
-      ? companiesWithResponses 
-      : new Set(companies?.map(c => c.id) || []);
-    
-    // Count ALL deployments from companies to show
-    const realDeployments = deployments?.filter(d => companiesToShow.has(d.company_id)) || [];
-    console.log(`[SUPER ADMIN] Total deployments from companies to show: ${realDeployments.length}`);
-    console.log(`[SUPER ADMIN] Deployment details:`, realDeployments.map(d => ({ id: d.id, company_id: d.company_id, survey_index: d.survey_index, created_at: d.created_at })));
-    
-    // Count actual responses by role
-    const leaderResponseCount = allResponses?.filter(r => r.respondent_role === 'leader').length || 0;
-    const teamMemberResponseCount = allResponses?.filter(r => r.respondent_role === 'team_member').length || 0;
-    
-    console.log(`[SUPER ADMIN] Found ${allResponses?.length || 0} total responses (${leaderResponseCount} leader responses, ${teamMemberResponseCount} team member responses)`);
-    
-    // Count unique leaders from contacts (not from responses, since responses are anonymous)
-    // Count leaders from companies we're showing
-    const realLeaderContacts = leaders.filter(l => companiesToShow.has(l.company_id));
-    const actualLeaderCount = realLeaderContacts.length;
-    
-    console.log(`[SUPER ADMIN] Total leaders: ${leaders.length}`);
-    console.log(`[SUPER ADMIN] Leaders by company:`, leaders.map(l => ({ email: l.email, company_id: l.company_id, role: l.role })));
-    console.log(`[SUPER ADMIN] Unique leaders from companies to show: ${actualLeaderCount}`);
     
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -254,8 +246,8 @@ export default async function handler(req, res) {
       }
     });
     
-    // Only count companies we're showing
-    const realCompanies = companies?.filter(c => companiesToShow.has(c.id)) || [];
+    // Count all companies (not filtered by responses)
+    const realCompanies = companies || [];
     const realActiveCompanies = realCompanies.filter(c => c.status === 'active' || !c.status);
     const realInactiveCompanies = realCompanies.filter(c => c.status === 'inactive');
     
