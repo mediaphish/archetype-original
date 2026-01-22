@@ -111,7 +111,7 @@ export default function Header() {
             {/* Desktop Navigation - Right Side with Proper Alignment */}
             <div className="hidden md:flex items-center gap-6 lg:gap-8 relative">
               {/* Secondary Navigation - Top Row (Positioned absolutely above primary nav) */}
-              <div className="absolute -top-5 right-0 flex items-center gap-4 text-sm">
+              <div className="absolute top-0 right-0 flex items-center gap-4 text-sm">
                 <a 
                   href="/faqs" 
                   onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
