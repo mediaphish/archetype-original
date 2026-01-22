@@ -218,9 +218,13 @@ async function buildKnowledgeCorpus() {
           }
         }
         
-        // Get today's date in YYYY-MM-DD format for accurate comparison
+        // Get today's date in YYYY-MM-DD format using local timezone (not UTC)
+        // This prevents timezone shifts that cause dates to be off by a day
         const today = new Date();
-        const todayStr = today.toISOString().split('T')[0]; // "2026-01-01"
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`; // "2026-01-21" in local timezone
         
         // Skip future posts - INCLUDING devotionals (only show devotionals on or before their publish date)
         const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
@@ -231,10 +235,15 @@ async function buildKnowledgeCorpus() {
             // Extract just the date part (YYYY-MM-DD) if it includes time
             publishDateStr = frontmatter.publish_date.split('T')[0].split(' ')[0];
           } else if (publishDate instanceof Date) {
-            publishDateStr = publishDate.toISOString().split('T')[0];
+            // Use local date methods to avoid UTC conversion issues
+            const pubYear = publishDate.getFullYear();
+            const pubMonth = String(publishDate.getMonth() + 1).padStart(2, '0');
+            const pubDay = String(publishDate.getDate()).padStart(2, '0');
+            publishDateStr = `${pubYear}-${pubMonth}-${pubDay}`;
           }
           
           // Compare date strings directly (YYYY-MM-DD format)
+          // Use >= to ensure posts go live on their publish date
           if (publishDateStr && publishDateStr > todayStr) {
             console.log(`⏰ Skipping future ${isDevotional ? 'devotional' : 'post'}: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDateStr}, today is ${todayStr})`);
             futurePosts++;
