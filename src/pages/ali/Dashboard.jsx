@@ -21,6 +21,7 @@ const ALIDashboard = () => {
   const [liveDashboardError, setLiveDashboardError] = useState(null);
   const [liveDashboardLoadedOnce, setLiveDashboardLoadedOnce] = useState(false);
   const [scoreCalculationExpanded, setScoreCalculationExpanded] = useState(false);
+  const [radarLayers, setRadarLayers] = useState({ overall: true, leader: true, team: true });
   // Zone modal removed (Zones page is the single source of truth)
   const chartRef = useRef(null);
 
@@ -1582,6 +1583,42 @@ const ALIDashboard = () => {
                       <div className="text-[11px] text-black/[0.38]">Center = 0 • Outer ring = 100</div>
                     </div>
 
+                    {/* Layer Toggle Controls */}
+                    <div className="mb-4 flex items-center gap-4 text-[12px]">
+                      <span className="text-black/[0.6] font-medium">Show layers:</span>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={radarLayers.overall}
+                          onChange={(e) => setRadarLayers(prev => ({ ...prev, overall: e.target.checked }))}
+                          className="w-4 h-4 rounded border-black/[0.2] text-[#2563eb] focus:ring-[#2563eb]"
+                        />
+                        <span className="text-black/[0.87]">Overall</span>
+                      </label>
+                      {hasLeaderTeam && (
+                        <>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={radarLayers.leader}
+                              onChange={(e) => setRadarLayers(prev => ({ ...prev, leader: e.target.checked }))}
+                              className="w-4 h-4 rounded border-black/[0.2] text-[#10b981] focus:ring-[#10b981]"
+                            />
+                            <span className="text-black/[0.87]">Leader</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={radarLayers.team}
+                              onChange={(e) => setRadarLayers(prev => ({ ...prev, team: e.target.checked }))}
+                              className="w-4 h-4 rounded border-black/[0.2] text-[#f59e0b] focus:ring-[#f59e0b]"
+                            />
+                            <span className="text-black/[0.87]">Team</span>
+                          </label>
+                        </>
+                      )}
+                    </div>
+
                     <div className="flex items-center justify-center relative">
                       <svg 
                         className="w-full max-w-[560px] h-auto" 
@@ -1641,7 +1678,13 @@ const ALIDashboard = () => {
                                 stroke="transparent"
                                 strokeWidth="30"
                                 style={{ cursor: 'pointer' }}
-                                onMouseEnter={() => setHoveredChartPoint({ key: k, index: i, overall: overallScore, leader: leaderScore, team: teamScore, label })}
+                                onMouseEnter={() => {
+                                  const tooltipData = { key: k, index: i, label };
+                                  if (radarLayers.overall) tooltipData.overall = overallScore;
+                                  if (radarLayers.leader && hasLeaderTeam) tooltipData.leader = leaderScore;
+                                  if (radarLayers.team && hasLeaderTeam) tooltipData.team = teamScore;
+                                  setHoveredChartPoint(tooltipData);
+                                }}
                               />
                               <text
                                 x={safeX}
@@ -1664,40 +1707,46 @@ const ALIDashboard = () => {
                           );
                         })}
 
-                        {/* Polygons */}
+                        {/* Polygons - Conditionally rendered based on toggle state */}
                         {/* Overall */}
-                        <polygon
-                          points={polyPoints(overall)}
-                          fill="rgba(37, 99, 235, 0.14)"
-                          stroke="#2563eb"
-                          strokeWidth="2.5"
-                          style={{ cursor: 'pointer' }}
-                          onMouseEnter={() => setHoveredChartPoint({ type: 'overall', scores: overall })}
-                          onMouseLeave={() => setHoveredChartPoint(null)}
-                        />
+                        {radarLayers.overall && (
+                          <polygon
+                            points={polyPoints(overall)}
+                            fill="rgba(37, 99, 235, 0.14)"
+                            stroke="#2563eb"
+                            strokeWidth="2.5"
+                            style={{ cursor: 'pointer' }}
+                            onMouseEnter={() => setHoveredChartPoint({ type: 'overall', scores: overall })}
+                            onMouseLeave={() => setHoveredChartPoint(null)}
+                          />
+                        )}
 
                         {hasLeaderTeam ? (
                           <>
                             {/* Leader */}
-                            <polygon
-                              points={polyPoints(leader)}
-                              fill="rgba(16, 185, 129, 0.10)"
-                              stroke="#10b981"
-                              strokeWidth="2.5"
-                              style={{ cursor: 'pointer' }}
-                              onMouseEnter={() => setHoveredChartPoint({ type: 'leader', scores: leader })}
-                              onMouseLeave={() => setHoveredChartPoint(null)}
-                            />
+                            {radarLayers.leader && (
+                              <polygon
+                                points={polyPoints(leader)}
+                                fill="rgba(16, 185, 129, 0.10)"
+                                stroke="#10b981"
+                                strokeWidth="2.5"
+                                style={{ cursor: 'pointer' }}
+                                onMouseEnter={() => setHoveredChartPoint({ type: 'leader', scores: leader })}
+                                onMouseLeave={() => setHoveredChartPoint(null)}
+                              />
+                            )}
                             {/* Team */}
-                            <polygon
-                              points={polyPoints(team)}
-                              fill="rgba(245, 158, 11, 0.10)"
-                              stroke="#f59e0b"
-                              strokeWidth="2.5"
-                              style={{ cursor: 'pointer' }}
-                              onMouseEnter={() => setHoveredChartPoint({ type: 'team', scores: team })}
-                              onMouseLeave={() => setHoveredChartPoint(null)}
-                            />
+                            {radarLayers.team && (
+                              <polygon
+                                points={polyPoints(team)}
+                                fill="rgba(245, 158, 11, 0.10)"
+                                stroke="#f59e0b"
+                                strokeWidth="2.5"
+                                style={{ cursor: 'pointer' }}
+                                onMouseEnter={() => setHoveredChartPoint({ type: 'team', scores: team })}
+                                onMouseLeave={() => setHoveredChartPoint(null)}
+                              />
+                            )}
                           </>
                         ) : null}
                       </svg>
@@ -1759,17 +1808,25 @@ const ALIDashboard = () => {
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-[12px] text-black/[0.6]">
-                      <div className="inline-flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(37,99,235,0.25)', border: '2px solid #2563eb' }} />
-                        Overall
-                      </div>
-                      <div className="inline-flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.20)', border: '2px solid #10b981' }} />
-                        Leader
-                      </div>
-                      <div className="inline-flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(245,158,11,0.22)', border: '2px solid #f59e0b' }} />
-                        Team
+                      <div className="flex items-center gap-4">
+                        {radarLayers.overall && (
+                          <div className="inline-flex items-center gap-2">
+                            <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(37,99,235,0.25)', border: '2px solid #2563eb' }} />
+                            Overall
+                          </div>
+                        )}
+                        {radarLayers.leader && hasLeaderTeam && (
+                          <div className="inline-flex items-center gap-2">
+                            <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.20)', border: '2px solid #10b981' }} />
+                            Leader
+                          </div>
+                        )}
+                        {radarLayers.team && hasLeaderTeam && (
+                          <div className="inline-flex items-center gap-2">
+                            <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(245,158,11,0.22)', border: '2px solid #f59e0b' }} />
+                            Team
+                          </div>
+                        )}
                       </div>
                       <div className="text-[12px] text-black/[0.6]">
                         Further out = healthier
