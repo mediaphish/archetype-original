@@ -96,9 +96,10 @@ export default function JournalPost() {
     // Handle YYYY-MM-DD format explicitly
     let date;
     if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      // Parse YYYY-MM-DD as UTC to avoid timezone issues
+      // Parse YYYY-MM-DD as local date (not UTC) to avoid timezone shifts
+      // This ensures "2026-01-22" displays as January 22, 2026, not January 21
       const [year, month, day] = dateString.split('-').map(Number);
-      date = new Date(Date.UTC(year, month - 1, day));
+      date = new Date(year, month - 1, day);
     } else {
       date = new Date(dateString);
     }

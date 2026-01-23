@@ -29,9 +29,13 @@ export default function Faith() {
       .then(data => {
         const allDevotionals = data.docs || [];
         
-        // Get today's date in YYYY-MM-DD format for accurate comparison
+        // Get today's date in YYYY-MM-DD format using local timezone (not UTC)
+        // This prevents timezone shifts that cause dates to be off by a day
         const today = new Date();
-        const todayStr = today.toISOString().split('T')[0]; // "2026-01-01"
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`; // "2026-01-21" in local timezone
         
         // Filter to ONLY published devotionals with publish_date <= today
         // This ensures only today's and past devotionals are shown

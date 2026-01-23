@@ -85,9 +85,13 @@ export default function Journal() {
       fetch('/api/knowledge?type=devotional').then(r => r.json())
     ])
       .then(([journalData, devotionalData]) => {
-        // Get today's date in YYYY-MM-DD format for accurate comparison
+        // Get today's date in YYYY-MM-DD format using local timezone (not UTC)
+        // This prevents timezone shifts that cause dates to be off by a day
         const today = new Date();
-        const todayStr = today.toISOString().split('T')[0]; // "2026-01-01"
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`; // "2026-01-21" in local timezone
         
         // Filter devotionals to only include those with publish_date <= today
         const publishedDevotionals = (devotionalData.docs || []).filter(devotional => {
@@ -160,9 +164,10 @@ export default function Journal() {
     // Handle YYYY-MM-DD format explicitly
     let date;
     if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      // Parse YYYY-MM-DD as UTC to avoid timezone issues
+      // Parse YYYY-MM-DD as local date (not UTC) to avoid timezone shifts
+      // This ensures "2026-01-22" displays as January 22, 2026, not January 21
       const [year, month, day] = dateString.split('-').map(Number);
-      date = new Date(Date.UTC(year, month - 1, day));
+      date = new Date(year, month - 1, day);
     } else {
       date = new Date(dateString);
     }

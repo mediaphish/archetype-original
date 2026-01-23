@@ -243,7 +243,8 @@ async function buildKnowledgeCorpus() {
           }
           
           // Compare date strings directly (YYYY-MM-DD format)
-          // Use >= to ensure posts go live on their publish date
+          // Use > (not >=) to ensure posts go live ON their publish date
+          // If publishDateStr === todayStr, the post should be published
           if (publishDateStr && publishDateStr > todayStr) {
             console.log(`⏰ Skipping future ${isDevotional ? 'devotional' : 'post'}: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDateStr}, today is ${todayStr})`);
             futurePosts++;
