@@ -10,8 +10,14 @@ import {
   calculateALIScore,
   calculatePatternScore,
   calculateAnchorScore,
-  classifyZone
+  classifyZone,
+  calculatePerceptionGap,
+  classifyGapSeverity,
+  calculateTeamExperienceMapCoordinates
 } from '../../../lib/ali-scoring.js';
+import {
+  calculateLeadershipMirror
+} from '../../../lib/ali-dashboard-calculations.js';
 
 /**
  * Transform response data for scoring
@@ -516,7 +522,14 @@ export default async function handler(req, res) {
           responsesPerSurvey: responsesPerSurvey
         },
         patterns,
-        topCompanies
+        topCompanies,
+        leadershipMirror: {
+          gaps: leadershipMirror.gaps || {},
+          severity: leadershipMirror.severity || {},
+          leaderScores: leadershipMirror.leaderScores || {},
+          teamScores: leadershipMirror.teamScores || {}
+        },
+        experienceMap: experienceMap || null
       }
     });
 
