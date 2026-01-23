@@ -252,11 +252,6 @@ export default async function handler(req, res) {
       }
     });
     
-    // Count all companies (not filtered by responses)
-    const realCompanies = companies || [];
-    const realActiveCompanies = realCompanies.filter(c => c.status === 'active' || !c.status);
-    const realInactiveCompanies = realCompanies.filter(c => c.status === 'inactive');
-    
     console.log(`[SUPER ADMIN] Companies with responses: ${realCompanies.length} (${realActiveCompanies.length} active, ${realInactiveCompanies.length} inactive)`);
 
     // Zone distribution
