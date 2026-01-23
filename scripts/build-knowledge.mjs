@@ -191,6 +191,8 @@ async function buildKnowledgeCorpus() {
         // Now parse frontmatter from cleaned content
         let { data: frontmatter, content: body } = matter(content);
         
+        const fileName = path.basename(filePath);
+        
         // gray-matter already removes frontmatter, but check if there's any leftover
         // Only remove frontmatter at the very start of the string (not line-by-line)
         // This preserves --- separators used as section dividers in devotional content
@@ -331,6 +333,7 @@ async function buildKnowledgeCorpus() {
         // Preserve publish_date as YYYY-MM-DD string if it's in that format
         // Don't convert to ISO string to avoid timezone issues
         let publishDateValue = frontmatter.publish_date || frontmatter.date;
+        
         if (!publishDateValue) {
           publishDateValue = new Date().toISOString();
         } else if (typeof publishDateValue === 'string' && publishDateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
