@@ -328,6 +328,19 @@ async function buildKnowledgeCorpus() {
           .replace(/\s+/g, ' ') // Collapse multiple spaces
           .trim();
 
+        // Preserve publish_date as YYYY-MM-DD string if it's in that format
+        // Don't convert to ISO string to avoid timezone issues
+        let publishDateValue = frontmatter.publish_date || frontmatter.date;
+        if (!publishDateValue) {
+          publishDateValue = new Date().toISOString();
+        } else if (typeof publishDateValue === 'string' && publishDateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          // Keep as YYYY-MM-DD string, don't convert
+          publishDateValue = publishDateValue;
+        } else {
+          // For other formats, convert to ISO
+          publishDateValue = new Date(publishDateValue).toISOString();
+        }
+        
         const journalDoc = {
           title: frontmatter.title || (isDevotional ? 'Untitled Devotional' : 'Untitled Journal Post'),
           slug: slug,
@@ -337,7 +350,7 @@ async function buildKnowledgeCorpus() {
           status: status,
           created_at: frontmatter.created_at || new Date().toISOString(),
           updated_at: frontmatter.updated_at || new Date().toISOString(),
-          publish_date: frontmatter.publish_date || frontmatter.date || new Date().toISOString(),
+          publish_date: publishDateValue,
           date: frontmatter.date || frontmatter.publish_date || null, // For devotionals
           summary: frontmatter.summary || (body ? body.substring(0, 200).trim() + '...' : ''),
           email_summary: emailSummary, // Email-specific summary (longer, cleaner)

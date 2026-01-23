@@ -93,18 +93,39 @@ export default function JournalPost() {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    // Handle YYYY-MM-DD format explicitly
-    let date;
-    if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      // Parse YYYY-MM-DD as local date (not UTC) to avoid timezone shifts
-      // This ensures "2026-01-22" displays as January 22, 2026, not January 21
-      const [year, month, day] = dateString.split('-').map(Number);
-      date = new Date(year, month - 1, day);
-    } else {
-      date = new Date(dateString);
+    
+    // Extract YYYY-MM-DD from any date format (handles ISO strings, YYYY-MM-DD, etc.)
+    let dateStr = String(dateString);
+    
+    // Extract just the date part (YYYY-MM-DD) from ISO strings like "2026-01-22T00:00:00.000Z"
+    if (dateStr.includes('T')) {
+      dateStr = dateStr.split('T')[0];
+    }
+    // Remove any time portion if present
+    if (dateStr.includes(' ')) {
+      dateStr = dateStr.split(' ')[0];
     }
     
-    // Check if date is valid
+    // Parse YYYY-MM-DD as local date (not UTC) to avoid timezone shifts
+    // This ensures "2026-01-22" displays as January 22, 2026, not January 21
+    if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return '';
+      }
+      
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+    
+    // Fallback for other formats
+    const date = new Date(dateString);
     if (isNaN(date.getTime())) {
       return '';
     }
