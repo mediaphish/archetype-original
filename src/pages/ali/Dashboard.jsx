@@ -1643,14 +1643,15 @@ const ALIDashboard = () => {
                                 strokeWidth="30"
                                 style={{ cursor: 'pointer' }}
                                 onMouseEnter={(e) => {
-                                  // Get the actual SVG coordinates of the axis end point
+                                  // Get mouse position relative to SVG container
                                   const svg = e.currentTarget.ownerSVGElement;
                                   const svgRect = svg.getBoundingClientRect();
-                                  const axisPoint = toAxis(i, rMax + 20); // Position tooltip near the axis end
+                                  const mouseX = e.clientX - svgRect.left;
+                                  const mouseY = e.clientY - svgRect.top;
                                   
-                                  // Convert SVG coordinates to percentage relative to SVG viewBox
-                                  const xPercent = (axisPoint.x / W) * 100;
-                                  const yPercent = (axisPoint.y / H) * 100;
+                                  // Convert to percentage of SVG container
+                                  const xPercent = (mouseX / svgRect.width) * 100;
+                                  const yPercent = (mouseY / svgRect.height) * 100;
                                   
                                   const tooltipData = { 
                                     key: k, 
@@ -1695,7 +1696,15 @@ const ALIDashboard = () => {
                             stroke="#2563eb"
                             strokeWidth="2.5"
                             style={{ cursor: 'pointer' }}
-                            onMouseEnter={() => setHoveredChartPoint({ type: 'overall', scores: overall })}
+                            onMouseEnter={(e) => {
+                              const svg = e.currentTarget.ownerSVGElement;
+                              const svgRect = svg.getBoundingClientRect();
+                              const mouseX = e.clientX - svgRect.left;
+                              const mouseY = e.clientY - svgRect.top;
+                              const xPercent = (mouseX / svgRect.width) * 100;
+                              const yPercent = (mouseY / svgRect.height) * 100;
+                              setHoveredChartPoint({ type: 'overall', scores: overall, xPercent, yPercent });
+                            }}
                             onMouseLeave={() => setHoveredChartPoint(null)}
                           />
                         )}
@@ -1710,7 +1719,15 @@ const ALIDashboard = () => {
                                 stroke="#10b981"
                                 strokeWidth="2.5"
                                 style={{ cursor: 'pointer' }}
-                                onMouseEnter={() => setHoveredChartPoint({ type: 'leader', scores: leader })}
+                                onMouseEnter={(e) => {
+                                  const svg = e.currentTarget.ownerSVGElement;
+                                  const svgRect = svg.getBoundingClientRect();
+                                  const mouseX = e.clientX - svgRect.left;
+                                  const mouseY = e.clientY - svgRect.top;
+                                  const xPercent = (mouseX / svgRect.width) * 100;
+                                  const yPercent = (mouseY / svgRect.height) * 100;
+                                  setHoveredChartPoint({ type: 'leader', scores: leader, xPercent, yPercent });
+                                }}
                                 onMouseLeave={() => setHoveredChartPoint(null)}
                               />
                             )}
@@ -1722,7 +1739,15 @@ const ALIDashboard = () => {
                                 stroke="#f59e0b"
                                 strokeWidth="2.5"
                                 style={{ cursor: 'pointer' }}
-                                onMouseEnter={() => setHoveredChartPoint({ type: 'team', scores: team })}
+                                onMouseEnter={(e) => {
+                                  const svg = e.currentTarget.ownerSVGElement;
+                                  const svgRect = svg.getBoundingClientRect();
+                                  const mouseX = e.clientX - svgRect.left;
+                                  const mouseY = e.clientY - svgRect.top;
+                                  const xPercent = (mouseX / svgRect.width) * 100;
+                                  const yPercent = (mouseY / svgRect.height) * 100;
+                                  setHoveredChartPoint({ type: 'team', scores: team, xPercent, yPercent });
+                                }}
                                 onMouseLeave={() => setHoveredChartPoint(null)}
                               />
                             )}
@@ -1737,10 +1762,8 @@ const ALIDashboard = () => {
                           style={{
                             left: hoveredChartPoint.xPercent !== undefined ? `${hoveredChartPoint.xPercent}%` : '50%',
                             top: hoveredChartPoint.yPercent !== undefined ? `${hoveredChartPoint.yPercent}%` : '20%',
-                            transform: hoveredChartPoint.xPercent !== undefined && hoveredChartPoint.yPercent !== undefined
-                              ? 'translate(-50%, -100%)'
-                              : 'translate(-50%, -100%)',
-                            marginTop: hoveredChartPoint.xPercent !== undefined && hoveredChartPoint.yPercent !== undefined ? '-12px' : '-8px'
+                            transform: 'translate(-50%, -100%)',
+                            marginTop: '-12px'
                           }}
                         >
                           {hoveredChartPoint.key ? (
