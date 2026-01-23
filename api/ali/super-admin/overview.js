@@ -319,7 +319,9 @@ export default async function handler(req, res) {
 
       // Get unique companies for this quarter
       const quarterCompanyIds = new Set(quarterDeployments.map(d => d.company_id));
-      const quarterLeaders = leaders.filter(l => quarterCompanyIds.has(l.company_id));
+      // Count leaders from actual responses, not contacts
+      const quarterLeaderResponses = quarterResponses.filter(r => r.respondent_role === 'leader');
+      const quarterLeaderCount = quarterLeaderResponses.length;
 
       // Calculate average score for this quarter
       const quarterCompanyScores = [];
@@ -349,14 +351,18 @@ export default async function handler(req, res) {
         }) || [];
         const prevQuarterCompanyIds = new Set(prevQuarterDeployments.map(d => d.company_id));
         changes.companies = quarterCompanyIds.size - prevQuarterCompanyIds.size;
-        const prevQuarterLeaders = leaders.filter(l => prevQuarterCompanyIds.has(l.company_id));
-        changes.leaders = quarterLeaders.length - prevQuarterLeaders.length;
+        const prevQuarterResponses = allResponses?.filter(r => {
+          const respDeploymentId = r.deployment_id;
+          return prevQuarterDeployments.some(d => d.id === respDeploymentId);
+        }) || [];
+        const prevQuarterLeaderCount = prevQuarterResponses.filter(r => r.respondent_role === 'leader').length;
+        changes.leaders = quarterLeaderCount - prevQuarterLeaderCount;
       }
 
       quarterlyTrends.push({
         quarter: label,
         companies: quarterCompanyIds.size,
-        leaders: quarterLeaders.length,
+        leaders: quarterLeaderCount,
         avgScore: quarterAvgScore,
         responses: quarterResponses.length,
         changes
@@ -419,14 +425,27 @@ export default async function handler(req, res) {
     });
 
     const patterns = Object.entries(allPatternScores).map(([name, scores]) => {
+      // For pattern analysis, we calculate the average across all responses (not per company)
+      // Since we're aggregating all responses, we should have one score per pattern
       const avg = scores.length > 0 ? scores.reduce((sum, s) => sum + s, 0) / scores.length : 0;
       // Calculate change (simplified - compare to previous quarter)
       const change = 0; // TODO: Calculate actual change when we have historical data
+      
+      // Calculate distribution (high >= 75, medium 60-74, low < 60)
+      const highCount = scores.filter(s => s >= 75).length;
+      const mediumCount = scores.filter(s => s >= 60 && s < 75).length;
+      const lowCount = scores.filter(s => s < 60).length;
+      const total = scores.length;
+      
       return {
         name: name === 'leadership_drift' ? 'Leadership Alignment' : name.charAt(0).toUpperCase() + name.slice(1),
         score: avg,
         change,
-        distribution: { high: 0, medium: 0, low: 0 } // TODO: Calculate distribution
+        distribution: { 
+          high: total > 0 ? (highCount / total) * 100 : 0, 
+          medium: total > 0 ? (mediumCount / total) * 100 : 0, 
+          low: total > 0 ? (lowCount / total) * 100 : 0 
+        }
       };
     });
 
