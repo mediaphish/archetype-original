@@ -1582,8 +1582,12 @@ const ALIDashboard = () => {
                       <div className="text-[11px] text-black/[0.38]">Center = 0 • Outer ring = 100</div>
                     </div>
 
-                    <div className="flex items-center justify-center">
-                      <svg className="w-full max-w-[560px] h-auto" viewBox={`0 0 ${W} ${H}`}>
+                    <div className="flex items-center justify-center relative">
+                      <svg 
+                        className="w-full max-w-[560px] h-auto" 
+                        viewBox={`0 0 ${W} ${H}`}
+                        onMouseLeave={() => setHoveredChartPoint(null)}
+                      >
                         {/* Rings */}
                         {[20, 40, 60, 80, 100].map((t) => (
                           <circle
@@ -1608,6 +1612,16 @@ const ALIDashboard = () => {
                           const safeX =
                             textAnchor === 'end' ? Math.max(16, end.x) : textAnchor === 'start' ? Math.min(W - 16, end.x) : end.x;
                           const safeY = Math.max(14, Math.min(H - 10, end.y + dy));
+                          
+                          // Get scores for this axis
+                          const overallScore = fmt0(overall?.[k]);
+                          const leaderScore = fmt0(leader?.[k]);
+                          const teamScore = fmt0(team?.[k]);
+                          
+                          // Create invisible hover area along the axis
+                          const hoverArea = toAxis(i, rMax + 25);
+                          const hoverAreaStart = toAxis(i, 0);
+                          
                           return (
                             <g key={k}>
                               <line
@@ -1618,12 +1632,24 @@ const ALIDashboard = () => {
                                 stroke="rgba(0,0,0,0.16)"
                                 strokeWidth="1.5"
                               />
+                              {/* Invisible hover area for tooltip */}
+                              <line
+                                x1={hoverAreaStart.x}
+                                y1={hoverAreaStart.y}
+                                x2={hoverArea.x}
+                                y2={hoverArea.y}
+                                stroke="transparent"
+                                strokeWidth="30"
+                                style={{ cursor: 'pointer' }}
+                                onMouseEnter={() => setHoveredChartPoint({ key: k, index: i, overall: overallScore, leader: leaderScore, team: teamScore, label })}
+                              />
                               <text
                                 x={safeX}
                                 y={safeY}
                                 fontSize="12"
                                 fill="rgba(0,0,0,0.72)"
                                 textAnchor={textAnchor}
+                                style={{ pointerEvents: 'none' }}
                               >
                                 {label === 'Leadership Alignment' ? (
                                   <>
@@ -1645,6 +1671,9 @@ const ALIDashboard = () => {
                           fill="rgba(37, 99, 235, 0.14)"
                           stroke="#2563eb"
                           strokeWidth="2.5"
+                          style={{ cursor: 'pointer' }}
+                          onMouseEnter={() => setHoveredChartPoint({ type: 'overall', scores: overall })}
+                          onMouseLeave={() => setHoveredChartPoint(null)}
                         />
 
                         {hasLeaderTeam ? (
@@ -1655,6 +1684,9 @@ const ALIDashboard = () => {
                               fill="rgba(16, 185, 129, 0.10)"
                               stroke="#10b981"
                               strokeWidth="2.5"
+                              style={{ cursor: 'pointer' }}
+                              onMouseEnter={() => setHoveredChartPoint({ type: 'leader', scores: leader })}
+                              onMouseLeave={() => setHoveredChartPoint(null)}
                             />
                             {/* Team */}
                             <polygon
@@ -1662,10 +1694,68 @@ const ALIDashboard = () => {
                               fill="rgba(245, 158, 11, 0.10)"
                               stroke="#f59e0b"
                               strokeWidth="2.5"
+                              style={{ cursor: 'pointer' }}
+                              onMouseEnter={() => setHoveredChartPoint({ type: 'team', scores: team })}
+                              onMouseLeave={() => setHoveredChartPoint(null)}
                             />
                           </>
                         ) : null}
                       </svg>
+                      
+                      {/* Tooltip */}
+                      {hoveredChartPoint && (
+                        <div 
+                          className="absolute bg-black/[0.87] text-white rounded-lg px-4 py-3 shadow-lg z-50 pointer-events-none"
+                          style={{
+                            left: hoveredChartPoint.index !== undefined ? `${(hoveredChartPoint.index / SYSTEM_KEYS.length) * 100}%` : '50%',
+                            top: hoveredChartPoint.index !== undefined ? '50%' : '20%',
+                            transform: 'translate(-50%, -100%)',
+                            marginTop: '-8px'
+                          }}
+                        >
+                          {hoveredChartPoint.key ? (
+                            <>
+                              <div className="text-[13px] font-semibold mb-2">{hoveredChartPoint.label}</div>
+                              <div className="text-[12px] space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-sm bg-[#2563eb]"></span>
+                                  <span>Overall: {hoveredChartPoint.overall ?? '—'}</span>
+                                </div>
+                                {hoveredChartPoint.leader !== null && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-sm bg-[#10b981]"></span>
+                                    <span>Leader: {hoveredChartPoint.leader ?? '—'}</span>
+                                  </div>
+                                )}
+                                {hoveredChartPoint.team !== null && (
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-sm bg-[#f59e0b]"></span>
+                                    <span>Team: {hoveredChartPoint.team ?? '—'}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="text-[13px] font-semibold mb-2">
+                                {hoveredChartPoint.type === 'overall' ? 'Overall Scores' : 
+                                 hoveredChartPoint.type === 'leader' ? 'Leader Scores' : 'Team Scores'}
+                              </div>
+                              <div className="text-[12px] space-y-1 max-h-[200px] overflow-y-auto">
+                                {SYSTEM_KEYS.map((k) => {
+                                  const score = fmt0(hoveredChartPoint.scores?.[k]);
+                                  return (
+                                    <div key={k} className="flex items-center justify-between gap-3">
+                                      <span>{systemKeyToLabel(k)}:</span>
+                                      <span className="font-semibold">{score ?? '—'}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-[12px] text-black/[0.6]">
@@ -1688,21 +1778,38 @@ const ALIDashboard = () => {
 
                     {/* Quick numeric readout so users don't have to decode the radar */}
                     <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
-                      <div className="text-[12px] font-semibold text-black/[0.87] mb-2">Quick read (this snapshot)</div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="text-[12px] font-semibold text-black/[0.87] mb-3">Quick read (this snapshot)</div>
+                      <div className="space-y-2">
                         {SYSTEM_KEYS.map((k) => {
                           const o = fmt0(overall?.[k]);
                           const l = fmt0(leader?.[k]);
                           const t = fmt0(team?.[k]);
                           return (
-                            <div key={`snap-${k}`} className="flex items-center justify-between gap-3">
-                              <div className="text-[12px] text-black/[0.6]">{systemKeyToLabel(k)}</div>
-                              <div className="text-[12px] text-black/[0.87] font-semibold whitespace-nowrap">
-                                <span className="text-[#2563eb]">O</span> {o ?? '—'}
-                                <span className="text-black/[0.38]">  </span>
-                                <span className="text-[#10b981]">L</span> {l ?? '—'}
-                                <span className="text-black/[0.38]">  </span>
-                                <span className="text-[#f59e0b]">T</span> {t ?? '—'}
+                            <div 
+                              key={`snap-${k}`} 
+                              className="flex items-center gap-4 py-2 border-b border-black/[0.06] last:border-0 hover:bg-black/[0.02] rounded px-2 -mx-2 transition-colors"
+                            >
+                              <div className="text-[13px] font-medium text-black/[0.87] min-w-[140px]">{systemKeyToLabel(k)}</div>
+                              <div className="flex items-center gap-4 flex-1">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="w-2.5 h-2.5 rounded-sm bg-[#2563eb] border border-[#2563eb]"></span>
+                                  <span className="text-[12px] text-black/[0.6]">Overall:</span>
+                                  <span className="text-[13px] font-semibold text-[#2563eb]">{o ?? '—'}</span>
+                                </div>
+                                {hasLeaderTeam && (
+                                  <>
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="w-2.5 h-2.5 rounded-sm bg-[#10b981] border border-[#10b981]"></span>
+                                      <span className="text-[12px] text-black/[0.6]">Leader:</span>
+                                      <span className="text-[13px] font-semibold text-[#10b981]">{l ?? '—'}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="w-2.5 h-2.5 rounded-sm bg-[#f59e0b] border border-[#f59e0b]"></span>
+                                      <span className="text-[12px] text-black/[0.6]">Team:</span>
+                                      <span className="text-[13px] font-semibold text-[#f59e0b]">{t ?? '—'}</span>
+                                    </div>
+                                  </>
+                                )}
                               </div>
                             </div>
                           );
