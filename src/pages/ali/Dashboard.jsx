@@ -22,6 +22,7 @@ const ALIDashboard = () => {
   const [liveDashboardLoadedOnce, setLiveDashboardLoadedOnce] = useState(false);
   const [scoreCalculationExpanded, setScoreCalculationExpanded] = useState(false);
   const [radarLayers, setRadarLayers] = useState({ overall: true, leader: true, team: true });
+  const [metricInsights, setMetricInsights] = useState({});
   // Zone modal removed (Zones page is the single source of truth)
   const chartRef = useRef(null);
 
@@ -925,6 +926,41 @@ const ALIDashboard = () => {
     if (typeof dashboardData?.trajectory?.value === 'number') return;
     setAnimatedValues(prev => ({ ...prev, trajectory: undefined }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [liveDashboard]);
+
+  // Fetch Archy-generated insights for metrics when live dashboard data is available
+  useEffect(() => {
+    if (!liveDashboard?.systemMap?.summary) return;
+    
+    const summary = liveDashboard.systemMap.summary;
+    const overall = summary.overall || {};
+    const leader = summary.leader || {};
+    const team = summary.team_member || {};
+    
+    // Build metrics array for insights API
+    const metrics = SYSTEM_KEYS.map(k => ({
+      key: k,
+      label: systemKeyToLabel(k),
+      overall: typeof overall[k] === 'number' ? overall[k] : null,
+      leader: typeof leader[k] === 'number' ? leader[k] : null,
+      team: typeof team[k] === 'number' ? team[k] : null
+    }));
+
+    // Fetch insights
+    fetch('/api/ali/generate-insights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ metrics })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok && data.insights) {
+          setMetricInsights(data.insights);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch metric insights:', err);
+      });
   }, [liveDashboard]);
 
   // Fetch Archy-generated recommended first move for the current zone (corpus-aware)
@@ -1868,47 +1904,8 @@ const ALIDashboard = () => {
                           const l = fmt0(leader?.[k]);
                           const t = fmt0(team?.[k]);
                           
-                          // Generate brief insight
-                          const getInsight = () => {
-                            if (o === null && l === null && t === null) return null;
-                            
-                            const overallVal = o ?? 0;
-                            const leaderVal = l ?? overallVal;
-                            const teamVal = t ?? overallVal;
-                            const gap = hasLeaderTeam && typeof leaderVal === 'number' && typeof teamVal === 'number' 
-                              ? Math.abs(leaderVal - teamVal) 
-                              : 0;
-                            
-                            // High score (70+)
-                            if (overallVal >= 70) {
-                              if (gap > 15) {
-                                return gap > 0 && leaderVal > teamVal 
-                                  ? 'Strong leader view, team sees it differently'
-                                  : 'Team sees strength leader doesn\'t recognize';
-                              }
-                              return 'Strong signal across the board';
-                            }
-                            
-                            // Medium score (50-69)
-                            if (overallVal >= 50) {
-                              if (gap > 15) {
-                                return gap > 0 && leaderVal > teamVal
-                                  ? 'Leader overestimates, team signals concern'
-                                  : 'Team sees more than leader recognizes';
-                              }
-                              return 'Room for improvement';
-                            }
-                            
-                            // Low score (<50)
-                            if (gap > 15) {
-                              return gap > 0 && leaderVal > teamVal
-                                ? 'Significant perception gap'
-                                : 'Team signals urgent need';
-                            }
-                            return 'Needs immediate attention';
-                          };
-                          
-                          const insight = getInsight();
+                          // Use Archy-generated insight if available, otherwise show null
+                          const insight = metricInsights[k] || null;
                           
                           return (
                             <div 
