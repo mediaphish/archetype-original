@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon, Bell, Zap, Activity, TrendingUp, Send, Share2, Calendar, Clock } from 'lucide-react';
+import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon, Bell, TrendingUp } from 'lucide-react';
 import DefinitionModal from '../../components/ali/DefinitionModal';
 import ChatApp from '../../app/ChatApp';
 import AliHeader from '../../components/ali/AliHeader';
@@ -350,6 +350,31 @@ const ALIDashboard = () => {
           </ul>
           <p className="text-sm text-gray-600">
             These profiles are not moral judgments—they're behavioral patterns that reveal where to grow. Once you see your profile, you understand your drift patterns and what needs to be strengthened.
+          </p>
+        </div>
+      )
+    },
+    'ali-score-calculation': {
+      title: 'ALI Score Calculation',
+      content: (
+        <div>
+          <p className="mb-4">
+            Your ALI Score is calculated using a weighted formula that combines your 7 test scores with your Anchor score:
+          </p>
+          <div className="bg-gray-50 rounded-lg p-4 mb-4 font-mono text-sm">
+            <div>
+              ALI = <span className="font-semibold">0.30</span> × Anchors + <span className="font-semibold">0.70</span> × 7‑test mean
+            </div>
+          </div>
+          <p className="mb-4">
+            <strong>Why this formula?</strong> The 70/30 split balances:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mb-4">
+            <li><strong>7 Tests (70%):</strong> Capture current leadership patterns that can change quickly</li>
+            <li><strong>Anchors (30%):</strong> Measure core leadership behaviors that change slowly, providing stability across quarters</li>
+          </ul>
+          <p className="text-sm text-gray-600">
+            This weighted approach ensures your score reflects both immediate patterns and foundational leadership behaviors.
           </p>
         </div>
       )
@@ -1056,9 +1081,9 @@ const ALIDashboard = () => {
               {/* HERO: 25% ALI Score Panel + 75% How it's calculated */}
               <div className="bg-white rounded-lg border border-black/[0.12] p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                  {/* Left: ALI Score Panel (25%) */}
+                  {/* Left: ALI Score Panel (25%) - Enhanced styling for prominence */}
                   <div className="lg:col-span-1">
-                    <div className="bg-[#2563eb]/5 rounded-lg border-2 border-[#2563eb]/20 p-6">
+                    <div className="bg-gradient-to-br from-[#2563eb]/10 to-[#2563eb]/5 rounded-xl border-2 border-[#2563eb]/30 p-6 shadow-lg shadow-[#2563eb]/10">
                       <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Your ALI Score</div>
                       <div className="text-[64px] font-bold leading-none text-[#2563eb] mb-2">{fmt1(aliCurrentScore)}</div>
                       <div className="text-[13px] text-black/[0.6] mb-4">0–100 (higher is healthier)</div>
@@ -1081,7 +1106,7 @@ const ALIDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Right: How it's calculated (75%) */}
+                  {/* Right: How it's calculated (75%) - Restructured into 2 columns */}
                   <div className="lg:col-span-3">
                     <div className="mb-6">
                       <div className="text-[18px] font-semibold text-black/[0.87] mb-1">How your score is calculated</div>
@@ -1090,16 +1115,16 @@ const ALIDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {/* 7 tests */}
-                      <div className="lg:col-span-2">
-                        <div className="flex items-center justify-between">
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                      {/* Left Column: 7 Tests (60-70% of 75% = ~3 columns) */}
+                      <div className="lg:col-span-3">
+                        <div className="flex items-center justify-between mb-3">
                           <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
                           <div className="text-[12px] text-black/[0.6]">
                             Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
                           </div>
                         </div>
-                        <div className="mt-3 space-y-2">
+                        <div className="space-y-2">
                           {breakdownRows.map((r) => {
                             const v = r.value;
                             const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
@@ -1139,30 +1164,25 @@ const ALIDashboard = () => {
                         </div>
                       </div>
 
-                      {/* Anchors + formula */}
-                      <div className="lg:col-span-1">
-                        <div className="text-[13px] font-semibold text-black/[0.87]">Anchors (30%)</div>
-                        <div className="mt-2 rounded-lg border border-black/[0.12] p-4">
-                          <div className="text-[11px] text-black/[0.38] uppercase tracking-wide">Anchor score</div>
-                          <div className="text-[28px] font-bold text-black/[0.87] leading-none mt-1">{fmt1(anchorCurrentScore)}</div>
-                          <div className="text-[12px] text-black/[0.6] mt-2">
-                            Anchors stabilize the score across quarters.
+                      {/* Right Column: Anchors (30-40% of 75% = ~2 columns) */}
+                      <div className="lg:col-span-2">
+                        <div className="text-[13px] font-semibold text-black/[0.87] mb-3">Anchors (30%)</div>
+                        <div className="rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 mb-4">
+                          <div className="text-[11px] text-black/[0.38] uppercase tracking-wide mb-1">Anchor score</div>
+                          <div className="text-[28px] font-bold text-black/[0.87] leading-none mb-3">{fmt1(anchorCurrentScore)}</div>
+                          <div className="text-[13px] text-black/[0.6] leading-relaxed">
+                            Anchors stabilize your score across quarters by measuring core leadership behaviors that change slowly.
                           </div>
                         </div>
 
-                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4">
-                          <div className="text-[12px] font-semibold text-black/[0.87] mb-2">The math (transparent)</div>
-                          <div className="text-[13px] text-black/[0.6] leading-relaxed">
-                            ALI = <span className="font-semibold text-black/[0.87]">0.30</span> × Anchors ({fmt1(anchorCurrentScore)}){' '}
-                            + <span className="font-semibold text-black/[0.87]">0.70</span> × 7‑test mean ({fmt1(patternMeanUsed)})
-                          </div>
-                          <div className="mt-2 text-[13px] text-black/[0.6]">
-                            Computed: <span className="font-semibold text-black/[0.87]">{fmt1(aliComputedUsed)}</span>
-                            {typeof aliCurrentScore === 'number' && typeof aliComputedUsed === 'number' ? (
-                              <span className="text-black/[0.38]"> • Δ {Math.abs(aliCurrentScore - aliComputedUsed).toFixed(2)}</span>
-                            ) : null}
-                          </div>
-                        </div>
+                        {/* Math formula - hidden by default, accessible via tooltip or "?" icon */}
+                        <button
+                          onClick={() => setOpenDefinition('ali-score-calculation')}
+                          className="text-[12px] text-black/[0.6] hover:text-black/[0.87] underline flex items-center gap-1"
+                        >
+                          <HelpCircle className="w-4 h-4" />
+                          <span>View calculation formula</span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1993,6 +2013,83 @@ const ALIDashboard = () => {
           </div>
         </section>
 
+        {/* Leadership Profile - Prominent Position */}
+        <section className="mb-12">
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <h2 className="text-[22px] font-semibold text-black/[0.87]">Leadership Profile</h2>
+                <button
+                  onClick={() => setOpenDefinition('leadership-profile')}
+                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  aria-label="Learn about Leadership Profile"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </button>
+              </div>
+              <button
+                onClick={() => handleNavigate(withEmail('/ali/reports'))}
+                className="text-[13px] font-semibold text-[#2563eb] hover:text-[#2563eb]/80"
+              >
+                View Full Profile →
+              </button>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl border-2 border-purple-200 p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <div className="text-[28px] font-bold text-black/[0.87] mb-1 capitalize">
+                    {profileNames[dashboardData.leadershipProfile.profile]}
+                  </div>
+                  <div className="text-[13px] text-black/[0.6]">Based on completed surveys</div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {/* Honesty Card */}
+                <div className="bg-white rounded-lg border border-purple-200 p-5 shadow-sm">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <div className="text-[13px] font-medium text-black/[0.6] mb-2">Honesty</div>
+                      <div className="text-[42px] font-bold text-black/[0.87] transition-all duration-500 leading-none">
+                        {fmt1(animatedValues.honesty ?? dashboardData.leadershipProfile.honesty.score)}
+                      </div>
+                    </div>
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-[12px] font-medium capitalize">
+                      {dashboardData.leadershipProfile.honesty.state}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Clarity Card */}
+                <div className="bg-white rounded-lg border border-purple-200 p-5 shadow-sm">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <div className="text-[13px] font-medium text-black/[0.6] mb-2">Clarity</div>
+                      <div className="text-[42px] font-bold text-black/[0.87] transition-all duration-500 leading-none">
+                        {fmt1(animatedValues.clarity_level ?? dashboardData.leadershipProfile.clarity.level)}
+                      </div>
+                    </div>
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-[12px] font-medium capitalize">
+                      {dashboardData.leadershipProfile.clarity.state}
+                    </div>
+                  </div>
+                  <div className="text-[11px] text-black/[0.6] mt-2">
+                    Stddev: {fmt1(dashboardData.leadershipProfile.clarity.stddev)}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Profile Description */}
+              <div className="pt-6 border-t border-purple-200">
+                <p className="text-[14px] text-black/[0.87] leading-relaxed">
+                  {profileDescriptions[dashboardData.leadershipProfile.profile]}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Section 3: Team Experience Map */}
         <section className="mb-12">
           <div className="bg-white rounded-lg border border-black/[0.12] p-8">
@@ -2209,292 +2306,7 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* Section 4 & 5: Leadership Profile and Mirror - Side by Side */}
-        <section className="mb-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Leadership Profile - Full purple background */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Leadership Profile</h2>
-                <button
-                  onClick={() => setOpenDefinition('leadership-profile')}
-                  className="text-gray-400 hover:text-blue-600 transition-colors"
-                  aria-label="Learn about Leadership Profile"
-                >
-                  <HelpCircle className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="bg-purple-100 rounded-lg border border-purple-200 p-6">
-                <div className="text-2xl font-bold text-gray-900 mb-2 capitalize">
-                  {profileNames[dashboardData.leadershipProfile.profile]}
-                </div>
-                <div className="text-sm text-gray-600 mb-6">Based on 4 completed surveys</div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Honesty Card */}
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-600 mb-2">Honesty</div>
-                        <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                          {fmt1(animatedValues.honesty ?? dashboardData.leadershipProfile.honesty.score)}
-                        </div>
-                      </div>
-                      <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
-                        {dashboardData.leadershipProfile.honesty.state}
-                      </div>
-                    </div>
-                  </div>
-                  {/* Clarity Card */}
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-600 mb-2">Clarity</div>
-                        <div className="text-4xl font-bold text-gray-900 transition-all duration-500">
-                          {fmt1(animatedValues.clarity_level ?? dashboardData.leadershipProfile.clarity.level)}
-                        </div>
-                      </div>
-                      <div className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium capitalize">
-                        {dashboardData.leadershipProfile.clarity.state}
-                      </div>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-2">
-                      Stddev: {fmt1(dashboardData.leadershipProfile.clarity.stddev)}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Profile Description */}
-                <div className="mt-6 pt-6 border-t border-purple-200">
-                  <p className="text-sm text-gray-700 leading-relaxed">
-                    {profileDescriptions[dashboardData.leadershipProfile.profile]}
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* Leadership Mirror - No pale colors */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-between w-full">
-                  <h2 className="text-xl font-semibold text-gray-900">Leadership Mirror</h2>
-                  <button
-                    onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors whitespace-nowrap"
-                  >
-                    Open Mirror →
-                  </button>
-                </div>
-                <button
-                  onClick={() => setOpenDefinition('leadership-mirror')}
-                  className="text-gray-400 hover:text-blue-600 transition-colors"
-                  aria-label="Learn about Leadership Mirror"
-                >
-                  <HelpCircle className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="bg-white rounded-lg border border-gray-200 p-6 transition-all duration-200 hover:shadow-lg">
-                {(() => {
-                  const mirror = dashboardData?.leadershipMirror || {};
-                  const gaps = mirror?.gaps || {};
-                  const leaderScores = mirror?.leaderScores || {};
-                  const teamScores = mirror?.teamScores || {};
-                  const severity = mirror?.severity || {};
-                  const counts = (liveDashboard && liveDashboard.responseCounts) ? liveDashboard.responseCounts : (dashboardData?.responseCounts || {});
-                  const leaderN = typeof counts?.leader === 'number' ? counts.leader : null;
-                  const teamN = typeof counts?.team_member === 'number' ? counts.team_member : null;
-
-                  const severityToBadge = (sev) => {
-                    const s = String(sev || '').toLowerCase();
-                    if (s === 'critical') return { label: 'Critical', cls: 'bg-red-50 border-red-200 text-red-800' };
-                    if (s === 'caution') return { label: 'Caution', cls: 'bg-orange-50 border-orange-200 text-orange-800' };
-                    if (s === 'neutral') return { label: 'Neutral', cls: 'bg-gray-50 border-gray-200 text-gray-700' };
-                    return { label: '—', cls: 'bg-gray-50 border-gray-200 text-gray-700' };
-                  };
-
-                  const orderedKeys = MIRROR_METRIC_ORDER.filter((k) => (
-                    Object.prototype.hasOwnProperty.call(gaps, k) ||
-                    Object.prototype.hasOwnProperty.call(leaderScores, k) ||
-                    Object.prototype.hasOwnProperty.call(teamScores, k)
-                  ));
-
-                  const rows = orderedKeys.map((k) => {
-                    const gap = (typeof gaps?.[k] === 'number' && Number.isFinite(gaps[k])) ? gaps[k] : null;
-                    const leaderScore = (typeof leaderScores?.[k] === 'number' && Number.isFinite(leaderScores[k])) ? leaderScores[k] : null;
-                    const teamScore = (typeof teamScores?.[k] === 'number' && Number.isFinite(teamScores[k])) ? teamScores[k] : null;
-                    return {
-                      key: k,
-                      label: mirrorKeyToLabel(k),
-                      gap,
-                      abs: gap === null ? null : Math.abs(gap),
-                      severity: severity?.[k],
-                      leaderScore,
-                      teamScore
-                    };
-                  });
-
-                  const sortable = rows.filter((r) => r.abs !== null);
-                  const topByGap = [...sortable].sort((a, b) => (b.abs ?? 0) - (a.abs ?? 0)).slice(0, 3);
-                  const visibleRows = mirrorShowAll ? rows : (topByGap.length ? topByGap : rows.slice(0, 3));
-                  const hasAny = rows.some((r) => r.leaderScore !== null || r.teamScore !== null || r.gap !== null);
-
-                  return (
-                    <div className="space-y-5">
-                      {(leaderN !== null || teamN !== null) ? (
-                        <div className="text-xs text-gray-600 flex items-center gap-2">
-                          <AlertTriangle className="w-4 h-4 text-gray-400" />
-                          Based on {leaderN ?? '—'} leader response(s) and {teamN ?? '—'} team response(s).
-                        </div>
-                      ) : null}
-
-                      {!hasAny ? (
-                        <div className="text-sm text-gray-600">
-                          Mirror data will appear once both a leader and team members have responded.
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          {visibleRows.map((row) => {
-                            const maxScore = Math.max(row.leaderScore ?? 0, row.teamScore ?? 0, 100);
-                            const badge = severityToBadge(row.severity);
-                            return (
-                              <div key={row.key} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                                <div className="flex items-start justify-between gap-3 mb-2">
-                                  <div className="min-w-0">
-                                    <div className="text-sm font-medium text-gray-900">{row.label}</div>
-                                    <div className="text-xs text-gray-500 mt-0.5">
-                                      Gap (leader − team):{' '}
-                                      <span className="font-semibold text-gray-700">{row.gap === null ? '—' : row.gap.toFixed(1)}</span>pt
-                                    </div>
-                                  </div>
-                                  <span className={`shrink-0 inline-flex items-center px-2 py-1 rounded-full border text-xs font-semibold ${badge.cls}`}>
-                                    {badge.label}
-                                  </span>
-                                </div>
-
-                                <div className="flex items-center gap-4">
-                                  <div className="flex-1">
-                                    <div className="text-xs text-gray-500 mb-1">Leader</div>
-                                    <div
-                                      className="h-7 bg-blue-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
-                                      style={{ width: `${(((row.leaderScore ?? 0) / maxScore) * 100)}%` }}
-                                    >
-                                      <span className="text-xs font-semibold text-white">
-                                        {row.leaderScore === null ? '—' : row.leaderScore.toFixed(1)}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="flex-1">
-                                    <div className="text-xs text-gray-500 mb-1">Team</div>
-                                    <div
-                                      className="h-7 bg-green-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
-                                      style={{ width: `${(((row.teamScore ?? 0) / maxScore) * 100)}%` }}
-                                    >
-                                      <span className="text-xs font-semibold text-white">
-                                        {row.teamScore === null ? '—' : row.teamScore.toFixed(1)}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-
-                          <div className="flex items-center justify-between pt-2">
-                            <button
-                              type="button"
-                              onClick={() => setMirrorShowAll((v) => !v)}
-                              className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-                            >
-                              {mirrorShowAll ? 'Show top gaps' : 'Show all metrics'}
-                            </button>
-                            <div className="text-xs text-gray-500">
-                              {mirrorShowAll ? 'All 7 tests + ALI overall' : 'Top 3 gaps'}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
-          </div>
-          </div>
-        </section>
-
-        {/* Quick Actions & Recent Activity - MOVED DOWN */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-          {/* Quick Actions */}
-          <section>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Zap className="w-5 h-5 text-blue-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
-              </div>
-              <div className="space-y-3">
-                <button
-                  onClick={() => handleNavigate('/ali/deploy')}
-                  className="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <Send className="w-5 h-5 text-blue-600" />
-                    <span className="font-medium text-gray-900">Deploy Survey</span>
-                  </div>
-                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transform -rotate-90" />
-                </button>
-                <button
-                  onClick={() => {}}
-                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <Share2 className="w-5 h-5 text-gray-600" />
-                    <span className="font-medium text-gray-900">Share Report</span>
-                  </div>
-                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transform -rotate-90" />
-                </button>
-                <button
-                  onClick={() => {}}
-                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-gray-600" />
-                    <span className="font-medium text-gray-900">Schedule Review</span>
-                  </div>
-                  <ArrowDown className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transform -rotate-90" />
-                </button>
-              </div>
-            </div>
-          </section>
-
-          {/* Recent Activity Feed */}
-          <section>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Activity className="w-5 h-5 text-blue-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
-              </div>
-              <div className="space-y-3">
-                {liveDashboard ? (
-                  <div className="text-sm text-gray-600">
-                    Recent Activity will populate as surveys are deployed and completed over time.
-                  </div>
-                ) : mockData.recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 mt-2 flex-shrink-0"></div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900">{activity.message}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Clock className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500">{activity.timestamp}</span>
-                        {activity.scoreChange && (
-                          <span className="text-xs font-medium text-green-600">+{activity.scoreChange}</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </div>
 
         {/* Section 7: Response Analytics */}
         <section className="mb-12">
@@ -2534,18 +2346,94 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* Footer Footnote: Total Responses & View Full Analytics Link */}
-        <div className="mt-12 pt-6 border-t border-gray-200">
-          <div className="flex items-center justify-between text-sm text-gray-500">
-            <div>
-              Total Responses: <span className="font-semibold text-gray-700">{Math.round(animatedValues.response_overall ?? responseOverallTarget)}</span> across all surveys
+        {/* Explore Reports Section */}
+        <section className="mb-12">
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+            <h2 className="text-[22px] font-semibold text-black/[0.87] mb-6">Explore Reports</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Leadership Mirror Report */}
+              <div 
+                onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
+                className="bg-white rounded-lg border-2 border-black/[0.12] p-6 cursor-pointer hover:border-[#2563eb] hover:shadow-md transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#2563eb]/10 flex items-center justify-center group-hover:bg-[#2563eb]/20 transition-colors">
+                    <Scale className="w-5 h-5 text-[#2563eb]" />
+                  </div>
+                  <h3 className="text-[16px] font-semibold text-black/[0.87]">Leadership Mirror</h3>
+                </div>
+                <p className="text-[13px] text-black/[0.6] mb-4">
+                  Compare how you see yourself versus how your team experiences you.
+                </p>
+                <button className="text-[13px] font-semibold text-[#2563eb] group-hover:text-[#2563eb]/80 flex items-center gap-1">
+                  View Report <ArrowDown className="w-4 h-4 transform -rotate-90" />
+                </button>
+              </div>
+
+              {/* Zones Guide */}
+              <div 
+                onClick={() => handleNavigate(withEmail('/ali/reports/zones'))}
+                className="bg-white rounded-lg border-2 border-black/[0.12] p-6 cursor-pointer hover:border-[#10b981] hover:shadow-md transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#10b981]/10 flex items-center justify-center group-hover:bg-[#10b981]/20 transition-colors">
+                    <Compass className="w-5 h-5 text-[#10b981]" />
+                  </div>
+                  <h3 className="text-[16px] font-semibold text-black/[0.87]">Zones Guide</h3>
+                </div>
+                <p className="text-[13px] text-black/[0.6] mb-4">
+                  Understand your current zone and what it means for your leadership.
+                </p>
+                <button className="text-[13px] font-semibold text-[#10b981] group-hover:text-[#10b981]/80 flex items-center gap-1">
+                  View Guide <ArrowDown className="w-4 h-4 transform -rotate-90" />
+                </button>
+              </div>
+
+              {/* Full Analytics */}
+              <div 
+                onClick={() => handleNavigate(withEmail('/ali/reports'))}
+                className="bg-white rounded-lg border-2 border-black/[0.12] p-6 cursor-pointer hover:border-[#8b5cf6] hover:shadow-md transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#8b5cf6]/10 flex items-center justify-center group-hover:bg-[#8b5cf6]/20 transition-colors">
+                    <BarChart3 className="w-5 h-5 text-[#8b5cf6]" />
+                  </div>
+                  <h3 className="text-[16px] font-semibold text-black/[0.87]">Full Analytics</h3>
+                </div>
+                <p className="text-[13px] text-black/[0.6] mb-4">
+                  Dive deep into all your leadership metrics and patterns.
+                </p>
+                <button className="text-[13px] font-semibold text-[#8b5cf6] group-hover:text-[#8b5cf6]/80 flex items-center gap-1">
+                  View Analytics <ArrowDown className="w-4 h-4 transform -rotate-90" />
+                </button>
+              </div>
+
+              {/* Leadership Profile Report */}
+              <div 
+                onClick={() => handleNavigate(withEmail('/ali/reports'))}
+                className="bg-white rounded-lg border-2 border-black/[0.12] p-6 cursor-pointer hover:border-[#f59e0b] hover:shadow-md transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center group-hover:bg-[#f59e0b]/20 transition-colors">
+                    <Shield className="w-5 h-5 text-[#f59e0b]" />
+                  </div>
+                  <h3 className="text-[16px] font-semibold text-black/[0.87]">Leadership Profile</h3>
+                </div>
+                <p className="text-[13px] text-black/[0.6] mb-4">
+                  Explore your leadership archetype and growth opportunities.
+                </p>
+                <button className="text-[13px] font-semibold text-[#f59e0b] group-hover:text-[#f59e0b]/80 flex items-center gap-1">
+                  View Profile <ArrowDown className="w-4 h-4 transform -rotate-90" />
+                </button>
+              </div>
             </div>
-            <button
-              onClick={() => handleNavigate(withEmail('/ali/reports'))}
-              className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
-            >
-              View Full Analytics →
-            </button>
+          </div>
+        </section>
+
+        {/* Footer Footnote: Total Responses */}
+        <div className="mt-12 pt-6 border-t border-gray-200">
+          <div className="text-sm text-gray-500">
+            Total Responses: <span className="font-semibold text-gray-700">{Math.round(animatedValues.response_overall ?? responseOverallTarget)}</span> across all surveys
           </div>
         </div>
       </main>
