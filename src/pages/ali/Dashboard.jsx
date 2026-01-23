@@ -1784,6 +1784,49 @@ const ALIDashboard = () => {
                           const o = fmt0(overall?.[k]);
                           const l = fmt0(leader?.[k]);
                           const t = fmt0(team?.[k]);
+                          
+                          // Generate brief insight
+                          const getInsight = () => {
+                            if (o === null && l === null && t === null) return null;
+                            
+                            const overallVal = o ?? 0;
+                            const leaderVal = l ?? overallVal;
+                            const teamVal = t ?? overallVal;
+                            const gap = hasLeaderTeam && typeof leaderVal === 'number' && typeof teamVal === 'number' 
+                              ? Math.abs(leaderVal - teamVal) 
+                              : 0;
+                            
+                            // High score (70+)
+                            if (overallVal >= 70) {
+                              if (gap > 15) {
+                                return gap > 0 && leaderVal > teamVal 
+                                  ? 'Strong leader view, team sees it differently'
+                                  : 'Team sees strength leader doesn\'t recognize';
+                              }
+                              return 'Strong signal across the board';
+                            }
+                            
+                            // Medium score (50-69)
+                            if (overallVal >= 50) {
+                              if (gap > 15) {
+                                return gap > 0 && leaderVal > teamVal
+                                  ? 'Leader overestimates, team signals concern'
+                                  : 'Team sees more than leader recognizes';
+                              }
+                              return 'Room for improvement';
+                            }
+                            
+                            // Low score (<50)
+                            if (gap > 15) {
+                              return gap > 0 && leaderVal > teamVal
+                                ? 'Significant perception gap'
+                                : 'Team signals urgent need';
+                            }
+                            return 'Needs immediate attention';
+                          };
+                          
+                          const insight = getInsight();
+                          
                           return (
                             <div 
                               key={`snap-${k}`} 
@@ -1791,24 +1834,31 @@ const ALIDashboard = () => {
                             >
                               <div className="text-[13px] font-medium text-black/[0.87] min-w-[140px]">{systemKeyToLabel(k)}</div>
                               <div className="flex items-center gap-4 flex-1">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="w-2.5 h-2.5 rounded-sm bg-[#2563eb] border border-[#2563eb]"></span>
-                                  <span className="text-[12px] text-black/[0.6]">Overall:</span>
-                                  <span className="text-[13px] font-semibold text-[#2563eb]">{o ?? '—'}</span>
+                                <div className="flex items-center gap-4">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="w-2.5 h-2.5 rounded-sm bg-[#2563eb] border border-[#2563eb]"></span>
+                                    <span className="text-[12px] text-black/[0.6]">Overall:</span>
+                                    <span className="text-[13px] font-semibold text-[#2563eb]">{o ?? '—'}</span>
+                                  </div>
+                                  {hasLeaderTeam && (
+                                    <>
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="w-2.5 h-2.5 rounded-sm bg-[#10b981] border border-[#10b981]"></span>
+                                        <span className="text-[12px] text-black/[0.6]">Leader:</span>
+                                        <span className="text-[13px] font-semibold text-[#10b981]">{l ?? '—'}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="w-2.5 h-2.5 rounded-sm bg-[#f59e0b] border border-[#f59e0b]"></span>
+                                        <span className="text-[12px] text-black/[0.6]">Team:</span>
+                                        <span className="text-[13px] font-semibold text-[#f59e0b]">{t ?? '—'}</span>
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
-                                {hasLeaderTeam && (
-                                  <>
-                                    <div className="flex items-center gap-1.5">
-                                      <span className="w-2.5 h-2.5 rounded-sm bg-[#10b981] border border-[#10b981]"></span>
-                                      <span className="text-[12px] text-black/[0.6]">Leader:</span>
-                                      <span className="text-[13px] font-semibold text-[#10b981]">{l ?? '—'}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                      <span className="w-2.5 h-2.5 rounded-sm bg-[#f59e0b] border border-[#f59e0b]"></span>
-                                      <span className="text-[12px] text-black/[0.6]">Team:</span>
-                                      <span className="text-[13px] font-semibold text-[#f59e0b]">{t ?? '—'}</span>
-                                    </div>
-                                  </>
+                                {insight && (
+                                  <div className="text-[11px] text-black/[0.6] italic ml-auto max-w-[200px] text-right">
+                                    {insight}
+                                  </div>
                                 )}
                               </div>
                             </div>
