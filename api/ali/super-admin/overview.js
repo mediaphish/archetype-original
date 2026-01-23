@@ -411,49 +411,57 @@ export default async function handler(req, res) {
       ? totalResponses / totalDeployments 
       : 0;
 
-    // Pattern analysis across platform
+    // Pattern analysis across platform - calculate from all responses
     const allPatternScores = { clarity: [], consistency: [], trust: [], communication: [], alignment: [], stability: [], leadership_drift: [] };
     
-    companyScores.forEach(({ companyId }) => {
-      const companyResponses = companyResponseMap[companyId] || [];
-      const allTransformed = [];
-      companyResponses.forEach(response => {
-        const role = response.respondent_role || 'team_member';
+    // Calculate patterns from all responses across all companies with responses
+    const allTransformedResponses = [];
+    allResponses?.forEach(response => {
+      const role = response.respondent_role || 'team_member';
+      try {
         const transformed = transformResponsesForScoring(response.responses, questionBank, role);
-        allTransformed.push(...transformed);
-      });
-
-      if (allTransformed.length > 0) {
-        Object.keys(allPatternScores).forEach(pattern => {
-          const score = calculatePatternScore(allTransformed, pattern);
-          if (score !== null) {
-            allPatternScores[pattern].push(score);
-          }
-        });
+        allTransformedResponses.push(...transformed);
+      } catch (error) {
+        console.error(`[SUPER ADMIN] Error transforming response ${response.id}:`, error);
       }
     });
 
+    if (allTransformedResponses.length > 0) {
+      Object.keys(allPatternScores).forEach(pattern => {
+        try {
+          const score = calculatePatternScore(allTransformedResponses, pattern);
+          if (score !== null && Number.isFinite(score)) {
+            allPatternScores[pattern].push(score);
+          }
+        } catch (error) {
+          console.error(`[SUPER ADMIN] Error calculating pattern ${pattern}:`, error);
+        }
+      });
+    }
+    
+    console.log(`[SUPER ADMIN] Pattern scores:`, Object.entries(allPatternScores).map(([k, v]) => `${k}: ${v.length > 0 ? v[0].toFixed(1) : 'N/A'}`));
+
     const patterns = Object.entries(allPatternScores).map(([name, scores]) => {
-      // For pattern analysis, we calculate the average across all responses (not per company)
+      // For pattern analysis, we calculate the average across all responses
       // Since we're aggregating all responses, we should have one score per pattern
-      const avg = scores.length > 0 ? scores.reduce((sum, s) => sum + s, 0) / scores.length : 0;
+      const avg = scores.length > 0 ? scores[0] : 0; // Only one score per pattern (aggregated)
       // Calculate change (simplified - compare to previous quarter)
       const change = 0; // TODO: Calculate actual change when we have historical data
       
-      // Calculate distribution (high >= 75, medium 60-74, low < 60)
-      const highCount = scores.filter(s => s >= 75).length;
-      const mediumCount = scores.filter(s => s >= 60 && s < 75).length;
-      const lowCount = scores.filter(s => s < 60).length;
-      const total = scores.length;
+      // Calculate distribution based on the average score
+      // For platform-wide, we categorize the average score
+      const highPercent = avg >= 75 ? 100 : 0;
+      const mediumPercent = avg >= 60 && avg < 75 ? 100 : 0;
+      const lowPercent = avg < 60 ? 100 : 0;
       
       return {
         name: name === 'leadership_drift' ? 'Leadership Alignment' : name.charAt(0).toUpperCase() + name.slice(1),
         score: avg,
         change,
         distribution: { 
-          high: total > 0 ? (highCount / total) * 100 : 0, 
-          medium: total > 0 ? (mediumCount / total) * 100 : 0, 
-          low: total > 0 ? (lowCount / total) * 100 : 0 
+          high: highPercent, 
+          medium: mediumPercent, 
+          low: lowPercent
         }
       };
     });
