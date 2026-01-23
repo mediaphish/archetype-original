@@ -204,6 +204,15 @@ export default async function handler(req, res) {
     
     console.log(`[SUPER ADMIN] Companies with responses:`, Array.from(companiesWithResponses));
     
+    // Only show companies that have actual responses (filter out test/seed data)
+    const realCompanies = companies?.filter(c => companiesWithResponses.has(c.id)) || [];
+    const realActiveCompanies = realCompanies.filter(c => c.status === 'active' || !c.status);
+    const realInactiveCompanies = realCompanies.filter(c => c.status === 'inactive');
+    
+    // Only count deployments from companies with responses
+    const realDeployments = deployments?.filter(d => companiesWithResponses.has(d.company_id)) || [];
+    console.log(`[SUPER ADMIN] Total deployments from companies with responses: ${realDeployments.length}`);
+    
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
