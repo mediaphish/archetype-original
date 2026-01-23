@@ -78,9 +78,10 @@ export default async function handler(req, res) {
       });
     }
 
-    const openaiApiKey = process.env.OPENAI_API_KEY;
+    // This project uses OPEN_API_KEY (see `api/chat.js`)
+    const openaiApiKey = process.env.OPEN_API_KEY;
     if (!openaiApiKey) {
-      console.error('[GENERATE_INSIGHTS] OpenAI API key missing');
+      console.error('[GENERATE_INSIGHTS] OpenAI API key missing (OPEN_API_KEY)');
       return res.status(500).json({ ok: false, error: 'OpenAI API key not configured' });
     }
 
