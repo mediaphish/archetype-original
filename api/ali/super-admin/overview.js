@@ -246,11 +246,20 @@ export default async function handler(req, res) {
 
     // Calculate score for each company
     Object.entries(companyResponseMap).forEach(([companyId, responses]) => {
-      const score = calculateCompanyScore(responses, questionBank);
-      if (score !== null) {
-        companyScores.push({ companyId, score });
+      try {
+        const score = calculateCompanyScore(responses, questionBank);
+        if (score !== null && Number.isFinite(score)) {
+          companyScores.push({ companyId, score });
+          console.log(`[SUPER ADMIN] Company ${companyId} score: ${score.toFixed(1)}`);
+        } else {
+          console.log(`[SUPER ADMIN] Company ${companyId} score calculation returned null or invalid`);
+        }
+      } catch (error) {
+        console.error(`[SUPER ADMIN] Error calculating score for company ${companyId}:`, error);
       }
     });
+    
+    console.log(`[SUPER ADMIN] Company scores calculated: ${companyScores.length}`);
     
     console.log(`[SUPER ADMIN] Companies with responses: ${realCompanies.length} (${realActiveCompanies.length} active, ${realInactiveCompanies.length} inactive)`);
 
