@@ -795,6 +795,19 @@ const ALIDashboard = () => {
     return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
+  const scoreToHeatStyle = (score) => {
+    if (typeof score !== 'number' || !Number.isFinite(score)) {
+      return { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.08)', color: 'rgba(0,0,0,0.60)' };
+    }
+    // 0 -> red, 100 -> green
+    const hue = Math.max(0, Math.min(120, (score / 100) * 120));
+    return {
+      backgroundColor: `hsl(${hue} 70% 92%)`,
+      borderColor: `hsl(${hue} 45% 70%)`,
+      color: 'rgba(0,0,0,0.75)'
+    };
+  };
+
   // Zone colors for score displays ONLY
   const getScoreColor = (score) => {
     if (score >= 75) return 'text-green-500';
@@ -1434,8 +1447,249 @@ const ALIDashboard = () => {
           </section>
         )}
 
-        {/* Section 2: Leadership System Map (capstone) - REMOVED (moved to Reports) */}
-        {/* Section 3: View Full Analytics - Link to Reports - REMOVED (redundant) */}
+        {/* Section 2: Leadership System Map (capstone) */}
+        <section className="mb-12">
+          <div className="bg-white rounded-lg border border-black/[0.12] p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-[22px] font-semibold text-black/[0.87]">Leadership System Map</h2>
+                  <button
+                    onClick={() => setOpenDefinition('leadership-system-map')}
+                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    aria-label="Learn about Leadership System Map"
+                  >
+                    <HelpCircle className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-[13px] text-black/[0.6]">
+                  The full 7-test diagnostic view (summary shape + individual response pattern).
+                </p>
+              </div>
+              {!dashboardData.dataQuality?.meets_minimum_n_org && (
+                <div className="px-3 py-1.5 bg-[#f59e0b]/10 rounded-md text-[12px] font-medium text-[#f59e0b]">
+                  Early signal: &lt;10 responses
+                </div>
+              )}
+            </div>
+
+            {(() => {
+              const liveSystem = liveDashboard?.systemMap || null;
+              const summary = liveSystem?.summary || null;
+              const respondents = Array.isArray(liveSystem?.respondents) ? liveSystem.respondents : [];
+
+              const fallbackSummary = {
+                overall: {
+                  clarity: dashboardData.scores.patterns.clarity?.current ?? null,
+                  consistency: dashboardData.scores.patterns.consistency?.current ?? null,
+                  trust: dashboardData.scores.patterns.trust?.current ?? null,
+                  communication: dashboardData.scores.patterns.communication?.current ?? null,
+                  alignment: dashboardData.scores.patterns.alignment?.current ?? null,
+                  stability: dashboardData.scores.patterns.stability?.current ?? null,
+                  leadership_drift: (typeof dashboardData.scores.patterns.leadership_drift?.current === 'number')
+                    ? (100 - dashboardData.scores.patterns.leadership_drift.current)
+                    : null
+                },
+                leader: null,
+                team_member: null
+              };
+
+              const s = summary || fallbackSummary;
+              const overall = s?.overall || {};
+              const leader = s?.leader || {};
+              const team = s?.team_member || {};
+
+              // --- Radar geometry ---
+              const W = 320;
+              const H = 260;
+              const cx = 160;
+              const cy = 130;
+              const rMax = 95;
+              const toPoint = (idx, value) => {
+                const angle = (-Math.PI / 2) + (idx * (2 * Math.PI / SYSTEM_KEYS.length));
+                const v = (typeof value === 'number' && Number.isFinite(value)) ? Math.max(0, Math.min(100, value)) : 0;
+                const rr = (v / 100) * rMax;
+                return { x: cx + rr * Math.cos(angle), y: cy + rr * Math.sin(angle) };
+              };
+              const toAxis = (idx, rr) => {
+                const angle = (-Math.PI / 2) + (idx * (2 * Math.PI / SYSTEM_KEYS.length));
+                return { x: cx + rr * Math.cos(angle), y: cy + rr * Math.sin(angle) };
+              };
+              const polyPoints = (obj) => SYSTEM_KEYS.map((k, i) => {
+                const p = toPoint(i, obj?.[k]);
+                return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+              }).join(' ');
+
+              const hasLeaderTeam = SYSTEM_KEYS.some((k) => typeof leader?.[k] === 'number') && SYSTEM_KEYS.some((k) => typeof team?.[k] === 'number');
+
+              // --- Heatmap rows ---
+              const leaderRows = respondents.filter((r) => r?.role === 'leader');
+              const teamRows = respondents.filter((r) => r?.role === 'team_member');
+              const makeRowLabel = (role, idx) => (role === 'leader' ? `Leader ${idx + 1}` : `Team ${idx + 1}`);
+
+              return (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Radar summary */}
+                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+                    <div className="flex items-end justify-between gap-4 mb-4">
+                      <div>
+                        <div className="text-[13px] font-semibold text-black/[0.6]">System profile (summary)</div>
+                        <div className="text-[13px] text-black/[0.6] mt-1">
+                          Leader vs Team vs Overall across 7 tests.
+                        </div>
+                      </div>
+                      <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
+                    </div>
+
+                    <div className="flex items-center justify-center">
+                      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+                        {/* Rings */}
+                        {[20, 40, 60, 80, 100].map((t) => (
+                          <circle
+                            key={t}
+                            cx={cx}
+                            cy={cy}
+                            r={(t / 100) * rMax}
+                            fill="none"
+                            stroke="rgba(0,0,0,0.08)"
+                            strokeWidth="1"
+                          />
+                        ))}
+
+                        {/* Axes + labels */}
+                        {SYSTEM_KEYS.map((k, i) => {
+                          const end = toAxis(i, rMax + 18);
+                          const axisEnd = toAxis(i, rMax);
+                          const label = systemKeyToLabel(k);
+                          const textAnchor = end.x < cx - 20 ? 'end' : end.x > cx + 20 ? 'start' : 'middle';
+                          const dy = end.y < cy - 20 ? -4 : end.y > cy + 20 ? 12 : 4;
+                          return (
+                            <g key={k}>
+                              <line
+                                x1={cx}
+                                y1={cy}
+                                x2={axisEnd.x}
+                                y2={axisEnd.y}
+                                stroke="rgba(0,0,0,0.10)"
+                                strokeWidth="1"
+                              />
+                              <text
+                                x={end.x}
+                                y={end.y + dy}
+                                fontSize="11"
+                                fill="rgba(0,0,0,0.60)"
+                                textAnchor={textAnchor}
+                              >
+                                {label}
+                              </text>
+                            </g>
+                          );
+                        })}
+
+                        {/* Polygons */}
+                        {/* Overall */}
+                        <polygon
+                          points={polyPoints(overall)}
+                          fill="rgba(37, 99, 235, 0.10)"
+                          stroke="rgba(37, 99, 235, 0.55)"
+                          strokeWidth="2"
+                        />
+
+                        {hasLeaderTeam ? (
+                          <>
+                            {/* Leader */}
+                            <polygon
+                              points={polyPoints(leader)}
+                              fill="rgba(16, 185, 129, 0.06)"
+                              stroke="rgba(16, 185, 129, 0.55)"
+                              strokeWidth="2"
+                            />
+                            {/* Team */}
+                            <polygon
+                              points={polyPoints(team)}
+                              fill="rgba(245, 158, 11, 0.06)"
+                              stroke="rgba(245, 158, 11, 0.55)"
+                              strokeWidth="2"
+                            />
+                          </>
+                        ) : null}
+                      </svg>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-3 text-[12px] text-black/[0.6]">
+                      <div className="inline-flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(37,99,235,0.25)', border: '1px solid rgba(37,99,235,0.45)' }} />
+                        Overall
+                      </div>
+                      <div className="inline-flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.18)', border: '1px solid rgba(16,185,129,0.45)' }} />
+                        Leader
+                      </div>
+                      <div className="inline-flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(245,158,11,0.18)', border: '1px solid rgba(245,158,11,0.45)' }} />
+                        Team
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Heatmap diagnostic */}
+                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+                    <div className="flex items-end justify-between gap-4 mb-4">
+                      <div>
+                        <div className="text-[13px] font-semibold text-black/[0.6]">Individual response pattern (diagnostic)</div>
+                        <div className="text-[13px] text-black/[0.6] mt-1">
+                          Each row is a response. This reveals spread, clusters, and mismatches.
+                        </div>
+                      </div>
+                      <div className="text-[11px] text-black/[0.38]">Darker = stronger</div>
+                    </div>
+
+                    {respondents.length ? (
+                      <div className="overflow-x-auto">
+                        <div className="min-w-[560px]">
+                          <div className="grid grid-cols-8 gap-2 mb-2">
+                            <div className="text-[11px] font-medium text-black/[0.38] uppercase tracking-wide">Respondent</div>
+                            {SYSTEM_KEYS.map((k) => (
+                              <div key={k} className="text-[11px] font-medium text-black/[0.38] uppercase tracking-wide text-center">
+                                {systemKeyToLabel(k)}
+                              </div>
+                            ))}
+                          </div>
+
+                          {[...leaderRows.map((r, idx) => ({ ...r, _label: makeRowLabel('leader', idx) })), ...teamRows.map((r, idx) => ({ ...r, _label: makeRowLabel('team_member', idx) }))].map((row, idx) => (
+                            <div key={`row-${idx}`} className="grid grid-cols-8 gap-2 mb-2">
+                              <div className="text-[12px] text-black/[0.6] whitespace-nowrap">{row._label}</div>
+                              {SYSTEM_KEYS.map((k) => {
+                                const v = row?.scores?.[k];
+                                const style = scoreToHeatStyle(v);
+                                return (
+                                  <div
+                                    key={`${idx}-${k}`}
+                                    className="h-8 rounded-md border flex items-center justify-center text-[12px] font-semibold"
+                                    style={style}
+                                    title={`${row._label} • ${systemKeyToLabel(k)}: ${typeof v === 'number' ? v.toFixed(1) : '—'}`}
+                                  >
+                                    {typeof v === 'number' && Number.isFinite(v) ? v.toFixed(0) : '—'}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-[13px] text-black/[0.6]">
+                        This diagnostic view appears once responses are available.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </section>
+
+        {/* Section 3: Team Experience Map */}
         <section className="mb-12">
           <div className="bg-white rounded-lg border border-black/[0.12] p-8">
             <div className="flex items-start justify-between mb-6">
