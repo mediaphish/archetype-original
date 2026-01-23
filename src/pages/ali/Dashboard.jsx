@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon, Bell, TrendingUp } from 'lucide-react';
+import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon, Bell, TrendingUp, ChevronDown } from 'lucide-react';
 import DefinitionModal from '../../components/ali/DefinitionModal';
 import ChatApp from '../../app/ChatApp';
 import AliHeader from '../../components/ali/AliHeader';
@@ -20,6 +20,7 @@ const ALIDashboard = () => {
   const [liveDashboard, setLiveDashboard] = useState(null);
   const [liveDashboardError, setLiveDashboardError] = useState(null);
   const [liveDashboardLoadedOnce, setLiveDashboardLoadedOnce] = useState(false);
+  const [scoreCalculationExpanded, setScoreCalculationExpanded] = useState(false);
   // Zone modal removed (Zones page is the single source of truth)
   const chartRef = useRef(null);
 
@@ -1078,11 +1079,11 @@ const ALIDashboard = () => {
 
           return (
             <div className="mb-8 space-y-6">
-              {/* HERO: 25% ALI Score Panel + 75% How it's calculated */}
+              {/* HERO: 2 columns - ALI Score (left) + 7 Tests (right) */}
               <div className="bg-white rounded-lg border border-black/[0.12] p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                  {/* Left: ALI Score Panel (25%) - Enhanced styling for prominence */}
-                  <div className="lg:col-span-1">
+                <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+                  {/* Left: ALI Score Panel (25-30%) */}
+                  <div className="lg:col-span-3">
                     <div className="bg-gradient-to-br from-[#2563eb]/10 to-[#2563eb]/5 rounded-xl border-2 border-[#2563eb]/30 p-6 shadow-lg shadow-[#2563eb]/10">
                       <div className="text-[13px] text-black/[0.6] uppercase tracking-wide mb-2">Your ALI Score</div>
                       <div className="text-[64px] font-bold leading-none text-[#2563eb] mb-2">{fmt1(aliCurrentScore)}</div>
@@ -1106,87 +1107,119 @@ const ALIDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Right: How it's calculated (75%) - Restructured into 2 columns */}
-                  <div className="lg:col-span-3">
-                    <div className="mb-6">
-                      <div className="text-[18px] font-semibold text-black/[0.87] mb-1">How your score is calculated</div>
+                  {/* Right: 7 Tests (70-75%) */}
+                  <div className="lg:col-span-7">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-[16px] font-semibold text-black/[0.87]">7 Tests</div>
                       <div className="text-[13px] text-black/[0.6]">
-                        Your 7 tests (70%) + anchors (30%) combine into your ALI score.
+                        Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                      {/* Left Column: 7 Tests (60-70% of 75% = ~3 columns) */}
-                      <div className="lg:col-span-3">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="text-[13px] font-semibold text-black/[0.87]">7 tests (70%)</div>
-                          <div className="text-[12px] text-black/[0.6]">
-                            Mean: <span className="font-semibold text-black/[0.87]">{fmt1(patternMeanUsed)}</span>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          {breakdownRows.map((r) => {
-                            const v = r.value;
-                            const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
-                            return (
-                              <div key={r.key} className="flex items-center gap-3">
-                                <div className="w-[140px] text-[13px] text-black/[0.6]">{r.label}</div>
-                                <div className="flex-1">
-                                  <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
-                                    <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
-                                  </div>
-                                </div>
-                                <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
+                    <div className="space-y-2 mb-4">
+                      {breakdownRows.map((r) => {
+                        const v = r.value;
+                        const pct = (typeof v === 'number' && Number.isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
+                        return (
+                          <div key={r.key} className="flex items-center gap-3">
+                            <div className="w-[140px] text-[13px] text-black/[0.6]">{r.label}</div>
+                            <div className="flex-1">
+                              <div className="h-3 rounded-full bg-black/[0.06] overflow-hidden">
+                                <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: r.color }} />
                               </div>
-                            );
-                          })}
-                        </div>
+                            </div>
+                            <div className="w-[44px] text-right text-[13px] font-semibold text-black/[0.87]">{fmt0(v)}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
 
-                        <div className="mt-4 rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
-                          <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
-                          <div className="flex flex-wrap gap-x-6 gap-y-1">
-                            <div>
-                              <span className="text-black/[0.6]">Top strengths:</span>{' '}
-                              <span className="font-semibold text-black/[0.87]">
-                                {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-black/[0.6]">Top constraints:</span>{' '}
-                              <span className="font-semibold text-black/[0.87]">
-                                {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="mt-2 text-[12px] text-black/[0.6]">
-                            Note: {driftDisplayLabel} is shown as "{driftDirectionCopy}" in this breakdown.
-                          </div>
+                    <div className="rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 text-[13px] text-black/[0.6]">
+                      <div className="font-semibold text-black/[0.87] mb-1">What this means (2‑second read)</div>
+                      <div className="flex flex-wrap gap-x-6 gap-y-1">
+                        <div>
+                          <span className="text-black/[0.6]">Top strengths:</span>{' '}
+                          <span className="font-semibold text-black/[0.87]">
+                            {highestTwo.length ? highestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-black/[0.6]">Top constraints:</span>{' '}
+                          <span className="font-semibold text-black/[0.87]">
+                            {lowestTwo.length ? lowestTwo.map((x) => `${x.label} (${fmt0(x.value)})`).join(', ') : '—'}
+                          </span>
                         </div>
                       </div>
-
-                      {/* Right Column: Anchors (30-40% of 75% = ~2 columns) */}
-                      <div className="lg:col-span-2">
-                        <div className="text-[13px] font-semibold text-black/[0.87] mb-3">Anchors (30%)</div>
-                        <div className="rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 mb-4">
-                          <div className="text-[11px] text-black/[0.38] uppercase tracking-wide mb-1">Anchor score</div>
-                          <div className="text-[28px] font-bold text-black/[0.87] leading-none mb-3">{fmt1(anchorCurrentScore)}</div>
-                          <div className="text-[13px] text-black/[0.6] leading-relaxed">
-                            Anchors stabilize your score across quarters by measuring core leadership behaviors that change slowly.
-                          </div>
-                        </div>
-
-                        {/* Math formula - hidden by default, accessible via tooltip or "?" icon */}
-                        <button
-                          onClick={() => setOpenDefinition('ali-score-calculation')}
-                          className="text-[12px] text-black/[0.6] hover:text-black/[0.87] underline flex items-center gap-1"
-                        >
-                          <HelpCircle className="w-4 h-4" />
-                          <span>View calculation formula</span>
-                        </button>
+                      <div className="mt-2 text-[12px] text-black/[0.6]">
+                        Note: {driftDisplayLabel} is shown as "{driftDirectionCopy}" in this breakdown.
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Accordion: How your score is calculated */}
+              <div className="bg-white rounded-lg border border-black/[0.12] overflow-hidden">
+                <button
+                  onClick={() => setScoreCalculationExpanded(!scoreCalculationExpanded)}
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-black/[0.02] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-[18px] font-semibold text-black/[0.87]">How your score is calculated</h3>
+                    <HelpCircle 
+                      className="w-5 h-5 text-black/[0.38] hover:text-[#2563eb] transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenDefinition('ali-score-calculation');
+                      }}
+                    />
+                  </div>
+                  <ChevronDown 
+                    className={`w-5 h-5 text-black/[0.6] transition-transform ${scoreCalculationExpanded ? 'transform rotate-180' : ''}`}
+                  />
+                </button>
+                
+                {scoreCalculationExpanded && (
+                  <div className="px-6 pb-6 border-t border-black/[0.12]">
+                    <div className="pt-6">
+                      <p className="text-[14px] text-black/[0.87] mb-6">
+                        Your ALI score combines your 7 test scores (70%) with your Anchor score (30%). This weighted approach balances current leadership patterns with foundational behaviors that change slowly.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* 7 Tests Explanation */}
+                        <div>
+                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">7 Tests (70%)</div>
+                          <p className="text-[13px] text-black/[0.6] mb-4">
+                            These seven patterns capture current leadership conditions that can change quickly: Clarity, Consistency, Trust, Communication, Alignment, Stability, and Leadership Alignment.
+                          </p>
+                          <div className="text-[13px] text-black/[0.6]">
+                            <span className="font-semibold text-black/[0.87]">Current mean:</span> {fmt1(patternMeanUsed)}
+                          </div>
+                        </div>
+
+                        {/* Anchors Section */}
+                        <div>
+                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">Anchors (30%)</div>
+                          <div className="rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 mb-4">
+                            <div className="text-[11px] text-black/[0.38] uppercase tracking-wide mb-1">Anchor score</div>
+                            <div className="text-[28px] font-bold text-black/[0.87] leading-none mb-3">{fmt1(anchorCurrentScore)}</div>
+                            <p className="text-[13px] text-black/[0.6] leading-relaxed">
+                              Anchors stabilize your score across quarters by measuring core leadership behaviors that change slowly.
+                            </p>
+                          </div>
+                          
+                          <button
+                            onClick={() => setOpenDefinition('ali-score-calculation')}
+                            className="text-[12px] text-black/[0.6] hover:text-black/[0.87] underline flex items-center gap-1"
+                          >
+                            <HelpCircle className="w-4 h-4" />
+                            <span>View calculation formula</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* SECOND ROW: Zone + Full Leadership Mirror */}
