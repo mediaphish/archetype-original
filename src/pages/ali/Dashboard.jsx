@@ -795,18 +795,6 @@ const ALIDashboard = () => {
     return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
-  const scoreToHeatStyle = (score) => {
-    if (typeof score !== 'number' || !Number.isFinite(score)) {
-      return { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.08)', color: 'rgba(0,0,0,0.60)' };
-    }
-    // 0 -> red, 100 -> green
-    const hue = Math.max(0, Math.min(120, (score / 100) * 120));
-    return {
-      backgroundColor: `hsl(${hue} 70% 92%)`,
-      borderColor: `hsl(${hue} 45% 70%)`,
-      color: 'rgba(0,0,0,0.75)'
-    };
-  };
 
   // Zone colors for score displays ONLY
   const getScoreColor = (score) => {
@@ -1632,50 +1620,242 @@ const ALIDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Heatmap diagnostic */}
+                  {/* Diagnostic: distributions (scales to hundreds, no table scroll) */}
                   <div className="bg-white rounded-lg border border-black/[0.12] p-6">
                     <div className="flex items-end justify-between gap-4 mb-4">
                       <div>
                         <div className="text-[13px] font-semibold text-black/[0.6]">Individual response pattern (diagnostic)</div>
                         <div className="text-[13px] text-black/[0.6] mt-1">
-                          Each row is a response. This reveals spread, clusters, and mismatches.
+                          Each dot is a response. This reveals spread, clusters, and mismatches—without turning into a spreadsheet.
                         </div>
                       </div>
-                      <div className="text-[11px] text-black/[0.38]">Darker = stronger</div>
+                      <div className="text-[11px] text-black/[0.38]">0–100 (higher is healthier)</div>
                     </div>
 
                     {respondents.length ? (
-                      <div className="overflow-x-auto">
-                        <div className="min-w-[560px]">
-                          <div className="grid grid-cols-8 gap-2 mb-2">
-                            <div className="text-[11px] font-medium text-black/[0.38] uppercase tracking-wide">Respondent</div>
-                            {SYSTEM_KEYS.map((k) => (
-                              <div key={k} className="text-[11px] font-medium text-black/[0.38] uppercase tracking-wide text-center">
-                                {systemKeyToLabel(k)}
-                              </div>
-                            ))}
-                          </div>
+                      <div className="rounded-xl border border-black/[0.12] bg-black/[0.02] p-4">
+                        {(() => {
+                          const mean = (arr) => {
+                            if (!arr.length) return null;
+                            return arr.reduce((a, b) => a + b, 0) / arr.length;
+                          };
 
-                          {[...leaderRows.map((r, idx) => ({ ...r, _label: makeRowLabel('leader', idx) })), ...teamRows.map((r, idx) => ({ ...r, _label: makeRowLabel('team_member', idx) }))].map((row, idx) => (
-                            <div key={`row-${idx}`} className="grid grid-cols-8 gap-2 mb-2">
-                              <div className="text-[12px] text-black/[0.6] whitespace-nowrap">{row._label}</div>
-                              {SYSTEM_KEYS.map((k) => {
-                                const v = row?.scores?.[k];
-                                const style = scoreToHeatStyle(v);
-                                return (
-                                  <div
-                                    key={`${idx}-${k}`}
-                                    className="h-8 rounded-md border flex items-center justify-center text-[12px] font-semibold"
-                                    style={style}
-                                    title={`${row._label} • ${systemKeyToLabel(k)}: ${typeof v === 'number' ? v.toFixed(1) : '—'}`}
-                                  >
-                                    {typeof v === 'number' && Number.isFinite(v) ? v.toFixed(0) : '—'}
+                          // Deterministic jitter in [-1,1] based on index (stable across renders)
+                          const jitter01 = (idx) => {
+                            const x = Math.sin((idx + 1) * 9973) * 10000;
+                            return (x - Math.floor(x)) * 2 - 1;
+                          };
+
+                          const leaderColor = 'rgba(16,185,129,0.55)'; // teal
+                          const teamColor = 'rgba(245,158,11,0.55)'; // amber
+                          const overallColor = 'rgba(37,99,235,0.55)'; // blue
+
+                          const leaderN = leaderRows.length;
+                          const teamN = teamRows.length;
+
+                          const W = 720;
+                          const padLeft = 120;
+                          const padRight = 18;
+                          const padTop = 16;
+                          const padBottom = 28;
+                          const laneH = 42; // visual weight
+                          const H = padTop + padBottom + SYSTEM_KEYS.length * laneH;
+                          const plotW = W - padLeft - padRight;
+
+                          const xForScore = (v) => {
+                            const vv = Math.max(0, Math.min(100, v));
+                            return padLeft + (vv / 100) * plotW;
+                          };
+
+                          const laneY = (i) => padTop + i * laneH + laneH / 2;
+                          const leaderY = (i) => laneY(i) - 8;
+                          const teamY = (i) => laneY(i) + 8;
+
+                          const healthyFrom = 70;
+                          const healthyX = xForScore(healthyFrom);
+
+                          const perKey = SYSTEM_KEYS.map((k) => {
+                            const leaderVals = leaderRows
+                              .map((r) => r?.scores?.[k])
+                              .filter((v) => typeof v === 'number' && Number.isFinite(v));
+                            const teamVals = teamRows
+                              .map((r) => r?.scores?.[k])
+                              .filter((v) => typeof v === 'number' && Number.isFinite(v));
+                            const allVals = [...leaderVals, ...teamVals];
+                            return {
+                              key: k,
+                              leaderVals,
+                              teamVals,
+                              leaderMean: mean(leaderVals),
+                              teamMean: mean(teamVals),
+                              overallMean: mean(allVals),
+                            };
+                          });
+
+                          return (
+                            <div>
+                              <div className="flex items-start justify-between gap-6">
+                                <div className="text-[12px] text-black/[0.6]">
+                                  <div className="font-semibold text-black/[0.87]">System Spread</div>
+                                  <div className="mt-1">7 lanes. Each dot is a response. Leader dots sit above the lane, team dots below.</div>
+                                </div>
+                                <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-[12px] text-black/[0.6]">
+                                  <div className="inline-flex items-center gap-2">
+                                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: leaderColor }} />
+                                    Leader (n={leaderN})
                                   </div>
-                                );
-                              })}
+                                  <div className="inline-flex items-center gap-2">
+                                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: teamColor }} />
+                                    Team (n={teamN})
+                                  </div>
+                                  <div className="inline-flex items-center gap-2">
+                                    <span className="w-6 h-[2px]" style={{ backgroundColor: overallColor }} />
+                                    Overall mean
+                                  </div>
+                                  <div className="inline-flex items-center gap-2">
+                                    <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.18)' }} />
+                                    Healthy band (70–100)
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="mt-4">
+                                <svg className="w-full h-[360px] md:h-[420px]" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="System Spread (7 lanes)">
+                                  {/* Healthy band */}
+                                  <rect
+                                    x={healthyX}
+                                    y={padTop - 6}
+                                    width={W - padRight - healthyX}
+                                    height={H - padTop - padBottom + 12}
+                                    fill="rgba(16,185,129,0.06)"
+                                    stroke="rgba(16,185,129,0.12)"
+                                    strokeWidth="1"
+                                    rx="8"
+                                  />
+
+                                  {/* X grid + labels */}
+                                  {[0, 50, 70, 100].map((t) => {
+                                    const x = xForScore(t);
+                                    const is70 = t === 70;
+                                    return (
+                                      <g key={`x-${t}`}>
+                                        <line
+                                          x1={x}
+                                          x2={x}
+                                          y1={padTop - 6}
+                                          y2={H - padBottom + 6}
+                                          stroke={is70 ? 'rgba(16,185,129,0.20)' : 'rgba(0,0,0,0.06)'}
+                                          strokeWidth={is70 ? '2' : '1'}
+                                        />
+                                        <text
+                                          x={x}
+                                          y={H - 8}
+                                          fontSize="11"
+                                          fill={is70 ? 'rgba(16,185,129,0.75)' : 'rgba(0,0,0,0.38)'}
+                                          textAnchor="middle"
+                                        >
+                                          {t}
+                                        </text>
+                                      </g>
+                                    );
+                                  })}
+
+                                  {/* Lanes */}
+                                  {perKey.map((row, i) => {
+                                    const yMid = laneY(i);
+                                    const yL = leaderY(i);
+                                    const yT = teamY(i);
+
+                                    return (
+                                      <g key={`lane-${row.key}`}>
+                                        {/* lane baseline */}
+                                        <line
+                                          x1={padLeft}
+                                          x2={W - padRight}
+                                          y1={yMid}
+                                          y2={yMid}
+                                          stroke="rgba(0,0,0,0.10)"
+                                          strokeWidth="1"
+                                        />
+
+                                        {/* lane label */}
+                                        <text x={padLeft - 10} y={yMid + 4} fontSize="12" fill="rgba(0,0,0,0.70)" textAnchor="end">
+                                          {systemKeyToLabel(row.key)}
+                                        </text>
+
+                                        {/* overall mean marker (dashed tick) */}
+                                        {typeof row.overallMean === 'number' ? (
+                                          <line
+                                            x1={xForScore(row.overallMean)}
+                                            x2={xForScore(row.overallMean)}
+                                            y1={yMid - 12}
+                                            y2={yMid + 12}
+                                            stroke={overallColor}
+                                            strokeWidth="2"
+                                            strokeDasharray="4 3"
+                                          />
+                                        ) : null}
+
+                                        {/* leader mean marker */}
+                                        {typeof row.leaderMean === 'number' ? (
+                                          <line
+                                            x1={xForScore(row.leaderMean)}
+                                            x2={xForScore(row.leaderMean)}
+                                            y1={yL - 10}
+                                            y2={yL + 10}
+                                            stroke="rgba(16,185,129,0.85)"
+                                            strokeWidth="3"
+                                            strokeLinecap="round"
+                                          />
+                                        ) : null}
+
+                                        {/* team mean marker */}
+                                        {typeof row.teamMean === 'number' ? (
+                                          <line
+                                            x1={xForScore(row.teamMean)}
+                                            x2={xForScore(row.teamMean)}
+                                            y1={yT - 10}
+                                            y2={yT + 10}
+                                            stroke="rgba(245,158,11,0.85)"
+                                            strokeWidth="3"
+                                            strokeLinecap="round"
+                                          />
+                                        ) : null}
+
+                                        {/* leader dots */}
+                                        {row.leaderVals.map((v, idx) => (
+                                          <circle
+                                            key={`l-${row.key}-${idx}`}
+                                            cx={xForScore(v)}
+                                            cy={yL + jitter01(idx) * 5}
+                                            r="2.4"
+                                            fill={leaderColor}
+                                          />
+                                        ))}
+
+                                        {/* team dots */}
+                                        {row.teamVals.map((v, idx) => (
+                                          <circle
+                                            key={`t-${row.key}-${idx}`}
+                                            cx={xForScore(v)}
+                                            cy={yT + jitter01(idx + 1000) * 5}
+                                            r="2.4"
+                                            fill={teamColor}
+                                          />
+                                        ))}
+                                      </g>
+                                    );
+                                  })}
+
+                                  {/* Axis label */}
+                                  <text x={(padLeft + (W - padRight)) / 2} y={H - 8} fontSize="11" fill="rgba(0,0,0,0.38)" textAnchor="middle">
+                                    Score (0–100)
+                                  </text>
+                                </svg>
+                              </div>
                             </div>
-                          ))}
-                        </div>
+                          );
+                        })()}
                       </div>
                     ) : (
                       <div className="text-[13px] text-black/[0.6]">
