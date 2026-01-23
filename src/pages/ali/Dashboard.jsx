@@ -1575,48 +1575,12 @@ const ALIDashboard = () => {
                 <div className="grid grid-cols-1 gap-6">
                   {/* Radar summary */}
                   <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-                    <div className="flex items-end justify-between gap-4 mb-4">
+                    <div className="flex items-end justify-between gap-4 mb-6">
                       <div>
                         <div className="text-[16px] font-semibold text-black/[0.87]">7‑Test Snapshot</div>
                         <div className="text-[13px] text-black/[0.6] mt-1">Overall vs Leader vs Team (0–100; higher is healthier).</div>
                       </div>
                       <div className="text-[11px] text-black/[0.38]">Center = 0 • Outer ring = 100</div>
-                    </div>
-
-                    {/* Layer Toggle Controls */}
-                    <div className="mb-4 flex items-center gap-4 text-[12px]">
-                      <span className="text-black/[0.6] font-medium">Show layers:</span>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={radarLayers.overall}
-                          onChange={(e) => setRadarLayers(prev => ({ ...prev, overall: e.target.checked }))}
-                          className="w-4 h-4 rounded border-black/[0.2] text-[#2563eb] focus:ring-[#2563eb]"
-                        />
-                        <span className="text-black/[0.87]">Overall</span>
-                      </label>
-                      {hasLeaderTeam && (
-                        <>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={radarLayers.leader}
-                              onChange={(e) => setRadarLayers(prev => ({ ...prev, leader: e.target.checked }))}
-                              className="w-4 h-4 rounded border-black/[0.2] text-[#10b981] focus:ring-[#10b981]"
-                            />
-                            <span className="text-black/[0.87]">Leader</span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={radarLayers.team}
-                              onChange={(e) => setRadarLayers(prev => ({ ...prev, team: e.target.checked }))}
-                              className="w-4 h-4 rounded border-black/[0.2] text-[#f59e0b] focus:ring-[#f59e0b]"
-                            />
-                            <span className="text-black/[0.87]">Team</span>
-                          </label>
-                        </>
-                      )}
                     </div>
 
                     <div className="flex items-center justify-center relative">
@@ -1807,25 +1771,47 @@ const ALIDashboard = () => {
                       )}
                     </div>
 
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-[12px] text-black/[0.6]">
-                      <div className="flex items-center gap-4">
-                        {radarLayers.overall && (
-                          <div className="inline-flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(37,99,235,0.25)', border: '2px solid #2563eb' }} />
-                            Overall
-                          </div>
-                        )}
-                        {radarLayers.leader && hasLeaderTeam && (
-                          <div className="inline-flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(16,185,129,0.20)', border: '2px solid #10b981' }} />
-                            Leader
-                          </div>
-                        )}
-                        {radarLayers.team && hasLeaderTeam && (
-                          <div className="inline-flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: 'rgba(245,158,11,0.22)', border: '2px solid #f59e0b' }} />
-                            Team
-                          </div>
+                    {/* Layer Controls & Legend - Integrated Design */}
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                      {/* Toggle Buttons - Professional Design */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] font-medium text-black/[0.6] mr-1">View:</span>
+                        <button
+                          onClick={() => setRadarLayers(prev => ({ ...prev, overall: !prev.overall }))}
+                          className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-200 flex items-center gap-2 ${
+                            radarLayers.overall
+                              ? 'bg-[#2563eb] text-white shadow-sm'
+                              : 'bg-white border border-black/[0.12] text-black/[0.6] hover:bg-black/[0.02]'
+                          }`}
+                        >
+                          <span className={`w-2.5 h-2.5 rounded-sm ${radarLayers.overall ? 'bg-white/30 border border-white/50' : 'bg-[#2563eb]/20 border border-[#2563eb]'}`} />
+                          Overall
+                        </button>
+                        {hasLeaderTeam && (
+                          <>
+                            <button
+                              onClick={() => setRadarLayers(prev => ({ ...prev, leader: !prev.leader }))}
+                              className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-200 flex items-center gap-2 ${
+                                radarLayers.leader
+                                  ? 'bg-[#10b981] text-white shadow-sm'
+                                  : 'bg-white border border-black/[0.12] text-black/[0.6] hover:bg-black/[0.02]'
+                              }`}
+                            >
+                              <span className={`w-2.5 h-2.5 rounded-sm ${radarLayers.leader ? 'bg-white/30 border border-white/50' : 'bg-[#10b981]/20 border border-[#10b981]'}`} />
+                              Leader
+                            </button>
+                            <button
+                              onClick={() => setRadarLayers(prev => ({ ...prev, team: !prev.team }))}
+                              className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-200 flex items-center gap-2 ${
+                                radarLayers.team
+                                  ? 'bg-[#f59e0b] text-white shadow-sm'
+                                  : 'bg-white border border-black/[0.12] text-black/[0.6] hover:bg-black/[0.02]'
+                              }`}
+                            >
+                              <span className={`w-2.5 h-2.5 rounded-sm ${radarLayers.team ? 'bg-white/30 border border-white/50' : 'bg-[#f59e0b]/20 border border-[#f59e0b]'}`} />
+                              Team
+                            </button>
+                          </>
                         )}
                       </div>
                       <div className="text-[12px] text-black/[0.6]">
