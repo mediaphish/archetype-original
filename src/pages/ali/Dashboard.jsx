@@ -23,6 +23,7 @@ const ALIDashboard = () => {
   const [scoreCalculationExpanded, setScoreCalculationExpanded] = useState(false);
   const [radarLayers, setRadarLayers] = useState({ overall: true, leader: true, team: true });
   const [metricInsights, setMetricInsights] = useState({});
+  const [insightsLoading, setInsightsLoading] = useState(false);
   // Zone modal removed (Zones page is the single source of truth)
   const chartRef = useRef(null);
 
@@ -930,7 +931,10 @@ const ALIDashboard = () => {
 
   // Fetch Archy-generated insights for metrics when live dashboard data is available
   useEffect(() => {
-    if (!liveDashboard?.systemMap?.summary) return;
+    if (!liveDashboard?.systemMap?.summary) {
+      setMetricInsights({});
+      return;
+    }
     
     const summary = liveDashboard.systemMap.summary;
     const overall = summary.overall || {};
@@ -946,20 +950,33 @@ const ALIDashboard = () => {
       team: typeof team[k] === 'number' ? team[k] : null
     }));
 
+    setInsightsLoading(true);
     // Fetch insights
     fetch('/api/ali/generate-insights', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ metrics })
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
         if (data.ok && data.insights) {
+          console.log('Loaded Archy insights:', data.insights);
           setMetricInsights(data.insights);
+        } else {
+          console.warn('Insights API returned unexpected format:', data);
         }
       })
       .catch(err => {
         console.error('Failed to fetch metric insights:', err);
+        // Keep existing insights or empty object on error
+      })
+      .finally(() => {
+        setInsightsLoading(false);
       });
   }, [liveDashboard]);
 
@@ -1904,8 +1921,22 @@ const ALIDashboard = () => {
                           const l = fmt0(leader?.[k]);
                           const t = fmt0(team?.[k]);
                           
-                          // Use Archy-generated insight if available, otherwise show null
-                          const insight = metricInsights[k] || null;
+                          // Use Archy-generated insight if available
+                          // Show loading state or fallback if insights haven't loaded yet
+                          let insight = metricInsights[k];
+                          if (!insight && insightsLoading) {
+                            insight = 'Generating insight...';
+                          } else if (!insight) {
+                            // Fallback: generate a simple insight based on score
+                            const overallVal = o ?? 0;
+                            if (overallVal >= 70) {
+                              insight = 'Strong performance in this area';
+                            } else if (overallVal >= 50) {
+                              insight = 'Room for improvement';
+                            } else {
+                              insight = 'Needs attention';
+                            }
+                          }
                           
                           return (
                             <div 
