@@ -177,9 +177,6 @@ export default async function handler(req, res) {
       allResponses = [];
     }
     
-    // Count ALL deployments (not filtered by responses)
-    const realDeployments = deployments || [];
-    console.log(`[SUPER ADMIN] Total deployments to show: ${realDeployments.length}`);
     
     // Count actual responses by role
     const leaderResponses = allResponses?.filter(r => r.respondent_role === 'leader') || [];
