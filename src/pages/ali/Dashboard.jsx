@@ -1642,8 +1642,23 @@ const ALIDashboard = () => {
                                 stroke="transparent"
                                 strokeWidth="30"
                                 style={{ cursor: 'pointer' }}
-                                onMouseEnter={() => {
-                                  const tooltipData = { key: k, index: i, label };
+                                onMouseEnter={(e) => {
+                                  // Get the actual SVG coordinates of the axis end point
+                                  const svg = e.currentTarget.ownerSVGElement;
+                                  const svgRect = svg.getBoundingClientRect();
+                                  const axisPoint = toAxis(i, rMax + 20); // Position tooltip near the axis end
+                                  
+                                  // Convert SVG coordinates to percentage relative to SVG viewBox
+                                  const xPercent = (axisPoint.x / W) * 100;
+                                  const yPercent = (axisPoint.y / H) * 100;
+                                  
+                                  const tooltipData = { 
+                                    key: k, 
+                                    index: i, 
+                                    label,
+                                    xPercent,
+                                    yPercent
+                                  };
                                   if (radarLayers.overall) tooltipData.overall = overallScore;
                                   if (radarLayers.leader && hasLeaderTeam) tooltipData.leader = leaderScore;
                                   if (radarLayers.team && hasLeaderTeam) tooltipData.team = teamScore;
@@ -1720,10 +1735,12 @@ const ALIDashboard = () => {
                         <div 
                           className="absolute bg-black/[0.87] text-white rounded-lg px-4 py-3 shadow-lg z-50 pointer-events-none"
                           style={{
-                            left: hoveredChartPoint.index !== undefined ? `${(hoveredChartPoint.index / SYSTEM_KEYS.length) * 100}%` : '50%',
-                            top: hoveredChartPoint.index !== undefined ? '50%' : '20%',
-                            transform: 'translate(-50%, -100%)',
-                            marginTop: '-8px'
+                            left: hoveredChartPoint.xPercent !== undefined ? `${hoveredChartPoint.xPercent}%` : '50%',
+                            top: hoveredChartPoint.yPercent !== undefined ? `${hoveredChartPoint.yPercent}%` : '20%',
+                            transform: hoveredChartPoint.xPercent !== undefined && hoveredChartPoint.yPercent !== undefined
+                              ? 'translate(-50%, -100%)'
+                              : 'translate(-50%, -100%)',
+                            marginTop: hoveredChartPoint.xPercent !== undefined && hoveredChartPoint.yPercent !== undefined ? '-12px' : '-8px'
                           }}
                         >
                           {hoveredChartPoint.key ? (
