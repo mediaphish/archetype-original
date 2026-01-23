@@ -560,7 +560,14 @@ export default async function handler(req, res) {
           responsesPerSurvey: 0
         },
         patterns: [],
-        topCompanies: []
+        topCompanies: [],
+        leadershipMirror: {
+          gaps: {},
+          severity: {},
+          leaderScores: {},
+          teamScores: {}
+        },
+        experienceMap: null
       }
     });
   }
