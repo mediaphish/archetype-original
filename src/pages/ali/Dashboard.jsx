@@ -1967,8 +1967,8 @@ const ALIDashboard = () => {
                                   )}
                                 </div>
                                 {insight && (
-                                  <div className="flex items-center gap-1.5 text-[11px] text-black/[0.6]">
-                                    <Lightbulb className="w-3.5 h-3.5 text-black/[0.6]" />
+                                  <div className="flex items-center gap-2 text-[11px] text-black/[0.6]">
+                                    <Lightbulb className="w-4 h-4 text-black/[0.6] flex-shrink-0" />
                                     <span className="italic">{insight}</span>
                                   </div>
                                 )}
