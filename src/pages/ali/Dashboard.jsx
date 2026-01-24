@@ -2790,7 +2790,7 @@ const ALIDashboard = () => {
       {/* Archy Chat Overlay */}
       {showArchyChat && (
         <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
-          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
+          <div className="w-full md:w-[60%] lg:w-[55%] h-[90vh] md:h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
             <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
