@@ -1969,7 +1969,19 @@ const ALIDashboard = () => {
                                 {insight && (
                                   <div className="flex items-center gap-2 text-[11px] text-black/[0.6]">
                                     <Lightbulb className="w-4 h-4 text-black/[0.6] flex-shrink-0" />
-                                    <span className="italic">{insight}</span>
+                                    <span className="italic flex-1">{insight}</span>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const metricLabel = systemKeyToLabel(k);
+                                        setArchyInitialMessage(`I'm looking at my ${metricLabel} score (Overall: ${o ?? '—'}, Leader: ${l ?? '—'}, Team: ${t ?? '—'}). The insight says: "${insight}". Can you help me understand what this means and what I should do about it?`);
+                                        setShowArchyChat(true);
+                                      }}
+                                      className="inline-flex items-center gap-1 text-[11px] text-blue-600 hover:text-blue-700 font-medium ml-2 flex-shrink-0"
+                                    >
+                                      <MessageSquareIcon className="w-3 h-3" />
+                                      Ask Archy
+                                    </button>
                                   </div>
                                 )}
                               </div>
