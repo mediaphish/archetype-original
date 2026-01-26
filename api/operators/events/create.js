@@ -20,7 +20,9 @@ export default async function handler(req, res) {
     const { 
       email, 
       title, 
-      event_date, 
+      event_date,
+      start_time,
+      finish_time,
       stake_amount, 
       max_seats,
       // Host fields
@@ -44,8 +46,13 @@ export default async function handler(req, res) {
     if (!email) {
       return res.status(400).json({ ok: false, error: 'Email required' });
     }
-    if (!title || !event_date || !stake_amount || !max_seats) {
-      return res.status(400).json({ ok: false, error: 'Missing required fields: title, event_date, stake_amount, max_seats' });
+    if (!title || !event_date || !start_time || !finish_time || !stake_amount || !max_seats) {
+      return res.status(400).json({ ok: false, error: 'Missing required fields: title, event_date, start_time, finish_time, stake_amount, max_seats' });
+    }
+
+    // Validate finish_time is after start_time
+    if (finish_time <= start_time) {
+      return res.status(400).json({ ok: false, error: 'Finish time must be after start time' });
     }
 
     // Validate host description length (150 words max)
@@ -74,6 +81,8 @@ export default async function handler(req, res) {
     const eventData = {
       title,
       event_date,
+      start_time: start_time || null,
+      finish_time: finish_time || null,
       state: 'LIVE',
       stake_amount: parseFloat(stake_amount),
       max_seats: parseInt(max_seats),

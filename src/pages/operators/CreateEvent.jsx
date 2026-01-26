@@ -6,6 +6,8 @@ export default function CreateEvent() {
   const [formData, setFormData] = useState({
     title: '',
     event_date: '',
+    start_time: '',
+    finish_time: '',
     stake_amount: '',
     max_seats: '',
     // Host fields
@@ -161,6 +163,13 @@ export default function CreateEvent() {
     }
 
     try {
+      // Validate finish_time is after start_time
+      if (formData.start_time && formData.finish_time && formData.finish_time <= formData.start_time) {
+        setError('Finish time must be after start time');
+        setLoading(false);
+        return;
+      }
+
       const resp = await fetch('/api/operators/events/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -277,22 +286,54 @@ export default function CreateEvent() {
                   />
                 </div>
 
+                <div>
+                  <label htmlFor="event_date" className="block text-sm font-medium text-gray-700 mb-2">
+                    Event Date *
+                  </label>
+                  <input
+                    type="date"
+                    id="event_date"
+                    name="event_date"
+                    required
+                    value={formData.event_date}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="event_date" className="block text-sm font-medium text-gray-700 mb-2">
-                      Event Date *
+                    <label htmlFor="start_time" className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Time *
                     </label>
                     <input
-                      type="date"
-                      id="event_date"
-                      name="event_date"
+                      type="time"
+                      id="start_time"
+                      name="start_time"
                       required
-                      value={formData.event_date}
+                      value={formData.start_time}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
+                  <div>
+                    <label htmlFor="finish_time" className="block text-sm font-medium text-gray-700 mb-2">
+                      Finish Time *
+                    </label>
+                    <input
+                      type="time"
+                      id="finish_time"
+                      name="finish_time"
+                      required
+                      value={formData.finish_time}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="max_seats" className="block text-sm font-medium text-gray-700 mb-2">
                       Max Seats *

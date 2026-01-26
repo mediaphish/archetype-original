@@ -22,7 +22,9 @@ export default async function handler(req, res) {
     const { 
       email,
       title, 
-      event_date, 
+      event_date,
+      start_time,
+      finish_time,
       stake_amount, 
       max_seats,
       // Host fields
@@ -94,11 +96,18 @@ export default async function handler(req, res) {
       }
     }
 
+    // Validate finish_time is after start_time (if both provided)
+    if (start_time && finish_time && finish_time <= start_time) {
+      return res.status(400).json({ ok: false, error: 'Finish time must be after start time' });
+    }
+
     // Build update object (only include fields that were provided)
     const updateData = {};
     
     if (title !== undefined) updateData.title = title;
     if (event_date !== undefined) updateData.event_date = event_date;
+    if (start_time !== undefined) updateData.start_time = start_time || null;
+    if (finish_time !== undefined) updateData.finish_time = finish_time || null;
     if (stake_amount !== undefined) updateData.stake_amount = parseFloat(stake_amount);
     if (max_seats !== undefined) updateData.max_seats = parseInt(max_seats);
     

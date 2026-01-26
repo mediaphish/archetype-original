@@ -8,6 +8,8 @@ export default function EditEvent() {
   const [formData, setFormData] = useState({
     title: '',
     event_date: '',
+    start_time: '',
+    finish_time: '',
     stake_amount: '',
     max_seats: '',
     // Host fields
@@ -104,6 +106,8 @@ export default function EditEvent() {
           setFormData({
             title: event.title || '',
             event_date: event.event_date || '',
+            start_time: event.start_time || '',
+            finish_time: event.finish_time || '',
             stake_amount: event.stake_amount?.toString() || '',
             max_seats: event.max_seats?.toString() || '',
             host_name: event.host_name || '',
@@ -191,6 +195,13 @@ export default function EditEvent() {
     setSaving(true);
     setError('');
     setSuccess(false);
+
+    // Validate finish_time is after start_time
+    if (formData.start_time && formData.finish_time && formData.finish_time <= formData.start_time) {
+      setError('Finish time must be after start time');
+      setSaving(false);
+      return;
+    }
 
     // Validate word counts
     if (formData.host_description) {
@@ -356,38 +367,68 @@ export default function EditEvent() {
                   />
                 </div>
 
+                <div>
+                  <label htmlFor="event_date" className="block text-sm font-medium text-gray-700 mb-2">
+                    Event Date *
+                  </label>
+                  <input
+                    type="date"
+                    id="event_date"
+                    name="event_date"
+                    required
+                    value={formData.event_date}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="event_date" className="block text-sm font-medium text-gray-700 mb-2">
-                      Event Date *
+                    <label htmlFor="start_time" className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Time *
                     </label>
                     <input
-                      type="date"
-                      id="event_date"
-                      name="event_date"
+                      type="time"
+                      id="start_time"
+                      name="start_time"
                       required
-                      value={formData.event_date}
+                      value={formData.start_time}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="max_seats" className="block text-sm font-medium text-gray-700 mb-2">
-                      Max Seats *
+                    <label htmlFor="finish_time" className="block text-sm font-medium text-gray-700 mb-2">
+                      Finish Time *
                     </label>
                     <input
-                      type="number"
-                      id="max_seats"
-                      name="max_seats"
+                      type="time"
+                      id="finish_time"
+                      name="finish_time"
                       required
-                      min="1"
-                      value={formData.max_seats}
+                      value={formData.finish_time}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="20"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label htmlFor="max_seats" className="block text-sm font-medium text-gray-700 mb-2">
+                    Max Seats *
+                  </label>
+                  <input
+                    type="number"
+                    id="max_seats"
+                    name="max_seats"
+                    required
+                    min="1"
+                    value={formData.max_seats}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="20"
+                  />
                 </div>
 
                 <div>

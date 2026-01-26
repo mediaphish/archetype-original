@@ -315,6 +315,16 @@ export default function EventDetail() {
     return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    // timeString is in HH:MM format (24-hour)
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
@@ -374,6 +384,11 @@ export default function EventDetail() {
                   month: 'long',
                   day: 'numeric'
                 })}
+                {event.start_time && event.finish_time && (
+                  <span className="ml-2">
+                    • {formatTime(event.start_time)} - {formatTime(event.finish_time)}
+                  </span>
+                )}
               </p>
             </div>
             {canManageEvent && event.state === 'LIVE' && (

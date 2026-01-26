@@ -18,6 +18,8 @@ Create 3 test events through the UI (as `bart@archetypeoriginal.com`):
 - Navigate to `/operators/events/new?email=bart@archetypeoriginal.com`
 - Title: "March 2026 Operators Meeting"
 - Date: 30 days from today
+- Start Time: 6:00 PM (18:00)
+- Finish Time: 9:00 PM (21:00)
 - Max Seats: 20
 - Stake Amount: $120
 - Add host and sponsor info (optional)
@@ -26,6 +28,8 @@ Create 3 test events through the UI (as `bart@archetypeoriginal.com`):
 **Event 2: OPEN Event (Voting/Check-in Testing)**
 - Create: "February 2026 Operators Meeting"
 - Date: Today or yesterday
+- Start Time: 6:00 PM (18:00)
+- Finish Time: 9:00 PM (21:00)
 - Max Seats: 20
 - Stake Amount: $120
 - After creating, click "Start Event" to change state to OPEN
@@ -33,6 +37,8 @@ Create 3 test events through the UI (as `bart@archetypeoriginal.com`):
 **Event 3: CLOSED Event (ROI Testing)**
 - Create: "January 2026 Operators Meeting"  
 - Date: 30 days ago
+- Start Time: 6:00 PM (18:00)
+- Finish Time: 9:00 PM (21:00)
 - Max Seats: 20
 - Stake Amount: $120
 - Start Event, then Close Event (to see ROI results)
@@ -50,6 +56,8 @@ Create 3 test events through the UI (as `bart@archetypeoriginal.com`):
 3. Fill in all required fields:
    - Title: "Test Event"
    - Date: Future date
+   - Start Time: 6:00 PM (18:00)
+   - Finish Time: 9:00 PM (21:00)
    - Max Seats: 20
    - Stake Amount: $120
 4. Add host information (name, location, description)
