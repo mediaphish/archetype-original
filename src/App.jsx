@@ -62,6 +62,7 @@ import SuperAdminAuditLog from "./pages/ali/SuperAdminAuditLog";
 import OperatorsEvents from "./pages/operators/Events";
 import OperatorsEventDetail from "./pages/operators/EventDetail";
 import OperatorsCreateEvent from "./pages/operators/CreateEvent";
+import OperatorsEditEvent from "./pages/operators/EditEvent";
 import OperatorsDashboard from "./pages/operators/Dashboard";
 import OperatorsAdmin from "./pages/operators/Admin";
 import OperatorsCandidates from "./pages/operators/Candidates";
@@ -225,8 +226,12 @@ export default function App() {
         } else if (path === '/operators/events/new') {
           setCurrentPage('operators-create-event');
         } else if (path.startsWith('/operators/events/')) {
-          const eventId = path.replace('/operators/events/', '');
-          if (eventId && eventId !== 'new') {
+          const eventPath = path.replace('/operators/events/', '');
+          if (eventPath === 'new') {
+            setCurrentPage('operators-create-event');
+          } else if (eventPath.endsWith('/edit')) {
+            setCurrentPage('operators-edit-event');
+          } else if (eventPath) {
             setCurrentPage('operators-event-detail');
           } else {
             setCurrentPage('operators-events');
@@ -804,6 +809,10 @@ export default function App() {
 
   if (currentPage === 'operators-create-event') {
     return <OperatorsCreateEvent />;
+  }
+
+  if (currentPage === 'operators-edit-event') {
+    return <OperatorsEditEvent />;
   }
 
   if (currentPage === 'operators-event-detail') {

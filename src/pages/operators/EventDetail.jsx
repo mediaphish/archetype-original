@@ -239,6 +239,13 @@ export default function EventDetail() {
   const canInviteCandidate = isOperator && event.state === 'LIVE';
   const canApproveCandidate = isCO && event.state === 'LIVE';
   const canManageEvent = isCO || isAccountant;
+  
+  // Check if event can be edited (LIVE state and future date)
+  const canEdit = isCO && event.state === 'LIVE';
+  const eventDate = new Date(event.event_date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const isFutureEvent = eventDate >= today;
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
@@ -559,6 +566,14 @@ export default function EventDetail() {
               <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
                 <h3 className="font-semibold text-gray-900 mb-3">Quick Actions</h3>
                 <div className="space-y-2">
+                  {canEdit && isFutureEvent && (
+                    <button
+                      onClick={() => handleNavigate(withEmail(`/operators/events/${id}/edit`))}
+                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                    >
+                      Edit Event
+                    </button>
+                  )}
                   {event.state === 'LIVE' && (
                     <button
                       onClick={handleOpenEvent}
