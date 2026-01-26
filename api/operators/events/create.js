@@ -117,6 +117,8 @@ export default async function handler(req, res) {
       sponsor_email: sponsor_email || null // Keep for backwards compatibility
     };
 
+    console.log('[CREATE_EVENT] Inserting event data:', JSON.stringify(eventData, null, 2));
+
     const { data: event, error } = await supabaseAdmin
       .from('operators_events')
       .insert(eventData)
@@ -125,7 +127,11 @@ export default async function handler(req, res) {
 
     if (error) {
       console.error('[CREATE_EVENT] Database error:', error);
-      return res.status(500).json({ ok: false, error: 'Failed to create event' });
+      return res.status(500).json({ 
+        ok: false, 
+        error: error.message || 'Failed to create event',
+        diag: process.env.NODE_ENV === 'development' ? { code: error.code, details: error.details, hint: error.hint } : undefined
+      });
     }
 
     return res.status(200).json({ ok: true, event });
