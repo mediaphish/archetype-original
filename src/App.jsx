@@ -58,6 +58,12 @@ import SuperAdminIntelligence from "./pages/ali/SuperAdminIntelligence";
 import SuperAdminTenants from "./pages/ali/SuperAdminTenants";
 import SuperAdminDeletions from "./pages/ali/SuperAdminDeletions";
 import SuperAdminAuditLog from "./pages/ali/SuperAdminAuditLog";
+// Operators pages
+import OperatorsEvents from "./pages/operators/Events";
+import OperatorsEventDetail from "./pages/operators/EventDetail";
+import OperatorsDashboard from "./pages/operators/Dashboard";
+import OperatorsAdmin from "./pages/operators/Admin";
+import OperatorsCandidates from "./pages/operators/Candidates";
 import ContactPage from "./pages/Contact";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
@@ -207,6 +213,31 @@ export default function App() {
           // Unknown /ali/* route - redirect to landing
           window.history.replaceState({}, '', '/ali');
           setCurrentPage('ali-landing');
+        }
+        return;
+      }
+      
+      // Handle Operators routes
+      if (path.startsWith('/operators/')) {
+        if (path === '/operators/events') {
+          setCurrentPage('operators-events');
+        } else if (path.startsWith('/operators/events/')) {
+          const eventId = path.replace('/operators/events/', '');
+          if (eventId && eventId !== 'new') {
+            setCurrentPage('operators-event-detail');
+          } else {
+            setCurrentPage('operators-events');
+          }
+        } else if (path === '/operators/dashboard') {
+          setCurrentPage('operators-dashboard');
+        } else if (path === '/operators/admin') {
+          setCurrentPage('operators-admin');
+        } else if (path === '/operators/candidates') {
+          setCurrentPage('operators-candidates');
+        } else {
+          // Default Operators route to events
+          window.history.replaceState({}, '', '/operators/events');
+          setCurrentPage('operators-events');
         }
         return;
       }
@@ -761,6 +792,27 @@ export default function App() {
 
   if (currentPage === 'ali-super-admin-audit-log') {
     return <SuperAdminAuditLog />;
+  }
+
+  // Render Operators pages
+  if (currentPage === 'operators-events') {
+    return <OperatorsEvents />;
+  }
+
+  if (currentPage === 'operators-event-detail') {
+    return <OperatorsEventDetail />;
+  }
+
+  if (currentPage === 'operators-dashboard') {
+    return <OperatorsDashboard />;
+  }
+
+  if (currentPage === 'operators-admin') {
+    return <OperatorsAdmin />;
+  }
+
+  if (currentPage === 'operators-candidates') {
+    return <OperatorsCandidates />;
   }
 
   // Render ALI Dashboard page (elevated design) - OLD route under culture-science
