@@ -213,11 +213,15 @@ export default function CreateEvent() {
           handleNavigate(withEmail(`/operators/events/${json.event.id}`));
         }, 1500);
       } else {
-        setError(json.error || 'Failed to create event');
+        // Show detailed error message
+        const errorMsg = json.error || 'Failed to create event';
+        const diagMsg = json.diag ? ` (Details: ${JSON.stringify(json.diag)})` : '';
+        setError(`${errorMsg}${diagMsg}`);
+        console.error('[CREATE_EVENT] API error:', json);
       }
     } catch (error) {
-      setError('Failed to create event. Please try again.');
-      console.error('Create event error:', error);
+      console.error('[CREATE_EVENT] Network error:', error);
+      setError(`Network error: ${error.message || 'Failed to create event. Please try again.'}`);
     } finally {
       setLoading(false);
     }
