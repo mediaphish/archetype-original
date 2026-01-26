@@ -24,6 +24,24 @@ export default function Events() {
   };
 
   useEffect(() => {
+    const fetchUserRoles = async () => {
+      if (!email) return;
+      
+      try {
+        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
+        const json = await resp.json();
+        if (json.ok && json.user) {
+          setUserRoles(json.user.roles || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user roles:', error);
+      }
+    };
+
+    fetchUserRoles();
+  }, [email]);
+
+  useEffect(() => {
     const fetchEvents = async () => {
       if (!email) {
         setLoading(false);
@@ -38,9 +56,6 @@ export default function Events() {
         
         if (json.ok) {
           setEvents(json.events || []);
-          if (json.events && json.events.length > 0 && json.events[0].user_roles) {
-            setUserRoles(json.events[0].user_roles);
-          }
         }
       } catch (error) {
         console.error('Failed to fetch events:', error);
