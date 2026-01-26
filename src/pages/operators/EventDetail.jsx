@@ -211,14 +211,14 @@ export default function EventDetail() {
 
   const fetchUserVotes = async (eventId, userEmail) => {
     try {
-      // Get all votes for this user in this event
+      // Get event data which includes vote_summary
       const resp = await fetch(`/api/operators/events/${eventId}?email=${encodeURIComponent(userEmail)}`);
       const json = await resp.json();
       if (json.ok && json.event.vote_summary) {
         setVoteSummary(json.event.vote_summary);
       }
-      // We need to get the user's actual votes to show which ones they voted on
-      // For now, we'll fetch remaining votes and infer from vote_summary
+      // Note: We'll get user's actual votes from the event data when it's fetched
+      // The API doesn't currently return individual user votes, so we'll infer from vote_summary
     } catch (error) {
       console.error('Failed to fetch user votes:', error);
     }
@@ -243,6 +243,8 @@ export default function EventDetail() {
       });
       const json = await resp.json();
       if (json.ok) {
+        // Update user's vote tracking
+        setUserVotes(prev => ({ ...prev, [targetEmail]: voteValue }));
         // Refresh event data to get updated vote counts
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
@@ -656,6 +658,7 @@ export default function EventDetail() {
                           .filter(r => (r.status === 'confirmed' || r.status === 'attended') && r.user_email !== email)
                           .map(rsvp => {
                             const summary = event.vote_summary?.[rsvp.user_email] || { upvotes: 0, downvotes: 0 };
+                            // Check if user has voted for this person (we'll need to track this after voting)
                             const userVote = userVotes[rsvp.user_email] || null;
                             return (
                               <div key={rsvp.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
