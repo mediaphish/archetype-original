@@ -63,7 +63,8 @@
         { "src": "api/operators/users/me.js", "use": "@vercel/node" },
         { "src": "api/operators/users/[email]/promote.js", "use": "@vercel/node" },
         { "src": "api/operators/users/[email]/reverse-offense.js", "use": "@vercel/node" },
-        { "src": "api/operators/offenses/record.js", "use": "@vercel/node" }
+        { "src": "api/operators/offenses/record.js", "use": "@vercel/node" },
+        { "src": "api/operators/upload-logo.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -127,6 +128,7 @@
         { "src": "/api/operators/users/(.*)/promote", "dest": "/api/operators/users/[email]/promote.js?email=$1" },
         { "src": "/api/operators/users/(.*)/reverse-offense", "dest": "/api/operators/users/[email]/reverse-offense.js?email=$1" },
         { "src": "/api/operators/offenses/record", "dest": "/api/operators/offenses/record.js" },
+        { "src": "/api/operators/upload-logo", "dest": "/api/operators/upload-logo.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],

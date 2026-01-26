@@ -17,7 +17,28 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { email, title, event_date, stake_amount, max_seats, sponsor_email } = req.body;
+    const { 
+      email, 
+      title, 
+      event_date, 
+      stake_amount, 
+      max_seats,
+      // Host fields
+      host_name,
+      host_logo_url,
+      host_location,
+      host_location_lat,
+      host_location_lng,
+      host_description,
+      // Sponsor fields
+      sponsor_name,
+      sponsor_logo_url,
+      sponsor_website,
+      sponsor_phone,
+      sponsor_pot_value,
+      sponsor_description,
+      sponsor_email // Keep for backwards compatibility
+    } = req.body;
 
     // Validation
     if (!email) {
@@ -27,38 +48,56 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'Missing required fields: title, event_date, stake_amount, max_seats' });
     }
 
+    // Validate host description length (150 words max)
+    if (host_description) {
+      const wordCount = host_description.trim().split(/\s+/).length;
+      if (wordCount > 150) {
+        return res.status(400).json({ ok: false, error: 'Host description must be 150 words or less' });
+      }
+    }
+
+    // Validate sponsor description length (150 words max)
+    if (sponsor_description) {
+      const wordCount = sponsor_description.trim().split(/\s+/).length;
+      if (wordCount > 150) {
+        return res.status(400).json({ ok: false, error: 'Sponsor description must be 150 words or less' });
+      }
+    }
+
     // Check permissions - only CO can create events
     const canCreate = await canPerformAction(email, 'LIVE', 'create_event');
     if (!canCreate) {
       return res.status(403).json({ ok: false, error: 'Only Chief Operators can create events' });
     }
 
-    // Validate sponsor (max 1 per event, optional)
-    if (sponsor_email) {
-      // Check if sponsor email exists in operators_users
-      const { data: sponsorUser } = await supabaseAdmin
-        .from('operators_users')
-        .select('email')
-        .eq('email', sponsor_email)
-        .maybeSingle();
-      
-      if (!sponsorUser) {
-        return res.status(400).json({ ok: false, error: 'Sponsor email not found in Operators system' });
-      }
-    }
+    // Create event with all fields
+    const eventData = {
+      title,
+      event_date,
+      state: 'LIVE',
+      stake_amount: parseFloat(stake_amount),
+      max_seats: parseInt(max_seats),
+      created_by: email,
+      // Host fields
+      host_name: host_name || null,
+      host_logo_url: host_logo_url || null,
+      host_location: host_location || null,
+      host_location_lat: host_location_lat ? parseFloat(host_location_lat) : null,
+      host_location_lng: host_location_lng ? parseFloat(host_location_lng) : null,
+      host_description: host_description || null,
+      // Sponsor fields
+      sponsor_name: sponsor_name || null,
+      sponsor_logo_url: sponsor_logo_url || null,
+      sponsor_website: sponsor_website || null,
+      sponsor_phone: sponsor_phone || null,
+      sponsor_pot_value: sponsor_pot_value ? parseFloat(sponsor_pot_value) : 0,
+      sponsor_description: sponsor_description || null,
+      sponsor_email: sponsor_email || null // Keep for backwards compatibility
+    };
 
-    // Create event
     const { data: event, error } = await supabaseAdmin
       .from('operators_events')
-      .insert({
-        title,
-        event_date,
-        state: 'LIVE',
-        stake_amount: parseFloat(stake_amount),
-        max_seats: parseInt(max_seats),
-        sponsor_email: sponsor_email || null,
-        created_by: email
-      })
+      .insert(eventData)
       .select()
       .single();
 
