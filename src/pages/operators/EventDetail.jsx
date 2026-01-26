@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
-import { MapPin, ExternalLink, Users, UserPlus, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { MapPin, ExternalLink, Users, UserPlus, CheckCircle, XCircle, Clock, ThumbsUp, ThumbsDown, LogIn, LogOut, X } from 'lucide-react';
 
 export default function EventDetail() {
   const path = window.location.pathname;
@@ -11,6 +11,8 @@ export default function EventDetail() {
   const [actionLoading, setActionLoading] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [candidateForm, setCandidateForm] = useState({ candidate_email: '', essay: '', contact_info: '' });
+  const [userVotes, setUserVotes] = useState({}); // { target_email: vote_value }
+  const [voteSummary, setVoteSummary] = useState({}); // { target_email: { upvotes, downvotes } }
 
   const urlParams = new URLSearchParams(window.location.search);
   const email = urlParams.get('email') || '';
@@ -60,6 +62,14 @@ export default function EventDetail() {
         
         if (json.ok) {
           setEvent(json.event);
+          // Initialize user votes from event data
+          if (json.event.vote_summary) {
+            setVoteSummary(json.event.vote_summary);
+          }
+          // Fetch user's votes to show current vote status
+          if (json.event.state === 'OPEN' && email) {
+            fetchUserVotes(id, email);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch event:', error);
@@ -194,6 +204,95 @@ export default function EventDetail() {
       }
     } catch (error) {
       alert('Failed to close event. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const fetchUserVotes = async (eventId, userEmail) => {
+    try {
+      // Get all votes for this user in this event
+      const resp = await fetch(`/api/operators/events/${eventId}?email=${encodeURIComponent(userEmail)}`);
+      const json = await resp.json();
+      if (json.ok && json.event.vote_summary) {
+        setVoteSummary(json.event.vote_summary);
+      }
+      // We need to get the user's actual votes to show which ones they voted on
+      // For now, we'll fetch remaining votes and infer from vote_summary
+    } catch (error) {
+      console.error('Failed to fetch user votes:', error);
+    }
+  };
+
+  const handleVote = async (targetEmail, voteValue) => {
+    if (email === targetEmail) {
+      alert('You cannot vote for yourself');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/votes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          target_email: targetEmail,
+          vote_value: voteValue
+        })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data to get updated vote counts
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          if (eventJson.event.vote_summary) {
+            setVoteSummary(eventJson.event.vote_summary);
+          }
+        }
+      } else {
+        alert(json.error || 'Failed to submit vote');
+      }
+    } catch (error) {
+      alert('Failed to submit vote. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleCheckIn = async (targetEmail, action, cashConfirmed = false) => {
+    if (action === 'check_in' && !cashConfirmed) {
+      if (!confirm('Have you confirmed cash payment for this attendee?')) {
+        return;
+      }
+      cashConfirmed = true;
+    }
+
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/check-in`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          target_email: targetEmail,
+          action,
+          cash_confirmed: cashConfirmed
+        })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || `Failed to ${action}`);
+      }
+    } catch (error) {
+      alert(`Failed to ${action}. Please try again.`);
     } finally {
       setActionLoading(false);
     }
@@ -539,16 +638,151 @@ export default function EventDetail() {
 
             {/* OPEN State - Voting, Check-in, etc. */}
             {event.state === 'OPEN' && (
-              <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Event is OPEN</h2>
-                <p className="text-gray-600 mb-4">
-                  Voting and check-ins are now active. {event.remaining_votes !== null && (
-                    <span>You have {event.remaining_votes} votes remaining.</span>
-                  )}
-                </p>
-                {/* Voting interface and check-in interface will be added in separate components */}
-                <p className="text-sm text-gray-500">Voting and check-in interfaces coming soon...</p>
-              </div>
+              <>
+                {/* Voting Interface */}
+                {isOperator && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Voting</h2>
+                    {event.remaining_votes !== null && (
+                      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-900">
+                          <span className="font-medium">Remaining Votes:</span> {event.remaining_votes} / 10
+                        </p>
+                      </div>
+                    )}
+                    {event.rsvps && event.rsvps.filter(r => r.status === 'confirmed' || r.status === 'attended').length > 0 ? (
+                      <div className="space-y-3">
+                        {event.rsvps
+                          .filter(r => (r.status === 'confirmed' || r.status === 'attended') && r.user_email !== email)
+                          .map(rsvp => {
+                            const summary = event.vote_summary?.[rsvp.user_email] || { upvotes: 0, downvotes: 0 };
+                            const userVote = userVotes[rsvp.user_email] || null;
+                            return (
+                              <div key={rsvp.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                <div className="flex-1">
+                                  <p className="font-medium text-gray-900">{rsvp.user_email}</p>
+                                  <div className="flex items-center gap-4 mt-1">
+                                    <span className="text-sm text-green-600">↑ {summary.upvotes}</span>
+                                    <span className="text-sm text-red-600">↓ {summary.downvotes}</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleVote(rsvp.user_email, 1)}
+                                    disabled={actionLoading || event.remaining_votes === 0}
+                                    className={`p-2 rounded-lg ${
+                                      userVote === 1
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-green-50'
+                                    } disabled:opacity-50`}
+                                    title="Vote Up"
+                                  >
+                                    <ThumbsUp className="w-5 h-5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleVote(rsvp.user_email, -1)}
+                                    disabled={actionLoading || event.remaining_votes === 0}
+                                    className={`p-2 rounded-lg ${
+                                      userVote === -1
+                                        ? 'bg-red-100 text-red-700'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-red-50'
+                                    } disabled:opacity-50`}
+                                    title="Vote Down"
+                                  >
+                                    <ThumbsDown className="w-5 h-5" />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-sm">No attendees to vote on yet.</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Check-in Interface (Accountants only) */}
+                {isAccountant && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Check-In Management</h2>
+                    {event.rsvps && event.rsvps.length > 0 ? (
+                      <div className="space-y-3">
+                        {event.rsvps.map(rsvp => {
+                          const attendance = event.attendance?.find(a => a.user_email === rsvp.user_email);
+                          const isCheckedIn = attendance?.checked_in || false;
+                          const isNoShow = attendance?.marked_no_show || false;
+                          const hasCheckedOut = attendance?.checked_out_at || false;
+
+                          return (
+                            <div key={rsvp.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                              <div className="flex-1">
+                                <p className="font-medium text-gray-900">{rsvp.user_email}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  {isCheckedIn && !hasCheckedOut && (
+                                    <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded">Checked In</span>
+                                  )}
+                                  {isNoShow && (
+                                    <span className="text-xs px-2 py-1 bg-red-100 text-red-800 rounded">No Show</span>
+                                  )}
+                                  {hasCheckedOut && (
+                                    <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">Checked Out</span>
+                                  )}
+                                  {!isCheckedIn && !isNoShow && (
+                                    <span className="text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded">Not Checked In</span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {!isCheckedIn && !isNoShow && (
+                                  <button
+                                    onClick={() => {
+                                      if (confirm('Have you confirmed cash payment for this attendee?')) {
+                                        handleCheckIn(rsvp.user_email, 'check_in', true);
+                                      }
+                                    }}
+                                    disabled={actionLoading}
+                                    className="px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-1"
+                                  >
+                                    <LogIn className="w-4 h-4" />
+                                    Check In
+                                  </button>
+                                )}
+                                {!isCheckedIn && !isNoShow && (
+                                  <button
+                                    onClick={() => handleCheckIn(rsvp.user_email, 'mark_no_show')}
+                                    disabled={actionLoading}
+                                    className="px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-1"
+                                  >
+                                    <X className="w-4 h-4" />
+                                    No Show
+                                  </button>
+                                )}
+                                {isCheckedIn && !hasCheckedOut && (
+                                  <button
+                                    onClick={() => {
+                                      if (confirm('Mark this attendee as checked out (early departure)?')) {
+                                        handleCheckIn(rsvp.user_email, 'check_out');
+                                      }
+                                    }}
+                                    disabled={actionLoading}
+                                    className="px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 disabled:opacity-50 flex items-center gap-1"
+                                  >
+                                    <LogOut className="w-4 h-4" />
+                                    Check Out
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-sm">No RSVPs to manage yet.</p>
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
             {/* CLOSED State - Outcomes */}
