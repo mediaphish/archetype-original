@@ -162,6 +162,13 @@ export default function CreateEvent() {
       }
     }
 
+    // Validate required fields before submitting
+    if (!formData.title || !formData.event_date || !formData.start_time || !formData.finish_time || !formData.stake_amount || !formData.max_seats) {
+      setError('Please fill in all required fields');
+      setLoading(false);
+      return;
+    }
+
     try {
       // Validate finish_time is after start_time
       if (formData.start_time && formData.finish_time && formData.finish_time <= formData.start_time) {
@@ -175,12 +182,26 @@ export default function CreateEvent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
-          ...formData,
+          title: formData.title,
+          event_date: formData.event_date,
+          start_time: formData.start_time,
+          finish_time: formData.finish_time,
           stake_amount: parseFloat(formData.stake_amount),
           max_seats: parseInt(formData.max_seats),
-          sponsor_pot_value: formData.sponsor_pot_value ? parseUSD(formData.sponsor_pot_value) : 0,
+          // Host fields
+          host_name: formData.host_name || null,
+          host_logo_url: formData.host_logo_url || null,
+          host_location: formData.host_location || null,
           host_location_lat: formData.host_location_lat || null,
-          host_location_lng: formData.host_location_lng || null
+          host_location_lng: formData.host_location_lng || null,
+          host_description: formData.host_description || null,
+          // Sponsor fields
+          sponsor_name: formData.sponsor_name || null,
+          sponsor_logo_url: formData.sponsor_logo_url || null,
+          sponsor_website: formData.sponsor_website || null,
+          sponsor_phone: formData.sponsor_phone || null,
+          sponsor_pot_value: formData.sponsor_pot_value ? parseUSD(formData.sponsor_pot_value) : 0,
+          sponsor_description: formData.sponsor_description || null
         })
       });
 

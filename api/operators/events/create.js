@@ -46,8 +46,21 @@ export default async function handler(req, res) {
     if (!email) {
       return res.status(400).json({ ok: false, error: 'Email required' });
     }
-    if (!title || !event_date || !start_time || !finish_time || !stake_amount || !max_seats) {
-      return res.status(400).json({ ok: false, error: 'Missing required fields: title, event_date, start_time, finish_time, stake_amount, max_seats' });
+    
+    // Check for missing required fields (allow empty strings to be caught)
+    const missingFields = [];
+    if (!title || title.trim() === '') missingFields.push('title');
+    if (!event_date || event_date.trim() === '') missingFields.push('event_date');
+    if (!start_time || start_time.trim() === '') missingFields.push('start_time');
+    if (!finish_time || finish_time.trim() === '') missingFields.push('finish_time');
+    if (!stake_amount || stake_amount === '') missingFields.push('stake_amount');
+    if (!max_seats || max_seats === '') missingFields.push('max_seats');
+    
+    if (missingFields.length > 0) {
+      return res.status(400).json({ 
+        ok: false, 
+        error: `Missing required fields: ${missingFields.join(', ')}` 
+      });
     }
 
     // Validate finish_time is after start_time
