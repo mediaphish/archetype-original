@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
-import { formatPhoneNumber, formatUSD, parseUSD, isValidPhone } from '../../lib/operators/input-masks.js';
+import { formatPhoneNumber, formatUSD, parseUSD, isValidPhone } from '../../../lib/operators/input-masks.js';
 
 export default function CreateEvent() {
   const [formData, setFormData] = useState({
