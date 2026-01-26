@@ -159,6 +159,57 @@ export default function EventDetail() {
     }
   };
 
+  const handleRemoveRSVP = async (targetEmail) => {
+    if (!confirm(`Are you sure you want to remove ${targetEmail} from this event?`)) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/remove-rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, target_email: targetEmail })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || 'Failed to remove RSVP');
+      }
+    } catch (error) {
+      alert('Failed to remove RSVP. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handlePromoteWaitlist = async (targetEmail) => {
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/promote-waitlist`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, target_email: targetEmail })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || 'Failed to promote from waitlist');
+      }
+    } catch (error) {
+      alert('Failed to promote from waitlist. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleOpenEvent = async () => {
     if (!confirm('Are you sure you want to start this event? This will enable voting and check-ins.')) return;
     setActionLoading(true);
@@ -343,6 +394,7 @@ export default function EventDetail() {
     );
   }
 
+  const isSA = userRoles.includes('super_admin');
   const isCO = userRoles.includes('chief_operator') || userRoles.includes('super_admin');
   const isOperator = userRoles.includes('operator');
   const isAccountant = userRoles.includes('accountant');
@@ -350,6 +402,7 @@ export default function EventDetail() {
   const canInviteCandidate = isOperator && event.state === 'LIVE';
   const canApproveCandidate = isCO && event.state === 'LIVE';
   const canManageEvent = isCO || isAccountant;
+  const canManageRSVPs = isSA || isCO; // SA or CO can manage RSVPs
   
   // Check if event can be edited (LIVE state and future date)
   const canEdit = isCO && event.state === 'LIVE';
@@ -543,6 +596,37 @@ export default function EventDetail() {
                   </div>
                 )}
 
+                {/* RSVP Status and Cancel */}
+                {event.user_rsvp && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Your RSVP</h2>
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-sm font-medium text-gray-700">Status:</span>
+                      <span className={`px-3 py-1 rounded text-sm font-medium ${
+                        event.user_rsvp.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                        event.user_rsvp.status === 'waitlisted' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {event.user_rsvp.status}
+                      </span>
+                    </div>
+                    {canCancelRSVP(event) && (
+                      <button
+                        onClick={handleCancelRSVP}
+                        disabled={actionLoading}
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                      >
+                        {actionLoading ? 'Processing...' : 'Cancel RSVP'}
+                      </button>
+                    )}
+                    {!canCancelRSVP(event) && event.user_rsvp && (
+                      <p className="text-sm text-gray-500">
+                        Cancellation is only available more than 24 hours before the event starts.
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 {/* Rules & Requirements */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">Rules & Requirements</h2>
@@ -648,6 +732,86 @@ export default function EventDetail() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Manage RSVPs (SA/CO only) */}
+                {canManageRSVPs && event.rsvps && event.rsvps.length > 0 && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Manage RSVPs</h2>
+                    
+                    {/* Confirmed RSVPs */}
+                    {event.rsvps.filter(r => r.status === 'confirmed').length > 0 && (
+                      <div className="mb-6">
+                        <h3 className="text-lg font-medium text-gray-900 mb-3">Confirmed ({event.rsvps.filter(r => r.status === 'confirmed').length})</h3>
+                        <div className="space-y-2">
+                          {event.rsvps
+                            .filter(r => r.status === 'confirmed')
+                            .map(rsvp => (
+                              <div key={rsvp.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                <div>
+                                  <p className="font-medium text-gray-900">{rsvp.user_email}</p>
+                                  <p className="text-xs text-gray-500">
+                                    RSVP'd: {new Date(rsvp.created_at).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => handleRemoveRSVP(rsvp.user_email)}
+                                  disabled={actionLoading}
+                                  className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Waitlisted RSVPs */}
+                    {event.rsvps.filter(r => r.status === 'waitlisted').length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-3">Waitlisted ({event.rsvps.filter(r => r.status === 'waitlisted').length})</h3>
+                        <div className="space-y-2">
+                          {event.rsvps
+                            .filter(r => r.status === 'waitlisted')
+                            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+                            .map(rsvp => (
+                              <div key={rsvp.id} className="flex items-center justify-between p-3 border border-yellow-200 bg-yellow-50 rounded-lg">
+                                <div>
+                                  <p className="font-medium text-gray-900">{rsvp.user_email}</p>
+                                  <p className="text-xs text-gray-500">
+                                    Waitlisted: {new Date(rsvp.created_at).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => handlePromoteWaitlist(rsvp.user_email)}
+                                  disabled={actionLoading}
+                                  className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                                >
+                                  Promote
+                                </button>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {event.rsvps.filter(r => r.status === 'confirmed').length === 0 && event.rsvps.filter(r => r.status === 'waitlisted').length === 0 && (
+                      <p className="text-gray-500 text-sm">No RSVPs yet.</p>
+                    )}
                   </div>
                 )}
               </>

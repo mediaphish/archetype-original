@@ -141,6 +141,56 @@ export default function Dashboard() {
     }
   };
 
+  const handleCancelRSVP = async (eventId) => {
+    if (!confirm('Are you sure you want to cancel your RSVP?')) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${eventId}/rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, action: 'cancel' })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh events
+        const eventsResp = await fetch(`/api/operators/events?state=LIVE&email=${encodeURIComponent(email)}`);
+        const eventsJson = await eventsResp.json();
+        if (eventsJson.ok && eventsJson.events) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const future = eventsJson.events.filter(e => {
+            const eventDate = new Date(e.event_date);
+            return eventDate >= today;
+          }).map(e => ({
+            ...e,
+            user_rsvp: e.user_rsvp_status ? { status: e.user_rsvp_status } : null,
+            rsvps: Array.from({ length: e.confirmed_count || 0 }, (_, i) => ({ status: 'confirmed' }))
+              .concat(Array.from({ length: e.waitlist_count || 0 }, (_, i) => ({ status: 'waitlisted' })))
+          }));
+          setUpcomingEvents(future);
+        }
+      } else {
+        alert(json.error || 'Failed to cancel RSVP');
+      }
+    } catch (error) {
+      alert('Failed to cancel RSVP. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const canCancelRSVP = (event) => {
+    if (!event.user_rsvp || event.state !== 'LIVE') return false;
+    if (!event.event_date || !event.start_time) return false;
+    
+    const eventDateTime = new Date(`${event.event_date}T${event.start_time}`);
+    const now = new Date();
+    const hoursUntilEvent = (eventDateTime - now) / (1000 * 60 * 60);
+    return hoursUntilEvent >= 24;
+  };
+
   const handleSubmitCandidate = async (e, eventId) => {
     e.preventDefault();
     setActionLoading(true);
@@ -359,6 +409,31 @@ export default function Dashboard() {
                             >
                               RSVP
                             </button>
+                          </div>
+                        )}
+
+                        {/* RSVP Status and Cancel */}
+                        {event.user_rsvp && (
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-gray-700">Your RSVP:</span>
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                event.user_rsvp.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                                event.user_rsvp.status === 'waitlisted' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {event.user_rsvp.status}
+                              </span>
+                            </div>
+                            {canCancelRSVP(event) && (
+                              <button
+                                onClick={() => handleCancelRSVP(event.id)}
+                                disabled={actionLoading}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm"
+                              >
+                                Cancel RSVP
+                              </button>
+                            )}
                           </div>
                         )}
 
