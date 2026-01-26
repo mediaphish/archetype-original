@@ -1,23 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import { MapPin, ExternalLink } from 'lucide-react';
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userRoles, setUserRoles] = useState([]);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [candidateForm, setCandidateForm] = useState({});
 
   const urlParams = new URLSearchParams(window.location.search);
   const email = urlParams.get('email') || '';
 
+  const handleNavigate = (path) => {
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const withEmail = (path) => {
+    if (!email) return path;
+    if (path.includes('email=')) return path;
+    const joiner = path.includes('?') ? '&' : '?';
+    return `${path}${joiner}email=${encodeURIComponent(email)}`;
+  };
+
   useEffect(() => {
-    const fetchDashboard = async () => {
+    const fetchUserRoles = async () => {
+      if (!email) return;
+      
+      try {
+        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
+        const json = await resp.json();
+        if (json.ok && json.user) {
+          setUserRoles(json.user.roles || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user roles:', error);
+      }
+    };
+
+    fetchUserRoles();
+  }, [email]);
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const resp = await fetch('/api/operators/dashboard');
-        const json = await resp.json();
         
-        if (json.ok) {
-          setDashboard(json.dashboard);
+        // Fetch dashboard metrics
+        const dashboardResp = await fetch('/api/operators/dashboard');
+        const dashboardJson = await dashboardResp.json();
+        if (dashboardJson.ok) {
+          setDashboard(dashboardJson.dashboard);
+        }
+
+        // Fetch upcoming events
+        if (email) {
+          const eventsResp = await fetch(`/api/operators/events?state=LIVE&email=${encodeURIComponent(email)}`);
+          const eventsJson = await eventsResp.json();
+          if (eventsJson.ok && eventsJson.events) {
+            // Filter to only future events and add RSVP data
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const future = eventsJson.events.filter(e => {
+              const eventDate = new Date(e.event_date);
+              return eventDate >= today;
+            }).map(e => ({
+              ...e,
+              user_rsvp: e.user_rsvp_status ? { status: e.user_rsvp_status } : null,
+              rsvps: Array.from({ length: e.confirmed_count || 0 }, (_, i) => ({ status: 'confirmed' }))
+                .concat(Array.from({ length: e.waitlist_count || 0 }, (_, i) => ({ status: 'waitlisted' })))
+            }));
+            setUpcomingEvents(future);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch dashboard:', error);
@@ -26,8 +83,8 @@ export default function Dashboard() {
       }
     };
 
-    fetchDashboard();
-  }, []);
+    fetchData();
+  }, [email]);
 
   if (loading) {
     return (
@@ -47,11 +104,119 @@ export default function Dashboard() {
     );
   }
 
+  const handleRSVP = async (eventId) => {
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${eventId}/rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, action: 'rsvp' })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh events
+        const eventsResp = await fetch(`/api/operators/events?state=LIVE&email=${encodeURIComponent(email)}`);
+        const eventsJson = await eventsResp.json();
+        if (eventsJson.ok && eventsJson.events) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const future = eventsJson.events.filter(e => {
+            const eventDate = new Date(e.event_date);
+            return eventDate >= today;
+          }).map(e => ({
+            ...e,
+            user_rsvp: e.user_rsvp_status ? { status: e.user_rsvp_status } : null,
+            rsvps: Array.from({ length: e.confirmed_count || 0 }, (_, i) => ({ status: 'confirmed' }))
+              .concat(Array.from({ length: e.waitlist_count || 0 }, (_, i) => ({ status: 'waitlisted' })))
+          }));
+          setUpcomingEvents(future);
+        }
+      } else {
+        alert(json.error || 'Failed to RSVP');
+      }
+    } catch (error) {
+      alert('Failed to RSVP. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleSubmitCandidate = async (e, eventId) => {
+    e.preventDefault();
+    setActionLoading(true);
+    const form = candidateForm[eventId] || { candidate_email: '', essay: '', contact_info: '' };
+    try {
+      const resp = await fetch('/api/operators/candidates/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          event_id: eventId,
+          ...form
+        })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        setCandidateForm(prev => ({ ...prev, [eventId]: { candidate_email: '', essay: '', contact_info: '' } }));
+        // Refresh events
+        const eventsResp = await fetch(`/api/operators/events?state=LIVE&email=${encodeURIComponent(email)}`);
+        const eventsJson = await eventsResp.json();
+        if (eventsJson.ok && eventsJson.events) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const future = eventsJson.events.filter(e => {
+            const eventDate = new Date(e.event_date);
+            return eventDate >= today;
+          }).map(e => ({
+            ...e,
+            user_rsvp: e.user_rsvp_status ? { status: e.user_rsvp_status } : null,
+            rsvps: Array.from({ length: e.confirmed_count || 0 }, (_, i) => ({ status: 'confirmed' }))
+              .concat(Array.from({ length: e.waitlist_count || 0 }, (_, i) => ({ status: 'waitlisted' })))
+          }));
+          setUpcomingEvents(future);
+        }
+      } else {
+        alert(json.error || 'Failed to submit candidate');
+      }
+    } catch (error) {
+      alert('Failed to submit candidate. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const getStateColor = (state) => {
+    switch (state) {
+      case 'LIVE': return 'bg-blue-100 text-blue-800';
+      case 'OPEN': return 'bg-green-100 text-green-800';
+      case 'CLOSED': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getMapLink = (address) => {
+    if (!address) return '';
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  };
+
+  const isOperator = userRoles.includes('operator');
+  const canRSVP = isOperator || userRoles.includes('candidate');
+
+  if (!dashboard) {
+    return (
+      <div className="min-h-screen bg-[#fafafa]">
+        <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <div className="container mx-auto px-4 py-8">No data available</div>
+      </div>
+    );
+  }
+
   const { event_metrics, longitudinal_metrics } = dashboard;
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} />
+      <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-semibold text-gray-900 mb-6">Dashboard</h1>
         
@@ -73,6 +238,171 @@ export default function Dashboard() {
             <p className="text-2xl font-semibold text-gray-900">{longitudinal_metrics.active_operators}</p>
           </div>
         </div>
+
+        {/* Upcoming Events */}
+        {upcomingEvents.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Upcoming Events</h2>
+            <div className="space-y-6">
+              {upcomingEvents.map(event => {
+                const eventForm = candidateForm[event.id] || { candidate_email: '', essay: '', contact_info: '' };
+                const canInviteCandidate = isOperator && event.state === 'LIVE';
+                
+                return (
+                  <div key={event.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-xl font-semibold text-gray-900">{event.title}</h3>
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStateColor(event.state)}`}>
+                            {event.state}
+                          </span>
+                        </div>
+                        <p className="text-gray-600">
+                          {new Date(event.event_date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleNavigate(withEmail(`/operators/events/${event.id}`))}
+                        className="px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-lg"
+                      >
+                        View Details
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <p className="text-sm text-gray-500 mb-1">Stake Amount</p>
+                        <p className="text-gray-900">${event.stake_amount}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500 mb-1">Seats</p>
+                        <p className="text-gray-900">
+                          {event.rsvps?.filter(r => r.status === 'confirmed').length || 0}/{event.max_seats}
+                        </p>
+                      </div>
+                    </div>
+
+                    {event.host_name && (
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-gray-700 mb-1">Host: {event.host_name}</p>
+                        {event.host_location && (
+                          <div className="flex items-start gap-2">
+                            <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-600">{event.host_location}</p>
+                              <a
+                                href={getMapLink(event.host_location)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 mt-1"
+                              >
+                                Get Directions <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {event.state === 'LIVE' && (
+                      <div className="space-y-4 border-t pt-4">
+                        {/* Rules Section */}
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-2">Rules & Requirements</h4>
+                          <div className="text-sm text-gray-600 space-y-2">
+                            <div>
+                              <p className="font-medium">To Become a Candidate:</p>
+                              <ul className="list-disc list-inside ml-2 space-y-1">
+                                <li>Must be invited by an existing Operator</li>
+                                <li>Must submit a 200+ word essay</li>
+                                <li>Must be approved by a Chief Operator</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <p className="font-medium">To Become an Operator:</p>
+                              <ul className="list-disc list-inside ml-2 space-y-1">
+                                <li>Must be an approved Candidate</li>
+                                <li>Must attend and be checked in</li>
+                                <li>Must receive votes and be promoted</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* RSVP */}
+                        {canRSVP && !event.user_rsvp && (
+                          <div>
+                            <button
+                              onClick={() => handleRSVP(event.id)}
+                              disabled={actionLoading}
+                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                            >
+                              RSVP
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Invite Candidate */}
+                        {canInviteCandidate && (
+                          <div>
+                            <h4 className="font-medium text-gray-900 mb-2">Invite Candidate</h4>
+                            <form onSubmit={(e) => handleSubmitCandidate(e, event.id)} className="space-y-3">
+                              <input
+                                type="email"
+                                required
+                                value={eventForm.candidate_email}
+                                onChange={(e) => setCandidateForm(prev => ({
+                                  ...prev,
+                                  [event.id]: { ...eventForm, candidate_email: e.target.value }
+                                }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                placeholder="Candidate email"
+                              />
+                              <textarea
+                                required
+                                rows="4"
+                                value={eventForm.essay}
+                                onChange={(e) => setCandidateForm(prev => ({
+                                  ...prev,
+                                  [event.id]: { ...eventForm, essay: e.target.value }
+                                }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                placeholder="Essay (200+ words)"
+                              />
+                              <input
+                                type="text"
+                                required
+                                value={eventForm.contact_info}
+                                onChange={(e) => setCandidateForm(prev => ({
+                                  ...prev,
+                                  [event.id]: { ...eventForm, contact_info: e.target.value }
+                                }))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                placeholder="Contact info"
+                              />
+                              <button
+                                type="submit"
+                                disabled={actionLoading}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm"
+                              >
+                                Submit Candidate
+                              </button>
+                            </form>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

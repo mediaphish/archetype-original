@@ -185,11 +185,6 @@ export default function EditEvent() {
     }
   };
 
-  const getMapLink = () => {
-    if (!formData.host_location) return '';
-    const encodedAddress = encodeURIComponent(formData.host_location);
-    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -461,28 +456,16 @@ export default function EditEvent() {
                   <label htmlFor="host_location" className="block text-sm font-medium text-gray-700 mb-2">
                     Host Location (Address)
                   </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      id="host_location"
-                      name="host_location"
-                      value={formData.host_location}
-                      onChange={handleChange}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="123 Main St, City, State ZIP"
-                    />
-                    {formData.host_location && (
-                      <a
-                        href={getMapLink()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 whitespace-nowrap"
-                      >
-                        Get Directions
-                      </a>
-                    )}
-                  </div>
-                  <p className="mt-1 text-xs text-gray-500">Enter full address for map links</p>
+                  <input
+                    type="text"
+                    id="host_location"
+                    name="host_location"
+                    value={formData.host_location}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter business name or full address"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Enter business name or full address</p>
                 </div>
 
                 <div>

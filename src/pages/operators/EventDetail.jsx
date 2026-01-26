@@ -150,7 +150,7 @@ export default function EventDetail() {
   };
 
   const handleOpenEvent = async () => {
-    if (!confirm('Are you sure you want to open this event? This will enable voting and check-ins.')) return;
+    if (!confirm('Are you sure you want to start this event? This will enable voting and check-ins.')) return;
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/open`, {
@@ -276,13 +276,23 @@ export default function EventDetail() {
               </p>
             </div>
             {canManageEvent && event.state === 'LIVE' && (
-              <button
-                onClick={handleOpenEvent}
-                disabled={actionLoading}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-              >
-                Open Event
-              </button>
+              <div className="flex items-center gap-3">
+                {canEdit && isFutureEvent && (
+                  <button
+                    onClick={() => handleNavigate(withEmail(`/operators/events/${id}/edit`))}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                  >
+                    Edit Event
+                  </button>
+                )}
+                <button
+                  onClick={handleOpenEvent}
+                  disabled={actionLoading}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                >
+                  Start Event
+                </button>
+              </div>
             )}
             {canManageEvent && event.state === 'OPEN' && (
               <button
@@ -416,6 +426,31 @@ export default function EventDetail() {
                     </button>
                   </div>
                 )}
+
+                {/* Rules & Requirements */}
+                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Rules & Requirements</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-medium text-gray-900 mb-2">To Become a Candidate:</h3>
+                      <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                        <li>Must be invited by an existing Operator</li>
+                        <li>Must submit a 200+ word essay explaining why you want to join</li>
+                        <li>Must provide contact information</li>
+                        <li>Must be approved by a Chief Operator</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-900 mb-2">To Become an Operator:</h3>
+                      <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                        <li>Must be an approved Candidate</li>
+                        <li>Must attend an event and be checked in</li>
+                        <li>Must receive votes from other Operators during the event</li>
+                        <li>Must be promoted based on voting results and attendance</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Invite Candidate (Operators only) */}
                 {canInviteCandidate && (
@@ -561,40 +596,6 @@ export default function EventDetail() {
               </div>
             </div>
 
-            {/* Quick Actions */}
-            {canManageEvent && (
-              <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                <h3 className="font-semibold text-gray-900 mb-3">Quick Actions</h3>
-                <div className="space-y-2">
-                  {canEdit && isFutureEvent && (
-                    <button
-                      onClick={() => handleNavigate(withEmail(`/operators/events/${id}/edit`))}
-                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-                    >
-                      Edit Event
-                    </button>
-                  )}
-                  {event.state === 'LIVE' && (
-                    <button
-                      onClick={handleOpenEvent}
-                      disabled={actionLoading}
-                      className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm"
-                    >
-                      Open Event
-                    </button>
-                  )}
-                  {event.state === 'OPEN' && (
-                    <button
-                      onClick={handleCloseEvent}
-                      disabled={actionLoading}
-                      className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm"
-                    >
-                      Close Event
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
