@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
-import { formatPhoneNumber, formatUSD, parseUSD } from '../../lib/operators/input-masks.js';
+import { formatPhoneNumber, formatUSD, parseUSD } from '../../../lib/operators/input-masks.js';
 
 export default function EditEvent() {
   const path = window.location.pathname;
