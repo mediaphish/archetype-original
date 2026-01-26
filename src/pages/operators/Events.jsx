@@ -30,8 +30,13 @@ export default function Events() {
       try {
         const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
         const json = await resp.json();
+        console.log('[Events] User roles response:', json);
         if (json.ok && json.user) {
-          setUserRoles(json.user.roles || []);
+          const roles = json.user.roles || [];
+          console.log('[Events] User roles:', roles);
+          setUserRoles(roles);
+        } else {
+          console.log('[Events] User not found or error:', json);
         }
       } catch (error) {
         console.error('Failed to fetch user roles:', error);
@@ -83,7 +88,7 @@ export default function Events() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Events</h1>
-          {userRoles.includes('chief_operator') && (
+          {(userRoles.includes('chief_operator') || userRoles.includes('super_admin')) && (
             <button
               onClick={() => handleNavigate(withEmail('/operators/events/new'))}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
