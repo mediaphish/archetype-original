@@ -961,7 +961,9 @@ export default function EventDetail() {
                                       )}
                                     </div>
                                     <p className="text-sm text-gray-600 mb-2">{topic.topic_summary}</p>
-                                    <p className="text-xs text-gray-500 italic mb-3">"{topic.why_this_fits_this_room}"</p>
+                                    <p className="text-sm text-gray-700 italic mb-3 border-l-2 border-gray-300 pl-3">
+                                      <span className="font-medium">Why this fits:</span> {topic.why_this_fits_this_room}
+                                    </p>
                                   </div>
                                 </div>
                                 <div>

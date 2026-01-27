@@ -66,6 +66,7 @@ import OperatorsEditEvent from "./pages/operators/EditEvent";
 import OperatorsDashboard from "./pages/operators/Dashboard";
 import OperatorsAdmin from "./pages/operators/Admin";
 import OperatorsCandidates from "./pages/operators/Candidates";
+import OperatorsProfile from "./pages/operators/Profile";
 import ContactPage from "./pages/Contact";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
@@ -242,6 +243,8 @@ export default function App() {
           setCurrentPage('operators-admin');
         } else if (path === '/operators/candidates') {
           setCurrentPage('operators-candidates');
+        } else if (path === '/operators/profile') {
+          setCurrentPage('operators-profile');
         } else {
           // Default Operators route to events
           window.history.replaceState({}, '', '/operators/events');
@@ -829,6 +832,10 @@ export default function App() {
 
   if (currentPage === 'operators-candidates') {
     return <OperatorsCandidates />;
+  }
+
+  if (currentPage === 'operators-profile') {
+    return <OperatorsProfile />;
   }
 
   // Render ALI Dashboard page (elevated design) - OLD route under culture-science

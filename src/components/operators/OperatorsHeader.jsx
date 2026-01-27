@@ -43,6 +43,9 @@ export default function OperatorsHeader({ active = 'events', email = '', userRol
             <button onClick={() => handleNavigate(withEmail('/operators/dashboard'))} className={tabClass('dashboard')}>
               Dashboard
             </button>
+            <button onClick={() => handleNavigate(withEmail('/operators/profile'))} className={tabClass('profile')}>
+              Profile
+            </button>
             {isCO && (
               <button onClick={() => handleNavigate(withEmail('/operators/candidates'))} className={tabClass('candidates')}>
                 Candidates

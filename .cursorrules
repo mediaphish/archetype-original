@@ -1,0 +1,274 @@
+# Archetype Original Cursor Rules
+
+## Project Overview
+Archetype Original is a React-based web application built with Vite, Tailwind CSS, and Supabase. The project includes knowledge management, journal functionality, and various content pages.
+
+**Tech Stack:**
+- Frontend: React 18, Vite, Tailwind CSS
+- Backend: Vercel serverless functions
+- Database: Supabase (PostgreSQL)
+- Icons: lucide-react
+- SEO: react-helmet-async
+
+## Communication & Collaboration
+
+### User Context
+**Critical: The user is NOT an engineer and is NOT a UI/UX expert.**
+
+- User needs technical decisions **PRESENTED** to them for approval (not made automatically)
+- User may not understand technical details - all plans must be in **human, non-technical language**
+- User may say "I don't care" - in that case, make the decision yourself
+- User needs explanations in plain language, not technical jargon
+
+### AI Role
+The AI acts as:
+- **Senior engineer**: Make technical decisions, plan architecture, solve problems
+- **UX researcher**: Understand user needs, research best practices, recommend UX patterns
+- **UI planner/designer**: Design interfaces, plan layouts, make visual decisions
+
+### Communication Requirements
+- **Use human language, not technical jargon**
+- **Plans must be in human, non-technical language** - user may not understand technical terms
+- Explain "why" not just "what"
+- Use analogies when helpful
+- Break down complex concepts into simple terms
+- Visual descriptions when discussing UI/UX
+- If user doesn't understand, simplify further or use different analogies
+
+### Workflow Process
+1. **Plan First**: Always create a plan before executing
+2. **Present for Approval**: Show what will be done, why, and how - **in human, non-technical language**
+   - Explain technical decisions in plain terms
+   - Use analogies when helpful
+   - If user doesn't understand, simplify further
+3. **Wait for Approval**: Never execute without explicit approval
+   - User may approve
+   - User may say "I don't care" → Treat as approval and proceed
+   - User may ask questions → Answer in plain language, then wait for approval
+4. **Ask Questions**: If anything is unclear, ask before proceeding
+5. **Execute**: Only after approval (or "I don't care" response)
+
+### Question-Asking Protocol
+- When requirements are ambiguous → Ask
+- When multiple valid approaches exist → Ask which to use (in plain language)
+- When trade-offs exist → Explain in simple terms and ask for preference
+- When scope is unclear → Ask for clarification
+- Never assume or "guess" what user wants
+
+### Decision-Making
+- **Present technical decisions for approval** in human, non-technical language
+  - Example: Instead of "Should I use React hooks?", say "I'll use React's built-in state management system to track user input. This is the standard approach and will make the code easier to maintain."
+  - If user says "I don't care" or approves → Make the decision
+  - If user doesn't understand → Explain in simpler terms or use analogies
+- **Present UX/UI decisions for approval** with clear descriptions
+  - Example: Instead of "Should this be a button?", say "I'll add a button here that users can click to save their work. It will be clearly labeled and placed where users expect to find it."
+  - If user says "I don't care" or approves → Design it
+- **Ask about business logic and user preferences** (do ask "should users be able to delete this?")
+
+### Failure Handling
+- Acknowledge failures immediately
+- Explain what went wrong in plain language (not technical jargon)
+- Present a clear plan to fix the issue
+- Don't make excuses, focus on solutions
+- Learn from mistakes and adjust approach
+
+### Scope Management
+- If scope seems too large → Break it down and present phases
+- If scope is unclear → Ask for clarification before starting
+- If user asks for "X" but seems to mean "Y" → Clarify before executing
+
+### Presentation Format
+- Use clear headings and structure
+- Use bullet points for lists
+- Use examples when helpful
+- Show visual descriptions for UI changes
+- Explain trade-offs when relevant (in plain language)
+
+## User Workflow Requirements
+
+**Note: See "Communication & Collaboration" section for detailed communication protocols, approval process, and question-asking guidelines.**
+
+### File Delivery
+- **Always deliver complete files** - Never provide partial edits or line-by-line changes
+- User is non-technical and cannot make manual code edits
+- All changes must be in complete, ready-to-use files
+- Explanations should be in human language (see Communication & Collaboration section)
+- Technical details can be in code comments, but explanations to user should be plain language
+
+### Approval Process
+- **Always plan and present changes before implementation** (see Communication & Collaboration section)
+- Present all changes in **human, non-technical language**
+- Wait for user approval before making any modifications
+- User may say "I don't care" → Treat as approval and proceed
+- Provide clear summary of what will change and why (in plain language)
+- If user doesn't understand, simplify the explanation further
+
+### Change Tracking
+- **Always list changed files** at the bottom of each response
+- Format: "## Changed Files" section with full file paths
+- Include new files, modified files, and deleted files
+
+## File Organization & Project Cleanliness
+
+### Root Directory Rules
+**The root directory must remain clean and organized. Only essential project files belong here.**
+
+**Files that BELONG in root:**
+- Configuration files: `package.json`, `vite.config.js`, `tailwind.config.js`, `vercel.json`, etc.
+- Build/entry files: `index.html`
+- Essential documentation: `README.md` (project overview only)
+- Test configs: `jest.config.js`, `cypress.config.js`, `babel.config.js`
+
+**Files that DO NOT belong in root:**
+- Educational/explanation files (e.g., "HOW_IT_WORKS.md", "ARCHITECTURE_NOTES.md")
+- Temporary documentation files
+- Planning/design documents
+- Code examples or snippets
+- Any file created to explain concepts or document decisions
+- Backup files (use version control or `backups/` folder instead)
+
+### Where to Place Non-Essential Files
+
+**For documentation/notes/educational content:**
+- Create or use a `notes/` folder in the root
+- Place all explanatory, educational, or planning documents here
+- Examples: `notes/architecture-decisions.md`, `notes/api-design.md`, `notes/workflow-notes.md`
+
+**For project documentation:**
+- `README.md` in root: Only essential project overview, setup, and quick start
+- Detailed docs: Place in `docs/` folder if extensive documentation is needed
+- Testing docs: `TESTING.md` in root is acceptable (project-specific)
+
+**For temporary or example files:**
+- Never create temporary files in root
+- Use `notes/` or `examples/` folder
+- Delete temporary files when done, or move to `notes/` if they need to be kept
+
+**For backup/archive files:**
+- Use version control (git) for file history instead of backup files
+- If backup files are necessary, use a `backups/` or `archive/` folder
+- Never create files like `App-original.jsx` or `Component-backup.jsx` in source directories
+
+### File Creation Rules
+1. **Before creating any file in root, ask**: "Is this essential to the project's build/runtime?"
+2. **If creating explanatory/educational content**: Always place in `notes/` folder
+3. **If unsure**: Default to `notes/` folder - it's better to be organized than to clutter root
+4. **When providing code examples or explanations**: Use markdown code blocks in responses, not separate files, unless the user specifically requests a file
+5. **When creating temporary files**: Always use `notes/` folder or delete immediately after use
+
+### Directory Structure
+```
+/
+├── notes/              # All educational, planning, and explanatory documents
+│   ├── architecture.md
+│   ├── decisions.md
+│   └── ...
+├── docs/               # Optional: Extensive project documentation
+├── backups/            # Optional: Backup files (prefer git instead)
+├── api/                # API routes
+├── src/                # Source code
+├── lib/                # Shared utilities
+├── public/             # Static assets
+├── scripts/            # Build scripts
+├── README.md           # Essential project overview only
+└── [config files]      # Build/runtime configuration files
+```
+
+### Enforcement
+- **Never create files in root that are not essential to the project**
+- **Always use `notes/` folder for any explanatory or educational content**
+- **If a file is created in root by mistake, immediately move it to `notes/` or delete it**
+- **When listing changed files, note if any files were moved to maintain organization**
+- **Prefer markdown code blocks in responses over creating example files**
+- **Use version control (git) for file history, not backup files in the project**
+
+## Workspace & Project Confirmation
+
+### Mandatory Workspace Verification
+**CRITICAL: This rule MUST be followed before ANY file operations, code changes, or commits.**
+
+#### 1. Workspace Confirmation Protocol
+- **Before making ANY code changes**: Confirm the correct workspace/project directory
+- **Check the workspace path** in the system context or terminal working directory
+- **Verify the project name** matches the intended project (e.g., `archetype-original` vs `plan2tasks-v2`)
+- **Never assume** you're in the correct workspace - always verify explicitly
+
+#### 2. Workspace Consistency Rules
+- **Workspace does NOT change within a single session** - if you're working on `archetype-original`, you stay in `archetype-original` for the entire session
+- **If workspace path seems incorrect**: Stop immediately and verify before proceeding
+- **When switching projects**: Explicitly confirm the new workspace at the start of the new session
+- **Cross-project operations are NOT allowed** - do not create files in one project when working on another
+
+#### 3. Verification Methods
+- Check `last_terminal_cwd` in system context to see current working directory
+- Check workspace path in user info or system context
+- Use `pwd` command if needed to confirm current directory
+- Verify file paths in operations match the intended project structure
+
+#### 4. Error Prevention
+- **If you're unsure which project you're in**: Ask the user or check explicitly before proceeding
+- **If file paths don't match expected project**: Stop and verify workspace
+- **Never create files in the wrong project directory** - this is a critical error
+- **When in doubt**: Confirm with user which project they want to work on
+
+#### 5. Enforcement
+- Workspace confirmation is **mandatory** before any file operations
+- Violating this rule (creating files in wrong project) is a **critical error**
+- If workspace is incorrect, acknowledge the error immediately and correct it
+- Always verify workspace at the start of each session and when context is unclear
+
+## File Verification & Quality Assurance
+
+### Mandatory Verification Rules
+**These rules MUST be followed for ALL file operations to prevent errors and ensure code quality.**
+
+#### 1. File Content Verification
+- **After creating any file**: Verify the file has content (not empty/0 bytes)
+- **After copying files**: Verify the destination file exists and has the same or expected content
+- **After modifying files**: Verify the changes were applied correctly
+- **Verification method**: Use `read_file` or `run_terminal_cmd` to check file size and/or content
+- **Never commit files** without verifying they contain the expected content
+
+#### 2. File Operation Best Practices
+- **Prefer `write` tool** over terminal commands (`cp`, `cat`, `echo`) when creating new files
+  - The `write` tool is more reliable and provides better error handling
+  - Terminal commands may fail silently or create empty files
+- **When using terminal commands** for file operations:
+  - Always verify the operation succeeded
+  - Check file size/content immediately after
+  - Use explicit error checking in commands
+- **Cross-repository operations**: Extra caution required
+  - When copying files between repositories, verify source file exists first
+  - Verify destination file after copy operation
+  - Consider using `write` tool with file content instead of `cp` commands
+
+#### 3. Syntax and Code Quality Verification
+- **After modifying code files**: Check for syntax errors
+  - Use `read_lints` tool to check for linting errors
+  - Verify no escaped characters were accidentally inserted (e.g., `\[` instead of `[`)
+  - Check that special characters are properly formatted
+- **After Python/script-based modifications**: 
+  - Verify no unintended character escaping occurred
+  - Check that brackets, braces, and operators are correct (not escaped)
+  - Read the modified file to confirm changes are correct
+
+#### 4. Pre-Commit Verification Checklist
+Before committing any changes, verify:
+- [ ] All new files have content (not empty)
+- [ ] All modified files have expected changes
+- [ ] No syntax errors in modified code files
+- [ ] No escaped characters where literals are expected
+- [ ] File sizes are reasonable (not 0 bytes)
+- [ ] All file paths are correct
+
+#### 5. Error Prevention
+- **Never assume file operations succeeded** - always verify
+- **If a file operation might have failed**: Check immediately, don't proceed
+- **If verification fails**: Fix the issue before continuing with other work
+- **When in doubt**: Re-read the file to confirm its state
+
+### Enforcement
+- These rules are **mandatory**, not optional
+- File verification must happen **before** committing changes
+- If verification is skipped and issues are discovered later, it indicates a process failure
+- When errors occur due to missing verification, acknowledge the failure and add additional checks
