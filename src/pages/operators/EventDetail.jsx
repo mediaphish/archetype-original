@@ -554,7 +554,7 @@ export default function EventDetail() {
   const isOperator = userRoles.includes('operator');
   const isAccountant = userRoles.includes('accountant');
   const canRSVP = isOperator || userRoles.includes('candidate');
-  const canInviteCandidate = isOperator && event.state === 'LIVE';
+  const canInviteCandidate = isOperator && event.state === 'LIVE' && !event.rsvp_closed;
   const canApproveCandidate = isCO && event.state === 'LIVE';
   const canManageEvent = isCO || isAccountant;
   const canManageRSVPs = isSA || isCO; // SA or CO can manage RSVPs
@@ -1099,7 +1099,14 @@ export default function EventDetail() {
                 {/* Manage RSVPs (SA/CO only) */}
                 {canManageRSVPs && event.rsvps && event.rsvps.length > 0 && (
                   <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Manage RSVPs</h2>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-semibold text-gray-900">Manage RSVPs</h2>
+                      {event.rsvp_closed && (
+                        <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded">
+                          RSVPs Closed
+                        </span>
+                      )}
+                    </div>
                     
                     {/* Confirmed RSVPs */}
                     {event.rsvps.filter(r => r.status === 'confirmed').length > 0 && (
@@ -1356,7 +1363,14 @@ export default function EventDetail() {
           <div className="space-y-6">
             {/* RSVP Status */}
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-3">RSVPs</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900">RSVPs</h3>
+                {event.rsvp_closed && (
+                  <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">
+                    Closed
+                  </span>
+                )}
+              </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Confirmed:</span>
