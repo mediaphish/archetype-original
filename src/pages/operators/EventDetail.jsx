@@ -11,7 +11,7 @@ export default function EventDetail() {
   const [actionLoading, setActionLoading] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [candidateForm, setCandidateForm] = useState({ candidate_email: '', essay: '', contact_info: '' });
-  const [userVotes, setUserVotes] = useState\({}\); // { target_email: vote_value }
+  const [userVotes, setUserVotes] = useState({}); // { target_email: vote_value }
   const [editingTopicId, setEditingTopicId] = useState(null);
   const [editingTopics, setEditingTopics] = useState([]);
   const [expandedPrompts, setExpandedPrompts] = useState(new Set());
