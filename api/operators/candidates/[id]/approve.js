@@ -4,6 +4,7 @@
  * POST /api/operators/candidates/[id]/approve
  * 
  * CO approves a candidate submission. Only CO can approve candidates.
+ * When approving, copies role_title, industry, and bio to operators_users if creating new user.
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
@@ -69,6 +70,37 @@ export default async function handler(req, res) {
     if (updateError) {
       console.error('[APPROVE_CANDIDATE] Database error:', updateError);
       return res.status(500).json({ ok: false, error: 'Failed to approve candidate' });
+    }
+
+    // Update or create operators_users record with bio fields
+    const { data: existingUser } = await supabaseAdmin
+      .from('operators_users')
+      .select('*')
+      .eq('email', candidate.candidate_email)
+      .maybeSingle();
+
+    const userUpdateData = {};
+    if (candidate.role_title) userUpdateData.role_title = candidate.role_title;
+    if (candidate.industry) userUpdateData.industry = candidate.industry;
+    if (candidate.bio) userUpdateData.bio = candidate.bio;
+
+    if (existingUser) {
+      // Update existing user with bio fields
+      if (Object.keys(userUpdateData).length > 0) {
+        await supabaseAdmin
+          .from('operators_users')
+          .update(userUpdateData)
+          .eq('email', candidate.candidate_email);
+      }
+    } else {
+      // Create new user with candidate role and bio fields
+      await supabaseAdmin
+        .from('operators_users')
+        .insert({
+          email: candidate.candidate_email,
+          roles: ['candidate'],
+          ...userUpdateData
+        });
     }
 
     return res.status(200).json({ ok: true, candidate: updatedCandidate });

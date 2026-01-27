@@ -7,7 +7,7 @@
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
-import { getUserOperatorsRoles, canPerformAction } from '../../../../lib/operators/permissions.js';
+import { getUserOperatorsRoles, canPerformAction, canManageTopics } from '../../../../lib/operators/permissions.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -138,6 +138,24 @@ export default async function handler(req, res) {
       promotions = promotionRecords || [];
     }
 
+    // Get topics (only for SA/CO/Accountant)
+    let topics = null;
+    const canManage = await canManageTopics(email);
+    if (canManage) {
+      const { data: eventTopics } = await supabaseAdmin
+        .from('operators_event_topics')
+        .select('*')
+        .eq('event_id', id)
+        .order('rank', { ascending: true });
+      topics = eventTopics || [];
+    }
+
+    // Calculate permission flags
+    const canCloseRSVP = canManage && event.state === 'LIVE' && !event.rsvp_closed;
+    const topicsExist = topics && topics.length > 0;
+    const canGenerateTopics = canManage && event.state === 'LIVE' && event.rsvp_closed && !topicsExist;
+    const canEditTopics = canManage && event.state === 'LIVE' && topicsExist && (!topics[0]?.is_locked);
+
     return res.status(200).json({
       ok: true,
       event: {
@@ -149,7 +167,11 @@ export default async function handler(req, res) {
         vote_summary: voteSummary,
         attendance,
         roi_winner: roiWinner,
-        promotions
+        promotions,
+        topics: canManage ? topics : undefined, // Only include if user can manage
+        can_close_rsvp: canCloseRSVP,
+        can_generate_topics: canGenerateTopics,
+        can_edit_topics: canEditTopics
       }
     });
   } catch (error) {

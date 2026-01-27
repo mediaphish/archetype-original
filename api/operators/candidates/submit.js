@@ -4,6 +4,7 @@
  * POST /api/operators/candidates/submit
  * 
  * Operator invites a Candidate to an event. Requires 200+ word essay and contact info.
+ * Now includes optional role_title, industry, and bio fields.
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { email, event_id, candidate_email, essay, contact_info } = req.body;
+    const { email, event_id, candidate_email, essay, contact_info, role_title, industry, bio } = req.body;
 
     // Validation
     if (!email) {
@@ -97,16 +98,23 @@ export default async function handler(req, res) {
     }
 
     // Create candidate submission
+    const candidateData = {
+      event_id,
+      candidate_email,
+      invited_by_email: email,
+      essay,
+      contact_info,
+      status: 'pending'
+    };
+
+    // Add optional bio fields if provided
+    if (role_title) candidateData.role_title = role_title;
+    if (industry) candidateData.industry = industry;
+    if (bio) candidateData.bio = bio;
+
     const { data: candidate, error: candidateError } = await supabaseAdmin
       .from('operators_candidates')
-      .insert({
-        event_id,
-        candidate_email,
-        invited_by_email: email,
-        essay,
-        contact_info,
-        status: 'pending'
-      })
+      .insert(candidateData)
       .select()
       .single();
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
-import { MapPin, ExternalLink, Users, UserPlus, CheckCircle, XCircle, Clock, ThumbsUp, ThumbsDown, LogIn, LogOut, X } from 'lucide-react';
+import { MapPin, ExternalLink, Users, UserPlus, CheckCircle, XCircle, Clock, ThumbsUp, ThumbsDown, LogIn, LogOut, X, ChevronDown, ChevronUp, Edit2, Save, Lock } from 'lucide-react';
 
 export default function EventDetail() {
   const path = window.location.pathname;
@@ -11,7 +11,10 @@ export default function EventDetail() {
   const [actionLoading, setActionLoading] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [candidateForm, setCandidateForm] = useState({ candidate_email: '', essay: '', contact_info: '' });
-  const [userVotes, setUserVotes] = useState({}); // { target_email: vote_value }
+  const \[userVotes, setUserVotes\] = useState\(\{\}\); // \{ target_email: vote_value \}
+  const [editingTopicId, setEditingTopicId] = useState(null);
+  const [editingTopics, setEditingTopics] = useState([]);
+  const [expandedPrompts, setExpandedPrompts] = useState(new Set());
   const [voteSummary, setVoteSummary] = useState({}); // { target_email: { upvotes, downvotes } }
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -385,6 +388,125 @@ export default function EventDetail() {
     );
   }
 
+  const handleCloseRSVP = async () => {
+    if (!confirm('Are you sure you want to close RSVP? This will prevent new RSVPs and stop waitlist auto-promotion.')) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/close-rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || 'Failed to close RSVP');
+      }
+    } catch (error) {
+      alert('Failed to close RSVP. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleGenerateTopics = async () => {
+    if (!confirm('Generate topic insights for this event? This will analyze attendee profiles and create discussion topics.')) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/generate-topics`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || 'Failed to generate topics');
+      }
+    } catch (error) {
+      alert('Failed to generate topics. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleUpdateTopics = async () => {
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/topics`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, topics: editingTopics })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        setEditingTopicId(null);
+        setEditingTopics([]);
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || 'Failed to update topics');
+      }
+    } catch (error) {
+      alert('Failed to update topics. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleStartEditTopics = () => {
+    if (event.topics && event.topics.length > 0) {
+      setEditingTopics([...event.topics]);
+      setEditingTopicId('all');
+    }
+  };
+
+  const handleCancelEditTopics = () => {
+    setEditingTopicId(null);
+    setEditingTopics([]);
+  };
+
+  const handleMoveTopic = (index, direction) => {
+    if (direction === 'up' && index > 0) {
+      const newTopics = [...editingTopics];
+      [newTopics[index], newTopics[index - 1]] = [newTopics[index - 1], newTopics[index]];
+      newTopics[index].rank = index + 1;
+      newTopics[index - 1].rank = index;
+      setEditingTopics(newTopics);
+    } else if (direction === 'down' && index < editingTopics.length - 1) {
+      const newTopics = [...editingTopics];
+      [newTopics[index], newTopics[index + 1]] = [newTopics[index + 1], newTopics[index]];
+      newTopics[index].rank = index + 1;
+      newTopics[index + 1].rank = index + 2;
+      setEditingTopics(newTopics);
+    }
+  };
+
+  const togglePrompts = (topicId) => {
+    const newExpanded = new Set(expandedPrompts);
+    if (newExpanded.has(topicId)) {
+      newExpanded.delete(topicId);
+    } else {
+      newExpanded.add(topicId);
+    }
+    setExpandedPrompts(newExpanded);
+  };
+
+
   if (!event) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
@@ -402,7 +524,8 @@ export default function EventDetail() {
   const canInviteCandidate = isOperator && event.state === 'LIVE';
   const canApproveCandidate = isCO && event.state === 'LIVE';
   const canManageEvent = isCO || isAccountant;
-  const canManageRSVPs = isSA || isCO; // SA or CO can manage RSVPs
+  const canManageRSVPs = isSA \|\| isCO; // SA or CO can manage RSVPs
+  const canManageTopics = isSA || isCO || isAccountant; // SA, CO, or Accountant can manage topics
   
   // Check if event can be edited (LIVE state and future date)
   const canEdit = isCO && event.state === 'LIVE';
@@ -651,6 +774,211 @@ export default function EventDetail() {
                     </div>
                   </div>
                 </div>
+
+                {/* Topic Insights (SA/CO/Accountant only) */}
+                {canManageTopics && event.state === 'LIVE' && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Topic Insights</h2>
+                    
+                    {/* Close RSVP Section */}
+                    {event.can_close_rsvp && (
+                      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-900 mb-3">
+                          RSVP is currently open. Close RSVP to enable topic generation.
+                        </p>
+                        <button
+                          onClick={handleCloseRSVP}
+                          disabled={actionLoading}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                        >
+                          {actionLoading ? 'Processing...' : 'Close RSVP'}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Generate Topics Section */}
+                    {event.can_generate_topics && (
+                      <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-900 mb-3">
+                          RSVP is closed. Generate AI-powered topic insights based on attendee profiles.
+                        </p>
+                        <button
+                          onClick={handleGenerateTopics}
+                          disabled={actionLoading}
+                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                        >
+                          {actionLoading ? 'Generating...' : 'Generate Topic Insights'}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Topics Display */}
+                    {event.topics && event.topics.length > 0 && (
+                      <div className="space-y-4">
+                        {editingTopicId === 'all' ? (
+                          /* Edit Mode */
+                          <div className="space-y-4">
+                            {editingTopics.map((topic, index) => (
+                              <div key={topic.id} className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                                <div className="flex items-center justify-between mb-3">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium text-gray-500">Rank {topic.rank}</span>
+                                    <button
+                                      onClick={() => handleMoveTopic(index, 'up')}
+                                      disabled={index === 0}
+                                      className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                                    >
+                                      <ChevronUp className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleMoveTopic(index, 'down')}
+                                      disabled={index === editingTopics.length - 1}
+                                      className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                                    >
+                                      <ChevronDown className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="space-y-3">
+                                  <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                                    <input
+                                      type="text"
+                                      value={topic.topic_title}
+                                      onChange={(e) => {
+                                        const updated = [...editingTopics];
+                                        updated[index].topic_title = e.target.value;
+                                        setEditingTopics(updated);
+                                      }}
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Summary</label>
+                                    <textarea
+                                      value={topic.topic_summary}
+                                      onChange={(e) => {
+                                        const updated = [...editingTopics];
+                                        updated[index].topic_summary = e.target.value;
+                                        setEditingTopics(updated);
+                                      }}
+                                      rows="2"
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Why This Fits</label>
+                                    <input
+                                      type="text"
+                                      value={topic.why_this_fits_this_room}
+                                      onChange={(e) => {
+                                        const updated = [...editingTopics];
+                                        updated[index].why_this_fits_this_room = e.target.value;
+                                        setEditingTopics(updated);
+                                      }}
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Starter Prompts (one per line)</label>
+                                    <textarea
+                                      value={Array.isArray(topic.starter_prompts) ? topic.starter_prompts.join('\n') : ''}
+                                      onChange={(e) => {
+                                        const updated = [...editingTopics];
+                                        updated[index].starter_prompts = e.target.value.split('\n').filter(p => p.trim());
+                                        setEditingTopics(updated);
+                                      }}
+                                      rows="4"
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            <div className="flex items-center gap-3">
+                              <button
+                                onClick={handleUpdateTopics}
+                                disabled={actionLoading}
+                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
+                              >
+                                <Save className="w-4 h-4" />
+                                Save Changes
+                              </button>
+                              <button
+                                onClick={handleCancelEditTopics}
+                                disabled={actionLoading}
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          /* View Mode */
+                          <div className="space-y-4">
+                            {event.topics.map((topic) => (
+                              <div key={topic.id} className="border border-gray-200 rounded-lg p-4">
+                                <div className="flex items-start justify-between mb-2">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="text-sm font-medium text-gray-500">#{topic.rank}</span>
+                                      <h3 className="text-lg font-semibold text-gray-900">{topic.topic_title}</h3>
+                                      {topic.is_locked && (
+                                        <Lock className="w-4 h-4 text-gray-400" title="Locked" />
+                                      )}
+                                    </div>
+                                    <p className="text-sm text-gray-600 mb-2">{topic.topic_summary}</p>
+                                    <p className="text-xs text-gray-500 italic mb-3">"{topic.why_this_fits_this_room}"</p>
+                                  </div>
+                                </div>
+                                <div>
+                                  <button
+                                    onClick={() => togglePrompts(topic.id)}
+                                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+                                  >
+                                    {expandedPrompts.has(topic.id) ? (
+                                      <>
+                                        <ChevronUp className="w-4 h-4" />
+                                        Hide Starter Prompts
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ChevronDown className="w-4 h-4" />
+                                        Show Starter Prompts
+                                      </>
+                                    )}
+                                  </button>
+                                  {expandedPrompts.has(topic.id) && (
+                                    <div className="mt-2 pl-4 border-l-2 border-gray-200">
+                                      <ul className="space-y-1 text-sm text-gray-600">
+                                        {(Array.isArray(topic.starter_prompts) ? topic.starter_prompts : []).map((prompt, idx) => (
+                                          <li key={idx} className="list-disc list-inside">{prompt}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                            {event.can_edit_topics && (
+                              <button
+                                onClick={handleStartEditTopics}
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center gap-2"
+                              >
+                                <Edit2 className="w-4 h-4" />
+                                Edit Topics
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {event.rsvp_closed && !event.topics && !event.can_generate_topics && (
+                      <p className="text-sm text-gray-500">Topics have been generated. Refresh to view them.</p>
+                    )}
+                  </div>
+                )}
 
                 {/* Invite Candidate (Operators only) */}
                 {canInviteCandidate && (

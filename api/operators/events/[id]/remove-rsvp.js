@@ -1,14 +1,14 @@
 /**
- * Remove RSVP (Admin)
+ * Remove RSVP
  * 
  * POST /api/operators/events/[id]/remove-rsvp
  * 
- * Allows SA or CO to remove any operator from an event (force remove, bypasses 24-hour rule).
- * If removed user was confirmed, auto-promotes first waitlisted operator.
+ * Super Admins or Chief Operators can force-remove an RSVP.
+ * Auto-promotes from waitlist only if RSVP is not closed.
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
-import { hasRole } from '../../../../lib/operators/permissions.js';
+import { hasAnyRole } from '../../../../lib/operators/permissions.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -25,24 +25,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'Event ID required' });
     }
     if (!email) {
-      return res.status(400).json({ ok: false, error: 'Email required' });
+      return res.status(400).json({ ok: false, error: 'Requester email required' });
     }
     if (!target_email) {
-      return res.status(400).json({ ok: false, error: 'target_email required' });
+      return res.status(400).json({ ok: false, error: 'Target email to remove required' });
     }
 
-    // Check permissions - only SA or CO can remove operators
-    const isSA = await hasRole(email, 'super_admin');
-    const isCO = await hasRole(email, 'chief_operator');
-    
-    if (!isSA && !isCO) {
-      return res.status(403).json({ ok: false, error: 'Only Super Admins or Chief Operators can remove operators from events' });
+    // Check permissions - only SA or CO can remove RSVPs
+    const canRemove = await hasAnyRole(email, ['super_admin', 'chief_operator']);
+    if (!canRemove) {
+      return res.status(403).json({ ok: false, error: 'Only Super Admins or Chief Operators can remove RSVPs' });
     }
 
     // Get event
     const { data: event, error: eventError } = await supabaseAdmin
       .from('operators_events')
-      .select('*')
+      .select('id, max_seats, rsvp_closed')
       .eq('id', id)
       .single();
 
@@ -50,38 +48,36 @@ export default async function handler(req, res) {
       return res.status(404).json({ ok: false, error: 'Event not found' });
     }
 
-    // Find RSVP for target_email
-    const { data: targetRSVP, error: rsvpError } = await supabaseAdmin
+    // Find the RSVP to remove
+    const { data: existingRSVP, error: fetchError } = await supabaseAdmin
       .from('operators_rsvps')
       .select('*')
       .eq('event_id', id)
       .eq('user_email', target_email)
       .maybeSingle();
 
-    if (rsvpError) {
-      console.error('[REMOVE_RSVP] Database error:', rsvpError);
-      return res.status(500).json({ ok: false, error: 'Failed to find RSVP' });
+    if (fetchError) {
+      console.error('[REMOVE_RSVP] Database error fetching RSVP:', fetchError);
+      return res.status(500).json({ ok: false, error: 'Failed to fetch RSVP' });
     }
 
-    if (!targetRSVP) {
-      return res.status(400).json({ ok: false, error: 'User has not RSVP\'d to this event' });
+    if (!existingRSVP) {
+      return res.status(404).json({ ok: false, error: 'RSVP not found for this user and event' });
     }
 
-    const wasConfirmed = targetRSVP.status === 'confirmed';
-
-    // Delete the RSVP
+    // Delete RSVP
     const { error: deleteError } = await supabaseAdmin
       .from('operators_rsvps')
       .delete()
-      .eq('id', targetRSVP.id);
+      .eq('id', existingRSVP.id);
 
     if (deleteError) {
-      console.error('[REMOVE_RSVP] Database error:', deleteError);
+      console.error('[REMOVE_RSVP] Database error deleting RSVP:', deleteError);
       return res.status(500).json({ ok: false, error: 'Failed to remove RSVP' });
     }
 
-    // If removed user was confirmed, auto-promote first waitlisted operator
-    if (wasConfirmed) {
+    // If a confirmed RSVP was removed, try to promote from waitlist (only if RSVP is not closed)
+    if (existingRSVP.status === 'confirmed' && !event.rsvp_closed) {
       const { data: waitlisted } = await supabaseAdmin
         .from('operators_rsvps')
         .select('*')
@@ -92,7 +88,7 @@ export default async function handler(req, res) {
         .maybeSingle();
 
       if (waitlisted) {
-        // Check if waitlisted user is an Operator (Candidates cannot be added late)
+        // Auto-promote first waitlisted (Operators only)
         const { data: waitlistedUser } = await supabaseAdmin
           .from('operators_users')
           .select('roles')

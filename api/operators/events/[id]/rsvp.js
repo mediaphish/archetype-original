@@ -5,6 +5,7 @@
  * 
  * RSVPs to an event. If event is full, user is waitlisted.
  * 24-hour notice required for cancellation.
+ * Cannot RSVP if rsvp_closed is true.
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
@@ -45,6 +46,11 @@ export default async function handler(req, res) {
     // Check state - must be LIVE
     if (event.state !== 'LIVE') {
       return res.status(400).json({ ok: false, error: 'Can only RSVP to LIVE events' });
+    }
+
+    // Check if RSVP is closed (for new RSVPs only)
+    if (action === 'rsvp' && event.rsvp_closed) {
+      return res.status(400).json({ ok: false, error: 'RSVP is closed for this event' });
     }
 
     // Check permissions
@@ -140,8 +146,8 @@ export default async function handler(req, res) {
         return res.status(500).json({ ok: false, error: 'Failed to cancel RSVP' });
       }
 
-      // Promote from waitlist if there's space
-      if (existingRSVP.status === 'confirmed') {
+      // Promote from waitlist if there's space AND RSVP is not closed
+      if (existingRSVP.status === 'confirmed' && !event.rsvp_closed) {
         const { data: waitlisted } = await supabaseAdmin
           .from('operators_rsvps')
           .select('*')
