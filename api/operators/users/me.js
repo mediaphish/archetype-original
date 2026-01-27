@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       // Remove sensitive fields if needed, or return all
       return res.status(200).json({ ok: true, user });
     } else if (req.method === 'PUT') {
-      const { role_title, industry, bio } = req.body;
+      const { role_title, industry, bio, headshot_url, business_name, website_url } = req.body;
 
       // Validate that user exists
       const user = await getOperatorsUser(email);
@@ -38,11 +38,21 @@ export default async function handler(req, res) {
         return res.status(404).json({ ok: false, error: 'User not found in Operators system' });
       }
 
+      // Check if user is an Operator (not just a Candidate) for operator-only fields
+      const isOperator = user.roles?.includes('operator') || false;
+      
       // Update user profile
       const updates = {};
       if (role_title !== undefined) updates.role_title = role_title || null;
       if (industry !== undefined) updates.industry = industry || null;
       if (bio !== undefined) updates.bio = bio || null;
+      
+      // Operator-only fields
+      if (isOperator) {
+        if (headshot_url !== undefined) updates.headshot_url = headshot_url || null;
+        if (business_name !== undefined) updates.business_name = business_name || null;
+        if (website_url !== undefined) updates.website_url = website_url || null;
+      }
 
       const { data: updatedUser, error: updateError } = await supabaseAdmin
         .from('operators_users')

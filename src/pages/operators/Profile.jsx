@@ -6,10 +6,14 @@ export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingHeadshot, setUploadingHeadshot] = useState(false);
   const [formData, setFormData] = useState({
     role_title: '',
     industry: '',
-    bio: ''
+    bio: '',
+    headshot_url: '',
+    business_name: '',
+    website_url: ''
   });
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -45,7 +49,10 @@ export default function Profile() {
           setFormData({
             role_title: json.user.role_title || '',
             industry: json.user.industry || '',
-            bio: json.user.bio || ''
+            bio: json.user.bio || '',
+            headshot_url: json.user.headshot_url || '',
+            business_name: json.user.business_name || '',
+            website_url: json.user.website_url || ''
           });
         }
       } catch (error) {
@@ -57,6 +64,52 @@ export default function Profile() {
 
     fetchProfile();
   }, [email]);
+
+  const handleHeadshotUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please select a PNG or JPG image');
+      return;
+    }
+
+    // Validate file size (max 2MB)
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert('Image must be smaller than 2MB');
+      return;
+    }
+
+    setUploadingHeadshot(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'headshot');
+
+      const resp = await fetch('/api/operators/upload-headshot', {
+        method: 'POST',
+        body: formData
+      });
+
+      const json = await resp.json();
+      if (json.ok) {
+        setFormData(prev => ({ ...prev, headshot_url: json.headshotUrl }));
+        alert('Headshot uploaded successfully');
+      } else {
+        alert(json.error || 'Failed to upload headshot');
+      }
+    } catch (error) {
+      console.error('Failed to upload headshot:', error);
+      alert('Failed to upload headshot. Please try again.');
+    } finally {
+      setUploadingHeadshot(false);
+      // Reset file input
+      e.target.value = '';
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -106,6 +159,8 @@ export default function Profile() {
       </div>
     );
   }
+
+  const isOperator = profile.roles?.includes('operator') || false;
 
   return (
     <div className="min-h-screen bg-[#F5F3F0]">
@@ -159,6 +214,70 @@ export default function Profile() {
                 {formData.bio.trim() ? formData.bio.trim().split(/\s+/).filter(word => word.length > 0).length : 0} words (Recommended: 100-200 words)
               </p>
             </div>
+
+            {/* Operator-only fields */}
+            {isOperator && (
+              <>
+                <div className="pt-4 border-t border-gray-200">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Operator Profile</h2>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Headshot
+                  </label>
+                  <div className="flex items-center gap-4">
+                    {formData.headshot_url && (
+                      <img 
+                        src={formData.headshot_url} 
+                        alt="Headshot" 
+                        className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg"
+                        onChange={handleHeadshotUpload}
+                        disabled={uploadingHeadshot}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 disabled:opacity-50"
+                      />
+                      {uploadingHeadshot && (
+                        <p className="text-xs text-gray-500 mt-1">Uploading...</p>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Upload a low-resolution headshot (PNG or JPG, max 2MB). Image will be automatically cropped and scaled.</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Business Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.business_name}
+                    onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
+                    placeholder="Your business or company name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Website Address
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.website_url}
+                    onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
+                    placeholder="https://example.com"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Include https:// or http://</p>
+                </div>
+              </>
+            )}
 
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
               <button
