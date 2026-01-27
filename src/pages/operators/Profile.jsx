@@ -156,7 +156,7 @@ export default function Profile() {
                 placeholder="Tell us about yourself, your background, and what you're working on. This helps generate more relevant discussion topics for events you attend. (Recommended: 100-200 words)"
               />
               <p className="text-xs text-gray-500 mt-1">
-                {formData.bio.length} characters (Recommended: 100-200 words)
+                {formData.bio.trim() ? formData.bio.trim().split(/\s+/).filter(word => word.length > 0).length : 0} words (Recommended: 100-200 words)
               </p>
             </div>
 
