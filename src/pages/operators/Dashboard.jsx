@@ -280,29 +280,106 @@ export default function Dashboard() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-semibold text-gray-900 mb-6">Dashboard</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Events</h3>
-            <p className="text-2xl font-semibold text-gray-900">{event_metrics.total_events}</p>
+        {/* Event Metrics */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Event Metrics</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Total Events</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.total_events}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Live Events</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.live_events}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Open Events</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.open_events}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Closed Events</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.closed_events}</p>
+            </div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Seats Filled Rate</h3>
-            <p className="text-2xl font-semibold text-gray-900">{event_metrics.seats_filled_rate.toFixed(1)}%</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Seats Filled Rate</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.seats_filled_rate.toFixed(1)}%</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Voting Completion</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.voting_completion_rate.toFixed(1)}%</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Attendance Counted</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.attendance_counted_rate.toFixed(1)}%</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Total Pot</h3>
+              <p className="text-2xl font-semibold text-gray-900">${event_metrics.total_pot.toFixed(2)}</p>
+            </div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Voting Completion</h3>
-            <p className="text-2xl font-semibold text-gray-900">{event_metrics.voting_completion_rate.toFixed(1)}%</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Room Positivity</h3>
+              <p className="text-2xl font-semibold text-gray-900">{(event_metrics.room_positivity_index * 100).toFixed(1)}%</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Signal Clarity</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.signal_clarity.toFixed(3)}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Total Offenses</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.total_offenses}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">No Shows</h3>
+              <p className="text-2xl font-semibold text-gray-900">{event_metrics.no_show_offenses}</p>
+            </div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Active Operators</h3>
-            <p className="text-2xl font-semibold text-gray-900">{longitudinal_metrics.active_operators}</p>
+        </div>
+
+        {/* Longitudinal Metrics */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Longitudinal Metrics</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Active Operators</h3>
+              <p className="text-2xl font-semibold text-gray-900">{longitudinal_metrics.active_operators}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Repeat Attendees</h3>
+              <p className="text-2xl font-semibold text-gray-900">{longitudinal_metrics.repeat_attendance_count}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Promotion Rate</h3>
+              <p className="text-2xl font-semibold text-gray-900">{longitudinal_metrics.promotion_rate.toFixed(1)}%</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Avg Signal Clarity</h3>
+              <p className="text-2xl font-semibold text-gray-900">{longitudinal_metrics.average_signal_clarity.toFixed(3)}</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Yellow Cards</h3>
+              <p className="text-2xl font-semibold text-yellow-600">{longitudinal_metrics.discipline_trends.yellow_cards}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Orange Cards</h3>
+              <p className="text-2xl font-semibold text-orange-600">{longitudinal_metrics.discipline_trends.orange_cards}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Red Cards</h3>
+              <p className="text-2xl font-semibold text-red-600">{longitudinal_metrics.discipline_trends.red_cards}</p>
+            </div>
           </div>
         </div>
 
         {/* Upcoming Events */}
-        {upcomingEvents.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Upcoming Events</h2>
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Upcoming Events</h2>
+          {upcomingEvents.length > 0 ? (
             <div className="space-y-6">
               {upcomingEvents.map(event => {
                 const eventForm = candidateForm[event.id] || { candidate_email: '', essay: '', contact_info: '' };
@@ -491,8 +568,12 @@ export default function Dashboard() {
                 );
               })}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <p className="text-gray-500 text-center">No upcoming events scheduled</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
