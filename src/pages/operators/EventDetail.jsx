@@ -524,7 +524,7 @@ export default function EventDetail() {
   const canInviteCandidate = isOperator && event.state === 'LIVE';
   const canApproveCandidate = isCO && event.state === 'LIVE';
   const canManageEvent = isCO || isAccountant;
-  const canManageRSVPs = isSA \|\| isCO; // SA or CO can manage RSVPs
+  const canManageRSVPs = isSA || isCO; // SA or CO can manage RSVPs
   const canManageTopics = isSA || isCO || isAccountant; // SA, CO, or Accountant can manage topics
   
   // Check if event can be edited (LIVE state and future date)
