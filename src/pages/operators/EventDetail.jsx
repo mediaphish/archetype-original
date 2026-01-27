@@ -108,6 +108,39 @@ export default function EventDetail() {
     }
   };
 
+  const canCancelRSVP = (event) => {
+    if (!event || !event.event_date || !event.start_time) return false;
+    const eventDateTime = new Date(`${event.event_date}T${event.start_time}`);
+    const now = new Date();
+    const hoursUntilEvent = (eventDateTime - now) / (1000 * 60 * 60);
+    return hoursUntilEvent > 24;
+  };
+
+  const handleCancelRSVP = async () => {
+    if (!confirm('Are you sure you want to cancel your RSVP?')) return;
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, action: 'cancel' })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || 'Failed to cancel RSVP');
+      }
+    } catch (error) {
+      alert('Failed to cancel RSVP. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleSubmitCandidate = async (e) => {
     e.preventDefault();
     setActionLoading(true);
