@@ -63,7 +63,11 @@ export default async function handler(req, res) {
 
       if (updateError) {
         console.error('[UPDATE_USER_PROFILE] Error:', updateError);
-        return res.status(500).json({ ok: false, error: 'Failed to update profile' });
+        return res.status(500).json({ 
+          ok: false, 
+          error: 'Failed to update profile',
+          details: updateError.message || 'Database error'
+        });
       }
 
       return res.status(200).json({ ok: true, user: updatedUser });

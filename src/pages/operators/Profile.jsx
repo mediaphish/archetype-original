@@ -128,7 +128,9 @@ export default function Profile() {
         setProfile(json.user);
         alert('Profile updated successfully');
       } else {
-        alert(json.error || 'Failed to update profile');
+        const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to update profile';
+        console.error('Profile update error:', json);
+        alert(errorMsg);
       }
     } catch (error) {
       console.error('Failed to save profile:', error);
