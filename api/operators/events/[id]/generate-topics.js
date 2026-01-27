@@ -102,9 +102,10 @@ export default async function handler(req, res) {
       }))
     };
 
-    // Check if OpenAI API key is configured
-    const openaiApiKey = process.env.OPENAI_API_KEY;
+    // Check if OpenAI API key is configured (this project uses OPEN_API_KEY)
+    const openaiApiKey = process.env.OPEN_API_KEY;
     if (!openaiApiKey) {
+      console.error('[GENERATE_TOPICS] OpenAI API key missing (OPEN_API_KEY)');
       return res.status(500).json({ ok: false, error: 'OpenAI API key not configured' });
     }
 
