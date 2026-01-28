@@ -1,0 +1,93 @@
+/**
+ * Revert Event to LIVE
+ * 
+ * POST /api/operators/events/[id]/revert-to-live
+ * 
+ * Transitions event from OPEN back to LIVE state. Unlocks topics.
+ * Only CO or Accountant can revert events.
+ */
+
+import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
+import { canPerformAction } from '../../../../lib/operators/permissions.js';
+
+export const config = { runtime: 'nodejs' };
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
+
+  try {
+    const { id } = req.query;
+    const { email } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ ok: false, error: 'Event ID required' });
+    }
+    if (!email) {
+      return res.status(400).json({ ok: false, error: 'Email required' });
+    }
+
+    // Get current event state
+    const { data: event, error: eventError } = await supabaseAdmin
+      .from('operators_events')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (eventError || !event) {
+      return res.status(404).json({ ok: false, error: 'Event not found' });
+    }
+
+    // Check state - must be OPEN
+    if (event.state !== 'OPEN') {
+      return res.status(400).json({ ok: false, error: `Event must be OPEN to revert to LIVE. Current state: ${event.state}` });
+    }
+
+    // Check permissions (same as opening/closing - CO or Accountant)
+    const canRevert = await canPerformAction(email, 'OPEN', 'revert_to_live');
+    if (!canRevert) {
+      return res.status(403).json({ ok: false, error: 'Only Chief Operators or Accountants can revert events to LIVE' });
+    }
+
+    // Unlock topics (set is_locked = false)
+    const { error: unlockError } = await supabaseAdmin
+      .from('operators_event_topics')
+      .update({ is_locked: false })
+      .eq('event_id', id);
+
+    if (unlockError) {
+      console.error('[REVERT_TO_LIVE] Error unlocking topics:', unlockError);
+      // Continue anyway - topics might not exist
+    }
+
+    // Update event state to LIVE and clear opened_at
+    const { data: updatedEvent, error: updateError } = await supabaseAdmin
+      .from('operators_events')
+      .update({
+        state: 'LIVE',
+        opened_at: null
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error('[REVERT_TO_LIVE] Database error:', updateError);
+      return res.status(500).json({ 
+        ok: false, 
+        error: 'Failed to revert event to LIVE',
+        details: updateError.message || 'Database error'
+      });
+    }
+
+    return res.status(200).json({ ok: true, event: updatedEvent });
+  } catch (error) {
+    console.error('[REVERT_TO_LIVE] Error:', error);
+    return res.status(500).json({ 
+      ok: false, 
+      error: 'Server error',
+      details: error.message || 'Unknown error'
+    });
+  }
+}

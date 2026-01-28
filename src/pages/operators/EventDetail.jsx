@@ -323,6 +323,33 @@ export default function EventDetail() {
     }
   };
 
+  const handleRevertToLive = async () => {
+    if (!confirm('Are you sure you want to revert this event to LIVE? This will unlock topics and allow editing before opening again.')) return;
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/revert-to-live`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to revert event to LIVE';
+        console.error('Revert to LIVE error:', json);
+        alert(errorMsg);
+      }
+    } catch (error) {
+      alert('Failed to revert event to LIVE. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const fetchUserVotes = async (eventId, userEmail) => {
     try {
       // Get event data which includes vote_summary
@@ -647,13 +674,22 @@ export default function EventDetail() {
               </div>
             )}
             {canManageEvent && event.state === 'OPEN' && (
-              <button
-                onClick={handleCloseEvent}
-                disabled={actionLoading}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
-              >
-                Close Event
-              </button>
+              <>
+                <button
+                  onClick={handleRevertToLive}
+                  disabled={actionLoading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                >
+                  Revert to LIVE
+                </button>
+                <button
+                  onClick={handleCloseEvent}
+                  disabled={actionLoading}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                >
+                  Close Event
+                </button>
+              </>
             )}
             {canManageEvent && event.state === 'CLOSED' && (
               <button
