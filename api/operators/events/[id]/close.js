@@ -99,34 +99,39 @@ export default async function handler(req, res) {
     if (roiError || !roiResult || roiResult.length === 0) {
       console.log('[CLOSE_EVENT] Function returned no winner, calculating manually...');
       
-      // Get all checked-in attendees with their vote counts
+      // Get all checked-in attendees
       const { data: attendanceRecords } = await supabaseAdmin
         .from('operators_attendance')
-        .select(`
-          user_email,
-          check_in_time,
-          operators_users!inner (
-            email,
-            owed_balance,
-            benched_until,
-            roles
-          )
-        `)
+        .select('user_email, check_in_time')
         .eq('event_id', id)
         .eq('checked_in', true)
         .eq('present_until_close', true)
         .eq('marked_no_show', false);
 
       if (attendanceRecords && attendanceRecords.length > 0) {
+        // Get user details for eligibility check
+        const userEmails = attendanceRecords.map(a => a.user_email);
+        const { data: users } = await supabaseAdmin
+          .from('operators_users')
+          .select('email, owed_balance, benched_until, roles')
+          .in('email', userEmails);
+
+        const userMap = {};
+        (users || []).forEach(u => {
+          userMap[u.email] = u;
+        });
+
         // Filter eligible attendees (no owed balance, not benched, has operator/candidate role)
         const eligibleAttendees = attendanceRecords.filter(att => {
-          const user = att.operators_users;
+          const user = userMap[att.user_email];
           if (!user) return false;
-          const hasRole = user.roles && (user.roles.includes('operator') || user.roles.includes('candidate'));
+          const hasRole = user.roles && Array.isArray(user.roles) && (user.roles.includes('operator') || user.roles.includes('candidate'));
           const noBalance = (user.owed_balance || 0) === 0;
           const notBenched = !user.benched_until || new Date(user.benched_until) < new Date();
           return hasRole && noBalance && notBenched;
         });
+
+        console.log(`[CLOSE_EVENT] Found ${eligibleAttendees.length} eligible attendees out of ${attendanceRecords.length} checked-in`);
 
         // Calculate vote totals for each eligible attendee
         const voteTotals = await Promise.all(
@@ -142,6 +147,8 @@ export default async function handler(req, res) {
             const netScore = upvotes - downvotes;
             const totalVotes = upvotes + downvotes;
             const upvoteRatio = totalVotes > 0 ? upvotes / totalVotes : 0;
+
+            console.log(`[CLOSE_EVENT] ${att.user_email}: ${upvotes} upvotes, ${downvotes} downvotes, net_score: ${netScore}`);
 
             return {
               user_email: att.user_email,
@@ -163,9 +170,16 @@ export default async function handler(req, res) {
           return new Date(a.check_in_time) - new Date(b.check_in_time);
         });
 
+        console.log(`[CLOSE_EVENT] Sorted vote totals:`, voteTotals.map(v => `${v.user_email}: ${v.net_score}`));
+
         if (voteTotals.length > 0 && voteTotals[0].net_score >= 0) {
           roiResult = [voteTotals[0]];
+          console.log(`[CLOSE_EVENT] Manual calculation found winner: ${voteTotals[0].user_email} with net_score ${voteTotals[0].net_score}`);
+        } else {
+          console.log(`[CLOSE_EVENT] No eligible winner found (all have negative net_score or no votes)`);
         }
+      } else {
+        console.log('[CLOSE_EVENT] No attendance records found for manual calculation');
       }
     }
 
