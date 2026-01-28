@@ -1472,7 +1472,7 @@ export default function EventDetail() {
                       {canEdit && isFutureEvent && (
                         <button
                           onClick={() => handleNavigate(withEmail(`/operators/events/${id}/edit`))}
-                          className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-left"
+                          className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50"
                         >
                           Edit Event
                         </button>
