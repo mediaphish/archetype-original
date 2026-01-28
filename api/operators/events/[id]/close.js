@@ -53,7 +53,36 @@ export default async function handler(req, res) {
     // Note: Events can be closed without all votes being used.
     // Operators who don't use all votes will receive penalty cards, but the event can still close.
 
-    // Calculate ROi winner using database function
+    // FIRST: Finalize attendance - set present_until_close for all checked-in attendees
+    // and update votes_used count from actual votes
+    // This MUST happen before ROI calculation because calculate_roi_winner requires
+    // present_until_close = true and correct votes_used
+    const { data: allAttendance } = await supabaseAdmin
+      .from('operators_attendance')
+      .select('*')
+      .eq('event_id', id);
+
+    for (const att of (allAttendance || [])) {
+      if (att.checked_in && !att.marked_no_show) {
+        // Count actual votes used
+        const { count: votesCount } = await supabaseAdmin
+          .from('operators_votes')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_id', id)
+          .eq('voter_email', att.user_email);
+
+        // Update attendance: set present_until_close and correct votes_used
+        await supabaseAdmin
+          .from('operators_attendance')
+          .update({
+            present_until_close: true,
+            votes_used: votesCount || 0
+          })
+          .eq('id', att.id);
+      }
+    }
+
+    // NOW: Calculate ROi winner using database function (after attendance is fixed)
     const { data: roiResult, error: roiError } = await supabaseAdmin
       .rpc('calculate_roi_winner', { event_id_param: id });
 
@@ -142,32 +171,14 @@ export default async function handler(req, res) {
       }
     }
 
-    // Finalize attendance - set present_until_close for all checked-in attendees
-    // and update votes_used count from actual votes
-    const { data: allAttendance } = await supabaseAdmin
+    // Update loyalty_count for eligible attendees (after attendance is finalized)
+    const { data: finalAttendance } = await supabaseAdmin
       .from('operators_attendance')
       .select('*')
       .eq('event_id', id);
 
-    for (const att of (allAttendance || [])) {
+    for (const att of (finalAttendance || [])) {
       if (att.checked_in && !att.marked_no_show) {
-        // Count actual votes used
-        const { count: votesCount } = await supabaseAdmin
-          .from('operators_votes')
-          .select('*', { count: 'exact', head: true })
-          .eq('event_id', id)
-          .eq('voter_email', att.user_email);
-
-        // Update attendance: set present_until_close and correct votes_used
-        await supabaseAdmin
-          .from('operators_attendance')
-          .update({
-            present_until_close: true,
-            votes_used: votesCount || 0
-          })
-          .eq('id', att.id);
-
-        // Update loyalty_count for eligible attendees
         const eligible = await supabaseAdmin.rpc('check_attendance_eligibility', {
           event_id_param: id,
           user_email_param: att.user_email
