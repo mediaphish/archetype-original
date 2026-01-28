@@ -156,6 +156,14 @@ export default async function handler(req, res) {
     const canGenerateScenarios = canManage && event.state === 'LIVE' && event.rsvp_closed && !scenariosExist;
     const canEditScenarios = canManage && event.state === 'LIVE' && scenariosExist && (!scenarios[0]?.is_locked);
 
+    // Ensure consistency: if state is LIVE, rsvp_closed should be false
+    // This is a safeguard in case the database update didn't complete properly
+    if (event.state === 'LIVE' && event.rsvp_closed === true) {
+      console.warn('[GET_EVENT] Inconsistent state: event is LIVE but rsvp_closed is true. Event ID:', event.id);
+      // Force it to false in the response (but don't update the database here)
+      event.rsvp_closed = false;
+    }
+
     return res.status(200).json({
       ok: true,
       event: {
