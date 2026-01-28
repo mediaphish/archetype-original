@@ -32,25 +32,25 @@ BEGIN
   ),
   ranked_targets AS (
     SELECT
-      user_email,
-      check_in_time,
-      (upvotes - downvotes) AS net_score,
+      et.user_email,
+      et.check_in_time,
+      (et.upvotes - et.downvotes) AS net_score,
       CASE 
-        WHEN (upvotes + downvotes) > 0 
-        THEN (upvotes::DECIMAL / (upvotes + downvotes)::DECIMAL)
+        WHEN (et.upvotes + et.downvotes) > 0 
+        THEN (et.upvotes::DECIMAL / (et.upvotes + et.downvotes)::DECIMAL)
         ELSE 0::DECIMAL
       END AS upvote_ratio,
-      (upvotes + downvotes) AS total_votes
-    FROM eligible_targets
+      (et.upvotes + et.downvotes) AS total_votes
+    FROM eligible_targets et
     ORDER BY
-      (upvotes - downvotes) DESC,  -- net_score DESC
+      (et.upvotes - et.downvotes) DESC,  -- net_score DESC
       CASE 
-        WHEN (upvotes + downvotes) > 0 
-        THEN (upvotes::DECIMAL / (upvotes + downvotes)::DECIMAL)
+        WHEN (et.upvotes + et.downvotes) > 0 
+        THEN (et.upvotes::DECIMAL / (et.upvotes + et.downvotes)::DECIMAL)
         ELSE 0::DECIMAL
       END DESC,  -- upvote_ratio DESC
-      (upvotes + downvotes) DESC,  -- total_votes DESC
-      check_in_time ASC  -- earliest check-in
+      (et.upvotes + et.downvotes) DESC,  -- total_votes DESC
+      et.check_in_time ASC  -- earliest check-in
     LIMIT 1
   )
   SELECT
