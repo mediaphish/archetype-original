@@ -3,7 +3,7 @@
  * 
  * POST /api/operators/events/[id]/reopen
  * 
- * Transitions event from CLOSED back to OPEN state. Unlocks scenarios.
+ * Transitions event from CLOSED back to OPEN state. Unlocks scenarios and resets RSVP status.
  * Only CO or Accountant can reopen events.
  */
 
@@ -61,12 +61,14 @@ export default async function handler(req, res) {
       // Continue anyway - scenarios might not exist
     }
 
-    // Update event state to OPEN and clear closed_at
+    // Update event state to OPEN, clear closed_at, and reset rsvp_closed
+    // Note: RSVPs are only allowed for LIVE events, but we reset this flag for consistency
     const { data: updatedEvent, error: updateError } = await supabaseAdmin
       .from('operators_events')
       .update({
         state: 'OPEN',
-        closed_at: null
+        closed_at: null,
+        rsvp_closed: false  // Reset RSVP status for consistency
       })
       .eq('id', id)
       .select()
@@ -80,6 +82,14 @@ export default async function handler(req, res) {
         details: updateError.message || 'Database error'
       });
     }
+
+    // Verify rsvp_closed was updated
+    if (updatedEvent && updatedEvent.rsvp_closed !== false) {
+      console.warn('[REOPEN_EVENT] Warning: rsvp_closed was not set to false. Current value:', updatedEvent.rsvp_closed);
+      updatedEvent.rsvp_closed = false;
+    }
+
+    console.log('[REOPEN_EVENT] Event reopened to OPEN. State:', updatedEvent?.state, 'RSVP Closed:', updatedEvent?.rsvp_closed);
 
     return res.status(200).json({ ok: true, event: updatedEvent });
   } catch (error) {

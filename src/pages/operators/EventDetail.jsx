@@ -307,10 +307,13 @@ export default function EventDetail() {
       });
       const json = await resp.json();
       if (json.ok) {
-        // Refresh event data
-        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        // Refresh event data with cache-busting to ensure fresh data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}&_t=${Date.now()}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          console.log('Event reopened to OPEN. RSVP Closed:', eventJson.event.rsvp_closed);
+        }
       } else {
         const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to reopen event';
         console.error('Reopen event error:', json);

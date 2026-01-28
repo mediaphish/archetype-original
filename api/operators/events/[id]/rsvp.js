@@ -45,11 +45,24 @@ export default async function handler(req, res) {
 
     // Check state - must be LIVE
     if (event.state !== 'LIVE') {
+      console.log('[RSVP] Event state check failed. State:', event.state, 'Event ID:', id);
       return res.status(400).json({ ok: false, error: 'Can only RSVP to LIVE events' });
+    }
+
+    // Ensure consistency: if state is LIVE, rsvp_closed should be false
+    // Auto-fix if inconsistent
+    if (event.rsvp_closed === true) {
+      console.warn('[RSVP] Inconsistent state: event is LIVE but rsvp_closed is true. Event ID:', id, 'Auto-fixing...');
+      await supabaseAdmin
+        .from('operators_events')
+        .update({ rsvp_closed: false })
+        .eq('id', id);
+      event.rsvp_closed = false;
     }
 
     // Check if RSVP is closed (for new RSVPs only)
     if (action === 'rsvp' && event.rsvp_closed) {
+      console.log('[RSVP] RSVP is closed. Event ID:', id, 'RSVP Closed:', event.rsvp_closed);
       return res.status(400).json({ ok: false, error: 'RSVP is closed for this event' });
     }
 
