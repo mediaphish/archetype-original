@@ -74,12 +74,20 @@ export default async function handler(req, res) {
 
     if (updateError) {
       console.error('[REOPEN_EVENT] Database error:', updateError);
-      return res.status(500).json({ ok: false, error: 'Failed to reopen event' });
+      return res.status(500).json({ 
+        ok: false, 
+        error: 'Failed to reopen event',
+        details: updateError.message || 'Database error'
+      });
     }
 
     return res.status(200).json({ ok: true, event: updatedEvent });
   } catch (error) {
     console.error('[REOPEN_EVENT] Error:', error);
-    return res.status(500).json({ ok: false, error: 'Server error' });
+    return res.status(500).json({ 
+      ok: false, 
+      error: 'Server error',
+      details: error.message || 'Unknown error'
+    });
   }
 }

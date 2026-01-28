@@ -312,7 +312,9 @@ export default function EventDetail() {
         const eventJson = await eventResp.json();
         if (eventJson.ok) setEvent(eventJson.event);
       } else {
-        alert(json.error || 'Failed to reopen event');
+        const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to reopen event';
+        console.error('Reopen event error:', json);
+        alert(errorMsg);
       }
     } catch (error) {
       alert('Failed to reopen event. Please try again.');
