@@ -67,6 +67,9 @@ import OperatorsDashboard from "./pages/operators/Dashboard";
 import OperatorsAdmin from "./pages/operators/Admin";
 import OperatorsCandidates from "./pages/operators/Candidates";
 import OperatorsProfile from "./pages/operators/Profile";
+import ToastProvider from "./components/operators/ToastProvider";
+import ErrorBoundary from "./components/operators/ErrorBoundary";
+import UserProvider from "./contexts/UserContext";
 import ContactPage from "./pages/Contact";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
@@ -807,35 +810,99 @@ export default function App() {
 
   // Render Operators pages
   if (currentPage === 'operators-events') {
-    return <OperatorsEvents />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsEvents />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   if (currentPage === 'operators-create-event') {
-    return <OperatorsCreateEvent />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsCreateEvent />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   if (currentPage === 'operators-edit-event') {
-    return <OperatorsEditEvent />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsEditEvent />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   if (currentPage === 'operators-event-detail') {
-    return <OperatorsEventDetail />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsEventDetail />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   if (currentPage === 'operators-dashboard') {
-    return <OperatorsDashboard />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsDashboard />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   if (currentPage === 'operators-admin') {
-    return <OperatorsAdmin />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsAdmin />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   if (currentPage === 'operators-candidates') {
-    return <OperatorsCandidates />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsCandidates />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   if (currentPage === 'operators-profile') {
-    return <OperatorsProfile />;
+    return (
+      <ErrorBoundary>
+        <UserProvider>
+          <ToastProvider>
+            <OperatorsProfile />
+          </ToastProvider>
+        </UserProvider>
+      </ErrorBoundary>
+    );
   }
 
   // Render ALI Dashboard page (elevated design) - OLD route under culture-science

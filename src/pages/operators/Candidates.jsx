@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { CheckCircle, XCircle, Clock, UserCheck } from 'lucide-react';
+import { useToast } from '../../components/operators/ToastProvider';
+import ConfirmModal from '../../components/operators/ConfirmModal';
+import { useUser } from '../../contexts/UserContext';
+import { EmptyCandidates } from '../../components/operators/EmptyState';
+import { handleKeyDown } from '../../lib/operators/accessibility';
 
 export default function Candidates() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || '';
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userRoles, setUserRoles] = useState([]);
   const [actionLoading, setActionLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false });
+  const toast = useToast();
+  const { email, userRoles } = useUser();
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -24,23 +29,6 @@ export default function Candidates() {
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
 
-  useEffect(() => {
-    const fetchUserRoles = async () => {
-      if (!email) return;
-      
-      try {
-        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        if (json.ok && json.user) {
-          setUserRoles(json.user.roles || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user roles:', error);
-      }
-    };
-
-    fetchUserRoles();
-  }, [email]);
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -87,19 +75,31 @@ export default function Candidates() {
           : `/api/operators/candidates?email=${encodeURIComponent(email)}&status=${filterStatus}`;
         const refreshResp = await fetch(url);
         const refreshJson = await refreshResp.json();
-        if (refreshJson.ok) setCandidates(refreshJson.candidates || []);
+        if (refreshJson.ok) {
+          setCandidates(refreshJson.candidates || []);
+          toast.success('Candidate approved successfully');
+        }
       } else {
-        alert(json.error || 'Failed to approve candidate');
+        toast.error(json.error || 'Failed to approve candidate');
       }
     } catch (error) {
-      alert('Failed to approve candidate. Please try again.');
+      toast.error('Failed to approve candidate. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleDeny = async (candidateId) => {
-    if (!confirm('Are you sure you want to deny this candidate?')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Deny Candidate',
+      message: 'Are you sure you want to deny this candidate?',
+      onConfirm: () => performDeny(candidateId),
+      variant: 'danger'
+    });
+  };
+
+  const performDeny = async (candidateId) => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/candidates/${candidateId}/deny`, {
@@ -115,12 +115,15 @@ export default function Candidates() {
           : `/api/operators/candidates?email=${encodeURIComponent(email)}&status=${filterStatus}`;
         const refreshResp = await fetch(url);
         const refreshJson = await refreshResp.json();
-        if (refreshJson.ok) setCandidates(refreshJson.candidates || []);
+        if (refreshJson.ok) {
+          setCandidates(refreshJson.candidates || []);
+          toast.success('Candidate denied');
+        }
       } else {
-        alert(json.error || 'Failed to deny candidate');
+        toast.error(json.error || 'Failed to deny candidate');
       }
     } catch (error) {
-      alert('Failed to deny candidate. Please try again.');
+      toast.error('Failed to deny candidate. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -160,57 +163,80 @@ export default function Candidates() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <OperatorsHeader active="candidates" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant || 'default'}
+      />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Candidates</h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2" role="group" aria-label="Filter candidates by status">
             <button
               onClick={() => setFilterStatus('all')}
+              onKeyDown={handleKeyDown(() => setFilterStatus('all'))}
               className={`px-4 py-2 rounded-lg text-sm ${
                 filterStatus === 'all' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
+              aria-label="Show all candidates"
+              aria-pressed={filterStatus === 'all'}
             >
               All
             </button>
             <button
               onClick={() => setFilterStatus('pending')}
+              onKeyDown={handleKeyDown(() => setFilterStatus('pending'))}
               className={`px-4 py-2 rounded-lg text-sm ${
                 filterStatus === 'pending' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
+              aria-label="Show pending candidates"
+              aria-pressed={filterStatus === 'pending'}
             >
               Pending
             </button>
             <button
               onClick={() => setFilterStatus('approved')}
+              onKeyDown={handleKeyDown(() => setFilterStatus('approved'))}
               className={`px-4 py-2 rounded-lg text-sm ${
                 filterStatus === 'approved' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
+              aria-label="Show approved candidates"
+              aria-pressed={filterStatus === 'approved'}
             >
               Approved
             </button>
             <button
               onClick={() => setFilterStatus('denied')}
+              onKeyDown={handleKeyDown(() => setFilterStatus('denied'))}
               className={`px-4 py-2 rounded-lg text-sm ${
                 filterStatus === 'denied' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
+              aria-label="Show denied candidates"
+              aria-pressed={filterStatus === 'denied'}
             >
               Denied
             </button>
             <button
               onClick={() => setFilterStatus('promoted')}
+              onKeyDown={handleKeyDown(() => setFilterStatus('promoted'))}
               className={`px-4 py-2 rounded-lg text-sm ${
                 filterStatus === 'promoted' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
+              aria-label="Show promoted candidates"
+              aria-pressed={filterStatus === 'promoted'}
             >
               Promoted
             </button>
@@ -219,7 +245,7 @@ export default function Candidates() {
 
         {candidates.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-            <p className="text-gray-600">No candidates found.</p>
+            <EmptyCandidates />
           </div>
         ) : (
           <div className="space-y-4">
@@ -231,8 +257,8 @@ export default function Candidates() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">{candidate.candidate_email}</h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(candidate.status)}`}>
-                          {getStatusIcon(candidate.status)}
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(candidate.status)}`} aria-label={`Candidate status: ${candidate.status}`}>
+                          {React.cloneElement(getStatusIcon(candidate.status), { 'aria-hidden': 'true' })}
                           {candidate.status}
                         </span>
                       </div>
@@ -259,15 +285,19 @@ export default function Candidates() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleApprove(candidate.id)}
+                          onKeyDown={handleKeyDown(() => handleApprove(candidate.id))}
                           disabled={actionLoading}
                           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm"
+                          aria-label={`Approve candidate ${candidate.candidate_email}`}
                         >
                           Approve
                         </button>
                         <button
                           onClick={() => handleDeny(candidate.id)}
+                          onKeyDown={handleKeyDown(() => handleDeny(candidate.id))}
                           disabled={actionLoading}
                           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm"
+                          aria-label={`Deny candidate ${candidate.candidate_email}`}
                         >
                           Deny
                         </button>

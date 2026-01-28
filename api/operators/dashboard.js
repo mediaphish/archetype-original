@@ -101,16 +101,16 @@ export default async function handler(req, res) {
     const attendanceCountedRate = totalAttendees > 0 ? (attendanceCounted / totalAttendees) * 100 : 0;
 
     // Room positivity index (average upvote ratio from closed events)
-    const { data: roiWinners } = await supabaseAdmin
+    const { data: allRoiWinners } = await supabaseAdmin
       .from('operators_roi_winners')
       .select('upvote_ratio');
 
-    const avgUpvoteRatio = (roiWinners || []).length > 0
-      ? (roiWinners || []).reduce((sum, w) => sum + parseFloat(w.upvote_ratio || 0), 0) / roiWinners.length
+    const avgUpvoteRatio = (allRoiWinners || []).length > 0
+      ? (allRoiWinners || []).reduce((sum, w) => sum + parseFloat(w.upvote_ratio || 0), 0) / allRoiWinners.length
       : 0;
 
     // Signal clarity (standard deviation of upvote ratios - lower is clearer)
-    const upvoteRatios = (roiWinners || []).map(w => parseFloat(w.upvote_ratio || 0));
+    const upvoteRatios = (allRoiWinners || []).map(w => parseFloat(w.upvote_ratio || 0));
     const mean = upvoteRatios.length > 0 ? upvoteRatios.reduce((a, b) => a + b, 0) / upvoteRatios.length : 0;
     const variance = upvoteRatios.length > 0
       ? upvoteRatios.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / upvoteRatios.length
@@ -248,6 +248,12 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error('[DASHBOARD] Error:', error);
-    return res.status(500).json({ ok: false, error: 'Server error' });
+    console.error('[DASHBOARD] Error stack:', error.stack);
+    console.error('[DASHBOARD] Error message:', error.message);
+    return res.status(500).json({ 
+      ok: false, 
+      error: 'Server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }

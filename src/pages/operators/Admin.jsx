@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { UserPlus, RotateCcw, Shield, AlertCircle } from 'lucide-react';
+import { useToast } from '../../components/operators/ToastProvider';
+import ConfirmModal from '../../components/operators/ConfirmModal';
+import { useUser } from '../../contexts/UserContext';
+import { handleKeyDown } from '../../lib/operators/accessibility';
 
 export default function Admin() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || '';
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userRoles, setUserRoles] = useState([]);
   const [actionLoading, setActionLoading] = useState(false);
   const [promoteEmail, setPromoteEmail] = useState('');
   const [reverseEmail, setReverseEmail] = useState('');
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false });
+  const toast = useToast();
+  const { email, userRoles } = useUser();
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -18,23 +22,6 @@ export default function Admin() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  useEffect(() => {
-    const fetchUserRoles = async () => {
-      if (!email) return;
-      
-      try {
-        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        if (json.ok && json.user) {
-          setUserRoles(json.user.roles || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user roles:', error);
-      }
-    };
-
-    fetchUserRoles();
-  }, [email]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -66,11 +53,20 @@ export default function Admin() {
 
   const handlePromote = async (targetEmail) => {
     if (!targetEmail) {
-      alert('Please enter an email address');
+      toast.error('Please enter an email address');
       return;
     }
 
-    if (!confirm(`Promote ${targetEmail} to Chief Operator?`)) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Promote to Chief Operator',
+      message: `Promote ${targetEmail} to Chief Operator?`,
+      onConfirm: () => performPromote(targetEmail),
+      variant: 'default'
+    });
+  };
+
+  const performPromote = async (targetEmail) => {
 
     setActionLoading(true);
     try {
@@ -86,12 +82,12 @@ export default function Admin() {
         const refreshResp = await fetch(`/api/operators/users?email=${encodeURIComponent(email)}`);
         const refreshJson = await refreshResp.json();
         if (refreshJson.ok) setUsers(refreshJson.users || []);
-        alert('User promoted successfully');
+        toast.success('User promoted successfully');
       } else {
-        alert(json.error || 'Failed to promote user');
+        toast.error(json.error || 'Failed to promote user');
       }
     } catch (error) {
-      alert('Failed to promote user. Please try again.');
+      toast.error('Failed to promote user. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -99,11 +95,20 @@ export default function Admin() {
 
   const handleReverseOffense = async (targetEmail) => {
     if (!targetEmail) {
-      alert('Please enter an email address');
+      toast.error('Please enter an email address');
       return;
     }
 
-    if (!confirm(`Reverse all offenses for ${targetEmail}? This will remove card status, bench status, and owed balance.`)) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Reverse Offenses',
+      message: `Reverse all offenses for ${targetEmail}? This will remove card status, bench status, and owed balance.`,
+      onConfirm: () => performReverseOffense(targetEmail),
+      variant: 'danger'
+    });
+  };
+
+  const performReverseOffense = async (targetEmail) => {
 
     setActionLoading(true);
     try {
@@ -119,12 +124,12 @@ export default function Admin() {
         const refreshResp = await fetch(`/api/operators/users?email=${encodeURIComponent(email)}`);
         const refreshJson = await refreshResp.json();
         if (refreshJson.ok) setUsers(refreshJson.users || []);
-        alert('Offenses reversed successfully');
+        toast.success('Offenses reversed successfully');
       } else {
-        alert(json.error || 'Failed to reverse offenses');
+        toast.error(json.error || 'Failed to reverse offenses');
       }
     } catch (error) {
-      alert('Failed to reverse offenses. Please try again.');
+      toast.error('Failed to reverse offenses. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -166,13 +171,21 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <OperatorsHeader active="admin" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant || 'default'}
+      />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-semibold text-gray-900 mb-6">Admin Controls</h1>
 
         {/* Promote User */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <UserPlus className="w-5 h-5" />
+            <UserPlus className="w-5 h-5" aria-hidden="true" />
             Promote to Chief Operator
           </h2>
           <div className="flex gap-2">
@@ -182,11 +195,14 @@ export default function Admin() {
               onChange={(e) => setPromoteEmail(e.target.value)}
               placeholder="user@example.com"
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
+              aria-label="Email address of user to promote"
             />
             <button
               onClick={() => handlePromote(promoteEmail)}
+              onKeyDown={handleKeyDown(() => handlePromote(promoteEmail))}
               disabled={actionLoading || !promoteEmail}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              aria-label="Promote user to Chief Operator"
             >
               Promote
             </button>
@@ -196,7 +212,7 @@ export default function Admin() {
         {/* Reverse Offense */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <RotateCcw className="w-5 h-5" />
+            <RotateCcw className="w-5 h-5" aria-hidden="true" />
             Reverse Offense
           </h2>
           <p className="text-sm text-gray-600 mb-4">
@@ -209,11 +225,14 @@ export default function Admin() {
               onChange={(e) => setReverseEmail(e.target.value)}
               placeholder="user@example.com"
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
+              aria-label="Email address of user to reverse offenses for"
             />
             <button
               onClick={() => handleReverseOffense(reverseEmail)}
+              onKeyDown={handleKeyDown(() => handleReverseOffense(reverseEmail))}
               disabled={actionLoading || !reverseEmail}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+              aria-label="Reverse all offenses for user"
             >
               Reverse
             </button>
@@ -223,7 +242,7 @@ export default function Admin() {
         {/* All Users */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5" />
+            <Shield className="w-5 h-5" aria-hidden="true" />
             All Users
           </h2>
           {users.length === 0 ? (

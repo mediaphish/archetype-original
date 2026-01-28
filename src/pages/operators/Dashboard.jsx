@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { MapPin, ExternalLink } from 'lucide-react';
+import { useToast } from '../../components/operators/ToastProvider';
+import ConfirmModal from '../../components/operators/ConfirmModal';
+import { useUser } from '../../contexts/UserContext';
+import { EmptyDashboard } from '../../components/operators/EmptyState';
+import { handleKeyDown } from '../../lib/operators/accessibility';
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userRoles, setUserRoles] = useState([]);
   const [actionLoading, setActionLoading] = useState(false);
   const [candidateForm, setCandidateForm] = useState({});
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || '';
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false });
+  const toast = useToast();
+  const { email, userRoles } = useUser();
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -26,72 +30,75 @@ export default function Dashboard() {
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
 
-  useEffect(() => {
-    const fetchUserRoles = async () => {
-      if (!email) return;
-      
-      try {
-        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        if (json.ok && json.user) {
-          setUserRoles(json.user.roles || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user roles:', error);
-      }
-    };
-
-    fetchUserRoles();
-  }, [email]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         
-        // Fetch dashboard metrics
+        // Fetch dashboard metrics (doesn't require email, returns aggregate data)
         const dashboardResp = await fetch('/api/operators/dashboard');
+        
+        if (!dashboardResp.ok) {
+          console.error('[DASHBOARD] HTTP error:', dashboardResp.status, dashboardResp.statusText);
+          const errorText = await dashboardResp.text();
+          console.error('[DASHBOARD] Error response:', errorText);
+          setDashboard(null);
+          setLoading(false);
+          return;
+        }
+        
         const dashboardJson = await dashboardResp.json();
         console.log('[DASHBOARD] API response:', dashboardJson);
+        
         if (dashboardJson.ok && dashboardJson.dashboard) {
           console.log('[DASHBOARD] Setting dashboard data:', dashboardJson.dashboard);
           setDashboard(dashboardJson.dashboard);
         } else {
           console.error('[DASHBOARD] API error:', dashboardJson.error || 'No dashboard data returned');
-          console.error('[DASHBOARD] Full response:', dashboardJson);
+          console.error('[DASHBOARD] Full response:', JSON.stringify(dashboardJson, null, 2));
+          toast.error(dashboardJson.error || 'Failed to load dashboard data');
           setDashboard(null);
         }
 
-        // Fetch upcoming events
+        // Fetch upcoming events (requires email)
         if (email) {
-          const eventsResp = await fetch(`/api/operators/events?state=LIVE&email=${encodeURIComponent(email)}`);
-          const eventsJson = await eventsResp.json();
-          if (eventsJson.ok && eventsJson.events) {
-            // Filter to only future events and add RSVP data
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const future = eventsJson.events.filter(e => {
-              const eventDate = new Date(e.event_date);
-              return eventDate >= today;
-            }).map(e => ({
-              ...e,
-              user_rsvp: e.user_rsvp_status ? { status: e.user_rsvp_status } : null,
-              rsvps: Array.from({ length: e.confirmed_count || 0 }, (_, i) => ({ status: 'confirmed' }))
-                .concat(Array.from({ length: e.waitlist_count || 0 }, (_, i) => ({ status: 'waitlisted' })))
-            }));
-            setUpcomingEvents(future);
+          try {
+            const eventsResp = await fetch(`/api/operators/events?state=LIVE&email=${encodeURIComponent(email)}`);
+            const eventsJson = await eventsResp.json();
+            if (eventsJson.ok && eventsJson.events) {
+              // Filter to only future events and add RSVP data
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              const future = eventsJson.events.filter(e => {
+                const eventDate = new Date(e.event_date);
+                return eventDate >= today;
+              }).map(e => ({
+                ...e,
+                user_rsvp: e.user_rsvp_status ? { status: e.user_rsvp_status } : null,
+                rsvps: Array.from({ length: e.confirmed_count || 0 }, (_, i) => ({ status: 'confirmed' }))
+                  .concat(Array.from({ length: e.waitlist_count || 0 }, (_, i) => ({ status: 'waitlisted' })))
+              }));
+              setUpcomingEvents(future);
+            }
+          } catch (eventsError) {
+            console.error('[DASHBOARD] Failed to fetch events:', eventsError);
+            // Don't fail the whole dashboard if events fail
           }
         }
       } catch (error) {
         console.error('[DASHBOARD] Failed to fetch dashboard:', error);
+        console.error('[DASHBOARD] Error details:', error.message, error.stack);
+        toast.error('Failed to load dashboard. Please try again.');
         setDashboard(null);
       } finally {
         setLoading(false);
       }
     };
 
+    // Only fetch if UserContext has finished loading (or if email is not required for dashboard)
     fetchData();
-  }, [email]);
+  }, [email, toast]);
 
   if (loading) {
     return (
@@ -124,7 +131,21 @@ export default function Dashboard() {
                   .catch(err => console.error('[DASHBOARD] Retry error:', err))
                   .finally(() => setLoading(false));
               }}
+              onKeyDown={handleKeyDown(() => {
+                setLoading(true);
+                fetch('/api/operators/dashboard')
+                  .then(r => r.json())
+                  .then(json => {
+                    console.log('[DASHBOARD] Retry response:', json);
+                    if (json.ok && json.dashboard) {
+                      setDashboard(json.dashboard);
+                    }
+                  })
+                  .catch(err => console.error('[DASHBOARD] Retry error:', err))
+                  .finally(() => setLoading(false));
+              })}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              aria-label="Retry loading dashboard data"
             >
               Retry
             </button>
@@ -162,19 +183,26 @@ export default function Dashboard() {
           setUpcomingEvents(future);
         }
       } else {
-        alert(json.error || 'Failed to RSVP');
+        toast.error(json.error || 'Failed to RSVP');
       }
     } catch (error) {
-      alert('Failed to RSVP. Please try again.');
+      toast.error('Failed to RSVP. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleCancelRSVP = async (eventId) => {
-    if (!confirm('Are you sure you want to cancel your RSVP?')) {
-      return;
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: 'Cancel RSVP',
+      message: 'Are you sure you want to cancel your RSVP?',
+      onConfirm: () => performCancelRSVP(eventId),
+      variant: 'default'
+    });
+  };
+
+  const performCancelRSVP = async (eventId) => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${eventId}/rsvp`, {
@@ -202,10 +230,10 @@ export default function Dashboard() {
           setUpcomingEvents(future);
         }
       } else {
-        alert(json.error || 'Failed to cancel RSVP');
+        toast.error(json.error || 'Failed to cancel RSVP');
       }
     } catch (error) {
-      alert('Failed to cancel RSVP. Please try again.');
+      toast.error('Failed to cancel RSVP. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -256,10 +284,10 @@ export default function Dashboard() {
           setUpcomingEvents(future);
         }
       } else {
-        alert(json.error || 'Failed to submit candidate');
+        toast.error(json.error || 'Failed to submit candidate');
       }
     } catch (error) {
-      alert('Failed to submit candidate. Please try again.');
+      toast.error('Failed to submit candidate. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -294,14 +322,62 @@ export default function Dashboard() {
   const canRSVP = isOperator || userRoles.includes('candidate');
 
   // Dashboard data should already be checked above, but add safety check
-  if (!dashboard) {
+  if (!dashboard && !loading) {
+    return (
+      <div className="min-h-screen bg-[#fafafa]">
+        <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <div className="container mx-auto px-4 py-8">
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <EmptyDashboard />
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => {
+                  setLoading(true);
+                  fetch('/api/operators/dashboard')
+                    .then(r => r.json())
+                    .then(json => {
+                      console.log('[DASHBOARD] Retry response:', json);
+                      if (json.ok && json.dashboard) {
+                        setDashboard(json.dashboard);
+                      }
+                    })
+                    .catch(err => console.error('[DASHBOARD] Retry error:', err))
+                    .finally(() => setLoading(false));
+                }}
+                onKeyDown={handleKeyDown(() => {
+                  setLoading(true);
+                  fetch('/api/operators/dashboard')
+                    .then(r => r.json())
+                    .then(json => {
+                      console.log('[DASHBOARD] Retry response:', json);
+                      if (json.ok && json.dashboard) {
+                        setDashboard(json.dashboard);
+                      }
+                    })
+                    .catch(err => console.error('[DASHBOARD] Retry error:', err))
+                    .finally(() => setLoading(false));
+                })}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                aria-label="Retry loading dashboard data"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Safety check - ensure dashboard data exists before destructuring
+  if (!dashboard || !dashboard.event_metrics || !dashboard.longitudinal_metrics) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">No data available</h2>
-            <p className="text-gray-600 mb-4">Unable to load dashboard metrics. Please check the console for errors.</p>
+            <p className="text-gray-600 mb-4">Dashboard data structure is incomplete. Please check the console for errors.</p>
             <button
               onClick={() => {
                 setLoading(true);
@@ -311,12 +387,36 @@ export default function Dashboard() {
                     console.log('[DASHBOARD] Retry response:', json);
                     if (json.ok && json.dashboard) {
                       setDashboard(json.dashboard);
+                    } else {
+                      toast.error(json.error || 'Failed to load dashboard');
                     }
                   })
-                  .catch(err => console.error('[DASHBOARD] Retry error:', err))
+                  .catch(err => {
+                    console.error('[DASHBOARD] Retry error:', err);
+                    toast.error('Failed to load dashboard');
+                  })
                   .finally(() => setLoading(false));
               }}
+              onKeyDown={handleKeyDown(() => {
+                setLoading(true);
+                fetch('/api/operators/dashboard')
+                  .then(r => r.json())
+                  .then(json => {
+                    console.log('[DASHBOARD] Retry response:', json);
+                    if (json.ok && json.dashboard) {
+                      setDashboard(json.dashboard);
+                    } else {
+                      toast.error(json.error || 'Failed to load dashboard');
+                    }
+                  })
+                  .catch(err => {
+                    console.error('[DASHBOARD] Retry error:', err);
+                    toast.error('Failed to load dashboard');
+                  })
+                  .finally(() => setLoading(false));
+              })}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              aria-label="Retry loading dashboard data"
             >
               Retry
             </button>
@@ -331,6 +431,14 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        variant={confirmModal.variant || 'default'}
+      />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-semibold text-gray-900 mb-6">Dashboard</h1>
         
@@ -503,7 +611,9 @@ export default function Dashboard() {
                       </div>
                       <button
                         onClick={() => handleNavigate(withEmail(`/operators/events/${event.id}`))}
+                        onKeyDown={handleKeyDown(() => handleNavigate(withEmail(`/operators/events/${event.id}`)))}
                         className="px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-lg"
+                        aria-label={`View details for ${event.title}`}
                       >
                         View Details
                       </button>
@@ -535,8 +645,9 @@ export default function Dashboard() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 mt-1"
+                                aria-label={`Get directions to ${event.host_location} (opens in new tab)`}
                               >
-                                Get Directions <ExternalLink className="w-3 h-3" />
+                                Get Directions <ExternalLink className="w-3 h-3" aria-hidden="true" />
                               </a>
                             </div>
                           </div>
@@ -574,8 +685,10 @@ export default function Dashboard() {
                           <div>
                             <button
                               onClick={() => handleRSVP(event.id)}
+                              onKeyDown={handleKeyDown(() => handleRSVP(event.id))}
                               disabled={actionLoading}
                               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                              aria-label={`RSVP for ${event.title}`}
                             >
                               RSVP
                             </button>
@@ -598,8 +711,10 @@ export default function Dashboard() {
                             {canCancelRSVP(event) && (
                               <button
                                 onClick={() => handleCancelRSVP(event.id)}
+                                onKeyDown={handleKeyDown(() => handleCancelRSVP(event.id))}
                                 disabled={actionLoading}
                                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm"
+                                aria-label={`Cancel RSVP for ${event.title}`}
                               >
                                 Cancel RSVP
                               </button>
@@ -622,6 +737,7 @@ export default function Dashboard() {
                                 }))}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                                 placeholder="Candidate email"
+                                aria-label="Candidate email address"
                               />
                               <textarea
                                 required
@@ -633,6 +749,7 @@ export default function Dashboard() {
                                 }))}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                                 placeholder="Essay (200+ words)"
+                                aria-label="Candidate essay (minimum 200 words)"
                               />
                               <input
                                 type="text"
@@ -644,11 +761,13 @@ export default function Dashboard() {
                                 }))}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                                 placeholder="Contact info"
+                                aria-label="Candidate contact information"
                               />
                               <button
                                 type="submit"
                                 disabled={actionLoading}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm"
+                                aria-label="Submit candidate application"
                               >
                                 Submit Candidate
                               </button>
@@ -663,7 +782,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-              <p className="text-gray-500 text-center">No upcoming events scheduled</p>
+              <EmptyEvents onCreateEvent={() => handleNavigate(withEmail('/operators/events/new'))} />
             </div>
           )}
         </div>

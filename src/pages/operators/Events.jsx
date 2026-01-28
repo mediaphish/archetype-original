@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import { EmptyEvents } from '../../components/operators/EmptyState';
+import { useUser } from '../../contexts/UserContext';
+import { handleKeyDown } from '../../lib/operators/accessibility';
 
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // 'all', 'LIVE', 'OPEN', 'CLOSED'
-  const [userRoles, setUserRoles] = useState([]);
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || '';
+  
+  const { email, userRoles } = useUser();
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -23,28 +24,6 @@ export default function Events() {
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
 
-  useEffect(() => {
-    const fetchUserRoles = async () => {
-      if (!email) return;
-      
-      try {
-        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        console.log('[Events] User roles response:', json);
-        if (json.ok && json.user) {
-          const roles = json.user.roles || [];
-          console.log('[Events] User roles:', roles);
-          setUserRoles(roles);
-        } else {
-          console.log('[Events] User not found or error:', json);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user roles:', error);
-      }
-    };
-
-    fetchUserRoles();
-  }, [email]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -91,23 +70,28 @@ export default function Events() {
           {(userRoles.includes('chief_operator') || userRoles.includes('super_admin')) && (
             <button
               onClick={() => handleNavigate(withEmail('/operators/events/new'))}
+              onKeyDown={handleKeyDown(() => handleNavigate(withEmail('/operators/events/new')))}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              aria-label="Create a new event"
             >
               Create Event
             </button>
           )}
         </div>
 
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-6" role="group" aria-label="Filter events by state">
           {['all', 'LIVE', 'OPEN', 'CLOSED'].map(state => (
             <button
               key={state}
               onClick={() => setFilter(state)}
+              onKeyDown={handleKeyDown(() => setFilter(state))}
               className={`px-4 py-2 rounded-lg ${
                 filter === state
                   ? 'bg-blue-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-50'
               }`}
+              aria-label={`Filter events by ${state === 'all' ? 'all states' : state.toLowerCase()} state`}
+              aria-pressed={filter === state}
             >
               {state === 'all' ? 'All Events' : state}
             </button>
@@ -117,21 +101,25 @@ export default function Events() {
         {loading ? (
           <div className="text-center py-12">Loading events...</div>
         ) : events.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">No events found</div>
+          <EmptyEvents onCreateEvent={() => handleNavigate(withEmail('/operators/events/new'))} />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list" aria-label="Events list">
             {events.map(event => (
               <div
                 key={event.id}
                 onClick={() => handleNavigate(withEmail(`/operators/events/${event.id}`))}
+                onKeyDown={handleKeyDown(() => handleNavigate(withEmail(`/operators/events/${event.id}`)))}
                 className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md cursor-pointer transition-shadow"
+                role="listitem"
+                tabIndex={0}
+                aria-label={`Event: ${event.title}, ${new Date(event.event_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}, ${event.confirmed_count} of ${event.max_seats} seats filled`}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${getStateColor(event.state)}`}>
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${getStateColor(event.state)}`} aria-label={`Event state: ${event.state}`}>
                     {event.state}
                   </span>
                   {event.user_rsvp_status && (
-                    <span className="text-sm text-gray-500">RSVP: {event.user_rsvp_status}</span>
+                    <span className="text-sm text-gray-500" aria-label={`Your RSVP status: ${event.user_rsvp_status}`}>RSVP: {event.user_rsvp_status}</span>
                   )}
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h3>
@@ -143,9 +131,9 @@ export default function Events() {
                   })}
                 </p>
                 <div className="flex items-center justify-between text-sm text-gray-500">
-                  <span>{event.confirmed_count}/{event.max_seats} seats</span>
+                  <span aria-label={`${event.confirmed_count} confirmed out of ${event.max_seats} total seats`}>{event.confirmed_count}/{event.max_seats} seats</span>
                   {event.waitlist_count > 0 && (
-                    <span>{event.waitlist_count} waitlisted</span>
+                    <span aria-label={`${event.waitlist_count} people on waitlist`}>{event.waitlist_count} waitlisted</span>
                   )}
                 </div>
               </div>

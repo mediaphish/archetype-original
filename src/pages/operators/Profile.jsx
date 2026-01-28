@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { Save } from 'lucide-react';
+import { useToast } from '../../components/operators/ToastProvider';
+import { useUser } from '../../contexts/UserContext';
+import FormField from '../../components/operators/FormField';
+import { validateProfileForm, validateFile } from '../../lib/operators/validation';
+import { handleKeyDown } from '../../lib/operators/accessibility';
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingHeadshot, setUploadingHeadshot] = useState(false);
-  const [userRoles, setUserRoles] = useState([]);
   const [formData, setFormData] = useState({
     role_title: '',
     industry: '',
@@ -16,9 +20,11 @@ export default function Profile() {
     business_name: '',
     website_url: ''
   });
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || '';
+  const { email, userRoles } = useUser();
+  const toast = useToast();
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -32,25 +38,6 @@ export default function Profile() {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
-
-  // Fetch user roles first to prevent header flash
-  useEffect(() => {
-    const fetchUserRoles = async () => {
-      if (!email) return;
-      
-      try {
-        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        if (json.ok && json.user) {
-          setUserRoles(json.user.roles || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user roles:', error);
-      }
-    };
-
-    fetchUserRoles();
-  }, [email]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -66,7 +53,6 @@ export default function Profile() {
         
         if (json.ok && json.user) {
           setProfile(json.user);
-          setUserRoles(json.user.roles || []);
           setFormData({
             role_title: json.user.role_title || '',
             industry: json.user.industry || '',
@@ -90,17 +76,14 @@ export default function Profile() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-    if (!allowedTypes.includes(file.type)) {
-      alert('Please select a PNG or JPG image');
-      return;
-    }
+    const validation = validateFile(file, {
+      maxSize: 2 * 1024 * 1024,
+      allowedTypes: ['image/png', 'image/jpeg', 'image/jpg'],
+      fieldName: 'Headshot'
+    });
 
-    // Validate file size (max 2MB)
-    const maxSize = 2 * 1024 * 1024;
-    if (file.size > maxSize) {
-      alert('Image must be smaller than 2MB');
+    if (!validation.valid) {
+      toast.error(validation.error);
       return;
     }
 
@@ -118,13 +101,13 @@ export default function Profile() {
       const json = await resp.json();
       if (json.ok) {
         setFormData(prev => ({ ...prev, headshot_url: json.headshotUrl }));
-        alert('Headshot uploaded successfully');
+        toast.success('Headshot uploaded successfully');
       } else {
-        alert(json.error || 'Failed to upload headshot');
+        toast.error(json.error || 'Failed to upload headshot');
       }
     } catch (error) {
       console.error('Failed to upload headshot:', error);
-      alert('Failed to upload headshot. Please try again.');
+      toast.error('Failed to upload headshot. Please try again.');
     } finally {
       setUploadingHeadshot(false);
       // Reset file input
@@ -132,7 +115,41 @@ export default function Profile() {
     }
   };
 
+  const handleFieldChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleFieldBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    
+    // Validate field on blur
+    const validation = validateProfileForm({ [name]: formData[name] });
+    if (!validation.valid && validation.errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: validation.errors[name] }));
+    }
+  };
+
   const handleSave = async () => {
+    // Validate entire form
+    const validation = validateProfileForm(formData);
+    if (!validation.valid) {
+      setErrors(validation.errors);
+      setTouched(Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+      toast.error('Please fix the errors before saving');
+      return;
+    }
+
     setSaving(true);
     try {
       const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`, {
@@ -147,15 +164,15 @@ export default function Profile() {
       const json = await resp.json();
       if (json.ok) {
         setProfile(json.user);
-        alert('Profile updated successfully');
+        toast.success('Profile updated successfully');
       } else {
         const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to update profile';
         console.error('Profile update error:', json);
-        alert(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
       console.error('Failed to save profile:', error);
-      alert('Failed to save profile. Please try again.');
+      toast.error('Failed to save profile. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -194,49 +211,43 @@ export default function Profile() {
           <p className="text-gray-600 mb-6">Update your profile information to help generate better topic insights for events.</p>
 
           <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Role Title
-              </label>
-              <input
-                type="text"
-                value={formData.role_title}
-                onChange={(e) => setFormData({ ...formData, role_title: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                placeholder="e.g., CEO, COO, VP of Operations"
-              />
-              <p className="text-xs text-gray-500 mt-1">Your current role or title</p>
-            </div>
+            <FormField
+              label="Role Title"
+              name="role_title"
+              type="text"
+              value={formData.role_title}
+              onChange={handleFieldChange}
+              onBlur={handleFieldBlur}
+              error={touched.role_title ? errors.role_title : undefined}
+              placeholder="e.g., CEO, COO, VP of Operations"
+              helpText="Your current role or title"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Industry
-              </label>
-              <input
-                type="text"
-                value={formData.industry}
-                onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                placeholder="e.g., Technology, Healthcare, Manufacturing"
-              />
-              <p className="text-xs text-gray-500 mt-1">The industry you work in</p>
-            </div>
+            <FormField
+              label="Industry"
+              name="industry"
+              type="text"
+              value={formData.industry}
+              onChange={handleFieldChange}
+              onBlur={handleFieldBlur}
+              error={touched.industry ? errors.industry : undefined}
+              placeholder="e.g., Technology, Healthcare, Manufacturing"
+              helpText="The industry you work in"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Bio
-              </label>
-              <textarea
-                value={formData.bio}
-                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                rows="6"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                placeholder="Tell us about yourself, your background, and what you're working on. This helps generate more relevant discussion topics for events you attend. (Recommended: 100-200 words)"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                {formData.bio.trim() ? formData.bio.trim().split(/\s+/).filter(word => word.length > 0).length : 0} words (Recommended: 100-200 words)
-              </p>
-            </div>
+            <FormField
+              label="Bio"
+              name="bio"
+              type="textarea"
+              value={formData.bio}
+              onChange={handleFieldChange}
+              onBlur={handleFieldBlur}
+              error={touched.bio ? errors.bio : undefined}
+              placeholder="Tell us about yourself, your background, and what you're working on. This helps generate more relevant discussion topics for events you attend. (Recommended: 100-200 words)"
+              helpText={`${formData.bio.trim() ? formData.bio.trim().split(/\s+/).filter(word => word.length > 0).length : 0} words (Recommended: 100-200 words)`}
+              rows={6}
+              maxLength={2000}
+            />
 
             {/* Operator-only fields */}
             {isOperator && (
@@ -264,51 +275,51 @@ export default function Profile() {
                         onChange={handleHeadshotUpload}
                         disabled={uploadingHeadshot}
                         className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 disabled:opacity-50"
+                        aria-label="Upload headshot image"
+                        aria-describedby="headshot-help"
                       />
                       {uploadingHeadshot && (
                         <p className="text-xs text-gray-500 mt-1">Uploading...</p>
                       )}
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Upload a low-resolution headshot (PNG or JPG, max 2MB). Image will be automatically cropped and scaled.</p>
+                  <p id="headshot-help" className="text-xs text-gray-500 mt-1">Upload a low-resolution headshot (PNG or JPG, max 2MB). Image will be automatically cropped and scaled.</p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Business Name
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.business_name}
-                    onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                    placeholder="Your business or company name"
-                  />
-                </div>
+                <FormField
+                  label="Business Name"
+                  name="business_name"
+                  type="text"
+                  value={formData.business_name}
+                  onChange={handleFieldChange}
+                  onBlur={handleFieldBlur}
+                  error={touched.business_name ? errors.business_name : undefined}
+                  placeholder="Your business or company name"
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Website Address
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.website_url}
-                    onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-                    placeholder="https://example.com"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Include https:// or http://</p>
-                </div>
+                <FormField
+                  label="Website Address"
+                  name="website_url"
+                  type="url"
+                  value={formData.website_url}
+                  onChange={handleFieldChange}
+                  onBlur={handleFieldBlur}
+                  error={touched.website_url ? errors.website_url : undefined}
+                  placeholder="https://example.com"
+                  helpText="Include https:// or http://"
+                />
               </>
             )}
 
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
               <button
                 onClick={handleSave}
+                onKeyDown={handleKeyDown(handleSave)}
                 disabled={saving}
                 className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                aria-label="Save profile changes"
               >
-                <Save className="w-4 h-4" />
+                <Save className="w-4 h-4" aria-hidden="true" />
                 {saving ? 'Saving...' : 'Save Profile'}
               </button>
             </div>

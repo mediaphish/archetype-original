@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { MapPin, ExternalLink, Users, UserPlus, CheckCircle, XCircle, Clock, ThumbsUp, ThumbsDown, LogIn, LogOut, X, ChevronDown, ChevronUp, Edit2, Save, Lock } from 'lucide-react';
+import { useToast } from '../../components/operators/ToastProvider';
+import ConfirmModal from '../../components/operators/ConfirmModal';
+import { useUser } from '../../contexts/UserContext';
+import { getVoteAriaLabel, getCheckInAriaLabel, getRSVPAriaLabel, handleKeyDown } from '../../lib/operators/accessibility';
 
 export default function EventDetail() {
   const path = window.location.pathname;
   const id = path.replace('/operators/events/', '');
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userRoles, setUserRoles] = useState([]);
   const [actionLoading, setActionLoading] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [candidateForm, setCandidateForm] = useState({ candidate_email: '', essay: '', contact_info: '' });
@@ -16,9 +19,9 @@ export default function EventDetail() {
   const [editingScenarios, setEditingScenarios] = useState([]);
   const [expandedPrompts, setExpandedPrompts] = useState(new Set());
   const [voteSummary, setVoteSummary] = useState({}); // { target_email: { upvotes, downvotes } }
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || '';
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false });
+  const toast = useToast();
+  const { email, userRoles } = useUser();
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -33,23 +36,6 @@ export default function EventDetail() {
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
 
-  useEffect(() => {
-    const fetchUserRoles = async () => {
-      if (!email) return;
-      
-      try {
-        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        if (json.ok && json.user) {
-          setUserRoles(json.user.roles || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user roles:', error);
-      }
-    };
-
-    fetchUserRoles();
-  }, [email]);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -97,12 +83,15 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('RSVP successful');
+        }
       } else {
-        alert(json.error || 'Failed to RSVP');
+        toast.error(json.error || 'Failed to RSVP');
       }
     } catch (error) {
-      alert('Failed to RSVP. Please try again.');
+      toast.error('Failed to RSVP. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -117,7 +106,16 @@ export default function EventDetail() {
   };
 
   const handleCancelRSVP = async () => {
-    if (!confirm('Are you sure you want to cancel your RSVP?')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Cancel RSVP',
+      message: 'Are you sure you want to cancel your RSVP?',
+      onConfirm: performCancelRSVP,
+      variant: 'default'
+    });
+  };
+
+  const performCancelRSVP = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/rsvp`, {
@@ -130,12 +128,15 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('RSVP cancelled successfully');
+        }
       } else {
-        alert(json.error || 'Failed to cancel RSVP');
+        toast.error(json.error || 'Failed to cancel RSVP');
       }
     } catch (error) {
-      alert('Failed to cancel RSVP. Please try again.');
+      toast.error('Failed to cancel RSVP. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -160,12 +161,15 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('Candidate submitted successfully');
+        }
       } else {
-        alert(json.error || 'Failed to submit candidate');
+        toast.error(json.error || 'Failed to submit candidate');
       }
     } catch (error) {
-      alert('Failed to submit candidate. Please try again.');
+      toast.error('Failed to submit candidate. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -184,21 +188,31 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('Candidate approved successfully');
+        }
       } else {
-        alert(json.error || 'Failed to approve candidate');
+        toast.error(json.error || 'Failed to approve candidate');
       }
     } catch (error) {
-      alert('Failed to approve candidate. Please try again.');
+      toast.error('Failed to approve candidate. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleRemoveRSVP = async (targetEmail) => {
-    if (!confirm(`Are you sure you want to remove ${targetEmail} from this event?`)) {
-      return;
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: 'Remove RSVP',
+      message: `Are you sure you want to remove ${targetEmail} from this event?`,
+      onConfirm: () => performRemoveRSVP(targetEmail),
+      variant: 'danger'
+    });
+  };
+
+  const performRemoveRSVP = async (targetEmail) => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/remove-rsvp`, {
@@ -211,12 +225,15 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('RSVP removed successfully');
+        }
       } else {
-        alert(json.error || 'Failed to remove RSVP');
+        toast.error(json.error || 'Failed to remove RSVP');
       }
     } catch (error) {
-      alert('Failed to remove RSVP. Please try again.');
+      toast.error('Failed to remove RSVP. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -235,19 +252,31 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('Waitlist promoted successfully');
+        }
       } else {
-        alert(json.error || 'Failed to promote from waitlist');
+        toast.error(json.error || 'Failed to promote from waitlist');
       }
     } catch (error) {
-      alert('Failed to promote from waitlist. Please try again.');
+      toast.error('Failed to promote from waitlist. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleOpenEvent = async () => {
-    if (!confirm('Are you sure you want to start this event? This will enable voting and check-ins.')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Start Event',
+      message: 'Are you sure you want to start this event? This will enable voting and check-ins.',
+      onConfirm: performOpenEvent,
+      variant: 'default'
+    });
+  };
+
+  const performOpenEvent = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/open`, {
@@ -260,19 +289,31 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('Event started successfully');
+        }
       } else {
-        alert(json.error || 'Failed to open event');
+        toast.error(json.error || 'Failed to open event');
       }
     } catch (error) {
-      alert('Failed to open event. Please try again.');
+      toast.error('Failed to open event. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleCloseEvent = async () => {
-    if (!confirm('Are you sure you want to close this event? This will finalize all outcomes and cannot be undone.')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Close Event',
+      message: 'Are you sure you want to close this event? This will finalize all outcomes and cannot be undone.',
+      onConfirm: performCloseEvent,
+      variant: 'danger'
+    });
+  };
+
+  const performCloseEvent = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/close`, {
@@ -285,19 +326,31 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('Event closed successfully');
+        }
       } else {
-        alert(json.error || 'Failed to close event');
+        toast.error(json.error || 'Failed to close event');
       }
     } catch (error) {
-      alert('Failed to close event. Please try again.');
+      toast.error('Failed to close event. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleReopenEvent = async () => {
-    if (!confirm('Are you sure you want to reopen this event? This will unlock scenarios and allow voting/attendance again.')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Reopen Event',
+      message: 'Are you sure you want to reopen this event? This will unlock scenarios and allow voting/attendance again.',
+      onConfirm: performReopenEvent,
+      variant: 'default'
+    });
+  };
+
+  const performReopenEvent = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/reopen`, {
@@ -314,20 +367,29 @@ export default function EventDetail() {
           setEvent(eventJson.event);
           console.log('Event reopened to OPEN. RSVP Closed:', eventJson.event.rsvp_closed);
         }
-      } else {
-        const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to reopen event';
-        console.error('Reopen event error:', json);
-        alert(errorMsg);
-      }
-    } catch (error) {
-      alert('Failed to reopen event. Please try again.');
+        } else {
+          const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to reopen event';
+          console.error('Reopen event error:', json);
+          toast.error(errorMsg);
+        }
+      } catch (error) {
+        toast.error('Failed to reopen event. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleRevertToLive = async () => {
-    if (!confirm('Are you sure you want to revert this event to LIVE? This will unlock scenarios and allow editing before opening again.')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Revert to LIVE',
+      message: 'Are you sure you want to revert this event to LIVE? This will unlock scenarios and allow editing before opening again.',
+      onConfirm: performRevertToLive,
+      variant: 'default'
+    });
+  };
+
+  const performRevertToLive = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/revert-to-live`, {
@@ -345,25 +407,34 @@ export default function EventDetail() {
           console.log('[UI] Refreshed event data. State:', eventJson.event.state, 'RSVP Closed:', eventJson.event.rsvp_closed);
           setEvent(eventJson.event);
           // Force a re-render by updating state
-          alert('Event successfully reverted to LIVE. RSVPs are now enabled.');
+          toast.success('Event successfully reverted to LIVE. RSVPs are now enabled.');
         } else {
           console.error('[UI] Failed to refresh event data:', eventJson);
-          alert('Event reverted but failed to refresh. Please reload the page.');
+          toast.warning('Event reverted but failed to refresh. Please reload the page.');
         }
       } else {
         const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to revert event to LIVE';
         console.error('Revert to LIVE error:', json);
-        alert(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
-      alert('Failed to revert event to LIVE. Please try again.');
+      toast.error('Failed to revert event to LIVE. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleAnnounceEvent = async () => {
-    if (!confirm('Are you sure you want to announce this event? This will send email notifications to all Operators and approved Candidates.')) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Announce Event',
+      message: 'Are you sure you want to announce this event? This will send email notifications to all Operators and approved Candidates.',
+      onConfirm: performAnnounceEvent,
+      variant: 'default'
+    });
+  };
+
+  const performAnnounceEvent = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/announce`, {
@@ -373,14 +444,14 @@ export default function EventDetail() {
       });
       const json = await resp.json();
       if (json.ok) {
-        alert(`Event announced successfully! Emails sent to ${json.sent} recipients.${json.failed > 0 ? ` (${json.failed} failed)` : ''}`);
+        toast.success(`Event announced successfully! Emails sent to ${json.sent} recipients.${json.failed > 0 ? ` (${json.failed} failed)` : ''}`);
       } else {
         const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to announce event';
         console.error('Announce event error:', json);
-        alert(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
-      alert('Failed to announce event. Please try again.');
+      toast.error('Failed to announce event. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -403,7 +474,7 @@ export default function EventDetail() {
 
   const handleVote = async (targetEmail, voteValue) => {
     if (email === targetEmail) {
-      alert('You cannot vote for yourself');
+      toast.warning('You cannot vote for yourself');
       return;
     }
 
@@ -432,16 +503,16 @@ export default function EventDetail() {
           }
         }
       } else {
-        alert(json.error || 'Failed to submit vote');
+        toast.error(json.error || 'Failed to submit vote');
       }
     } catch (error) {
-      alert('Failed to submit vote. Please try again.');
+      toast.error('Failed to submit vote. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleCheckIn = async (targetEmail, action) => {
+  const handleCheckInOut = async (targetEmail, action) => {
     // Payment is assumed - one-click check-in
     setActionLoading(true);
     try {
@@ -460,12 +531,15 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success(`${action === 'check_in' ? 'Checked in' : action === 'check_out' ? 'Checked out' : action === 'mark_no_show' ? 'Marked as no-show' : 'Action completed'} successfully`);
+        }
       } else {
-        alert(json.error || `Failed to ${action}`);
+        toast.error(json.error || `Failed to ${action}`);
       }
     } catch (error) {
-      alert(`Failed to ${action}. Please try again.`);
+      toast.error(`Failed to ${action}. Please try again.`);
     } finally {
       setActionLoading(false);
     }
@@ -500,15 +574,32 @@ export default function EventDetail() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        variant={confirmModal.variant || 'default'}
+      />
         <div className="container mx-auto px-4 py-8">Loading event...</div>
       </div>
     );
   }
 
   const handleCloseRSVP = async () => {
-    if (!confirm('Are you sure you want to close RSVP? This will prevent new RSVPs and stop waitlist auto-promotion.')) {
-      return;
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: 'Close RSVP',
+      message: 'Are you sure you want to close RSVP? This will prevent new RSVPs and stop waitlist auto-promotion.',
+      onConfirm: performCloseRSVP,
+      variant: 'default'
+    });
+  };
+
+  const performCloseRSVP = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/close-rsvp`, {
@@ -521,21 +612,31 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('RSVP closed successfully');
+        }
       } else {
-        alert(json.error || 'Failed to close RSVP');
+        toast.error(json.error || 'Failed to close RSVP');
       }
     } catch (error) {
-      alert('Failed to close RSVP. Please try again.');
+      toast.error('Failed to close RSVP. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleGenerateScenarios = async () => {
-    if (!confirm('Generate scenario insights for this event? This will analyze attendee profiles and current challenges to create realistic problem scenarios.')) {
-      return;
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: 'Generate Scenarios',
+      message: 'Generate scenario insights for this event? This will analyze attendee profiles and current challenges to create realistic problem scenarios.',
+      onConfirm: performGenerateScenarios,
+      variant: 'default'
+    });
+  };
+
+  const performGenerateScenarios = async () => {
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/generate-scenarios`, {
@@ -548,12 +649,14 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('Scenarios generated successfully');
       } else {
-        alert(json.error || 'Failed to generate scenarios');
+        toast.error(json.error || 'Failed to generate scenarios');
       }
     } catch (error) {
-      alert('Failed to generate scenarios. Please try again.');
+      toast.error('Failed to generate scenarios. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -574,12 +677,14 @@ export default function EventDetail() {
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
-        if (eventJson.ok) setEvent(eventJson.event);
-      } else {
-        alert(json.error || 'Failed to update scenarios');
-      }
-    } catch (error) {
-      alert('Failed to update scenarios. Please try again.');
+        if (eventJson.ok) {
+          setEvent(eventJson.event);
+          toast.success('Scenarios updated successfully');
+        } else {
+          toast.error(json.error || 'Failed to update scenarios');
+        }
+      } catch (error) {
+        toast.error('Failed to update scenarios. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -628,6 +733,16 @@ export default function EventDetail() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        variant={confirmModal.variant || 'default'}
+      />
         <div className="container mx-auto px-4 py-8">Event not found</div>
       </div>
     );
@@ -654,6 +769,16 @@ export default function EventDetail() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        variant={confirmModal.variant || 'default'}
+      />
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-6">
@@ -1286,27 +1411,31 @@ export default function EventDetail() {
                                 <div className="flex items-center gap-2">
                                   <button
                                     onClick={() => handleVote(rsvp.user_email, 1)}
+                                    onKeyDown={handleKeyDown(() => handleVote(rsvp.user_email, 1))}
                                     disabled={actionLoading || event.remaining_votes === 0}
                                     className={`p-2 rounded-lg ${
                                       userVote === 1
                                         ? 'bg-green-100 text-green-700'
                                         : 'bg-gray-100 text-gray-600 hover:bg-green-50'
                                     } disabled:opacity-50`}
-                                    title="Vote Up"
+                                    aria-label={getVoteAriaLabel(rsvp.user_email, 1, userVote)}
+                                    aria-pressed={userVote === 1}
                                   >
-                                    <ThumbsUp className="w-5 h-5" />
+                                    <ThumbsUp className="w-5 h-5" aria-hidden="true" />
                                   </button>
                                   <button
                                     onClick={() => handleVote(rsvp.user_email, -1)}
+                                    onKeyDown={handleKeyDown(() => handleVote(rsvp.user_email, -1))}
                                     disabled={actionLoading || event.remaining_votes === 0}
                                     className={`p-2 rounded-lg ${
                                       userVote === -1
                                         ? 'bg-red-100 text-red-700'
                                         : 'bg-gray-100 text-gray-600 hover:bg-red-50'
                                     } disabled:opacity-50`}
-                                    title="Vote Down"
+                                    aria-label={getVoteAriaLabel(rsvp.user_email, -1, userVote)}
+                                    aria-pressed={userVote === -1}
                                   >
-                                    <ThumbsDown className="w-5 h-5" />
+                                    <ThumbsDown className="w-5 h-5" aria-hidden="true" />
                                   </button>
                                 </div>
                               </div>
@@ -1374,9 +1503,13 @@ export default function EventDetail() {
                                 {isCheckedIn && !hasCheckedOut && (
                                   <button
                                     onClick={() => {
-                                      if (confirm('Mark this attendee as checked out (early departure)?')) {
-                                        handleCheckIn(rsvp.user_email, 'check_out');
-                                      }
+                                      setConfirmModal({
+                                        isOpen: true,
+                                        title: 'Check Out Attendee',
+                                        message: `Mark ${att.user_email} as checked out (early departure)?`,
+                                        onConfirm: () => handleCheckInOut(att.user_email, 'check_out'),
+                                        variant: 'default'
+                                      });
                                     }}
                                     disabled={actionLoading}
                                     className="px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 disabled:opacity-50 flex items-center gap-1"
