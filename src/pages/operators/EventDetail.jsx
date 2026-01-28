@@ -654,52 +654,6 @@ export default function EventDetail() {
                 )}
               </p>
             </div>
-            {canManageEvent && event.state === 'LIVE' && (
-              <div className="flex items-center gap-3">
-                {canEdit && isFutureEvent && (
-                  <button
-                    onClick={() => handleNavigate(withEmail(`/operators/events/${id}/edit`))}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                  >
-                    Edit Event
-                  </button>
-                )}
-                <button
-                  onClick={handleOpenEvent}
-                  disabled={actionLoading}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-                >
-                  Start Event
-                </button>
-              </div>
-            )}
-            {canManageEvent && event.state === 'OPEN' && (
-              <>
-                <button
-                  onClick={handleRevertToLive}
-                  disabled={actionLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                >
-                  Revert to LIVE
-                </button>
-                <button
-                  onClick={handleCloseEvent}
-                  disabled={actionLoading}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
-                >
-                  Close Event
-                </button>
-              </>
-            )}
-            {canManageEvent && event.state === 'CLOSED' && (
-              <button
-                onClick={handleReopenEvent}
-                disabled={actionLoading}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-              >
-                Reopen Event
-              </button>
-            )}
           </div>
         </div>
 
@@ -1443,6 +1397,60 @@ export default function EventDetail() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Event Actions (CO/Accountant only) */}
+            {canManageEvent && (
+              <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Event Actions</h2>
+                <div className="space-y-3">
+                  {event.state === 'LIVE' && (
+                    <>
+                      {canEdit && isFutureEvent && (
+                        <button
+                          onClick={() => handleNavigate(withEmail(`/operators/events/${id}/edit`))}
+                          className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-left"
+                        >
+                          Edit Event
+                        </button>
+                      )}
+                      <button
+                        onClick={handleOpenEvent}
+                        disabled={actionLoading}
+                        className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                      >
+                        Start Event
+                      </button>
+                    </>
+                  )}
+                  {event.state === 'OPEN' && (
+                    <>
+                      <button
+                        onClick={handleRevertToLive}
+                        disabled={actionLoading}
+                        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                      >
+                        Revert to LIVE
+                      </button>
+                      <button
+                        onClick={handleCloseEvent}
+                        disabled={actionLoading}
+                        className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                      >
+                        Close Event
+                      </button>
+                    </>
+                  )}
+                  {event.state === 'CLOSED' && (
+                    <button
+                      onClick={handleReopenEvent}
+                      disabled={actionLoading}
+                      className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                    >
+                      Reopen Event
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
             {/* RSVP Status */}
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-3">
