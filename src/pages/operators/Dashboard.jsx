@@ -52,8 +52,12 @@ export default function Dashboard() {
         // Fetch dashboard metrics
         const dashboardResp = await fetch('/api/operators/dashboard');
         const dashboardJson = await dashboardResp.json();
-        if (dashboardJson.ok) {
+        console.log('[DASHBOARD] API response:', dashboardJson);
+        if (dashboardJson.ok && dashboardJson.dashboard) {
           setDashboard(dashboardJson.dashboard);
+        } else {
+          console.error('[DASHBOARD] API error:', dashboardJson.error || 'No dashboard data returned');
+          setDashboard(null);
         }
 
         // Fetch upcoming events

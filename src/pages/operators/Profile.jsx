@@ -7,6 +7,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingHeadshot, setUploadingHeadshot] = useState(false);
+  const [userRoles, setUserRoles] = useState([]);
   const [formData, setFormData] = useState({
     role_title: '',
     industry: '',
@@ -46,6 +47,7 @@ export default function Profile() {
         
         if (json.ok && json.user) {
           setProfile(json.user);
+          setUserRoles(json.user.roles || []);
           setFormData({
             role_title: json.user.role_title || '',
             industry: json.user.industry || '',
@@ -143,7 +145,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
-        <OperatorsHeader email={email} />
+        <OperatorsHeader active="profile" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
         <div className="max-w-4xl mx-auto px-6 py-12">
           <p className="text-gray-600">Loading profile...</p>
         </div>
@@ -154,7 +156,7 @@ export default function Profile() {
   if (!profile) {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
-        <OperatorsHeader email={email} />
+        <OperatorsHeader active="profile" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
         <div className="max-w-4xl mx-auto px-6 py-12">
           <p className="text-gray-600">Profile not found</p>
         </div>
@@ -166,7 +168,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-[#F5F3F0]">
-      <OperatorsHeader email={email} />
+      <OperatorsHeader active="profile" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Profile</h1>
