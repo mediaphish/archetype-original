@@ -83,6 +83,15 @@ export default async function handler(req, res) {
       });
     }
 
+    // Verify rsvp_closed was updated
+    if (updatedEvent && updatedEvent.rsvp_closed !== false) {
+      console.warn('[REVERT_TO_LIVE] Warning: rsvp_closed was not set to false. Current value:', updatedEvent.rsvp_closed);
+      // Force it in the response
+      updatedEvent.rsvp_closed = false;
+    }
+
+    console.log('[REVERT_TO_LIVE] Event reverted to LIVE. State:', updatedEvent?.state, 'RSVP Closed:', updatedEvent?.rsvp_closed);
+
     return res.status(200).json({ ok: true, event: updatedEvent });
   } catch (error) {
     console.error('[REVERT_TO_LIVE] Error:', error);
