@@ -195,11 +195,9 @@ export default async function handler(req, res) {
               batchSent = true;
             }
           } else {
-            // Success - count successful sends
-            const successEmails = result.data || [];
-            successCount += successEmails.length;
-            failureCount += (batch.length - successEmails.length);
-            console.log(`[ANNOUNCE_EVENT] Batch ${batchNumber} sent successfully: ${successEmails.length}/${batch.length} emails`);
+            // Success - all emails in batch were sent
+            successCount += batch.length;
+            console.log(`[ANNOUNCE_EVENT] Batch ${batchNumber} sent successfully: ${batch.length} emails`);
             batchSent = true;
           }
         } catch (error) {
