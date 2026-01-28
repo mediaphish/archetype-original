@@ -54,9 +54,11 @@ export default function Dashboard() {
         const dashboardJson = await dashboardResp.json();
         console.log('[DASHBOARD] API response:', dashboardJson);
         if (dashboardJson.ok && dashboardJson.dashboard) {
+          console.log('[DASHBOARD] Setting dashboard data:', dashboardJson.dashboard);
           setDashboard(dashboardJson.dashboard);
         } else {
           console.error('[DASHBOARD] API error:', dashboardJson.error || 'No dashboard data returned');
+          console.error('[DASHBOARD] Full response:', dashboardJson);
           setDashboard(null);
         }
 
@@ -291,11 +293,35 @@ export default function Dashboard() {
   const isOperator = userRoles.includes('operator');
   const canRSVP = isOperator || userRoles.includes('candidate');
 
+  // Dashboard data should already be checked above, but add safety check
   if (!dashboard) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
-        <div className="container mx-auto px-4 py-8">No data available</div>
+        <div className="container mx-auto px-4 py-8">
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">No data available</h2>
+            <p className="text-gray-600 mb-4">Unable to load dashboard metrics. Please check the console for errors.</p>
+            <button
+              onClick={() => {
+                setLoading(true);
+                fetch('/api/operators/dashboard')
+                  .then(r => r.json())
+                  .then(json => {
+                    console.log('[DASHBOARD] Retry response:', json);
+                    if (json.ok && json.dashboard) {
+                      setDashboard(json.dashboard);
+                    }
+                  })
+                  .catch(err => console.error('[DASHBOARD] Retry error:', err))
+                  .finally(() => setLoading(false));
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
