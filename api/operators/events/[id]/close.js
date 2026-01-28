@@ -83,12 +83,90 @@ export default async function handler(req, res) {
     }
 
     // NOW: Calculate ROi winner using database function (after attendance is fixed)
-    const { data: roiResult, error: roiError } = await supabaseAdmin
-      .rpc('calculate_roi_winner', { event_id_param: id });
+    let roiResult = null;
+    let roiError = null;
+    
+    try {
+      const result = await supabaseAdmin.rpc('calculate_roi_winner', { event_id_param: id });
+      roiResult = result.data;
+      roiError = result.error;
+    } catch (err) {
+      console.error('[CLOSE_EVENT] ROi calculation error:', err);
+      roiError = err;
+    }
 
-    if (roiError) {
-      console.error('[CLOSE_EVENT] ROi calculation error:', roiError);
-      // Continue anyway - ROi might be null if no eligible winners
+    // If function fails or returns no results, manually calculate ROI winner
+    if (roiError || !roiResult || roiResult.length === 0) {
+      console.log('[CLOSE_EVENT] Function returned no winner, calculating manually...');
+      
+      // Get all checked-in attendees with their vote counts
+      const { data: attendanceRecords } = await supabaseAdmin
+        .from('operators_attendance')
+        .select(`
+          user_email,
+          check_in_time,
+          operators_users!inner (
+            email,
+            owed_balance,
+            benched_until,
+            roles
+          )
+        `)
+        .eq('event_id', id)
+        .eq('checked_in', true)
+        .eq('present_until_close', true)
+        .eq('marked_no_show', false);
+
+      if (attendanceRecords && attendanceRecords.length > 0) {
+        // Filter eligible attendees (no owed balance, not benched, has operator/candidate role)
+        const eligibleAttendees = attendanceRecords.filter(att => {
+          const user = att.operators_users;
+          if (!user) return false;
+          const hasRole = user.roles && (user.roles.includes('operator') || user.roles.includes('candidate'));
+          const noBalance = (user.owed_balance || 0) === 0;
+          const notBenched = !user.benched_until || new Date(user.benched_until) < new Date();
+          return hasRole && noBalance && notBenched;
+        });
+
+        // Calculate vote totals for each eligible attendee
+        const voteTotals = await Promise.all(
+          eligibleAttendees.map(async (att) => {
+            const { data: votes } = await supabaseAdmin
+              .from('operators_votes')
+              .select('vote_value')
+              .eq('event_id', id)
+              .eq('target_email', att.user_email);
+
+            const upvotes = (votes || []).filter(v => v.vote_value === 1).length;
+            const downvotes = (votes || []).filter(v => v.vote_value === -1).length;
+            const netScore = upvotes - downvotes;
+            const totalVotes = upvotes + downvotes;
+            const upvoteRatio = totalVotes > 0 ? upvotes / totalVotes : 0;
+
+            return {
+              user_email: att.user_email,
+              check_in_time: att.check_in_time,
+              net_score: netScore,
+              upvote_ratio: upvoteRatio,
+              total_votes: totalVotes,
+              upvotes,
+              downvotes
+            };
+          })
+        );
+
+        // Sort by net_score DESC, upvote_ratio DESC, total_votes DESC, check_in_time ASC
+        voteTotals.sort((a, b) => {
+          if (b.net_score !== a.net_score) return b.net_score - a.net_score;
+          if (b.upvote_ratio !== a.upvote_ratio) return b.upvote_ratio - a.upvote_ratio;
+          if (b.total_votes !== a.total_votes) return b.total_votes - a.total_votes;
+          return new Date(a.check_in_time) - new Date(b.check_in_time);
+        });
+
+        if (voteTotals.length > 0 && voteTotals[0].net_score >= 0) {
+          roiResult = [voteTotals[0]];
+        }
+      }
     }
 
     // Calculate pot amount if there's a winner
@@ -111,7 +189,14 @@ export default async function handler(req, res) {
     // Store ROi winner if found
     if (roiResult && roiResult.length > 0) {
       const winner = roiResult[0];
+      
+      // Delete any existing ROI winner for this event
       await supabaseAdmin
+        .from('operators_roi_winners')
+        .delete()
+        .eq('event_id', id);
+      
+      const { error: insertError } = await supabaseAdmin
         .from('operators_roi_winners')
         .insert({
           event_id: id,
@@ -122,6 +207,14 @@ export default async function handler(req, res) {
           check_in_time: winner.check_in_time,
           pot_amount_won: potAmountWon
         });
+
+      if (insertError) {
+        console.error('[CLOSE_EVENT] Failed to insert ROI winner:', insertError);
+      } else {
+        console.log('[CLOSE_EVENT] ROI winner stored:', winner.winner_email, 'net_score:', winner.net_score);
+      }
+    } else {
+      console.log('[CLOSE_EVENT] No eligible ROI winner found');
     }
 
     // Resolve candidate promotions
