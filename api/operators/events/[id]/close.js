@@ -142,33 +142,50 @@ export default async function handler(req, res) {
       }
     }
 
-    // Finalize attendance (mark attendance_counted based on eligibility)
+    // Finalize attendance - set present_until_close for all checked-in attendees
+    // and update votes_used count from actual votes
     const { data: allAttendance } = await supabaseAdmin
       .from('operators_attendance')
       .select('*')
       .eq('event_id', id);
 
     for (const att of (allAttendance || [])) {
-      const eligible = await supabaseAdmin.rpc('check_attendance_eligibility', {
-        event_id_param: id,
-        user_email_param: att.user_email
-      });
+      if (att.checked_in && !att.marked_no_show) {
+        // Count actual votes used
+        const { count: votesCount } = await supabaseAdmin
+          .from('operators_votes')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_id', id)
+          .eq('voter_email', att.user_email);
 
-      // Update attendance record (attendance_counted is computed, but we can store it)
-      // Note: Since attendance_counted is computed, we might need to add a stored column
-      // For now, we'll update loyalty_count for eligible attendees
-      if (eligible.data) {
-        const { data: user } = await supabaseAdmin
-          .from('operators_users')
-          .select('loyalty_count')
-          .eq('email', att.user_email)
-          .maybeSingle();
+        // Update attendance: set present_until_close and correct votes_used
+        await supabaseAdmin
+          .from('operators_attendance')
+          .update({
+            present_until_close: true,
+            votes_used: votesCount || 0
+          })
+          .eq('id', att.id);
 
-        if (user) {
-          await supabaseAdmin
+        // Update loyalty_count for eligible attendees
+        const eligible = await supabaseAdmin.rpc('check_attendance_eligibility', {
+          event_id_param: id,
+          user_email_param: att.user_email
+        });
+
+        if (eligible.data) {
+          const { data: user } = await supabaseAdmin
             .from('operators_users')
-            .update({ loyalty_count: (user.loyalty_count || 0) + 1 })
-            .eq('email', att.user_email);
+            .select('loyalty_count')
+            .eq('email', att.user_email)
+            .maybeSingle();
+
+          if (user) {
+            await supabaseAdmin
+              .from('operators_users')
+              .update({ loyalty_count: (user.loyalty_count || 0) + 1 })
+              .eq('email', att.user_email);
+          }
         }
       }
     }
