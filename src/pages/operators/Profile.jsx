@@ -33,6 +33,25 @@ export default function Profile() {
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
 
+  // Fetch user roles first to prevent header flash
+  useEffect(() => {
+    const fetchUserRoles = async () => {
+      if (!email) return;
+      
+      try {
+        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
+        const json = await resp.json();
+        if (json.ok && json.user) {
+          setUserRoles(json.user.roles || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user roles:', error);
+      }
+    };
+
+    fetchUserRoles();
+  }, [email]);
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!email) {
