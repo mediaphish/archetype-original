@@ -198,11 +198,13 @@ export default async function handler(req, res) {
         .eq('checked_in', true)
         .eq('marked_no_show', false);
 
-      // Calculate total pot: (stake_amount × confirmed_attendees) / 2 + sponsor_pot_value
-      const totalPot = (parseFloat(event.stake_amount || 0) * (confirmedCount || 0)) / 2 + parseFloat(event.sponsor_pot_value || 0);
+      // Calculate stake pot: stake_amount × confirmed_attendees
+      // Breakdown: 25% Host, 25% AO, 50% ROI winner + full sponsor pot
+      const stakePot = parseFloat(event.stake_amount || 0) * (confirmedCount || 0);
+      const sponsorPot = parseFloat(event.sponsor_pot_value || 0);
       
-      // Calculate winner's pot: 50% of total pot (after 25% host and 25% AO)
-      potAmountWon = totalPot * 0.5;
+      // ROI winner gets: 50% of stake pot + full sponsor pot
+      potAmountWon = (stakePot * 0.5) + sponsorPot;
     }
 
     // Store ROi winner if found
