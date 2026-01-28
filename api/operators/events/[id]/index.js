@@ -160,7 +160,12 @@ export default async function handler(req, res) {
     // This is a safeguard in case the database update didn't complete properly
     if (event.state === 'LIVE' && event.rsvp_closed === true) {
       console.warn('[GET_EVENT] Inconsistent state: event is LIVE but rsvp_closed is true. Event ID:', event.id);
-      // Force it to false in the response (but don't update the database here)
+      // Fix the database inconsistency
+      await supabaseAdmin
+        .from('operators_events')
+        .update({ rsvp_closed: false })
+        .eq('id', event.id);
+      // Force it to false in the response
       event.rsvp_closed = false;
     }
 
