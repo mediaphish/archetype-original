@@ -652,6 +652,9 @@ export default function EventDetail() {
         if (eventJson.ok) {
           setEvent(eventJson.event);
           toast.success('Scenarios generated successfully');
+        } else {
+          toast.error('Failed to refresh event data after generating scenarios');
+        }
       } else {
         toast.error(json.error || 'Failed to generate scenarios');
       }
