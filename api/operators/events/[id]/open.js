@@ -4,7 +4,7 @@
  * POST /api/operators/events/[id]/open
  * 
  * Transitions event from LIVE to OPEN state. Only CO or Accountant can open events.
- * Locks all topics for the event when opening.
+ * Locks all scenarios for the event when opening.
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
@@ -66,9 +66,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: 'Failed to open event' });
     }
 
-    // Lock all topics for this event
+    // Lock all scenarios for this event
     const { error: lockError } = await supabaseAdmin
-      .from('operators_event_topics')
+      .from('operators_event_scenarios')
       .update({ is_locked: true })
       .eq('event_id', id);
 

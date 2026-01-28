@@ -12,8 +12,8 @@ export default function EventDetail() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [candidateForm, setCandidateForm] = useState({ candidate_email: '', essay: '', contact_info: '' });
   const [userVotes, setUserVotes] = useState({}); // { target_email: vote_value }
-  const [editingTopicId, setEditingTopicId] = useState(null);
-  const [editingTopics, setEditingTopics] = useState([]);
+  const [editingScenarioId, setEditingScenarioId] = useState(null);
+  const [editingScenarios, setEditingScenarios] = useState([]);
   const [expandedPrompts, setExpandedPrompts] = useState(new Set());
   const [voteSummary, setVoteSummary] = useState({}); // { target_email: { upvotes, downvotes } }
 
@@ -297,7 +297,7 @@ export default function EventDetail() {
   };
 
   const handleReopenEvent = async () => {
-    if (!confirm('Are you sure you want to reopen this event? This will unlock topics and allow voting/attendance again.')) return;
+    if (!confirm('Are you sure you want to reopen this event? This will unlock scenarios and allow voting/attendance again.')) return;
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/reopen`, {
@@ -324,7 +324,7 @@ export default function EventDetail() {
   };
 
   const handleRevertToLive = async () => {
-    if (!confirm('Are you sure you want to revert this event to LIVE? This will unlock topics and allow editing before opening again.')) return;
+    if (!confirm('Are you sure you want to revert this event to LIVE? This will unlock scenarios and allow editing before opening again.')) return;
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/revert-to-live`, {
@@ -502,13 +502,13 @@ export default function EventDetail() {
     }
   };
 
-  const handleGenerateTopics = async () => {
-    if (!confirm('Generate topic insights for this event? This will analyze attendee profiles and create discussion topics.')) {
+  const handleGenerateScenarios = async () => {
+    if (!confirm('Generate scenario insights for this event? This will analyze attendee profiles and current challenges to create realistic problem scenarios.')) {
       return;
     }
     setActionLoading(true);
     try {
-      const resp = await fetch(`/api/operators/events/${id}/generate-topics`, {
+      const resp = await fetch(`/api/operators/events/${id}/generate-scenarios`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -520,75 +520,75 @@ export default function EventDetail() {
         const eventJson = await eventResp.json();
         if (eventJson.ok) setEvent(eventJson.event);
       } else {
-        alert(json.error || 'Failed to generate topics');
+        alert(json.error || 'Failed to generate scenarios');
       }
     } catch (error) {
-      alert('Failed to generate topics. Please try again.');
+      alert('Failed to generate scenarios. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleUpdateTopics = async () => {
+  const handleUpdateScenarios = async () => {
     setActionLoading(true);
     try {
-      const resp = await fetch(`/api/operators/events/${id}/topics`, {
+      const resp = await fetch(`/api/operators/events/${id}/scenarios`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, topics: editingTopics })
+        body: JSON.stringify({ email, scenarios: editingScenarios })
       });
       const json = await resp.json();
       if (json.ok) {
-        setEditingTopicId(null);
-        setEditingTopics([]);
+        setEditingScenarioId(null);
+        setEditingScenarios([]);
         // Refresh event data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
         const eventJson = await eventResp.json();
         if (eventJson.ok) setEvent(eventJson.event);
       } else {
-        alert(json.error || 'Failed to update topics');
+        alert(json.error || 'Failed to update scenarios');
       }
     } catch (error) {
-      alert('Failed to update topics. Please try again.');
+      alert('Failed to update scenarios. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleStartEditTopics = () => {
-    if (event.topics && event.topics.length > 0) {
-      setEditingTopics([...event.topics]);
-      setEditingTopicId('all');
+  const handleStartEditScenarios = () => {
+    if (event.scenarios && event.scenarios.length > 0) {
+      setEditingScenarios([...event.scenarios]);
+      setEditingScenarioId('all');
     }
   };
 
-  const handleCancelEditTopics = () => {
-    setEditingTopicId(null);
-    setEditingTopics([]);
+  const handleCancelEditScenarios = () => {
+    setEditingScenarioId(null);
+    setEditingScenarios([]);
   };
 
-  const handleMoveTopic = (index, direction) => {
+  const handleMoveScenario = (index, direction) => {
     if (direction === 'up' && index > 0) {
-      const newTopics = [...editingTopics];
-      [newTopics[index], newTopics[index - 1]] = [newTopics[index - 1], newTopics[index]];
-      newTopics[index].rank = index + 1;
-      newTopics[index - 1].rank = index;
-      setEditingTopics(newTopics);
-    } else if (direction === 'down' && index < editingTopics.length - 1) {
-      const newTopics = [...editingTopics];
-      [newTopics[index], newTopics[index + 1]] = [newTopics[index + 1], newTopics[index]];
-      newTopics[index].rank = index + 1;
-      newTopics[index + 1].rank = index + 2;
-      setEditingTopics(newTopics);
+      const newScenarios = [...editingScenarios];
+      [newScenarios[index], newScenarios[index - 1]] = [newScenarios[index - 1], newScenarios[index]];
+      newScenarios[index].rank = index + 1;
+      newScenarios[index - 1].rank = index;
+      setEditingScenarios(newScenarios);
+    } else if (direction === 'down' && index < editingScenarios.length - 1) {
+      const newScenarios = [...editingScenarios];
+      [newScenarios[index], newScenarios[index + 1]] = [newScenarios[index + 1], newScenarios[index]];
+      newScenarios[index].rank = index + 1;
+      newScenarios[index + 1].rank = index + 2;
+      setEditingScenarios(newScenarios);
     }
   };
 
-  const togglePrompts = (topicId) => {
+  const togglePrompts = (scenarioId) => {
     const newExpanded = new Set(expandedPrompts);
-    if (newExpanded.has(topicId)) {
-      newExpanded.delete(topicId);
+    if (newExpanded.has(scenarioId)) {
+      newExpanded.delete(scenarioId);
     } else {
-      newExpanded.add(topicId);
+      newExpanded.add(scenarioId);
     }
     setExpandedPrompts(newExpanded);
   };
@@ -612,7 +612,7 @@ export default function EventDetail() {
   const canApproveCandidate = isCO && event.state === 'LIVE';
   const canManageEvent = isCO || isAccountant;
   const canManageRSVPs = isSA || isCO; // SA or CO can manage RSVPs
-  const canManageTopics = isSA || isCO || isAccountant; // SA, CO, or Accountant can manage topics
+  const canManageTopics = isSA || isCO || isAccountant; // SA, CO, or Accountant can manage scenarios
   
   // Check if event can be edited (LIVE state and future date)
   const canEdit = isCO && event.state === 'LIVE';
@@ -834,16 +834,16 @@ export default function EventDetail() {
                   </div>
                 </div>
 
-                {/* Topic Insights (SA/CO/Accountant only) */}
+                {/* Scenario Insights (SA/CO/Accountant only) */}
                 {canManageTopics && (event.state === 'LIVE' || event.state === 'OPEN') && (
                   <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Topic Insights</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Topics & Scenarios</h2>
                     
                     {/* Close RSVP Section (LIVE only) */}
                     {event.state === 'LIVE' && event.can_close_rsvp && (
                       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                         <p className="text-sm text-blue-900 mb-3">
-                          RSVP is currently open. Close RSVP to enable topic generation.
+                          RSVP is currently open. Close RSVP to enable scenario generation.
                         </p>
                         <button
                           onClick={handleCloseRSVP}
@@ -855,43 +855,43 @@ export default function EventDetail() {
                       </div>
                     )}
 
-                    {/* Generate Topics Section (LIVE only) */}
-                    {event.state === 'LIVE' && event.can_generate_topics && (
+                    {/* Generate Scenarios Section (LIVE only) */}
+                    {event.state === 'LIVE' && event.can_generate_scenarios && (
                       <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                         <p className="text-sm text-green-900 mb-3">
-                          RSVP is closed. Generate AI-powered topic insights based on attendee profiles.
+                          RSVP is closed. Generate AI-powered scenario insights based on attendee profiles and current challenges.
                         </p>
                         <button
-                          onClick={handleGenerateTopics}
+                          onClick={handleGenerateScenarios}
                           disabled={actionLoading}
                           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                         >
-                          {actionLoading ? 'Generating...' : 'Generate Topic Insights'}
+                          {actionLoading ? 'Generating...' : 'Generate Scenario Insights'}
                         </button>
                       </div>
                     )}
 
-                    {/* Topics Display */}
-                    {event.topics && event.topics.length > 0 && (
+                    {/* Scenarios Display */}
+                    {event.scenarios && event.scenarios.length > 0 && (
                       <div className="space-y-4">
                         {/* Edit Mode (LIVE only, not locked) */}
-                        {editingTopicId === 'all' && event.state === 'LIVE' ? (
+                        {editingScenarioId === 'all' && event.state === 'LIVE' ? (
                           <div className="space-y-4">
-                            {editingTopics.map((topic, index) => (
-                              <div key={topic.id} className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                            {editingScenarios.map((scenario, index) => (
+                              <div key={scenario.id} className="border border-gray-300 rounded-lg p-4 bg-gray-50">
                                 <div className="flex items-center justify-between mb-3">
                                   <div className="flex items-center gap-2">
-                                    <span className="text-sm font-medium text-gray-500">Rank {topic.rank}</span>
+                                    <span className="text-sm font-medium text-gray-500">Rank {scenario.rank}</span>
                                     <button
-                                      onClick={() => handleMoveTopic(index, 'up')}
+                                      onClick={() => handleMoveScenario(index, 'up')}
                                       disabled={index === 0}
                                       className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
                                     >
                                       <ChevronUp className="w-4 h-4" />
                                     </button>
                                     <button
-                                      onClick={() => handleMoveTopic(index, 'down')}
-                                      disabled={index === editingTopics.length - 1}
+                                      onClick={() => handleMoveScenario(index, 'down')}
+                                      disabled={index === editingScenarios.length - 1}
                                       className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
                                     >
                                       <ChevronDown className="w-4 h-4" />
@@ -900,40 +900,41 @@ export default function EventDetail() {
                                 </div>
                                 <div className="space-y-3">
                                   <div>
-                                    <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Scenario Title</label>
                                     <input
                                       type="text"
-                                      value={topic.topic_title}
+                                      value={scenario.scenario_title}
                                       onChange={(e) => {
-                                        const updated = [...editingTopics];
-                                        updated[index].topic_title = e.target.value;
-                                        setEditingTopics(updated);
+                                        const updated = [...editingScenarios];
+                                        updated[index].scenario_title = e.target.value;
+                                        setEditingScenarios(updated);
                                       }}
                                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
                                     />
                                   </div>
                                   <div>
-                                    <label className="block text-xs font-medium text-gray-700 mb-1">Summary</label>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">Scenario Story</label>
                                     <textarea
-                                      value={topic.topic_summary}
+                                      value={scenario.scenario_story}
                                       onChange={(e) => {
-                                        const updated = [...editingTopics];
-                                        updated[index].topic_summary = e.target.value;
-                                        setEditingTopics(updated);
+                                        const updated = [...editingScenarios];
+                                        updated[index].scenario_story = e.target.value;
+                                        setEditingScenarios(updated);
                                       }}
-                                      rows="2"
+                                      rows="5"
                                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                                      placeholder="1 paragraph (3-5 sentences) describing the problem scenario"
                                     />
                                   </div>
                                   <div>
                                     <label className="block text-xs font-medium text-gray-700 mb-1">Why This Fits</label>
                                     <input
                                       type="text"
-                                      value={topic.why_this_fits_this_room}
+                                      value={scenario.why_this_fits_this_room}
                                       onChange={(e) => {
-                                        const updated = [...editingTopics];
+                                        const updated = [...editingScenarios];
                                         updated[index].why_this_fits_this_room = e.target.value;
-                                        setEditingTopics(updated);
+                                        setEditingScenarios(updated);
                                       }}
                                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
                                     />
@@ -941,11 +942,11 @@ export default function EventDetail() {
                                   <div>
                                     <label className="block text-xs font-medium text-gray-700 mb-1">Starter Prompts (one per line)</label>
                                     <textarea
-                                      value={Array.isArray(topic.starter_prompts) ? topic.starter_prompts.join('\n') : ''}
+                                      value={Array.isArray(scenario.starter_prompts) ? scenario.starter_prompts.join('\n') : ''}
                                       onChange={(e) => {
-                                        const updated = [...editingTopics];
+                                        const updated = [...editingScenarios];
                                         updated[index].starter_prompts = e.target.value.split('\n').filter(p => p.trim());
-                                        setEditingTopics(updated);
+                                        setEditingScenarios(updated);
                                       }}
                                       rows="4"
                                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
@@ -956,7 +957,7 @@ export default function EventDetail() {
                             ))}
                             <div className="flex items-center gap-3">
                               <button
-                                onClick={handleUpdateTopics}
+                                onClick={handleUpdateScenarios}
                                 disabled={actionLoading}
                                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
                               >
@@ -964,7 +965,7 @@ export default function EventDetail() {
                                 Save Changes
                               </button>
                               <button
-                                onClick={handleCancelEditTopics}
+                                onClick={handleCancelEditScenarios}
                                 disabled={actionLoading}
                                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
                               >
@@ -975,29 +976,29 @@ export default function EventDetail() {
                         ) : (
                           /* View Mode */
                           <div className="space-y-4">
-                            {event.topics.map((topic) => (
-                              <div key={topic.id} className="border border-gray-200 rounded-lg p-4">
+                            {event.scenarios.map((scenario) => (
+                              <div key={scenario.id} className="border border-gray-200 rounded-lg p-4">
                                 <div className="flex items-start justify-between mb-2">
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <span className="text-sm font-medium text-gray-500">#{topic.rank}</span>
-                                      <h3 className="text-lg font-semibold text-gray-900">{topic.topic_title}</h3>
-                                      {topic.is_locked && (
+                                      <span className="text-sm font-medium text-gray-500">#{scenario.rank}</span>
+                                      <h3 className="text-lg font-semibold text-gray-900">{scenario.scenario_title}</h3>
+                                      {scenario.is_locked && (
                                         <Lock className="w-4 h-4 text-gray-400" title="Locked" />
                                       )}
                                     </div>
-                                    <p className="text-sm text-gray-600 mb-2">{topic.topic_summary}</p>
+                                    <p className="text-sm text-gray-700 mb-3 leading-relaxed">{scenario.scenario_story}</p>
                                     <p className="text-sm text-gray-700 italic mb-3 border-l-2 border-gray-300 pl-3">
-                                      <span className="font-medium">Why this fits:</span> {topic.why_this_fits_this_room}
+                                      <span className="font-medium">Why this fits:</span> {scenario.why_this_fits_this_room}
                                     </p>
                                   </div>
                                 </div>
                                 <div>
                                   <button
-                                    onClick={() => togglePrompts(topic.id)}
+                                    onClick={() => togglePrompts(scenario.id)}
                                     className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
                                   >
-                                    {expandedPrompts.has(topic.id) ? (
+                                    {expandedPrompts.has(scenario.id) ? (
                                       <>
                                         <ChevronUp className="w-4 h-4" />
                                         Hide Starter Prompts
@@ -1009,10 +1010,10 @@ export default function EventDetail() {
                                       </>
                                     )}
                                   </button>
-                                  {expandedPrompts.has(topic.id) && (
+                                  {expandedPrompts.has(scenario.id) && (
                                     <div className="mt-2 pl-4 border-l-2 border-gray-200">
                                       <ul className="space-y-1 text-sm text-gray-600">
-                                        {(Array.isArray(topic.starter_prompts) ? topic.starter_prompts : []).map((prompt, idx) => (
+                                        {(Array.isArray(scenario.starter_prompts) ? scenario.starter_prompts : []).map((prompt, idx) => (
                                           <li key={idx} className="list-disc list-inside">{prompt}</li>
                                         ))}
                                       </ul>
@@ -1021,21 +1022,21 @@ export default function EventDetail() {
                                 </div>
                               </div>
                             ))}
-                            {/* Edit Topics button (LIVE only, not locked) */}
-                            {event.state === 'LIVE' && event.can_edit_topics && !event.topics.some(t => t.is_locked) && (
+                            {/* Edit Scenarios button (LIVE only, not locked) */}
+                            {event.state === 'LIVE' && event.can_edit_scenarios && !event.scenarios.some(s => s.is_locked) && (
                               <button
-                                onClick={handleStartEditTopics}
+                                onClick={handleStartEditScenarios}
                                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center gap-2"
                               >
                                 <Edit2 className="w-4 h-4" />
-                                Edit Topics
+                                Edit Scenarios
                               </button>
                             )}
                             {/* Locked message for OPEN events */}
                             {event.state === 'OPEN' && (
                               <p className="text-sm text-gray-500 italic flex items-center gap-2">
                                 <Lock className="w-4 h-4" />
-                                Topics are locked. They cannot be edited once the event is open.
+                                Scenarios are locked. They cannot be edited once the event is open.
                               </p>
                             )}
                           </div>
@@ -1043,8 +1044,8 @@ export default function EventDetail() {
                       </div>
                     )}
 
-                    {event.rsvp_closed && !event.topics && !event.can_generate_topics && (
-                      <p className="text-sm text-gray-500">Topics have been generated. Refresh to view them.</p>
+                    {event.rsvp_closed && !event.scenarios && !event.can_generate_scenarios && (
+                      <p className="text-sm text-gray-500">Scenarios have been generated. Refresh to view them.</p>
                     )}
                   </div>
                 )}

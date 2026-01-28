@@ -3,7 +3,7 @@
  * 
  * POST /api/operators/events/[id]/revert-to-live
  * 
- * Transitions event from OPEN back to LIVE state. Unlocks topics.
+ * Transitions event from OPEN back to LIVE state. Unlocks scenarios and resets RSVP status.
  * Only CO or Accountant can revert events.
  */
 
@@ -50,23 +50,25 @@ export default async function handler(req, res) {
       return res.status(403).json({ ok: false, error: 'Only Chief Operators or Accountants can revert events to LIVE' });
     }
 
-    // Unlock topics (set is_locked = false)
+    // Unlock scenarios (set is_locked = false)
     const { error: unlockError } = await supabaseAdmin
-      .from('operators_event_topics')
+      .from('operators_event_scenarios')
       .update({ is_locked: false })
       .eq('event_id', id);
 
     if (unlockError) {
-      console.error('[REVERT_TO_LIVE] Error unlocking topics:', unlockError);
-      // Continue anyway - topics might not exist
+      console.error('[REVERT_TO_LIVE] Error unlocking scenarios:', unlockError);
+      // Continue anyway - scenarios might not exist
     }
 
-    // Update event state to LIVE and clear opened_at
+    // Update event state to LIVE, clear opened_at/closed_at, and reset rsvp_closed to allow RSVPs again
     const { data: updatedEvent, error: updateError } = await supabaseAdmin
       .from('operators_events')
       .update({
         state: 'LIVE',
-        opened_at: null
+        opened_at: null,
+        closed_at: null,  // Clear closed_at if it exists
+        rsvp_closed: false  // Reset RSVP status to allow new RSVPs
       })
       .eq('id', id)
       .select()

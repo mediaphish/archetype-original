@@ -138,23 +138,23 @@ export default async function handler(req, res) {
       promotions = promotionRecords || [];
     }
 
-    // Get topics (only for SA/CO/Accountant)
-    let topics = null;
+    // Get scenarios (only for SA/CO/Accountant)
+    let scenarios = null;
     const canManage = await canManageTopics(email);
     if (canManage) {
-      const { data: eventTopics } = await supabaseAdmin
-        .from('operators_event_topics')
+      const { data: eventScenarios } = await supabaseAdmin
+        .from('operators_event_scenarios')
         .select('*')
         .eq('event_id', id)
         .order('rank', { ascending: true });
-      topics = eventTopics || [];
+      scenarios = eventScenarios || [];
     }
 
     // Calculate permission flags
     const canCloseRSVP = canManage && event.state === 'LIVE' && !event.rsvp_closed;
-    const topicsExist = topics && topics.length > 0;
-    const canGenerateTopics = canManage && event.state === 'LIVE' && event.rsvp_closed && !topicsExist;
-    const canEditTopics = canManage && event.state === 'LIVE' && topicsExist && (!topics[0]?.is_locked);
+    const scenariosExist = scenarios && scenarios.length > 0;
+    const canGenerateScenarios = canManage && event.state === 'LIVE' && event.rsvp_closed && !scenariosExist;
+    const canEditScenarios = canManage && event.state === 'LIVE' && scenariosExist && (!scenarios[0]?.is_locked);
 
     return res.status(200).json({
       ok: true,
@@ -168,10 +168,10 @@ export default async function handler(req, res) {
         attendance,
         roi_winner: roiWinner,
         promotions,
-        topics: canManage ? topics : undefined, // Only include if user can manage
+        scenarios: canManage ? scenarios : undefined, // Only include if user can manage
         can_close_rsvp: canCloseRSVP,
-        can_generate_topics: canGenerateTopics,
-        can_edit_topics: canEditTopics
+        can_generate_scenarios: canGenerateScenarios,
+        can_edit_scenarios: canEditScenarios
       }
     });
   } catch (error) {

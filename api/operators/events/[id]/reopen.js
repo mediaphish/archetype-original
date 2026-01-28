@@ -3,7 +3,7 @@
  * 
  * POST /api/operators/events/[id]/reopen
  * 
- * Transitions event from CLOSED back to OPEN state. Unlocks topics.
+ * Transitions event from CLOSED back to OPEN state. Unlocks scenarios.
  * Only CO or Accountant can reopen events.
  */
 
@@ -50,15 +50,15 @@ export default async function handler(req, res) {
       return res.status(403).json({ ok: false, error: 'Only Chief Operators or Accountants can reopen events' });
     }
 
-    // Unlock topics (set is_locked = false)
+    // Unlock scenarios (set is_locked = false)
     const { error: unlockError } = await supabaseAdmin
-      .from('operators_event_topics')
+      .from('operators_event_scenarios')
       .update({ is_locked: false })
       .eq('event_id', id);
 
     if (unlockError) {
-      console.error('[REOPEN_EVENT] Error unlocking topics:', unlockError);
-      // Continue anyway - topics might not exist
+      console.error('[REOPEN_EVENT] Error unlocking scenarios:', unlockError);
+      // Continue anyway - scenarios might not exist
     }
 
     // Update event state to OPEN and clear closed_at
