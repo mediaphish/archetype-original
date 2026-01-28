@@ -809,12 +809,12 @@ export default function EventDetail() {
                 </div>
 
                 {/* Topic Insights (SA/CO/Accountant only) */}
-                {canManageTopics && event.state === 'LIVE' && (
+                {canManageTopics && (event.state === 'LIVE' || event.state === 'OPEN') && (
                   <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Topic Insights</h2>
                     
-                    {/* Close RSVP Section */}
-                    {event.can_close_rsvp && (
+                    {/* Close RSVP Section (LIVE only) */}
+                    {event.state === 'LIVE' && event.can_close_rsvp && (
                       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                         <p className="text-sm text-blue-900 mb-3">
                           RSVP is currently open. Close RSVP to enable topic generation.
@@ -829,8 +829,8 @@ export default function EventDetail() {
                       </div>
                     )}
 
-                    {/* Generate Topics Section */}
-                    {event.can_generate_topics && (
+                    {/* Generate Topics Section (LIVE only) */}
+                    {event.state === 'LIVE' && event.can_generate_topics && (
                       <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                         <p className="text-sm text-green-900 mb-3">
                           RSVP is closed. Generate AI-powered topic insights based on attendee profiles.
@@ -848,8 +848,8 @@ export default function EventDetail() {
                     {/* Topics Display */}
                     {event.topics && event.topics.length > 0 && (
                       <div className="space-y-4">
-                        {editingTopicId === 'all' ? (
-                          /* Edit Mode */
+                        {/* Edit Mode (LIVE only, not locked) */}
+                        {editingTopicId === 'all' && event.state === 'LIVE' ? (
                           <div className="space-y-4">
                             {editingTopics.map((topic, index) => (
                               <div key={topic.id} className="border border-gray-300 rounded-lg p-4 bg-gray-50">
@@ -995,7 +995,8 @@ export default function EventDetail() {
                                 </div>
                               </div>
                             ))}
-                            {event.can_edit_topics && (
+                            {/* Edit Topics button (LIVE only, not locked) */}
+                            {event.state === 'LIVE' && event.can_edit_topics && !event.topics.some(t => t.is_locked) && (
                               <button
                                 onClick={handleStartEditTopics}
                                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center gap-2"
@@ -1003,6 +1004,13 @@ export default function EventDetail() {
                                 <Edit2 className="w-4 h-4" />
                                 Edit Topics
                               </button>
+                            )}
+                            {/* Locked message for OPEN events */}
+                            {event.state === 'OPEN' && (
+                              <p className="text-sm text-gray-500 italic flex items-center gap-2">
+                                <Lock className="w-4 h-4" />
+                                Topics are locked. They cannot be edited once the event is open.
+                              </p>
                             )}
                           </div>
                         )}
