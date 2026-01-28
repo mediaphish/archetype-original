@@ -120,28 +120,39 @@ export default async function handler(req, res) {
     // Get ROi winner (if CLOSED) with user business_name
     let roiWinner = null;
     if (event.state === 'CLOSED') {
+      console.log('[GET_EVENT] Fetching ROI winner for event:', id);
       const { data: winner, error: winnerError } = await supabaseAdmin
         .from('operators_roi_winners')
         .select('*')
         .eq('event_id', id)
         .maybeSingle();
       
+      console.log('[GET_EVENT] ROI winner query result:', { winner, winnerError });
+      
       if (winnerError) {
         console.error('[GET_EVENT] Error fetching ROI winner:', winnerError);
       }
       
       if (winner) {
+        console.log('[GET_EVENT] Found ROI winner:', winner.winner_email);
         // Get business_name separately if needed
-        const { data: user } = await supabaseAdmin
+        const { data: user, error: userError } = await supabaseAdmin
           .from('operators_users')
           .select('business_name')
           .eq('email', winner.winner_email)
           .maybeSingle();
         
+        if (userError) {
+          console.error('[GET_EVENT] Error fetching user business_name:', userError);
+        }
+        
         roiWinner = {
           ...winner,
           business_name: user?.business_name || null
         };
+        console.log('[GET_EVENT] Final ROI winner object:', roiWinner);
+      } else {
+        console.log('[GET_EVENT] No ROI winner found in database');
       }
     }
 
