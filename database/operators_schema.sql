@@ -86,9 +86,10 @@ CREATE TABLE IF NOT EXISTS operators_votes (
   target_email TEXT NOT NULL,
   vote_value INTEGER NOT NULL CHECK (vote_value IN (-1, 1)),
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  CONSTRAINT unique_vote_per_target UNIQUE (event_id, voter_email, target_email),
   CONSTRAINT no_self_voting CHECK (voter_email != target_email)
 );
+-- Note: No unique constraint on (event_id, voter_email, target_email) to allow multiple votes per target
+-- Users can vote multiple times for the same person (up to 10 total votes per event)
 
 CREATE INDEX IF NOT EXISTS idx_operators_votes_event_id ON operators_votes(event_id);
 CREATE INDEX IF NOT EXISTS idx_operators_votes_voter_email ON operators_votes(voter_email);
