@@ -6,6 +6,8 @@ import ConfirmModal from '../../components/operators/ConfirmModal';
 import { useUser } from '../../contexts/UserContext';
 import { EmptyDashboard } from '../../components/operators/EmptyState';
 import { handleKeyDown } from '../../lib/operators/accessibility';
+import { trackPageLoad, trackAPIResponseTime } from '../../lib/operators/performance';
+import { trackError } from '../../lib/operators/errorTracking';
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -32,12 +34,18 @@ export default function Dashboard() {
 
 
   useEffect(() => {
+    // Track page load performance
+    trackPageLoad('dashboard');
+
     const fetchData = async () => {
       try {
         setLoading(true);
+        const startTime = performance.now();
         
         // Fetch dashboard metrics (doesn't require email, returns aggregate data)
         const dashboardResp = await fetch('/api/operators/dashboard');
+        const apiDuration = performance.now() - startTime;
+        await trackAPIResponseTime('/api/operators/dashboard', apiDuration, dashboardResp.ok ? 'success' : 'error');
         
         if (!dashboardResp.ok) {
           console.error('[DASHBOARD] HTTP error:', dashboardResp.status, dashboardResp.statusText);
@@ -89,6 +97,14 @@ export default function Dashboard() {
       } catch (error) {
         console.error('[DASHBOARD] Failed to fetch dashboard:', error);
         console.error('[DASHBOARD] Error details:', error.message, error.stack);
+        
+        // Track error
+        trackError(error, null, {
+          component: 'Dashboard',
+          action: 'fetchData',
+          email: email || 'unknown',
+        });
+        
         toast.error('Failed to load dashboard. Please try again.');
         setDashboard(null);
       } finally {

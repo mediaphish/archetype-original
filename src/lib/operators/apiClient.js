@@ -1,6 +1,8 @@
 /**
- * Standardized API client wrapper with consistent error handling
+ * Standardized API client wrapper with consistent error handling, retry logic, and caching
  */
+
+import { trackAPIError } from './errorTracking';
 
 class APIError extends Error {
   constructor(message, code, details = null) {
@@ -19,6 +21,90 @@ class APIClient {
     this.baseURL = baseURL;
     this.pendingRequests = new Map(); // Cache for pending requests to prevent duplicates
     this.responseCache = new Map(); // Simple cache for GET requests (5 second TTL)
+    this.persistentCache = new Map(); // Persistent cache for certain endpoints (localStorage-backed)
+    
+    // Load persistent cache from localStorage on initialization
+    this.loadPersistentCache();
+    
+    // Clean up expired cache entries every minute
+    setInterval(() => this.cleanExpiredCache(), 60000);
+  }
+
+  /**
+   * Load persistent cache from localStorage
+   */
+  loadPersistentCache() {
+    try {
+      const stored = localStorage.getItem('operators_api_cache');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const now = Date.now();
+        // Only load non-expired entries
+        Object.entries(parsed).forEach(([key, value]) => {
+          if (value.expiresAt > now) {
+            this.persistentCache.set(key, value);
+          }
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to load persistent cache:', error);
+    }
+  }
+
+  /**
+   * Save persistent cache to localStorage
+   */
+  savePersistentCache() {
+    try {
+      const cacheObj = Object.fromEntries(this.persistentCache);
+      localStorage.setItem('operators_api_cache', JSON.stringify(cacheObj));
+    } catch (error) {
+      console.warn('Failed to save persistent cache:', error);
+    }
+  }
+
+  /**
+   * Clean expired cache entries
+   */
+  cleanExpiredCache() {
+    const now = Date.now();
+    
+    // Clean in-memory cache
+    for (const [key, value] of this.responseCache.entries()) {
+      if (now - value.timestamp > 5000) {
+        this.responseCache.delete(key);
+      }
+    }
+    
+    // Clean persistent cache
+    let needsSave = false;
+    for (const [key, value] of this.persistentCache.entries()) {
+      if (now > value.expiresAt) {
+        this.persistentCache.delete(key);
+        needsSave = true;
+      }
+    }
+    
+    if (needsSave) {
+      this.savePersistentCache();
+    }
+  }
+
+  /**
+   * Get cache TTL for an endpoint (in milliseconds)
+   * Some endpoints can be cached longer than others
+   */
+  getCacheTTL(endpoint) {
+    // Dashboard and user data can be cached longer
+    if (endpoint.includes('/dashboard') || endpoint.includes('/users/me')) {
+      return 30000; // 30 seconds
+    }
+    // Events list can be cached moderately
+    if (endpoint.includes('/events') && !endpoint.includes('/events/') && !endpoint.includes('/events/[')) {
+      return 10000; // 10 seconds
+    }
+    // Default short cache
+    return 5000; // 5 seconds
   }
 
   /**
@@ -51,13 +137,33 @@ class APIClient {
     const url = `${this.baseURL}${endpoint}`;
     const requestKey = `${options.method || 'GET'}:${url}:${options.body ? JSON.stringify(options.body) : ''}`;
     
-    // For GET requests, check cache first (5 second TTL)
-    if ((!options.method || options.method === 'GET') && this.responseCache.has(requestKey)) {
-      const cached = this.responseCache.get(requestKey);
-      if (Date.now() - cached.timestamp < 5000) {
-        return cached.data;
+    // For GET requests, check cache first
+    if (!options.method || options.method === 'GET') {
+      const cacheTTL = this.getCacheTTL(endpoint);
+      
+      // Check in-memory cache
+      if (this.responseCache.has(requestKey)) {
+        const cached = this.responseCache.get(requestKey);
+        if (Date.now() - cached.timestamp < cacheTTL) {
+          return cached.data;
+        }
+        this.responseCache.delete(requestKey);
       }
-      this.responseCache.delete(requestKey);
+      
+      // Check persistent cache for longer-lived data
+      if (cacheTTL > 5000 && this.persistentCache.has(requestKey)) {
+        const cached = this.persistentCache.get(requestKey);
+        if (Date.now() < cached.expiresAt) {
+          // Also add to in-memory cache for faster access
+          this.responseCache.set(requestKey, {
+            data: cached.data,
+            timestamp: Date.now(),
+          });
+          return cached.data;
+        }
+        this.persistentCache.delete(requestKey);
+        this.savePersistentCache();
+      }
     }
 
     // Check if same request is already pending (deduplication)
@@ -88,15 +194,38 @@ class APIClient {
           
           // Cache GET responses
           if (!options.method || options.method === 'GET') {
+            const cacheTTL = this.getCacheTTL(endpoint);
+            const now = Date.now();
+            
+            // Always add to in-memory cache
             this.responseCache.set(requestKey, {
               data,
-              timestamp: Date.now()
+              timestamp: now,
             });
+            
+            // Add to persistent cache for longer-lived endpoints
+            if (cacheTTL > 5000) {
+              this.persistentCache.set(requestKey, {
+                data,
+                expiresAt: now + cacheTTL,
+              });
+              this.savePersistentCache();
+            }
           }
           
           return data;
         } catch (error) {
           lastError = error;
+
+          // Track API errors (only on final attempt to avoid spam)
+          if (attempt === retries) {
+            trackAPIError(error, endpoint, options.method || 'GET', {
+              attempt: attempt + 1,
+              retries,
+            }).catch(() => {
+              // Silently fail - error tracking shouldn't break the app
+            });
+          }
 
           // Don't retry on client errors (4xx) except 429 (rate limit)
           if (error.code && error.code.startsWith('HTTP_4') && error.code !== 'HTTP_429') {

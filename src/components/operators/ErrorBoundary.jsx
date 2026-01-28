@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
+import { trackError } from '../../lib/operators/errorTracking';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -21,10 +22,13 @@ class ErrorBoundary extends React.Component {
       errorInfo
     });
 
-    // TODO: In production, send to error tracking service (e.g., Sentry)
-    // if (process.env.NODE_ENV === 'production') {
-    //   Sentry.captureException(error, { contexts: { react: { componentStack: errorInfo.componentStack } } });
-    // }
+    // Track error to monitoring service
+    trackError(error, errorInfo, {
+      component: 'ErrorBoundary',
+      userId: this.props.userId || null,
+    }).catch(() => {
+      // Silently fail - error tracking shouldn't break the app
+    });
   }
 
   handleReset = () => {
