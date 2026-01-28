@@ -267,8 +267,8 @@ BEGIN
     LEFT JOIN operators_votes v ON v.event_id = a.event_id AND v.target_email = a.user_email
     WHERE a.event_id = event_id_param
       AND a.checked_in = true
-      AND a.votes_used = 10
       AND a.present_until_close = true
+      -- Note: Removed votes_used = 10 requirement - events can close without all votes used
       AND a.marked_no_show = false
       AND u.owed_balance = 0
       AND (u.benched_until IS NULL OR u.benched_until < NOW())
