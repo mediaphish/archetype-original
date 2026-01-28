@@ -90,13 +90,17 @@ export default async function handler(req, res) {
       const result = await supabaseAdmin.rpc('calculate_roi_winner', { event_id_param: id });
       roiResult = result.data;
       roiError = result.error;
+      console.log('[CLOSE_EVENT] Database function result:', { roiResult, roiError });
     } catch (err) {
       console.error('[CLOSE_EVENT] ROi calculation error:', err);
       roiError = err;
     }
 
-    // If function fails or returns no results, manually calculate ROI winner
-    if (roiError || !roiResult || roiResult.length === 0) {
+    // Always manually calculate ROI winner as fallback (database function may not be updated)
+    // If function returns results, use them; otherwise use manual calculation
+    const useManualCalculation = roiError || !roiResult || roiResult.length === 0;
+    
+    if (useManualCalculation) {
       console.log('[CLOSE_EVENT] Function returned no winner, calculating manually...');
       
       // Get all checked-in attendees
