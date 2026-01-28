@@ -9,8 +9,11 @@
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { canPerformAction } from '../../../../lib/operators/permissions.js';
+import { Resend } from 'resend';
 
 export const config = { runtime: 'nodejs' };
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -71,9 +74,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'No recipients found to announce event to' });
     }
 
-    // Send emails via Resend
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
+    // Check Resend API key
+    if (!process.env.RESEND_API_KEY) {
       console.error('[ANNOUNCE_EVENT] RESEND_API_KEY not configured');
       return res.status(500).json({ ok: false, error: 'Email service not configured' });
     }
@@ -138,51 +140,82 @@ export default async function handler(req, res) {
       `;
     };
 
-    // Send emails in batches (Resend supports up to 100 per batch)
-    const batchSize = 100;
+    // Send emails in batches using Resend Batch API (up to 100 per batch)
+    const BATCH_SIZE = 100;
     let successCount = 0;
     let failureCount = 0;
     const errors = [];
 
-    for (let i = 0; i < allRecipients.length; i += batchSize) {
-      const batch = allRecipients.slice(i, i + batchSize);
+    for (let i = 0; i < allRecipients.length; i += BATCH_SIZE) {
+      const batch = allRecipients.slice(i, i + BATCH_SIZE);
+      const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
+      const totalBatches = Math.ceil(allRecipients.length / BATCH_SIZE);
       
-      try {
-        const emailPromises = batch.map(recipientEmail => {
-          return fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${resendApiKey}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              from: fromEmail,
-              to: recipientEmail,
-              subject: `New Operators Event: ${event.title}`,
-              html: buildEmailHtml(recipientEmail)
-            })
-          });
-        });
+      console.log(`[ANNOUNCE_EVENT] Sending batch ${batchNumber}/${totalBatches} (${batch.length} emails)...`);
 
-        const results = await Promise.allSettled(emailPromises);
-        
-        results.forEach((result, index) => {
-          if (result.status === 'fulfilled' && result.value.ok) {
-            successCount++;
+      // Build batch array for Resend
+      const batchEmails = batch.map(recipientEmail => ({
+        from: fromEmail,
+        to: recipientEmail,
+        subject: `New Operators Event: ${event.title}`,
+        html: buildEmailHtml(recipientEmail)
+      }));
+
+      let retries = 3;
+      let batchSent = false;
+
+      while (retries > 0 && !batchSent) {
+        try {
+          const result = await resend.batch.send(batchEmails);
+
+          if (result?.error) {
+            // Check if it's a rate limit error
+            if (result.error.name === 'rate_limit_exceeded' || result.error.statusCode === 429) {
+              retries--;
+              if (retries > 0) {
+                console.warn(`[ANNOUNCE_EVENT] Rate limit hit for batch ${batchNumber}, waiting 2 seconds before retry...`);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                continue;
+              } else {
+                // Batch failed after retries
+                console.error(`[ANNOUNCE_EVENT] Batch ${batchNumber} failed after retries:`, result.error);
+                batch.forEach(email => {
+                  failureCount++;
+                  errors.push({ email, error: result.error.message || 'Rate limit exceeded' });
+                });
+                batchSent = true;
+              }
+            } else {
+              // Other error
+              console.error(`[ANNOUNCE_EVENT] Batch ${batchNumber} error:`, result.error);
+              batch.forEach(email => {
+                failureCount++;
+                errors.push({ email, error: result.error.message || 'Batch send failed' });
+              });
+              batchSent = true;
+            }
           } else {
-            failureCount++;
-            errors.push({
-              email: batch[index],
-              error: result.status === 'rejected' ? result.reason?.message : 'Unknown error'
-            });
+            // Success - count successful sends
+            const successEmails = result.data || [];
+            successCount += successEmails.length;
+            failureCount += (batch.length - successEmails.length);
+            console.log(`[ANNOUNCE_EVENT] Batch ${batchNumber} sent successfully: ${successEmails.length}/${batch.length} emails`);
+            batchSent = true;
           }
-        });
-      } catch (error) {
-        console.error('[ANNOUNCE_EVENT] Batch send error:', error);
-        failureCount += batch.length;
-        batch.forEach(email => {
-          errors.push({ email, error: error.message || 'Batch send failed' });
-        });
+        } catch (error) {
+          retries--;
+          if (retries > 0) {
+            console.warn(`[ANNOUNCE_EVENT] Batch ${batchNumber} error, retrying...`, error.message);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          } else {
+            console.error(`[ANNOUNCE_EVENT] Batch ${batchNumber} failed after retries:`, error);
+            batch.forEach(email => {
+              failureCount++;
+              errors.push({ email, error: error.message || 'Batch send failed' });
+            });
+            batchSent = true;
+          }
+        }
       }
     }
 
