@@ -337,13 +337,18 @@ export default function EventDetail() {
       });
       const json = await resp.json();
       if (json.ok) {
+        console.log('[UI] Revert to LIVE successful. Event from API:', json.event);
         // Refresh event data with cache-busting to ensure fresh data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}&_t=${Date.now()}`);
         const eventJson = await eventResp.json();
         if (eventJson.ok) {
+          console.log('[UI] Refreshed event data. State:', eventJson.event.state, 'RSVP Closed:', eventJson.event.rsvp_closed);
           setEvent(eventJson.event);
           // Force a re-render by updating state
-          console.log('Event reverted to LIVE. RSVP Closed:', eventJson.event.rsvp_closed);
+          alert('Event successfully reverted to LIVE. RSVPs are now enabled.');
+        } else {
+          console.error('[UI] Failed to refresh event data:', eventJson);
+          alert('Event reverted but failed to refresh. Please reload the page.');
         }
       } else {
         const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to revert event to LIVE';

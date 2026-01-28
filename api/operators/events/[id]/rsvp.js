@@ -45,8 +45,12 @@ export default async function handler(req, res) {
 
     // Check state - must be LIVE
     if (event.state !== 'LIVE') {
-      console.log('[RSVP] Event state check failed. State:', event.state, 'Event ID:', id);
-      return res.status(400).json({ ok: false, error: 'Can only RSVP to LIVE events' });
+      console.log('[RSVP] Event state check failed. State:', event.state, 'Event ID:', id, 'RSVP Closed:', event.rsvp_closed);
+      return res.status(400).json({ 
+        ok: false, 
+        error: 'Can only RSVP to LIVE events',
+        details: `Event is currently ${event.state}. Please revert to LIVE state first.`
+      });
     }
 
     // Ensure consistency: if state is LIVE, rsvp_closed should be false
