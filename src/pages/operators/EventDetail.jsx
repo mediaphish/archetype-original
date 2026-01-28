@@ -684,10 +684,13 @@ export default function EventDetail() {
           setEvent(eventJson.event);
           toast.success('Scenarios updated successfully');
         } else {
-          toast.error(json.error || 'Failed to update scenarios');
+          toast.error('Failed to refresh event data after updating scenarios');
         }
-      } catch (error) {
-        toast.error('Failed to update scenarios. Please try again.');
+      } else {
+        toast.error(json.error || 'Failed to update scenarios');
+      }
+    } catch (error) {
+      toast.error('Failed to update scenarios. Please try again.');
     } finally {
       setActionLoading(false);
     }
