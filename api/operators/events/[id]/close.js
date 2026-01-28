@@ -75,6 +75,23 @@ export default async function handler(req, res) {
       // Continue anyway - ROi might be null if no eligible winners
     }
 
+    // Calculate pot amount if there's a winner
+    let potAmountWon = null;
+    if (roiResult && roiResult.length > 0) {
+      // Count confirmed RSVPs
+      const { count: confirmedCount } = await supabaseAdmin
+        .from('operators_rsvps')
+        .select('*', { count: 'exact', head: true })
+        .eq('event_id', id)
+        .eq('status', 'confirmed');
+
+      // Calculate total pot: (stake_amount × confirmed_attendees) / 2 + sponsor_pot_value
+      const totalPot = (parseFloat(event.stake_amount || 0) * (confirmedCount || 0)) / 2 + parseFloat(event.sponsor_pot_value || 0);
+      
+      // Calculate winner's pot: 50% of total pot (after 25% host and 25% AO)
+      potAmountWon = totalPot * 0.5;
+    }
+
     // Store ROi winner if found
     if (roiResult && roiResult.length > 0) {
       const winner = roiResult[0];
@@ -86,7 +103,8 @@ export default async function handler(req, res) {
           net_score: winner.net_score,
           upvote_ratio: winner.upvote_ratio,
           total_votes: winner.total_votes,
-          check_in_time: winner.check_in_time
+          check_in_time: winner.check_in_time,
+          pot_amount_won: potAmountWon
         });
     }
 

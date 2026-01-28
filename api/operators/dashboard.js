@@ -183,6 +183,37 @@ export default async function handler(req, res) {
       .select('*', { count: 'exact', head: true })
       .eq('card_status', 'red');
 
+    // Get recent ROI winners (last 10) with event and user details
+    const { data: recentWinners } = await supabaseAdmin
+      .from('operators_roi_winners')
+      .select(`
+        id,
+        winner_email,
+        pot_amount_won,
+        created_at,
+        operators_events (
+          id,
+          title,
+          event_date
+        ),
+        operators_users!operators_roi_winners_winner_email_fkey (
+          business_name
+        )
+      `)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    // Format ROI winners data
+    const roiWinners = (recentWinners || []).map(winner => ({
+      id: winner.id,
+      winner_email: winner.winner_email,
+      winner_name: winner.operators_users?.business_name || null,
+      pot_amount_won: winner.pot_amount_won ? parseFloat(winner.pot_amount_won) : null,
+      event_title: winner.operators_events?.title || null,
+      event_date: winner.operators_events?.event_date || null,
+      created_at: winner.created_at
+    }));
+
     return res.status(200).json({
       ok: true,
       dashboard: {
@@ -211,7 +242,8 @@ export default async function handler(req, res) {
             orange_cards: orangeCards || 0,
             red_cards: redCards || 0
           }
-        }
+        },
+        recent_roi_winners: roiWinners
       }
     });
   } catch (error) {

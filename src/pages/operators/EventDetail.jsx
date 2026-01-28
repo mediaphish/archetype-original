@@ -362,6 +362,30 @@ export default function EventDetail() {
     }
   };
 
+  const handleAnnounceEvent = async () => {
+    if (!confirm('Are you sure you want to announce this event? This will send email notifications to all Operators and approved Candidates.')) return;
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/announce`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        alert(`Event announced successfully! Emails sent to ${json.sent} recipients.${json.failed > 0 ? ` (${json.failed} failed)` : ''}`);
+      } else {
+        const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to announce event';
+        console.error('Announce event error:', json);
+        alert(errorMsg);
+      }
+    } catch (error) {
+      alert('Failed to announce event. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const fetchUserVotes = async (eventId, userEmail) => {
     try {
       // Get event data which includes vote_summary
@@ -1390,8 +1414,36 @@ export default function EventDetail() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Event Outcomes</h2>
                 {event.roi_winner && (
                   <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="font-medium text-green-900">ROi Winner:</p>
-                    <p className="text-green-800">{event.roi_winner.winner_email}</p>
+                    <p className="font-medium text-green-900 mb-2">ROi Winner:</p>
+                    <p className="text-lg font-semibold text-green-800 mb-2">
+                      {event.roi_winner.business_name || (event.roi_winner.winner_email ? event.roi_winner.winner_email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown')}
+                    </p>
+                    {event.roi_winner.pot_amount_won !== null && event.roi_winner.pot_amount_won !== undefined && (
+                      <div className="mt-3 pt-3 border-t border-green-300">
+                        <p className="text-sm font-medium text-green-700 mb-1">Pot Won:</p>
+                        <p className="text-2xl font-bold text-green-800">
+                          ${event.roi_winner.pot_amount_won.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </p>
+                      </div>
+                    )}
+                    {event.roi_winner.net_score !== undefined && (
+                      <div className="mt-3 pt-3 border-t border-green-300">
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <p className="text-green-700 font-medium">Net Score</p>
+                            <p className="text-green-800 font-semibold">{event.roi_winner.net_score}</p>
+                          </div>
+                          <div>
+                            <p className="text-green-700 font-medium">Upvote Ratio</p>
+                            <p className="text-green-800 font-semibold">{(parseFloat(event.roi_winner.upvote_ratio || 0) * 100).toFixed(1)}%</p>
+                          </div>
+                          <div>
+                            <p className="text-green-700 font-medium">Total Votes</p>
+                            <p className="text-green-800 font-semibold">{event.roi_winner.total_votes}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
                 {event.promotions && event.promotions.length > 0 && (
@@ -1425,6 +1477,13 @@ export default function EventDetail() {
                           Edit Event
                         </button>
                       )}
+                      <button
+                        onClick={handleAnnounceEvent}
+                        disabled={actionLoading}
+                        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                      >
+                        Announce Event
+                      </button>
                       <button
                         onClick={handleOpenEvent}
                         disabled={actionLoading}

@@ -117,15 +117,26 @@ export default async function handler(req, res) {
       attendance = attendanceRecords || [];
     }
 
-    // Get ROi winner (if CLOSED)
+    // Get ROi winner (if CLOSED) with user business_name
     let roiWinner = null;
     if (event.state === 'CLOSED') {
       const { data: winner } = await supabaseAdmin
         .from('operators_roi_winners')
-        .select('*')
+        .select(`
+          *,
+          operators_users!operators_roi_winners_winner_email_fkey (
+            business_name
+          )
+        `)
         .eq('event_id', id)
         .maybeSingle();
-      roiWinner = winner;
+      
+      if (winner) {
+        roiWinner = {
+          ...winner,
+          business_name: winner.operators_users?.business_name || null
+        };
+      }
     }
 
     // Get promotions (if CLOSED)

@@ -376,6 +376,45 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Recent ROI Winners */}
+        {dashboard.recent_roi_winners && dashboard.recent_roi_winners.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Recent ROI Winners</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {dashboard.recent_roi_winners.map(winner => {
+                const winnerName = winner.winner_name || (winner.winner_email ? winner.winner_email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown');
+                const eventDate = winner.event_date ? new Date(winner.event_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                }) : null;
+                
+                return (
+                  <div key={winner.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <div className="mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{winnerName}</h3>
+                      {winner.event_title && (
+                        <p className="text-sm text-gray-600 mb-1">{winner.event_title}</p>
+                      )}
+                      {eventDate && (
+                        <p className="text-xs text-gray-500">{eventDate}</p>
+                      )}
+                    </div>
+                    {winner.pot_amount_won !== null && (
+                      <div className="pt-3 border-t border-gray-200">
+                        <p className="text-sm font-medium text-gray-500 mb-1">Pot Won</p>
+                        <p className="text-2xl font-semibold text-green-600">
+                          ${winner.pot_amount_won.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Upcoming Events */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Upcoming Events</h2>
