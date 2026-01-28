@@ -296,6 +296,31 @@ export default function EventDetail() {
     }
   };
 
+  const handleReopenEvent = async () => {
+    if (!confirm('Are you sure you want to reopen this event? This will unlock topics and allow voting/attendance again.')) return;
+    setActionLoading(true);
+    try {
+      const resp = await fetch(`/api/operators/events/${id}/reopen`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const json = await resp.json();
+      if (json.ok) {
+        // Refresh event data
+        const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}`);
+        const eventJson = await eventResp.json();
+        if (eventJson.ok) setEvent(eventJson.event);
+      } else {
+        alert(json.error || 'Failed to reopen event');
+      }
+    } catch (error) {
+      alert('Failed to reopen event. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const fetchUserVotes = async (eventId, userEmail) => {
     try {
       // Get event data which includes vote_summary
@@ -626,6 +651,15 @@ export default function EventDetail() {
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
               >
                 Close Event
+              </button>
+            )}
+            {canManageEvent && event.state === 'CLOSED' && (
+              <button
+                onClick={handleReopenEvent}
+                disabled={actionLoading}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+              >
+                Reopen Event
               </button>
             )}
           </div>
