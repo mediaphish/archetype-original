@@ -73,35 +73,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'You have used all 10 votes' });
     }
 
-    // Check if already voted for this target (can vote multiple times, but not duplicate)
-    // Actually, the unique constraint prevents duplicate votes per target
-    // But we allow multiple votes per target, so we need to check if this exact vote exists
-    const { data: existingVote } = await supabaseAdmin
-      .from('operators_votes')
-      .select('*')
-      .eq('event_id', id)
-      .eq('voter_email', email)
-      .eq('target_email', target_email)
-      .maybeSingle();
-
-    if (existingVote) {
-      // Update existing vote
-      const { data: updatedVote, error: updateError } = await supabaseAdmin
-        .from('operators_votes')
-        .update({ vote_value })
-        .eq('id', existingVote.id)
-        .select()
-        .single();
-
-      if (updateError) {
-        console.error('[VOTE] Database error:', updateError);
-        return res.status(500).json({ ok: false, error: 'Failed to update vote' });
-      }
-
-      return res.status(200).json({ ok: true, vote: updatedVote, remaining: 10 - votesUsed });
-    }
-
-    // Create new vote
+    // Create new vote - allow multiple votes for the same target
+    // Users can vote multiple times for the same person (up to 10 total votes)
     const { data: vote, error: voteError } = await supabaseAdmin
       .from('operators_votes')
       .insert({
