@@ -50,6 +50,11 @@ export default async function handler(req, res) {
       return res.status(403).json({ ok: false, error: 'Only Accountants can manage check-ins' });
     }
 
+    // Prevent check-out and check-in on CLOSED events
+    if (event.state === 'CLOSED' && (action === 'check_in' || action === 'check_out')) {
+      return res.status(400).json({ ok: false, error: 'Cannot check in or check out attendees for CLOSED events' });
+    }
+
     // Get or create attendance record
     let { data: attendance } = await supabaseAdmin
       .from('operators_attendance')
@@ -111,6 +116,11 @@ export default async function handler(req, res) {
 
       return res.status(200).json({ ok: true, attendance: updatedAttendance });
     } else if (action === 'check_out') {
+      // Prevent check-out if already checked out
+      if (attendance.checked_out_at) {
+        return res.status(400).json({ ok: false, error: 'Attendee is already checked out' });
+      }
+
       // Mark early departure
       const { data: updatedAttendance, error: updateError } = await supabaseAdmin
         .from('operators_attendance')
@@ -124,18 +134,33 @@ export default async function handler(req, res) {
 
       if (updateError) {
         console.error('[CHECK_OUT] Database error:', updateError);
-        return res.status(500).json({ ok: false, error: 'Failed to check out' });
+        return res.status(500).json({ ok: false, error: 'Failed to check out', details: updateError.message });
       }
 
-      // Record offense
-      await supabaseAdmin
+      // Record offense (only if not already recorded for this event/user)
+      const { data: existingOffense } = await supabaseAdmin
         .from('operators_offenses')
-        .insert({
-          event_id: id,
-          user_email: target_email,
-          offense_type: 'early_departure',
-          recorded_by_email: email
-        });
+        .select('id')
+        .eq('event_id', id)
+        .eq('user_email', target_email)
+        .eq('offense_type', 'early_departure')
+        .maybeSingle();
+
+      if (!existingOffense) {
+        const { error: offenseError } = await supabaseAdmin
+          .from('operators_offenses')
+          .insert({
+            event_id: id,
+            user_email: target_email,
+            offense_type: 'early_departure',
+            recorded_by_email: email
+          });
+
+        if (offenseError) {
+          console.error('[CHECK_OUT] Failed to record offense:', offenseError);
+          // Don't fail the check-out if offense recording fails
+        }
+      }
 
       return res.status(200).json({ ok: true, attendance: updatedAttendance });
     } else {
