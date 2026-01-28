@@ -441,14 +441,8 @@ export default function EventDetail() {
     }
   };
 
-  const handleCheckIn = async (targetEmail, action, cashConfirmed = false) => {
-    if (action === 'check_in' && !cashConfirmed) {
-      if (!confirm('Have you confirmed cash payment for this attendee?')) {
-        return;
-      }
-      cashConfirmed = true;
-    }
-
+  const handleCheckIn = async (targetEmail, action) => {
+    // Payment is assumed - one-click check-in
     setActionLoading(true);
     try {
       const resp = await fetch(`/api/operators/events/${id}/check-in`, {
@@ -458,7 +452,7 @@ export default function EventDetail() {
           email,
           target_email: targetEmail,
           action,
-          cash_confirmed: cashConfirmed
+          cash_confirmed: true // Payment is assumed
         })
       });
       const json = await resp.json();
@@ -1359,11 +1353,7 @@ export default function EventDetail() {
                               <div className="flex items-center gap-2">
                                 {!isCheckedIn && !isNoShow && (
                                   <button
-                                    onClick={() => {
-                                      if (confirm('Have you confirmed cash payment for this attendee?')) {
-                                        handleCheckIn(rsvp.user_email, 'check_in', true);
-                                      }
-                                    }}
+                                    onClick={() => handleCheckIn(rsvp.user_email, 'check_in')}
                                     disabled={actionLoading}
                                     className="px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-1"
                                   >

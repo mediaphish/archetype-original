@@ -50,21 +50,8 @@ export default async function handler(req, res) {
       return res.status(403).json({ ok: false, error: 'Only Chief Operators or Accountants can close events' });
     }
 
-    // Validate vote exhaustion - all attendees must have used all 10 votes
-    const { data: attendanceRecords } = await supabaseAdmin
-      .from('operators_attendance')
-      .select('user_email, votes_used')
-      .eq('event_id', id)
-      .eq('checked_in', true);
-
-    const incompleteVoters = (attendanceRecords || []).filter(a => a.votes_used !== 10);
-    if (incompleteVoters.length > 0) {
-      return res.status(400).json({
-        ok: false,
-        error: 'Cannot close event: some attendees have not used all votes',
-        incomplete_voters: incompleteVoters.map(a => a.user_email)
-      });
-    }
+    // Note: Events can be closed without all votes being used.
+    // Operators who don't use all votes will receive penalty cards, but the event can still close.
 
     // Calculate ROi winner using database function
     const { data: roiResult, error: roiError } = await supabaseAdmin
