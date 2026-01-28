@@ -186,12 +186,13 @@ export default async function handler(req, res) {
     // Calculate pot amount if there's a winner
     let potAmountWon = null;
     if (roiResult && roiResult.length > 0) {
-      // Count confirmed RSVPs
+      // Count checked-in attendees (attended or confirmed RSVPs)
       const { count: confirmedCount } = await supabaseAdmin
-        .from('operators_rsvps')
+        .from('operators_attendance')
         .select('*', { count: 'exact', head: true })
         .eq('event_id', id)
-        .eq('status', 'confirmed');
+        .eq('checked_in', true)
+        .eq('marked_no_show', false);
 
       // Calculate total pot: (stake_amount × confirmed_attendees) / 2 + sponsor_pot_value
       const totalPot = (parseFloat(event.stake_amount || 0) * (confirmedCount || 0)) / 2 + parseFloat(event.sponsor_pot_value || 0);
