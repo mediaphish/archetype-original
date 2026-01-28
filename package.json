@@ -16,6 +16,9 @@
     "update-journal": "node scripts/manage-journal.mjs update",
     "list-journal": "node scripts/manage-journal.mjs list",
     "test": "jest",
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open",
+    "test:all": "npm run test && npm run test:e2e",
     "install-prerender": "npm install --save-dev puppeteer"
   },
   "dependencies": {
