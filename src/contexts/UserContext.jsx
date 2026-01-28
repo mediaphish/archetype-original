@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 const UserContext = createContext(null);
 
@@ -50,16 +50,19 @@ export default function UserProvider({ children, initialEmail = null }) {
     fetchUserData();
   }, [fetchUserData]);
 
-  const value = {
+  const isSuperAdmin = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
+  const isChiefOperator = useMemo(() => userRoles.includes('chief_operator') || userRoles.includes('super_admin'), [userRoles]);
+
+  const value = useMemo(() => ({
     email,
     userRoles,
     userProfile,
     loading,
     updateEmail,
     refreshUserData,
-    isSuperAdmin: userRoles.includes('super_admin'),
-    isChiefOperator: userRoles.includes('chief_operator') || userRoles.includes('super_admin'),
-  };
+    isSuperAdmin,
+    isChiefOperator,
+  }), [email, userRoles, userProfile, loading, updateEmail, refreshUserData, isSuperAdmin, isChiefOperator]);
 
   return (
     <UserContext.Provider value={value}>

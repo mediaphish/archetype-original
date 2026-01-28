@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Calendar, Users, FileText, AlertCircle, Plus } from 'lucide-react';
 
 const icons = {
@@ -8,7 +8,7 @@ const icons = {
   default: FileText,
 };
 
-export default function EmptyState({
+function EmptyState({
   icon = 'default',
   title,
   message,
@@ -40,7 +40,9 @@ export default function EmptyState({
   );
 }
 
-export function EmptyEvents({ onCreateEvent }) {
+export default memo(EmptyState);
+
+export const EmptyEvents = memo(function EmptyEvents({ onCreateEvent }) {
   return (
     <EmptyState
       icon="events"
@@ -50,9 +52,9 @@ export function EmptyEvents({ onCreateEvent }) {
       onAction={onCreateEvent}
     />
   );
-}
+});
 
-export function EmptyCandidates() {
+export const EmptyCandidates = memo(function EmptyCandidates() {
   return (
     <EmptyState
       icon="candidates"
@@ -60,9 +62,9 @@ export function EmptyCandidates() {
       message="Candidates will appear here once they submit applications for events."
     />
   );
-}
+});
 
-export function EmptyDashboard() {
+export const EmptyDashboard = memo(function EmptyDashboard() {
   return (
     <EmptyState
       icon="dashboard"
@@ -70,4 +72,4 @@ export function EmptyDashboard() {
       message="Dashboard metrics will appear here once you have events and activity in the system."
     />
   );
-}
+});

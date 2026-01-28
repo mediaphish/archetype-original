@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { MapPin, ExternalLink, Users, UserPlus, CheckCircle, XCircle, Clock, ThumbsUp, ThumbsDown, LogIn, LogOut, X, ChevronDown, ChevronUp, Edit2, Save, Lock } from 'lucide-react';
 import { useToast } from '../../components/operators/ToastProvider';
@@ -23,18 +23,18 @@ export default function EventDetail() {
   const toast = useToast();
   const { email, userRoles } = useUser();
 
-  const handleNavigate = (path) => {
+  const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
-  };
+  }, []);
 
-  const withEmail = (path) => {
+  const withEmail = useCallback((path) => {
     if (!email) return path;
     if (path.includes('email=')) return path;
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  };
+  }, [email]);
 
 
   useEffect(() => {
@@ -97,13 +97,13 @@ export default function EventDetail() {
     }
   };
 
-  const canCancelRSVP = (event) => {
+  const canCancelRSVP = useCallback((event) => {
     if (!event || !event.event_date || !event.start_time) return false;
     const eventDateTime = new Date(`${event.event_date}T${event.start_time}`);
     const now = new Date();
     const hoursUntilEvent = (eventDateTime - now) / (1000 * 60 * 60);
     return hoursUntilEvent > 24;
-  };
+  }, []);
 
   const handleCancelRSVP = async () => {
     setConfirmModal({
@@ -545,22 +545,22 @@ export default function EventDetail() {
     }
   };
 
-  const getStateColor = (state) => {
+  const getStateColor = useCallback((state) => {
     switch (state) {
       case 'LIVE': return 'bg-blue-100 text-blue-800';
       case 'OPEN': return 'bg-green-100 text-green-800';
       case 'CLOSED': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
-  };
+  }, []);
 
-  const getMapLink = () => {
+  const getMapLink = useMemo(() => {
     if (!event?.host_location) return '';
     const encodedAddress = encodeURIComponent(event.host_location);
     return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-  };
+  }, [event?.host_location]);
 
-  const formatTime = (timeString) => {
+  const formatTime = useCallback((timeString) => {
     if (!timeString) return '';
     // timeString is in HH:MM format (24-hour)
     const [hours, minutes] = timeString.split(':');
@@ -568,7 +568,7 @@ export default function EventDetail() {
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${minutes} ${ampm}`;
-  };
+  }, []);
 
   if (loading) {
     return (
@@ -754,23 +754,26 @@ export default function EventDetail() {
     );
   }
 
-  const isSA = userRoles.includes('super_admin');
-  const isCO = userRoles.includes('chief_operator') || userRoles.includes('super_admin');
-  const isOperator = userRoles.includes('operator');
-  const isAccountant = userRoles.includes('accountant');
-  const canRSVP = isOperator || userRoles.includes('candidate');
-  const canInviteCandidate = isOperator && event.state === 'LIVE' && !event.rsvp_closed;
-  const canApproveCandidate = isCO && event.state === 'LIVE';
-  const canManageEvent = isCO || isAccountant;
-  const canManageRSVPs = isSA || isCO; // SA or CO can manage RSVPs
-  const canManageTopics = isSA || isCO || isAccountant; // SA, CO, or Accountant can manage scenarios
+  const isSA = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
+  const isCO = useMemo(() => userRoles.includes('chief_operator') || userRoles.includes('super_admin'), [userRoles]);
+  const isOperator = useMemo(() => userRoles.includes('operator'), [userRoles]);
+  const isAccountant = useMemo(() => userRoles.includes('accountant'), [userRoles]);
+  const canRSVP = useMemo(() => isOperator || userRoles.includes('candidate'), [isOperator, userRoles]);
+  const canInviteCandidate = useMemo(() => isOperator && event?.state === 'LIVE' && !event?.rsvp_closed, [isOperator, event?.state, event?.rsvp_closed]);
+  const canApproveCandidate = useMemo(() => isCO && event?.state === 'LIVE', [isCO, event?.state]);
+  const canManageEvent = useMemo(() => isCO || isAccountant, [isCO, isAccountant]);
+  const canManageRSVPs = useMemo(() => isSA || isCO, [isSA, isCO]);
+  const canManageTopics = useMemo(() => isSA || isCO || isAccountant, [isSA, isCO, isAccountant]);
   
   // Check if event can be edited (LIVE state and future date)
-  const canEdit = isCO && event.state === 'LIVE';
-  const eventDate = new Date(event.event_date);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const isFutureEvent = eventDate >= today;
+  const canEdit = useMemo(() => isCO && event?.state === 'LIVE', [isCO, event?.state]);
+  const isFutureEvent = useMemo(() => {
+    if (!event?.event_date) return false;
+    const eventDate = new Date(event.event_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return eventDate >= today;
+  }, [event?.event_date]);
 
   return (
     <div className="min-h-screen bg-[#fafafa]">

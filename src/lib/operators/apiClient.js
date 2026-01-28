@@ -12,11 +12,13 @@ class APIError extends Error {
 }
 
 /**
- * Standard API client with consistent error handling and retry logic
+ * Standard API client with consistent error handling, retry logic, and request deduplication
  */
 class APIClient {
   constructor(baseURL = '') {
     this.baseURL = baseURL;
+    this.pendingRequests = new Map(); // Cache for pending requests to prevent duplicates
+    this.responseCache = new Map(); // Simple cache for GET requests (5 second TTL)
   }
 
   /**
@@ -43,10 +45,26 @@ class APIClient {
   }
 
   /**
-   * Make API request with retry logic
+   * Make API request with retry logic and request deduplication
    */
   async request(endpoint, options = {}, retries = 2) {
     const url = `${this.baseURL}${endpoint}`;
+    const requestKey = `${options.method || 'GET'}:${url}:${options.body ? JSON.stringify(options.body) : ''}`;
+    
+    // For GET requests, check cache first (5 second TTL)
+    if ((!options.method || options.method === 'GET') && this.responseCache.has(requestKey)) {
+      const cached = this.responseCache.get(requestKey);
+      if (Date.now() - cached.timestamp < 5000) {
+        return cached.data;
+      }
+      this.responseCache.delete(requestKey);
+    }
+
+    // Check if same request is already pending (deduplication)
+    if (this.pendingRequests.has(requestKey)) {
+      return this.pendingRequests.get(requestKey);
+    }
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -60,30 +78,51 @@ class APIClient {
       delete config.headers['Content-Type'];
     }
 
-    let lastError;
-    for (let attempt = 0; attempt <= retries; attempt++) {
-      try {
-        const response = await fetch(url, config);
-        return await this.handleResponse(response);
-      } catch (error) {
-        lastError = error;
+    // Create promise for this request
+    const requestPromise = (async () => {
+      let lastError;
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          const response = await fetch(url, config);
+          const data = await this.handleResponse(response);
+          
+          // Cache GET responses
+          if (!options.method || options.method === 'GET') {
+            this.responseCache.set(requestKey, {
+              data,
+              timestamp: Date.now()
+            });
+          }
+          
+          return data;
+        } catch (error) {
+          lastError = error;
 
-        // Don't retry on client errors (4xx) except 429 (rate limit)
-        if (error.code && error.code.startsWith('HTTP_4') && error.code !== 'HTTP_429') {
-          throw error;
-        }
+          // Don't retry on client errors (4xx) except 429 (rate limit)
+          if (error.code && error.code.startsWith('HTTP_4') && error.code !== 'HTTP_429') {
+            throw error;
+          }
 
-        // Don't retry on last attempt
-        if (attempt < retries) {
-          // Exponential backoff: wait 2^attempt * 100ms
-          const delay = Math.pow(2, attempt) * 100;
-          await new Promise(resolve => setTimeout(resolve, delay));
-          continue;
+          // Don't retry on last attempt
+          if (attempt < retries) {
+            // Exponential backoff: wait 2^attempt * 100ms
+            const delay = Math.pow(2, attempt) * 100;
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
+        } finally {
+          // Remove from pending requests when done
+          this.pendingRequests.delete(requestKey);
         }
       }
-    }
 
-    throw lastError;
+      throw lastError;
+    })();
+
+    // Store pending request
+    this.pendingRequests.set(requestKey, requestPromise);
+    
+    return requestPromise;
   }
 
   /**

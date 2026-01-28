@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 import { trapFocus } from '../../lib/operators/accessibility';
 
-export default function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', variant = 'default' }) {
+function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', variant = 'default' }) {
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -22,14 +22,12 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
-  const variants = {
+  const variants = useMemo(() => ({
     default: 'bg-white',
     danger: 'bg-white',
-  };
+  }), []);
 
-  const buttonVariants = {
+  const buttonVariants = useMemo(() => ({
     default: {
       confirm: 'bg-blue-600 hover:bg-blue-700 text-white',
       cancel: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
@@ -38,16 +36,18 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
       confirm: 'bg-red-600 hover:bg-red-700 text-white',
       cancel: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
     },
-  };
+  }), []);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     onConfirm();
     onClose();
-  };
+  }, [onConfirm, onClose]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     onClose();
-  };
+  }, [onClose]);
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -109,3 +109,5 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
     </div>
   );
 }
+
+export default memo(ConfirmModal);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { MapPin, ExternalLink } from 'lucide-react';
 import { useToast } from '../../components/operators/ToastProvider';
@@ -17,18 +17,18 @@ export default function Dashboard() {
   const toast = useToast();
   const { email, userRoles } = useUser();
 
-  const handleNavigate = (path) => {
+  const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
-  };
+  }, []);
 
-  const withEmail = (path) => {
+  const withEmail = useCallback((path) => {
     if (!email) return path;
     if (path.includes('email=')) return path;
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  };
+  }, [email]);
 
 
   useEffect(() => {
@@ -293,22 +293,22 @@ export default function Dashboard() {
     }
   };
 
-  const getStateColor = (state) => {
+  const getStateColor = useCallback((state) => {
     switch (state) {
       case 'LIVE': return 'bg-blue-100 text-blue-800';
       case 'OPEN': return 'bg-green-100 text-green-800';
       case 'CLOSED': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
-  };
+  }, []);
 
-  const getMapLink = (address) => {
+  const getMapLink = useCallback((address) => {
     if (!address) return '';
     const encodedAddress = encodeURIComponent(address);
     return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-  };
+  }, []);
 
-  const formatTime = (timeString) => {
+  const formatTime = useCallback((timeString) => {
     if (!timeString) return '';
     // timeString is in HH:MM format (24-hour)
     const [hours, minutes] = timeString.split(':');
@@ -316,10 +316,10 @@ export default function Dashboard() {
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${minutes} ${ampm}`;
-  };
+  }, []);
 
-  const isOperator = userRoles.includes('operator');
-  const canRSVP = isOperator || userRoles.includes('candidate');
+  const isOperator = useMemo(() => userRoles.includes('operator'), [userRoles]);
+  const canRSVP = useMemo(() => isOperator || userRoles.includes('candidate'), [isOperator, userRoles]);
 
   // Dashboard data should already be checked above, but add safety check
   if (!dashboard && !loading) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { EmptyEvents } from '../../components/operators/EmptyState';
 import { useUser } from '../../contexts/UserContext';
@@ -11,18 +11,18 @@ export default function Events() {
   
   const { email, userRoles } = useUser();
 
-  const handleNavigate = (path) => {
+  const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
-  };
+  }, []);
 
-  const withEmail = (path) => {
+  const withEmail = useCallback((path) => {
     if (!email) return path;
     if (path.includes('email=')) return path;
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  };
+  }, [email]);
 
 
   useEffect(() => {
@@ -51,14 +51,14 @@ export default function Events() {
     fetchEvents();
   }, [email, filter]);
 
-  const getStateColor = (state) => {
+  const getStateColor = useCallback((state) => {
     switch (state) {
       case 'LIVE': return 'bg-blue-100 text-blue-800';
       case 'OPEN': return 'bg-green-100 text-green-800';
       case 'CLOSED': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#fafafa]">

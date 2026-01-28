@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import SEO from "./components/SEO";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -58,15 +58,15 @@ import SuperAdminIntelligence from "./pages/ali/SuperAdminIntelligence";
 import SuperAdminTenants from "./pages/ali/SuperAdminTenants";
 import SuperAdminDeletions from "./pages/ali/SuperAdminDeletions";
 import SuperAdminAuditLog from "./pages/ali/SuperAdminAuditLog";
-// Operators pages
-import OperatorsEvents from "./pages/operators/Events";
-import OperatorsEventDetail from "./pages/operators/EventDetail";
-import OperatorsCreateEvent from "./pages/operators/CreateEvent";
-import OperatorsEditEvent from "./pages/operators/EditEvent";
-import OperatorsDashboard from "./pages/operators/Dashboard";
-import OperatorsAdmin from "./pages/operators/Admin";
-import OperatorsCandidates from "./pages/operators/Candidates";
-import OperatorsProfile from "./pages/operators/Profile";
+// Operators pages - Lazy loaded for better performance
+const OperatorsEvents = lazy(() => import("./pages/operators/Events"));
+const OperatorsEventDetail = lazy(() => import("./pages/operators/EventDetail"));
+const OperatorsCreateEvent = lazy(() => import("./pages/operators/CreateEvent"));
+const OperatorsEditEvent = lazy(() => import("./pages/operators/EditEvent"));
+const OperatorsDashboard = lazy(() => import("./pages/operators/Dashboard"));
+const OperatorsAdmin = lazy(() => import("./pages/operators/Admin"));
+const OperatorsCandidates = lazy(() => import("./pages/operators/Candidates"));
+const OperatorsProfile = lazy(() => import("./pages/operators/Profile"));
 import ToastProvider from "./components/operators/ToastProvider";
 import ErrorBoundary from "./components/operators/ErrorBoundary";
 import UserProvider from "./contexts/UserContext";
@@ -808,13 +808,25 @@ export default function App() {
     return <SuperAdminAuditLog />;
   }
 
-  // Render Operators pages
+  // Loading fallback for lazy-loaded Operators pages
+  const OperatorsPageLoader = () => (
+    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    </div>
+  );
+
+  // Render Operators pages with lazy loading
   if (currentPage === 'operators-events') {
     return (
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsEvents />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsEvents />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>
@@ -826,7 +838,9 @@ export default function App() {
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsCreateEvent />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsCreateEvent />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>
@@ -838,7 +852,9 @@ export default function App() {
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsEditEvent />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsEditEvent />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>
@@ -850,7 +866,9 @@ export default function App() {
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsEventDetail />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsEventDetail />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>
@@ -862,7 +880,9 @@ export default function App() {
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsDashboard />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsDashboard />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>
@@ -874,7 +894,9 @@ export default function App() {
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsAdmin />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsAdmin />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>
@@ -886,7 +908,9 @@ export default function App() {
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsCandidates />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsCandidates />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>
@@ -898,7 +922,9 @@ export default function App() {
       <ErrorBoundary>
         <UserProvider>
           <ToastProvider>
-            <OperatorsProfile />
+            <Suspense fallback={<OperatorsPageLoader />}>
+              <OperatorsProfile />
+            </Suspense>
           </ToastProvider>
         </UserProvider>
       </ErrorBoundary>

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { AlertCircle } from 'lucide-react';
 
-export default function FormField({
+function FormField({
   label,
   name,
   type = 'text',
@@ -128,3 +128,5 @@ export default function FormField({
     </div>
   );
 }
+
+export default memo(FormField);

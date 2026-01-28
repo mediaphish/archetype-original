@@ -1,34 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useMemo, useCallback } from 'react';
 import { Menu, X } from 'lucide-react';
 import { handleKeyDown } from '../../lib/operators/accessibility';
 
-export default function OperatorsHeader({ active = 'events', email = '', userRoles = [], onNavigate }) {
+function OperatorsHeader({ active = 'events', email = '', userRoles = [], onNavigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleNavigate = (path) => {
+  const handleNavigate = useCallback((path) => {
     setMobileMenuOpen(false); // Close mobile menu on navigation
     if (typeof onNavigate === 'function') return onNavigate(path);
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
-  };
+  }, [onNavigate]);
 
-  const withEmail = (path) => {
+  const withEmail = useCallback((path) => {
     if (!email) return path;
     if (!path || typeof path !== 'string') return path;
     if (path.includes('email=')) return path;
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  };
+  }, [email]);
 
-  const tabClass = (key) =>
-    key === active ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:text-gray-900';
+  const tabClass = useCallback((key) =>
+    key === active ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:text-gray-900', [active]);
 
-  const mobileTabClass = (key) =>
-    key === active ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700 hover:bg-gray-50';
+  const mobileTabClass = useCallback((key) =>
+    key === active ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700 hover:bg-gray-50', [active]);
 
-  const isSA = userRoles.includes('super_admin');
-  const isCO = userRoles.includes('chief_operator');
+  const isSA = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
+  const isCO = useMemo(() => userRoles.includes('chief_operator'), [userRoles]);
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -181,3 +181,5 @@ export default function OperatorsHeader({ active = 'events', email = '', userRol
     </header>
   );
 }
+
+export default memo(OperatorsHeader);
