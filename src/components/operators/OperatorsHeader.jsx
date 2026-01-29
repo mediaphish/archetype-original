@@ -37,12 +37,10 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
             type="button"
             onClick={() => handleNavigate('/operators/events')}
             onKeyDown={handleKeyDown(() => handleNavigate('/operators/events'))}
-            className="flex items-center gap-2 text-xl font-bold text-gray-900"
+            className="flex items-center text-gray-900"
             aria-label="Go to Operators Events"
           >
-            <img src="/brand/ao-icon.svg" alt="Archetype Original" className="w-6 h-6" aria-hidden="true" />
-            <span className="hidden sm:inline">The Operators</span>
-            <span className="sm:hidden">Operators</span>
+            <img src="/brand/the-operators-logo.svg" alt="The Operators" className="h-8 w-auto max-w-[180px] sm:max-w-[220px]" aria-hidden="true" />
           </button>
 
           {/* Desktop Navigation */}

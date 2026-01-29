@@ -51,7 +51,7 @@ const OperatorsLogin = () => {
       <div className="max-w-md w-full">
         {/* Logo/Header */}
         <div className="text-center mb-8">
-          <div className="text-3xl font-bold text-gray-900 mb-2">Operators Platform</div>
+          <img src="/brand/the-operators-logo.svg" alt="The Operators" className="h-10 w-auto max-w-[200px] mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900">Log In</h1>
           <p className="text-gray-600 mt-2">We'll send you a magic link to sign in</p>
         </div>
