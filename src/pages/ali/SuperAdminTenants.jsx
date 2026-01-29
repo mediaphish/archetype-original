@@ -1,18 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, ExternalLink } from 'lucide-react';
 import SuperAdminNav from '../../components/ali/SuperAdminNav';
-
-function getSuperAdminEmail() {
-  if (typeof window === 'undefined') return '';
-  const params = new URLSearchParams(window.location.search);
-  const fromUrl = params.get('email');
-  if (fromUrl) return fromUrl.trim();
-  try {
-    const stored = localStorage.getItem('ali_email');
-    if (stored) return stored.trim();
-  } catch (_) {}
-  return '';
-}
+import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
 
 const SuperAdminTenants = () => {
   const [tenants, setTenants] = useState([]);
@@ -64,7 +53,10 @@ const SuperAdminTenants = () => {
   const display = (v) => (v != null && v !== '' ? String(v) : '–');
 
   const handleViewCompany = (companyId) => {
-    window.history.pushState({}, '', `/ali/super-admin/tenants/${companyId}`);
+    const email = getSuperAdminEmail();
+    const base = `/ali/super-admin/tenants/${companyId}`;
+    const url = email ? `${base}?email=${encodeURIComponent(email)}` : base;
+    window.history.pushState({}, '', url);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 

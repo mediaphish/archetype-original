@@ -229,6 +229,12 @@ export default function App() {
         return;
       }
       if (path.startsWith('/ali/')) {
+        const hasAliEmail = () => {
+          if (typeof window === 'undefined') return false;
+          const e = (new URLSearchParams(window.location.search).get('email') || localStorage.getItem('ali_email') || '').trim();
+          return e.length > 0;
+        };
+
         if (path === '/ali/login') {
           setCurrentPage('ali-login');
         } else if (path === '/ali/signup') {
@@ -237,25 +243,34 @@ export default function App() {
           setCurrentPage('ali-verify-email');
         } else if (path === '/ali/setup-account') {
           setCurrentPage('ali-setup-account');
-        } else if (path === '/ali/dashboard') {
-          setCurrentPage('ali-dashboard');
-        } else if (path === '/ali/deploy') {
-          setCurrentPage('ali-deploy');
-        } else if (path === '/ali/settings') {
-          setCurrentPage('ali-settings');
-        } else if (path === '/ali/billing') {
-          setCurrentPage('ali-billing');
-        } else if (path === '/ali/reports') {
-          setCurrentPage('ali-reports');
-        } else if (path === '/ali/reports/zones') {
-          setCurrentPage('ali-reports-zones');
-        } else if (path === '/ali/reports/mirror') {
-          setCurrentPage('ali-reports-mirror');
-        } else if (path === '/ali/reports/profile') {
-          setCurrentPage('ali-reports-profile');
         } else if (path.startsWith('/ali/survey/')) {
           setCurrentPage('ali-survey');
+        } else if (path === '/ali/dashboard') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-dashboard');
+        } else if (path === '/ali/deploy') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-deploy');
+        } else if (path === '/ali/settings') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-settings');
+        } else if (path === '/ali/billing') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-billing');
+        } else if (path === '/ali/reports') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-reports');
+        } else if (path === '/ali/reports/zones') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-reports-zones');
+        } else if (path === '/ali/reports/mirror') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-reports-mirror');
+        } else if (path === '/ali/reports/profile') {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
+          setCurrentPage('ali-reports-profile');
         } else if (path.startsWith('/ali/super-admin/')) {
+          if (!hasAliEmail()) { window.location.replace('/ali/login'); return; }
           if (path === '/ali/super-admin/overview') {
             setCurrentPage('ali-super-admin-overview');
           } else if (path === '/ali/super-admin/intelligence') {

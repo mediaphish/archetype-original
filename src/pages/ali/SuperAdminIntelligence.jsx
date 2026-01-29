@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, ExternalLink } from 'lucide-react';
 import SuperAdminNav from '../../components/ali/SuperAdminNav';
+import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
 
 const SuperAdminIntelligence = () => {
   const [intelligenceItems, setIntelligenceItems] = useState([]);
@@ -105,8 +106,11 @@ const SuperAdminIntelligence = () => {
     }
   };
 
-  const handleViewCompany = (companyName) => {
-    window.history.pushState({}, '', `/ali/super-admin/tenants`);
+  const handleViewCompany = () => {
+    const email = getSuperAdminEmail();
+    const base = '/ali/super-admin/tenants';
+    const url = email ? `${base}?email=${encodeURIComponent(email)}` : base;
+    window.history.pushState({}, '', url);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 

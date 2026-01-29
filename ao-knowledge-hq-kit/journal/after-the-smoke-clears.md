@@ -1,9 +1,9 @@
 ---
 title: "After the Smoke Clears"
 slug: "after-the-smoke-clears"
-publish_date: "2026-02-11"
-created_at: "2026-02-11"
-updated_at: "2026-02-11"
+publish_date: "2026-02-05"
+created_at: "2026-02-05"
+updated_at: "2026-02-05"
 summary: "A conclusion to the Narcissistic Leadership Tactics series, shifting focus from unhealthy patterns to the posture and practices of healthy, servant leadership."
 categories: ["leadership", "psychology", "organizational-dynamics", "servant-leadership", "culture"]
 featured_image: "../images/after-the-smoke-clears.jpg"

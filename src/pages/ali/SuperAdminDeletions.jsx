@@ -1,18 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import SuperAdminNav from '../../components/ali/SuperAdminNav';
-
-function getSuperAdminEmail() {
-  if (typeof window === 'undefined') return '';
-  const params = new URLSearchParams(window.location.search);
-  const fromUrl = params.get('email');
-  if (fromUrl) return fromUrl.trim();
-  try {
-    const stored = localStorage.getItem('ali_email');
-    if (stored) return stored.trim();
-  } catch (_) {}
-  return '';
-}
+import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
 
 const SuperAdminDeletions = () => {
   const [companyId, setCompanyId] = useState('');
@@ -24,7 +13,7 @@ const SuperAdminDeletions = () => {
   const requireEmail = useCallback(() => {
     const email = getSuperAdminEmail();
     if (!email) {
-      alert('Super admin email required. Open this page from a magic-link sign-in (URL has ?email=...) or ensure ali_email is in localStorage.');
+      alert('You need to be signed in as a Super Admin. Use the ALI magic link to sign in, then open Deletions from the Super Admin tabs.');
       return null;
     }
     return email;

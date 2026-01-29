@@ -1,11 +1,11 @@
 ---
 title: "Consistency Over Intensity"
 slug: consistency-over-intensity
-date: "2026-02-10"
+date: "2026-01-29"
 type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
-publish_date: "2026-02-10"
+publish_date: "2026-01-29"
 scripture_reference: "Lamentations 3:22–23"
 summary: "Renewal is sustained through steady faithfulness, not bursts of intensity."
 ---

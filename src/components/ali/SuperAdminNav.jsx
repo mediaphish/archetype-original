@@ -1,17 +1,17 @@
-import React from 'react';
-
-function getSuperAdminEmail() {
-  const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const fromUrl = params.get('email');
-  if (fromUrl) return fromUrl.trim();
-  try {
-    const stored = localStorage.getItem('ali_email');
-    if (stored) return stored.trim();
-  } catch (_) {}
-  return '';
-}
+import React, { useEffect } from 'react';
+import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
 
 const SuperAdminNav = ({ activeTab }) => {
+  useEffect(() => {
+    const email = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+    if (!email || typeof email !== 'string') return;
+    const trimmed = email.trim();
+    if (!trimmed) return;
+    try {
+      localStorage.setItem('ali_email', trimmed);
+    } catch (_) {}
+  }, []);
+
   const handleNavigate = (path) => {
     const email = getSuperAdminEmail();
     const url = email ? `${path}${path.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}` : path;
@@ -54,9 +54,7 @@ const SuperAdminNav = ({ activeTab }) => {
               href="/ali/dashboard"
               onClick={(e) => {
                 e.preventDefault();
-                // Get email from URL params to pass to tenant dashboard
-                const urlParams = new URLSearchParams(window.location.search);
-                const email = urlParams.get('email');
+                const email = getSuperAdminEmail();
                 const dashboardUrl = email ? `/ali/dashboard?email=${encodeURIComponent(email)}` : '/ali/dashboard';
                 handleNavigate(dashboardUrl);
               }}
