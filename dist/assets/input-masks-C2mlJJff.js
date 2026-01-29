@@ -1,0 +1,2 @@
+function r(n){const e=n.replace(/\D/g,"").slice(0,10);return e.length===0?"":e.length<=3?`(${e}`:e.length<=6?`(${e.slice(0,3)}) ${e.slice(3)}`:`(${e.slice(0,3)}) ${e.slice(3,6)}-${e.slice(6)}`}function i(n){const t=n.replace(/\D/g,"");return t===""?"":(parseInt(t,10)/100).toFixed(2)}function s(n){const t=n.replace(/\D/g,"");return t===""?0:parseInt(t,10)/100}export{i as a,r as f,s as p};
+//# sourceMappingURL=input-masks-C2mlJJff.js.map
