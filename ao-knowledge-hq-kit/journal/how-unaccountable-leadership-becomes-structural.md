@@ -1,9 +1,9 @@
 ---
 title: "How Unaccountable Leadership Becomes Structural"
 slug: "how-unaccountable-leadership-becomes-structural"
-publish_date: "2026-01-28"
-created_at: "2026-01-28"
-updated_at: "2026-01-28"
+publish_date: "2026-01-29"
+created_at: "2026-01-29"
+updated_at: "2026-01-29"
 summary: "An editorial examination of how unaccountable leadership endures—not through personality, but through systems that reorganize to protect authority from consequence."
 categories: ["editorial", "servant-leadership", "accountability", "power", "culture", "organizational-psychology"]
 featured_image: "../images/how-unaccountable-leadership-becomes-structural.png"

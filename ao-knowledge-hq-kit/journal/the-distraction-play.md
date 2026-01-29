@@ -1,9 +1,9 @@
 ---
 title: "The Distraction Play"
 slug: "the-distraction-play"
-publish_date: "2026-01-29"
-created_at: "2026-01-29"
-updated_at: "2026-01-29"
+publish_date: "2026-02-18"
+created_at: "2026-02-18"
+updated_at: "2026-02-18"
 summary: "Narcissistic leaders keep teams busy with noise to avoid accountability. Servant leaders resist constant pivots and focus attention on what truly matters."
 categories: ["leadership", "psychology", "narcissism", "organizational-dynamics", "servant-leadership", "culture"]
 featured_image: "../images/the-distraction-play.jpg"
