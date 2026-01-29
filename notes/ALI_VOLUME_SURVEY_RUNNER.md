@@ -50,6 +50,11 @@ DEPLOYMENT_TOKENS=t1 NUM_USERS=100 CONCURRENCY=10 node scripts/ali-volume-survey
 - Progress logs every 10 submissions.
 - Final summary: **Total submitted**, **Failed**, **Success rate**, **Total time**, **Submit latency p50/p95**.
 
+## ALI lib unit tests (cadence + survey-builder)
+
+- **Jest:** `lib/__tests__/ali-cadence.test.js`, `lib/__tests__/ali-survey-builder.test.js`. Run with `npm test -- lib/__tests__` (requires `npm install` and `babel-jest`).
+- **Node runner:** `npm run test:ali-lib` or `node scripts/run-ali-lib-tests.mjs`. Runs cadence checks always; runs builder checks if `seedrandom` is available.
+
 ## Data-change validation
 
 Before running: note response count, ALI score, and zone (e.g. from Dashboard) for the test company.  

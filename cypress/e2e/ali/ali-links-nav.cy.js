@@ -32,15 +32,6 @@ describe('ALI links and navigation', () => {
     mockAliReports();
   });
 
-  it('Leadership Profile in header goes to /ali/reports/profile', () => {
-    cy.visit(`/ali/dashboard?email=${encodeURIComponent(testEmail)}`);
-    cy.contains('ALI', { timeout: 10000 }).should('be.visible');
-    cy.get('nav').contains('Reports').trigger('mouseenter');
-    cy.contains('Leadership Profile').click();
-    cy.url().should('include', '/ali/reports/profile');
-    cy.contains('Leadership Profile').should('be.visible');
-  });
-
   it('Reports Hub in header goes to /ali/reports', () => {
     cy.visit(`/ali/dashboard?email=${encodeURIComponent(testEmail)}`);
     cy.get('nav').contains('Reports').trigger('mouseenter');

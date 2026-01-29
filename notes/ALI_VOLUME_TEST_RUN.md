@@ -11,28 +11,20 @@ NUM_USERS=50 \
 node scripts/ali-volume-survey-runner.mjs
 ```
 
-## Result
+## Result (2026-01-29 initial run)
 
-- **Outcome:** Script exited before submitting. Token fetch failed.
-- **Reason:** `GET /api/ali/deployments` is not yet deployed to production. The runner uses that endpoint when `FETCH_DEPLOYMENTS_EMAIL` is set and `DEPLOYMENT_TOKENS` is empty.
-- **Output:**
-  ```
-  Fetching deployment tokens from /api/ali/deployments...
-  Could not fetch tokens. Ensure GET /api/ali/deployments is deployed and returns data for this email.
-  ```
+- **Outcome:** Token fetch failed (deployments API not yet deployed).
+- **Output:** `Could not fetch tokens. Ensure GET /api/ali/deployments is deployed...`
 
-## Next steps
+## Result (2026-01-29 after deploy)
 
-1. Deploy the latest code (including `api/ali/deployments.js` and `/api/ali/deployments` route).
-2. Re-run the volume test:
-   ```bash
-   FETCH_DEPLOYMENTS_EMAIL=bart@archetypeoriginal.com \
-   BASE_URL=https://www.archetypeoriginal.com \
-   NUM_USERS=50 \
-   node scripts/ali-volume-survey-runner.mjs
-   ```
-3. Capture metrics from the script output (total submitted, failed, success rate, latency p50/p95).
-4. Validate data change: before/after response counts, ALI score, and zone on the Dashboard for the test company.
+- **Outcome:** Success. 50 submitted, 0 failed, 100% success rate.
+- **Metrics:** Total time 4.2 s; submit latency p50 282 ms, p95 1123 ms.
+- **Data validation:** Before 5 responses, ALI 58.5, zone orange. After 55 responses, ALI 51.4, zone orange; scores and experience map updated.
+
+## Re-run
+
+To run again, use the same command as in "Run" above, then capture metrics from the output and validate data change (before/after counts, scores, zone).
 
 ## Alternative (manual tokens)
 
@@ -56,4 +48,4 @@ node scripts/ali-volume-survey-runner.mjs
 3. **After run:** Record the same metrics.
 4. **Confirm:** Response count increased; ALI score and zone updated as expected when crossing thresholds (e.g. 5, 10 responses).
 
-**Status:** Pending a successful volume run. Re-run the volume test after deploy, then perform this validation.
+**Status:** Completed 2026-01-29 (see "Result after deploy" above).
