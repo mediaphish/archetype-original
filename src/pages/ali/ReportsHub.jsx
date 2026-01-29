@@ -60,8 +60,13 @@ const ReportsHub = () => {
       <AliHeader active="reports" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between flex-wrap gap-4">
           <div>
+            <nav className="text-sm text-gray-500 mb-1" aria-label="Breadcrumb">
+              <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="hover:text-gray-900">Dashboard</button>
+              <span className="mx-1">→</span>
+              <span className="text-gray-900 font-medium">Reports</span>
+            </nav>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Reports</h1>
             <p className="text-gray-600">Choose a deep-dive view. Each report focuses on one concept.</p>
           </div>
@@ -81,7 +86,7 @@ const ReportsHub = () => {
           />
           <Card
             title="Patterns"
-            description="Explore the seven leadership patterns (clarity, consistency, trust, etc.) with trend charts."
+            description="Explore the seven leadership patterns (clarity, consistency, trust, etc.) with trend charts. Coming soon."
             disabled
           />
           <Card
@@ -90,8 +95,13 @@ const ReportsHub = () => {
             onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
           />
           <Card
+            title="Leadership Profile"
+            description="Explore your leadership archetype (Honesty & Clarity) and growth opportunities."
+            onClick={() => handleNavigate(withEmail('/ali/reports/profile'))}
+          />
+          <Card
             title="Trajectory"
-            description="Track movement across survey cycles and understand what changed."
+            description="Track movement across survey cycles and understand what changed. Coming soon."
             disabled
           />
         </div>

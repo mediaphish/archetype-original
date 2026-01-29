@@ -72,6 +72,8 @@ const SuperAdminOverview = () => {
     );
   }
 
+  const hasNoData = (data.metrics.companies?.total ?? 0) === 0 && (data.metrics.respondents?.total ?? 0) === 0 && (data.metrics.surveys?.total ?? 0) === 0;
+
   return (
     <div className="min-h-screen bg-[#fafafa] ali-system">
       <SuperAdminNav activeTab="overview" />
@@ -81,6 +83,19 @@ const SuperAdminOverview = () => {
         <div className="mb-6">
           <h1 className="text-[28px] font-semibold text-black/[0.87] mb-1">Platform Overview</h1>
         </div>
+
+        {/* Empty state when no platform data */}
+        {hasNoData && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-6" role="status">
+            <h2 className="text-[18px] font-semibold text-amber-900 mb-2">No data yet</h2>
+            <p className="text-[14px] text-amber-800 mb-3">
+              Platform metrics will appear here once companies deploy surveys and collect responses.
+            </p>
+            <p className="text-[13px] text-amber-700">
+              Next steps: deploy a survey from Deploy, share the link with respondents, and ensure at least one company has completed responses.
+            </p>
+          </div>
+        )}
 
         {/* HERO: Platform Avg ALI (25%) + Platform Health (75%) */}
         <div className="bg-white rounded-lg border border-black/[0.12] p-8">

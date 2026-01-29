@@ -2342,7 +2342,7 @@ const ALIDashboard = () => {
                 </button>
               </div>
               <button
-                onClick={() => handleNavigate(withEmail('/ali/reports'))}
+                onClick={() => handleNavigate(withEmail('/ali/reports/profile'))}
                 className="text-[13px] font-semibold text-[#2563eb] hover:text-[#2563eb]/80"
               >
                 View Full Profile →
@@ -2703,7 +2703,7 @@ const ALIDashboard = () => {
                 </button>
               </div>
 
-              {/* Full Analytics */}
+              {/* Reports Hub */}
               <div 
                 onClick={() => handleNavigate(withEmail('/ali/reports'))}
                 className="bg-white rounded-lg border-2 border-black/[0.12] p-6 cursor-pointer hover:border-[#8b5cf6] hover:shadow-md transition-all group"
@@ -2712,19 +2712,19 @@ const ALIDashboard = () => {
                   <div className="w-10 h-10 rounded-lg bg-[#8b5cf6]/10 flex items-center justify-center group-hover:bg-[#8b5cf6]/20 transition-colors">
                     <BarChart3 className="w-5 h-5 text-[#8b5cf6]" />
                   </div>
-                  <h3 className="text-[16px] font-semibold text-black/[0.87]">Full Analytics</h3>
+                  <h3 className="text-[16px] font-semibold text-black/[0.87]">Reports Hub</h3>
                 </div>
                 <p className="text-[13px] text-black/[0.6] mb-4">
-                  Dive deep into all your leadership metrics and patterns.
+                  Choose a report: Zones, Mirror, Profile, and more.
                 </p>
                 <button className="text-[13px] font-semibold text-[#8b5cf6] group-hover:text-[#8b5cf6]/80 flex items-center gap-1">
-                  View Analytics <ArrowDown className="w-4 h-4 transform -rotate-90" />
+                  Open <ArrowDown className="w-4 h-4 transform -rotate-90" />
                 </button>
               </div>
 
               {/* Leadership Profile Report */}
               <div 
-                onClick={() => handleNavigate(withEmail('/ali/reports'))}
+                onClick={() => handleNavigate(withEmail('/ali/reports/profile'))}
                 className="bg-white rounded-lg border-2 border-black/[0.12] p-6 cursor-pointer hover:border-[#f59e0b] hover:shadow-md transition-all group"
               >
                 <div className="flex items-center gap-3 mb-3">

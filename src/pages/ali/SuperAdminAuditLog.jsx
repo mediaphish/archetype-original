@@ -100,7 +100,13 @@ const SuperAdminAuditLog = () => {
             <p className="text-[14px] text-black/[0.6]">Track all super admin actions with detailed filtering and export</p>
           </div>
           <div className="flex items-center gap-3">
-            <button className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {}}
+              title="Filter options coming soon"
+              className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors flex items-center gap-2"
+              aria-label="Filter audit log (coming soon)"
+            >
               <Filter className="w-4 h-4" />
               Filter
             </button>

@@ -52,6 +52,7 @@ import ALIReports from "./pages/ali/Reports";
 import ReportsHub from "./pages/ali/ReportsHub";
 import ReportsZones from "./pages/ali/ReportsZones";
 import ReportsMirror from "./pages/ali/ReportsMirror";
+import ReportsProfile from "./pages/ali/ReportsProfile";
 import ALISurvey from "./pages/ali/Survey";
 import SuperAdminOverview from "./pages/ali/SuperAdminOverview";
 import SuperAdminIntelligence from "./pages/ali/SuperAdminIntelligence";
@@ -116,6 +117,7 @@ export default function App() {
       if (path === '/ali/reports') return 'ali-reports';
       if (path === '/ali/reports/zones') return 'ali-reports-zones';
       if (path === '/ali/reports/mirror') return 'ali-reports-mirror';
+      if (path === '/ali/reports/profile') return 'ali-reports-profile';
       if (path.startsWith('/ali/survey/')) return 'ali-survey';
       if (path.startsWith('/ali/super-admin/')) {
         if (path === '/ali/super-admin/overview') return 'ali-super-admin-overview';
@@ -249,6 +251,8 @@ export default function App() {
           setCurrentPage('ali-reports-zones');
         } else if (path === '/ali/reports/mirror') {
           setCurrentPage('ali-reports-mirror');
+        } else if (path === '/ali/reports/profile') {
+          setCurrentPage('ali-reports-profile');
         } else if (path.startsWith('/ali/survey/')) {
           setCurrentPage('ali-survey');
         } else if (path.startsWith('/ali/super-admin/')) {
@@ -869,6 +873,10 @@ export default function App() {
 
   if (currentPage === 'ali-reports-mirror') {
     return <ReportsMirror />;
+  }
+
+  if (currentPage === 'ali-reports-profile') {
+    return <ReportsProfile />;
   }
 
   if (currentPage === 'ali-survey') {

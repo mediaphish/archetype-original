@@ -51,33 +51,45 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
               onMouseLeave={() => setReportsDropdownOpen(false)}
             >
               <button 
+                type="button"
                 className={`flex items-center gap-1 ${isReportsActive ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:text-gray-900'}`}
+                aria-expanded={reportsDropdownOpen}
+                aria-haspopup="true"
+                aria-label="Reports menu"
               >
                 Reports
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${reportsDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               
               {reportsDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50" role="menu" aria-label="Reports menu">
                   <button
+                    type="button"
+                    role="menuitem"
                     onClick={() => handleNavigate(withEmail('/ali/reports'))}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                   >
-                    Full Analytics
+                    Reports Hub
                   </button>
                   <button
+                    type="button"
+                    role="menuitem"
                     onClick={() => handleNavigate(withEmail('/ali/reports/mirror'))}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                   >
                     Leadership Mirror
                   </button>
                   <button
+                    type="button"
+                    role="menuitem"
                     onClick={() => handleNavigate(withEmail('/ali/reports/zones'))}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                   >
                     Zones Guide
                   </button>
                   <button
+                    type="button"
+                    role="menuitem"
                     onClick={() => handleNavigate(withEmail('/ali/reports/profile'))}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                   >

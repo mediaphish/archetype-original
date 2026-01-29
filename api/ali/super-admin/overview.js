@@ -489,6 +489,11 @@ export default async function handler(req, res) {
         };
       });
 
+    // Platform-wide mirror/experience map: ensure always defined (avoid ReferenceError).
+    // Optional future enhancement: compute from allResponses + questionBank via calculateLeadershipMirror.
+    const leadershipMirror = { gaps: {}, severity: {}, leaderScores: {}, teamScores: {} };
+    const experienceMap = null;
+
     return res.status(200).json({
       ok: true,
       overview: {

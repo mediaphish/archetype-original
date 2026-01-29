@@ -176,18 +176,39 @@ export default function ReportsMirror() {
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
+            <nav className="text-sm text-gray-500 mb-1" aria-label="Breadcrumb">
+              <button onClick={() => handleNavigate(withEmail('/ali/dashboard'))} className="hover:text-gray-900">Dashboard</button>
+              <span className="mx-1">→</span>
+              <button onClick={() => handleNavigate(withEmail('/ali/reports'))} className="hover:text-gray-900">Reports</button>
+              <span className="mx-1">→</span>
+              <span className="text-gray-900 font-medium">Leadership Mirror</span>
+            </nav>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Leadership Mirror</h1>
             <p className="text-gray-600">
               Where leader and team experience differ. Gaps can signal misunderstanding, misalignment, or blind spots.
             </p>
             {error ? <p className="text-xs text-red-600 mt-1">(live data unavailable: {error})</p> : null}
           </div>
-          <button
-            onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
-            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-          >
-            ← Back to Dashboard
-          </button>
+          <div className="flex items-center gap-4 flex-wrap">
+            <button
+              onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              ← Back to Dashboard
+            </button>
+            <button
+              onClick={() => handleNavigate(withEmail('/ali/reports'))}
+              className="text-sm text-gray-600 hover:text-gray-900 font-medium"
+            >
+              Reports Hub
+            </button>
+            <button
+              onClick={() => handleNavigate(withEmail('/ali/reports/profile'))}
+              className="text-sm text-gray-600 hover:text-gray-900 font-medium"
+            >
+              Leadership Profile
+            </button>
+          </div>
         </div>
 
         <section className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
