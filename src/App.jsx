@@ -59,6 +59,8 @@ import SuperAdminTenants from "./pages/ali/SuperAdminTenants";
 import SuperAdminDeletions from "./pages/ali/SuperAdminDeletions";
 import SuperAdminAuditLog from "./pages/ali/SuperAdminAuditLog";
 // Operators pages - Lazy loaded for better performance
+const OperatorsLanding = lazy(() => import("./pages/operators/Landing"));
+const OperatorsLogin = lazy(() => import("./pages/operators/Login"));
 const OperatorsEvents = lazy(() => import("./pages/operators/Events"));
 const OperatorsEventDetail = lazy(() => import("./pages/operators/EventDetail"));
 const OperatorsCreateEvent = lazy(() => import("./pages/operators/CreateEvent"));
@@ -134,12 +136,62 @@ export default function App() {
     if (path === '/philosophy') return 'philosophy';
     if (path === '/methods' || path.startsWith('/methods/')) return 'methods';
     if (path === '/what-i-do') return 'what-i-do';
+    // Operators Platform routes
+    if (path === '/operators') return 'operators-landing';
+    if (path === '/operators/login') return 'operators-login';
+    // Check authentication for protected Operators routes
+    if (path.startsWith('/operators/')) {
+      // Public routes (already handled above)
+      if (path === '/operators' || path === '/operators/login') {
+        // This shouldn't happen due to checks above, but just in case
+        return path === '/operators' ? 'operators-landing' : 'operators-login';
+      }
+      // Protected routes - check authentication
+      if (typeof window !== 'undefined') {
+        const storedEmail = localStorage.getItem('operators_email');
+        const urlEmail = new URLSearchParams(window.location.search).get('email');
+        if (!storedEmail && !urlEmail) {
+          // Not authenticated - will redirect to login in handleRoute
+          // But for now, return login page to prevent flash of protected content
+          return 'operators-login';
+        }
+      }
+      // Authenticated - return appropriate page based on path
+      if (path === '/operators/events') return 'operators-events';
+      if (path === '/operators/events/new') return 'operators-create-event';
+      if (path.startsWith('/operators/events/')) {
+        const eventPath = path.replace('/operators/events/', '');
+        if (eventPath === 'new') return 'operators-create-event';
+        if (eventPath.endsWith('/edit')) return 'operators-edit-event';
+        if (eventPath) return 'operators-event-detail';
+        return 'operators-events';
+      }
+      if (path === '/operators/dashboard') return 'operators-dashboard';
+      if (path === '/operators/admin') return 'operators-admin';
+      if (path === '/operators/candidates') return 'operators-candidates';
+      if (path === '/operators/profile') return 'operators-profile';
+      // Unknown operators route - redirect to landing
+      return 'operators-landing';
+    }
     return 'home';
   };
   
   const [currentPage, setCurrentPage] = useState(getInitialPage());
   const isNavigatingBack = useRef(false);
   const previousPath = useRef(window.location.pathname);
+
+  // Immediate route protection check on mount for protected Operators routes
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/operators/') && path !== '/operators' && path !== '/operators/login') {
+      const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('operators_email') : null;
+      const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+      if (!storedEmail && !urlEmail) {
+        window.location.replace('/operators/login');
+        return;
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Disable scroll restoration globally for journal pages
@@ -224,7 +276,42 @@ export default function App() {
       }
       
       // Handle Operators routes
+      if (path === '/operators') {
+        setCurrentPage('operators-landing');
+        return;
+      }
+      if (path === '/operators/login') {
+        setCurrentPage('operators-login');
+        return;
+      }
       if (path.startsWith('/operators/')) {
+        // Route protection: check if user is authenticated
+        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('operators_email') : null;
+        const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+        
+        // If email comes from URL (magic link verification), store it in localStorage
+        if (urlEmail && !storedEmail) {
+          try {
+            localStorage.setItem('operators_email', urlEmail);
+            // Clear email from URL for clean URLs
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, '', cleanUrl);
+          } catch (e) {
+            console.error('Failed to store email in localStorage:', e);
+          }
+        }
+        
+        // Check authentication (allow if email in localStorage or URL)
+        // Only check for protected routes (not landing or login)
+        if (path !== '/operators' && path !== '/operators/login') {
+          if (!storedEmail && !urlEmail) {
+            // Not authenticated - redirect to login
+            window.location.replace('/operators/login');
+            return;
+          }
+        }
+        
+        // User is authenticated (or on public route), proceed with route handling
         if (path === '/operators/events') {
           setCurrentPage('operators-events');
         } else if (path === '/operators/events/new') {
@@ -249,9 +336,9 @@ export default function App() {
         } else if (path === '/operators/profile') {
           setCurrentPage('operators-profile');
         } else {
-          // Default Operators route to events
-          window.history.replaceState({}, '', '/operators/events');
-          setCurrentPage('operators-events');
+          // Unknown operators route - redirect to landing (not dashboard)
+          window.history.replaceState({}, '', '/operators');
+          setCurrentPage('operators-landing');
         }
         return;
       }
@@ -818,7 +905,25 @@ export default function App() {
     </div>
   );
 
-  // Render Operators pages with lazy loading
+  // Render Operators landing page (public, no auth required)
+  if (currentPage === 'operators-landing') {
+    return (
+      <Suspense fallback={<OperatorsPageLoader />}>
+        <OperatorsLanding />
+      </Suspense>
+    );
+  }
+
+  // Render Operators login page (public, no auth required)
+  if (currentPage === 'operators-login') {
+    return (
+      <Suspense fallback={<OperatorsPageLoader />}>
+        <OperatorsLogin />
+      </Suspense>
+    );
+  }
+
+  // Render Operators pages with lazy loading (protected routes)
   if (currentPage === 'operators-events') {
     return (
       <ErrorBoundary>

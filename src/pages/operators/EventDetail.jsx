@@ -29,13 +29,6 @@ export default function EventDetail() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
-  const withEmail = useCallback((path) => {
-    if (!email) return path;
-    if (path.includes('email=')) return path;
-    const joiner = path.includes('?') ? '&' : '?';
-    return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  }, [email]);
-
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -573,7 +566,7 @@ export default function EventDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="events" onNavigate={handleNavigate} />
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false })}
@@ -738,7 +731,7 @@ export default function EventDetail() {
   if (!event) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="events" onNavigate={handleNavigate} />
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false })}
@@ -777,7 +770,7 @@ export default function EventDetail() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <OperatorsHeader active="events" onNavigate={handleNavigate} />
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false })}
@@ -792,7 +785,7 @@ export default function EventDetail() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-6">
           <button
-            onClick={() => handleNavigate(withEmail('/operators/events'))}
+            onClick={() => handleNavigate('/operators/events')}
             className="text-blue-600 hover:text-blue-700 mb-4"
           >
             ← Back to Events
@@ -1603,7 +1596,7 @@ export default function EventDetail() {
                     <>
                       {canEdit && isFutureEvent && (
                         <button
-                          onClick={() => handleNavigate(withEmail(`/operators/events/${id}/edit`))}
+                          onClick={() => handleNavigate(`/operators/events/${id}/edit`)}
                           className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50"
                         >
                           Edit Event

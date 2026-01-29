@@ -25,13 +25,6 @@ export default function Dashboard() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
-  const withEmail = useCallback((path) => {
-    if (!email) return path;
-    if (path.includes('email=')) return path;
-    const joiner = path.includes('?') ? '&' : '?';
-    return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  }, [email]);
-
 
   useEffect(() => {
     // Track page load performance
@@ -119,7 +112,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} />
+        <OperatorsHeader active="dashboard" />
         <div className="container mx-auto px-4 py-8">Loading dashboard...</div>
       </div>
     );
@@ -128,7 +121,7 @@ export default function Dashboard() {
   if (!dashboard && !loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="dashboard" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">No data available</h2>
@@ -341,7 +334,7 @@ export default function Dashboard() {
   if (!dashboard && !loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="dashboard" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <EmptyDashboard />
@@ -389,7 +382,7 @@ export default function Dashboard() {
   if (!dashboard || !dashboard.event_metrics || !dashboard.longitudinal_metrics) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="dashboard" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">No data available</h2>
@@ -446,7 +439,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <OperatorsHeader active="dashboard" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <OperatorsHeader active="dashboard" onNavigate={handleNavigate} />
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false })}
@@ -626,8 +619,8 @@ export default function Dashboard() {
                         </p>
                       </div>
                       <button
-                        onClick={() => handleNavigate(withEmail(`/operators/events/${event.id}`))}
-                        onKeyDown={handleKeyDown(() => handleNavigate(withEmail(`/operators/events/${event.id}`)))}
+                        onClick={() => handleNavigate(`/operators/events/${event.id}`)}
+                        onKeyDown={handleKeyDown(() => handleNavigate(`/operators/events/${event.id}`))}
                         className="px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-lg"
                         aria-label={`View details for ${event.title}`}
                       >
@@ -798,7 +791,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-              <EmptyEvents onCreateEvent={() => handleNavigate(withEmail('/operators/events/new'))} />
+              <EmptyEvents onCreateEvent={() => handleNavigate('/operators/events/new')} />
             </div>
           )}
         </div>

@@ -32,13 +32,6 @@ export default function Profile() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const withEmail = (path) => {
-    if (!email) return path;
-    if (path.includes('email=')) return path;
-    const joiner = path.includes('?') ? '&' : '?';
-    return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  };
-
   useEffect(() => {
     const fetchProfile = async () => {
       if (!email) {
@@ -181,7 +174,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
-        <OperatorsHeader active="profile" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="profile" onNavigate={handleNavigate} />
         <div className="max-w-4xl mx-auto px-6 py-12">
           <p className="text-gray-600">Loading profile...</p>
         </div>
@@ -192,7 +185,7 @@ export default function Profile() {
   if (!profile) {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
-        <OperatorsHeader active="profile" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="profile" onNavigate={handleNavigate} />
         <div className="max-w-4xl mx-auto px-6 py-12">
           <p className="text-gray-600">Profile not found</p>
         </div>
@@ -204,7 +197,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-[#F5F3F0]">
-      <OperatorsHeader active="profile" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <OperatorsHeader active="profile" onNavigate={handleNavigate} />
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Profile</h1>

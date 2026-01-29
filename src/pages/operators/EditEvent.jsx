@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { formatPhoneNumber, formatUSD, parseUSD } from '../../../lib/operators/input-masks.js';
+import { useUser } from '../../contexts/UserContext';
 
 export default function EditEvent() {
+  const { email, userRoles } = useUser();
   const path = window.location.pathname;
   const id = path.replace('/operators/events/', '').replace('/edit', '');
   const [formData, setFormData] = useState({
@@ -32,12 +34,8 @@ export default function EditEvent() {
   const [uploadingLogo, setUploadingLogo] = useState({ host: false, sponsor: false });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [userRoles, setUserRoles] = useState([]);
   const [hostDescriptionWordCount, setHostDescriptionWordCount] = useState(0);
   const [sponsorDescriptionWordCount, setSponsorDescriptionWordCount] = useState(0);
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email') || '';
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -45,29 +43,7 @@ export default function EditEvent() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const withEmail = (path) => {
-    if (!email) return path;
-    if (path.includes('email=')) return path;
-    const joiner = path.includes('?') ? '&' : '?';
-    return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  };
-
   useEffect(() => {
-    const fetchUserRoles = async () => {
-      if (!email) return;
-      
-      try {
-        const resp = await fetch(`/api/operators/users/me?email=${encodeURIComponent(email)}`);
-        const json = await resp.json();
-        if (json.ok && json.user) {
-          setUserRoles(json.user.roles || []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user roles:', error);
-      }
-    };
-
-    fetchUserRoles();
   }, [email]);
 
   useEffect(() => {
@@ -242,7 +218,7 @@ export default function EditEvent() {
       if (json.ok) {
         setSuccess(true);
         setTimeout(() => {
-          handleNavigate(withEmail(`/operators/events/${id}`));
+          handleNavigate(`/operators/events/${id}`);
         }, 1500);
       } else {
         setError(json.error || 'Failed to update event');
@@ -275,10 +251,10 @@ export default function EditEvent() {
     }
   };
 
-  if (!userRoles.includes('chief_operator') && !userRoles.includes('super_admin')) {
+  if (!userRoles || (!userRoles.includes('chief_operator') && !userRoles.includes('super_admin'))) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="events" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <p className="text-gray-600">Only Chief Operators can edit events.</p>
@@ -291,7 +267,7 @@ export default function EditEvent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="events" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="text-center py-12">Loading event...</div>
         </div>
@@ -302,12 +278,12 @@ export default function EditEvent() {
   if (error && !formData.title) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="events" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="bg-white rounded-xl border border-red-200 p-6 shadow-sm">
             <p className="text-red-600">{error}</p>
             <button
-              onClick={() => handleNavigate(withEmail(`/operators/events/${id}`))}
+              onClick={() => handleNavigate(`/operators/events/${id}`)}
               className="mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
             >
               Back to Event
@@ -320,12 +296,12 @@ export default function EditEvent() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <OperatorsHeader active="events" onNavigate={handleNavigate} />
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-6">
           <button
-            onClick={() => handleNavigate(withEmail(`/operators/events/${id}`))}
+            onClick={() => handleNavigate(`/operators/events/${id}`)}
             className="text-blue-600 hover:text-blue-700 mb-4"
           >
             ← Back to Event
@@ -655,7 +631,7 @@ export default function EditEvent() {
               </button>
               <button
                 type="button"
-                onClick={() => handleNavigate(withEmail(`/operators/events/${id}`))}
+                onClick={() => handleNavigate(`/operators/events/${id}`)}
                 className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
               >
                 Cancel

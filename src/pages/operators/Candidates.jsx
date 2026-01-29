@@ -22,13 +22,6 @@ export default function Candidates() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const withEmail = (path) => {
-    if (!email) return path;
-    if (path.includes('email=')) return path;
-    const joiner = path.includes('?') ? '&' : '?';
-    return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  };
-
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -154,7 +147,7 @@ export default function Candidates() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="candidates" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="candidates" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8">Loading candidates...</div>
       </div>
     );
@@ -162,7 +155,7 @@ export default function Candidates() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <OperatorsHeader active="candidates" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <OperatorsHeader active="candidates" onNavigate={handleNavigate} />
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false })}

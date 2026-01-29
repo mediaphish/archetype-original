@@ -9,20 +9,20 @@ export default function Events() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // 'all', 'LIVE', 'OPEN', 'CLOSED'
   
-  const { email, userRoles } = useUser();
+  const { email, userRoles, isAuthenticated } = useUser();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated && !email) {
+      window.location.replace('/operators/login');
+    }
+  }, [isAuthenticated, email]);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
-
-  const withEmail = useCallback((path) => {
-    if (!email) return path;
-    if (path.includes('email=')) return path;
-    const joiner = path.includes('?') ? '&' : '?';
-    return `${path}${joiner}email=${encodeURIComponent(email)}`;
-  }, [email]);
 
 
   useEffect(() => {
@@ -62,15 +62,15 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <OperatorsHeader active="events" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <OperatorsHeader active="events" onNavigate={handleNavigate} />
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Events</h1>
           {(userRoles.includes('chief_operator') || userRoles.includes('super_admin')) && (
             <button
-              onClick={() => handleNavigate(withEmail('/operators/events/new'))}
-              onKeyDown={handleKeyDown(() => handleNavigate(withEmail('/operators/events/new')))}
+              onClick={() => handleNavigate('/operators/events/new')}
+              onKeyDown={handleKeyDown(() => handleNavigate('/operators/events/new'))}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               aria-label="Create a new event"
             >
@@ -101,14 +101,14 @@ export default function Events() {
         {loading ? (
           <div className="text-center py-12">Loading events...</div>
         ) : events.length === 0 ? (
-          <EmptyEvents onCreateEvent={() => handleNavigate(withEmail('/operators/events/new'))} />
+          <EmptyEvents onCreateEvent={() => handleNavigate('/operators/events/new')} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list" aria-label="Events list">
             {events.map(event => (
               <div
                 key={event.id}
-                onClick={() => handleNavigate(withEmail(`/operators/events/${event.id}`))}
-                onKeyDown={handleKeyDown(() => handleNavigate(withEmail(`/operators/events/${event.id}`)))}
+                onClick={() => handleNavigate(`/operators/events/${event.id}`)}
+                onKeyDown={handleKeyDown(() => handleNavigate(`/operators/events/${event.id}`))}
                 className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md cursor-pointer transition-shadow"
                 role="listitem"
                 tabIndex={0}

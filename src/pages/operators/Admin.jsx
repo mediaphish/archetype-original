@@ -149,7 +149,7 @@ export default function Admin() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="admin" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="admin" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8">Loading...</div>
       </div>
     );
@@ -158,7 +158,7 @@ export default function Admin() {
   if (!isSuperAdmin) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
-        <OperatorsHeader active="admin" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+        <OperatorsHeader active="admin" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="bg-white rounded-xl border border-red-200 p-6 shadow-sm">
             <p className="text-red-600">Only Super Admins can access this page.</p>
@@ -170,7 +170,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <OperatorsHeader active="admin" email={email} userRoles={userRoles} onNavigate={handleNavigate} />
+      <OperatorsHeader active="admin" onNavigate={handleNavigate} />
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false })}
