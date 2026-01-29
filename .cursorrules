@@ -272,3 +272,18 @@ Before committing any changes, verify:
 - File verification must happen **before** committing changes
 - If verification is skipped and issues are discovered later, it indicates a process failure
 - When errors occur due to missing verification, acknowledge the failure and add additional checks
+
+## Commit & Deploy (Mandatory)
+
+### Content and Site Updates
+- **After adding or updating devotionals**: Commit the new/edited devotional markdown files and the updated `public/knowledge.json`, then push to the host. Deploy so the site reflects the changes.
+- **After running the knowledge build** (`node scripts/build-knowledge.mjs`): Commit `public/knowledge.json` and any new journal/devotional source files, then push. Do not leave knowledge or content changes uncommitted or undeployed.
+- **After other content or site-affecting changes**: Commit and push so the live site is updated. The AI has been committing and deploying to the host routinely; this is expected behavior for this project.
+
+### Process
+1. Stage the relevant files (e.g. devotionals under `ao-knowledge-hq-kit/journal/devotionals/`, `public/knowledge.json`).
+2. Commit with a clear message (e.g. "Add devotionals for Feb 7–9" or "Update knowledge.json after build").
+3. Push to the remote (e.g. `origin main`) so the host (e.g. Vercel) deploys.
+
+### Rule
+- **Do not leave content or knowledge updates uncommitted or undeployed.** When devotionals, journal posts, or the knowledge corpus are added or updated, complete the workflow by committing and pushing to the host.
