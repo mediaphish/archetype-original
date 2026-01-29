@@ -1,30 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import SuperAdminNav from '../../components/ali/SuperAdminNav';
+
+function getSuperAdminEmail() {
+  if (typeof window === 'undefined') return '';
+  const params = new URLSearchParams(window.location.search);
+  const fromUrl = params.get('email');
+  if (fromUrl) return fromUrl.trim();
+  try {
+    const stored = localStorage.getItem('ali_email');
+    if (stored) return stored.trim();
+  } catch (_) {}
+  return '';
+}
 
 const SuperAdminDeletions = () => {
   const [companyId, setCompanyId] = useState('');
   const [surveyId, setSurveyId] = useState('');
   const [loading, setLoading] = useState(false);
   const [dryRunResult, setDryRunResult] = useState(null);
+  const [wipeAllConfirm, setWipeAllConfirm] = useState(false);
+
+  const requireEmail = useCallback(() => {
+    const email = getSuperAdminEmail();
+    if (!email) {
+      alert('Super admin email required. Open this page from a magic-link sign-in (URL has ?email=...) or ensure ali_email is in localStorage.');
+      return null;
+    }
+    return email;
+  }, []);
 
   const handleDryRun = async (type, id) => {
-    if (!id) {
+    if ((type === 'company' || type === 'survey') && !id) {
       alert('Please enter an ID');
       return;
     }
+    const email = requireEmail();
+    if (!email) return;
 
     setLoading(true);
     try {
+      const body = { resource_type: type, email };
+      if (id) body.resource_id = id;
       const response = await fetch('/api/ali/admin/deletions/dry-run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          resource_type: type,
-          resource_id: id
-        })
+        body: JSON.stringify(body)
       });
-      const result = await response.json();
+      const text = await response.text();
+      let result;
+      try {
+        result = text ? JSON.parse(text) : {};
+      } catch (_) {
+        alert(`Dry-run failed: server returned an error (status ${response.status}). Check the browser console for details.`);
+        setLoading(false);
+        return;
+      }
       if (result.ok) {
         setDryRunResult(result.summary);
       } else {
@@ -32,17 +63,24 @@ const SuperAdminDeletions = () => {
       }
     } catch (error) {
       console.error('Error running dry-run:', error);
-      alert('Error running dry-run');
+      const msg = error?.message || String(error);
+      alert(`Dry-run failed: ${msg}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInitiateDeletion = async (type, id) => {
-    if (!id) {
+  const handleInitiateDeletion = async (type, id, opts = {}) => {
+    if ((type === 'company' || type === 'survey') && !id) {
       alert('Please enter an ID');
       return;
     }
+    if (type === 'wipe_all' && !opts.confirmWipeAll) {
+      alert('Check "I understand this deletes all ALI data" to enable Execute wipe all.');
+      return;
+    }
+    const email = requireEmail();
+    if (!email) return;
 
     if (!confirm('Are you sure you want to initiate this deletion? This action cannot be undone.')) {
       return;
@@ -50,16 +88,27 @@ const SuperAdminDeletions = () => {
 
     setLoading(true);
     try {
+      const body = {
+        resource_type: type,
+        email,
+        reason: 'Manual deletion by Super Admin'
+      };
+      if (id) body.resource_id = id;
+      if (type === 'wipe_all') body.confirm_wipe_all = true;
       const response = await fetch('/api/ali/admin/deletions/initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          resource_type: type,
-          resource_id: id,
-          reason: 'Manual deletion by Super Admin'
-        })
+        body: JSON.stringify(body)
       });
-      const result = await response.json();
+      const text = await response.text();
+      let result;
+      try {
+        result = text ? JSON.parse(text) : {};
+      } catch (_) {
+        alert(`Deletion failed: server returned an error (status ${response.status}). Check the browser console.`);
+        setLoading(false);
+        return;
+      }
       if (result.ok) {
         alert('Deletion initiated successfully');
         if (type === 'company') setCompanyId('');
@@ -70,7 +119,8 @@ const SuperAdminDeletions = () => {
       }
     } catch (error) {
       console.error('Error initiating deletion:', error);
-      alert('Error initiating deletion');
+      const msg = error?.message || String(error);
+      alert(`Deletion failed: ${msg}`);
     } finally {
       setLoading(false);
     }
@@ -110,7 +160,7 @@ const SuperAdminDeletions = () => {
               </label>
               <input
                 type="text"
-                placeholder="ten_..."
+                placeholder="company UUID..."
                 value={companyId}
                 onChange={(e) => setCompanyId(e.target.value)}
                 className="w-full px-4 py-2 border border-black/[0.12] rounded-lg text-[14px] text-black/[0.87] placeholder:text-black/[0.38] focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent"
@@ -141,11 +191,11 @@ const SuperAdminDeletions = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-[13px] font-medium text-black/[0.6] mb-2">
-                Survey ID
+                Survey ID (deployment UUID)
               </label>
               <input
                 type="text"
-                placeholder="sur_..."
+                placeholder="deployment UUID..."
                 value={surveyId}
                 onChange={(e) => setSurveyId(e.target.value)}
                 className="w-full px-4 py-2 border border-black/[0.12] rounded-lg text-[14px] text-black/[0.87] placeholder:text-black/[0.38] focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent"
@@ -167,6 +217,54 @@ const SuperAdminDeletions = () => {
                 Initiate Deletion
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Wipe test data */}
+        <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
+          <h3 className="text-[18px] font-semibold text-black/[0.87] mb-2">Wipe test data</h3>
+          <p className="text-[13px] text-black/[0.6] mb-4">
+            Wipe list: companies matching ALI_WIPE_IDS or ALI_WIPE_NAMES (env). Wipe all: every company and related data.
+          </p>
+          <div className="flex flex-wrap gap-3 items-center">
+            <button
+              onClick={() => handleDryRun('wipe_list')}
+              disabled={loading}
+              className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Dry-run wipe list
+            </button>
+            <button
+              onClick={() => handleInitiateDeletion('wipe_list')}
+              disabled={loading}
+              className="px-4 py-2 bg-amber-600 text-white rounded-lg text-[14px] font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Execute wipe list
+            </button>
+            <span className="text-black/[0.38]">|</span>
+            <button
+              onClick={() => handleDryRun('wipe_all')}
+              disabled={loading}
+              className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Dry-run wipe all
+            </button>
+            <label className="flex items-center gap-2 text-[13px] text-black/[0.87]">
+              <input
+                type="checkbox"
+                checked={wipeAllConfirm}
+                onChange={(e) => setWipeAllConfirm(e.target.checked)}
+                className="rounded border-black/[0.24]"
+              />
+              I understand this deletes all ALI data
+            </label>
+            <button
+              onClick={() => handleInitiateDeletion('wipe_all', undefined, { confirmWipeAll: wipeAllConfirm })}
+              disabled={loading || !wipeAllConfirm}
+              className="px-4 py-2 bg-[#ef4444] text-white rounded-lg text-[14px] font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Execute wipe all
+            </button>
           </div>
         </div>
 

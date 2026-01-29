@@ -1,8 +1,21 @@
 import React from 'react';
 
+function getSuperAdminEmail() {
+  const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const fromUrl = params.get('email');
+  if (fromUrl) return fromUrl.trim();
+  try {
+    const stored = localStorage.getItem('ali_email');
+    if (stored) return stored.trim();
+  } catch (_) {}
+  return '';
+}
+
 const SuperAdminNav = ({ activeTab }) => {
   const handleNavigate = (path) => {
-    window.history.pushState({}, '', path);
+    const email = getSuperAdminEmail();
+    const url = email ? `${path}${path.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}` : path;
+    window.history.pushState({}, '', url);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
