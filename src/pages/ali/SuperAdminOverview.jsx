@@ -5,24 +5,35 @@ import SuperAdminNav from '../../components/ali/SuperAdminNav';
 const SuperAdminOverview = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
+  const fetchData = async () => {
+    setFetchError(null);
+    setLoading(true);
+    setData(null);
+    try {
+      const response = await fetch('/api/ali/super-admin/overview', {
+        headers: { Accept: 'application/json' },
+        cache: 'no-store'
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        setFetchError(result?.error || `Request failed (${response.status})`);
+        return;
+      }
+      if (result.ok && result.overview) {
+        setData(result.overview);
+      } else {
+        setFetchError(result?.error || 'No overview data returned');
+      }
+    } catch (error) {
+      setFetchError(error?.message || 'Failed to load overview');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/ali/super-admin/overview');
-        const result = await response.json();
-        console.log('Super Admin Overview API response:', result);
-        if (result.ok && result.overview) {
-          setData(result.overview);
-        } else {
-          console.error('API returned error or missing data:', result);
-        }
-      } catch (error) {
-        console.error('Error fetching overview:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
@@ -65,7 +76,16 @@ const SuperAdminOverview = () => {
         <SuperAdminNav activeTab="overview" />
         <div className="pt-8 pb-12 px-6 max-w-7xl mx-auto">
           <div className="text-center py-12">
-            <div className="text-[14px] text-black/[0.6]">No data available</div>
+            <div className="text-[14px] text-black/[0.6] mb-2">
+              {fetchError ? `Couldn’t load overview: ${fetchError}` : 'No data available'}
+            </div>
+            <button
+              type="button"
+              onClick={fetchData}
+              className="mt-3 px-4 py-2 bg-[#2563eb] text-white text-sm font-semibold rounded-lg hover:bg-[#1d4ed8] transition-colors"
+            >
+              Retry
+            </button>
           </div>
         </div>
       </div>
