@@ -14,6 +14,11 @@ const ALIDeploy = () => {
   const [loadingNext, setLoadingNext] = useState(true);
   const [deploying, setDeploying] = useState(false);
   const [deployError, setDeployError] = useState('');
+  const [activeDeployments, setActiveDeployments] = useState([]);
+  const [loadingDeployments, setLoadingDeployments] = useState(false);
+  const [deploymentsError, setDeploymentsError] = useState('');
+  const [viewLinkModal, setViewLinkModal] = useState(null);
+  const [copyFeedback, setCopyFeedback] = useState('');
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -89,17 +94,60 @@ const ALIDeploy = () => {
     loadNext();
   }, [email]);
 
-  const activeDeployments = [
-    {
-      id: 'deploy-1',
-      surveyIndex: 'S1',
-      status: 'active',
-      responses: 42,
-      minimum: 5,
-      opensAt: '2024-01-15',
-      closesAt: '2024-02-15'
+  const loadDeployments = async () => {
+    if (!email) return;
+    setLoadingDeployments(true);
+    setDeploymentsError('');
+    try {
+      const r = await fetch(`/api/ali/deployments?email=${encodeURIComponent(email)}`);
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setDeploymentsError(j?.error || 'Failed to load deployments.');
+        setActiveDeployments([]);
+        return;
+      }
+      setActiveDeployments(j.deployments || []);
+    } catch (e) {
+      setDeploymentsError(e?.message || 'Failed to load deployments.');
+      setActiveDeployments([]);
+    } finally {
+      setLoadingDeployments(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    loadDeployments();
+  }, [email]);
+
+  const getSurveyUrl = (d) => {
+    if (!d?.deploymentToken) return '';
+    return `${window.location.origin}/ali/survey/${d.deploymentToken}`;
+  };
+
+  const handleCopyViewLink = (deployment) => {
+    const url = getSurveyUrl(deployment);
+    if (!url) return;
+    navigator.clipboard.writeText(url).then(
+      () => {
+        setCopyFeedback('Copied!');
+        setTimeout(() => setCopyFeedback(''), 2000);
+      },
+      () => {
+        setCopyFeedback('Copy failed');
+        setTimeout(() => setCopyFeedback(''), 2000);
+      }
+    );
+  };
+
+  const openViewLinkModal = (deployment) => {
+    setViewLinkModal(deployment);
+    setCopyFeedback('');
+  };
+
+  const closeViewLinkModal = () => {
+    setViewLinkModal(null);
+    setCopyFeedback('');
+  };
 
   const handleGenerateLink = async () => {
     setDeployError('');
@@ -133,6 +181,8 @@ const ALIDeploy = () => {
       // Extract token from URL for display/back-compat
       const tokenMatch = typeof surveyUrl === 'string' ? surveyUrl.split('/').pop() : null;
       setGeneratedToken(tokenMatch || null);
+
+      await loadDeployments();
     } catch (e) {
       setDeployError(e?.message || 'Failed to create deployment.');
     } finally {
@@ -305,11 +355,17 @@ const ALIDeploy = () => {
         {/* Active Deployments List */}
         <section className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Active Deployments</h2>
-          
-          {activeDeployments.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              No active deployments
+
+          {deploymentsError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              {deploymentsError}
             </div>
+          )}
+
+          {loadingDeployments ? (
+            <div className="text-center py-8 text-gray-500">Loading deployments…</div>
+          ) : activeDeployments.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No active deployments</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -337,16 +393,16 @@ const ALIDeploy = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-gray-900">
-                        {deployment.responses} / {deployment.minimum}
-                        {deployment.responses >= deployment.minimum && (
+                        {deployment.responseCount} / {deployment.minimumResponses ?? 5}
+                        {(deployment.responseCount ?? 0) >= (deployment.minimumResponses ?? 5) && (
                           <span className="ml-2 text-blue-600 text-xs">✓</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-600">{deployment.opensAt}</td>
-                      <td className="py-3 px-4 text-sm text-gray-600">{deployment.closesAt}</td>
+                      <td className="py-3 px-4 text-sm text-gray-600">{deployment.opensAt ?? '—'}</td>
+                      <td className="py-3 px-4 text-sm text-gray-600">{deployment.closesAt ?? '—'}</td>
                       <td className="py-3 px-4">
                         <button
-                          onClick={() => alert('View link - coming soon')}
+                          onClick={() => openViewLinkModal(deployment)}
                           className="text-sm text-blue-600 hover:underline"
                         >
                           View Link
@@ -360,6 +416,36 @@ const ALIDeploy = () => {
           )}
         </section>
       </main>
+
+      {/* View Link Modal */}
+      {viewLinkModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={closeViewLinkModal}>
+          <div
+            className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Survey Link — {viewLinkModal.surveyIndex}</h3>
+            <p className="text-sm text-gray-600 mb-3">Share this link with respondents to complete the survey.</p>
+            <div className="bg-gray-50 rounded border border-gray-200 p-3 mb-4">
+              <div className="font-mono text-sm break-all text-gray-900">{getSurveyUrl(viewLinkModal)}</div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => handleCopyViewLink(viewLinkModal)}
+                className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700"
+              >
+                {copyFeedback || 'Copy Link'}
+              </button>
+              <button
+                onClick={closeViewLinkModal}
+                className="flex-1 bg-white border border-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-50"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
