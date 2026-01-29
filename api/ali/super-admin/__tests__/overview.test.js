@@ -50,7 +50,7 @@ describe('Super Admin Overview API', () => {
     });
   });
 
-  it('returns 200 and overview with metrics, leadershipMirror, experienceMap', async () => {
+  it('returns 200 and overview with metrics, leadershipMirror, experienceMap, segmentation, contentMining, productMetrics, benchmarks, platformALITrend', async () => {
     await overviewHandler(req, res);
     expect(statusSpy).toHaveBeenCalledWith(200);
     expect(jsonSpy).toHaveBeenCalledTimes(1);
@@ -67,6 +67,14 @@ describe('Super Admin Overview API', () => {
     expect(body.overview.leadershipMirror.leaderScores).toBeDefined();
     expect(body.overview.leadershipMirror.teamScores).toBeDefined();
     expect(body.overview.experienceMap === null || typeof body.overview.experienceMap === 'object').toBe(true);
+    expect(body.overview.segmentation).toBeDefined();
+    expect(Array.isArray(body.overview.segmentation.byIndustry)).toBe(true);
+    expect(Array.isArray(body.overview.segmentation.byCompanySize)).toBe(true);
+    expect(body.overview.contentMining).toBeDefined();
+    expect(body.overview.productMetrics).toBeDefined();
+    expect(body.overview.benchmarks).toBeDefined();
+    expect(Array.isArray(body.overview.platformALITrend)).toBe(true);
+    expect(body.overview.engagementDetail).toBeDefined();
   });
 
   it('returns 405 for non-GET', async () => {

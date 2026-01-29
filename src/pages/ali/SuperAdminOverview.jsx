@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Users, Crown, ClipboardCheck, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Users, Crown, ClipboardCheck, TrendingUp, Download, MessageCircle } from 'lucide-react';
 import SuperAdminNav from '../../components/ali/SuperAdminNav';
+import ChatApp from '../../app/ChatApp';
 
 const SuperAdminOverview = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+  const [showArchyChat, setShowArchyChat] = useState(false);
+  const [archyInitialMessage, setArchyInitialMessage] = useState('');
 
   const fetchData = async () => {
     setFetchError(null);
@@ -57,6 +60,47 @@ const SuperAdminOverview = () => {
   const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
   const fmt0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? String(Math.round(v)) : '—');
 
+  const exportOverviewCsv = useCallback(() => {
+    if (!data) return;
+    const rows = [];
+    const m = data.metrics || {};
+    rows.push(['Metric', 'Value']);
+    rows.push(['Companies', m.companies?.total ?? '']);
+    rows.push(['Leaders', m.leaders?.total ?? '']);
+    rows.push(['Surveys', m.surveys?.total ?? '']);
+    rows.push(['Respondents', m.respondents?.total ?? '']);
+    rows.push(['Avg ALI', fmt1(m.avgALIScore)]);
+    (data.zoneDistribution || []).forEach((z) => {
+      rows.push([`Zone ${z.zone}`, z.count]);
+    });
+    if (data.engagement) {
+      rows.push(['Response rate %', fmt1(data.engagement.responseRate)]);
+      rows.push(['Surveys per company', fmt1(data.engagement.surveysPerCompany)]);
+    }
+    if (data.platformALITrend?.length) {
+      data.platformALITrend.forEach((t) => rows.push([`ALI ${t.quarter}`, fmt1(t.avgALI)]));
+    }
+    const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `ali-overview-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }, [data]);
+
+  const askArchyAboutOverview = useCallback(() => {
+    if (!data) return;
+    const m = data.metrics || {};
+    const parts = [
+      `Platform overview: ${m.companies?.total ?? 0} companies, ${m.respondents?.total ?? 0} respondents, avg ALI ${fmt1(m.avgALIScore)}.`,
+      (data.zoneDistribution || []).map((z) => `${z.zone}: ${z.count}`).join('; '),
+      data.leadershipMirror?.leaderScores?.ali != null ? `Platform leader vs team gaps are available.` : ''
+    ].filter(Boolean);
+    setArchyInitialMessage(`I'm on the Super Admin Platform Overview. ${parts.join(' ')} What journal angles or content ideas can you suggest from this data?`);
+    setShowArchyChat(true);
+  }, [data]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa] ali-system">
@@ -100,8 +144,48 @@ const SuperAdminOverview = () => {
       
       <div className="pt-8 pb-12 px-6 max-w-7xl mx-auto space-y-6">
         {/* Page Header */}
-        <div className="mb-6">
-          <h1 className="text-[28px] font-semibold text-black/[0.87] mb-1">Platform Overview</h1>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-[28px] font-semibold text-black/[0.87]">Platform Overview</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={exportOverviewCsv}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-black/[0.87] bg-white border border-black/[0.2] rounded-lg hover:bg-black/[0.04] transition-colors"
+              aria-label="Export overview as CSV"
+            >
+              <Download className="w-4 h-4" />
+              Export overview (CSV)
+            </button>
+            <button
+              type="button"
+              onClick={askArchyAboutOverview}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#2563eb] rounded-lg hover:bg-[#1d4ed8] transition-colors"
+              aria-label="Ask Archy about platform data"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Ask Archy
+            </button>
+          </div>
+        </div>
+
+        {/* Jump to */}
+        <div className="mb-4 flex flex-wrap gap-2 text-sm">
+          <span className="text-black/[0.6]">Jump to:</span>
+          {[
+            ['overview-hero', 'Hero'],
+            ['overview-zones', 'Zones'],
+            ['overview-engagement', 'Engagement'],
+            ['overview-quarterly', 'Quarterly'],
+            ['overview-patterns', 'Patterns'],
+            ['overview-mirror', 'Mirror'],
+            ['overview-segments', 'Segments'],
+            ['overview-benchmarks', 'Benchmarks'],
+            ['overview-content', 'Content']
+          ].map(([id, label]) => (
+            <a key={id} href={`#${id}`} className="text-[#2563eb] hover:underline">
+              {label}
+            </a>
+          ))}
         </div>
 
         {/* Empty state when no platform data */}
@@ -118,7 +202,7 @@ const SuperAdminOverview = () => {
         )}
 
         {/* HERO: Platform Avg ALI (25%) + Platform Health (75%) */}
-        <div className="bg-white rounded-lg border border-black/[0.12] p-8">
+        <div id="overview-hero" className="bg-white rounded-lg border border-black/[0.12] p-8 scroll-mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Left: Platform Average ALI Score (25%) */}
             <div className="lg:col-span-1">
@@ -191,7 +275,7 @@ const SuperAdminOverview = () => {
         </div>
 
         {/* SECOND ROW: Zone Distribution + Engagement Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="overview-zones" className="grid grid-cols-1 lg:grid-cols-2 gap-6 scroll-mt-4">
           {/* Zone Distribution */}
           <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
             <h2 className="text-[22px] font-semibold text-black/[0.87] mb-6">Score Distribution by Zone</h2>
@@ -228,7 +312,7 @@ const SuperAdminOverview = () => {
           </div>
 
           {/* Engagement Metrics */}
-          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+          <div id="overview-engagement" className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm scroll-mt-4">
             <h3 className="text-[18px] font-semibold text-black/[0.87] mb-6">Engagement Metrics</h3>
             <div className="space-y-4">
               <div>
@@ -256,8 +340,43 @@ const SuperAdminOverview = () => {
           </div>
         </div>
 
+        {/* Engagement & adoption */}
+        {data.engagementDetail && (
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+            <h2 className="text-[22px] font-semibold text-black/[0.87] mb-2">Engagement & adoption</h2>
+            <p className="text-[13px] text-black/[0.6] mb-6">Cadence mix, response velocity, retention</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <div className="text-[13px] font-medium text-black/[0.6] mb-2">Survey cadence (S1–S4)</div>
+                <div className="flex flex-wrap gap-2">
+                  {['S1', 'S2', 'S3', 'S4'].map((k) => (
+                    <span key={k} className="px-3 py-1 rounded-lg bg-black/[0.06] text-sm">
+                      {k}: {(data.engagementDetail.cadenceMix && data.engagementDetail.cadenceMix[k]) ?? 0}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div className="text-[13px] font-medium text-black/[0.6] mb-2">Avg minutes to first / 5 / 10 responses</div>
+                <div className="space-y-1 text-sm">
+                  <div>First: {fmt1(data.engagementDetail.velocity?.avgMinutesToFirst) ?? '—'} min</div>
+                  <div>5 responses: {fmt1(data.engagementDetail.velocity?.avgMinutesTo5) ?? '—'} min</div>
+                  <div>10 responses: {fmt1(data.engagementDetail.velocity?.avgMinutesTo10) ?? '—'} min</div>
+                </div>
+              </div>
+              <div>
+                <div className="text-[13px] font-medium text-black/[0.6] mb-2">Retention</div>
+                <div className="space-y-1 text-sm">
+                  <div>1 deployment: {data.engagementDetail.retention?.oneDeployment ?? 0} companies</div>
+                  <div>2+ deployments: {data.engagementDetail.retention?.twoOrMore ?? 0} companies</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* THIRD ROW: Quarterly Trends */}
-        <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+        <div id="overview-quarterly" className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm scroll-mt-4">
           <h2 className="text-[22px] font-semibold text-black/[0.87] mb-6">Quarterly Growth Trends</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -296,7 +415,7 @@ const SuperAdminOverview = () => {
         </div>
 
         {/* FOURTH ROW: Pattern Analysis */}
-        <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+        <div id="overview-patterns" className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm scroll-mt-4">
           <h2 className="text-[22px] font-semibold text-black/[0.87] mb-6">Pattern Analysis Across Platform</h2>
           <div className="space-y-4">
             {data.patterns.map((pattern) => (
@@ -356,7 +475,7 @@ const SuperAdminOverview = () => {
 
         {/* SIXTH ROW: Leadership Mirror */}
         {data.leadershipMirror && (
-          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+          <div id="overview-mirror" className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm scroll-mt-4">
             <h2 className="text-[22px] font-semibold text-black/[0.87] mb-6">Platform Leadership Mirror</h2>
             <p className="text-[13px] text-black/[0.6] mb-6">
               Leader vs Team perception gaps across the platform
@@ -384,11 +503,19 @@ const SuperAdminOverview = () => {
                     critical: { cls: 'bg-red-50 border-red-200 text-red-700', label: 'Critical Gap' },
                     significant: { cls: 'bg-orange-50 border-orange-200 text-orange-700', label: 'Significant Gap' },
                     moderate: { cls: 'bg-yellow-50 border-yellow-200 text-yellow-700', label: 'Moderate Gap' },
+                    caution: { cls: 'bg-yellow-50 border-yellow-200 text-yellow-700', label: 'Moderate Gap' },
                     neutral: { cls: 'bg-gray-50 border-gray-200 text-gray-700', label: 'Neutral' }
                   };
                   return badges[sev] || badges.neutral;
                 };
                 
+                if (mirrorRows.length === 0) {
+                  return (
+                    <div className="text-[14px] text-black/[0.6] py-4">
+                      Add leader and team responses to see perception gaps across the platform.
+                    </div>
+                  );
+                }
                 return mirrorRows.map((row) => {
                   const leaderScore = leaderScores[row.key] ?? null;
                   const teamScore = teamScores[row.key] ?? null;
@@ -539,7 +666,289 @@ const SuperAdminOverview = () => {
             )}
           </div>
         )}
+
+        {/* Segmentation by industry */}
+        {data.segmentation?.byIndustry && data.segmentation.byIndustry.length > 0 && (
+          <div id="overview-segments" className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm scroll-mt-4">
+            <h2 className="text-[22px] font-semibold text-black/[0.87] mb-2">Segment by industry</h2>
+            <p className="text-[13px] text-black/[0.6] mb-6">Companies, responses, and avg ALI by industry</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-xs text-black/[0.6] uppercase tracking-wide border-b border-black/[0.12]">
+                    <th className="py-3 pr-4">Industry</th>
+                    <th className="py-3 pr-4">Companies</th>
+                    <th className="py-3 pr-4">Responses</th>
+                    <th className="py-3">Avg ALI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.segmentation.byIndustry.map((row) => (
+                    <tr key={row.segment} className="border-b border-black/[0.08]">
+                      <td className="py-3 pr-4 font-medium text-black/[0.87]">{row.segment}</td>
+                      <td className="py-3 pr-4 text-black/[0.6]">{row.companies}</td>
+                      <td className="py-3 pr-4 text-black/[0.6]">{row.responses}</td>
+                      <td className="py-3 text-black/[0.87]">{fmt1(row.avgALI)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Segmentation by company size */}
+        {data.segmentation?.byCompanySize && data.segmentation.byCompanySize.length > 0 && (
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+            <h2 className="text-[22px] font-semibold text-black/[0.87] mb-2">Segment by company size</h2>
+            <p className="text-[13px] text-black/[0.6] mb-6">Companies, responses, and avg ALI by company size</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-xs text-black/[0.6] uppercase tracking-wide border-b border-black/[0.12]">
+                    <th className="py-3 pr-4">Company size</th>
+                    <th className="py-3 pr-4">Companies</th>
+                    <th className="py-3 pr-4">Responses</th>
+                    <th className="py-3">Avg ALI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.segmentation.byCompanySize.map((row) => (
+                    <tr key={row.segment} className="border-b border-black/[0.08]">
+                      <td className="py-3 pr-4 font-medium text-black/[0.87]">{row.segment}</td>
+                      <td className="py-3 pr-4 text-black/[0.6]">{row.companies}</td>
+                      <td className="py-3 pr-4 text-black/[0.6]">{row.responses}</td>
+                      <td className="py-3 text-black/[0.87]">{fmt1(row.avgALI)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Benchmarks */}
+        {data.benchmarks && Object.keys(data.benchmarks).length > 0 && (
+          <div id="overview-benchmarks" className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm scroll-mt-4">
+            <h2 className="text-[22px] font-semibold text-black/[0.87] mb-2">Benchmarks</h2>
+            <p className="text-[13px] text-black/[0.6] mb-6">25th, 50th, 75th percentiles across companies (ALI and patterns)</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {['ali', 'clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'].filter((k) => data.benchmarks[k]).map((k) => (
+                <div key={k} className="rounded-lg border border-black/[0.12] p-4">
+                  <div className="text-[12px] font-medium text-black/[0.6] uppercase mb-2 capitalize">{k.replace(/_/g, ' ')}</div>
+                  <div className="text-sm">
+                    <div>p25: {fmt1(data.benchmarks[k].p25)}</div>
+                    <div>p50: {fmt1(data.benchmarks[k].p50)}</div>
+                    <div>p75: {fmt1(data.benchmarks[k].p75)}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Platform ALI trend */}
+        {data.platformALITrend && data.platformALITrend.length > 0 && (
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+            <h2 className="text-[22px] font-semibold text-black/[0.87] mb-2">Platform ALI over time</h2>
+            <p className="text-[13px] text-black/[0.6] mb-6">Average ALI by quarter</p>
+            <div className="flex flex-wrap gap-4">
+              {data.platformALITrend.map((t) => (
+                <div key={t.quarter} className="flex items-center gap-2">
+                  <span className="text-sm text-black/[0.6]">{t.quarter}</span>
+                  <span className="text-base font-semibold text-black/[0.87]">{fmt1(t.avgALI)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Product & tool metrics */}
+        {data.productMetrics && (
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 shadow-sm">
+            <h2 className="text-[22px] font-semibold text-black/[0.87] mb-2">Product & tool metrics</h2>
+            <p className="text-[13px] text-black/[0.6] mb-6">Gap severity, question-level stats, negative vs positive items</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {data.productMetrics.gapSeverityDistribution && (
+                <div>
+                  <div className="text-[13px] font-medium text-black/[0.6] mb-2">Gap severity distribution (%)</div>
+                  <div className="space-y-1 text-sm">
+                    <div>Critical: {fmt1(data.productMetrics.gapSeverityDistribution.criticalPct)}%</div>
+                    <div>Significant: {fmt1(data.productMetrics.gapSeverityDistribution.significantPct)}%</div>
+                    <div>Moderate: {fmt1(data.productMetrics.gapSeverityDistribution.moderatePct)}%</div>
+                    <div>Neutral: {fmt1(data.productMetrics.gapSeverityDistribution.neutralPct)}%</div>
+                  </div>
+                </div>
+              )}
+              {data.productMetrics.negativeVsPositive && (
+                <div>
+                  <div className="text-[13px] font-medium text-black/[0.6] mb-2">Avg score: negative vs positive items</div>
+                  <div className="space-y-2 text-sm">
+                    <div>Leader positive: {fmt1(data.productMetrics.negativeVsPositive.leader?.positive) ?? '—'}</div>
+                    <div>Leader negative: {fmt1(data.productMetrics.negativeVsPositive.leader?.negative) ?? '—'}</div>
+                    <div>Team positive: {fmt1(data.productMetrics.negativeVsPositive.team?.positive) ?? '—'}</div>
+                    <div>Team negative: {fmt1(data.productMetrics.negativeVsPositive.team?.negative) ?? '—'}</div>
+                  </div>
+                </div>
+              )}
+              {data.productMetrics.questionLevel && Object.keys(data.productMetrics.questionLevel).length > 0 && (
+                <div>
+                  <div className="text-[13px] font-medium text-black/[0.6] mb-2">Question-level (sample)</div>
+                  <div className="space-y-1 text-sm max-h-32 overflow-y-auto">
+                    {Object.entries(data.productMetrics.questionLevel).slice(0, 8).map(([sid, v]) => (
+                      <div key={sid}>{sid}: mean {fmt1(v.mean)}, n={v.n}</div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Content-mining */}
+        {data.contentMining && (
+          <div id="overview-content" className="space-y-6 scroll-mt-4">
+            <h2 className="text-[22px] font-semibold text-black/[0.87]">Content mining</h2>
+            <p className="text-[13px] text-black/[0.6] mb-4">
+              Metrics to support journal posts, tools, and consulting concepts.
+            </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {data.contentMining.patternPrevalence && data.contentMining.patternPrevalence.length > 0 && (
+                <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
+                  <h3 className="text-[16px] font-semibold text-black/[0.87] mb-3">Pattern prevalence (bottom 2)</h3>
+                  <p className="text-[12px] text-black/[0.6] mb-3">% of companies where each pattern is among the two lowest</p>
+                  <div className="space-y-2">
+                    {data.contentMining.patternPrevalence.slice(0, 7).map((r) => (
+                      <div key={r.pattern} className="flex justify-between text-sm">
+                        <span className="text-black/[0.87] capitalize">{r.pattern.replace(/_/g, ' ')}</span>
+                        <span className="font-medium">{fmt1(r.pctBottom2)}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {data.contentMining.hardestPatterns && data.contentMining.hardestPatterns.length > 0 && (
+                <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
+                  <h3 className="text-[16px] font-semibold text-black/[0.87] mb-3">Hardest patterns</h3>
+                  <p className="text-[12px] text-black/[0.6] mb-3">Times each pattern was the single lowest across companies</p>
+                  <div className="space-y-2">
+                    {data.contentMining.hardestPatterns.slice(0, 7).map((r) => (
+                      <div key={r.pattern} className="flex justify-between text-sm">
+                        <span className="text-black/[0.87] capitalize">{r.pattern.replace(/_/g, ' ')}</span>
+                        <span className="font-medium">{r.timesLowest}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {data.contentMining.gapThemes && data.contentMining.gapThemes.length > 0 && (
+              <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
+                <h3 className="text-[16px] font-semibold text-black/[0.87] mb-3">Gap themes</h3>
+                <p className="text-[12px] text-black/[0.6] mb-4">Per-gap severity counts across companies (leader vs team)</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="text-xs text-black/[0.6] uppercase border-b border-black/[0.12]">
+                        <th className="py-2 pr-4">Gap</th>
+                        <th className="py-2 pr-4">Critical</th>
+                        <th className="py-2 pr-4">Significant / Caution</th>
+                        <th className="py-2 pr-4">Moderate</th>
+                        <th className="py-2">Neutral</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.contentMining.gapThemes.map((r) => (
+                        <tr key={r.gap} className="border-b border-black/[0.08]">
+                          <td className="py-2 pr-4 font-medium capitalize">{r.gap.replace(/_/g, ' ')}</td>
+                          <td className="py-2 pr-4">{r.critical}</td>
+                          <td className="py-2 pr-4">{(r.significant || 0) + (r.caution || 0)}</td>
+                          <td className="py-2 pr-4">{r.moderate}</td>
+                          <td className="py-2">{r.neutral}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+            {data.contentMining.zoneTransitions && data.contentMining.zoneTransitions.length > 0 && (
+              <div className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
+                <h3 className="text-[16px] font-semibold text-black/[0.87] mb-3">Zone transitions</h3>
+                <p className="text-[12px] text-black/[0.6] mb-4">Companies moving between zones across consecutive quarters</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="text-xs text-black/[0.6] uppercase border-b border-black/[0.12]">
+                        <th className="py-2 pr-4">From</th>
+                        <th className="py-2 pr-4">To</th>
+                        <th className="py-2 pr-4">Quarters</th>
+                        <th className="py-2">Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.contentMining.zoneTransitions.map((t, i) => (
+                        <tr key={i} className="border-b border-black/[0.08]">
+                          <td className="py-2 pr-4 capitalize">{t.from}</td>
+                          <td className="py-2 pr-4 capitalize">{t.to}</td>
+                          <td className="py-2 pr-4">{t.quarters}</td>
+                          <td className="py-2 font-medium">{t.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Archy Chat Floating Button */}
+      <button
+        type="button"
+        onClick={() => {
+          setArchyInitialMessage('');
+          setShowArchyChat(!showArchyChat);
+        }}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
+        aria-label="Chat with Archy about platform overview"
+      >
+        <img
+          src="/images/archy-avatar.png"
+          alt="Archy"
+          className="w-full h-full object-cover"
+          onError={(e) => { e.target.style.display = 'none'; }}
+        />
+      </button>
+
+      {/* Archy Chat Overlay */}
+      {showArchyChat && (
+        <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
+          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
+            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <img src="/images/archy-avatar.png" alt="Archy" className="w-10 h-10 rounded-full" onError={(e) => { e.target.style.display = 'none'; }} />
+                  <div>
+                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
+                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
+                  </div>
+                </div>
+                <button type="button" onClick={() => setShowArchyChat(false)} className="text-gray-400 hover:text-gray-600 p-2" aria-label="Close chat">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                <ChatApp
+                  context="ali-super-admin-overview"
+                  initialMessage={archyInitialMessage || "I'm on the Super Admin Platform Overview. Help me understand the metrics and suggest journal or content angles from this data."}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
