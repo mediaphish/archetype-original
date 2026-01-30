@@ -51,48 +51,48 @@ const ALISettings = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="text-xl font-bold text-gray-900">ALI</div>
-            <nav className="flex items-center gap-6">
+            <nav className="flex items-center gap-2 sm:gap-4">
               <button
                 onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/reports'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Reports
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/deploy'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/settings'))}
-                className="text-blue-600 font-semibold"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-blue-600 font-semibold"
               >
                 Settings
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/billing'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Billing
               </button>
               {isSuperAdminUser && (
                 <button
                   onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
-                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
+                  className="min-h-[44px] inline-flex items-center justify-center px-3 text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
                 >
                   Super Admin
                 </button>
               )}
               <button
                 onClick={() => handleNavigate('/ali')}
-                className="text-gray-600 hover:text-gray-800"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-800"
               >
                 Log Out
               </button>
@@ -112,7 +112,7 @@ const ALISettings = () => {
           <nav className="flex gap-6">
             <button
               onClick={() => setActiveTab('company')}
-              className={`py-3 px-1 border-b-2 font-semibold ${
+              className={`min-h-[44px] flex items-center justify-center py-3 px-1 border-b-2 font-semibold ${
                 activeTab === 'company' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -120,7 +120,7 @@ const ALISettings = () => {
             </button>
             <button
               onClick={() => setActiveTab('contacts')}
-              className={`py-3 px-1 border-b-2 font-semibold ${
+              className={`min-h-[44px] flex items-center justify-center py-3 px-1 border-b-2 font-semibold ${
                 activeTab === 'contacts' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -213,7 +213,7 @@ const ALISettings = () => {
               <h2 className="text-xl font-semibold text-gray-900">Contacts</h2>
               <button
                 onClick={handleAddContact}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 text-sm"
+                className="min-h-[44px] bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 text-sm flex items-center justify-center"
               >
                 Add Contact
               </button>

@@ -50,48 +50,48 @@ const ALIBilling = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="text-xl font-bold text-gray-900">ALI</div>
-            <nav className="flex items-center gap-6">
+            <nav className="flex items-center gap-2 sm:gap-4">
               <button
                 onClick={() => handleNavigate(withEmail('/ali/dashboard'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/reports'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Reports
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/deploy'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Deploy
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/settings'))}
-                className="text-gray-600 hover:text-gray-900"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-900"
               >
                 Settings
               </button>
               <button
                 onClick={() => handleNavigate(withEmail('/ali/billing'))}
-                className="text-blue-600 font-semibold"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-blue-600 font-semibold"
               >
                 Billing
               </button>
               {isSuperAdminUser && (
                 <button
                   onClick={() => handleNavigate(withEmail('/ali/super-admin/overview'))}
-                  className="text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
+                  className="min-h-[44px] inline-flex items-center justify-center px-3 text-[#2563eb] font-semibold hover:text-[#1d4ed8]"
                 >
                   Super Admin
                 </button>
               )}
               <button
                 onClick={() => handleNavigate('/ali')}
-                className="text-gray-600 hover:text-gray-800"
+                className="min-h-[44px] inline-flex items-center justify-center px-3 text-gray-600 hover:text-gray-800"
               >
                 Log Out
               </button>
@@ -126,7 +126,7 @@ const ALIBilling = () => {
             </div>
             <button
               onClick={() => alert('Change plan - coming soon')}
-              className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200"
+              className="min-h-[44px] bg-gray-100 text-gray-900 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 flex items-center justify-center"
             >
               Change Plan
             </button>
@@ -145,7 +145,7 @@ const ALIBilling = () => {
             <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
             <button
               onClick={() => alert('Update payment method - coming soon')}
-              className="text-sm text-blue-600 hover:underline font-semibold"
+              className="min-h-[44px] inline-flex items-center justify-center px-3 text-sm text-blue-600 hover:underline font-semibold"
             >
               Update
             </button>

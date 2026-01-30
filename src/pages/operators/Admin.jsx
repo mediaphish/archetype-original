@@ -201,7 +201,7 @@ export default function Admin() {
               onClick={() => handlePromote(promoteEmail)}
               onKeyDown={handleKeyDown(() => handlePromote(promoteEmail))}
               disabled={actionLoading || !promoteEmail}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
               aria-label="Promote user to Chief Operator"
             >
               Promote
@@ -231,7 +231,7 @@ export default function Admin() {
               onClick={() => handleReverseOffense(reverseEmail)}
               onKeyDown={handleKeyDown(() => handleReverseOffense(reverseEmail))}
               disabled={actionLoading || !reverseEmail}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+              className="min-h-[44px] px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center"
               aria-label="Reverse all offenses for user"
             >
               Reverse

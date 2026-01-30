@@ -79,7 +79,7 @@ export default function CannotAnswerContactForm({ question, onSuccess, onSkip })
           <button 
             type="submit"
             disabled={status.loading || !state.name.trim() || !state.email.trim()}
-            className="flex-1 bg-amber text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-amber-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="min-h-[44px] flex-1 bg-amber text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-amber-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {status.loading ? "Sending…" : "Send to Bart"}
           </button>
@@ -88,7 +88,7 @@ export default function CannotAnswerContactForm({ question, onSuccess, onSkip })
               type="button"
               onClick={onSkip}
               disabled={status.loading}
-              className="px-4 py-2 text-sm text-warm-charcoal/70 hover:text-warm-charcoal transition-colors disabled:opacity-50"
+              className="min-h-[44px] px-4 py-2 text-sm text-warm-charcoal/70 hover:text-warm-charcoal transition-colors disabled:opacity-50 flex items-center justify-center"
             >
               Skip
             </button>

@@ -368,7 +368,7 @@ export default function ALIApply() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 disabled:opacity-50"
+                className="min-h-[44px] w-full px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 disabled:opacity-50 flex items-center justify-center"
                 style={{ backgroundColor: "#6A1B1A" }}
                 onMouseEnter={(e) => !isSubmitting && (e.target.style.backgroundColor = "#7A2B2A")}
                 onMouseLeave={(e) => !isSubmitting && (e.target.style.backgroundColor = "#6A1B1A")}

@@ -76,7 +76,7 @@ const ALILogin = () => {
                   setEmail('');
                   setErrorMessage('');
                 }}
-                className="text-blue-600 hover:underline"
+                className="min-h-[44px] inline-flex items-center justify-center text-blue-600 hover:underline"
               >
                 Use a different email
               </button>
@@ -92,7 +92,7 @@ const ALILogin = () => {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="w-full px-4 py-2 sm:py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="you@company.com"
                   required
                 />
@@ -101,7 +101,7 @@ const ALILogin = () => {
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="min-h-[44px] w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {status === 'sending' ? 'Sending...' : 'Send Magic Link'}
               </button>
@@ -129,7 +129,7 @@ const ALILogin = () => {
           <div className="mt-4 text-center">
             <button
               onClick={() => handleNavigate('/ali')}
-              className="text-sm text-gray-500 hover:text-gray-700"
+              className="min-h-[44px] inline-flex items-center justify-center text-sm text-gray-500 hover:text-gray-700"
             >
               ← Back to Home
             </button>

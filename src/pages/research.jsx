@@ -94,7 +94,7 @@ export default function Research() {
             <a 
               href="/knowledge.json" 
               download="knowledge.json"
-              className="inline-block bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+              className="min-h-[44px] inline-flex items-center justify-center bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
             >
               Download Raw JSON
             </a>

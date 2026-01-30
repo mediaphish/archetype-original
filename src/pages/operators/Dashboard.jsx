@@ -168,7 +168,7 @@ export default function Dashboard() {
                   .catch(err => console.error('[DASHBOARD] Retry error:', err))
                   .finally(() => setLoading(false));
               })}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center"
               aria-label="Retry loading dashboard data"
             >
               Retry
@@ -381,7 +381,7 @@ export default function Dashboard() {
                     .catch(err => console.error('[DASHBOARD] Retry error:', err))
                     .finally(() => setLoading(false));
                 })}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center"
                 aria-label="Retry loading dashboard data"
               >
                 Retry
@@ -439,7 +439,7 @@ export default function Dashboard() {
                   })
                   .finally(() => setLoading(false));
               })}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center"
               aria-label="Retry loading dashboard data"
             >
               Retry
@@ -636,7 +636,7 @@ export default function Dashboard() {
                       <button
                         onClick={() => handleNavigate(`/operators/events/${event.id}`)}
                         onKeyDown={handleKeyDown(() => handleNavigate(`/operators/events/${event.id}`))}
-                        className="px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-lg"
+                        className="min-h-[44px] px-4 py-2 text-blue-600 hover:text-blue-700 border border-blue-600 rounded-lg flex items-center justify-center"
                         aria-label={`View details for ${event.title}`}
                       >
                         View Details
@@ -711,7 +711,7 @@ export default function Dashboard() {
                               onClick={() => handleRSVP(event.id)}
                               onKeyDown={handleKeyDown(() => handleRSVP(event.id))}
                               disabled={actionLoading}
-                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                              className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
                               aria-label={`RSVP for ${event.title}`}
                             >
                               RSVP
@@ -737,7 +737,7 @@ export default function Dashboard() {
                                 onClick={() => handleCancelRSVP(event.id)}
                                 onKeyDown={handleKeyDown(() => handleCancelRSVP(event.id))}
                                 disabled={actionLoading}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm"
+                                className="min-h-[44px] px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm flex items-center justify-center"
                                 aria-label={`Cancel RSVP for ${event.title}`}
                               >
                                 Cancel RSVP
@@ -790,7 +790,7 @@ export default function Dashboard() {
                               <button
                                 type="submit"
                                 disabled={actionLoading}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm"
+                                className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm flex items-center justify-center"
                                 aria-label="Submit candidate application"
                               >
                                 Submit Candidate

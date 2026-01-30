@@ -312,7 +312,7 @@ const ALIDeploy = () => {
             <button
               onClick={handleGenerateLink}
               disabled={deploying || loadingNext || !nextSurvey.canDeploy}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {deploying ? 'Generating…' : 'Generate Deployment Link'}
             </button>
@@ -338,13 +338,13 @@ const ALIDeploy = () => {
             <div className="flex gap-4">
               <button
                 onClick={handleCopyLink}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700"
+                className="min-h-[44px] flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center"
               >
                 Copy Link
               </button>
               <button
                 onClick={() => alert('QR code generation - coming soon')}
-                className="flex-1 bg-white border border-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-50"
+                className="min-h-[44px] flex-1 bg-white border border-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-50 flex items-center justify-center"
               >
                 Download QR Code
               </button>
@@ -403,7 +403,7 @@ const ALIDeploy = () => {
                       <td className="py-3 px-4">
                         <button
                           onClick={() => openViewLinkModal(deployment)}
-                          className="text-sm text-blue-600 hover:underline"
+                          className="min-h-[44px] inline-flex items-center justify-center text-sm text-blue-600 hover:underline px-2"
                         >
                           View Link
                         </button>
@@ -432,13 +432,13 @@ const ALIDeploy = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => handleCopyViewLink(viewLinkModal)}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700"
+                className="min-h-[44px] flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center"
               >
                 {copyFeedback || 'Copy Link'}
               </button>
               <button
                 onClick={closeViewLinkModal}
-                className="flex-1 bg-white border border-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-50"
+                className="min-h-[44px] flex-1 bg-white border border-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-50 flex items-center justify-center"
               >
                 Close
               </button>

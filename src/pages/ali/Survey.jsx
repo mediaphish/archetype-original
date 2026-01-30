@@ -278,7 +278,7 @@ const ALISurvey = () => {
             <button
               type="submit"
               disabled={submitting || !respondentRole || Object.keys(responses).length !== questions.length}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {submitting ? 'Submitting...' : 'Submit Survey'}
             </button>

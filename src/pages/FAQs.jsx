@@ -396,7 +396,7 @@ export default function FAQs() {
                   window.history.pushState({}, '', '/contact');
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
-                className="bg-[#1A1A1A] text-white px-8 py-4 font-medium hover:bg-[#1A1A1A]/90 transition-colors text-center rounded-lg"
+                className="min-h-[44px] inline-flex items-center justify-center bg-[#1A1A1A] text-white px-8 py-4 font-medium hover:bg-[#1A1A1A]/90 transition-colors text-center rounded-lg"
               >
                 Contact Us
               </a>
@@ -405,7 +405,7 @@ export default function FAQs() {
                   const archyButton = document.querySelector('[data-archy-button]');
                   if (archyButton) archyButton.click();
                 }}
-                className="bg-transparent text-[#1A1A1A] px-8 py-4 font-medium border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center rounded-lg"
+                className="min-h-[44px] inline-flex items-center justify-center bg-transparent text-[#1A1A1A] px-8 py-4 font-medium border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center rounded-lg"
               >
                 Chat with Archy
               </button>

@@ -773,7 +773,7 @@ export default function ReportsZones() {
                   );
                   setShowArchyChat(true);
                 }}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
+                className="min-h-[44px] inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
               >
                 <MessageSquare className="w-4 h-4" />
                 Ask Archy

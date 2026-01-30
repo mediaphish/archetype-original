@@ -176,7 +176,7 @@ export default function Candidates() {
             <button
               onClick={() => setFilterStatus('all')}
               onKeyDown={handleKeyDown(() => setFilterStatus('all'))}
-              className={`px-4 py-2 rounded-lg text-sm ${
+              className={`min-h-[44px] px-4 py-2 rounded-lg text-sm flex items-center justify-center ${
                 filterStatus === 'all' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -189,7 +189,7 @@ export default function Candidates() {
             <button
               onClick={() => setFilterStatus('pending')}
               onKeyDown={handleKeyDown(() => setFilterStatus('pending'))}
-              className={`px-4 py-2 rounded-lg text-sm ${
+              className={`min-h-[44px] px-4 py-2 rounded-lg text-sm flex items-center justify-center ${
                 filterStatus === 'pending' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -202,7 +202,7 @@ export default function Candidates() {
             <button
               onClick={() => setFilterStatus('approved')}
               onKeyDown={handleKeyDown(() => setFilterStatus('approved'))}
-              className={`px-4 py-2 rounded-lg text-sm ${
+              className={`min-h-[44px] px-4 py-2 rounded-lg text-sm flex items-center justify-center ${
                 filterStatus === 'approved' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -215,7 +215,7 @@ export default function Candidates() {
             <button
               onClick={() => setFilterStatus('denied')}
               onKeyDown={handleKeyDown(() => setFilterStatus('denied'))}
-              className={`px-4 py-2 rounded-lg text-sm ${
+              className={`min-h-[44px] px-4 py-2 rounded-lg text-sm flex items-center justify-center ${
                 filterStatus === 'denied' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -228,7 +228,7 @@ export default function Candidates() {
             <button
               onClick={() => setFilterStatus('promoted')}
               onKeyDown={handleKeyDown(() => setFilterStatus('promoted'))}
-              className={`px-4 py-2 rounded-lg text-sm ${
+              className={`min-h-[44px] px-4 py-2 rounded-lg text-sm flex items-center justify-center ${
                 filterStatus === 'promoted' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -285,7 +285,7 @@ export default function Candidates() {
                           onClick={() => handleApprove(candidate.id)}
                           onKeyDown={handleKeyDown(() => handleApprove(candidate.id))}
                           disabled={actionLoading}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm"
+                          className="min-h-[44px] px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm flex items-center justify-center"
                           aria-label={`Approve candidate ${candidate.candidate_email}`}
                         >
                           {actionLoading ? <><ButtonSpinner /> Approving...</> : 'Approve'}
@@ -294,7 +294,7 @@ export default function Candidates() {
                           onClick={() => handleDeny(candidate.id)}
                           onKeyDown={handleKeyDown(() => handleDeny(candidate.id))}
                           disabled={actionLoading}
-                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm"
+                          className="min-h-[44px] px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm flex items-center justify-center"
                           aria-label={`Deny candidate ${candidate.candidate_email}`}
                         >
                           {actionLoading ? <><ButtonSpinner /> Denying...</> : 'Deny'}

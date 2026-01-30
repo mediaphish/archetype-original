@@ -159,14 +159,14 @@ const SuperAdminDeletions = () => {
               <button
                 onClick={() => handleDryRun('company', companyId)}
                 disabled={loading || !companyId}
-                className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="min-h-[44px] px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 Run Dry-Run
               </button>
               <button
                 onClick={() => handleInitiateDeletion('company', companyId)}
                 disabled={loading || !companyId}
-                className="px-4 py-2 bg-[#ef4444] text-white rounded-lg text-[14px] font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="min-h-[44px] px-4 py-2 bg-[#ef4444] text-white rounded-lg text-[14px] font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 Initiate Deletion
               </button>
@@ -194,14 +194,14 @@ const SuperAdminDeletions = () => {
               <button
                 onClick={() => handleDryRun('survey', surveyId)}
                 disabled={loading || !surveyId}
-                className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="min-h-[44px] px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 Run Dry-Run
               </button>
               <button
                 onClick={() => handleInitiateDeletion('survey', surveyId)}
                 disabled={loading || !surveyId}
-                className="px-4 py-2 bg-[#ef4444] text-white rounded-lg text-[14px] font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="min-h-[44px] px-4 py-2 bg-[#ef4444] text-white rounded-lg text-[14px] font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 Initiate Deletion
               </button>
@@ -219,14 +219,14 @@ const SuperAdminDeletions = () => {
             <button
               onClick={() => handleDryRun('wipe_list')}
               disabled={loading}
-              className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               Dry-run wipe list
             </button>
             <button
               onClick={() => handleInitiateDeletion('wipe_list')}
               disabled={loading}
-              className="px-4 py-2 bg-amber-600 text-white rounded-lg text-[14px] font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] px-4 py-2 bg-amber-600 text-white rounded-lg text-[14px] font-semibold hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               Execute wipe list
             </button>
@@ -234,7 +234,7 @@ const SuperAdminDeletions = () => {
             <button
               onClick={() => handleDryRun('wipe_all')}
               disabled={loading}
-              className="px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] px-4 py-2 border border-black/[0.12] bg-white text-black/[0.87] rounded-lg text-[14px] font-semibold hover:bg-black/[0.04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               Dry-run wipe all
             </button>
@@ -250,7 +250,7 @@ const SuperAdminDeletions = () => {
             <button
               onClick={() => handleInitiateDeletion('wipe_all', undefined, { confirmWipeAll: wipeAllConfirm })}
               disabled={loading || !wipeAllConfirm}
-              className="px-4 py-2 bg-[#ef4444] text-white rounded-lg text-[14px] font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] px-4 py-2 bg-[#ef4444] text-white rounded-lg text-[14px] font-semibold hover:bg-[#dc2626] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               Execute wipe all
             </button>

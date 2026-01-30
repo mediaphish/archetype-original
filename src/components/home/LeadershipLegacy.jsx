@@ -23,7 +23,7 @@ export default function LeadershipLegacy() {
             </p>
           </div>
           
-          <button className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors">
+          <button className="min-h-[44px] inline-flex items-center justify-center bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors">
             Get Started
           </button>
         </div>

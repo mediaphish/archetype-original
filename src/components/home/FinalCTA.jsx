@@ -39,14 +39,14 @@ export default function FinalCTA() {
             <a
               href="/contact"
               onClick={(e) => handleLinkClick(e, '/contact')}
-              className="px-8 sm:px-10 py-4 sm:py-5 bg-[#1A1A1A] text-white font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
+              className="min-h-[44px] inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-[#1A1A1A] text-white font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
             >
               Start a Conversation
             </a>
             <a
               href="/journal"
               onClick={(e) => handleLinkClick(e, '/journal')}
-              className="px-8 sm:px-10 py-4 sm:py-5 bg-transparent text-[#1A1A1A] font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
+              className="min-h-[44px] inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-transparent text-[#1A1A1A] font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
             >
               Explore the Journal
             </a>

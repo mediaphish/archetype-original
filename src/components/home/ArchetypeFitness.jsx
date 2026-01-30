@@ -23,7 +23,7 @@ export default function ArchetypeFitness() {
               The gym story that changed everything. How physical culture and leadership culture are built the same way—one intentional choice at a time.
             </p>
             
-            <button className="bg-[#C85A3C] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
+            <button className="min-h-[44px] inline-flex items-center justify-center bg-[#C85A3C] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
               Read the Story
             </button>
           </div>

@@ -139,7 +139,7 @@ export default function JournalSubscription() {
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="bg-[#1A1A1A] text-white px-6 sm:px-8 py-3 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              className="min-h-[44px] bg-[#1A1A1A] text-white px-6 sm:px-8 py-3 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center"
             >
               {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
             </button>
