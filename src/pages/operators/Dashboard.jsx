@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import LoadingSpinner from '../../components/operators/LoadingSpinner';
+import Skeleton, { SkeletonCard } from '../../components/operators/Skeleton';
 import { MapPin, ExternalLink } from 'lucide-react';
 import { useToast } from '../../components/operators/ToastProvider';
 import ConfirmModal from '../../components/operators/ConfirmModal';
@@ -113,7 +115,20 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="dashboard" />
-        <div className="container mx-auto px-4 py-8">Loading dashboard...</div>
+        <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                <Skeleton className="h-5 mb-2" width="50%" />
+                <Skeleton className="h-8" width="70%" />
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        </div>
       </div>
     );
   }
@@ -337,7 +352,7 @@ export default function Dashboard() {
         <OperatorsHeader active="dashboard" onNavigate={handleNavigate} />
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <EmptyDashboard />
+            <EmptyDashboard onViewEvents={() => handleNavigate('/operators/events')} onCreateEvent={(userRoles.includes('chief_operator') || userRoles.includes('super_admin')) ? () => handleNavigate('/operators/events/new') : undefined} />
             <div className="mt-4 text-center">
               <button
                 onClick={() => {
@@ -448,7 +463,7 @@ export default function Dashboard() {
         message={confirmModal.message}
         variant={confirmModal.variant || 'default'}
       />
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-semibold text-gray-900 mb-6">Dashboard</h1>
         
         {/* Event Metrics */}

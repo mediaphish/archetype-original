@@ -5,6 +5,7 @@ const icons = {
   events: Calendar,
   candidates: Users,
   dashboard: AlertCircle,
+  search: FileText,
   default: FileText,
 };
 
@@ -64,12 +65,28 @@ export const EmptyCandidates = memo(function EmptyCandidates() {
   );
 });
 
-export const EmptyDashboard = memo(function EmptyDashboard() {
+export const EmptyDashboard = memo(function EmptyDashboard({ onCreateEvent, onViewEvents }) {
+  const actionLabel = onCreateEvent ? 'Create Event' : onViewEvents ? 'View Events' : null;
+  const onAction = onCreateEvent || onViewEvents;
   return (
     <EmptyState
       icon="dashboard"
       title="No data available"
-      message="Dashboard metrics will appear here once you have events and activity in the system."
+      message="Dashboard metrics will appear here once you have events and activity in the system. Create your first event to get started."
+      actionLabel={actionLabel}
+      onAction={onAction}
+    />
+  );
+});
+
+export const EmptySearchResults = memo(function EmptySearchResults({ onClear }) {
+  return (
+    <EmptyState
+      icon="search"
+      title="No results found"
+      message="Try adjusting your search or filters to find what you're looking for."
+      actionLabel={onClear ? 'Clear search' : undefined}
+      onAction={onClear}
     />
   );
 });

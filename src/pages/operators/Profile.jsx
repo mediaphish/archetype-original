@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import LoadingSpinner, { ButtonSpinner } from '../../components/operators/LoadingSpinner';
+import Skeleton from '../../components/operators/Skeleton';
 import { Save } from 'lucide-react';
 import { useToast } from '../../components/operators/ToastProvider';
 import { useUser } from '../../contexts/UserContext';
@@ -175,8 +177,11 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
         <OperatorsHeader active="profile" onNavigate={handleNavigate} />
-        <div className="max-w-4xl mx-auto px-6 py-12">
-          <p className="text-gray-600">Loading profile...</p>
+        <div id="main-content" className="max-w-4xl mx-auto px-6 py-12" aria-busy="true" aria-label="Loading profile">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <Skeleton className="h-8 mb-6" width="30%" />
+            <Skeleton lines={4} className="h-4" />
+          </div>
         </div>
       </div>
     );
@@ -186,7 +191,7 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
         <OperatorsHeader active="profile" onNavigate={handleNavigate} />
-        <div className="max-w-4xl mx-auto px-6 py-12">
+        <div id="main-content" className="max-w-4xl mx-auto px-6 py-12">
           <p className="text-gray-600">Profile not found</p>
         </div>
       </div>
@@ -198,7 +203,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#F5F3F0]">
       <OperatorsHeader active="profile" onNavigate={handleNavigate} />
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div id="main-content" className="max-w-4xl mx-auto px-6 py-12">
         <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Profile</h1>
           <p className="text-gray-600 mb-6">Update your profile information to help generate better topic insights for events.</p>
@@ -313,7 +318,7 @@ export default function Profile() {
                 aria-label="Save profile changes"
               >
                 <Save className="w-4 h-4" aria-hidden="true" />
-                {saving ? 'Saving...' : 'Save Profile'}
+                {saving ? <><ButtonSpinner /> Saving...</> : 'Save Profile'}
               </button>
             </div>
           </div>

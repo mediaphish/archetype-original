@@ -71,7 +71,11 @@ const OperatorsAdmin = lazy(() => import("./pages/operators/Admin"));
 const OperatorsCandidates = lazy(() => import("./pages/operators/Candidates"));
 const OperatorsProfile = lazy(() => import("./pages/operators/Profile"));
 import ToastProvider from "./components/operators/ToastProvider";
+import { CriticalErrorProvider } from "./components/operators/CriticalErrorBanner";
+import OfflineBanner from "./components/operators/OfflineBanner";
 import ErrorBoundary from "./components/operators/ErrorBoundary";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { operatorsQueryClient } from "./lib/operators/query-client";
 import UserProvider from "./contexts/UserContext";
 import ContactPage from "./pages/Contact";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
@@ -951,11 +955,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsEvents />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsEvents />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );
@@ -965,11 +974,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsCreateEvent />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsCreateEvent />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );
@@ -979,11 +993,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsEditEvent />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsEditEvent />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );
@@ -993,11 +1012,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsEventDetail />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsEventDetail />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );
@@ -1007,11 +1031,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsDashboard />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsDashboard />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );
@@ -1021,11 +1050,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsAdmin />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsAdmin />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );
@@ -1035,11 +1069,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsCandidates />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsCandidates />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );
@@ -1049,11 +1088,16 @@ export default function App() {
     return (
       <ErrorBoundary>
         <UserProvider>
-          <ToastProvider>
-            <Suspense fallback={<OperatorsPageLoader />}>
-              <OperatorsProfile />
-            </Suspense>
-          </ToastProvider>
+          <CriticalErrorProvider>
+            <OfflineBanner />
+            <QueryClientProvider client={operatorsQueryClient}>
+              <ToastProvider>
+                <Suspense fallback={<OperatorsPageLoader />}>
+                  <OperatorsProfile />
+                </Suspense>
+              </ToastProvider>
+            </QueryClientProvider>
+          </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
     );

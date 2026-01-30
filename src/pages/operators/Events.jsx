@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import Skeleton, { SkeletonCard } from '../../components/operators/Skeleton';
 import { EmptyEvents } from '../../components/operators/EmptyState';
 import { useUser } from '../../contexts/UserContext';
 import { handleKeyDown } from '../../lib/operators/accessibility';
@@ -64,7 +65,7 @@ export default function Events() {
     <div className="min-h-screen bg-[#fafafa]">
       <OperatorsHeader active="events" onNavigate={handleNavigate} />
       
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Events</h1>
           {(userRoles.includes('chief_operator') || userRoles.includes('super_admin')) && (
@@ -99,7 +100,11 @@ export default function Events() {
         </div>
 
         {loading ? (
-          <div className="text-center py-12">Loading events...</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true" aria-label="Loading events">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
         ) : events.length === 0 ? (
           <EmptyEvents onCreateEvent={() => handleNavigate('/operators/events/new')} />
         ) : (

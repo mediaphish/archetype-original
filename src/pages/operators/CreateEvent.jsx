@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import { ButtonSpinner } from '../../components/operators/LoadingSpinner';
 import { formatPhoneNumber, formatUSD, parseUSD, isValidPhone } from '../../../lib/operators/input-masks.js';
 import { useUser } from '../../contexts/UserContext';
 
@@ -227,7 +228,7 @@ export default function CreateEvent() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="events" onNavigate={handleNavigate} />
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <p className="text-gray-600">Only Chief Operators can create events.</p>
           </div>
@@ -240,7 +241,7 @@ export default function CreateEvent() {
     <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="events" onNavigate={handleNavigate} />
       
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-6">
           <button
             onClick={() => handleNavigate('/operators/events')}
@@ -583,7 +584,7 @@ export default function CreateEvent() {
                 disabled={loading}
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Creating...' : 'Create Event'}
+                {loading ? <><ButtonSpinner /> Creating...</> : 'Create Event'}
               </button>
               <button
                 type="button"

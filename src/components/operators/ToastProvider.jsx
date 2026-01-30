@@ -22,7 +22,10 @@ export default function ToastProvider({ children }) {
     const id = Math.random().toString(36).substring(7);
     const toast = { id, message, type, duration };
     
-    setToasts(prev => [...prev, toast]);
+    setToasts(prev => {
+      const next = [...prev, toast];
+      return next.slice(-3);
+    });
 
     if (duration > 0) {
       setTimeout(() => {

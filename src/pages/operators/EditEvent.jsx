@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import LoadingSpinner, { ButtonSpinner } from '../../components/operators/LoadingSpinner';
+import Skeleton, { SkeletonCard } from '../../components/operators/Skeleton';
 import { formatPhoneNumber, formatUSD, parseUSD } from '../../../lib/operators/input-masks.js';
 import { useUser } from '../../contexts/UserContext';
 
@@ -255,7 +257,7 @@ export default function EditEvent() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="events" onNavigate={handleNavigate} />
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
             <p className="text-gray-600">Only Chief Operators can edit events.</p>
           </div>
@@ -268,8 +270,15 @@ export default function EditEvent() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="events" onNavigate={handleNavigate} />
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          <div className="text-center py-12">Loading event...</div>
+        <div className="container mx-auto px-4 py-8 max-w-7xl" aria-busy="true" aria-label="Loading event">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mb-6">
+            <Skeleton className="h-8 mb-4" width="50%" />
+            <Skeleton lines={5} className="h-4" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
         </div>
       </div>
     );
@@ -279,7 +288,7 @@ export default function EditEvent() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="events" onNavigate={handleNavigate} />
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="bg-white rounded-xl border border-red-200 p-6 shadow-sm">
             <p className="text-red-600">{error}</p>
             <button
@@ -298,7 +307,7 @@ export default function EditEvent() {
     <div className="min-h-screen bg-[#fafafa]">
       <OperatorsHeader active="events" onNavigate={handleNavigate} />
       
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-6">
           <button
             onClick={() => handleNavigate(`/operators/events/${id}`)}
@@ -627,7 +636,7 @@ export default function EditEvent() {
                 disabled={saving}
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? <><ButtonSpinner /> Saving...</> : 'Save Changes'}
               </button>
               <button
                 type="button"

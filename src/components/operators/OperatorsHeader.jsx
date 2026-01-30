@@ -2,6 +2,7 @@ import React, { useState, memo, useMemo, useCallback } from 'react';
 import { Menu, X, LogOut } from 'lucide-react';
 import { handleKeyDown } from '../../lib/operators/accessibility';
 import { useUser } from '../../contexts/UserContext';
+import SkipLink from './SkipLink';
 
 function OperatorsHeader({ active = 'events', onNavigate }) {
   const { email, userRoles, logout } = useUser();
@@ -31,6 +32,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <SkipLink />
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <button
@@ -108,12 +110,12 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
             </button>
           </nav>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - min 44x44px touch target */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             onKeyDown={handleKeyDown(() => setMobileMenuOpen(!mobileMenuOpen))}
-            className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100"
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
@@ -129,7 +131,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
               <button
                 onClick={() => handleNavigate('/operators/events')}
                 onKeyDown={handleKeyDown(() => handleNavigate('/operators/events'))}
-                className={`px-4 py-2 rounded-lg text-left ${mobileTabClass('events')}`}
+                className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('events')}`}
                 aria-label="Navigate to Events"
                 aria-current={active === 'events' ? 'page' : undefined}
               >
@@ -138,7 +140,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
               <button
                 onClick={() => handleNavigate('/operators/dashboard')}
                 onKeyDown={handleKeyDown(() => handleNavigate('/operators/dashboard'))}
-                className={`px-4 py-2 rounded-lg text-left ${mobileTabClass('dashboard')}`}
+                className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('dashboard')}`}
                 aria-label="Navigate to Dashboard"
                 aria-current={active === 'dashboard' ? 'page' : undefined}
               >
@@ -147,7 +149,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
               <button
                 onClick={() => handleNavigate('/operators/profile')}
                 onKeyDown={handleKeyDown(() => handleNavigate('/operators/profile'))}
-                className={`px-4 py-2 rounded-lg text-left ${mobileTabClass('profile')}`}
+                className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('profile')}`}
                 aria-label="Navigate to Profile"
                 aria-current={active === 'profile' ? 'page' : undefined}
               >
@@ -157,7 +159,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
                 <button
                   onClick={() => handleNavigate('/operators/candidates')}
                   onKeyDown={handleKeyDown(() => handleNavigate('/operators/candidates'))}
-                  className={`px-4 py-2 rounded-lg text-left ${mobileTabClass('candidates')}`}
+                  className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('candidates')}`}
                   aria-label="Navigate to Candidates"
                   aria-current={active === 'candidates' ? 'page' : undefined}
                 >
@@ -168,7 +170,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
                 <button
                   onClick={() => handleNavigate('/operators/admin')}
                   onKeyDown={handleKeyDown(() => handleNavigate('/operators/admin'))}
-                  className={`px-4 py-2 rounded-lg text-left ${mobileTabClass('admin')}`}
+                  className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('admin')}`}
                   aria-label="Navigate to Admin"
                   aria-current={active === 'admin' ? 'page' : undefined}
                 >
@@ -176,14 +178,14 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
                 </button>
               )}
               {email && (
-                <div className="px-4 py-2 text-sm text-gray-500 border-t border-gray-200 mt-2 pt-2" aria-label={`Logged in as ${email}`}>
+                <div className="px-4 py-3 text-sm text-gray-500 border-t border-gray-200 mt-2 pt-2" aria-label={`Logged in as ${email}`}>
                   {email}
                 </div>
               )}
               <button
                 onClick={handleLogout}
                 onKeyDown={handleKeyDown(handleLogout)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-left text-gray-700 hover:bg-gray-50 border-t border-gray-200 mt-2 pt-2"
+                className="min-h-[44px] flex items-center gap-2 px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50 border-t border-gray-200 mt-2 pt-2"
                 aria-label="Log out"
               >
                 <LogOut className="w-4 h-4" aria-hidden="true" />

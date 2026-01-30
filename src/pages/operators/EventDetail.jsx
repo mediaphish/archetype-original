@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import LoadingSpinner, { ButtonSpinner } from '../../components/operators/LoadingSpinner';
+import Skeleton, { SkeletonCard } from '../../components/operators/Skeleton';
 import { MapPin, ExternalLink, Users, UserPlus, CheckCircle, XCircle, Clock, ThumbsUp, ThumbsDown, LogIn, LogOut, X, ChevronDown, ChevronUp, Edit2, Save, Lock } from 'lucide-react';
 import { useToast } from '../../components/operators/ToastProvider';
 import ConfirmModal from '../../components/operators/ConfirmModal';
@@ -577,7 +579,16 @@ export default function EventDetail() {
         cancelText={confirmModal.cancelText}
         variant={confirmModal.variant || 'default'}
       />
-        <div className="container mx-auto px-4 py-8">Loading event...</div>
+        <div className="container mx-auto px-4 py-8 max-w-4xl" aria-busy="true" aria-label="Loading event">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mb-6">
+            <Skeleton className="h-8 mb-4" width="60%" />
+            <Skeleton lines={3} className="h-4" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        </div>
       </div>
     );
   }
@@ -782,7 +793,7 @@ export default function EventDetail() {
         variant={confirmModal.variant || 'default'}
       />
       
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-6">
           <button
             onClick={() => handleNavigate('/operators/events')}
@@ -930,7 +941,7 @@ export default function EventDetail() {
                       disabled={actionLoading}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                     >
-                      {actionLoading ? 'Processing...' : 'RSVP'}
+                      {actionLoading ? <><ButtonSpinner /> Processing...</> : 'RSVP'}
                     </button>
                   </div>
                 )}
@@ -955,7 +966,7 @@ export default function EventDetail() {
                         disabled={actionLoading}
                         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
                       >
-                        {actionLoading ? 'Processing...' : 'Cancel RSVP'}
+                        {actionLoading ? <><ButtonSpinner /> Processing...</> : 'Cancel RSVP'}
                       </button>
                     )}
                     {!canCancelRSVP(event) && event.user_rsvp && (
@@ -1007,7 +1018,7 @@ export default function EventDetail() {
                           disabled={actionLoading}
                           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                         >
-                          {actionLoading ? 'Processing...' : 'Close RSVP'}
+                          {actionLoading ? <><ButtonSpinner /> Processing...</> : 'Close RSVP'}
                         </button>
                       </div>
                     )}
@@ -1023,7 +1034,7 @@ export default function EventDetail() {
                           disabled={actionLoading}
                           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                         >
-                          {actionLoading ? 'Generating...' : 'Generate Scenario Insights'}
+                          {actionLoading ? <><ButtonSpinner /> Generating...</> : 'Generate Scenario Insights'}
                         </button>
                       </div>
                     )}
@@ -1259,7 +1270,7 @@ export default function EventDetail() {
                         disabled={actionLoading}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {actionLoading ? 'Submitting...' : 'Submit Candidate'}
+                        {actionLoading ? <><ButtonSpinner /> Submitting...</> : 'Submit Candidate'}
                       </button>
                     </form>
                   </div>

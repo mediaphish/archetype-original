@@ -131,9 +131,9 @@ class APIClient {
   }
 
   /**
-   * Make API request with retry logic and request deduplication
+   * Make API request with retry logic, timeout, and request deduplication
    */
-  async request(endpoint, options = {}, retries = 2) {
+  async request(endpoint, options = {}, retries = 2, timeoutMs = 30000) {
     const url = `${this.baseURL}${endpoint}`;
     const requestKey = `${options.method || 'GET'}:${url}:${options.body ? JSON.stringify(options.body) : ''}`;
     
@@ -184,12 +184,16 @@ class APIClient {
       delete config.headers['Content-Type'];
     }
 
-    // Create promise for this request
+    // Create promise for this request (with timeout)
     const requestPromise = (async () => {
       let lastError;
       for (let attempt = 0; attempt <= retries; attempt++) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+        const fetchOptions = { ...config, signal: controller.signal };
         try {
-          const response = await fetch(url, config);
+          const response = await fetch(url, fetchOptions);
+          clearTimeout(timeoutId);
           const data = await this.handleResponse(response);
           
           // Cache GET responses
@@ -215,7 +219,11 @@ class APIClient {
           
           return data;
         } catch (error) {
+          clearTimeout(timeoutId);
           lastError = error;
+          if (error.name === 'AbortError') {
+            lastError = new APIError('Request timed out. Please try again.', 'TIMEOUT', { originalError: error });
+          }
 
           // Track API errors (only on final attempt to avoid spam)
           if (attempt === retries) {
@@ -239,14 +247,13 @@ class APIClient {
             await new Promise(resolve => setTimeout(resolve, delay));
             continue;
           }
-        } finally {
-          // Remove from pending requests when done
-          this.pendingRequests.delete(requestKey);
         }
       }
 
       throw lastError;
-    })();
+    })().finally(() => {
+      this.pendingRequests.delete(requestKey);
+    });
 
     // Store pending request
     this.pendingRequests.set(requestKey, requestPromise);

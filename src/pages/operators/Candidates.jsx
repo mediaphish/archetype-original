@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
+import LoadingSpinner, { ButtonSpinner } from '../../components/operators/LoadingSpinner';
+import Skeleton, { SkeletonTable } from '../../components/operators/Skeleton';
 import { CheckCircle, XCircle, Clock, UserCheck } from 'lucide-react';
 import { useToast } from '../../components/operators/ToastProvider';
 import ConfirmModal from '../../components/operators/ConfirmModal';
@@ -148,7 +150,10 @@ export default function Candidates() {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="candidates" onNavigate={handleNavigate} />
-        <div className="container mx-auto px-4 py-8">Loading candidates...</div>
+        <div className="container mx-auto px-4 py-8 max-w-7xl" aria-busy="true" aria-label="Loading candidates">
+          <Skeleton className="h-8 mb-6" width="40%" />
+          <SkeletonTable rows={6} cols={4} />
+        </div>
       </div>
     );
   }
@@ -164,7 +169,7 @@ export default function Candidates() {
         message={confirmModal.message}
         variant={confirmModal.variant || 'default'}
       />
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Candidates</h1>
           <div className="flex gap-2" role="group" aria-label="Filter candidates by status">
@@ -283,7 +288,7 @@ export default function Candidates() {
                           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 text-sm"
                           aria-label={`Approve candidate ${candidate.candidate_email}`}
                         >
-                          Approve
+                          {actionLoading ? <><ButtonSpinner /> Approving...</> : 'Approve'}
                         </button>
                         <button
                           onClick={() => handleDeny(candidate.id)}
@@ -292,7 +297,7 @@ export default function Candidates() {
                           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm"
                           aria-label={`Deny candidate ${candidate.candidate_email}`}
                         >
-                          Deny
+                          {actionLoading ? <><ButtonSpinner /> Denying...</> : 'Deny'}
                         </button>
                       </div>
                     )}

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 function FormField({
   label,
@@ -9,6 +9,7 @@ function FormField({
   onChange,
   onBlur,
   error,
+  success = false,
   required = false,
   placeholder,
   helpText,
@@ -20,6 +21,7 @@ function FormField({
 }) {
   const inputId = `field-${name}`;
   const hasError = !!error;
+  const showSuccess = success && !hasError && (value || '').toString().trim().length > 0;
 
   const baseInputClasses = `
     w-full px-4 py-2 border rounded-lg
@@ -27,7 +29,9 @@ function FormField({
     transition-colors
     ${hasError 
       ? 'border-red-500 bg-red-50 focus:ring-red-500' 
-      : 'border-gray-300 bg-white'
+      : showSuccess
+        ? 'border-green-500 bg-green-50/30 focus:ring-green-500'
+        : 'border-gray-300 bg-white'
     }
     ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
   `;
@@ -113,6 +117,12 @@ function FormField({
       {helpText && !hasError && (
         <p id={`${inputId}-help`} className="mt-1 text-sm text-gray-500">
           {helpText}
+        </p>
+      )}
+      {showSuccess && (
+        <p className="mt-1 flex items-center gap-1 text-sm text-green-600" aria-hidden="true">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" />
+          <span>Looks good</span>
         </p>
       )}
       {hasError && (
