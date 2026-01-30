@@ -11,6 +11,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 const sections = [
   { id: 'opening-frame', label: 'Opening Frame' },
@@ -327,9 +328,9 @@ export default function Methods() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/methods-layer-3.png" 
-                      alt="Methods Background Layer" 
+                    <OptimizedImage
+                      src="/images/methods-layer-3.png"
+                      alt="Methods Background Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -345,9 +346,9 @@ export default function Methods() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/methods-layer-2.png" 
-                      alt="Methods Middle Layer" 
+                    <OptimizedImage
+                      src="/images/methods-layer-2.png"
+                      alt="Methods Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -363,9 +364,9 @@ export default function Methods() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/methods-layer-1.png" 
-                      alt="Methods Foreground Layer" 
+                    <OptimizedImage
+                      src="/images/methods-layer-1.png"
+                      alt="Methods Foreground Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -378,9 +379,9 @@ export default function Methods() {
                 <div className="lg:hidden absolute inset-0">
                   {/* Layer 3: Back */}
                   <div className="absolute inset-0 z-10">
-                    <img 
-                      src="/images/methods-layer-3.png" 
-                      alt="Methods Background Layer" 
+                    <OptimizedImage
+                      src="/images/methods-layer-3.png"
+                      alt="Methods Background Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -390,9 +391,9 @@ export default function Methods() {
                   
                   {/* Layer 2: Middle */}
                   <div className="absolute inset-0 z-20">
-                    <img 
-                      src="/images/methods-layer-2.png" 
-                      alt="Methods Middle Layer" 
+                    <OptimizedImage
+                      src="/images/methods-layer-2.png"
+                      alt="Methods Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -402,9 +403,9 @@ export default function Methods() {
                   
                   {/* Layer 1: Front */}
                   <div className="absolute inset-0 z-30">
-                    <img 
-                      src="/images/methods-layer-1.png" 
-                      alt="Methods Foreground Layer" 
+                    <OptimizedImage
+                      src="/images/methods-layer-1.png"
+                      alt="Methods Foreground Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';

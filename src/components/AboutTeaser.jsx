@@ -1,4 +1,5 @@
 import React from "react";
+import { OptimizedImage } from "./OptimizedImage";
 
 export default function AboutTeaser() {
   return (
@@ -11,7 +12,7 @@ export default function AboutTeaser() {
           {/* Photo Column - Left on desktop, top on mobile */}
           <div className="w-full md:w-1/3 flex-shrink-0">
             <div className="relative">
-              <img
+              <OptimizedImage
                 src="/images/bart-paden.jpg"
                 alt="Bart Paden - Leadership Mentor and Consultant"
                 className="w-full h-auto rounded-lg border-4 border-amber shadow-lg object-cover aspect-[3/4]"

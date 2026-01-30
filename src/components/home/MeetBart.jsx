@@ -3,6 +3,7 @@
  * Editorial Minimal Design - 30/70 Split Layout
  */
 import React from 'react';
+import { OptimizedImage } from '../OptimizedImage';
 
 export default function MeetBart() {
   const handleLinkClick = (e, href) => {
@@ -21,10 +22,11 @@ export default function MeetBart() {
             {/* Left Column: Headshot (order-1 on mobile, order-1 on desktop) */}
             <div className="order-1">
               <div className="relative aspect-[3/4] w-full max-w-[240px] sm:max-w-[280px] mx-auto lg:mx-0">
-                <img
+                <OptimizedImage
                   src="/images/bart-headshot-003.jpg"
                   alt="Bart - Founder of Archetype Original"
                   className="w-full h-full object-cover"
+                  loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

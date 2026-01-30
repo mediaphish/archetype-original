@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 const sections = [
   { id: 'work-found-me', label: 'The Work Found Me' },
@@ -140,10 +141,11 @@ export default function About() {
               
               {/* Right: Bart Character Image - 30% smaller desktop, 50% smaller mobile */}
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
-                <img
+                <OptimizedImage
                   src="/images/bart-character-001b.png"
                   alt="Bart Paden"
                   className="w-full max-w-[14rem] sm:max-w-[16rem] lg:max-w-[22rem] h-auto object-contain"
+                  loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -221,10 +223,12 @@ export default function About() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12 items-start">
               <div className="flex justify-center lg:justify-start">
-                <img
+                <OptimizedImage
                   src="/images/bart-headshot-002.jpg"
                   alt="Bart"
                   className="w-60 h-60 object-contain rounded-sm"
+                  width={240}
+                  height={240}
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

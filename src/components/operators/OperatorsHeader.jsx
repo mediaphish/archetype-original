@@ -3,6 +3,7 @@ import { Menu, X, LogOut } from 'lucide-react';
 import { handleKeyDown } from '../../lib/operators/accessibility';
 import { useUser } from '../../contexts/UserContext';
 import SkipLink from './SkipLink';
+import { OptimizedImage } from '../OptimizedImage';
 
 function OperatorsHeader({ active = 'events', onNavigate }) {
   const { email, userRoles, logout } = useUser();
@@ -42,7 +43,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
             className="flex items-center text-gray-900"
             aria-label="Go to Operators Events"
           >
-            <img src="/brand/the-operators-logo.svg" alt="The Operators" className="h-8 w-auto max-w-[180px] sm:max-w-[220px]" aria-hidden="true" />
+            <OptimizedImage src="/brand/the-operators-logo.svg" alt="The Operators" className="h-8 w-auto max-w-[180px] sm:max-w-[220px]" aria-hidden="true" loading="eager" decoding="async" />
           </button>
 
           {/* Desktop Navigation */}
@@ -102,7 +103,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
             <button
               onClick={handleLogout}
               onKeyDown={handleKeyDown(handleLogout)}
-              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 px-3 py-1 rounded hover:bg-gray-100"
+              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 min-h-[44px] min-w-[44px] px-3 py-2 rounded hover:bg-gray-100 justify-center"
               aria-label="Log out"
             >
               <LogOut className="w-4 h-4" aria-hidden="true" />

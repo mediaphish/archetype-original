@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, MessageSquare } from 'lucide-react';
 import ChatApp from '../../app/ChatApp';
+import { OptimizedImage } from '../OptimizedImage';
 
 const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenArchy }) => {
   const [showArchy, setShowArchy] = React.useState(false);
@@ -26,11 +27,11 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
             <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors p-2"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors rounded"
               aria-label="Close"
             >
               <X className="w-6 h-6" />
@@ -38,21 +39,21 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             <div className="prose prose-sm max-w-none">
               {content}
             </div>
           </div>
 
           {/* Footer with Archy Button */}
-          <div className="p-6 border-t border-gray-200 bg-gray-50">
-            <div className="flex items-center justify-between">
+          <div className="p-4 sm:p-6 border-t border-gray-200 bg-gray-50">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <p className="text-sm text-gray-600">
                 Want to dive deeper? Ask Archy about this section.
               </p>
               <button
                 onClick={handleOpenArchy}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className="min-h-[44px] inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
                 <MessageSquare className="w-4 h-4" />
                 Chat with Archy
@@ -69,12 +70,14 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
             <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-h-[44px]">
                   <div className="relative w-10 h-10">
-                    <img
+                    <OptimizedImage
                       src="/images/archy-avatar.png"
                       alt="Archy"
                       className="w-10 h-10 rounded-full border-0"
+                      width={40}
+                      height={40}
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}
@@ -87,7 +90,7 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
                 </div>
                 <button
                   onClick={() => setShowArchy(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors rounded"
                   aria-label="Close chat"
                 >
                   <X className="w-6 h-6" />

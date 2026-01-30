@@ -11,6 +11,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function Consulting() {
   const [scrollY, setScrollY] = useState(0);
@@ -80,9 +81,9 @@ export default function Consulting() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/consulting-layer-3.png" 
-                      alt="Consulting Background" 
+                    <OptimizedImage
+                      src="/images/consulting-layer-3.png"
+                      alt="Consulting Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -98,13 +99,13 @@ export default function Consulting() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/consulting-layer-2.png" 
-                    alt="Bart" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
+                    <OptimizedImage
+                      src="/images/consulting-layer-2.png"
+                      alt="Bart"
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
                     />
                   </div>
                   
@@ -116,9 +117,9 @@ export default function Consulting() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/consulting-layer-1.png" 
-                      alt="Consulting Foreground" 
+                    <OptimizedImage
+                      src="/images/consulting-layer-1.png"
+                      alt="Consulting Foreground"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -131,9 +132,9 @@ export default function Consulting() {
                 <div className="lg:hidden absolute inset-0">
                   {/* Layer 3: Back */}
                   <div className="absolute inset-0 z-10">
-                    <img 
-                      src="/images/consulting-layer-3.png" 
-                      alt="Consulting Background" 
+                    <OptimizedImage
+                      src="/images/consulting-layer-3.png"
+                      alt="Consulting Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -143,9 +144,9 @@ export default function Consulting() {
                   
                   {/* Layer 2: Middle */}
                   <div className="absolute inset-0 z-20">
-                    <img 
-                      src="/images/consulting-layer-2.png" 
-                      alt="Bart" 
+                    <OptimizedImage
+                      src="/images/consulting-layer-2.png"
+                      alt="Bart"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -155,9 +156,9 @@ export default function Consulting() {
                   
                   {/* Layer 1: Front */}
                   <div className="absolute inset-0 z-30">
-                    <img 
-                      src="/images/consulting-layer-1.png" 
-                      alt="Consulting Foreground" 
+                    <OptimizedImage
+                      src="/images/consulting-layer-1.png"
+                      alt="Consulting Foreground"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';

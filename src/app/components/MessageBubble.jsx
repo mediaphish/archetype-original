@@ -1,5 +1,6 @@
 import React from 'react';
 import InlineContactForm from './InlineContactForm.jsx';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 // Simple markdown parser for basic formatting
 function parseMarkdown(text) {
@@ -110,10 +111,12 @@ export default function MessageBubble({ message, isUser = false, showButtons = f
       <div className={`max-w-[60%] ${isUser ? 'text-right' : 'text-left'}`}>
         <div className={`flex ${isUser ? 'flex-row-reverse' : 'flex-row'} gap-3`}>
           {!isUser && (
-            <img 
-              src="/images/archy-avatar.png" 
-              alt="Archy" 
+            <OptimizedImage
+              src="/images/archy-avatar.png"
+              alt="Archy"
               className="w-10 h-10 rounded-full flex-shrink-0 object-cover border-0"
+              width={40}
+              height={40}
               onError={(e) => {
                 e.target.style.display = 'none';
               }}

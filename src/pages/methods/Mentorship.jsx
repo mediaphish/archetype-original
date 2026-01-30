@@ -11,6 +11,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const sections = [
   { id: 'opening', label: 'Opening' },
@@ -153,9 +154,9 @@ export default function Mentorship() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/mentor-layer-3.png" 
-                      alt="Mentorship Background" 
+                    <OptimizedImage
+                      src="/images/mentor-layer-3.png"
+                      alt="Mentorship Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -171,9 +172,9 @@ export default function Mentorship() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/mentor-layer-2.png" 
-                      alt="Mentorship Middle Layer" 
+                    <OptimizedImage
+                      src="/images/mentor-layer-2.png"
+                      alt="Mentorship Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -189,9 +190,9 @@ export default function Mentorship() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/mentor-layer-1.png" 
-                      alt="Archy" 
+                    <OptimizedImage
+                      src="/images/mentor-layer-1.png"
+                      alt="Archy"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -204,9 +205,9 @@ export default function Mentorship() {
                 <div className="lg:hidden absolute inset-0">
                   {/* Layer 3: Back */}
                   <div className="absolute inset-0 z-10">
-                    <img 
-                      src="/images/mentor-layer-3.png" 
-                      alt="Mentorship Background" 
+                    <OptimizedImage
+                      src="/images/mentor-layer-3.png"
+                      alt="Mentorship Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -216,9 +217,9 @@ export default function Mentorship() {
                   
                   {/* Layer 2: Middle */}
                   <div className="absolute inset-0 z-20">
-                    <img 
-                      src="/images/mentor-layer-2.png" 
-                      alt="Mentorship Middle Layer" 
+                    <OptimizedImage
+                      src="/images/mentor-layer-2.png"
+                      alt="Mentorship Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -228,9 +229,9 @@ export default function Mentorship() {
                   
                   {/* Layer 1: Archy */}
                   <div className="absolute inset-0 z-30">
-                    <img 
-                      src="/images/mentor-layer-1.png" 
-                      alt="Archy" 
+                    <OptimizedImage
+                      src="/images/mentor-layer-1.png"
+                      alt="Archy"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';

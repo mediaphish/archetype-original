@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
+import { OptimizedImage } from '../OptimizedImage';
 
 const SuperAdminNav = ({ activeTab }) => {
   useEffect(() => {
@@ -30,20 +31,20 @@ const SuperAdminNav = ({ activeTab }) => {
 
   return (
     <nav className="bg-white border-b border-black/[0.12] sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/brand/ao-logo.svg" alt="Archetype Original" className="w-8 h-8" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-h-[44px]">
+            <OptimizedImage src="/brand/ao-logo.svg" alt="Archetype Original" className="w-8 h-8" loading="eager" width={32} height={32} />
             <span className="text-[18px] font-semibold text-black/[0.87]">ALI Super Admin</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-6">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => handleNavigate(tab.path)}
-                className={`text-[14px] transition-colors ${
+                className={`min-h-[44px] text-[14px] transition-colors px-4 py-2 rounded-lg flex items-center ${
                   activeTab === tab.id
-                    ? 'text-black/[0.87] font-semibold bg-black/[0.06] px-4 py-2 rounded-lg'
+                    ? 'text-black/[0.87] font-semibold bg-black/[0.06]'
                     : 'text-black/[0.6] hover:text-black/[0.87]'
                 }`}
               >
@@ -58,7 +59,7 @@ const SuperAdminNav = ({ activeTab }) => {
                 const dashboardUrl = email ? `/ali/dashboard?email=${encodeURIComponent(email)}` : '/ali/dashboard';
                 handleNavigate(dashboardUrl);
               }}
-              className="text-[14px] text-[#2563eb] font-semibold hover:text-[#1d4ed8] transition-colors"
+              className="min-h-[44px] flex items-center px-4 py-2 text-[14px] text-[#2563eb] font-semibold hover:text-[#1d4ed8] transition-colors rounded-lg"
             >
               View as Client
             </a>

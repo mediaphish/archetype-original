@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, ChevronDown, User, Share2, Send, ExternalLink, HelpCircle, ChevronLeft, ChevronRight, TrendingUp, GitBranch, Target, Download, FileText, Calendar, Filter } from 'lucide-react';
 import DefinitionModal from '../../components/ali/DefinitionModal';
 import ChatApp from '../../app/ChatApp';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const ALIReports = () => {
   const [animatedValues, setAnimatedValues] = useState({});
@@ -1946,7 +1947,7 @@ const ALIReports = () => {
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
         aria-label="Chat with Archy about your reports"
       >
-        <img
+        <OptimizedImage
           src="/images/archy-avatar.png"
           alt="Archy"
           className="w-full h-full object-cover"
@@ -1965,10 +1966,12 @@ const ALIReports = () => {
               <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
-                    <img
+                    <OptimizedImage
                       src="/images/archy-avatar.png"
                       alt="Archy"
                       className="w-10 h-10 rounded-full border-0"
+                      width={40}
+                      height={40}
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}

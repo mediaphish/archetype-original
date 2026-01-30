@@ -6,6 +6,7 @@
  */
 import React, { useState, useEffect, useRef } from 'react';
 import SEO from '../../components/SEO';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const sections = [
   { id: 'what-archy-does', label: 'What Archy Does' },
@@ -149,10 +150,11 @@ export default function Archy() {
               
               {/* Right: Archy Character Image - 30% smaller desktop, 50% smaller mobile */}
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
-                <img
+                <OptimizedImage
                   src="/images/archy-character-008.png"
                   alt="Archy - AI Leadership Coach"
                   className="w-full max-w-[14rem] sm:max-w-[16rem] lg:max-w-[22rem] h-auto object-contain"
+                  loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

@@ -4,6 +4,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import SEO from '../../components/SEO';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function CultureScience() {
   const [scrollY, setScrollY] = useState(0);
@@ -60,9 +61,9 @@ export default function CultureScience() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/science-layer-3.png" 
-                      alt="Culture Science Background" 
+                    <OptimizedImage
+                      src="/images/science-layer-3.png"
+                      alt="Culture Science Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -78,9 +79,9 @@ export default function CultureScience() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/science-layer-2.png" 
-                      alt="Culture Science Middle Layer" 
+                    <OptimizedImage
+                      src="/images/science-layer-2.png"
+                      alt="Culture Science Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -96,9 +97,9 @@ export default function CultureScience() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/science-layer-1.png" 
-                      alt="Archy" 
+                    <OptimizedImage
+                      src="/images/science-layer-1.png"
+                      alt="Archy"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -111,9 +112,9 @@ export default function CultureScience() {
                 <div className="lg:hidden absolute inset-0">
                   {/* Layer 3: Background */}
                   <div className="absolute inset-0 z-10">
-                    <img 
-                      src="/images/science-layer-3.png" 
-                      alt="Culture Science Background" 
+                    <OptimizedImage
+                      src="/images/science-layer-3.png"
+                      alt="Culture Science Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -123,9 +124,9 @@ export default function CultureScience() {
                   
                   {/* Layer 2: Middle */}
                   <div className="absolute inset-0 z-20">
-                    <img 
-                      src="/images/science-layer-2.png" 
-                      alt="Culture Science Middle Layer" 
+                    <OptimizedImage
+                      src="/images/science-layer-2.png"
+                      alt="Culture Science Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -135,9 +136,9 @@ export default function CultureScience() {
                   
                   {/* Layer 1: Archy */}
                   <div className="absolute inset-0 z-30">
-                    <img 
-                      src="/images/science-layer-1.png" 
-                      alt="Archy" 
+                    <OptimizedImage
+                      src="/images/science-layer-1.png"
+                      alt="Archy"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';

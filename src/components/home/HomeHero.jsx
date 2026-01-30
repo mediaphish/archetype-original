@@ -3,6 +3,7 @@
  * Editorial Minimal Design - Parallax Hero with Archy
  */
 import React, { useState, useEffect } from 'react';
+import { OptimizedImage } from '../OptimizedImage';
 
 export default function HomeHero() {
   const [scrollY, setScrollY] = useState(0);
@@ -115,10 +116,11 @@ export default function HomeHero() {
                   transition: 'transform 0.1s ease-out'
                 }}
               >
-                <img 
-                  src="/images/home-layer-4.png" 
-                  alt="Archy's speech bubble" 
+                <OptimizedImage
+                  src="/images/home-layer-4.png"
+                  alt="Archy's speech bubble"
                   className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
+                  loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -133,10 +135,11 @@ export default function HomeHero() {
                   transition: 'transform 0.1s ease-out'
                 }}
               >
-                <img 
-                  src="/images/home-layer-3.png" 
-                  alt="Hi, I'm Bart! speech bubble" 
+                <OptimizedImage
+                  src="/images/home-layer-3.png"
+                  alt="Hi, I'm Bart! speech bubble"
                   className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
+                  loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -151,10 +154,11 @@ export default function HomeHero() {
                   transition: 'transform 0.1s ease-out'
                 }}
               >
-                <img 
-                  src="/images/home-layer-2.png" 
-                  alt="Archy, the wise leadership guide" 
+                <OptimizedImage
+                  src="/images/home-layer-2.png"
+                  alt="Archy, the wise leadership guide"
                   className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
+                  loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -169,10 +173,11 @@ export default function HomeHero() {
                   transition: 'transform 0.1s ease-out'
                 }}
               >
-                <img 
-                  src="/images/home-layer-1.png" 
-                  alt="And, I'm Archy! speech bubble" 
+                <OptimizedImage
+                  src="/images/home-layer-1.png"
+                  alt="And, I'm Archy! speech bubble"
                   className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
+                  loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

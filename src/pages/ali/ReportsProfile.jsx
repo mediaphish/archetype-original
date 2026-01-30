@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { HelpCircle, Info } from 'lucide-react';
 import ChatApp from '../../app/ChatApp';
 import AliHeader from '../../components/ali/AliHeader';
+import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
 
 function fmt1(n) {
@@ -257,7 +258,7 @@ export default function ReportsProfile() {
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
         aria-label="Chat with Archy about your Leadership Profile"
       >
-        <img src="/images/archy-avatar.png" alt="Archy" className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none'; }} />
+        <OptimizedImage src="/images/archy-avatar.png" alt="Archy" className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none'; }} />
       </button>
       {showArchyChat && (
         <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
@@ -266,7 +267,7 @@ export default function ReportsProfile() {
               <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
-                    <img src="/images/archy-avatar.png" alt="Archy" className="w-10 h-10 rounded-full border-0" onError={(e) => { e.target.style.display = 'none'; }} />
+                    <OptimizedImage src="/images/archy-avatar.png" alt="Archy" className="w-10 h-10 rounded-full border-0" width={40} height={40} onError={(e) => { e.target.style.display = 'none'; }} />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg text-gray-900">Archy</h3>

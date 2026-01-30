@@ -1,4 +1,5 @@
 import React from 'react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const OperatorsLanding = () => {
   const handleNavigate = (path) => {
@@ -14,7 +15,7 @@ const OperatorsLanding = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xl font-bold text-gray-900">
-              <img src="/brand/ao-icon.svg" alt="Archetype Original" className="w-6 h-6" aria-hidden="true" />
+              <OptimizedImage src="/brand/ao-icon.svg" alt="Archetype Original" className="w-6 h-6" aria-hidden="true" loading="eager" decoding="async" />
               <span className="hidden sm:inline">The Operators</span>
               <span className="sm:hidden">Operators</span>
             </div>
@@ -49,7 +50,7 @@ const OperatorsLanding = () => {
               </button>
               <button
                 onClick={() => handleNavigate('/operators/login')}
-                className="px-6 py-3 border border-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-50"
+                className="min-h-[44px] px-6 py-3 border border-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-50"
               >
                 Log In
               </button>

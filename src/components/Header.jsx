@@ -334,10 +334,10 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Mobile Menu Button - Animated Hamburger to X */}
+            {/* Mobile Menu Button - 44px touch target */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative w-8 h-8"
+              className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative"
               aria-label="Toggle menu"
             >
               <span className="sr-only">Toggle menu</span>
@@ -384,11 +384,11 @@ export default function Header() {
         >
           <div className="flex flex-col h-full">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#1A1A1A]/10">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#1A1A1A]/10">
               <h2 className="text-lg font-semibold text-[#1A1A1A]">Menu</h2>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors"
                 aria-label="Close menu"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -403,7 +403,7 @@ export default function Header() {
                 <a 
                   href="/meet-bart" 
                   onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
-                  className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
+                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
                     isActive('/meet-bart') 
                       ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
                       : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
@@ -415,7 +415,7 @@ export default function Header() {
                 <a 
                   href="/archy" 
                   onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
-                  className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
+                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
                     isActive('/archy') 
                       ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
                       : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
@@ -427,7 +427,7 @@ export default function Header() {
                 <a 
                   href="/philosophy" 
                   onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
-                  className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
+                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
                     isActive('/philosophy') 
                       ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
                       : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
@@ -461,42 +461,42 @@ export default function Header() {
                       <a
                         href="/methods"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Overview
                       </a>
                       <a
                         href="/methods/mentorship"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/methods/mentorship'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Mentorship
                       </a>
                       <a
                         href="/methods/consulting"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/methods/consulting'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Consulting
                       </a>
                       <a
                         href="/methods/fractional-roles"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/methods/fractional-roles'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Fractional Roles
                       </a>
                       <a
                         href="/methods/speaking-seminars"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Speaking & Seminars
                       </a>
                       <a
                         href="/methods/training-education"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/methods/training-education'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Training & Education
                       </a>
@@ -508,7 +508,7 @@ export default function Header() {
                 <div>
                   <button
                     onClick={() => setCultureScienceDropdownOpen(!cultureScienceDropdownOpen)}
-                    className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
+                    className={`min-h-[44px] w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
                       isActive('/culture-science') 
                         ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
@@ -529,14 +529,14 @@ export default function Header() {
                       <a
                         href="/culture-science"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Overview
                       </a>
                       <a
                         href="/culture-science/ali"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ali'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         The Archetype Leadership Index (ALI)
                       </a>
@@ -546,35 +546,35 @@ export default function Header() {
                       <a
                         href="/culture-science/anti-projects/scoreboard-leadership"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/anti-projects/scoreboard-leadership'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-16"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-16"
                       >
                         Scoreboard Leadership
                       </a>
                       <a
                         href="/culture-science/anti-projects/bad-leader-project"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/anti-projects/bad-leader-project'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-16"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-16"
                       >
                         The Bad Leader Project
                       </a>
                       <a
                         href="/culture-science/research"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/research'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Research
                       </a>
                       <a
                         href="/culture-science/industry-reports"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/industry-reports'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Industry Reports
                       </a>
                       <a
                         href="/culture-science/ethics"
                         onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ethics'); }}
-                        className="block px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
+                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
                       >
                         Ethics
                       </a>
@@ -586,7 +586,7 @@ export default function Header() {
                 <a
                   href="/engagement-inquiry"
                   onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
-                  className={`px-6 py-3 text-base font-medium transition-all duration-200 ${
+                  className={`min-h-[44px] flex items-center justify-center px-6 py-3 text-base font-medium transition-all duration-200 ${
                     isActive('/engagement-inquiry') 
                       ? 'text-white bg-[#C85A3C]' 
                       : 'bg-[#C85A3C] text-white hover:bg-[#B54A32]'
@@ -598,11 +598,11 @@ export default function Header() {
             </div>
 
             {/* Drawer Footer - FAQs, Journal and Contact at Bottom */}
-            <div className="border-t border-[#1A1A1A]/10 p-6 space-y-3">
+            <div className="border-t border-[#1A1A1A]/10 p-4 sm:p-6 space-y-3">
               <a 
                 href="/faqs" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
-                className={`block px-4 py-3 text-base font-medium transition-all duration-200 rounded-sm ${
+                className={`min-h-[44px] flex items-center px-4 py-3 text-base font-medium transition-all duration-200 rounded-sm ${
                   isActive('/faqs') 
                     ? 'text-[#1A1A1A] bg-[#FAFAF9]' 
                     : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
@@ -613,7 +613,7 @@ export default function Header() {
               <a 
                 href="/journal" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/journal'); }}
-                className={`block px-4 py-3 text-base font-medium transition-all duration-200 rounded-sm ${
+                className={`min-h-[44px] flex items-center px-4 py-3 text-base font-medium transition-all duration-200 rounded-sm ${
                   isActive('/journal') 
                     ? 'text-[#1A1A1A] bg-[#FAFAF9]' 
                     : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
@@ -624,7 +624,7 @@ export default function Header() {
               <a 
                 href="/contact" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
-                className="block px-4 py-3 bg-[#1A1A1A] text-white font-medium text-center hover:bg-[#1A1A1A]/90 transition-all duration-200 rounded-sm"
+                className="min-h-[44px] flex items-center justify-center px-4 py-3 bg-[#1A1A1A] text-white font-medium hover:bg-[#1A1A1A]/90 transition-all duration-200 rounded-sm"
               >
                 Contact
               </a>

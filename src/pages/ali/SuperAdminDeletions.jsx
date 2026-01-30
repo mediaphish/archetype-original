@@ -119,7 +119,7 @@ const SuperAdminDeletions = () => {
     <div className="min-h-screen bg-[#fafafa] ali-system">
       <SuperAdminNav activeTab="deletions" />
       
-      <div className="pt-8 pb-12 px-6 max-w-7xl mx-auto space-y-6">
+      <div className="pt-8 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-[28px] font-semibold text-black/[0.87] mb-1">Deletion Console</h1>

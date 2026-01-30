@@ -7,6 +7,7 @@ import { useToast } from '../../components/operators/ToastProvider';
 import ConfirmModal from '../../components/operators/ConfirmModal';
 import { useUser } from '../../contexts/UserContext';
 import { getVoteAriaLabel, getCheckInAriaLabel, getRSVPAriaLabel, handleKeyDown } from '../../lib/operators/accessibility';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function EventDetail() {
   const path = window.location.pathname;
@@ -863,7 +864,7 @@ export default function EventDetail() {
                   {event.host_name && (
                     <div className="flex items-center gap-3">
                       {event.host_logo_url && (
-                        <img src={event.host_logo_url} alt="Host logo" className="h-12 w-12 rounded" />
+                        <OptimizedImage src={event.host_logo_url} alt="Host logo" className="h-12 w-12 rounded" width={48} height={48} />
                       )}
                       <div>
                         <p className="font-medium text-gray-900">{event.host_name}</p>
@@ -900,7 +901,7 @@ export default function EventDetail() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     {event.sponsor_logo_url && (
-                      <img src={event.sponsor_logo_url} alt="Sponsor logo" className="h-12 w-12 rounded" />
+                      <OptimizedImage src={event.sponsor_logo_url} alt="Sponsor logo" className="h-12 w-12 rounded" width={48} height={48} />
                     )}
                     <div>
                       <p className="font-medium text-gray-900">{event.sponsor_name}</p>

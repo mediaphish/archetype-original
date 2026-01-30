@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const OperatorsLogin = () => {
   const [email, setEmail] = useState('');
@@ -51,7 +52,7 @@ const OperatorsLogin = () => {
       <div className="max-w-md w-full">
         {/* Logo/Header */}
         <div className="text-center mb-8">
-          <img src="/brand/the-operators-logo.svg" alt="The Operators" className="h-10 w-auto max-w-[200px] mx-auto mb-4" />
+          <OptimizedImage src="/brand/the-operators-logo.svg" alt="The Operators" className="h-10 w-auto max-w-[200px] mx-auto mb-4" loading="eager" decoding="async" />
           <h1 className="text-2xl font-bold text-gray-900">Log In</h1>
           <p className="text-gray-600 mt-2">We'll send you a magic link to sign in</p>
         </div>
@@ -110,7 +111,7 @@ const OperatorsLogin = () => {
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full min-h-[44px] bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label={status === 'sending' ? 'Sending magic link' : 'Send magic link'}
               >
                 {status === 'sending' ? 'Sending...' : 'Send Magic Link'}

@@ -1,5 +1,6 @@
 import React from "react";
 import SEO from "../components/SEO";
+import { OptimizedImage } from "../components/OptimizedImage";
 
 export default function ALIThanks() {
   return (
@@ -10,10 +11,13 @@ export default function ALIThanks() {
           <div className="bg-white rounded-xl shadow-lg p-8 md:p-12 border-2 text-center" style={{ borderColor: "#E8E2D0" }}>
             {/* Archy Image */}
             <div className="flex justify-center mb-8">
-              <img
+              <OptimizedImage
                 src="/images/archy-hero.png"
                 alt="Archy"
                 className="w-32 h-32 md:w-40 md:h-40 object-contain"
+                width={160}
+                height={160}
+                loading="eager"
                 style={{ maxHeight: "150px" }}
               />
             </div>

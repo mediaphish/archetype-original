@@ -60,7 +60,7 @@ function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmText 
     >
       <div
         ref={modalRef}
-        className={`${variants[variant]} rounded-lg shadow-xl max-w-md w-full mx-4 p-6`}
+        className={`${variants[variant]} rounded-lg shadow-xl max-w-md w-full mx-4 p-4 sm:p-6`}
         onClick={(e) => e.stopPropagation()}
         tabIndex={-1}
       >
@@ -79,18 +79,18 @@ function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmText 
           <button
             onClick={handleCancel}
             onKeyDown={(e) => e.key === 'Enter' && handleCancel()}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors rounded"
             aria-label="Close dialog"
             tabIndex={0}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="flex gap-3 justify-end">
+        <div className="flex gap-3 justify-end flex-wrap">
           <button
             onClick={handleCancel}
             onKeyDown={(e) => e.key === 'Enter' && handleCancel()}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${buttonVariants[variant].cancel}`}
+            className={`min-h-[44px] px-4 py-2 rounded-lg font-medium transition-colors ${buttonVariants[variant].cancel}`}
             tabIndex={0}
           >
             {cancelText}
@@ -98,7 +98,7 @@ function ConfirmModal({ isOpen, onClose, onConfirm, title, message, confirmText 
           <button
             onClick={handleConfirm}
             onKeyDown={(e) => e.key === 'Enter' && handleConfirm()}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${buttonVariants[variant].confirm}`}
+            className={`min-h-[44px] px-4 py-2 rounded-lg font-medium transition-colors ${buttonVariants[variant].confirm}`}
             tabIndex={0}
             autoFocus
           >

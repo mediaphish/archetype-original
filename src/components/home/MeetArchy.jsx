@@ -4,6 +4,7 @@
  */
 import React, { useState } from 'react';
 import ChatApp from '../../app/ChatApp';
+import { OptimizedImage } from '../OptimizedImage';
 
 export default function MeetArchy() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -82,10 +83,12 @@ export default function MeetArchy() {
               <div className="order-1 lg:order-2 border border-[#1A1A1A]/10 p-4 sm:p-6 md:p-8 lg:p-12">
                 {/* Archy Message */}
                 <div className="flex items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
-                  <img 
-                    src="/images/archy-avatar.png" 
-                    alt="Archy" 
+                  <OptimizedImage
+                    src="/images/archy-avatar.png"
+                    alt="Archy"
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 object-cover"
+                    width={48}
+                    height={48}
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
@@ -134,10 +137,12 @@ export default function MeetArchy() {
               <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0 bg-white">
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
-                    <img
+                    <OptimizedImage
                       src="/images/archy-avatar.png"
                       alt="Archy"
                       className="w-10 h-10 rounded-full border-0"
+                      width={40}
+                      height={40}
                     />
                   </div>
                   <div>

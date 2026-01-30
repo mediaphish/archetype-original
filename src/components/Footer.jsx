@@ -30,7 +30,7 @@ export default function Footer() {
                   <a
                     href="/meet-bart"
                     onClick={(e) => handleLinkClick(e, '/meet-bart')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     About Bart
                   </a>
@@ -39,7 +39,7 @@ export default function Footer() {
                   <a
                     href="/philosophy"
                     onClick={(e) => handleLinkClick(e, '/philosophy')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Philosophy
                   </a>
@@ -57,7 +57,7 @@ export default function Footer() {
                   <a
                     href="/methods"
                     onClick={(e) => handleLinkClick(e, '/methods')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     How I Work
                   </a>
@@ -66,7 +66,7 @@ export default function Footer() {
                   <a
                     href="/methods/mentorship"
                     onClick={(e) => handleLinkClick(e, '/methods/mentorship')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Mentorship
                   </a>
@@ -75,7 +75,7 @@ export default function Footer() {
                   <a
                     href="/methods/consulting"
                     onClick={(e) => handleLinkClick(e, '/methods/consulting')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Consulting
                   </a>
@@ -84,7 +84,7 @@ export default function Footer() {
                   <a
                     href="/methods/fractional-roles"
                     onClick={(e) => handleLinkClick(e, '/methods/fractional-roles')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Fractional Roles
                   </a>
@@ -93,7 +93,7 @@ export default function Footer() {
                   <a
                     href="/methods/speaking-seminars"
                     onClick={(e) => handleLinkClick(e, '/methods/speaking-seminars')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Speaking & Seminars
                   </a>
@@ -102,7 +102,7 @@ export default function Footer() {
                   <a
                     href="/methods/training-education"
                     onClick={(e) => handleLinkClick(e, '/methods/training-education')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Training & Education
                   </a>
@@ -120,7 +120,7 @@ export default function Footer() {
                   <a
                     href="/culture-science"
                     onClick={(e) => handleLinkClick(e, '/culture-science')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Culture Science
                   </a>
@@ -129,7 +129,7 @@ export default function Footer() {
                   <a
                     href="/culture-science/ali"
                     onClick={(e) => handleLinkClick(e, '/culture-science/ali')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     ALI
                   </a>
@@ -138,7 +138,7 @@ export default function Footer() {
                   <a
                     href="/culture-science/anti-projects/scoreboard-leadership"
                     onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/scoreboard-leadership')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Scoreboard Leadership
                   </a>
@@ -147,7 +147,7 @@ export default function Footer() {
                   <a
                     href="/culture-science/anti-projects/bad-leader-project"
                     onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/bad-leader-project')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Bad Leader Project
                   </a>
@@ -165,7 +165,7 @@ export default function Footer() {
                   <a
                     href="/contact"
                     onClick={(e) => handleLinkClick(e, '/contact')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Contact
                   </a>
@@ -174,7 +174,7 @@ export default function Footer() {
                   <a
                     href="/journal"
                     onClick={(e) => handleLinkClick(e, '/journal')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Journal
                   </a>
@@ -183,7 +183,7 @@ export default function Footer() {
                   <a
                     href="/archy"
                     onClick={(e) => handleLinkClick(e, '/archy')}
-                    className="text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Meet Archy
                   </a>
@@ -199,7 +199,7 @@ export default function Footer() {
                 href="https://www.facebook.com/archetypeoriginal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors rounded"
                 aria-label="Follow us on Facebook"
                 title="Follow us on Facebook"
               >
@@ -211,7 +211,7 @@ export default function Footer() {
                 href="https://www.instagram.com/archetypeoriginal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors rounded"
                 aria-label="Follow us on Instagram"
                 title="Follow us on Instagram"
               >
@@ -223,7 +223,7 @@ export default function Footer() {
                 href="https://www.linkedin.com/company/archetypeoriginal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors rounded"
                 aria-label="Follow us on LinkedIn"
                 title="Follow us on LinkedIn"
               >

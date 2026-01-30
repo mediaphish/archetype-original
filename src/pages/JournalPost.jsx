@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import { OptimizedImage } from '../components/OptimizedImage';
 import DevotionalPost from './DevotionalPost';
 import JournalSubscription from '../components/JournalSubscription';
 
@@ -342,8 +343,8 @@ export default function JournalPost() {
               {/* Post image - show at top if exists */}
               {post.image && (
                 <div className="mb-8 sm:mb-10 w-full flex justify-center items-center py-6 bg-[#FAFAF9]">
-                  <img 
-                    src={post.image} 
+                  <OptimizedImage
+                    src={post.image}
                     alt={post.title}
                     className="max-w-2xl w-full h-auto object-contain"
                   />
@@ -810,8 +811,8 @@ export default function JournalPost() {
                       case 'image':
                         return (
                           <div key={index} className="my-8 sm:my-10 flex justify-center py-6 bg-[#FAFAF9]">
-                            <img 
-                              src={block.src} 
+                            <OptimizedImage
+                              src={block.src}
                               alt={block.alt || post.title}
                               className="max-w-2xl w-full h-auto object-contain"
                             />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import JournalSubscription from '../components/JournalSubscription';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 export default function Journal() {
   const [posts, setPosts] = useState([]);
@@ -279,8 +280,8 @@ export default function Journal() {
                   {/* Image */}
                   {featuredPost.image && (
                     <div className="w-full overflow-hidden">
-                      <img 
-                        src={featuredPost.image} 
+                      <OptimizedImage
+                        src={featuredPost.image}
                         alt={featuredPost.title}
                         className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
                       />
@@ -337,8 +338,8 @@ export default function Journal() {
                       {/* Image */}
                       {post.image && (
                         <div className="w-full mb-4 overflow-hidden">
-                          <img 
-                            src={post.image} 
+                          <OptimizedImage
+                            src={post.image}
                             alt={post.title}
                             className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
                           />

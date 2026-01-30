@@ -92,7 +92,7 @@ const SuperAdminAuditLog = () => {
     <div className="min-h-screen bg-[#fafafa] ali-system">
       <SuperAdminNav activeTab="audit-log" />
       
-      <div className="pt-8 pb-12 px-6 max-w-7xl mx-auto space-y-6">
+      <div className="pt-8 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -121,8 +121,8 @@ const SuperAdminAuditLog = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl border border-black/[0.12] overflow-hidden">
-          <table className="w-full">
+        <div className="bg-white rounded-xl border border-black/[0.12] overflow-x-auto">
+          <table className="w-full min-w-[600px]">
             <thead className="bg-black/[0.04]">
               <tr>
                 <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Timestamp</th>

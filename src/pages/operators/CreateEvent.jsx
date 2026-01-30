@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import OperatorsHeader from '../../components/operators/OperatorsHeader';
 import { ButtonSpinner } from '../../components/operators/LoadingSpinner';
 import { formatPhoneNumber, formatUSD, parseUSD, isValidPhone } from '../../../lib/operators/input-masks.js';
+import { OptimizedImage } from '../../components/OptimizedImage';
 import { useUser } from '../../contexts/UserContext';
 
 export default function CreateEvent() {
@@ -408,7 +409,7 @@ export default function CreateEvent() {
                     />
                     {uploadingLogo.host && <span className="text-sm text-gray-500">Uploading...</span>}
                     {formData.host_logo_url && (
-                      <img src={formData.host_logo_url} alt="Host logo" className="h-12 w-auto" />
+                      <OptimizedImage src={formData.host_logo_url} alt="Host logo" className="h-12 w-auto" height={48} />
                     )}
                   </div>
                   <p className="mt-1 text-xs text-gray-500">PNG or JPG, max 2MB. Recommended: 200x200px</p>
@@ -501,7 +502,7 @@ export default function CreateEvent() {
                     />
                     {uploadingLogo.sponsor && <span className="text-sm text-gray-500">Uploading...</span>}
                     {formData.sponsor_logo_url && (
-                      <img src={formData.sponsor_logo_url} alt="Sponsor logo" className="h-12 w-auto" />
+                      <OptimizedImage src={formData.sponsor_logo_url} alt="Sponsor logo" className="h-12 w-auto" height={48} />
                     )}
                   </div>
                   <p className="mt-1 text-xs text-gray-500">PNG or JPG, max 2MB. Recommended: 200x200px</p>
@@ -589,7 +590,7 @@ export default function CreateEvent() {
               <button
                 type="button"
                 onClick={() => handleNavigate('/operators/events')}
-                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                className="min-h-[44px] px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
               >
                 Cancel
               </button>

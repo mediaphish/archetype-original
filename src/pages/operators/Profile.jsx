@@ -8,6 +8,7 @@ import { useUser } from '../../contexts/UserContext';
 import FormField from '../../components/operators/FormField';
 import { validateProfileForm, validateFile } from '../../lib/operators/validation';
 import { handleKeyDown } from '../../lib/operators/accessibility';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
@@ -177,7 +178,7 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
         <OperatorsHeader active="profile" onNavigate={handleNavigate} />
-        <div id="main-content" className="max-w-4xl mx-auto px-6 py-12" aria-busy="true" aria-label="Loading profile">
+        <div id="main-content" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-busy="true" aria-label="Loading profile">
           <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
             <Skeleton className="h-8 mb-6" width="30%" />
             <Skeleton lines={4} className="h-4" />
@@ -191,7 +192,7 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-[#F5F3F0]">
         <OperatorsHeader active="profile" onNavigate={handleNavigate} />
-        <div id="main-content" className="max-w-4xl mx-auto px-6 py-12">
+        <div id="main-content" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <p className="text-gray-600">Profile not found</p>
         </div>
       </div>
@@ -203,7 +204,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#F5F3F0]">
       <OperatorsHeader active="profile" onNavigate={handleNavigate} />
-      <div id="main-content" className="max-w-4xl mx-auto px-6 py-12">
+      <div id="main-content" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Profile</h1>
           <p className="text-gray-600 mb-6">Update your profile information to help generate better topic insights for events.</p>
@@ -260,10 +261,12 @@ export default function Profile() {
                   </label>
                   <div className="flex items-center gap-4">
                     {formData.headshot_url && (
-                      <img 
-                        src={formData.headshot_url} 
-                        alt="Headshot" 
+                      <OptimizedImage
+                        src={formData.headshot_url}
+                        alt="Headshot"
                         className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+                        width={96}
+                        height={96}
                       />
                     )}
                     <div className="flex-1">
@@ -314,7 +317,7 @@ export default function Profile() {
                 onClick={handleSave}
                 onKeyDown={handleKeyDown(handleSave)}
                 disabled={saving}
-                className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="min-h-[44px] px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 aria-label="Save profile changes"
               >
                 <Save className="w-4 h-4" aria-hidden="true" />

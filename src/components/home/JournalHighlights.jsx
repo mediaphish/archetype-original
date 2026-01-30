@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { OptimizedImage } from '../OptimizedImage';
 
 export default function JournalHighlights() {
   const [posts, setPosts] = useState([]);
@@ -86,8 +87,8 @@ export default function JournalHighlights() {
                     {/* Left: Image */}
                     <div className="bg-[#FAFAF9]">
                       {featuredPost.image ? (
-                        <img 
-                          src={featuredPost.image} 
+                        <OptimizedImage
+                          src={featuredPost.image}
                           alt={featuredPost.title}
                           className="w-full h-auto group-hover:opacity-90 transition-opacity"
                         />
@@ -149,8 +150,8 @@ export default function JournalHighlights() {
                     >
                       {post.image && (
                         <div className="mb-6 sm:mb-8 bg-[#FAFAF9]">
-                          <img 
-                            src={post.image} 
+                          <OptimizedImage
+                            src={post.image}
                             alt={post.title}
                             className="w-full h-auto group-hover:opacity-90 transition-opacity"
                           />

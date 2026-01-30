@@ -11,6 +11,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 const sections = [
   { id: 'intro', label: 'Intro' },
@@ -200,9 +201,9 @@ export default function Philosophy() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/philosophy-layer-3.png" 
-                      alt="Philosophy Background" 
+                    <OptimizedImage
+                      src="/images/philosophy-layer-3.png"
+                      alt="Philosophy Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -218,9 +219,9 @@ export default function Philosophy() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/philosophy-layer-2.png" 
-                      alt="Philosophy Middle Layer" 
+                    <OptimizedImage
+                      src="/images/philosophy-layer-2.png"
+                      alt="Philosophy Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -236,9 +237,9 @@ export default function Philosophy() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/philosophy-layer-1.png" 
-                      alt="Archy" 
+                    <OptimizedImage
+                      src="/images/philosophy-layer-1.png"
+                      alt="Archy"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -251,9 +252,9 @@ export default function Philosophy() {
                 <div className="lg:hidden absolute inset-0">
                   {/* Layer 3: Background */}
                   <div className="absolute inset-0 z-10">
-                    <img 
-                      src="/images/philosophy-layer-3.png" 
-                      alt="Philosophy Background" 
+                    <OptimizedImage
+                      src="/images/philosophy-layer-3.png"
+                      alt="Philosophy Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -263,9 +264,9 @@ export default function Philosophy() {
                   
                   {/* Layer 2: Middle */}
                   <div className="absolute inset-0 z-20">
-                    <img 
-                      src="/images/philosophy-layer-2.png" 
-                      alt="Philosophy Middle Layer" 
+                    <OptimizedImage
+                      src="/images/philosophy-layer-2.png"
+                      alt="Philosophy Middle Layer"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -275,9 +276,9 @@ export default function Philosophy() {
                   
                   {/* Layer 1: Archy */}
                   <div className="absolute inset-0 z-30">
-                    <img 
-                      src="/images/philosophy-layer-1.png" 
-                      alt="Archy" 
+                    <OptimizedImage
+                      src="/images/philosophy-layer-1.png"
+                      alt="Archy"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Users, Crown, ClipboardCheck, TrendingUp, Download, MessageCircle } from 'lucide-react';
 import SuperAdminNav from '../../components/ali/SuperAdminNav';
 import ChatApp from '../../app/ChatApp';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 const SuperAdminOverview = () => {
   const [data, setData] = useState(null);
@@ -105,7 +106,7 @@ const SuperAdminOverview = () => {
     return (
       <div className="min-h-screen bg-[#fafafa] ali-system">
         <SuperAdminNav activeTab="overview" />
-        <div className="pt-8 pb-12 px-6 max-w-7xl mx-auto">
+        <div className="pt-8 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="text-center py-12">
             <div className="text-[14px] text-black/[0.6]">Loading platform overview...</div>
           </div>
@@ -118,7 +119,7 @@ const SuperAdminOverview = () => {
     return (
       <div className="min-h-screen bg-[#fafafa] ali-system">
         <SuperAdminNav activeTab="overview" />
-        <div className="pt-8 pb-12 px-6 max-w-7xl mx-auto">
+        <div className="pt-8 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="text-center py-12">
             <div className="text-[14px] text-black/[0.6] mb-2">
               {fetchError ? `Couldn’t load overview: ${fetchError}` : 'No data available'}
@@ -142,7 +143,7 @@ const SuperAdminOverview = () => {
     <div className="min-h-screen bg-[#fafafa] ali-system">
       <SuperAdminNav activeTab="overview" />
       
-      <div className="pt-8 pb-12 px-6 max-w-7xl mx-auto space-y-6">
+      <div className="pt-8 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
         {/* Page Header */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-[28px] font-semibold text-black/[0.87]">Platform Overview</h1>
@@ -914,7 +915,7 @@ const SuperAdminOverview = () => {
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
         aria-label="Chat with Archy about platform overview"
       >
-        <img
+        <OptimizedImage
           src="/images/archy-avatar.png"
           alt="Archy"
           className="w-full h-full object-cover"
@@ -929,7 +930,7 @@ const SuperAdminOverview = () => {
             <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  <img src="/images/archy-avatar.png" alt="Archy" className="w-10 h-10 rounded-full" onError={(e) => { e.target.style.display = 'none'; }} />
+                  <OptimizedImage src="/images/archy-avatar.png" alt="Archy" className="w-10 h-10 rounded-full" width={40} height={40} onError={(e) => { e.target.style.display = 'none'; }} />
                   <div>
                     <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
                     <p className="text-xs text-gray-500">AI Leadership Assistant</p>

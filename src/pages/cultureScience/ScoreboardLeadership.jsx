@@ -4,6 +4,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import SEO from '../../components/SEO';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function ScoreboardLeadership() {
   const [scrollY, setScrollY] = useState(0);
@@ -78,9 +79,9 @@ export default function ScoreboardLeadership() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/scoreboard-layer-2.png" 
-                      alt="Scoreboard Leadership Background" 
+                    <OptimizedImage
+                      src="/images/scoreboard-layer-2.png"
+                      alt="Scoreboard Leadership Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -96,9 +97,9 @@ export default function ScoreboardLeadership() {
                       transition: 'transform 0.1s ease-out'
                     }}
                   >
-                    <img 
-                      src="/images/scoreboard-layer-1.png" 
-                      alt="Scoreboard Leadership Foreground" 
+                    <OptimizedImage
+                      src="/images/scoreboard-layer-1.png"
+                      alt="Scoreboard Leadership Foreground"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -111,9 +112,9 @@ export default function ScoreboardLeadership() {
                 <div className="lg:hidden absolute inset-0">
                   {/* Layer 2: Back */}
                   <div className="absolute inset-0 z-10">
-                    <img 
-                      src="/images/scoreboard-layer-2.png" 
-                      alt="Scoreboard Leadership Background" 
+                    <OptimizedImage
+                      src="/images/scoreboard-layer-2.png"
+                      alt="Scoreboard Leadership Background"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -123,9 +124,9 @@ export default function ScoreboardLeadership() {
                   
                   {/* Layer 1: Front */}
                   <div className="absolute inset-0 z-20">
-                    <img 
-                      src="/images/scoreboard-layer-1.png" 
-                      alt="Scoreboard Leadership Foreground" 
+                    <OptimizedImage
+                      src="/images/scoreboard-layer-1.png"
+                      alt="Scoreboard Leadership Foreground"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';

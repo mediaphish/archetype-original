@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ChatApp from '../app/ChatApp';
+import { OptimizedImage } from './OptimizedImage';
 
 export default function FloatingArchyButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +61,7 @@ export default function FloatingArchyButton() {
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
         aria-label="Chat with Archy"
       >
-        <img
+        <OptimizedImage
           src="/images/archy-avatar.png"
           alt="Archy"
           className="w-full h-full object-cover"
@@ -79,10 +80,12 @@ export default function FloatingArchyButton() {
               <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
-                    <img
+                    <OptimizedImage
                       src="/images/archy-avatar.png"
                       alt="Archy"
                       className="w-10 h-10 rounded-full border-0"
+                      width={40}
+                      height={40}
                     />
                   </div>
                   <div>
@@ -92,7 +95,7 @@ export default function FloatingArchyButton() {
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors rounded"
                   aria-label="Close chat"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
