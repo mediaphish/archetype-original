@@ -246,7 +246,7 @@ export default function CreateEvent() {
         <div className="mb-6">
           <button
             onClick={() => handleNavigate('/operators/events')}
-            className="text-blue-600 hover:text-blue-700 mb-4"
+            className="min-h-[44px] inline-flex items-center justify-center text-blue-600 hover:text-blue-700 mb-4"
           >
             ← Back to Events
           </button>
@@ -434,7 +434,7 @@ export default function CreateEvent() {
                         href={getMapLink()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 whitespace-nowrap"
+                        className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 whitespace-nowrap flex items-center justify-center"
                       >
                         Get Directions
                       </a>
@@ -583,7 +583,7 @@ export default function CreateEvent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="min-h-[44px] px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? <><ButtonSpinner /> Creating...</> : 'Create Event'}
               </button>

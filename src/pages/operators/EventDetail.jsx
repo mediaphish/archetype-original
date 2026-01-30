@@ -798,7 +798,7 @@ export default function EventDetail() {
         <div className="mb-6">
           <button
             onClick={() => handleNavigate('/operators/events')}
-            className="text-blue-600 hover:text-blue-700 mb-4"
+            className="min-h-[44px] inline-flex items-center justify-center text-blue-600 hover:text-blue-700 mb-4"
           >
             ← Back to Events
           </button>
@@ -880,7 +880,7 @@ export default function EventDetail() {
                           href={getMapLink()}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 mt-1"
+                          className="min-h-[44px] inline-flex items-center justify-center gap-1 text-sm text-blue-600 hover:text-blue-700 mt-1"
                         >
                           Get Directions <ExternalLink className="w-3 h-3" />
                         </a>
@@ -940,7 +940,7 @@ export default function EventDetail() {
                     <button
                       onClick={handleRSVP}
                       disabled={actionLoading}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                      className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
                     >
                       {actionLoading ? <><ButtonSpinner /> Processing...</> : 'RSVP'}
                     </button>
@@ -965,7 +965,7 @@ export default function EventDetail() {
                       <button
                         onClick={handleCancelRSVP}
                         disabled={actionLoading}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                        className="min-h-[44px] px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center"
                       >
                         {actionLoading ? <><ButtonSpinner /> Processing...</> : 'Cancel RSVP'}
                       </button>
@@ -1017,7 +1017,7 @@ export default function EventDetail() {
                         <button
                           onClick={handleCloseRSVP}
                           disabled={actionLoading}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                          className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
                         >
                           {actionLoading ? <><ButtonSpinner /> Processing...</> : 'Close RSVP'}
                         </button>
@@ -1033,7 +1033,7 @@ export default function EventDetail() {
                         <button
                           onClick={handleGenerateScenarios}
                           disabled={actionLoading}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                          className="min-h-[44px] px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center"
                         >
                           {actionLoading ? <><ButtonSpinner /> Generating...</> : 'Generate Scenario Insights'}
                         </button>
@@ -1054,14 +1054,16 @@ export default function EventDetail() {
                                     <button
                                       onClick={() => handleMoveScenario(index, 'up')}
                                       disabled={index === 0}
-                                      className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                                      className="min-h-[44px] min-w-[44px] flex items-center justify-center p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                                      aria-label="Move scenario up"
                                     >
                                       <ChevronUp className="w-4 h-4" />
                                     </button>
                                     <button
                                       onClick={() => handleMoveScenario(index, 'down')}
                                       disabled={index === editingScenarios.length - 1}
-                                      className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                                      className="min-h-[44px] min-w-[44px] flex items-center justify-center p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                                      aria-label="Move scenario down"
                                     >
                                       <ChevronDown className="w-4 h-4" />
                                     </button>
@@ -1128,7 +1130,7 @@ export default function EventDetail() {
                               <button
                                 onClick={handleUpdateScenarios}
                                 disabled={actionLoading}
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
+                                className="min-h-[44px] px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-2"
                               >
                                 <Save className="w-4 h-4" />
                                 Save Changes
@@ -1136,7 +1138,7 @@ export default function EventDetail() {
                               <button
                                 onClick={handleCancelEditScenarios}
                                 disabled={actionLoading}
-                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+                                className="min-h-[44px] px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 flex items-center justify-center"
                               >
                                 Cancel
                               </button>
@@ -1165,7 +1167,7 @@ export default function EventDetail() {
                                 <div>
                                   <button
                                     onClick={() => togglePrompts(scenario.id)}
-                                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+                                    className="min-h-[44px] flex items-center justify-center gap-1 text-sm text-blue-600 hover:text-blue-700"
                                   >
                                     {expandedPrompts.has(scenario.id) ? (
                                       <>
@@ -1195,7 +1197,7 @@ export default function EventDetail() {
                             {event.state === 'LIVE' && event.can_edit_scenarios && !event.scenarios.some(s => s.is_locked) && (
                               <button
                                 onClick={handleStartEditScenarios}
-                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center gap-2"
+                                className="min-h-[44px] px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center justify-center gap-2"
                               >
                                 <Edit2 className="w-4 h-4" />
                                 Edit Scenarios
@@ -1269,7 +1271,7 @@ export default function EventDetail() {
                       <button
                         type="submit"
                         disabled={actionLoading}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                        className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
                       >
                         {actionLoading ? <><ButtonSpinner /> Submitting...</> : 'Submit Candidate'}
                       </button>
@@ -1289,7 +1291,7 @@ export default function EventDetail() {
                             <button
                               onClick={() => handleApproveCandidate(candidate.id)}
                               disabled={actionLoading}
-                              className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                              className="min-h-[44px] px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center"
                             >
                               Approve
                             </button>
@@ -1338,7 +1340,7 @@ export default function EventDetail() {
                                 <button
                                   onClick={() => handleRemoveRSVP(rsvp.user_email)}
                                   disabled={actionLoading}
-                                  className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50"
+                                  className="min-h-[44px] px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center"
                                 >
                                   Remove
                                 </button>
@@ -1373,7 +1375,7 @@ export default function EventDetail() {
                                 <button
                                   onClick={() => handlePromoteWaitlist(rsvp.user_email)}
                                   disabled={actionLoading}
-                                  className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                                  className="min-h-[44px] px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center"
                                 >
                                   Promote
                                 </button>
@@ -1427,7 +1429,7 @@ export default function EventDetail() {
                                     onClick={() => handleVote(rsvp.user_email, 1)}
                                     onKeyDown={handleKeyDown(() => handleVote(rsvp.user_email, 1))}
                                     disabled={actionLoading || event.remaining_votes === 0}
-                                    className={`p-2 rounded-lg ${
+                                    className={`min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg ${
                                       userVote === 1
                                         ? 'bg-green-100 text-green-700'
                                         : 'bg-gray-100 text-gray-600 hover:bg-green-50'
@@ -1441,7 +1443,7 @@ export default function EventDetail() {
                                     onClick={() => handleVote(rsvp.user_email, -1)}
                                     onKeyDown={handleKeyDown(() => handleVote(rsvp.user_email, -1))}
                                     disabled={actionLoading || event.remaining_votes === 0}
-                                    className={`p-2 rounded-lg ${
+                                    className={`min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg ${
                                       userVote === -1
                                         ? 'bg-red-100 text-red-700'
                                         : 'bg-gray-100 text-gray-600 hover:bg-red-50'
@@ -1496,9 +1498,9 @@ export default function EventDetail() {
                               <div className="flex items-center gap-2">
                                 {!isCheckedIn && !isNoShow && (
                                   <button
-                                    onClick={() => handleCheckIn(rsvp.user_email, 'check_in')}
+                                    onClick={() => handleCheckInOut(rsvp.user_email, 'check_in')}
                                     disabled={actionLoading}
-                                    className="px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-1"
+                                    className="min-h-[44px] px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-1"
                                   >
                                     <LogIn className="w-4 h-4" />
                                     Check In
@@ -1506,9 +1508,9 @@ export default function EventDetail() {
                                 )}
                                 {!isCheckedIn && !isNoShow && (
                                   <button
-                                    onClick={() => handleCheckIn(rsvp.user_email, 'mark_no_show')}
+                                    onClick={() => handleCheckInOut(rsvp.user_email, 'mark_no_show')}
                                     disabled={actionLoading}
-                                    className="px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-1"
+                                    className="min-h-[44px] px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-1"
                                   >
                                     <X className="w-4 h-4" />
                                     No Show
@@ -1520,13 +1522,13 @@ export default function EventDetail() {
                                       setConfirmModal({
                                         isOpen: true,
                                         title: 'Check Out Attendee',
-                                        message: `Mark ${att.user_email} as checked out (early departure)?`,
-                                        onConfirm: () => handleCheckInOut(att.user_email, 'check_out'),
+                                        message: `Mark ${rsvp.user_email} as checked out (early departure)?`,
+                                        onConfirm: () => handleCheckInOut(rsvp.user_email, 'check_out'),
                                         variant: 'default'
                                       });
                                     }}
                                     disabled={actionLoading}
-                                    className="px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 disabled:opacity-50 flex items-center gap-1"
+                                    className="min-h-[44px] px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 disabled:opacity-50 flex items-center justify-center gap-1"
                                   >
                                     <LogOut className="w-4 h-4" />
                                     Check Out
@@ -1609,7 +1611,7 @@ export default function EventDetail() {
                       {canEdit && isFutureEvent && (
                         <button
                           onClick={() => handleNavigate(`/operators/events/${id}/edit`)}
-                          className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50"
+                          className="w-full min-h-[44px] px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
                         >
                           Edit Event
                         </button>
@@ -1617,14 +1619,14 @@ export default function EventDetail() {
                       <button
                         onClick={handleAnnounceEvent}
                         disabled={actionLoading}
-                        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                        className="w-full min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
                       >
                         Announce Event
                       </button>
                       <button
                         onClick={handleOpenEvent}
                         disabled={actionLoading}
-                        className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                        className="w-full min-h-[44px] px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center"
                       >
                         Start Event
                       </button>
@@ -1635,14 +1637,14 @@ export default function EventDetail() {
                       <button
                         onClick={handleRevertToLive}
                         disabled={actionLoading}
-                        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                        className="w-full min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
                       >
                         Revert to LIVE
                       </button>
                       <button
                         onClick={handleCloseEvent}
                         disabled={actionLoading}
-                        className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                        className="w-full min-h-[44px] px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center"
                       >
                         Close Event
                       </button>
@@ -1652,7 +1654,7 @@ export default function EventDetail() {
                     <button
                       onClick={handleReopenEvent}
                       disabled={actionLoading}
-                      className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                      className="w-full min-h-[44px] px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center"
                     >
                       Reopen Event
                     </button>
