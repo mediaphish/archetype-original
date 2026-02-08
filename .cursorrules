@@ -314,3 +314,10 @@ Before committing any changes, verify:
 
 ### Rule
 - **Never leave project files uncommitted or undeployed.** Complete the workflow by committing and pushing to the host. Incomplete deploys waste the user's time and money.
+
+### When Push Is Rejected (Remote Has New Work)
+- The knowledge build and pre-render hooks may run on commit and create additional commits; the remote may also have new commits (e.g. CI, other pushes). **You must reconcile and deploy anyway.**
+- **Do not** hand off "run git pull/push" to the user. **Do not** skip deploy because of merge conflicts or diverged history.
+- Steps: (1) Stash unstaged changes if needed. (2) Pull from remote (e.g. `git pull origin main --no-rebase`). (3) Resolve any conflicts (e.g. keep our `public/knowledge.json` when it contains the content we just added). (4) Complete the merge commit if applicable. (5) Push to remote (`git push origin main`). (6) Restore stash if used.
+- Resolving conflicts: For `public/knowledge.json`, prefer keeping the version that includes the devotionals/content just added (use `git checkout --ours public/knowledge.json` during merge, then `git add` and continue).
+- **Never skip commit and deploy** because reconciliation is required. Figure out the mismatches and push so the live site is updated.
