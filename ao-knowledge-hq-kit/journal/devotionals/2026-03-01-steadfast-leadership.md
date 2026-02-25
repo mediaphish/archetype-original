@@ -22,7 +22,7 @@ Steadfast leadership is the ability to remain calm under pressure, disciplined u
 
 This month we will examine emotional regulation, disciplined response, authority under authority, and endurance that finishes well.
 
-Love must be steady to endure.
+Leadership must be steady to endure.
 
 March is about remaining steady.
 
