@@ -6,14 +6,14 @@ type: devotional
 categories: ["servant-leadership", "devotional"]
 status: published
 publish_date: "2026-02-27"
-scripture_reference: "Colossians 3:23–24 (ESV)"
+scripture_reference: "Hebrews 13:16 (ESV)"
 summary: "Leadership love values faithfulness more than recognition."
 ---
 
 ## Scripture
 
-**Colossians 3:23–24 (ESV)**  
-https://www.esv.org/Colossians+3:23-24/
+**Hebrews 13:16 (ESV)**  
+https://www.esv.org/Hebrews+13:16/
 
 ## Reflection
 
