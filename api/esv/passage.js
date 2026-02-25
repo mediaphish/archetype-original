@@ -11,6 +11,15 @@
 const cache = new Map();
 const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 hours
 
+/** Normalize reference for ESV API: strip "(ESV)", convert 5b/5a to 5 so API returns full verse. */
+function normalizeReferenceForApi(ref) {
+  if (!ref || typeof ref !== 'string') return ref;
+  let r = ref.trim().replace(/\s*\(ESV\)\s*$/i, '');
+  // Verse part like 4:5b-7 or 4:5a -> 4:5-7 or 4:5 so API returns full verse text (e.g. "The Lord is at hand")
+  r = r.replace(/:(\d+)[ab]([\s\-–—]\d+)?/gi, (_, verse, rest) => `:${verse}${rest || ''}`);
+  return r.trim();
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -22,8 +31,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Scripture reference is required.' });
   }
 
-  // Check cache first
-  const cacheKey = reference.toLowerCase().trim();
+  const apiReference = normalizeReferenceForApi(reference);
+
+  // Check cache first (use normalized ref for cache so 5b and 5 share result)
+  const cacheKey = apiReference.toLowerCase().trim();
   if (cache.has(cacheKey)) {
     const cached = cache.get(cacheKey);
     if (Date.now() - cached.timestamp < CACHE_TTL) {
@@ -46,9 +57,9 @@ export default async function handler(req, res) {
   try {
     // ESV API endpoint
     // Documentation: https://api.esv.org/docs/passage/text/
-    const esvApiUrl = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(reference)}&include-verse-numbers=true&include-footnotes=false&include-headings=false&include-short-copyright=false&include-passage-references=false`;
+    const esvApiUrl = `https://api.esv.org/v3/passage/text/?q=${encodeURIComponent(apiReference)}&include-verse-numbers=true&include-footnotes=false&include-headings=false&include-short-copyright=false&include-passage-references=false`;
 
-    console.log(`📖 Fetching from ESV API: ${reference}`);
+    console.log(`📖 Fetching from ESV API: ${apiReference}`);
 
     const esvResponse = await fetch(esvApiUrl, {
       headers: {
@@ -76,7 +87,7 @@ export default async function handler(req, res) {
     
     // ESV API returns passages in an array
     const passageText = data.passages ? data.passages.join('\n\n').trim() : '';
-    const passageReference = data.canonical || reference;
+    const passageReference = data.canonical || reference; // Use original reference for display (e.g. "4:5b–7 (ESV)")
 
     if (!passageText) {
       return res.status(404).json({ 

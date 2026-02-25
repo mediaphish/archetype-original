@@ -17,10 +17,11 @@ export function buildEsvUrl(reference) {
 
   // Parse the reference
   // Pattern: Book Chapter:Verse-Verse or Book Chapter
-  // Examples: "2 Corinthians 5:16-17", "John 3:16", "Psalm 23"
+  // Examples: "2 Corinthians 5:16-17", "John 3:16", "Philippians 4:5b–7 (ESV)"
   
-  // Remove common abbreviations and normalize
-  let normalized = reference.trim();
+  // Remove (ESV) suffix and normalize verse "5b" to "5" for URL building
+  let normalized = reference.trim().replace(/\s*\(ESV\)\s*$/i, '');
+  normalized = normalized.replace(/:(\d+)[ab]([\s\-–—]\d+)?/gi, (_, v, rest) => `:${v}${rest || ''}`);
   
   // Handle verse ranges (e.g., "16-17" or "16–17" with en-dash)
   const verseMatch = normalized.match(/:(\d+)[\s\-–—]+(\d+)$/);

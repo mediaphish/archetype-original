@@ -87,6 +87,7 @@ export default function DevotionalPost({ post: postProp = null }) {
   // Parse the markdown body into sections
   const parseDevotionalSections = (body) => {
     const sections = {
+      monthOverview: null,  // First-of-month intro (e.g. ### March Overview); appears before Scripture
       scripture: null,
       reflection: null,
       practicalApplication: null,
@@ -94,15 +95,19 @@ export default function DevotionalPost({ post: postProp = null }) {
       closingThought: null
     };
 
-    // Split by horizontal rules (---)
-    const parts = body.split(/^---$/m).map(p => p.trim()).filter(p => p);
-    
     // Find sections by heading
     let currentSection = null;
     let currentContent = [];
 
     body.split('\n').forEach(line => {
-      if (line.startsWith('## Scripture')) {
+      // Month overview: ### March Overview (or ### April Overview, etc.) — only on first day of month
+      if (line.match(/^###\s+.+Overview\s*$/)) {
+        if (currentSection) {
+          sections[currentSection] = currentContent.join('\n').trim();
+        }
+        currentSection = 'monthOverview';
+        currentContent = [];
+      } else if (line.startsWith('## Scripture')) {
         if (currentSection) {
           sections[currentSection] = currentContent.join('\n').trim();
         }
@@ -275,6 +280,16 @@ export default function DevotionalPost({ post: postProp = null }) {
                     </h1>
                   </div>
                 </>
+              )}
+
+              {/* Month Overview (first-of-month only: e.g. ### March Overview) — before Scripture, distinct styling */}
+              {sections.monthOverview && (
+                <div className="mb-10 sm:mb-12 p-6 sm:p-8 rounded-lg bg-[#FFF8F0] border border-[#E8D5CC]">
+                  <div 
+                    className="prose prose-lg max-w-none text-[#3D3D3D] font-serif leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: processMarkdown(sections.monthOverview) }}
+                  />
+                </div>
               )}
               
               {/* Scripture */}
