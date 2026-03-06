@@ -13,6 +13,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import seoConfig from '../config/seo.json';
 import ScriptureBlock from '../components/ScriptureBlock';
 import ESVCopyright from '../components/ESVCopyright';
 import JournalSubscription from '../components/JournalSubscription';
@@ -214,6 +215,9 @@ export default function DevotionalPost({ post: postProp = null }) {
 
   // If post is provided as prop, render in compact mode (for inline use)
   const isInline = !!postProp;
+  const siteUrl = seoConfig.default.siteUrl.replace(/\/$/, '');
+  const canonicalUrl = `${siteUrl}/journal/${post.slug}`;
+  const ogImage = post.image ? `${siteUrl}${post.image.startsWith('/') ? post.image : '/' + post.image}` : `${siteUrl}/og-default.jpg`;
 
   return (
     <>
@@ -223,6 +227,11 @@ export default function DevotionalPost({ post: postProp = null }) {
           <Helmet>
             <title>{post.title} | Archetype Original</title>
             <meta name="description" content={post.summary || post.title} />
+            <link rel="canonical" href={canonicalUrl} />
+            <meta property="og:url" content={canonicalUrl} />
+            <meta property="og:title" content={`${post.title} | Archetype Original`} />
+            <meta property="og:description" content={post.summary || post.title} />
+            <meta property="og:image" content={ogImage} />
           </Helmet>
         </>
       )}
@@ -245,8 +254,8 @@ export default function DevotionalPost({ post: postProp = null }) {
                       {formatDate(post.publish_date || post.date)}
                     </time>
                   )}
-                  <ShareLinks 
-                    url={typeof window !== 'undefined' ? window.location.href : ''}
+                  <ShareLinks
+                    url={canonicalUrl}
                     title={post.title}
                     description={post.summary || ''}
                   />
@@ -261,25 +270,18 @@ export default function DevotionalPost({ post: postProp = null }) {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-12 sm:space-y-16">
               {isInline && (
-                <>
-                  <div className="text-center mb-8">
-                    <div className="flex items-center justify-center gap-4 mb-4">
-                      {(post.publish_date || post.date) && (
-                        <time className="text-sm text-[#6B6B6B]">
-                          {formatDate(post.publish_date || post.date)}
-                        </time>
-                      )}
-                      <ShareLinks 
-                        url={typeof window !== 'undefined' ? `${window.location.origin}/journal/${post.slug}` : ''}
-                        title={post.title}
-                        description={post.summary || ''}
-                      />
-                    </div>
-                    <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-2 leading-tight">
-                      {post.title}
-                    </h1>
+                <div className="text-center mb-8">
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    {(post.publish_date || post.date) && (
+                      <time className="text-sm text-[#6B6B6B]">
+                        {formatDate(post.publish_date || post.date)}
+                      </time>
+                    )}
                   </div>
-                </>
+                  <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-2 leading-tight">
+                    {post.title}
+                  </h1>
+                </div>
               )}
 
               {/* Month Overview (first-of-month only: e.g. ### March Overview) — before Scripture, distinct styling */}
