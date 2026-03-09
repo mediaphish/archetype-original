@@ -79,7 +79,11 @@
         { "src": "api/operators/users/[email]/reverse-offense.js", "use": "@vercel/node" },
         { "src": "api/operators/offenses/record.js", "use": "@vercel/node" },
         { "src": "api/operators/upload-logo.js", "use": "@vercel/node" },
-        { "src": "api/operators/upload-headshot.js", "use": "@vercel/node" }
+        { "src": "api/operators/upload-headshot.js", "use": "@vercel/node" },
+    { "src": "api/social/schedule.js", "use": "@vercel/node" },
+    { "src": "api/social/publish-now.js", "use": "@vercel/node" },
+    { "src": "api/social/post-now.js", "use": "@vercel/node" },
+    { "src": "api/cron/publish-scheduled-posts.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -158,6 +162,10 @@
         { "src": "/api/operators/offenses/record", "dest": "/api/operators/offenses/record.js" },
         { "src": "/api/operators/upload-logo", "dest": "/api/operators/upload-logo.js" },
         { "src": "/api/operators/upload-headshot", "dest": "/api/operators/upload-headshot.js" },
+    { "src": "/api/social/schedule", "dest": "/api/social/schedule.js" },
+    { "src": "/api/social/publish-now", "dest": "/api/social/publish-now.js" },
+    { "src": "/api/social/post-now", "dest": "/api/social/post-now.js" },
+    { "src": "/api/cron/publish-scheduled-posts", "dest": "/api/cron/publish-scheduled-posts.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
@@ -173,6 +181,10 @@
     {
       "path": "/api/cron/generate-intelligence",
       "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/publish-scheduled-posts",
+      "schedule": "*/15 * * * *"
     }
   ]
 }
