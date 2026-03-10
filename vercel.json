@@ -83,7 +83,10 @@
     { "src": "api/social/schedule.js", "use": "@vercel/node" },
     { "src": "api/social/publish-now.js", "use": "@vercel/node" },
     { "src": "api/social/post-now.js", "use": "@vercel/node" },
-    { "src": "api/cron/publish-scheduled-posts.js", "use": "@vercel/node" }
+    { "src": "api/cron/publish-scheduled-posts.js", "use": "@vercel/node" },
+    { "src": "api/ao/auth/send-magic-link.js", "use": "@vercel/node" },
+    { "src": "api/ao/auth/verify-magic-link.js", "use": "@vercel/node" },
+    { "src": "api/ao/scheduled-posts.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -166,6 +169,9 @@
     { "src": "/api/social/publish-now", "dest": "/api/social/publish-now.js" },
     { "src": "/api/social/post-now", "dest": "/api/social/post-now.js" },
     { "src": "/api/cron/publish-scheduled-posts", "dest": "/api/cron/publish-scheduled-posts.js" },
+    { "src": "/api/ao/auth/send-magic-link", "dest": "/api/ao/auth/send-magic-link.js" },
+    { "src": "/api/ao/auth/verify-magic-link", "dest": "/api/ao/auth/verify-magic-link.js" },
+    { "src": "/api/ao/scheduled-posts", "dest": "/api/ao/scheduled-posts.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],

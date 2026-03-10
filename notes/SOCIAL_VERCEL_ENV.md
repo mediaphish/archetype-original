@@ -4,6 +4,32 @@ Add these in your Vercel project (archetype-original) for the internal social sc
 
 ---
 
+## AO Automation Dashboard (auth)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AO_OWNER_EMAIL` | Yes (for dashboard) | The single allowed email for magic-link sign-in to the AO Automation Dashboard at `/ao/login`. Only this email can request or use a magic link. |
+
+Run the migration `database/ao_magic_link_tokens.sql` in Supabase to create the tokens table.
+
+---
+
+## Meta (single app) — Instagram + Facebook
+
+When using one Meta app for both Instagram Business and a Facebook Page, set these and use `account_id` = `meta` (or `default`) when scheduling:
+
+| Variable | Required | Description |
+|---------|----------|-------------|
+| `META_ACCESS_TOKEN` | Yes | Meta Graph API access token (Page token with Instagram publish permission). |
+| `INSTAGRAM_BUSINESS_ID` | Yes | Instagram Business account ID (e.g. `17841479576915269`). |
+| `FACEBOOK_PAGE_ID` | Yes | Facebook Page ID (e.g. `904376692760504`). |
+| `META_APP_ID` | No* | App ID (for reference; not used by publisher). |
+| `META_APP_SECRET` | No* | App secret (for token exchange; not used by publisher). |
+
+Publishing uses **Graph API v25.0**: Instagram = create container → 5s delay → publish (retry up to 3×); Facebook = `POST /{page-id}/photos` with `url` and `caption`. Image validation (reachable, aspect ratio, &lt; 8MB) runs before publish.
+
+---
+
 ## Security (optional)
 
 | Variable | Required | Description |

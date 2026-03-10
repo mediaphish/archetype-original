@@ -59,6 +59,14 @@ import SuperAdminIntelligence from "./pages/ali/SuperAdminIntelligence";
 import SuperAdminTenants from "./pages/ali/SuperAdminTenants";
 import SuperAdminDeletions from "./pages/ali/SuperAdminDeletions";
 import SuperAdminAuditLog from "./pages/ali/SuperAdminAuditLog";
+// AO Automation Dashboard
+import AOLogin from "./pages/ao/Login";
+import AOCommandCenter from "./pages/ao/CommandCenter";
+import AOInsights from "./pages/ao/Insights";
+import AOReview from "./pages/ao/Review";
+import AOPublishing from "./pages/ao/Publishing";
+import AOWriting from "./pages/ao/Writing";
+import AOSettings from "./pages/ao/Settings";
 // Operators pages - Lazy loaded for better performance
 const OperatorsLanding = lazy(() => import("./pages/operators/Landing"));
 const OperatorsLogin = lazy(() => import("./pages/operators/Login"));
@@ -179,6 +187,25 @@ export default function App() {
       // Unknown operators route - redirect to landing
       return 'operators-landing';
     }
+    // AO Automation Dashboard routes
+    if (path === '/ao' || path === '/ao/') {
+      const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
+      const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+      return (storedEmail || urlEmail) ? 'ao-command-center' : 'ao-login';
+    }
+    if (path === '/ao/login') return 'ao-login';
+    if (path.startsWith('/ao/')) {
+      const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
+      const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+      if (!storedEmail && !urlEmail) return 'ao-login';
+      if (path === '/ao/command-center') return 'ao-command-center';
+      if (path === '/ao/insights') return 'ao-insights';
+      if (path === '/ao/review') return 'ao-review';
+      if (path === '/ao/publishing') return 'ao-publishing';
+      if (path === '/ao/writing') return 'ao-writing';
+      if (path === '/ao/settings') return 'ao-settings';
+      return 'ao-command-center';
+    }
     return 'home';
   };
   
@@ -196,6 +223,23 @@ export default function App() {
         window.location.replace('/operators/login');
         return;
       }
+    }
+  }, []);
+
+  // AO Automation: store email from URL and protect routes
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (!path.startsWith('/ao/')) return;
+    if (path === '/ao/login') return;
+    const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+    const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
+    if (urlEmail) {
+      try {
+        localStorage.setItem('ao_email', urlEmail);
+      } catch (e) {}
+    }
+    if (!storedEmail && !urlEmail) {
+      window.location.replace('/ao/login');
     }
   }, []);
 
@@ -362,6 +406,49 @@ export default function App() {
           // Unknown operators route - redirect to landing (not dashboard)
           window.history.replaceState({}, '', '/operators');
           setCurrentPage('operators-landing');
+        }
+        return;
+      }
+
+      // AO Automation Dashboard routes
+      if (path === '/ao' || path === '/ao/') {
+        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
+        const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+        if (!storedEmail && !urlEmail) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        window.history.replaceState({}, '', '/ao/command-center' + (urlEmail ? `?email=${encodeURIComponent(urlEmail)}` : ''));
+        setCurrentPage('ao-command-center');
+        return;
+      }
+      if (path === '/ao/login') {
+        setCurrentPage('ao-login');
+        return;
+      }
+      if (path.startsWith('/ao/')) {
+        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
+        const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+        if (urlEmail && !storedEmail) {
+          try {
+            localStorage.setItem('ao_email', urlEmail);
+            const cleanUrl = path;
+            window.history.replaceState({}, '', cleanUrl);
+          } catch (e) {}
+        }
+        if (!storedEmail && !urlEmail) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        if (path === '/ao/command-center') setCurrentPage('ao-command-center');
+        else if (path === '/ao/insights') setCurrentPage('ao-insights');
+        else if (path === '/ao/review') setCurrentPage('ao-review');
+        else if (path === '/ao/publishing') setCurrentPage('ao-publishing');
+        else if (path === '/ao/writing') setCurrentPage('ao-writing');
+        else if (path === '/ao/settings') setCurrentPage('ao-settings');
+        else {
+          window.history.replaceState({}, '', '/ao/command-center');
+          setCurrentPage('ao-command-center');
         }
         return;
       }
@@ -948,6 +1035,28 @@ export default function App() {
         <OperatorsLogin />
       </Suspense>
     );
+  }
+
+  if (currentPage === 'ao-login') {
+    return <AOLogin />;
+  }
+  if (currentPage === 'ao-command-center') {
+    return <AOCommandCenter />;
+  }
+  if (currentPage === 'ao-insights') {
+    return <AOInsights />;
+  }
+  if (currentPage === 'ao-review') {
+    return <AOReview />;
+  }
+  if (currentPage === 'ao-publishing') {
+    return <AOPublishing />;
+  }
+  if (currentPage === 'ao-writing') {
+    return <AOWriting />;
+  }
+  if (currentPage === 'ao-settings') {
+    return <AOSettings />;
   }
 
   // Render Operators pages with lazy loading (protected routes)

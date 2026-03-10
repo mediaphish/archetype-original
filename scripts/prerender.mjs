@@ -53,6 +53,15 @@ const routes = [
   '/privacy-policy',
   '/terms-and-conditions',
   '/what-i-do',
+  // AO Automation Dashboard (single-owner console)
+  '/ao',
+  '/ao/login',
+  '/ao/command-center',
+  '/ao/insights',
+  '/ao/review',
+  '/ao/publishing',
+  '/ao/writing',
+  '/ao/settings',
 ];
 
 // Get all journal post slugs
