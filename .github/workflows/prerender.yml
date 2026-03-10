@@ -1,0 +1,73 @@
+# Pre-render all site URLs to static HTML (SEO).
+# Runs on a schedule, on content changes, and can be triggered manually.
+name: Pre-render all URLs
+
+on:
+  schedule:
+    # Daily at 3 AM UTC (after knowledge/journal workflows have had a chance to run)
+    - cron: '0 3 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prerender.mjs'
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'vite.config.js'
+  workflow_dispatch: # Manual trigger from Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  prerender:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Puppeteer for pre-rendering
+        run: npm run install-prerender
+
+      - name: Build and pre-render all routes
+        run: npm run prerender:local
+        env:
+          # So prerender.mjs doesn't think it's on Vercel and skip
+          VERCEL: ''
+
+      - name: Check for pre-rendered changes
+        id: changes
+        run: |
+          git add dist/
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit pre-rendered files
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Auto-update pre-rendered HTML for all URLs [skip ci]"
+
+      - name: Push changes
+        if: steps.changes.outputs.changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          force: false
