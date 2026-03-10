@@ -12,6 +12,11 @@ export default function CommandCenter() {
   const [scheduled, setScheduled] = useState([]);
   const [failures, setFailures] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [scanStatus, setScanStatus] = useState({ last_internal_scan: null, last_external_scan: null, recent_errors: [] });
+  const [quotesCount, setQuotesCount] = useState(0);
+  const [journalCount, setJournalCount] = useState(0);
+  const [writingCount, setWritingCount] = useState(0);
+  const [scanning, setScanning] = useState(false);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -33,20 +38,48 @@ export default function CommandCenter() {
     let cancelled = false;
     (async () => {
       try {
-        const [schedRes, failRes] = await Promise.all([
+        const [schedRes, failRes, statusRes, quotesRes, journalRes, writingRes] = await Promise.all([
           fetch(`/api/ao/scheduled-posts?email=${encodeURIComponent(email)}&status=scheduled&limit=10`),
           fetch(`/api/ao/scheduled-posts?email=${encodeURIComponent(email)}&status=failed&limit=10`),
+          fetch(`/api/ao/automation-status?email=${encodeURIComponent(email)}`),
+          fetch(`/api/ao/quotes/list?email=${encodeURIComponent(email)}`),
+          fetch(`/api/ao/journal-topics/list?email=${encodeURIComponent(email)}`),
+          fetch(`/api/ao/writing/list?email=${encodeURIComponent(email)}`),
         ]);
         if (cancelled) return;
         const schedJson = await schedRes.json().catch(() => ({}));
         const failJson = await failRes.json().catch(() => ({}));
+        const statusJson = await statusRes.json().catch(() => ({}));
+        const quotesJson = await quotesRes.json().catch(() => ({}));
+        const journalJson = await journalRes.json().catch(() => ({}));
+        const writingJson = await writingRes.json().catch(() => ({}));
         if (schedJson.ok && schedJson.posts) setScheduled(schedJson.posts);
         if (failJson.ok && failJson.posts) setFailures(failJson.posts);
+        if (statusJson.ok) setScanStatus({ last_internal_scan: statusJson.last_internal_scan, last_external_scan: statusJson.last_external_scan, recent_errors: statusJson.recent_errors || [] });
+        if (quotesJson.ok && Array.isArray(quotesJson.quotes)) setQuotesCount(quotesJson.quotes.filter((q) => q.status === 'pending').length);
+        if (journalJson.ok && Array.isArray(journalJson.topics)) setJournalCount(journalJson.topics.filter((t) => t.status === 'pending').length);
+        if (writingJson.ok && Array.isArray(writingJson.writing)) setWritingCount(writingJson.writing.filter((w) => w.status === 'pending' || w.status === 'drafting').length);
       } catch (_) {}
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
   }, [email]);
+
+  const runScan = useCallback(async (type) => {
+    if (!email || scanning) return;
+    setScanning(true);
+    try {
+      const url = `${type === 'internal' ? '/api/ao/scan-internal' : '/api/ao/scan-external'}?email=${encodeURIComponent(email)}`;
+      const res = await fetch(url, { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (json.ok) {
+        setScanStatus((prev) => ({ ...prev, [`last_${type}_scan`]: new Date().toISOString() }));
+        window.location.reload();
+      }
+    } finally {
+      setScanning(false);
+    }
+  }, [email, scanning]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -58,17 +91,21 @@ export default function CommandCenter() {
         <div className="grid gap-6 md:grid-cols-2">
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">New social candidates</h2>
-            <p className="text-gray-500 text-sm">Queue will appear when the internal scanner and intelligence layer are connected.</p>
+            <p className="text-gray-700 font-medium">{quotesCount} pending</p>
+            <p className="text-gray-500 text-sm mt-1">Quote queue from internal scan.</p>
             <button type="button" onClick={() => handleNavigate(withEmail('/ao/review', email))} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Social</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">New journal candidates</h2>
-            <p className="text-gray-500 text-sm">Queue will appear when the intelligence layer is connected.</p>
+            <p className="text-gray-700 font-medium">{journalCount} pending</p>
+            <p className="text-gray-500 text-sm mt-1">Journal topic queue.</p>
             <button type="button" onClick={() => handleNavigate(withEmail('/ao/review', email))} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Journal</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Expandable ideas</h2>
-            <p className="text-gray-500 text-sm">Placeholder until expandable-ideas queue exists.</p>
+            <p className="text-gray-700 font-medium">{writingCount} in queue</p>
+            <p className="text-gray-500 text-sm mt-1">Writing queue (drafting).</p>
+            <button type="button" onClick={() => handleNavigate(withEmail('/ao/writing', email))} className="mt-3 text-blue-600 hover:underline text-sm">Go to Writing</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Contradiction / clarification</h2>
@@ -115,7 +152,20 @@ export default function CommandCenter() {
 
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Scan status</h2>
-          <p className="text-gray-500 text-sm">Last internal: — | Last external: — (scanners not yet connected)</p>
+          <p className="text-gray-600 text-sm">
+            Last internal: {scanStatus.last_internal_scan ? new Date(scanStatus.last_internal_scan).toLocaleString() : '—'} | Last external: {scanStatus.last_external_scan ? new Date(scanStatus.last_external_scan).toLocaleString() : '—'}
+          </p>
+          {scanStatus.recent_errors?.length > 0 && (
+            <ul className="mt-2 text-sm text-red-600">
+              {scanStatus.recent_errors.slice(0, 3).map((r, i) => (
+                <li key={i}>{r.error_message}</li>
+              ))}
+            </ul>
+          )}
+          <div className="mt-3 flex gap-2">
+            <button type="button" onClick={() => runScan('internal')} disabled={scanning} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Run internal scan</button>
+            <button type="button" onClick={() => runScan('external')} disabled={scanning} className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 disabled:opacity-50">Run external scan</button>
+          </div>
         </section>
       </main>
     </div>
