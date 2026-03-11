@@ -41,7 +41,19 @@ Publishing uses **Graph API v25.0**: Instagram = create container â†’ 5s delay â
 
 ## LinkedIn
 
-**Personal profile**
+**OAuth callback (Connect LinkedIn in AO Settings)**
+
+Used by `/api/auth/linkedin/start` and `/api/auth/linkedin/callback` so the owner can connect LinkedIn from the AO Automation Settings page. State is stored in a signed httpOnly cookie; tokens are stored in `ao_linkedin_tokens` (run `database/ao_linkedin_tokens.sql` in Supabase).
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `LINKEDIN_CLIENT_ID` | Yes (for OAuth) | LinkedIn app Client ID. |
+| `LINKEDIN_CLIENT_SECRET` | Yes (for OAuth) | LinkedIn app Client Secret. Never expose to the client. |
+| `LINKEDIN_REDIRECT_URI` | Yes (for OAuth) | Exact callback URL, e.g. `https://www.archetypeoriginal.com/api/auth/linkedin/callback`. Must match the value configured in your LinkedIn app. |
+| `AO_OAUTH_COOKIE_SECRET` or `LINKEDIN_OAUTH_STATE_SECRET` | Yes (for OAuth) | Secret used to sign the OAuth state cookie (e.g. 32+ random bytes). Required for Connect LinkedIn flow. |
+| `LINKEDIN_SCOPE` | No | OAuth scopes (default: `openid profile email w_member_social`). |
+
+**Personal profile (manual token)**
 
 | Variable | Required | Description |
 |---------|----------|-------------|

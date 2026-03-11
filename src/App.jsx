@@ -67,6 +67,7 @@ import AOReview from "./pages/ao/Review";
 import AOPublishing from "./pages/ao/Publishing";
 import AOWriting from "./pages/ao/Writing";
 import AOSettings from "./pages/ao/Settings";
+import AOLinkedInHandoff from "./pages/ao/LinkedInHandoff";
 // Operators pages - Lazy loaded for better performance
 const OperatorsLanding = lazy(() => import("./pages/operators/Landing"));
 const OperatorsLogin = lazy(() => import("./pages/operators/Login"));
@@ -194,6 +195,7 @@ export default function App() {
       return (storedEmail || urlEmail) ? 'ao-command-center' : 'ao-login';
     }
     if (path === '/ao/login') return 'ao-login';
+    if (path === '/ao/auth/linkedin/handoff') return 'ao-linkedin-handoff';
     if (path.startsWith('/ao/')) {
       const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
       const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
@@ -231,6 +233,7 @@ export default function App() {
     const path = window.location.pathname;
     if (!path.startsWith('/ao/')) return;
     if (path === '/ao/login') return;
+    if (path === '/ao/auth/linkedin/handoff') return;
     const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
     const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
     if (urlEmail) {
@@ -427,6 +430,10 @@ export default function App() {
         return;
       }
       if (path.startsWith('/ao/')) {
+        if (path === '/ao/auth/linkedin/handoff') {
+          setCurrentPage('ao-linkedin-handoff');
+          return;
+        }
         const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
         const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
         if (urlEmail && !storedEmail) {
@@ -1057,6 +1064,9 @@ export default function App() {
   }
   if (currentPage === 'ao-settings') {
     return <AOSettings />;
+  }
+  if (currentPage === 'ao-linkedin-handoff') {
+    return <AOLinkedInHandoff />;
   }
 
   // Render Operators pages with lazy loading (protected routes)
