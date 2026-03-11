@@ -7,6 +7,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { getLinkedinVersionHeaders } from '../../../lib/social/linkedinVersion.js';
 
 const LINKEDIN_REST_BASE = 'https://api.linkedin.com/rest';
 const LINKEDIN_V2_BASE = 'https://api.linkedin.com/v2';
@@ -31,7 +32,7 @@ async function getMemberUrn(accessToken) {
   const headers = {
     Authorization: `Bearer ${accessToken}`,
     'X-Restli-Protocol-Version': '2.0.0',
-    'LinkedIn-Version': '202401',
+    ...getLinkedinVersionHeaders(),
   };
 
   // Try REST /me (may work with w_member_social)
@@ -84,7 +85,7 @@ async function createPost(accessToken, authorUrn) {
       Authorization: `Bearer ${accessToken}`,
       'X-Restli-Protocol-Version': '2.0.0',
       'Content-Type': 'application/json',
-      'LinkedIn-Version': '202401',
+      ...getLinkedinVersionHeaders(),
     },
     body: JSON.stringify(body),
   });

@@ -53,6 +53,7 @@ Used by `/api/auth/linkedin/start` and `/api/auth/linkedin/callback` so the owne
 | `LINKEDIN_REDIRECT_URI` | Yes (for OAuth) | Exact callback URL, e.g. `https://www.archetypeoriginal.com/api/auth/linkedin/callback`. Must match the value configured in your LinkedIn app. |
 | `AO_OAUTH_COOKIE_SECRET` or `LINKEDIN_OAUTH_STATE_SECRET` | Yes (for OAuth) | Secret used to sign the OAuth state cookie (e.g. 32+ random bytes). Required for Connect LinkedIn flow. |
 | `LINKEDIN_SCOPE` | No | OAuth scopes (default: `openid profile email w_member_social`). |
+| `LINKEDIN_API_VERSION` | No | LinkedIn version header (YYYYMM). Default: `202601`. Only change this if LinkedIn requires a newer active version. |
 
 **Personal profile (manual token)**
 

@@ -7,6 +7,7 @@
 import { createHmac } from 'crypto';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { readAoSession } from '../../../lib/ao/requireAoSession.js';
+import { getLinkedinVersionHeaders } from '../../../lib/social/linkedinVersion.js';
 
 const SITE_URL = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const SETTINGS_PATH = '/ao/settings';
@@ -91,7 +92,7 @@ async function resolvePersonUrn(accessToken) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'X-Restli-Protocol-Version': '2.0.0',
-        'LinkedIn-Version': '202401',
+        ...getLinkedinVersionHeaders(),
       },
     });
     if (res.ok) {
