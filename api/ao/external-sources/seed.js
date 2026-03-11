@@ -6,8 +6,8 @@
  * Safe to run multiple times; it skips URLs that already exist.
  */
 
-import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
-import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
+import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 
 const SEED_SOURCES = [
   // Tier 1 — Global Leadership Research & Executive Thinking

@@ -6,8 +6,8 @@
  * This is the allowlist used by /api/ao/scan-external (RSS/article sources).
  */
 
-import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
-import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
+import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 
 function normType(v) {
   const t = String(v || '').trim().toLowerCase();

@@ -3,8 +3,8 @@
  * DELETE /api/ao/external-sources/:id
  */
 
-import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
-import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
+import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
