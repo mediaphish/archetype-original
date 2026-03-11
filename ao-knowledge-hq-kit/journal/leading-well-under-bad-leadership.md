@@ -11,7 +11,7 @@ categories:
   - accountability
   - power
   - servant-leadership
-featured_image: "../images/leading-well-under-bad-leadership.png"
+featured_image: "../images/leading-well-under-bad-leadership.jpg"
 takeaways:
   - Leadership influence always has limits, but integrity does not.
   - Some systems cannot be corrected from the middle, and leaders must recognize those boundaries.
