@@ -26,6 +26,11 @@ function getCookieSecret() {
   return process.env.AO_OAUTH_COOKIE_SECRET || process.env.X_OAUTH_STATE_SECRET;
 }
 
+function getCanonicalOrigin() {
+  // Must exactly match the callback URL registered in X.
+  return SITE_URL;
+}
+
 function getRequestOrigin(req) {
   try {
     const proto = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() || 'https';
@@ -43,8 +48,8 @@ function getRequestOrigin(req) {
   }
 }
 
-function getRedirectUri(req) {
-  const origin = getRequestOrigin(req);
+function getRedirectUri() {
+  const origin = getCanonicalOrigin();
   return `${origin}/api/auth/x/callback`;
 }
 
@@ -209,7 +214,10 @@ export default async function handler(req, res) {
 
   clearStateCookie(req, res);
 
-  const redirectUri = getRedirectUri(req);
+  // For the OAuth token exchange, this redirect URI must match the one used in
+  // the authorize URL exactly. Since X may only allow one callback URL, we
+  // always use SITE_URL (www).
+  const redirectUri = getRedirectUri();
 
   try {
     const exchanged = await exchangeCode({ code, codeVerifier: decoded.payload.codeVerifier, redirectUri });

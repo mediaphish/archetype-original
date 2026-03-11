@@ -28,6 +28,12 @@ function getCookieSecret() {
   return process.env.AO_OAUTH_COOKIE_SECRET || process.env.X_OAUTH_STATE_SECRET;
 }
 
+function getCanonicalOrigin() {
+  // X requires an exact callback URL match. Since their UI may only allow
+  // one callback URL, we always use SITE_URL (www) for the OAuth round-trip.
+  return SITE_URL;
+}
+
 function getRequestOrigin(req) {
   try {
     const proto = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() || 'https';
@@ -45,8 +51,8 @@ function getRequestOrigin(req) {
   }
 }
 
-function getRedirectUri(req) {
-  const origin = getRequestOrigin(req);
+function getRedirectUri() {
+  const origin = getCanonicalOrigin();
   return `${origin}/api/auth/x/callback`;
 }
 
@@ -140,7 +146,7 @@ export default async function handler(req, res) {
   const authUrl = new URL(AUTHORIZE_URL);
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('client_id', clientId);
-  authUrl.searchParams.set('redirect_uri', getRedirectUri(req));
+  authUrl.searchParams.set('redirect_uri', getRedirectUri());
   authUrl.searchParams.set('scope', process.env.X_SCOPE || DEFAULT_SCOPES);
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('code_challenge', codeChallenge);
