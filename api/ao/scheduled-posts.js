@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 
   let query = supabaseAdmin
     .from('ao_scheduled_posts')
-    .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, created_at, updated_at')
+    .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, created_at, updated_at')
     .order('scheduled_at', { ascending: false })
     .limit(limit);
 

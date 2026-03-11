@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { platform, account_id, text, image_url } = req.body || {};
+    const { platform, account_id, text, image_url, first_comment } = req.body || {};
     const validation = validatePlatformAccount(platform, account_id);
     if (!validation.valid) {
       return res.status(400).json({ ok: false, error: validation.error });
@@ -44,6 +44,7 @@ export default async function handler(req, res) {
         scheduled_at: now,
         text: text.trim(),
         image_url: image_url && typeof image_url === 'string' ? image_url.trim() || null : null,
+        first_comment: first_comment && typeof first_comment === 'string' ? first_comment.trim() || null : null,
         status: 'scheduled'
       })
       .select('id')

@@ -87,6 +87,7 @@
     { "src": "api/ao/auth/send-magic-link.js", "use": "@vercel/node" },
     { "src": "api/ao/auth/verify-magic-link.js", "use": "@vercel/node" },
     { "src": "api/ao/scheduled-posts.js", "use": "@vercel/node" },
+    { "src": "api/ao/scheduled-posts/[id].js", "use": "@vercel/node" },
     { "src": "api/ao/quotes/list.js", "use": "@vercel/node" },
     { "src": "api/ao/quotes/[id]/approve.js", "use": "@vercel/node" },
     { "src": "api/ao/quotes/[id]/reject.js", "use": "@vercel/node" },
@@ -99,7 +100,10 @@
     { "src": "api/ao/writing/[id]/draft.js", "use": "@vercel/node" },
     { "src": "api/ao/writing/[id]/discard.js", "use": "@vercel/node" },
     { "src": "api/ao/scan-internal.js", "use": "@vercel/node" },
-    { "src": "api/ao/scan-external.js", "use": "@vercel/node" }
+    { "src": "api/ao/scan-external.js", "use": "@vercel/node" },
+    { "src": "api/auth/linkedin/callback.js", "use": "@vercel/node" },
+    { "src": "api/auth/linkedin/start.js", "use": "@vercel/node" },
+    { "src": "api/ao/linkedin/status.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -184,6 +188,7 @@
     { "src": "/api/cron/publish-scheduled-posts", "dest": "/api/cron/publish-scheduled-posts.js" },
     { "src": "/api/ao/auth/send-magic-link", "dest": "/api/ao/auth/send-magic-link.js" },
     { "src": "/api/ao/auth/verify-magic-link", "dest": "/api/ao/auth/verify-magic-link.js" },
+    { "src": "/api/ao/scheduled-posts/([^/]+)", "dest": "/api/ao/scheduled-posts/[id].js?id=$1" },
     { "src": "/api/ao/scheduled-posts", "dest": "/api/ao/scheduled-posts.js" },
     { "src": "/api/ao/quotes/list", "dest": "/api/ao/quotes/list.js" },
     { "src": "/api/ao/quotes/(.*)/approve", "dest": "/api/ao/quotes/[id]/approve.js?id=$1" },
@@ -198,6 +203,9 @@
     { "src": "/api/ao/writing/(.*)/discard", "dest": "/api/ao/writing/[id]/discard.js?id=$1" },
     { "src": "/api/ao/scan-internal", "dest": "/api/ao/scan-internal.js" },
     { "src": "/api/ao/scan-external", "dest": "/api/ao/scan-external.js" },
+    { "src": "/api/auth/linkedin/callback", "dest": "/api/auth/linkedin/callback.js" },
+    { "src": "/api/auth/linkedin/start", "dest": "/api/auth/linkedin/start.js" },
+    { "src": "/api/ao/linkedin/status", "dest": "/api/ao/linkedin/status.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
