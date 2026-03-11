@@ -29,6 +29,7 @@ function safeUrl(u) {
 
 const TABS = [
   { key: 'social', label: 'Social Review Queue' },
+  { key: 'held', label: 'Held (Social)' },
   { key: 'journal', label: 'Journal Review Queue' },
   { key: 'expandable', label: 'Expandable Ideas Queue' },
 ];
@@ -38,6 +39,13 @@ export default function Review() {
   const [authChecked, setAuthChecked] = useState(false);
   const [activeTab, setActiveTab] = useState('social');
   const [quotes, setQuotes] = useState([]);
+  const [quotesPage, setQuotesPage] = useState({ status: 'pending', limit: 10, offset: 0, total: null });
+  const [pageSize, setPageSize] = useState(10);
+  const [pageOffset, setPageOffset] = useState(0);
+
+  const [heldQuotes, setHeldQuotes] = useState([]);
+  const [heldPage, setHeldPage] = useState({ status: 'held', limit: 10, offset: 0, total: null });
+  const [heldOffset, setHeldOffset] = useState(0);
   const [topics, setTopics] = useState([]);
   const [writing, setWriting] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,23 +87,32 @@ export default function Review() {
     let cancelled = false;
     (async () => {
       try {
-        const [quotesRes, journalRes, writingRes] = await Promise.all([
-          fetch(`/api/ao/quotes/list`),
+        const [quotesRes, heldRes, journalRes, writingRes] = await Promise.all([
+          fetch(`/api/ao/quotes/list?status=pending&limit=${encodeURIComponent(pageSize)}&offset=${encodeURIComponent(pageOffset)}`),
+          fetch(`/api/ao/quotes/list?status=held&limit=${encodeURIComponent(pageSize)}&offset=${encodeURIComponent(heldOffset)}`),
           fetch(`/api/ao/journal-topics/list`),
           fetch(`/api/ao/writing/list`),
         ]);
         if (cancelled) return;
         const q = await quotesRes.json().catch(() => ({}));
+        const h = await heldRes.json().catch(() => ({}));
         const j = await journalRes.json().catch(() => ({}));
         const w = await writingRes.json().catch(() => ({}));
-        if (q.ok && Array.isArray(q.quotes)) setQuotes(q.quotes);
+        if (q.ok && Array.isArray(q.quotes)) {
+          setQuotes(q.quotes);
+          if (q.page) setQuotesPage(q.page);
+        }
+        if (h.ok && Array.isArray(h.quotes)) {
+          setHeldQuotes(h.quotes);
+          if (h.page) setHeldPage(h.page);
+        }
         if (j.ok && Array.isArray(j.topics)) setTopics(j.topics);
         if (w.ok && Array.isArray(w.writing)) setWriting(w.writing);
       } catch (_) {}
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [authChecked, email]);
+  }, [authChecked, email, pageSize, pageOffset, heldOffset]);
 
   const act = useCallback(async (kind, id, extra) => {
     if (!authChecked || acting) return;
@@ -105,6 +122,8 @@ export default function Review() {
       let url = '';
       if (kind === 'quote-approve') url = `${base}/quotes/${id}/approve`;
       else if (kind === 'quote-reject') url = `${base}/quotes/${id}/reject`;
+      else if (kind === 'quote-hold') url = `${base}/quotes/${id}/hold`;
+      else if (kind === 'quote-unhold') url = `${base}/quotes/${id}/unhold`;
       else if (kind === 'topic-approve') url = `${base}/journal-topics/${id}/approve`;
       else if (kind === 'topic-reject') url = `${base}/journal-topics/${id}/reject`;
       else if (kind === 'topic-approve-draft') url = `${base}/journal-topics/${id}/approve-and-draft`;
@@ -115,6 +134,14 @@ export default function Review() {
       const json = await res.json().catch(() => ({}));
       if (json.ok) {
         if (kind === 'quote-approve' || kind === 'quote-reject') setQuotes((prev) => prev.filter((x) => x.id !== id));
+        if (kind === 'quote-hold') {
+          setQuotes((prev) => prev.filter((x) => x.id !== id));
+          window.location.reload();
+        }
+        if (kind === 'quote-unhold') {
+          setHeldQuotes((prev) => prev.filter((x) => x.id !== id));
+          window.location.reload();
+        }
         if (kind === 'topic-approve' || kind === 'topic-reject' || kind === 'topic-approve-draft') setTopics((prev) => prev.filter((x) => x.id !== id));
         if (kind === 'topic-approve-draft' && json.writing) setWriting((prev) => [json.writing, ...prev]);
         if (kind === 'writing-draft' || kind === 'writing-discard') setWriting((prev) => prev.filter((x) => x.id !== id));
@@ -125,8 +152,15 @@ export default function Review() {
   }, [authChecked, acting]);
 
   const pendingQuotes = quotes.filter((q) => q.status === 'pending');
+  const heldList = heldQuotes.filter((q) => q.status === 'held');
   const pendingTopics = topics.filter((t) => t.status === 'pending');
   const pendingWriting = writing.filter((w) => w.status === 'pending' || w.status === 'drafting');
+
+  const canPrev = pageOffset > 0;
+  const canNext = typeof quotesPage.total === 'number' ? (pageOffset + pageSize) < quotesPage.total : pendingQuotes.length === pageSize;
+
+  const canHeldPrev = heldOffset > 0;
+  const canHeldNext = typeof heldPage.total === 'number' ? (heldOffset + pageSize) < heldPage.total : heldList.length === pageSize;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -156,6 +190,51 @@ export default function Review() {
               <p className="text-gray-600 text-sm mb-4">
                 First comment supported on: Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment in <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="text-blue-600 hover:underline">Publishing</button> when scheduling posts.
               </p>
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <span className="font-medium">Show</span>
+                  <select
+                    value={String(pageSize >= 200 ? 'all' : pageSize)}
+                    onChange={(e) => {
+                      const v = String(e.target.value);
+                      const n = v === 'all' ? 200 : Number.parseInt(v, 10);
+                      setPageSize(Number.isFinite(n) ? n : 10);
+                      setPageOffset(0);
+                    }}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm bg-white"
+                  >
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                    <option value="all">All</option>
+                  </select>
+                  <span>per page</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={!canPrev}
+                    onClick={() => setPageOffset((x) => Math.max(0, x - pageSize))}
+                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!canNext}
+                    onClick={() => setPageOffset((x) => x + pageSize)}
+                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                  {typeof quotesPage.total === 'number' ? (
+                    <span className="text-xs text-gray-500">
+                      {Math.min(quotesPage.total, pageOffset + 1)}–{Math.min(quotesPage.total, pageOffset + pendingQuotes.length)} of {quotesPage.total}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
               {pendingQuotes.length === 0 ? (
                 <p className="text-gray-500">No pending quotes. Run an internal scan from Command Center to add candidates.</p>
               ) : (
@@ -167,6 +246,15 @@ export default function Review() {
                           <h3 className="text-base font-semibold text-gray-900">
                             {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
                           </h3>
+                          {q.ao_lane || (Array.isArray(q.topic_tags) && q.topic_tags.length) || q.content_kind ? (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {q.content_kind ? <Pill tone="gray">{String(q.content_kind).replace(/_/g, ' ')}</Pill> : null}
+                              {q.ao_lane ? <Pill tone="blue">{q.ao_lane}</Pill> : null}
+                              {Array.isArray(q.topic_tags) ? q.topic_tags.slice(0, 6).map((t, idx) => (
+                                <Pill key={idx} tone="gray">{String(t)}</Pill>
+                              )) : null}
+                            </div>
+                          ) : null}
                           <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-600">
                             <span className="truncate max-w-[520px]">
                               {q.source_name ? <span className="font-medium text-gray-700">{q.source_name}</span> : null}
@@ -334,6 +422,63 @@ export default function Review() {
                         </div>
                       </details>
                       <div className="flex gap-2">
+                        <button type="button" onClick={() => act('quote-approve', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">Approve</button>
+                        <button type="button" onClick={() => act('quote-hold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50">Hold</button>
+                        <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          )}
+          {!loading && activeTab === 'held' && (
+            <>
+              <p className="text-gray-600 text-sm mb-4">
+                Held items stay here and do not expire. Bring them back to Pending when you’re ready.
+              </p>
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div className="text-xs text-gray-500">
+                  {typeof heldPage.total === 'number' ? `${heldPage.total} held item(s)` : null}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={!canHeldPrev}
+                    onClick={() => setHeldOffset((x) => Math.max(0, x - pageSize))}
+                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!canHeldNext}
+                    onClick={() => setHeldOffset((x) => x + pageSize)}
+                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+              {heldList.length === 0 ? (
+                <p className="text-gray-500">No held items.</p>
+              ) : (
+                <ul className="space-y-4">
+                  {heldList.map((q) => (
+                    <li key={q.id} className="border border-gray-200 rounded p-4">
+                      <div className="flex items-center justify-between gap-3 mb-2">
+                        <h3 className="text-base font-semibold text-gray-900">{q.source_title || q.source_name || 'Held item'}</h3>
+                        <Pill tone="gray">held</Pill>
+                      </div>
+                      {q.pull_quote ? (
+                        <blockquote className="border-l-4 border-gray-900 pl-4 py-1 mb-3">
+                          <p className="text-gray-900 font-medium whitespace-pre-wrap">{q.pull_quote}</p>
+                        </blockquote>
+                      ) : (
+                        <p className="text-gray-800 mb-3">{q.quote_text?.slice(0, 260)}{q.quote_text?.length > 260 ? '…' : ''}</p>
+                      )}
+                      <div className="flex gap-2">
+                        <button type="button" onClick={() => act('quote-unhold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Unhold</button>
                         <button type="button" onClick={() => act('quote-approve', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">Approve</button>
                         <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
                       </div>
