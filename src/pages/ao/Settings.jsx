@@ -11,6 +11,12 @@ export default function Settings() {
   const [linkedinTestLoading, setLinkedinTestLoading] = useState(false);
   const [linkedinTestResult, setLinkedinTestResult] = useState(null); // 'success' | 'error' | null
   const [linkedinTestError, setLinkedinTestError] = useState('');
+  const [metaLoading, setMetaLoading] = useState(true);
+  const [metaStatus, setMetaStatus] = useState(null);
+  const [metaError, setMetaError] = useState('');
+  const [metaTestLoading, setMetaTestLoading] = useState({ facebook: false, instagram: false });
+  const [metaTestResult, setMetaTestResult] = useState({ facebook: null, instagram: null }); // success|error|null
+  const [metaTestError, setMetaTestError] = useState({ facebook: '', instagram: '' });
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -66,6 +72,34 @@ export default function Settings() {
     return () => { cancelled = true; };
   }, [authChecked, email]);
 
+  useEffect(() => {
+    if (!authChecked) return;
+    let cancelled = false;
+    (async () => {
+      setMetaLoading(true);
+      setMetaError('');
+      try {
+        const res = await fetch('/api/ao/meta/status');
+        const json = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        if (res.ok && json.ok) {
+          setMetaStatus(json);
+        } else {
+          setMetaStatus(null);
+          setMetaError(json.error || 'Meta status check failed');
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setMetaStatus(null);
+          setMetaError(e.message || 'Meta status check failed');
+        }
+      } finally {
+        if (!cancelled) setMetaLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [authChecked]);
+
   const maskedEmail = email ? `${email.slice(0, 2)}***@${email.split('@')[1] || '***'}` : '—';
 
   async function handleLinkedInTestPost() {
@@ -90,6 +124,33 @@ export default function Settings() {
       setLinkedinTestError(e.message || 'Request failed');
     } finally {
       setLinkedinTestLoading(false);
+    }
+  }
+
+  async function handleMetaTestPost(platform) {
+    if (!authChecked) return;
+    if (platform !== 'facebook' && platform !== 'instagram') return;
+    setMetaTestResult((p) => ({ ...p, [platform]: null }));
+    setMetaTestError((p) => ({ ...p, [platform]: '' }));
+    setMetaTestLoading((p) => ({ ...p, [platform]: true }));
+    try {
+      const res = await fetch('/api/providers/meta/test-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (json.ok) {
+        setMetaTestResult((p) => ({ ...p, [platform]: 'success' }));
+      } else {
+        setMetaTestResult((p) => ({ ...p, [platform]: 'error' }));
+        setMetaTestError((p) => ({ ...p, [platform]: json.error || 'Request failed' }));
+      }
+    } catch (e) {
+      setMetaTestResult((p) => ({ ...p, [platform]: 'error' }));
+      setMetaTestError((p) => ({ ...p, [platform]: e.message || 'Request failed' }));
+    } finally {
+      setMetaTestLoading((p) => ({ ...p, [platform]: false }));
     }
   }
 
@@ -142,6 +203,84 @@ export default function Settings() {
               {linkedinTestResult === 'error' && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">LinkedIn test post failed.{linkedinTestError ? ` ${linkedinTestError}` : ''}</div>
               )}
+            </div>
+          )}
+        </section>
+
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Meta (Facebook + Instagram)</h2>
+          <p className="text-gray-600 text-sm mb-4">Connect your Facebook Page and Instagram Business account for publishing. Tokens are stored as environment configuration.</p>
+          {metaLoading ? (
+            <p className="text-gray-500 text-sm">Checking connection…</p>
+          ) : metaError ? (
+            <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">Meta status check failed. {metaError}</div>
+          ) : (
+            <div className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="p-3 border border-gray-200 rounded">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-900">Facebook Page</span>
+                    <span className={`text-sm font-medium ${metaStatus?.facebook?.connected ? 'text-green-700' : 'text-gray-600'}`}>
+                      {metaStatus?.facebook?.connected ? 'Connected' : 'Not connected'}
+                    </span>
+                  </div>
+                  {metaStatus?.facebook?.connected ? (
+                    <p className="text-xs text-gray-500 mt-1">{metaStatus.facebook.page?.name || 'Page'}{metaStatus.facebook.page?.id ? ` · ${metaStatus.facebook.page.id}` : ''}</p>
+                  ) : (
+                    <p className="text-xs text-gray-500 mt-1">{metaStatus?.facebook?.reason || 'Missing configuration'}</p>
+                  )}
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleMetaTestPost('facebook')}
+                      disabled={!metaStatus?.facebook?.connected || metaTestLoading.facebook}
+                      className="inline-block px-4 py-2 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      {metaTestLoading.facebook ? 'Posting…' : 'Post Facebook Test'}
+                    </button>
+                  </div>
+                  {metaTestResult.facebook === 'success' && (
+                    <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded text-green-800 text-sm">Facebook test post published.</div>
+                  )}
+                  {metaTestResult.facebook === 'error' && (
+                    <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded text-red-800 text-sm">Facebook test post failed.{metaTestError.facebook ? ` ${metaTestError.facebook}` : ''}</div>
+                  )}
+                </div>
+
+                <div className="p-3 border border-gray-200 rounded">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-900">Instagram</span>
+                    <span className={`text-sm font-medium ${metaStatus?.instagram?.connected ? 'text-green-700' : 'text-gray-600'}`}>
+                      {metaStatus?.instagram?.connected ? 'Connected' : 'Not connected'}
+                    </span>
+                  </div>
+                  {metaStatus?.instagram?.connected ? (
+                    <p className="text-xs text-gray-500 mt-1">@{metaStatus.instagram.account?.username || 'connected'}{metaStatus.instagram.account?.id ? ` · ${metaStatus.instagram.account.id}` : ''}</p>
+                  ) : (
+                    <p className="text-xs text-gray-500 mt-1">{metaStatus?.instagram?.reason || 'Missing configuration'}</p>
+                  )}
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleMetaTestPost('instagram')}
+                      disabled={!metaStatus?.instagram?.connected || metaTestLoading.instagram}
+                      className="inline-block px-4 py-2 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      {metaTestLoading.instagram ? 'Posting…' : 'Post Instagram Test'}
+                    </button>
+                  </div>
+                  {metaTestResult.instagram === 'success' && (
+                    <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded text-green-800 text-sm">Instagram test post published.</div>
+                  )}
+                  {metaTestResult.instagram === 'error' && (
+                    <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded text-red-800 text-sm">Instagram test post failed.{metaTestError.instagram ? ` ${metaTestError.instagram}` : ''}</div>
+                  )}
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-500">
+                Test posts publish real content to your Facebook Page and Instagram feed. If connection is missing, see <a href="https://github.com/mediaphish/archetype-original/blob/main/notes/SOCIAL_VERCEL_ENV.md" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">notes/SOCIAL_VERCEL_ENV.md</a>.
+              </p>
             </div>
           )}
         </section>
