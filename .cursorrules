@@ -306,6 +306,31 @@ Before committing any changes, verify:
 - The AI is the technical owner: **commit and push all project changes** (except explicitly excluded, e.g. secrets, local-only config) so the live site reflects the work. **No picking and choosing.** No "interpretation" of what's "relevant."
 
 ### Content and Site Updates
+#### Devotionals: mandatory duplicate / overlap check (Step 1)
+
+When the user provides new devotional markdown files, BEFORE copying any files, refreshing the knowledge list, or committing anything:
+
+- Scan the existing devotionals folder:
+  - `ao-knowledge-hq-kit/journal/devotionals/`
+
+- Check for duplicates and significant overlaps between:
+  - the incoming files vs every existing devotional file
+  - the incoming files vs each other
+  - (and if obvious duplicates already exist in the folder, flag them too)
+
+- Treat any of the following as “stop and report”:
+  - Same filename, same `slug`, or same `publish_date`
+  - Same `scripture_reference` (ignore formatting differences like “–” vs “-” and the “(ESV)” suffix)
+  - Very similar title/summary, or a clearly repeated core theme in the Reflection (effectively the same devotional point)
+
+If any duplicates/overlaps are found:
+- STOP the integration immediately (do not copy files, do not refresh knowledge, do not commit/push).
+- Report back with:
+  - The incoming file(s)
+  - The conflicting existing file(s)
+  - A plain-language explanation of what overlaps (passage, topic, wording)
+- Wait for the user to decide how to proceed (skip, merge, rewrite/refocus, or replace).
+
 - **After adding or updating devotionals**: Commit the new/edited devotional markdown files and the updated `public/knowledge.json`, then push to the host. Deploy so the site reflects the changes.
 - **After running the knowledge build** (`node scripts/build-knowledge.mjs`): Commit `public/knowledge.json` and any new journal/devotional source files, then push. Do not leave knowledge or content changes uncommitted or undeployed.
 - **After other content or site-affecting changes**: Commit and push **all** changed project files so the live site is updated. The AI commits and deploys to the host routinely; this is expected.
