@@ -8,11 +8,13 @@ export default function CommandCenter() {
   const [scheduled, setScheduled] = useState([]);
   const [failures, setFailures] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [scanStatus, setScanStatus] = useState({ last_internal_scan: null, last_external_scan: null, recent_errors: [] });
+  const [scanStatus, setScanStatus] = useState({ last_internal_scan: null, last_external_scan: null, last_daily_run: null, recent_errors: [] });
   const [quotesCount, setQuotesCount] = useState(0);
   const [journalCount, setJournalCount] = useState(0);
   const [writingCount, setWritingCount] = useState(0);
   const [scanning, setScanning] = useState(false);
+  const [dailyRunning, setDailyRunning] = useState(false);
+  const [dailyRunMessage, setDailyRunMessage] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -67,7 +69,7 @@ export default function CommandCenter() {
         const writingJson = await writingRes.json().catch(() => ({}));
         if (schedJson.ok && schedJson.posts) setScheduled(schedJson.posts);
         if (failJson.ok && failJson.posts) setFailures(failJson.posts);
-        if (statusJson.ok) setScanStatus({ last_internal_scan: statusJson.last_internal_scan, last_external_scan: statusJson.last_external_scan, recent_errors: statusJson.recent_errors || [] });
+        if (statusJson.ok) setScanStatus({ last_internal_scan: statusJson.last_internal_scan, last_external_scan: statusJson.last_external_scan, last_daily_run: statusJson.last_daily_run || null, recent_errors: statusJson.recent_errors || [] });
         if (quotesJson.ok && Array.isArray(quotesJson.quotes)) setQuotesCount(quotesJson.quotes.filter((q) => q.status === 'pending').length);
         if (journalJson.ok && Array.isArray(journalJson.topics)) setJournalCount(journalJson.topics.filter((t) => t.status === 'pending').length);
         if (writingJson.ok && Array.isArray(writingJson.writing)) setWritingCount(writingJson.writing.filter((w) => w.status === 'pending' || w.status === 'drafting').length);
@@ -92,6 +94,26 @@ export default function CommandCenter() {
       setScanning(false);
     }
   }, [authChecked, scanning]);
+
+  const runDailyNow = useCallback(async () => {
+    if (!authChecked || dailyRunning) return;
+    setDailyRunMessage('');
+    setDailyRunning(true);
+    try {
+      const res = await fetch('/api/ao/daily-run-now', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setDailyRunMessage(`Daily run complete. Drafted ${json.drafted_count || 0} item(s).`);
+        window.location.reload();
+      } else {
+        setDailyRunMessage(json.error || 'Daily run failed');
+      }
+    } catch (e) {
+      setDailyRunMessage(e.message || 'Daily run failed');
+    } finally {
+      setDailyRunning(false);
+    }
+  }, [authChecked, dailyRunning]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -163,10 +185,16 @@ export default function CommandCenter() {
         </section>
 
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Scan status</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Daily run & scan status</h2>
           <p className="text-gray-600 text-sm">
+            Last daily run: {scanStatus.last_daily_run ? new Date(scanStatus.last_daily_run).toLocaleString() : '—'}<br />
             Last internal: {scanStatus.last_internal_scan ? new Date(scanStatus.last_internal_scan).toLocaleString() : '—'} | Last external: {scanStatus.last_external_scan ? new Date(scanStatus.last_external_scan).toLocaleString() : '—'}
           </p>
+          {dailyRunMessage && (
+            <div className={`mt-3 p-3 rounded text-sm ${dailyRunMessage.toLowerCase().includes('failed') ? 'bg-red-50 border border-red-200 text-red-800' : 'bg-green-50 border border-green-200 text-green-800'}`}>
+              {dailyRunMessage}
+            </div>
+          )}
           {scanStatus.recent_errors?.length > 0 && (
             <ul className="mt-2 text-sm text-red-600">
               {scanStatus.recent_errors.slice(0, 3).map((r, i) => (
@@ -175,6 +203,7 @@ export default function CommandCenter() {
             </ul>
           )}
           <div className="mt-3 flex gap-2">
+            <button type="button" onClick={runDailyNow} disabled={dailyRunning} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">{dailyRunning ? 'Running…' : 'Run daily now'}</button>
             <button type="button" onClick={() => runScan('internal')} disabled={scanning} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Run internal scan</button>
             <button type="button" onClick={() => runScan('external')} disabled={scanning} className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 disabled:opacity-50">Run external scan</button>
           </div>

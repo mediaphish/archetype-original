@@ -38,6 +38,9 @@
       { "src": "api/ali/admin/deletions/initiate.js", "use": "@vercel/node" },
       { "src": "api/ali/admin/deletions/execute.js", "use": "@vercel/node" },
       { "src": "api/cron/generate-intelligence.js", "use": "@vercel/node" },
+    { "src": "api/cron/ao/external-scan.js", "use": "@vercel/node" },
+    { "src": "api/cron/ao/internal-scan.js", "use": "@vercel/node" },
+    { "src": "api/cron/ao/daily-run.js", "use": "@vercel/node" },
         { "src": "api/journal/subscribe.js", "use": "@vercel/node" },
         { "src": "api/journal/notify.js", "use": "@vercel/node" },
         { "src": "api/journal/retry-failed-emails.js", "use": "@vercel/node" },
@@ -103,6 +106,12 @@
     { "src": "api/ao/writing/[id]/discard.js", "use": "@vercel/node" },
     { "src": "api/ao/scan-internal.js", "use": "@vercel/node" },
     { "src": "api/ao/scan-external.js", "use": "@vercel/node" },
+    { "src": "api/ao/daily-run-now.js", "use": "@vercel/node" },
+    { "src": "api/ao/import/upload.js", "use": "@vercel/node" },
+    { "src": "api/ao/import/batches.js", "use": "@vercel/node" },
+    { "src": "api/ao/import/batches/[id].js", "use": "@vercel/node" },
+    { "src": "api/ao/external-sources/index.js", "use": "@vercel/node" },
+    { "src": "api/ao/external-sources/[id].js", "use": "@vercel/node" },
     { "src": "api/auth/linkedin/callback.js", "use": "@vercel/node" },
     { "src": "api/auth/linkedin/start.js", "use": "@vercel/node" },
     { "src": "api/auth/meta/start.js", "use": "@vercel/node" },
@@ -114,7 +123,8 @@
     { "src": "api/ao/meta/status.js", "use": "@vercel/node" },
     { "src": "api/providers/meta/test-post.js", "use": "@vercel/node" },
     { "src": "api/ao/x/status.js", "use": "@vercel/node" },
-    { "src": "api/providers/x/test-post.js", "use": "@vercel/node" }
+    { "src": "api/providers/x/test-post.js", "use": "@vercel/node" },
+    { "src": "api/providers/facebook/group-post.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -152,6 +162,9 @@
     { "src": "/api/ali/admin/deletions/initiate", "dest": "/api/ali/admin/deletions/initiate.js" },
     { "src": "/api/ali/admin/deletions/execute", "dest": "/api/ali/admin/deletions/execute.js" },
     { "src": "/api/cron/generate-intelligence", "dest": "/api/cron/generate-intelligence.js" },
+    { "src": "/api/cron/ao/external-scan", "dest": "/api/cron/ao/external-scan.js" },
+    { "src": "/api/cron/ao/internal-scan", "dest": "/api/cron/ao/internal-scan.js" },
+    { "src": "/api/cron/ao/daily-run", "dest": "/api/cron/ao/daily-run.js" },
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
         { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
         { "src": "/api/journal/retry-failed-emails", "dest": "/api/journal/retry-failed-emails.js" },
@@ -216,6 +229,13 @@
     { "src": "/api/ao/writing/(.*)/discard", "dest": "/api/ao/writing/[id]/discard.js?id=$1" },
     { "src": "/api/ao/scan-internal", "dest": "/api/ao/scan-internal.js" },
     { "src": "/api/ao/scan-external", "dest": "/api/ao/scan-external.js" },
+    { "src": "/api/ao/daily-run-now", "dest": "/api/ao/daily-run-now.js" },
+    { "src": "/api/ao/import/upload", "dest": "/api/ao/import/upload.js" },
+    { "src": "/api/ao/import/batches/([^/]+)/publish", "dest": "/api/ao/import/batches/[id].js?id=$1&action=publish" },
+    { "src": "/api/ao/import/batches/([^/]+)", "dest": "/api/ao/import/batches/[id].js?id=$1" },
+    { "src": "/api/ao/import/batches", "dest": "/api/ao/import/batches.js" },
+    { "src": "/api/ao/external-sources/([^/]+)", "dest": "/api/ao/external-sources/[id].js?id=$1" },
+    { "src": "/api/ao/external-sources", "dest": "/api/ao/external-sources/index.js" },
     { "src": "/api/auth/linkedin/callback", "dest": "/api/auth/linkedin/callback.js" },
     { "src": "/api/auth/linkedin/start", "dest": "/api/auth/linkedin/start.js" },
     { "src": "/api/auth/meta/start", "dest": "/api/auth/meta/start.js" },
@@ -228,6 +248,7 @@
     { "src": "/api/providers/meta/test-post", "dest": "/api/providers/meta/test-post.js" },
     { "src": "/api/ao/x/status", "dest": "/api/ao/x/status.js" },
     { "src": "/api/providers/x/test-post", "dest": "/api/providers/x/test-post.js" },
+    { "src": "/api/providers/facebook/group-post", "dest": "/api/providers/facebook/group-post.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
@@ -243,6 +264,18 @@
     {
       "path": "/api/cron/generate-intelligence",
       "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/ao/external-scan",
+      "schedule": "40 12 * * *"
+    },
+    {
+      "path": "/api/cron/ao/internal-scan",
+      "schedule": "15 12 * * 1"
+    },
+    {
+      "path": "/api/cron/ao/daily-run",
+      "schedule": "55 12 * * *"
     },
     {
       "path": "/api/cron/publish-scheduled-posts",

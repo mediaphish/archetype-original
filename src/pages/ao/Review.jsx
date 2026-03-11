@@ -139,6 +139,60 @@ export default function Review() {
                     <li key={q.id} className="border border-gray-200 rounded p-4">
                       <p className="text-gray-800 mb-2">{q.quote_text?.slice(0, 300)}{q.quote_text?.length > 300 ? '…' : ''}</p>
                       <p className="text-gray-500 text-sm mb-3">Source: {q.source_slug_or_url || '—'} · Score: {q.composite_score ?? '—'}</p>
+                      {(q.drafts_by_channel || q.suggested_schedule) && (
+                        <div className="mb-3 space-y-2">
+                          {q.suggested_schedule?.slots?.length ? (
+                            <div className="text-xs text-gray-600">
+                              <span className="font-medium text-gray-700">Suggested timing:</span>{' '}
+                              {q.suggested_schedule.slots.slice(0, 3).map((s, idx) => (
+                                <span key={idx} className="mr-2">
+                                  {s.kind || 'slot'}: {s.recommended_at_utc ? new Date(s.recommended_at_utc).toLocaleString() : '—'}
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
+
+                          {q.drafts_by_channel && (
+                            <details className="border border-gray-200 rounded bg-gray-50 p-3">
+                              <summary className="cursor-pointer text-sm font-medium text-gray-800">Drafts (Bart voice)</summary>
+                              <div className="mt-3 grid gap-3 md:grid-cols-2">
+                                {['linkedin', 'facebook', 'instagram', 'x'].map((ch) => {
+                                  const text = q.drafts_by_channel?.[ch] || '';
+                                  const tags = q.hashtags_by_channel?.[ch] || [];
+                                  const fc = q.first_comment_suggestions?.[ch] || null;
+                                  if (!text) return null;
+                                  return (
+                                    <div key={ch} className="border border-gray-200 rounded bg-white p-3">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-xs uppercase tracking-wide text-gray-500">{ch}</span>
+                                        <button
+                                          type="button"
+                                          onClick={async () => {
+                                            try { await navigator.clipboard.writeText(text + (tags?.length ? `\n\n${tags.map((t) => (t.startsWith('#') ? t : `#${t}`)).join(' ')}` : '')); } catch (_) {}
+                                          }}
+                                          className="text-xs text-blue-600 hover:underline"
+                                        >
+                                          Copy
+                                        </button>
+                                      </div>
+                                      <p className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">{text}</p>
+                                      {Array.isArray(tags) && tags.length > 0 && (
+                                        <p className="mt-2 text-xs text-gray-600">{tags.map((t) => (String(t).startsWith('#') ? t : `#${t}`)).join(' ')}</p>
+                                      )}
+                                      {fc && (
+                                        <div className="mt-2">
+                                          <p className="text-xs font-medium text-gray-700">First comment (optional)</p>
+                                          <p className="text-xs text-gray-700 whitespace-pre-wrap">{fc}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </details>
+                          )}
+                        </div>
+                      )}
                       <div className="flex gap-2">
                         <button type="button" onClick={() => act('quote-approve', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">Approve</button>
                         <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>

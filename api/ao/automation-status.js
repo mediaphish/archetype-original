@@ -26,10 +26,12 @@ export default async function handler(req, res) {
     const rows = data || [];
     const internal = rows.find((r) => r.scan_type === 'internal');
     const external = rows.find((r) => r.scan_type === 'external');
+    const daily = rows.find((r) => r.scan_type === 'full_corpus');
     return res.status(200).json({
       ok: true,
       last_internal_scan: internal?.finished_at || internal?.started_at || null,
       last_external_scan: external?.finished_at || external?.started_at || null,
+      last_daily_run: daily?.finished_at || daily?.started_at || null,
       recent_errors: rows.filter((r) => r.error_message).slice(0, 5),
     });
   } catch (e) {

@@ -15,6 +15,18 @@ Run the migration `database/ao_magic_link_tokens.sql` in Supabase to create the 
 
 ---
 
+## AO Automation — Import “Publish to site” (optional, for file uploads)
+
+If you use the `/ao/import` feature to upload devotionals in batches, the “Publish validated items” button can create a commit directly in the GitHub repo so the content goes live without you doing anything manually.
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AO_GITHUB_TOKEN` | Yes (for publish) | GitHub token with permission to write to the `main` branch of `mediaphish/archetype-original`. |
+| `AO_GITHUB_REPOSITORY` | No | Repo in `owner/name` form. Default: `mediaphish/archetype-original`. |
+| `AO_GITHUB_BRANCH` | No | Branch name. Default: `main`. |
+
+---
+
 ## Meta (single app) — Instagram + Facebook
 
 When using one Meta app for both Instagram Business and a Facebook Page, set these and use `account_id` = `meta` (or `default`) when scheduling:

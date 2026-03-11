@@ -66,6 +66,7 @@ import AOInsights from "./pages/ao/Insights";
 import AOReview from "./pages/ao/Review";
 import AOPublishing from "./pages/ao/Publishing";
 import AOWriting from "./pages/ao/Writing";
+import AOImport from "./pages/ao/Import";
 import AOSettings from "./pages/ao/Settings";
 import AOLinkedInHandoff from "./pages/ao/LinkedInHandoff";
 // Operators pages - Lazy loaded for better performance
@@ -196,6 +197,7 @@ export default function App() {
     if (path === '/ao/auth/linkedin/handoff') return 'ao-linkedin-handoff';
     if (path.startsWith('/ao/')) {
       if (path === '/ao/command-center') return 'ao-command-center';
+      if (path === '/ao/import') return 'ao-import';
       if (path === '/ao/insights') return 'ao-insights';
       if (path === '/ao/review') return 'ao-review';
       if (path === '/ao/publishing') return 'ao-publishing';
@@ -408,6 +410,7 @@ export default function App() {
           return;
         }
         if (path === '/ao/command-center') setCurrentPage('ao-command-center');
+        else if (path === '/ao/import') setCurrentPage('ao-import');
         else if (path === '/ao/insights') setCurrentPage('ao-insights');
         else if (path === '/ao/review') setCurrentPage('ao-review');
         else if (path === '/ao/publishing') setCurrentPage('ao-publishing');
@@ -1009,6 +1012,9 @@ export default function App() {
   }
   if (currentPage === 'ao-command-center') {
     return <AOCommandCenter />;
+  }
+  if (currentPage === 'ao-import') {
+    return <AOImport />;
   }
   if (currentPage === 'ao-insights') {
     return <AOInsights />;

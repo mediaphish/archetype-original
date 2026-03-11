@@ -1,11 +1,13 @@
 /**
- * AO Automation — External scan (stub).
+ * AO Automation — External scan (allowlist-only).
  * POST /api/ao/scan-external?email=xxx
- * Logs a scan run; full RSS/article fetch can be added later.
+ *
+ * Reads curated sources from ao_external_sources, extracts candidate snippets,
+ * evaluates + dedupes, inserts into ao_quote_review_queue.
  */
 
-import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { requireAoSession } from '../../lib/ao/requireAoSession.js';
+import { runExternalScan } from '../../lib/ao/runExternalScan.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST' && req.method !== 'GET') {
@@ -14,27 +16,25 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
-  try {
-    const { data: logRow } = await supabaseAdmin
-      .from('ao_scan_log')
-      .insert({
-        scan_type: 'external',
-        started_at: new Date().toISOString(),
-        finished_at: new Date().toISOString(),
-        candidates_found: 0,
-        candidates_inserted: 0,
-        error_message: 'External scan not yet implemented',
-      })
-      .select('id')
-      .single();
-
-    return res.status(200).json({
-      ok: true,
-      message: 'External scan stub executed',
-      log_id: logRow?.id,
-    });
-  } catch (e) {
-    console.error('[ao/scan-external]', e);
-    return res.status(500).json({ ok: false, error: e.message });
+  const result = await runExternalScan();
+  if (!result.ok) {
+    const msg = String(result.error || 'External scan failed');
+    if (msg.includes('ao_scan_log') || msg.includes('ao_external_sources') || msg.includes('ao_quote_review_queue')) {
+      return res.status(500).json({
+        ok: false,
+        error: 'Scan tables are not set up yet. Run database/ao_queue_and_scan_schema.sql in Supabase.',
+        log_id: result.logId || null,
+      });
+    }
+    return res.status(500).json({ ok: false, error: msg, log_id: result.logId || null });
   }
+
+  return res.status(200).json({
+    ok: true,
+    message: result.message || 'External scan completed',
+    candidates_found: result.candidatesFound ?? 0,
+    candidates_evaluated: result.candidatesEvaluated ?? 0,
+    candidates_inserted: result.candidatesInserted ?? 0,
+    log_id: result.logId || null,
+  });
 }

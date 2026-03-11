@@ -49,6 +49,15 @@ export default function Settings() {
   const [xTestResult, setXTestResult] = useState(null); // success|error|null
   const [xTestError, setXTestError] = useState('');
 
+  const [sourcesLoading, setSourcesLoading] = useState(true);
+  const [sources, setSources] = useState([]);
+  const [sourcesError, setSourcesError] = useState('');
+  const [newSourceUrl, setNewSourceUrl] = useState('');
+  const [newSourceName, setNewSourceName] = useState('');
+  const [newSourceType, setNewSourceType] = useState('rss'); // rss | article
+  const [addSourceLoading, setAddSourceLoading] = useState(false);
+  const [deleteSourceLoading, setDeleteSourceLoading] = useState(null);
+
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -175,6 +184,82 @@ export default function Settings() {
     })();
     return () => { cancelled = true; };
   }, [authChecked]);
+
+  const loadSources = useCallback(async () => {
+    if (!authChecked) return;
+    setSourcesLoading(true);
+    setSourcesError('');
+    try {
+      const res = await fetch('/api/ao/external-sources');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setSources(Array.isArray(json.sources) ? json.sources : []);
+      } else {
+        setSources([]);
+        setSourcesError(json.error || 'Could not load sources');
+      }
+    } catch (e) {
+      setSources([]);
+      setSourcesError(e.message || 'Could not load sources');
+    } finally {
+      setSourcesLoading(false);
+    }
+  }, [authChecked]);
+
+  useEffect(() => {
+    loadSources();
+  }, [loadSources]);
+
+  async function handleAddSource() {
+    if (!authChecked || addSourceLoading) return;
+    const url = newSourceUrl.trim();
+    if (!url) return;
+    setAddSourceLoading(true);
+    setSourcesError('');
+    try {
+      const res = await fetch('/api/ao/external-sources', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url,
+          name: newSourceName.trim() || null,
+          source_type: newSourceType,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setSourcesError(json.error || 'Could not add source');
+      } else {
+        setNewSourceUrl('');
+        setNewSourceName('');
+        setNewSourceType('rss');
+        await loadSources();
+      }
+    } catch (e) {
+      setSourcesError(e.message || 'Could not add source');
+    } finally {
+      setAddSourceLoading(false);
+    }
+  }
+
+  async function handleDeleteSource(id) {
+    if (!authChecked || deleteSourceLoading) return;
+    setDeleteSourceLoading(id);
+    setSourcesError('');
+    try {
+      const res = await fetch(`/api/ao/external-sources/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setSourcesError(json.error || 'Could not delete source');
+      } else {
+        await loadSources();
+      }
+    } catch (e) {
+      setSourcesError(e.message || 'Could not delete source');
+    } finally {
+      setDeleteSourceLoading(null);
+    }
+  }
 
   const maskedEmail = email ? `${email.slice(0, 2)}***@${email.split('@')[1] || '***'}` : '—';
 
@@ -463,7 +548,85 @@ export default function Settings() {
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Scan configuration</h2>
-          <p className="text-gray-500 text-sm">Internal and external scan frequency and sources will be configurable here when the scan backend is connected.</p>
+          <p className="text-gray-600 text-sm mb-4">This is the curated allowlist used for the daily external scan. Add RSS feeds (preferred) or individual articles.</p>
+
+          {sourcesError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{sourcesError}</div>
+          )}
+
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Source URL</label>
+              <input
+                value={newSourceUrl}
+                onChange={(e) => setNewSourceUrl(e.target.value)}
+                placeholder="https://example.com/feed.xml"
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+              <select
+                value={newSourceType}
+                onChange={(e) => setNewSourceType(e.target.value)}
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm bg-white"
+              >
+                <option value="rss">RSS feed</option>
+                <option value="article">Article</option>
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Name (optional)</label>
+              <input
+                value={newSourceName}
+                onChange={(e) => setNewSourceName(e.target.value)}
+                placeholder="Example: “Harvard Business Review”"
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="flex items-end">
+              <button
+                type="button"
+                onClick={handleAddSource}
+                disabled={addSourceLoading || !newSourceUrl.trim()}
+                className="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 disabled:opacity-50"
+              >
+                {addSourceLoading ? 'Adding…' : 'Add source'}
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Allowlist</h3>
+            {sourcesLoading ? (
+              <p className="text-sm text-gray-500">Loading…</p>
+            ) : sources.length === 0 ? (
+              <p className="text-sm text-gray-500">No sources yet. Add at least 1 RSS feed to enable external scanning.</p>
+            ) : (
+              <ul className="divide-y divide-gray-200 border border-gray-200 rounded">
+                {sources.map((s) => (
+                  <li key={s.id} className="p-3 flex flex-wrap items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {s.name || s.url}
+                        <span className="ml-2 text-xs text-gray-500">({s.source_type})</span>
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">{s.url}</p>
+                      <p className="text-xs text-gray-400">Last fetched: {s.last_fetched_at ? new Date(s.last_fetched_at).toLocaleString() : '—'}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSource(s.id)}
+                      disabled={deleteSourceLoading === s.id}
+                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      {deleteSourceLoading === s.id ? 'Deleting…' : 'Delete'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </section>
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">

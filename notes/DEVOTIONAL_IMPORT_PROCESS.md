@@ -3,6 +3,8 @@
 ## Overview
 This document describes the standard process for importing new devotional markdown files into the archetype-original system. This process should be followed every time new devotionals are added.
 
+**New (preferred) option:** Use the AO Automation dashboard at `/ao/import` to upload **multiple devotional markdown files at once**, review validation, and then publish the batch.
+
 ## System Architecture
 
 - **Devotionals Location**: `/Users/mediaphish/archetype-original/ao-knowledge-hq-kit/journal/devotionals/`
@@ -41,6 +43,14 @@ summary: "Brief summary text"
 **Note**: The full scripture text is NOT embedded in the markdown. The `ScriptureBlock` component fetches it dynamically from ESV API using the `scripture_reference` from frontmatter.
 
 ## Import Process Steps
+
+### Option A (preferred): Upload batch in AO Automation
+1. Go to `/ao/import`
+2. Select **multiple** `.md` files (5–7 at a time is fine)
+3. Click **Upload batch**
+4. Review any validation errors (missing frontmatter fields, missing sections, etc.)
+5. Click **Publish validated items** when ready
+6. Confirm the devotionals appear on `/faith` on the correct dates (future publish dates remain hidden until their day)
 
 ### Step 1: Copy Markdown Files
 1. Locate the devotional markdown files (usually in Downloads or provided by user)
