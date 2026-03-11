@@ -107,10 +107,14 @@
     { "src": "api/auth/linkedin/start.js", "use": "@vercel/node" },
     { "src": "api/auth/meta/start.js", "use": "@vercel/node" },
     { "src": "api/auth/meta/callback.js", "use": "@vercel/node" },
+    { "src": "api/auth/x/start.js", "use": "@vercel/node" },
+    { "src": "api/auth/x/callback.js", "use": "@vercel/node" },
     { "src": "api/ao/linkedin/status.js", "use": "@vercel/node" },
     { "src": "api/providers/linkedin/test-post.js", "use": "@vercel/node" },
     { "src": "api/ao/meta/status.js", "use": "@vercel/node" },
-    { "src": "api/providers/meta/test-post.js", "use": "@vercel/node" }
+    { "src": "api/providers/meta/test-post.js", "use": "@vercel/node" },
+    { "src": "api/ao/x/status.js", "use": "@vercel/node" },
+    { "src": "api/providers/x/test-post.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -216,10 +220,14 @@
     { "src": "/api/auth/linkedin/start", "dest": "/api/auth/linkedin/start.js" },
     { "src": "/api/auth/meta/start", "dest": "/api/auth/meta/start.js" },
     { "src": "/api/auth/meta/callback", "dest": "/api/auth/meta/callback.js" },
+    { "src": "/api/auth/x/start", "dest": "/api/auth/x/start.js" },
+    { "src": "/api/auth/x/callback", "dest": "/api/auth/x/callback.js" },
     { "src": "/api/ao/linkedin/status", "dest": "/api/ao/linkedin/status.js" },
     { "src": "/api/providers/linkedin/test-post", "dest": "/api/providers/linkedin/test-post.js" },
     { "src": "/api/ao/meta/status", "dest": "/api/ao/meta/status.js" },
     { "src": "/api/providers/meta/test-post", "dest": "/api/providers/meta/test-post.js" },
+    { "src": "/api/ao/x/status", "dest": "/api/ao/x/status.js" },
+    { "src": "/api/providers/x/test-post", "dest": "/api/providers/x/test-post.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],

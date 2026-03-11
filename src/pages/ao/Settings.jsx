@@ -8,6 +8,8 @@ export default function Settings() {
   const [linkedinMessage, setLinkedinMessage] = useState('');
   const [metaConnectStatus, setMetaConnectStatus] = useState(null);
   const [metaConnectMessage, setMetaConnectMessage] = useState('');
+  const [xConnectStatus, setXConnectStatus] = useState(null);
+  const [xConnectMessage, setXConnectMessage] = useState('');
   const [linkedinConnected, setLinkedinConnected] = useState(false);
   const [linkedinLoading, setLinkedinLoading] = useState(true);
   const [linkedinTestLoading, setLinkedinTestLoading] = useState(false);
@@ -19,6 +21,14 @@ export default function Settings() {
   const [metaTestLoading, setMetaTestLoading] = useState({ facebook: false, instagram: false });
   const [metaTestResult, setMetaTestResult] = useState({ facebook: null, instagram: null }); // success|error|null
   const [metaTestError, setMetaTestError] = useState({ facebook: '', instagram: '' });
+
+  const [xLoading, setXLoading] = useState(true);
+  const [xConnected, setXConnected] = useState(false);
+  const [xUsername, setXUsername] = useState('');
+  const [xError, setXError] = useState('');
+  const [xTestLoading, setXTestLoading] = useState(false);
+  const [xTestResult, setXTestResult] = useState(null); // success|error|null
+  const [xTestError, setXTestError] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -35,6 +45,10 @@ export default function Settings() {
     if (params.get('provider') === 'meta') {
       setMetaConnectStatus(params.get('status') || null);
       setMetaConnectMessage(params.get('message') || '');
+    }
+    if (params.get('provider') === 'x') {
+      setXConnectStatus(params.get('status') || null);
+      setXConnectMessage(params.get('message') || '');
     }
   }, []);
 
@@ -106,6 +120,37 @@ export default function Settings() {
     return () => { cancelled = true; };
   }, [authChecked]);
 
+  useEffect(() => {
+    if (!authChecked) return;
+    let cancelled = false;
+    (async () => {
+      setXLoading(true);
+      setXError('');
+      try {
+        const res = await fetch('/api/ao/x/status');
+        const json = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        if (res.ok && json.ok) {
+          setXConnected(!!json.connected);
+          setXUsername(json.username || '');
+        } else {
+          setXConnected(false);
+          setXUsername('');
+          setXError(json.error || 'X status check failed');
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setXConnected(false);
+          setXUsername('');
+          setXError(e.message || 'X status check failed');
+        }
+      } finally {
+        if (!cancelled) setXLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [authChecked]);
+
   const maskedEmail = email ? `${email.slice(0, 2)}***@${email.split('@')[1] || '***'}` : '—';
 
   async function handleLinkedInTestPost() {
@@ -160,6 +205,28 @@ export default function Settings() {
     }
   }
 
+  async function handleXTestPost() {
+    if (!authChecked) return;
+    setXTestResult(null);
+    setXTestError('');
+    setXTestLoading(true);
+    try {
+      const res = await fetch('/api/providers/x/test-post', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (json.ok) {
+        setXTestResult('success');
+      } else {
+        setXTestResult('error');
+        setXTestError(json.error || 'Request failed');
+      }
+    } catch (e) {
+      setXTestResult('error');
+      setXTestError(e.message || 'Request failed');
+    } finally {
+      setXTestLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="settings" email={email} onNavigate={handleNavigate} />
@@ -178,6 +245,12 @@ export default function Settings() {
         )}
         {metaConnectStatus === 'error' && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">Meta connection failed.{metaConnectMessage ? ` ${metaConnectMessage}` : ''}</div>
+        )}
+        {xConnectStatus === 'connected' && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">X connected. You can publish to @archetypeog.</div>
+        )}
+        {xConnectStatus === 'error' && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">X connection failed.{xConnectMessage ? ` ${xConnectMessage}` : ''}</div>
         )}
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
@@ -305,6 +378,48 @@ export default function Settings() {
               <p className="text-xs text-gray-500">
                 Test posts publish real content to your Facebook Page and Instagram feed. If connection is missing, see <a href="https://github.com/mediaphish/archetype-original/blob/main/notes/SOCIAL_VERCEL_ENV.md" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">notes/SOCIAL_VERCEL_ENV.md</a>.
               </p>
+            </div>
+          )}
+        </section>
+
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">X</h2>
+          <p className="text-gray-600 text-sm mb-4">Connect your X account for publishing.</p>
+
+          {xLoading ? (
+            <p className="text-gray-500 text-sm">Checking connection…</p>
+          ) : xError ? (
+            <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">X status check failed. {xError}</div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className={`text-sm font-medium ${xConnected ? 'text-green-700' : 'text-gray-600'}`}>
+                  {xConnected ? `Connected${xUsername ? ` (@${xUsername})` : ''}` : 'Not connected'}
+                </span>
+                <a
+                  href="/api/auth/x/start"
+                  className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1"
+                  style={xConnected ? { border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151' } : { backgroundColor: '#111827', color: '#fff' }}
+                >
+                  {xConnected ? 'Reconnect X' : 'Connect X'}
+                </a>
+                {xConnected && (
+                  <button
+                    type="button"
+                    onClick={handleXTestPost}
+                    disabled={xTestLoading}
+                    className="inline-block px-4 py-2 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    {xTestLoading ? 'Posting…' : 'Post X Test'}
+                  </button>
+                )}
+              </div>
+              {xTestResult === 'success' && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">X test post published.</div>
+              )}
+              {xTestResult === 'error' && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">X test post failed.{xTestError ? ` ${xTestError}` : ''}</div>
+              )}
             </div>
           )}
         </section>
