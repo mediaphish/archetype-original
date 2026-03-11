@@ -25,6 +25,7 @@ function FirstCommentStatusBadge({ status, errorMessage }) {
 
 export default function Publishing() {
   const [email, setEmail] = useState('');
+  const [authChecked, setAuthChecked] = useState(false);
   const [scheduled, setScheduled] = useState([]);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,11 +42,28 @@ export default function Publishing() {
   }, []);
 
   useEffect(() => {
-    const e = new URLSearchParams(window.location.search).get('email') || localStorage.getItem('ao_email') || '';
-    setEmail(e);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/me');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        if (!cancelled) {
+          setEmail(json.email || '');
+          setAuthChecked(true);
+        }
+      } catch (_) {
+        window.location.replace('/ao/login');
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const fetchPosts = useCallback(async () => {
+    if (!authChecked) return;
     if (!email) {
       setLoading(false);
       return;
@@ -53,8 +71,8 @@ export default function Publishing() {
     setLoading(true);
     try {
       const [schedRes, histRes] = await Promise.all([
-        fetch(`/api/ao/scheduled-posts?email=${encodeURIComponent(email)}&status=scheduled&limit=50`),
-        fetch(`/api/ao/scheduled-posts?email=${encodeURIComponent(email)}&limit=50`),
+        fetch(`/api/ao/scheduled-posts?status=scheduled&limit=50`),
+        fetch(`/api/ao/scheduled-posts?limit=50`),
       ]);
       const schedJson = await schedRes.json().catch(() => ({}));
       const histJson = await histRes.json().catch(() => ({}));
@@ -65,7 +83,7 @@ export default function Publishing() {
       }
     } catch (_) {}
     setLoading(false);
-  }, [email]);
+  }, [authChecked, email]);
 
   useEffect(() => {
     fetchPosts();
@@ -88,10 +106,10 @@ export default function Publishing() {
   };
 
   const handlePatchFirstComment = useCallback(async (id, first_comment) => {
-    if (!email) return;
+    if (!authChecked) return;
     setPatchLoading(true);
     try {
-      const res = await fetch(`/api/ao/scheduled-posts/${id}?email=${encodeURIComponent(email)}`, {
+      const res = await fetch(`/api/ao/scheduled-posts/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ first_comment }),
@@ -104,7 +122,7 @@ export default function Publishing() {
       }
     } catch (_) {}
     setPatchLoading(false);
-  }, [email, fetchPosts]);
+  }, [authChecked, fetchPosts]);
 
   const startEdit = (post) => {
     setEditingId(post.id);

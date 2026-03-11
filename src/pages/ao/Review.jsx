@@ -8,13 +8,9 @@ const TABS = [
   { key: 'expandable', label: 'Expandable Ideas Queue' },
 ];
 
-function withEmail(path, email) {
-  if (!email) return path;
-  return `${path}${path.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`;
-}
-
 export default function Review() {
   const [email, setEmail] = useState('');
+  const [authChecked, setAuthChecked] = useState(false);
   const [activeTab, setActiveTab] = useState('social');
   const [quotes, setQuotes] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -29,11 +25,28 @@ export default function Review() {
   }, []);
 
   useEffect(() => {
-    const e = new URLSearchParams(window.location.search).get('email') || localStorage.getItem('ao_email') || '';
-    setEmail(e);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/me');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        if (!cancelled) {
+          setEmail(json.email || '');
+          setAuthChecked(true);
+        }
+      } catch (_) {
+        window.location.replace('/ao/login');
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
+    if (!authChecked) return;
     if (!email) {
       setLoading(false);
       return;
@@ -42,9 +55,9 @@ export default function Review() {
     (async () => {
       try {
         const [quotesRes, journalRes, writingRes] = await Promise.all([
-          fetch(`/api/ao/quotes/list?email=${encodeURIComponent(email)}`),
-          fetch(`/api/ao/journal-topics/list?email=${encodeURIComponent(email)}`),
-          fetch(`/api/ao/writing/list?email=${encodeURIComponent(email)}`),
+          fetch(`/api/ao/quotes/list`),
+          fetch(`/api/ao/journal-topics/list`),
+          fetch(`/api/ao/writing/list`),
         ]);
         if (cancelled) return;
         const q = await quotesRes.json().catch(() => ({}));
@@ -57,21 +70,21 @@ export default function Review() {
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [email]);
+  }, [authChecked, email]);
 
   const act = useCallback(async (kind, id, extra) => {
-    if (!email || acting) return;
+    if (!authChecked || acting) return;
     setActing(id);
     try {
       const base = `/api/ao`;
       let url = '';
-      if (kind === 'quote-approve') url = `${base}/quotes/${id}/approve?email=${encodeURIComponent(email)}`;
-      else if (kind === 'quote-reject') url = `${base}/quotes/${id}/reject?email=${encodeURIComponent(email)}`;
-      else if (kind === 'topic-approve') url = `${base}/journal-topics/${id}/approve?email=${encodeURIComponent(email)}`;
-      else if (kind === 'topic-reject') url = `${base}/journal-topics/${id}/reject?email=${encodeURIComponent(email)}`;
-      else if (kind === 'topic-approve-draft') url = `${base}/journal-topics/${id}/approve-and-draft?email=${encodeURIComponent(email)}`;
-      else if (kind === 'writing-draft') url = `${base}/writing/${id}/draft?email=${encodeURIComponent(email)}`;
-      else if (kind === 'writing-discard') url = `${base}/writing/${id}/discard?email=${encodeURIComponent(email)}`;
+      if (kind === 'quote-approve') url = `${base}/quotes/${id}/approve`;
+      else if (kind === 'quote-reject') url = `${base}/quotes/${id}/reject`;
+      else if (kind === 'topic-approve') url = `${base}/journal-topics/${id}/approve`;
+      else if (kind === 'topic-reject') url = `${base}/journal-topics/${id}/reject`;
+      else if (kind === 'topic-approve-draft') url = `${base}/journal-topics/${id}/approve-and-draft`;
+      else if (kind === 'writing-draft') url = `${base}/writing/${id}/draft`;
+      else if (kind === 'writing-discard') url = `${base}/writing/${id}/discard`;
       if (!url) return;
       const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: extra ? JSON.stringify(extra) : undefined });
       const json = await res.json().catch(() => ({}));
@@ -84,7 +97,7 @@ export default function Review() {
     } finally {
       setActing(null);
     }
-  }, [email, acting]);
+  }, [authChecked, acting]);
 
   const pendingQuotes = quotes.filter((q) => q.status === 'pending');
   const pendingTopics = topics.filter((t) => t.status === 'pending');
@@ -116,7 +129,7 @@ export default function Review() {
           ) : activeTab === 'social' && (
             <>
               <p className="text-gray-600 text-sm mb-4">
-                First comment supported on: Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment in <button type="button" onClick={() => handleNavigate(withEmail('/ao/publishing', email))} className="text-blue-600 hover:underline">Publishing</button> when scheduling posts.
+                First comment supported on: Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment in <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="text-blue-600 hover:underline">Publishing</button> when scheduling posts.
               </p>
               {pendingQuotes.length === 0 ? (
                 <p className="text-gray-500">No pending quotes. Run an internal scan from Command Center to add candidates.</p>

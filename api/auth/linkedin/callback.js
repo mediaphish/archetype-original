@@ -6,6 +6,7 @@
 
 import { createHmac } from 'crypto';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { readAoSession } from '../../../lib/ao/requireAoSession.js';
 
 const SITE_URL = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const SETTINGS_PATH = '/ao/settings';
@@ -71,6 +72,14 @@ export default async function handler(req, res) {
     res.statusCode = 405;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ error: 'Method not allowed' }));
+    return;
+  }
+
+  // Owner-only: if not signed in to AO, do not accept LinkedIn callbacks.
+  const session = readAoSession(req);
+  if (!session.ok) {
+    clearStateCookie(res);
+    redirect(res, '/ao/login');
     return;
   }
 

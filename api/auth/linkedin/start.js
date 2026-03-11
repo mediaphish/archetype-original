@@ -5,6 +5,7 @@
  */
 
 import { randomBytes, createHmac } from 'crypto';
+import { readAoSession } from '../../../lib/ao/requireAoSession.js';
 
 const SITE_URL = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const COOKIE_NAME = 'ao_linkedin_oauth_state';
@@ -51,6 +52,13 @@ export default async function handler(req, res) {
     res.statusCode = 405;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ error: 'Method not allowed' }));
+    return;
+  }
+
+  // Owner-only: require AO session cookie before starting OAuth.
+  const session = readAoSession(req);
+  if (!session.ok) {
+    redirect(res, `${SITE_URL}/ao/login`);
     return;
   }
 

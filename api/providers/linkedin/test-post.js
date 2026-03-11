@@ -6,7 +6,7 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { requireOwnerEmail } from '../../../lib/ao/requireOwnerEmail.js';
+import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 
 const LINKEDIN_REST_BASE = 'https://api.linkedin.com/rest';
 const LINKEDIN_V2_BASE = 'https://api.linkedin.com/v2';
@@ -98,7 +98,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  const auth = requireOwnerEmail(req, res);
+  const auth = requireAoSession(req, res);
   if (!auth) return;
 
   try {

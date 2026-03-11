@@ -7,7 +7,7 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
-import { requireOwnerEmail } from '../../lib/ao/requireOwnerEmail.js';
+import { requireAoSession } from '../../lib/ao/requireAoSession.js';
 import { evaluateCandidate } from '../../lib/ao/evaluateCandidate.js';
 import {
   normalizeQuoteText,
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
-  const auth = requireOwnerEmail(req, res);
+  const auth = requireAoSession(req, res);
   if (!auth) return;
 
   let logId = null;

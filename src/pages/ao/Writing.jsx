@@ -4,6 +4,7 @@ import LoadingSpinner from '../../components/operators/LoadingSpinner';
 
 export default function Writing() {
   const [email, setEmail] = useState('');
+  const [authChecked, setAuthChecked] = useState(false);
   const [writing, setWriting] = useState([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null);
@@ -15,11 +16,28 @@ export default function Writing() {
   }, []);
 
   useEffect(() => {
-    const e = new URLSearchParams(window.location.search).get('email') || localStorage.getItem('ao_email') || '';
-    setEmail(e);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/me');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        if (!cancelled) {
+          setEmail(json.email || '');
+          setAuthChecked(true);
+        }
+      } catch (_) {
+        window.location.replace('/ao/login');
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
+    if (!authChecked) return;
     if (!email) {
       setLoading(false);
       return;
@@ -27,7 +45,7 @@ export default function Writing() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`/api/ao/writing/list?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`/api/ao/writing/list`);
         if (cancelled) return;
         const json = await res.json().catch(() => ({}));
         if (json.ok && Array.isArray(json.writing)) setWriting(json.writing);
@@ -35,14 +53,14 @@ export default function Writing() {
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [email]);
+  }, [authChecked, email]);
 
   const act = useCallback(async (kind, id) => {
-    if (!email || acting) return;
+    if (!authChecked || acting) return;
     setActing(id);
     try {
       const url = kind === 'draft' ? `/api/ao/writing/${id}/draft` : `/api/ao/writing/${id}/discard`;
-      const res = await fetch(`${url}?email=${encodeURIComponent(email)}`, { method: 'POST' });
+      const res = await fetch(`${url}`, { method: 'POST' });
       const json = await res.json().catch(() => ({}));
       if (json.ok) {
         if (kind === 'draft' && json.writing) setWriting((prev) => prev.map((w) => (w.id === id ? json.writing : w)));
@@ -51,7 +69,7 @@ export default function Writing() {
     } finally {
       setActing(null);
     }
-  }, [email, acting]);
+  }, [authChecked, acting]);
 
   const pending = writing.filter((w) => w.status === 'pending' || w.status === 'drafting');
   const drafted = writing.filter((w) => w.status === 'drafted');

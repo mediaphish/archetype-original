@@ -3,6 +3,7 @@ import AOHeader from '../../components/ao/AOHeader';
 
 export default function Settings() {
   const [email, setEmail] = useState('');
+  const [authChecked, setAuthChecked] = useState(false);
   const [linkedinStatus, setLinkedinStatus] = useState(null);
   const [linkedinMessage, setLinkedinMessage] = useState('');
   const [linkedinConnected, setLinkedinConnected] = useState(false);
@@ -18,8 +19,6 @@ export default function Settings() {
   }, []);
 
   useEffect(() => {
-    const e = new URLSearchParams(window.location.search).get('email') || localStorage.getItem('ao_email') || '';
-    setEmail(e);
     const params = new URLSearchParams(window.location.search);
     if (params.get('provider') === 'linkedin') {
       setLinkedinStatus(params.get('status') || null);
@@ -28,6 +27,28 @@ export default function Settings() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/me');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        if (!cancelled) {
+          setEmail(json.email || '');
+          setAuthChecked(true);
+        }
+      } catch (_) {
+        window.location.replace('/ao/login');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!authChecked) return;
     if (!email) {
       setLinkedinLoading(false);
       return;
@@ -35,7 +56,7 @@ export default function Settings() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`/api/ao/linkedin/status?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`/api/ao/linkedin/status`);
         if (cancelled) return;
         const json = await res.json().catch(() => ({}));
         if (json.ok) setLinkedinConnected(!!json.connected);
@@ -43,19 +64,19 @@ export default function Settings() {
       if (!cancelled) setLinkedinLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [email]);
+  }, [authChecked, email]);
 
   const maskedEmail = email ? `${email.slice(0, 2)}***@${email.split('@')[1] || '***'}` : '—';
 
   async function handleLinkedInTestPost() {
-    if (!email) return;
+    if (!authChecked) return;
     setLinkedinTestResult(null);
     setLinkedinTestError('');
     setLinkedinTestLoading(true);
     try {
       const res = await fetch('/api/providers/linkedin/test-post', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-ao-email': email },
+        headers: { 'Content-Type': 'application/json' },
       });
       const data = await res.json().catch(() => ({}));
       if (data.success) {

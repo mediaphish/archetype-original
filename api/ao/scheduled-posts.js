@@ -1,25 +1,19 @@
 /**
  * AO Automation Dashboard — List scheduled posts.
- * GET /api/ao/scheduled-posts?email=xxx&status=xxx&limit=50
- * Requires email (owner). Optional: status (scheduled|publishing|posted|failed), limit, from, to.
+ * GET /api/ao/scheduled-posts?status=xxx&limit=50
+ * Owner-only session required. Optional: status (scheduled|publishing|posted|failed), limit, from, to.
  */
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
-
-const OWNER_EMAIL = (process.env.AO_OWNER_EMAIL || '').toLowerCase().trim();
+import { requireAoSession } from '../../lib/ao/requireAoSession.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const email = (req.query?.email || req.headers?.['x-ao-email'] || '').toLowerCase().trim();
-  if (!email) {
-    return res.status(401).json({ error: 'Email required' });
-  }
-  if (OWNER_EMAIL && email !== OWNER_EMAIL) {
-    return res.status(403).json({ error: 'Not authorized' });
-  }
+  const auth = requireAoSession(req, res);
+  if (!auth) return;
 
   const status = req.query?.status || null;
   const limit = Math.min(Number(req.query?.limit) || 50, 100);

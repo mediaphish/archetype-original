@@ -18,8 +18,23 @@ export default function Insights() {
   }, []);
 
   useEffect(() => {
-    const e = new URLSearchParams(window.location.search).get('email') || localStorage.getItem('ao_email') || '';
-    setEmail(e);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/me');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        if (!cancelled) {
+          setEmail(json.email || '');
+        }
+      } catch (_) {
+        window.location.replace('/ao/login');
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   return (

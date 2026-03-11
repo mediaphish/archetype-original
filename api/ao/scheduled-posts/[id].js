@@ -5,14 +5,14 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { requireOwnerEmail } from '../../../lib/ao/requireOwnerEmail.js';
+import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'PATCH') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
-  const auth = requireOwnerEmail(req, res);
+  const auth = requireAoSession(req, res);
   if (!auth) return;
 
   const id = req.query?.id;

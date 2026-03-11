@@ -2,13 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
 
-function withEmail(path, email) {
-  if (!email) return path;
-  return `${path}${path.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`;
-}
-
 export default function CommandCenter() {
   const [email, setEmail] = useState('');
+  const [authChecked, setAuthChecked] = useState(false);
   const [scheduled, setScheduled] = useState([]);
   const [failures, setFailures] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,12 +21,28 @@ export default function CommandCenter() {
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const e = params.get('email') || (typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null) || '';
-    setEmail(e);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/me');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          window.location.replace('/ao/login');
+          return;
+        }
+        if (!cancelled) {
+          setEmail(json.email || '');
+          setAuthChecked(true);
+        }
+      } catch (_) {
+        window.location.replace('/ao/login');
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
+    if (!authChecked) return;
     if (!email) {
       setLoading(false);
       return;
@@ -39,12 +51,12 @@ export default function CommandCenter() {
     (async () => {
       try {
         const [schedRes, failRes, statusRes, quotesRes, journalRes, writingRes] = await Promise.all([
-          fetch(`/api/ao/scheduled-posts?email=${encodeURIComponent(email)}&status=scheduled&limit=10`),
-          fetch(`/api/ao/scheduled-posts?email=${encodeURIComponent(email)}&status=failed&limit=10`),
-          fetch(`/api/ao/automation-status?email=${encodeURIComponent(email)}`),
-          fetch(`/api/ao/quotes/list?email=${encodeURIComponent(email)}`),
-          fetch(`/api/ao/journal-topics/list?email=${encodeURIComponent(email)}`),
-          fetch(`/api/ao/writing/list?email=${encodeURIComponent(email)}`),
+          fetch(`/api/ao/scheduled-posts?status=scheduled&limit=10`),
+          fetch(`/api/ao/scheduled-posts?status=failed&limit=10`),
+          fetch(`/api/ao/automation-status`),
+          fetch(`/api/ao/quotes/list`),
+          fetch(`/api/ao/journal-topics/list`),
+          fetch(`/api/ao/writing/list`),
         ]);
         if (cancelled) return;
         const schedJson = await schedRes.json().catch(() => ({}));
@@ -63,13 +75,13 @@ export default function CommandCenter() {
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [email]);
+  }, [authChecked, email]);
 
   const runScan = useCallback(async (type) => {
-    if (!email || scanning) return;
+    if (!authChecked || scanning) return;
     setScanning(true);
     try {
-      const url = `${type === 'internal' ? '/api/ao/scan-internal' : '/api/ao/scan-external'}?email=${encodeURIComponent(email)}`;
+      const url = `${type === 'internal' ? '/api/ao/scan-internal' : '/api/ao/scan-external'}`;
       const res = await fetch(url, { method: 'POST' });
       const json = await res.json().catch(() => ({}));
       if (json.ok) {
@@ -79,7 +91,7 @@ export default function CommandCenter() {
     } finally {
       setScanning(false);
     }
-  }, [email, scanning]);
+  }, [authChecked, scanning]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -93,19 +105,19 @@ export default function CommandCenter() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">New social candidates</h2>
             <p className="text-gray-700 font-medium">{quotesCount} pending</p>
             <p className="text-gray-500 text-sm mt-1">Quote queue from internal scan.</p>
-            <button type="button" onClick={() => handleNavigate(withEmail('/ao/review', email))} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Social</button>
+            <button type="button" onClick={() => handleNavigate('/ao/review')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Social</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">New journal candidates</h2>
             <p className="text-gray-700 font-medium">{journalCount} pending</p>
             <p className="text-gray-500 text-sm mt-1">Journal topic queue.</p>
-            <button type="button" onClick={() => handleNavigate(withEmail('/ao/review', email))} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Journal</button>
+            <button type="button" onClick={() => handleNavigate('/ao/review')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Journal</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Expandable ideas</h2>
             <p className="text-gray-700 font-medium">{writingCount} in queue</p>
             <p className="text-gray-500 text-sm mt-1">Writing queue (drafting).</p>
-            <button type="button" onClick={() => handleNavigate(withEmail('/ao/writing', email))} className="mt-3 text-blue-600 hover:underline text-sm">Go to Writing</button>
+            <button type="button" onClick={() => handleNavigate('/ao/writing')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Writing</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Contradiction / clarification</h2>
@@ -124,12 +136,12 @@ export default function CommandCenter() {
               {scheduled.slice(0, 5).map((p) => (
                 <li key={p.id} className="flex justify-between items-start text-sm">
                   <span className="text-gray-700">{p.platform} / {p.account_id} — {new Date(p.scheduled_at).toLocaleString()}</span>
-                  <button type="button" onClick={() => handleNavigate(withEmail('/ao/publishing', email))} className="text-blue-600 hover:underline">View</button>
+                  <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="text-blue-600 hover:underline">View</button>
                 </li>
               ))}
             </ul>
           )}
-          <button type="button" onClick={() => handleNavigate(withEmail('/ao/publishing', email))} className="mt-3 text-blue-600 hover:underline text-sm">View all in Publishing</button>
+          <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="mt-3 text-blue-600 hover:underline text-sm">View all in Publishing</button>
         </section>
 
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
@@ -147,7 +159,7 @@ export default function CommandCenter() {
               ))}
             </ul>
           )}
-          <button type="button" onClick={() => handleNavigate(withEmail('/ao/publishing', email))} className="mt-3 text-blue-600 hover:underline text-sm">View in Publishing</button>
+          <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="mt-3 text-blue-600 hover:underline text-sm">View in Publishing</button>
         </section>
 
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">

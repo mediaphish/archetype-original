@@ -25,9 +25,9 @@ export default function AOHeader({ active, email, onNavigate }) {
     }
   }, [onNavigate]);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
     try {
-      localStorage.removeItem('ao_email');
+      await fetch('/api/ao/auth/logout', { method: 'POST' });
     } catch (e) {}
     handleNavigate('/ao/login');
   }, [handleNavigate]);

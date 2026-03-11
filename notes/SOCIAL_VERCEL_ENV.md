@@ -9,6 +9,7 @@ Add these in your Vercel project (archetype-original) for the internal social sc
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `AO_OWNER_EMAIL` | Yes (for dashboard) | The single allowed email for magic-link sign-in to the AO Automation Dashboard at `/ao/login`. Only this email can request or use a magic link. |
+| `AO_SESSION_SECRET` | Yes (for dashboard) | Secret used to sign the owner’s AO session cookie after the magic link is verified. |
 
 Run the migration `database/ao_magic_link_tokens.sql` in Supabase to create the tokens table.
 

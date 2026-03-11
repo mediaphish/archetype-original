@@ -4,6 +4,7 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { setAoSessionCookie } from '../../../lib/ao/requireAoSession.js';
 
 const siteUrl = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const loginPath = '/ao/login';
@@ -65,7 +66,15 @@ export default async function handler(req, res) {
       .update({ used: true, used_at: new Date().toISOString() })
       .eq('id', tokenData.id);
 
-    const redirectUrl = `${siteUrl}${dashboardPath}?email=${encodeURIComponent(emailLower)}`;
+    const cookieOk = setAoSessionCookie(res, emailLower);
+    if (!cookieOk) {
+      return res
+        .status(503)
+        .send(errorPage('Login Not Configured', 'AO session signing is not configured on the server.', loginPath, 'Go to Login'));
+    }
+
+    res.setHeader('Cache-Control', 'no-store');
+    const redirectUrl = `${siteUrl}${dashboardPath}`;
     return res.status(302).setHeader('Location', redirectUrl).send(`
       <!DOCTYPE html>
       <html>

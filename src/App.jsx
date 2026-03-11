@@ -190,16 +190,11 @@ export default function App() {
     }
     // AO Automation Dashboard routes
     if (path === '/ao' || path === '/ao/') {
-      const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
-      const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
-      return (storedEmail || urlEmail) ? 'ao-command-center' : 'ao-login';
+      return 'ao-command-center';
     }
     if (path === '/ao/login') return 'ao-login';
     if (path === '/ao/auth/linkedin/handoff') return 'ao-linkedin-handoff';
     if (path.startsWith('/ao/')) {
-      const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
-      const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
-      if (!storedEmail && !urlEmail) return 'ao-login';
       if (path === '/ao/command-center') return 'ao-command-center';
       if (path === '/ao/insights') return 'ao-insights';
       if (path === '/ao/review') return 'ao-review';
@@ -228,23 +223,7 @@ export default function App() {
     }
   }, []);
 
-  // AO Automation: store email from URL and protect routes
-  useEffect(() => {
-    const path = window.location.pathname;
-    if (!path.startsWith('/ao/')) return;
-    if (path === '/ao/login') return;
-    if (path === '/ao/auth/linkedin/handoff') return;
-    const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
-    const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
-    if (urlEmail) {
-      try {
-        localStorage.setItem('ao_email', urlEmail);
-      } catch (e) {}
-    }
-    if (!storedEmail && !urlEmail) {
-      window.location.replace('/ao/login');
-    }
-  }, []);
+  // AO Automation routes are protected server-side via signed session cookie.
 
   useEffect(() => {
     // Disable scroll restoration globally for journal pages
@@ -415,13 +394,7 @@ export default function App() {
 
       // AO Automation Dashboard routes
       if (path === '/ao' || path === '/ao/') {
-        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
-        const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
-        if (!storedEmail && !urlEmail) {
-          window.location.replace('/ao/login');
-          return;
-        }
-        window.history.replaceState({}, '', '/ao/command-center' + (urlEmail ? `?email=${encodeURIComponent(urlEmail)}` : ''));
+        window.history.replaceState({}, '', '/ao/command-center');
         setCurrentPage('ao-command-center');
         return;
       }
@@ -432,19 +405,6 @@ export default function App() {
       if (path.startsWith('/ao/')) {
         if (path === '/ao/auth/linkedin/handoff') {
           setCurrentPage('ao-linkedin-handoff');
-          return;
-        }
-        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('ao_email') : null;
-        const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
-        if (urlEmail && !storedEmail) {
-          try {
-            localStorage.setItem('ao_email', urlEmail);
-            const cleanUrl = path;
-            window.history.replaceState({}, '', cleanUrl);
-          } catch (e) {}
-        }
-        if (!storedEmail && !urlEmail) {
-          window.location.replace('/ao/login');
           return;
         }
         if (path === '/ao/command-center') setCurrentPage('ao-command-center');
