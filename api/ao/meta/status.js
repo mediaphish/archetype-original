@@ -7,23 +7,9 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { getMetaConnection } from '../../../lib/social/metaConnection.js';
 
 const GRAPH_BASE = 'https://graph.facebook.com/v25.0';
-
-function envStatus() {
-  const metaToken = (process.env.META_ACCESS_TOKEN || '').trim();
-  const pageId = (process.env.FACEBOOK_PAGE_ID || '').trim();
-  const igBusinessId = (process.env.INSTAGRAM_BUSINESS_ID || '').trim();
-
-  return {
-    metaTokenPresent: !!metaToken,
-    pageIdPresent: !!pageId,
-    igBusinessIdPresent: !!igBusinessId,
-    metaToken,
-    pageId,
-    igBusinessId,
-  };
-}
 
 async function fetchJson(url) {
   const res = await fetch(url, { method: 'GET' });
@@ -39,23 +25,27 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
-  const env = envStatus();
+  const meta = await getMetaConnection();
+  const metaToken = (meta?.token || '').trim();
+  const pageId = (meta?.pageId || '').trim();
+  const igBusinessId = (meta?.igBusinessId || '').trim();
+
   const details = {
     facebook: { connected: false, reason: null },
     instagram: { connected: false, reason: null },
   };
 
-  if (!env.metaTokenPresent) {
+  if (!metaToken) {
     details.facebook.reason = 'META_ACCESS_TOKEN is missing';
     details.instagram.reason = 'META_ACCESS_TOKEN is missing';
-    return res.status(200).json({ ok: true, ...details, env: { pageIdPresent: env.pageIdPresent, igBusinessIdPresent: env.igBusinessIdPresent, metaTokenPresent: env.metaTokenPresent } });
+    return res.status(200).json({ ok: true, ...details });
   }
 
   // Facebook Page check
-  if (!env.pageIdPresent) {
+  if (!pageId) {
     details.facebook.reason = 'FACEBOOK_PAGE_ID is missing';
   } else {
-    const url = `${GRAPH_BASE}/${encodeURIComponent(env.pageId)}?fields=id,name&access_token=${encodeURIComponent(env.metaToken)}`;
+    const url = `${GRAPH_BASE}/${encodeURIComponent(pageId)}?fields=id,name&access_token=${encodeURIComponent(metaToken)}`;
     const r = await fetchJson(url);
     if (r.ok && r.json?.id) {
       details.facebook.connected = true;
@@ -66,10 +56,10 @@ export default async function handler(req, res) {
   }
 
   // Instagram Business check
-  if (!env.igBusinessIdPresent) {
+  if (!igBusinessId) {
     details.instagram.reason = 'INSTAGRAM_BUSINESS_ID is missing';
   } else {
-    const url = `${GRAPH_BASE}/${encodeURIComponent(env.igBusinessId)}?fields=id,username&access_token=${encodeURIComponent(env.metaToken)}`;
+    const url = `${GRAPH_BASE}/${encodeURIComponent(igBusinessId)}?fields=id,username&access_token=${encodeURIComponent(metaToken)}`;
     const r = await fetchJson(url);
     if (r.ok && r.json?.id) {
       details.instagram.connected = true;
@@ -83,6 +73,7 @@ export default async function handler(req, res) {
     ok: true,
     facebook: details.facebook,
     instagram: details.instagram,
+    source: meta?.source || 'env',
   });
 }
 

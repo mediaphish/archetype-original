@@ -6,6 +6,8 @@ export default function Settings() {
   const [authChecked, setAuthChecked] = useState(false);
   const [linkedinStatus, setLinkedinStatus] = useState(null);
   const [linkedinMessage, setLinkedinMessage] = useState('');
+  const [metaConnectStatus, setMetaConnectStatus] = useState(null);
+  const [metaConnectMessage, setMetaConnectMessage] = useState('');
   const [linkedinConnected, setLinkedinConnected] = useState(false);
   const [linkedinLoading, setLinkedinLoading] = useState(true);
   const [linkedinTestLoading, setLinkedinTestLoading] = useState(false);
@@ -29,6 +31,10 @@ export default function Settings() {
     if (params.get('provider') === 'linkedin') {
       setLinkedinStatus(params.get('status') || null);
       setLinkedinMessage(params.get('message') || '');
+    }
+    if (params.get('provider') === 'meta') {
+      setMetaConnectStatus(params.get('status') || null);
+      setMetaConnectMessage(params.get('message') || '');
     }
   }, []);
 
@@ -167,6 +173,12 @@ export default function Settings() {
         {linkedinStatus === 'error' && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">LinkedIn connection failed.{linkedinMessage ? ` ${linkedinMessage}` : ''}</div>
         )}
+        {metaConnectStatus === 'connected' && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">Meta connected. You can publish to Facebook and Instagram.</div>
+        )}
+        {metaConnectStatus === 'error' && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">Meta connection failed.{metaConnectMessage ? ` ${metaConnectMessage}` : ''}</div>
+        )}
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">LinkedIn</h2>
@@ -209,13 +221,25 @@ export default function Settings() {
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Meta (Facebook + Instagram)</h2>
-          <p className="text-gray-600 text-sm mb-4">Connect your Facebook Page and Instagram Business account for publishing. Tokens are stored as environment configuration.</p>
+          <p className="text-gray-600 text-sm mb-4">Connect your Facebook Page and Instagram Business account for publishing.</p>
           {metaLoading ? (
             <p className="text-gray-500 text-sm">Checking connection…</p>
           ) : metaError ? (
             <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">Meta status check failed. {metaError}</div>
           ) : (
             <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href="/api/auth/meta/start"
+                  className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1"
+                  style={metaStatus?.facebook?.connected || metaStatus?.instagram?.connected ? { border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151' } : { backgroundColor: '#1877F2', color: '#fff' }}
+                >
+                  {(metaStatus?.facebook?.connected || metaStatus?.instagram?.connected) ? 'Reconnect Meta' : 'Connect Meta'}
+                </a>
+                {metaStatus?.source === 'stored' && (
+                  <span className="text-xs text-gray-500">Connected via AO Settings</span>
+                )}
+              </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="p-3 border border-gray-200 rounded">
                   <div className="flex items-center justify-between">
