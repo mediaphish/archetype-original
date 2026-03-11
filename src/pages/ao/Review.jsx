@@ -115,6 +115,9 @@ export default function Review() {
             <LoadingSpinner />
           ) : activeTab === 'social' && (
             <>
+              <p className="text-gray-600 text-sm mb-4">
+                First comment supported on: Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment in <button type="button" onClick={() => handleNavigate(withEmail('/ao/publishing', email))} className="text-blue-600 hover:underline">Publishing</button> when scheduling posts.
+              </p>
               {pendingQuotes.length === 0 ? (
                 <p className="text-gray-500">No pending quotes. Run an internal scan from Command Center to add candidates.</p>
               ) : (

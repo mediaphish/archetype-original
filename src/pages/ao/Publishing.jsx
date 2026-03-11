@@ -240,6 +240,9 @@ export default function Publishing() {
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Platform status</h2>
           <p className="text-gray-500 text-sm">Configured platforms are set via environment variables. See notes/SOCIAL_VERCEL_ENV.md.</p>
+          <p className="text-gray-600 text-sm mt-2">
+            <strong>First comment supported:</strong> Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment on each scheduled post above; it is published after the main post (or as a reply on X). Comment status is tracked separately (pending, posted, failed, skipped).
+          </p>
         </section>
 
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
