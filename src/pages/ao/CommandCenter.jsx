@@ -2,6 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
 
+function IndeterminateBar({ label }) {
+  return (
+    <div className="mt-3">
+      {label ? <p className="text-xs text-gray-600 mb-2">{label}</p> : null}
+      <div className="h-2 w-full bg-gray-100 rounded overflow-hidden border border-gray-200">
+        <div className="h-full w-1/2 bg-green-600 animate-pulse" />
+      </div>
+      <p className="text-xs text-gray-500 mt-2">This can take a moment. You can stay on this page.</p>
+    </div>
+  );
+}
+
 export default function CommandCenter() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
@@ -207,6 +219,7 @@ export default function CommandCenter() {
             <button type="button" onClick={() => runScan('internal')} disabled={scanning} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Run internal scan</button>
             <button type="button" onClick={() => runScan('external')} disabled={scanning} className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 disabled:opacity-50">Run external scan</button>
           </div>
+          {dailyRunning ? <IndeterminateBar label="Daily run in progress…" /> : null}
         </section>
       </main>
     </div>

@@ -2,6 +2,31 @@ import React, { useState, useEffect, useCallback } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
 
+function Pill({ tone = 'gray', children }) {
+  const tones = {
+    gray: 'bg-gray-100 text-gray-700 border-gray-200',
+    red: 'bg-red-50 text-red-700 border-red-200',
+    yellow: 'bg-yellow-50 text-yellow-800 border-yellow-200',
+    green: 'bg-green-50 text-green-800 border-green-200',
+    blue: 'bg-blue-50 text-blue-800 border-blue-200',
+  };
+  return (
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${tones[tone] || tones.gray}`}>
+      {children}
+    </span>
+  );
+}
+
+function safeUrl(u) {
+  try {
+    if (!u) return null;
+    const url = new URL(String(u));
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 const TABS = [
   { key: 'social', label: 'Social Review Queue' },
   { key: 'journal', label: 'Journal Review Queue' },
@@ -137,10 +162,71 @@ export default function Review() {
                 <ul className="space-y-4">
                   {pendingQuotes.map((q) => (
                     <li key={q.id} className="border border-gray-200 rounded p-4">
-                      <p className="text-gray-800 mb-2">{q.quote_text?.slice(0, 300)}{q.quote_text?.length > 300 ? '…' : ''}</p>
-                      <p className="text-gray-500 text-sm mb-3">Source: {q.source_slug_or_url || '—'} · Score: {q.composite_score ?? '—'}</p>
-                      {(q.drafts_by_channel || q.suggested_schedule) && (
-                        <div className="mb-3 space-y-2">
+                      <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                        <div className="min-w-0">
+                          <h3 className="text-base font-semibold text-gray-900">
+                            {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
+                          </h3>
+                          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                            <span className="truncate max-w-[520px]">
+                              {q.source_name ? <span className="font-medium text-gray-700">{q.source_name}</span> : null}
+                              {q.source_author ? <span> · {q.source_author}</span> : null}
+                              {q.source_published_at ? <span> · {new Date(q.source_published_at).toLocaleDateString()}</span> : null}
+                            </span>
+                            {safeUrl(q.source_url) ? (
+                              <a className="text-blue-600 hover:underline" href={safeUrl(q.source_url)} target="_blank" rel="noreferrer">
+                                Open source
+                              </a>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          {q.best_move ? <Pill tone="blue">{String(q.best_move).replace(/_/g, ' ')}</Pill> : null}
+                          {Array.isArray(q.risk_flags) && q.risk_flags.length ? (
+                            <Pill tone="yellow">{q.risk_flags.length} risk flag{q.risk_flags.length === 1 ? '' : 's'}</Pill>
+                          ) : (
+                            <Pill tone="green">low risk</Pill>
+                          )}
+                        </div>
+                      </div>
+
+                      {q.pull_quote ? (
+                        <blockquote className="border-l-4 border-gray-900 pl-4 py-1 mb-3">
+                          <p className="text-gray-900 font-medium whitespace-pre-wrap">{q.pull_quote}</p>
+                        </blockquote>
+                      ) : (
+                        <p className="text-gray-800 mb-3">{q.quote_text?.slice(0, 260)}{q.quote_text?.length > 260 ? '…' : ''}</p>
+                      )}
+
+                      {q.why_it_matters ? (
+                        <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap">{q.why_it_matters}</p>
+                      ) : null}
+
+                      {Array.isArray(q.risk_flags) && q.risk_flags.length ? (
+                        <div className="mb-3 flex flex-wrap gap-2">
+                          {q.risk_flags.slice(0, 6).map((rf, idx) => (
+                            <Pill key={idx} tone="yellow">{String(rf)}</Pill>
+                          ))}
+                        </div>
+                      ) : null}
+
+                      <details className="mb-3 border border-gray-200 rounded bg-gray-50 p-3">
+                        <summary className="cursor-pointer text-sm font-medium text-gray-800">Details (drafts, quote card, similarity)</summary>
+                        <div className="mt-3 space-y-4">
+                          {q.source_excerpt ? (
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-1">Source excerpt</p>
+                              <p className="text-xs text-gray-700 whitespace-pre-wrap">{q.source_excerpt}</p>
+                            </div>
+                          ) : null}
+
+                          {q.summary_interpretation ? (
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-1">Summary + interpretation</p>
+                              <p className="text-sm text-gray-800 whitespace-pre-wrap">{q.summary_interpretation}</p>
+                            </div>
+                          ) : null}
+
                           {q.suggested_schedule?.slots?.length ? (
                             <div className="text-xs text-gray-600">
                               <span className="font-medium text-gray-700">Suggested timing:</span>{' '}
@@ -152,10 +238,59 @@ export default function Review() {
                             </div>
                           ) : null}
 
+                          {q.similarity_notes?.scheduling_hint ? (
+                            <div className="text-xs text-gray-700">
+                              <span className="font-medium text-gray-800">Scheduling hint:</span>{' '}
+                              {q.similarity_notes.scheduling_hint}
+                            </div>
+                          ) : null}
+
+                          {q.similarity_notes?.matches?.length ? (
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-2">We’ve said this before (closest AO matches)</p>
+                              <ul className="space-y-2">
+                                {q.similarity_notes.matches.slice(0, 3).map((m, idx) => (
+                                  <li key={idx} className="text-xs text-gray-700">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-medium text-gray-900">{m.title || 'AO post'}</span>
+                                      {safeUrl(m.url) ? (
+                                        <a className="text-blue-600 hover:underline" href={safeUrl(m.url)} target="_blank" rel="noreferrer">
+                                          Open
+                                        </a>
+                                      ) : null}
+                                    </div>
+                                    {m.excerpt ? <p className="text-xs text-gray-600 mt-1">{m.excerpt}</p> : null}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+
+                          {q.quote_card_svg ? (
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-2">AO quote card preview</p>
+                              <div className="border border-gray-200 rounded bg-white p-2 overflow-auto">
+                                <div dangerouslySetInnerHTML={{ __html: q.quote_card_svg }} />
+                              </div>
+                              {q.quote_card_caption ? (
+                                <p className="mt-2 text-xs text-gray-700 whitespace-pre-wrap">
+                                  <span className="font-medium text-gray-800">Caption:</span> {q.quote_card_caption}
+                                </p>
+                              ) : null}
+                            </div>
+                          ) : null}
+
+                          {q.alt_moves ? (
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-2">Alternate moves</p>
+                              <pre className="text-xs text-gray-700 whitespace-pre-wrap">{JSON.stringify(q.alt_moves, null, 2)}</pre>
+                            </div>
+                          ) : null}
+
                           {q.drafts_by_channel && (
-                            <details className="border border-gray-200 rounded bg-gray-50 p-3">
-                              <summary className="cursor-pointer text-sm font-medium text-gray-800">Drafts (Bart voice)</summary>
-                              <div className="mt-3 grid gap-3 md:grid-cols-2">
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-2">Channel drafts</p>
+                              <div className="grid gap-3 md:grid-cols-2">
                                 {['linkedin', 'facebook', 'instagram', 'x'].map((ch) => {
                                   const text = q.drafts_by_channel?.[ch] || '';
                                   const tags = q.hashtags_by_channel?.[ch] || [];
@@ -168,7 +303,12 @@ export default function Review() {
                                         <button
                                           type="button"
                                           onClick={async () => {
-                                            try { await navigator.clipboard.writeText(text + (tags?.length ? `\n\n${tags.map((t) => (t.startsWith('#') ? t : `#${t}`)).join(' ')}` : '')); } catch (_) {}
+                                            try {
+                                              await navigator.clipboard.writeText(
+                                                text +
+                                                  (tags?.length ? `\n\n${tags.map((t) => (String(t).startsWith('#') ? t : `#${t}`)).join(' ')}` : '')
+                                              );
+                                            } catch (_) {}
                                           }}
                                           className="text-xs text-blue-600 hover:underline"
                                         >
@@ -189,10 +329,10 @@ export default function Review() {
                                   );
                                 })}
                               </div>
-                            </details>
+                            </div>
                           )}
                         </div>
-                      )}
+                      </details>
                       <div className="flex gap-2">
                         <button type="button" onClick={() => act('quote-approve', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">Approve</button>
                         <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
