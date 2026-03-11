@@ -6,8 +6,12 @@
  * Safe to run multiple times; it skips URLs that already exist.
  */
 
-import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { createClient } from '@supabase/supabase-js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+
+const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
 
 const SEED_SOURCES = [
   // Tier 1 — Global Leadership Research & Executive Thinking

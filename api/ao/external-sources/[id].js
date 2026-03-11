@@ -3,8 +3,12 @@
  * DELETE /api/ao/external-sources/:id
  */
 
-import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { createClient } from '@supabase/supabase-js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+
+const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
