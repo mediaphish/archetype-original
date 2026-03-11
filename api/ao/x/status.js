@@ -4,7 +4,7 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { getXAccessToken } from '../../../lib/social/xConnection.js';
+import { getStoredXTokenRow, getXAccessToken } from '../../../lib/social/xConnection.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -14,14 +14,25 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
+  const stored = await getStoredXTokenRow();
+  if (!stored?.id) {
+    return res.status(200).json({ ok: true, connected: false, state: 'not_connected' });
+  }
+
   const token = await getXAccessToken();
   if (!token.ok) {
-    return res.status(200).json({ ok: true, connected: false, reason: token.error || 'Not connected' });
+    return res.status(200).json({
+      ok: true,
+      connected: false,
+      state: 'needs_reconnect',
+      reason: token.error || 'Needs reconnect',
+    });
   }
 
   return res.status(200).json({
     ok: true,
     connected: true,
+    state: 'connected',
     username: token.username || null,
     source: token.source || 'stored',
   });

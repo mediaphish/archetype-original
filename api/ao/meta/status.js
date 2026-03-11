@@ -11,6 +11,14 @@ import { getMetaConnection } from '../../../lib/social/metaConnection.js';
 
 const GRAPH_BASE = 'https://graph.facebook.com/v25.0';
 
+function classifyState({ connected, reason, hasToken }) {
+  if (connected) return 'connected';
+  const r = String(reason || '').toLowerCase();
+  if (!hasToken) return 'not_connected';
+  if (r.includes('is missing')) return 'not_connected';
+  return 'needs_reconnect';
+}
+
 async function fetchJson(url) {
   const res = await fetch(url, { method: 'GET' });
   const json = await res.json().catch(() => ({}));
@@ -38,7 +46,13 @@ export default async function handler(req, res) {
   if (!metaToken) {
     details.facebook.reason = 'META_ACCESS_TOKEN is missing';
     details.instagram.reason = 'META_ACCESS_TOKEN is missing';
-    return res.status(200).json({ ok: true, ...details });
+    return res.status(200).json({
+      ok: true,
+      facebook: { ...details.facebook, state: 'not_connected' },
+      instagram: { ...details.instagram, state: 'not_connected' },
+      overallState: 'not_connected',
+      source: meta?.source || 'env',
+    });
   }
 
   // Facebook Page check
@@ -71,8 +85,20 @@ export default async function handler(req, res) {
 
   return res.status(200).json({
     ok: true,
-    facebook: details.facebook,
-    instagram: details.instagram,
+    facebook: {
+      ...details.facebook,
+      state: classifyState({ connected: details.facebook.connected, reason: details.facebook.reason, hasToken: true }),
+    },
+    instagram: {
+      ...details.instagram,
+      state: classifyState({ connected: details.instagram.connected, reason: details.instagram.reason, hasToken: true }),
+    },
+    overallState:
+      details.facebook.connected && details.instagram.connected
+        ? 'connected'
+        : (details.facebook.connected || details.instagram.connected)
+          ? 'needs_reconnect'
+          : 'not_connected',
     source: meta?.source || 'env',
   });
 }

@@ -1,6 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 
+function StatusPill({ state }) {
+  const s = state || 'not_connected';
+  const map = {
+    connected: { label: 'Connected', cls: 'bg-green-50 text-green-800 border-green-200' },
+    not_connected: { label: 'Not connected', cls: 'bg-gray-50 text-gray-700 border-gray-200' },
+    needs_reconnect: { label: 'Needs reconnect', cls: 'bg-yellow-50 text-yellow-900 border-yellow-200' },
+  };
+  const cfg = map[s] || map.not_connected;
+  return (
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cfg.cls}`}>
+      {cfg.label}
+    </span>
+  );
+}
+
 export default function Settings() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
@@ -11,6 +26,8 @@ export default function Settings() {
   const [xConnectStatus, setXConnectStatus] = useState(null);
   const [xConnectMessage, setXConnectMessage] = useState('');
   const [linkedinConnected, setLinkedinConnected] = useState(false);
+  const [linkedinState, setLinkedinState] = useState('not_connected'); // connected | not_connected | needs_reconnect
+  const [linkedinReason, setLinkedinReason] = useState('');
   const [linkedinLoading, setLinkedinLoading] = useState(true);
   const [linkedinTestLoading, setLinkedinTestLoading] = useState(false);
   const [linkedinTestResult, setLinkedinTestResult] = useState(null); // 'success' | 'error' | null
@@ -18,12 +35,14 @@ export default function Settings() {
   const [metaLoading, setMetaLoading] = useState(true);
   const [metaStatus, setMetaStatus] = useState(null);
   const [metaError, setMetaError] = useState('');
+  const [metaOverallState, setMetaOverallState] = useState('not_connected');
   const [metaTestLoading, setMetaTestLoading] = useState({ facebook: false, instagram: false });
   const [metaTestResult, setMetaTestResult] = useState({ facebook: null, instagram: null }); // success|error|null
   const [metaTestError, setMetaTestError] = useState({ facebook: '', instagram: '' });
 
   const [xLoading, setXLoading] = useState(true);
   const [xConnected, setXConnected] = useState(false);
+  const [xState, setXState] = useState('not_connected'); // connected | not_connected | needs_reconnect
   const [xUsername, setXUsername] = useState('');
   const [xError, setXError] = useState('');
   const [xTestLoading, setXTestLoading] = useState(false);
@@ -85,7 +104,11 @@ export default function Settings() {
         const res = await fetch(`/api/ao/linkedin/status`);
         if (cancelled) return;
         const json = await res.json().catch(() => ({}));
-        if (json.ok) setLinkedinConnected(!!json.connected);
+        if (json.ok) {
+          setLinkedinConnected(!!json.connected);
+          setLinkedinState(json.state || (json.connected ? 'connected' : 'not_connected'));
+          setLinkedinReason(json.reason || '');
+        }
       } catch (_) {}
       if (!cancelled) setLinkedinLoading(false);
     })();
@@ -104,6 +127,7 @@ export default function Settings() {
         if (cancelled) return;
         if (res.ok && json.ok) {
           setMetaStatus(json);
+          setMetaOverallState(json.overallState || 'not_connected');
         } else {
           setMetaStatus(null);
           setMetaError(json.error || 'Meta status check failed');
@@ -133,6 +157,7 @@ export default function Settings() {
         if (res.ok && json.ok) {
           setXConnected(!!json.connected);
           setXUsername(json.username || '');
+          setXState(json.state || (json.connected ? 'connected' : 'not_connected'));
         } else {
           setXConnected(false);
           setXUsername('');
@@ -261,15 +286,13 @@ export default function Settings() {
           ) : (
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-3">
-                <span className={`text-sm font-medium ${linkedinConnected ? 'text-green-700' : 'text-gray-600'}`}>
-                  {linkedinConnected ? 'Connected' : 'Not connected'}
-                </span>
+                <StatusPill state={linkedinState} />
                 <a
                   href="/api/auth/linkedin/start"
                   className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#0A66C2]"
                   style={linkedinConnected ? { border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151' } : { backgroundColor: '#0A66C2', color: '#fff' }}
                 >
-                  {linkedinConnected ? 'Reconnect' : 'Connect LinkedIn'}
+                  {(linkedinState === 'connected' || linkedinState === 'needs_reconnect') ? 'Reconnect' : 'Connect LinkedIn'}
                 </a>
                 {linkedinConnected && (
                   <button
@@ -282,6 +305,11 @@ export default function Settings() {
                   </button>
                 )}
               </div>
+              {linkedinState === 'needs_reconnect' && (
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-yellow-900 text-sm">
+                  LinkedIn needs reconnect.{linkedinReason ? ` ${linkedinReason}` : ''}
+                </div>
+              )}
               {linkedinTestResult === 'success' && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">LinkedIn test post published.</div>
               )}
@@ -302,6 +330,7 @@ export default function Settings() {
           ) : (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-3">
+                <StatusPill state={metaOverallState} />
                 <a
                   href="/api/auth/meta/start"
                   className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1"
@@ -317,9 +346,7 @@ export default function Settings() {
                 <div className="p-3 border border-gray-200 rounded">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-900">Facebook Page</span>
-                    <span className={`text-sm font-medium ${metaStatus?.facebook?.connected ? 'text-green-700' : 'text-gray-600'}`}>
-                      {metaStatus?.facebook?.connected ? 'Connected' : 'Not connected'}
-                    </span>
+                    <StatusPill state={metaStatus?.facebook?.state} />
                   </div>
                   {metaStatus?.facebook?.connected ? (
                     <p className="text-xs text-gray-500 mt-1">{metaStatus.facebook.page?.name || 'Page'}{metaStatus.facebook.page?.id ? ` · ${metaStatus.facebook.page.id}` : ''}</p>
@@ -347,9 +374,7 @@ export default function Settings() {
                 <div className="p-3 border border-gray-200 rounded">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-900">Instagram</span>
-                    <span className={`text-sm font-medium ${metaStatus?.instagram?.connected ? 'text-green-700' : 'text-gray-600'}`}>
-                      {metaStatus?.instagram?.connected ? 'Connected' : 'Not connected'}
-                    </span>
+                    <StatusPill state={metaStatus?.instagram?.state} />
                   </div>
                   {metaStatus?.instagram?.connected ? (
                     <p className="text-xs text-gray-500 mt-1">@{metaStatus.instagram.account?.username || 'connected'}{metaStatus.instagram.account?.id ? ` · ${metaStatus.instagram.account.id}` : ''}</p>
@@ -393,15 +418,16 @@ export default function Settings() {
           ) : (
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-3">
-                <span className={`text-sm font-medium ${xConnected ? 'text-green-700' : 'text-gray-600'}`}>
-                  {xConnected ? `Connected${xUsername ? ` (@${xUsername})` : ''}` : 'Not connected'}
-                </span>
+                <StatusPill state={xState} />
+                {xState === 'connected' && xUsername ? (
+                  <span className="text-sm text-gray-600">@{xUsername}</span>
+                ) : null}
                 <a
                   href="/api/auth/x/start"
                   className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1"
                   style={xConnected ? { border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151' } : { backgroundColor: '#111827', color: '#fff' }}
                 >
-                  {xConnected ? 'Reconnect X' : 'Connect X'}
+                  {(xState === 'connected' || xState === 'needs_reconnect') ? 'Reconnect X' : 'Connect X'}
                 </a>
                 {xConnected && (
                   <button
@@ -414,6 +440,11 @@ export default function Settings() {
                   </button>
                 )}
               </div>
+              {xState === 'needs_reconnect' && (
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-yellow-900 text-sm">
+                  X needs reconnect.
+                </div>
+              )}
               {xTestResult === 'success' && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">X test post published.</div>
               )}
