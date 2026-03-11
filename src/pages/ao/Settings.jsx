@@ -57,6 +57,8 @@ export default function Settings() {
   const [newSourceType, setNewSourceType] = useState('rss'); // rss | article
   const [addSourceLoading, setAddSourceLoading] = useState(false);
   const [deleteSourceLoading, setDeleteSourceLoading] = useState(null);
+  const [seeding, setSeeding] = useState(false);
+  const [seedMessage, setSeedMessage] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -189,6 +191,7 @@ export default function Settings() {
     if (!authChecked) return;
     setSourcesLoading(true);
     setSourcesError('');
+    setSeedMessage('');
     try {
       const res = await fetch('/api/ao/external-sources');
       const json = await res.json().catch(() => ({}));
@@ -258,6 +261,27 @@ export default function Settings() {
       setSourcesError(e.message || 'Could not delete source');
     } finally {
       setDeleteSourceLoading(null);
+    }
+  }
+
+  async function handleSeedSources() {
+    if (!authChecked || seeding) return;
+    setSeeding(true);
+    setSeedMessage('');
+    setSourcesError('');
+    try {
+      const res = await fetch('/api/ao/external-sources/seed', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setSourcesError(json.error || 'Could not seed sources');
+      } else {
+        setSeedMessage(`Seeded sources. Added ${json.inserted ?? 0}.`);
+        await loadSources();
+      }
+    } catch (e) {
+      setSourcesError(e.message || 'Could not seed sources');
+    } finally {
+      setSeeding(false);
     }
   }
 
@@ -553,6 +577,21 @@ export default function Settings() {
           {sourcesError && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{sourcesError}</div>
           )}
+          {seedMessage && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">{seedMessage}</div>
+          )}
+
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSeedSources}
+              disabled={seeding}
+              className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
+            >
+              {seeding ? 'Seeding…' : 'Seed sources'}
+            </button>
+            <span className="text-xs text-gray-500">Adds your Tier 1–13 starter list to the allowlist (safe to run more than once).</span>
+          </div>
 
           <div className="grid gap-3 md:grid-cols-3">
             <div className="md:col-span-2">
