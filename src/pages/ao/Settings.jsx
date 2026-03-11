@@ -7,6 +7,9 @@ export default function Settings() {
   const [linkedinMessage, setLinkedinMessage] = useState('');
   const [linkedinConnected, setLinkedinConnected] = useState(false);
   const [linkedinLoading, setLinkedinLoading] = useState(true);
+  const [linkedinTestLoading, setLinkedinTestLoading] = useState(false);
+  const [linkedinTestResult, setLinkedinTestResult] = useState(null); // 'success' | 'error' | null
+  const [linkedinTestError, setLinkedinTestError] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -44,6 +47,31 @@ export default function Settings() {
 
   const maskedEmail = email ? `${email.slice(0, 2)}***@${email.split('@')[1] || '***'}` : '—';
 
+  async function handleLinkedInTestPost() {
+    if (!email) return;
+    setLinkedinTestResult(null);
+    setLinkedinTestError('');
+    setLinkedinTestLoading(true);
+    try {
+      const res = await fetch('/api/providers/linkedin/test-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-ao-email': email },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.success) {
+        setLinkedinTestResult('success');
+      } else {
+        setLinkedinTestResult('error');
+        setLinkedinTestError(data.error || 'Request failed');
+      }
+    } catch (e) {
+      setLinkedinTestResult('error');
+      setLinkedinTestError(e.message || 'Request failed');
+    } finally {
+      setLinkedinTestLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="settings" email={email} onNavigate={handleNavigate} />
@@ -64,17 +92,35 @@ export default function Settings() {
           {linkedinLoading ? (
             <p className="text-gray-500 text-sm">Checking connection…</p>
           ) : (
-            <div className="flex flex-wrap items-center gap-3">
-              <span className={`text-sm font-medium ${linkedinConnected ? 'text-green-700' : 'text-gray-600'}`}>
-                {linkedinConnected ? 'Connected' : 'Not connected'}
-              </span>
-              <a
-                href="/api/auth/linkedin/start"
-                className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#0A66C2]"
-                style={linkedinConnected ? { border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151' } : { backgroundColor: '#0A66C2', color: '#fff' }}
-              >
-                {linkedinConnected ? 'Reconnect' : 'Connect LinkedIn'}
-              </a>
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className={`text-sm font-medium ${linkedinConnected ? 'text-green-700' : 'text-gray-600'}`}>
+                  {linkedinConnected ? 'Connected' : 'Not connected'}
+                </span>
+                <a
+                  href="/api/auth/linkedin/start"
+                  className="inline-block px-4 py-2 text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#0A66C2]"
+                  style={linkedinConnected ? { border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151' } : { backgroundColor: '#0A66C2', color: '#fff' }}
+                >
+                  {linkedinConnected ? 'Reconnect' : 'Connect LinkedIn'}
+                </a>
+                {linkedinConnected && (
+                  <button
+                    type="button"
+                    onClick={handleLinkedInTestPost}
+                    disabled={linkedinTestLoading}
+                    className="inline-block px-4 py-2 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#0A66C2] disabled:opacity-50"
+                  >
+                    {linkedinTestLoading ? 'Posting…' : 'Post LinkedIn Test'}
+                  </button>
+                )}
+              </div>
+              {linkedinTestResult === 'success' && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">LinkedIn test post published.</div>
+              )}
+              {linkedinTestResult === 'error' && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">LinkedIn test post failed.{linkedinTestError ? ` ${linkedinTestError}` : ''}</div>
+              )}
             </div>
           )}
         </section>
