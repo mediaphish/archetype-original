@@ -10,6 +10,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 
 const LINKEDIN_REST_BASE = 'https://api.linkedin.com/rest';
 const LINKEDIN_V2_BASE = 'https://api.linkedin.com/v2';
+const LINKEDIN_USERINFO_URL = 'https://api.linkedin.com/v2/userinfo';
 const TEST_POST_BODY = 'Testing LinkedIn API connection from AO Automation.';
 
 /**
@@ -17,6 +18,16 @@ const TEST_POST_BODY = 'Testing LinkedIn API connection from AO Automation.';
  * Tries REST /me first, then v2 /me; returns urn:li:person:{id} or null.
  */
 async function getMemberUrn(accessToken) {
+  // Best: OpenID userinfo -> sub
+  try {
+    const ui = await fetch(LINKEDIN_USERINFO_URL, { headers: { Authorization: `Bearer ${accessToken}` } });
+    if (ui.ok) {
+      const data = await ui.json().catch(() => ({}));
+      const sub = data.sub;
+      if (sub) return sub.startsWith('urn:') ? sub : `urn:li:person:${sub}`;
+    }
+  } catch (_) {}
+
   const headers = {
     Authorization: `Bearer ${accessToken}`,
     'X-Restli-Protocol-Version': '2.0.0',
@@ -104,7 +115,7 @@ export default async function handler(req, res) {
   try {
     const { data: row, error: fetchError } = await supabaseAdmin
       .from('ao_linkedin_tokens')
-      .select('access_token')
+      .select('id, access_token, person_urn')
       .limit(1)
       .maybeSingle();
 
@@ -119,7 +130,19 @@ export default async function handler(req, res) {
 
     const accessToken = row.access_token;
 
-    let authorUrn = await getMemberUrn(accessToken);
+    let authorUrn = row.person_urn || null;
+    if (!authorUrn) {
+      authorUrn = await getMemberUrn(accessToken);
+      if (authorUrn) {
+        // Best effort: persist for future use
+        try {
+          await supabaseAdmin
+            .from('ao_linkedin_tokens')
+            .update({ person_urn: authorUrn, updated_at: new Date().toISOString() })
+            .eq('id', row.id);
+        } catch (_) {}
+      }
+    }
     if (!authorUrn && process.env.LINKEDIN_PERSON_URN) {
       authorUrn = process.env.LINKEDIN_PERSON_URN.trim();
     }
@@ -127,7 +150,7 @@ export default async function handler(req, res) {
       console.warn('[LinkedIn test-post] Could not resolve member URN (me endpoint may require openid scope)');
       return res.status(400).json({
         success: false,
-        error: 'Could not identify connected member. Add Sign In with LinkedIn (OpenID) to your app, or set LINKEDIN_PERSON_URN in environment and retry.',
+        error: 'Could not identify connected member. In LinkedIn app settings, enable Sign In with LinkedIn (OpenID) and reconnect on /ao/settings, or set LINKEDIN_PERSON_URN and retry.',
       });
     }
 

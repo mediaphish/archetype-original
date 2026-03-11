@@ -12,6 +12,9 @@ const SITE_URL = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const SETTINGS_PATH = '/ao/settings';
 const COOKIE_NAME = 'ao_linkedin_oauth_state';
 const LINKEDIN_TOKEN_URL = 'https://www.linkedin.com/oauth/v2/accessToken';
+const LINKEDIN_USERINFO_URL = 'https://api.linkedin.com/v2/userinfo';
+const LINKEDIN_REST_BASE = 'https://api.linkedin.com/rest';
+const LINKEDIN_V2_BASE = 'https://api.linkedin.com/v2';
 
 function getCookieSecret() {
   return process.env.AO_OAUTH_COOKIE_SECRET || process.env.LINKEDIN_OAUTH_STATE_SECRET;
@@ -65,6 +68,52 @@ function getQuery(req) {
   const idx = raw.indexOf('?');
   const search = idx >= 0 ? raw.slice(idx) : '';
   return new URLSearchParams(search);
+}
+
+async function resolvePersonUrn(accessToken) {
+  // Best path: OpenID Connect userinfo -> "sub"
+  try {
+    const res = await fetch(LINKEDIN_USERINFO_URL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (res.ok) {
+      const json = await res.json().catch(() => ({}));
+      const sub = json.sub;
+      if (sub && typeof sub === 'string') {
+        return sub.startsWith('urn:') ? sub : `urn:li:person:${sub}`;
+      }
+    }
+  } catch (_) {}
+
+  // Fallback: REST /me
+  try {
+    const res = await fetch(`${LINKEDIN_REST_BASE}/me`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'X-Restli-Protocol-Version': '2.0.0',
+        'LinkedIn-Version': '202401',
+      },
+    });
+    if (res.ok) {
+      const json = await res.json().catch(() => ({}));
+      const id = json.id || json.sub;
+      if (id) return id.startsWith('urn:') ? id : `urn:li:person:${id}`;
+    }
+  } catch (_) {}
+
+  // Fallback: v2 /me
+  try {
+    const res = await fetch(`${LINKEDIN_V2_BASE}/me`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (res.ok) {
+      const json = await res.json().catch(() => ({}));
+      const id = json.id;
+      if (id) return id.startsWith('urn:') ? id : `urn:li:person:${id}`;
+    }
+  } catch (_) {}
+
+  return null;
 }
 
 export default async function handler(req, res) {
@@ -163,10 +212,13 @@ export default async function handler(req, res) {
       return;
     }
 
+    const personUrn = await resolvePersonUrn(accessToken);
+
     const row = {
       access_token: accessToken,
       refresh_token: refreshToken,
       expires_at: expiresAt,
+      ...(personUrn ? { person_urn: personUrn } : {}),
       updated_at: new Date().toISOString(),
     };
 
@@ -177,7 +229,11 @@ export default async function handler(req, res) {
       await supabaseAdmin.from('ao_linkedin_tokens').insert(row);
     }
 
-    redirect(res, SETTINGS_PATH, { provider: 'linkedin', status: 'connected' });
+    redirect(res, SETTINGS_PATH, {
+      provider: 'linkedin',
+      status: personUrn ? 'connected' : 'connected',
+      ...(personUrn ? {} : { message: 'Connected, but could not identify your LinkedIn member. Enable OpenID scopes and reconnect.' }),
+    });
   } catch (err) {
     console.error('[AO LinkedIn callback] Unexpected error:', err);
     toSettingsError('Connection failed');

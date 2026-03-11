@@ -11,8 +11,9 @@ const SITE_URL = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const COOKIE_NAME = 'ao_linkedin_oauth_state';
 const COOKIE_MAX_AGE = 600; // 10 minutes
 const LINKEDIN_AUTH_URL = 'https://www.linkedin.com/oauth/v2/authorization';
-// Default: w_member_social only (Share on LinkedIn). Add "openid profile email" if your app has Sign In with LinkedIn using OpenID Connect.
-const DEFAULT_SCOPES = 'w_member_social';
+// Default: include OpenID so we can resolve the connected member identity for posting.
+// If your LinkedIn app does not have the OpenID product enabled, set LINKEDIN_SCOPE explicitly (e.g. "w_member_social") until enabled.
+const DEFAULT_SCOPES = 'openid profile email w_member_social';
 
 function getCookieSecret() {
   return process.env.AO_OAUTH_COOKIE_SECRET || process.env.LINKEDIN_OAUTH_STATE_SECRET;

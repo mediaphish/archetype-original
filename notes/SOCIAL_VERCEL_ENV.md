@@ -58,8 +58,8 @@ Used by `/api/auth/linkedin/start` and `/api/auth/linkedin/callback` so the owne
 
 | Variable | Required | Description |
 |---------|----------|-------------|
-| `LINKEDIN_ACCESS_TOKEN` | Yes | Long-lived access token with permission to create posts. |
-| `LINKEDIN_PERSON_URN` | Yes* | Your person URN, e.g. `urn:li:person:xxxxxxxx`. Required for the Posts API author field. |
+| `LINKEDIN_ACCESS_TOKEN` | Yes | Long-lived access token with permission to create posts. (Optional if you use OAuth connect from `/ao/settings`.) |
+| `LINKEDIN_PERSON_URN` | Yes* | Your person URN, e.g. `urn:li:person:xxxxxxxx`. Required for posting **unless** OAuth connect has stored `person_urn` in `ao_linkedin_tokens`. |
 
 *Get token and URN: [LinkedIn Developers](https://www.linkedin.com/developers/) → create app → Products (e.g. Share on LinkedIn, Sign In with LinkedIn) → OAuth 2.0 scopes (e.g. `w_member_social`) → use OAuth 2.0 flow or developer tools to obtain access token. Person URN is in the token response or profile API.
 

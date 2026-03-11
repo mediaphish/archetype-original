@@ -5,6 +5,7 @@
 CREATE TABLE IF NOT EXISTS ao_linkedin_tokens (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   access_token TEXT NOT NULL,
+  person_urn TEXT,
   refresh_token TEXT,
   expires_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
