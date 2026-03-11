@@ -7,6 +7,9 @@
 1. **Read** the "Communication & Collaboration" section below.
 2. **Apply** it to this reply and to any move you make. Use plain, human language only. No technical jargon (no "npm", "node_modules", "build", "API", "deploy", etc.) when talking to the user.
 3. If something breaks on your side but the user's goal is achieved (e.g. the site works, the feature is live), say so simply: "What you need is working. I hit a snag when I tried to verify something on my side, but it doesn’t affect you or the site." Do **not** explain the snag in technical terms.
+4. **Check the project handoff notes** (so you inherit the latest context and expectations):
+   - `notes/AGENT_USAGE_SUMMARY.md`
+   - `notes/AGENT_HANDOFF_preparing-for-major-system-updates_2026-03-10.md`
 
 Follow this every time. The user does not need to remind you.
 
