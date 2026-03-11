@@ -22,14 +22,34 @@ function getCookieSecret() {
   return process.env.AO_OAUTH_COOKIE_SECRET || process.env.META_OAUTH_STATE_SECRET;
 }
 
-function getMetaRedirectUri() {
-  return process.env.META_REDIRECT_URI || `${SITE_URL}/api/auth/meta/callback`;
+function getRequestOrigin(req) {
+  try {
+    const proto = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() || 'https';
+    const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim();
+    if (!host) return SITE_URL;
+    const hostLower = host.toLowerCase();
+    const allowed =
+      hostLower === 'localhost' ||
+      hostLower.endsWith('.vercel.app') ||
+      hostLower.endsWith('archetypeoriginal.com');
+    if (!allowed) return SITE_URL;
+    return `${proto}://${host}`;
+  } catch {
+    return SITE_URL;
+  }
 }
 
-function getCookieDomain() {
+function getMetaRedirectUri(req) {
+  // Must exactly match the redirect_uri used when starting the connection.
+  const origin = getRequestOrigin(req);
+  return `${origin}/api/auth/meta/callback`;
+}
+
+function getCookieDomain(req) {
   try {
-    const url = new URL(SITE_URL);
-    const host = (url.hostname || '').toLowerCase();
+    const origin = getRequestOrigin(req);
+    const url = new URL(origin);
+    const host = String(url.hostname || '').toLowerCase();
     if (!host) return null;
     if (host === 'localhost') return null;
     if (host.endsWith('.vercel.app')) return null;
@@ -63,7 +83,7 @@ function verifyState(stateFromQuery, cookieValue) {
   return signature === expected;
 }
 
-function clearStateCookie(res) {
+function clearStateCookie(req, res) {
   const clear = [
     `${COOKIE_NAME}=`,
     'Path=/',
@@ -72,15 +92,17 @@ function clearStateCookie(res) {
     'Max-Age=0',
     'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
   ];
-  const domain = getCookieDomain();
+  const domain = getCookieDomain(req);
   if (domain) clear.push(`Domain=${domain}`);
-  if (SITE_URL.startsWith('https')) clear.push('Secure');
+  const origin = getRequestOrigin(req);
+  if (origin.startsWith('https://')) clear.push('Secure');
   res.setHeader('Set-Cookie', clear.join('; '));
 }
 
-function redirect(res, path, query = {}) {
+function redirect(req, res, path, query = {}) {
   const q = new URLSearchParams(query).toString();
-  const url = `${SITE_URL}${path}${q ? `?${q}` : ''}`;
+  const origin = getRequestOrigin(req);
+  const url = `${origin}${path}${q ? `?${q}` : ''}`;
   res.statusCode = 302;
   res.setHeader('Location', url);
   res.end();
@@ -160,8 +182,8 @@ export default async function handler(req, res) {
 
   const session = readAoSession(req);
   if (!session.ok) {
-    clearStateCookie(res);
-    redirect(res, '/ao/login');
+    clearStateCookie(req, res);
+    redirect(req, res, '/ao/login');
     return;
   }
 
@@ -172,8 +194,8 @@ export default async function handler(req, res) {
   const errorDescription = query.get('error_description') || '';
 
   const toSettingsError = (message) => {
-    clearStateCookie(res);
-    redirect(res, SETTINGS_PATH, { provider: 'meta', status: 'error', ...(message ? { message } : {}) });
+    clearStateCookie(req, res);
+    redirect(req, res, SETTINGS_PATH, { provider: 'meta', status: 'error', ...(message ? { message } : {}) });
   };
 
   if (error) {
@@ -194,7 +216,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  clearStateCookie(res);
+  clearStateCookie(req, res);
 
   const appId = (process.env.META_APP_ID || '').trim();
   const appSecret = (process.env.META_APP_SECRET || '').trim();
@@ -203,7 +225,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const redirectUri = getMetaRedirectUri();
+  const redirectUri = getMetaRedirectUri(req);
 
   try {
     const shortRes = await exchangeCodeForUserToken({ appId, appSecret, redirectUri, code });
@@ -263,7 +285,7 @@ export default async function handler(req, res) {
     }
 
     const message = instagramBusinessId ? null : 'Connected Facebook Page. Instagram is not linked to this Page yet.';
-    redirect(res, SETTINGS_PATH, { provider: 'meta', status: 'connected', ...(message ? { message } : {}) });
+    redirect(req, res, SETTINGS_PATH, { provider: 'meta', status: 'connected', ...(message ? { message } : {}) });
   } catch (e) {
     toSettingsError(e.message || 'Connection failed');
   }

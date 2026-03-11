@@ -27,14 +27,35 @@ function getCookieSecret() {
   return process.env.AO_OAUTH_COOKIE_SECRET || process.env.META_OAUTH_STATE_SECRET;
 }
 
-function getMetaRedirectUri() {
-  return process.env.META_REDIRECT_URI || `${SITE_URL}/api/auth/meta/callback`;
+function getRequestOrigin(req) {
+  try {
+    const proto = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() || 'https';
+    const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim();
+    if (!host) return SITE_URL;
+    const hostLower = host.toLowerCase();
+    const allowed =
+      hostLower === 'localhost' ||
+      hostLower.endsWith('.vercel.app') ||
+      hostLower.endsWith('archetypeoriginal.com');
+    if (!allowed) return SITE_URL;
+    return `${proto}://${host}`;
+  } catch {
+    return SITE_URL;
+  }
 }
 
-function getCookieDomain() {
+function getMetaRedirectUri(req) {
+  // Use the exact origin of the current request so we don't bounce between www/non-www
+  // (which can cause Meta to drop the code/state on the return trip).
+  const origin = getRequestOrigin(req);
+  return `${origin}/api/auth/meta/callback`;
+}
+
+function getCookieDomain(req) {
   try {
-    const url = new URL(SITE_URL);
-    const host = (url.hostname || '').toLowerCase();
+    const origin = getRequestOrigin(req);
+    const url = new URL(origin);
+    const host = String(url.hostname || '').toLowerCase();
     if (!host) return null;
     if (host === 'localhost') return null;
     if (host.endsWith('.vercel.app')) return null;
@@ -52,11 +73,12 @@ function signState(state) {
   return createHmac('sha256', secret).update(state).digest('hex');
 }
 
-function setStateCookie(res, state) {
+function setStateCookie(req, res, state) {
   const signature = signState(state);
   if (!signature) return false;
   const value = `${state}.${signature}`;
-  const isSecure = SITE_URL.startsWith('https');
+  const origin = getRequestOrigin(req);
+  const isSecure = origin.startsWith('https://');
   const cookie = [
     `${COOKIE_NAME}=${encodeURIComponent(value)}`,
     'Path=/',
@@ -64,7 +86,7 @@ function setStateCookie(res, state) {
     'SameSite=Lax',
     `Max-Age=${COOKIE_MAX_AGE}`,
   ];
-  const domain = getCookieDomain();
+  const domain = getCookieDomain(req);
   if (domain) cookie.push(`Domain=${domain}`);
   if (isSecure) cookie.push('Secure');
   res.setHeader('Set-Cookie', cookie.join('; '));
@@ -87,31 +109,31 @@ export default async function handler(req, res) {
 
   const session = readAoSession(req);
   if (!session.ok) {
-    redirect(res, `${SITE_URL}/ao/login`);
+    redirect(res, '/ao/login');
     return;
   }
 
   const appId = (process.env.META_APP_ID || '').trim();
   if (!appId) {
-    redirect(res, `${SITE_URL}/ao/settings?provider=meta&status=error&message=Server+config+error`);
+    redirect(res, `/ao/settings?provider=meta&status=error&message=Server+config+error`);
     return;
   }
 
   const secret = getCookieSecret();
   if (!secret) {
-    redirect(res, `${SITE_URL}/ao/settings?provider=meta&status=error&message=Server+config+error`);
+    redirect(res, `/ao/settings?provider=meta&status=error&message=Server+config+error`);
     return;
   }
 
   const state = randomBytes(24).toString('hex');
-  if (!setStateCookie(res, state)) {
-    redirect(res, `${SITE_URL}/ao/settings?provider=meta&status=error&message=Could+not+start+connection`);
+  if (!setStateCookie(req, res, state)) {
+    redirect(res, `/ao/settings?provider=meta&status=error&message=Could+not+start+connection`);
     return;
   }
 
   const authUrl = new URL(META_OAUTH_URL);
   authUrl.searchParams.set('client_id', appId);
-  authUrl.searchParams.set('redirect_uri', getMetaRedirectUri());
+  authUrl.searchParams.set('redirect_uri', getMetaRedirectUri(req));
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('response_type', 'code');
   authUrl.searchParams.set('scope', process.env.META_SCOPE || DEFAULT_SCOPES);
