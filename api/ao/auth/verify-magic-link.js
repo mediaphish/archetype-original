@@ -6,7 +6,6 @@
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { setAoSessionCookie } from '../../../lib/ao/requireAoSession.js';
 
-const siteUrl = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
 const loginPath = '/ao/login';
 const dashboardPath = '/ao/command-center';
 
@@ -74,7 +73,7 @@ export default async function handler(req, res) {
     }
 
     res.setHeader('Cache-Control', 'no-store');
-    const redirectUrl = `${siteUrl}${dashboardPath}`;
+    const redirectUrl = dashboardPath;
     return res.status(302).setHeader('Location', redirectUrl).send(`
       <!DOCTYPE html>
       <html>
