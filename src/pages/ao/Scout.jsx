@@ -119,7 +119,6 @@ export default function Scout() {
     if (!authChecked) return;
     setSourcesLoading(true);
     setSourcesError('');
-    setSourcesMessage('');
     try {
       const res = await fetch('/api/ao/external-sources');
       const json = await res.json().catch(() => ({}));
@@ -243,8 +242,8 @@ export default function Scout() {
       const res = await fetch('/api/ao/external-sources/wipe', { method: 'POST' });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Wipe failed');
-      setSourcesMessage('Wiped watched URLs.');
       await loadSources();
+      setSourcesMessage('Wiped watched URLs.');
     } catch (e) {
       setSourcesError(e.message || 'Wipe failed');
     } finally {
@@ -263,8 +262,13 @@ export default function Scout() {
       const res = await fetch('/api/ao/external-sources/rebuild', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target_count: 20 }) });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Rebuild failed');
-      setSourcesMessage(`Rebuilt watched URLs. Added ${json.inserted || 0}.`);
       await loadSources();
+      const inserted = Number(json.inserted || 0);
+      if (!inserted) {
+        setSourcesError(json.message || 'Rebuild finished, but found 0 working sources.');
+      } else {
+        setSourcesMessage(`Rebuilt watched URLs. Added ${inserted}.`);
+      }
     } catch (e) {
       setSourcesError(e.message || 'Rebuild failed');
     } finally {
@@ -426,6 +430,9 @@ export default function Scout() {
               </button>
               <span className="text-xs text-gray-500">Option A: tight, high-trust list. The system verifies feeds before saving.</span>
             </div>
+            {(rebuildingSources || wipingSources) ? (
+              <IndeterminateBar label={rebuildingSources ? 'Rebuilding the list…' : 'Wiping the list…'} />
+            ) : null}
 
             <div className="grid gap-3 md:grid-cols-3">
               <div className="md:col-span-2">
