@@ -61,7 +61,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         ok: true,
         inserted: 0,
-        message: 'No working feed sources found. Try again or provide a narrower prompt.',
+        message: built.note || 'No working feed sources found. Try again or provide a narrower prompt.',
         verified: [],
       });
     }
@@ -89,6 +89,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       inserted: rows.length,
+      message: built.note || null,
       verified: verified.map((v) => ({ name: v.name, feed_url: v.feed_url, homepage_url: v.homepage_url })),
     });
   } catch (e) {

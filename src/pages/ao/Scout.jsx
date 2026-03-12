@@ -285,15 +285,27 @@ export default function Scout() {
     setSourcesError('');
     setSourcesMessage('');
     try {
-      const res = await fetch('/api/ao/external-sources/rebuild', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target_count: 20 }) });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok || !json.ok) throw new Error(json.error || 'Rebuild failed');
+      const res = await fetch('/api/ao/external-sources/rebuild', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_count: 20 }),
+      });
+      const text = await res.text().catch(() => '');
+      const json = (() => {
+        try { return text ? JSON.parse(text) : {}; } catch { return {}; }
+      })();
+      if (!res.ok || !json.ok) {
+        if (res.status === 504 || res.status === 502 || res.status === 503) {
+          throw new Error('Rebuild took too long to finish. Try again — it will keep building the list.');
+        }
+        throw new Error(json.error || (res.status ? `Rebuild failed (${res.status})` : 'Rebuild failed'));
+      }
       await loadSources();
       const inserted = Number(json.inserted || 0);
       if (!inserted) {
         setSourcesError(json.message || 'Rebuild finished, but found 0 working sources.');
       } else {
-        setSourcesMessage(`Rebuilt watched URLs. Added ${inserted}.`);
+        setSourcesMessage(`Rebuilt watched URLs. Added ${inserted}.${json.message ? ` ${json.message}` : ''}`);
       }
     } catch (e) {
       setSourcesError(e.message || 'Rebuild failed');
