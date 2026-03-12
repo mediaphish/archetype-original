@@ -125,6 +125,8 @@
     { "src": "/api/ao/ideas", "dest": "/api/ao/ideas/index.js" },
     { "src": "/api/ao/publishing/schedule-from-idea", "dest": "/api/ao/publishing/schedule-from-idea.js" },
     { "src": "/api/ao/publishing/schedule-from-quote", "dest": "/api/ao/publishing/schedule-from-quote.js" },
+    { "src": "/api/ao/external-sources/wipe", "dest": "/api/ao/external-sources/wipe.js" },
+    { "src": "/api/ao/external-sources/rebuild", "dest": "/api/ao/external-sources/rebuild.js" },
     { "src": "/api/ao/external-sources/seed", "dest": "/api/ao/external-sources/seed.js" },
     { "src": "/api/ao/external-sources/([^/]+)", "dest": "/api/ao/external-sources/[id].js?id=$1" },
     { "src": "/api/ao/external-sources", "dest": "/api/ao/external-sources/index.js" },
@@ -160,16 +162,12 @@
       "schedule": "0 9 * * 1"
     },
     {
-      "path": "/api/cron/ao/external-scan",
-      "schedule": "40 12 * * *"
-    },
-    {
       "path": "/api/cron/ao/internal-scan",
       "schedule": "15 12 * * 1"
     },
     {
       "path": "/api/cron/ao/daily-run",
-      "schedule": "55 12 * * *"
+      "schedule": "55 12 * * 1-5"
     },
     {
       "path": "/api/cron/publish-scheduled-posts",

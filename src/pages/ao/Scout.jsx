@@ -50,11 +50,14 @@ export default function Scout() {
   const [sourcesLoading, setSourcesLoading] = useState(true);
   const [sources, setSources] = useState([]);
   const [sourcesError, setSourcesError] = useState('');
+  const [sourcesMessage, setSourcesMessage] = useState('');
   const [newSourceUrl, setNewSourceUrl] = useState('');
   const [newSourceName, setNewSourceName] = useState('');
   const [newSourceType, setNewSourceType] = useState('rss'); // rss | article
   const [addSourceLoading, setAddSourceLoading] = useState(false);
   const [deleteSourceLoading, setDeleteSourceLoading] = useState(null);
+  const [rebuildingSources, setRebuildingSources] = useState(false);
+  const [wipingSources, setWipingSources] = useState(false);
 
   // People we follow (Brain Trust registry)
   const [peopleLoading, setPeopleLoading] = useState(true);
@@ -116,6 +119,7 @@ export default function Scout() {
     if (!authChecked) return;
     setSourcesLoading(true);
     setSourcesError('');
+    setSourcesMessage('');
     try {
       const res = await fetch('/api/ao/external-sources');
       const json = await res.json().catch(() => ({}));
@@ -225,6 +229,46 @@ export default function Scout() {
       setSourcesError(e.message || 'Could not add source');
     } finally {
       setAddSourceLoading(false);
+    }
+  }
+
+  async function handleWipeSources() {
+    if (!authChecked || wipingSources) return;
+    const ok = window.confirm('Wipe all watched URLs? This cannot be undone.');
+    if (!ok) return;
+    setWipingSources(true);
+    setSourcesError('');
+    setSourcesMessage('');
+    try {
+      const res = await fetch('/api/ao/external-sources/wipe', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Wipe failed');
+      setSourcesMessage('Wiped watched URLs.');
+      await loadSources();
+    } catch (e) {
+      setSourcesError(e.message || 'Wipe failed');
+    } finally {
+      setWipingSources(false);
+    }
+  }
+
+  async function handleRebuildSources() {
+    if (!authChecked || rebuildingSources) return;
+    const ok = window.confirm('Rebuild watched URLs with AI? This will wipe the list first.');
+    if (!ok) return;
+    setRebuildingSources(true);
+    setSourcesError('');
+    setSourcesMessage('');
+    try {
+      const res = await fetch('/api/ao/external-sources/rebuild', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target_count: 20 }) });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Rebuild failed');
+      setSourcesMessage(`Rebuilt watched URLs. Added ${json.inserted || 0}.`);
+      await loadSources();
+    } catch (e) {
+      setSourcesError(e.message || 'Rebuild failed');
+    } finally {
+      setRebuildingSources(false);
     }
   }
 
@@ -361,6 +405,27 @@ export default function Scout() {
             <p className="text-sm text-gray-600 mb-4">These are the sites Scout checks for leadership signals.</p>
 
             {sourcesError ? <p className="text-sm text-red-700 mb-3">{sourcesError}</p> : null}
+            {sourcesMessage ? <p className="text-sm text-green-800 mb-3">{sourcesMessage}</p> : null}
+
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleRebuildSources}
+                disabled={rebuildingSources}
+                className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
+              >
+                {rebuildingSources ? 'Rebuilding…' : 'Rebuild list with AI'}
+              </button>
+              <button
+                type="button"
+                onClick={handleWipeSources}
+                disabled={wipingSources}
+                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+              >
+                {wipingSources ? 'Wiping…' : 'Wipe list'}
+              </button>
+              <span className="text-xs text-gray-500">Option A: tight, high-trust list. The system verifies feeds before saving.</span>
+            </div>
 
             <div className="grid gap-3 md:grid-cols-3">
               <div className="md:col-span-2">
