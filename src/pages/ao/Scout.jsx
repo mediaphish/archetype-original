@@ -13,6 +13,14 @@ function safeUrl(s) {
   }
 }
 
+function summarizeResponseText(text) {
+  const raw = String(text || '').trim();
+  if (!raw) return '';
+  // If the response is HTML, show a short, cleaner snippet.
+  const noTags = raw.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  return (noTags || raw).slice(0, 220);
+}
+
 function IndeterminateBar({ label }) {
   return (
     <div className="mt-3">
@@ -298,7 +306,11 @@ export default function Scout() {
         if (res.status === 504 || res.status === 502 || res.status === 503) {
           throw new Error('Rebuild took too long to finish. Try again — it will keep building the list.');
         }
-        throw new Error(json.error || (res.status ? `Rebuild failed (${res.status})` : 'Rebuild failed'));
+        const hint = summarizeResponseText(text);
+        throw new Error(
+          json.error
+          || (hint ? `Rebuild failed (${res.status || 'error'}): ${hint}` : (res.status ? `Rebuild failed (${res.status})` : 'Rebuild failed'))
+        );
       }
       await loadSources();
       const inserted = Number(json.inserted || 0);
