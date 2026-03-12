@@ -241,6 +241,26 @@ export default function Review() {
                 <ul className="space-y-4">
                   {pendingQuotes.map((q) => (
                     <li key={q.id} className="border border-gray-200 rounded p-4">
+                      <div className="mb-2 text-sm text-gray-800">
+                        <span className="font-semibold">Source:</span>{' '}
+                        <span className="font-medium">
+                          {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
+                        </span>
+                        {q.source_title ? <span> — “{q.source_title}”</span> : null}
+                        {safeUrl(q.source_url || q.source_slug_or_url) ? (
+                          <span>
+                            {' '}
+                            <a
+                              className="text-blue-700 hover:underline"
+                              href={safeUrl(q.source_url || q.source_slug_or_url)}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              (link)
+                            </a>
+                          </span>
+                        ) : null}
+                      </div>
                       <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                         <div className="min-w-0">
                           <h3 className="text-base font-semibold text-gray-900">
