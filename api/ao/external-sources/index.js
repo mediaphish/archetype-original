@@ -72,6 +72,8 @@ export default async function handler(req, res) {
           url,
           name,
           source_type,
+          origin: 'manual',
+          is_protected: true,
           created_at: new Date().toISOString(),
         })
         .select('*')
@@ -81,6 +83,12 @@ export default async function handler(req, res) {
           return res.status(500).json({
             ok: false,
             error: 'External sources table is not set up yet. Run database/ao_queue_and_scan_schema.sql in Supabase.',
+          });
+        }
+        if (String(error.message || '').includes('is_protected') || String(error.message || '').includes('origin')) {
+          return res.status(500).json({
+            ok: false,
+            error: 'Sources protection is not set up yet. Run database/ao_external_sources_protected.sql in Supabase.',
           });
         }
         return res.status(500).json({ ok: false, error: error.message });

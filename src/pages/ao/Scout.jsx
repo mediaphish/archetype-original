@@ -428,7 +428,7 @@ export default function Scout() {
               >
                 {wipingSources ? 'Wiping…' : 'Wipe list'}
               </button>
-              <span className="text-xs text-gray-500">Option A: tight, high-trust list. The system verifies feeds before saving.</span>
+              <span className="text-xs text-gray-500">Wipe removes AI-added URLs only. Manual URLs stay until you delete them.</span>
             </div>
             {(rebuildingSources || wipingSources) ? (
               <IndeterminateBar label={rebuildingSources ? 'Rebuilding the list…' : 'Wiping the list…'} />

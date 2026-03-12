@@ -22,13 +22,19 @@ export default async function handler(req, res) {
     const { error } = await supabaseAdmin
       .from('ao_external_sources')
       .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000');
+      .eq('is_protected', false);
 
     if (error) {
       if (String(error.message || '').includes('ao_external_sources')) {
         return res.status(500).json({
           ok: false,
           error: 'External sources table is not set up yet. Run database/ao_queue_and_scan_schema.sql in Supabase.',
+        });
+      }
+      if (String(error.message || '').includes('is_protected')) {
+        return res.status(500).json({
+          ok: false,
+          error: 'Sources protection is not set up yet. Run database/ao_external_sources_protected.sql in Supabase.',
         });
       }
       return res.status(500).json({ ok: false, error: error.message });

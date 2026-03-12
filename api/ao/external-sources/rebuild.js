@@ -30,16 +30,22 @@ export default async function handler(req, res) {
   const targetCount = clampInt(req.body?.target_count, 20, 10, 40);
 
   try {
-    // Wipe first (start over).
+    // Wipe AI sources first (keep protected manual sources).
     const wipe = await supabaseAdmin
       .from('ao_external_sources')
       .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000');
+      .eq('is_protected', false);
     if (wipe.error) {
       if (String(wipe.error.message || '').includes('ao_external_sources')) {
         return res.status(500).json({
           ok: false,
           error: 'External sources table is not set up yet. Run database/ao_queue_and_scan_schema.sql in Supabase.',
+        });
+      }
+      if (String(wipe.error.message || '').includes('is_protected')) {
+        return res.status(500).json({
+          ok: false,
+          error: 'Sources protection is not set up yet. Run database/ao_external_sources_protected.sql in Supabase.',
         });
       }
       return res.status(500).json({ ok: false, error: wipe.error.message });
@@ -64,11 +70,19 @@ export default async function handler(req, res) {
       url: v.feed_url,
       name: `AI — ${String(v.name || '').trim()}`.slice(0, 120),
       source_type: 'rss',
+      origin: 'ai',
+      is_protected: false,
       created_at: new Date().toISOString(),
     }));
 
     const ins = await supabaseAdmin.from('ao_external_sources').insert(rows);
     if (ins.error) {
+      if (String(ins.error.message || '').includes('is_protected') || String(ins.error.message || '').includes('origin')) {
+        return res.status(500).json({
+          ok: false,
+          error: 'Sources protection is not set up yet. Run database/ao_external_sources_protected.sql in Supabase.',
+        });
+      }
       return res.status(500).json({ ok: false, error: ins.error.message });
     }
 
