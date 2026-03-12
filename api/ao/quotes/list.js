@@ -17,6 +17,46 @@ function clampInt(v, fallback, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
+function isLeadershipRelevantRow(row) {
+  const combined = [
+    row?.source_title,
+    row?.source_name,
+    row?.source_excerpt,
+    row?.raw_content,
+    row?.quote_text,
+  ].filter(Boolean).join(' ').toLowerCase();
+
+  if (!combined) return false;
+
+  const strong = ['leadership', 'leader', 'management', 'manager', 'servant leadership', 'executive', 'workplace', 'organization', 'organisational'];
+  const support = [
+    'culture',
+    'team',
+    'accountability',
+    'trust',
+    'discipline',
+    'strategy',
+    'execution',
+    'decision',
+    'responsibility',
+    'ownership',
+    'integrity',
+    'authority',
+    'power',
+    'coaching',
+    'conflict',
+    'collaboration',
+    'communication',
+    'psychological safety',
+    'hiring',
+    'performance',
+  ];
+
+  const hasStrong = strong.some((k) => combined.includes(k));
+  const supportHits = support.reduce((n, k) => (combined.includes(k) ? n + 1 : n), 0);
+  return hasStrong || supportHits >= 3;
+}
+
 async function expireOldPending() {
   const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
   await supabaseAdmin
@@ -62,9 +102,37 @@ export default async function handler(req, res) {
     if (error) {
       return res.status(500).json({ ok: false, error: error.message });
     }
+
+    // Aggressive cleanup: hide obvious off-topic external items immediately.
+    // Better to return fewer items than show junk.
+    const rows = Array.isArray(data) ? data : [];
+    const keep = [];
+    const toReject = [];
+    for (const r of rows) {
+      const isExternal = r && r.is_internal === false;
+      if (isExternal && !isLeadershipRelevantRow(r)) {
+        toReject.push(r.id);
+        continue;
+      }
+      keep.push(r);
+    }
+    if (toReject.length) {
+      try {
+        await supabaseAdmin
+          .from('ao_quote_review_queue')
+          .update({
+            status: 'rejected',
+            auto_discarded: true,
+            discard_reason: 'Off-topic (not leadership-related)',
+            updated_at: new Date().toISOString(),
+          })
+          .in('id', toReject);
+      } catch (_) {}
+    }
+
     return res.status(200).json({
       ok: true,
-      quotes: data || [],
+      quotes: keep,
       page: {
         status,
         limit,
