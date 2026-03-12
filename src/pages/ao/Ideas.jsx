@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
+import TinyMarkdownEditor from '../../components/ao/TinyMarkdownEditor';
 
 function fmtDate(iso) {
   try {
@@ -53,6 +54,8 @@ export default function Ideas() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
 
+  const [activePathTab, setActivePathTab] = useState('idea_seed'); // idea_seed | ready_post
+
   const [statusFilter, setStatusFilter] = useState('active'); // active | held | archived | all
   const [query, setQuery] = useState('');
   const [pageSize, setPageSize] = useState(10);
@@ -74,6 +77,15 @@ export default function Ideas() {
   const [newSourceUrl, setNewSourceUrl] = useState('');
   const [newRaw, setNewRaw] = useState('');
   const [creating, setCreating] = useState(false);
+
+  const [readyTitle, setReadyTitle] = useState('');
+  const [readyMarkdown, setReadyMarkdown] = useState('');
+  const [readyTargetSite, setReadyTargetSite] = useState(true);
+  const [readyTargetSocial, setReadyTargetSocial] = useState(true);
+  const [readyChannels, setReadyChannels] = useState({ linkedin: true, facebook: true, instagram: true, x: true });
+  const [readyFeatured, setReadyFeatured] = useState(null); // { filename, mime_type, content_base64 }
+  const readyMdFileRef = useRef(null);
+  const readyImageFileRef = useRef(null);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -116,6 +128,7 @@ export default function Ideas() {
     try {
       const params = new URLSearchParams();
       params.set('status', statusFilter);
+      params.set('path', activePathTab);
       params.set('limit', String(pageSize));
       params.set('offset', String(offset));
       if (query.trim()) params.set('q', query.trim());
@@ -177,6 +190,7 @@ export default function Ideas() {
         title: newTitle.trim() ? newTitle.trim() : null,
         raw_input: newRaw,
         source_url: looksUrl(newSourceUrl) ? newSourceUrl.trim() : null,
+        path: 'idea_seed',
       };
       const res = await fetch('/api/ao/ideas', {
         method: 'POST',
@@ -199,6 +213,42 @@ export default function Ideas() {
     }
   }, [newTitle, newRaw, newSourceUrl, fetchList]);
 
+  const createReadyPost = useCallback(async () => {
+    setCreating(true);
+    setError('');
+    setMessage('');
+    try {
+      const channels = Object.entries(readyChannels).filter(([, v]) => !!v).map(([k]) => k);
+      const body = {
+        path: 'ready_post',
+        title: readyTitle.trim() ? readyTitle.trim() : null,
+        raw_input: readyMarkdown,
+        markdown_content: readyMarkdown,
+        ready_target_site: !!readyTargetSite,
+        ready_target_social: !!readyTargetSocial,
+        ready_social_channels: channels,
+        featured_image: readyFeatured,
+      };
+      const res = await fetch('/api/ao/ideas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to save Ready Post');
+      setReadyTitle('');
+      setReadyMarkdown('');
+      setReadyFeatured(null);
+      setMessage('Saved. Select it in the list to generate social drafts or send to Import.');
+      setOffset(0);
+      await fetchList({ keepSelection: false });
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setCreating(false);
+    }
+  }, [readyTitle, readyMarkdown, readyTargetSite, readyTargetSocial, readyChannels, readyFeatured, fetchList]);
+
   const act = useCallback(async (action, extraBody) => {
     if (!detail?.id) return;
     setActing(true);
@@ -214,7 +264,13 @@ export default function Ideas() {
       if (!res.ok || !json.ok) throw new Error(json.error || 'Action failed');
       setDetail(json.idea || null);
       if (action === 'shape-brief') setLastWhatIsMissing(json.meta?.what_is_missing || []);
-      setMessage(action === 'shape-brief' ? 'Brief created.' : 'Done.');
+      if (action === 'send-to-import') {
+        setMessage('Sent to Import. Open Import to publish it to the site.');
+      } else if (action === 'generate-social-drafts') {
+        setMessage('Social drafts generated. Open Publishing to schedule them.');
+      } else {
+        setMessage(action === 'shape-brief' ? 'Brief created.' : 'Done.');
+      }
       await fetchList({ keepSelection: true });
     } catch (e) {
       setError(e.message);
@@ -259,7 +315,7 @@ export default function Ideas() {
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Ideas</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Drop in a thought, outline, or draft. When you’re ready, click “Shape into brief” to get a decision-ready summary.
+              Two paths: capture raw seeds to shape into a brief, or paste finished posts to go live quickly.
             </p>
           </div>
 
@@ -271,48 +327,188 @@ export default function Ideas() {
           ) : null}
 
           <section className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">New idea</h2>
-            <div className="grid gap-3 md:grid-cols-3">
-              <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title (optional)</label>
-                <input
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Short label you’ll recognize"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Source link (optional)</label>
-                <input
-                  value={newSourceUrl}
-                  onChange={(e) => setNewSourceUrl(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="https://…"
-                />
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">New</h2>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setActivePathTab('idea_seed'); setOffset(0); }}
+                  className={`px-3 py-1.5 rounded text-sm font-medium ${activePathTab === 'idea_seed' ? 'bg-gray-900 text-white' : 'border border-gray-300 hover:bg-gray-50'}`}
+                >
+                  Idea Seeds
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActivePathTab('ready_post'); setOffset(0); }}
+                  className={`px-3 py-1.5 rounded text-sm font-medium ${activePathTab === 'ready_post' ? 'bg-gray-900 text-white' : 'border border-gray-300 hover:bg-gray-50'}`}
+                >
+                  Ready Posts
+                </button>
               </div>
             </div>
-            <div className="mt-3">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Your idea</label>
-              <textarea
-                value={newRaw}
-                onChange={(e) => setNewRaw(e.target.value)}
-                rows={6}
-                className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="One line, bullets, or a full draft. Anything works."
-              />
-            </div>
-            <div className="mt-3 flex items-center gap-3">
-              <button
-                type="button"
-                disabled={creating || newRaw.trim().length < 5}
-                onClick={createIdea}
-                className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
-              >
-                {creating ? 'Saving…' : 'Save idea'}
-              </button>
-              <span className="text-xs text-gray-500">Nothing gets posted automatically.</span>
-            </div>
+
+            {activePathTab === 'idea_seed' ? (
+              <div>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <div className="md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Title (optional)</label>
+                    <input
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Short label you’ll recognize"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Source link (optional)</label>
+                    <input
+                      value={newSourceUrl}
+                      onChange={(e) => setNewSourceUrl(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="https://…"
+                    />
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Your idea</label>
+                  <textarea
+                    value={newRaw}
+                    onChange={(e) => setNewRaw(e.target.value)}
+                    rows={6}
+                    className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="One line, bullets, or a full draft. Anything works."
+                  />
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={creating || newRaw.trim().length < 5}
+                    onClick={createIdea}
+                    className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
+                  >
+                    {creating ? 'Saving…' : 'Save idea'}
+                  </button>
+                  <span className="text-xs text-gray-500">Nothing gets posted automatically.</span>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Title (optional)</label>
+                    <input
+                      value={readyTitle}
+                      onChange={(e) => setReadyTitle(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Short label you’ll recognize"
+                    />
+                  </div>
+                  <div className="md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Targets</label>
+                    <div className="flex flex-col gap-2 mt-1">
+                      <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" checked={readyTargetSite} onChange={(e) => setReadyTargetSite(e.target.checked)} />
+                        Website (sends to Import)
+                      </label>
+                      <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                        <input type="checkbox" checked={readyTargetSocial} onChange={(e) => setReadyTargetSocial(e.target.checked)} />
+                        Social (creates drafts)
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {readyTargetSocial ? (
+                  <div className="mt-3">
+                    <div className="text-sm font-medium text-gray-700 mb-1">Social channels (default all)</div>
+                    <div className="flex flex-wrap gap-3 text-sm text-gray-700">
+                      {['linkedin', 'facebook', 'instagram', 'x'].map((k) => (
+                        <label key={k} className="inline-flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={!!readyChannels[k]}
+                            onChange={(e) => setReadyChannels((p) => ({ ...p, [k]: e.target.checked }))}
+                          />
+                          {k}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="mt-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Post</label>
+                  <TinyMarkdownEditor
+                    value={readyMarkdown}
+                    onChange={setReadyMarkdown}
+                    placeholder="Paste your finished post. You can format it here."
+                    onUploadMarkdown={() => readyMdFileRef.current?.click()}
+                  />
+                  <input
+                    ref={readyMdFileRef}
+                    type="file"
+                    accept=".md,text/markdown"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const text = await f.text();
+                      setReadyMarkdown(text);
+                      e.target.value = '';
+                    }}
+                  />
+                </div>
+
+                <div className="mt-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <label className="block text-sm font-medium text-gray-700">Featured image (optional)</label>
+                    <button
+                      type="button"
+                      onClick={() => readyImageFileRef.current?.click()}
+                      className="px-3 py-1.5 text-sm border border-gray-300 rounded hover:bg-gray-50"
+                    >
+                      Choose image
+                    </button>
+                  </div>
+                  {readyFeatured ? (
+                    <div className="mt-2 text-sm text-gray-700">
+                      Selected: <span className="font-semibold">{readyFeatured.filename}</span>
+                    </div>
+                  ) : (
+                    <div className="mt-2 text-xs text-gray-500">One image only (used as the post’s featured image).</div>
+                  )}
+                  <input
+                    ref={readyImageFileRef}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const buf = await f.arrayBuffer();
+                      const bytes = new Uint8Array(buf);
+                      let binary = '';
+                      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+                      const content_base64 = btoa(binary);
+                      setReadyFeatured({ filename: f.name, mime_type: f.type || 'image/jpeg', content_base64 });
+                      e.target.value = '';
+                    }}
+                  />
+                </div>
+
+                <div className="mt-3 flex items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={creating || readyMarkdown.trim().length < 20}
+                    onClick={createReadyPost}
+                    className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
+                  >
+                    {creating ? 'Saving…' : 'Save ready post'}
+                  </button>
+                  <span className="text-xs text-gray-500">It won’t publish automatically.</span>
+                </div>
+              </div>
+            )}
           </section>
 
           <div className="grid gap-6 lg:grid-cols-2">
@@ -478,6 +674,26 @@ export default function Ideas() {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
+                    {detail.path === 'ready_post' ? (
+                      <>
+                        <button
+                          type="button"
+                          disabled={acting}
+                          onClick={() => act('generate-social-drafts')}
+                          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 disabled:opacity-50"
+                        >
+                          {acting ? 'Working…' : 'Generate social drafts'}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={acting || !detail.ready_target_site}
+                          onClick={() => act('send-to-import')}
+                          className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          Send to Import
+                        </button>
+                      </>
+                    ) : (
                     <button
                       type="button"
                       disabled={acting}
@@ -486,6 +702,7 @@ export default function Ideas() {
                     >
                       {acting ? 'Working…' : (hasBrief ? 'Re-shape brief' : 'Shape into brief')}
                     </button>
+                    )}
                     <button
                       type="button"
                       disabled={acting}

@@ -118,6 +118,8 @@
     { "src": "api/ao/ideas/[id]/hold.js", "use": "@vercel/node" },
     { "src": "api/ao/ideas/[id]/unhold.js", "use": "@vercel/node" },
     { "src": "api/ao/ideas/[id]/archive.js", "use": "@vercel/node" },
+    { "src": "api/ao/ideas/[id]/generate-social-drafts.js", "use": "@vercel/node" },
+    { "src": "api/ao/ideas/[id]/send-to-import.js", "use": "@vercel/node" },
     { "src": "api/ao/external-sources/index.js", "use": "@vercel/node" },
     { "src": "api/ao/external-sources/[id].js", "use": "@vercel/node" },
     { "src": "api/ao/external-sources/seed.js", "use": "@vercel/node" },
@@ -133,7 +135,8 @@
     { "src": "api/providers/meta/test-post.js", "use": "@vercel/node" },
     { "src": "api/ao/x/status.js", "use": "@vercel/node" },
     { "src": "api/providers/x/test-post.js", "use": "@vercel/node" },
-    { "src": "api/providers/facebook/group-post.js", "use": "@vercel/node" }
+    { "src": "api/providers/facebook/group-post.js", "use": "@vercel/node" },
+    { "src": "api/ao/publishing/schedule-from-idea.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -249,8 +252,11 @@
     { "src": "/api/ao/ideas/([^/]+)/hold", "dest": "/api/ao/ideas/[id]/hold.js?id=$1" },
     { "src": "/api/ao/ideas/([^/]+)/unhold", "dest": "/api/ao/ideas/[id]/unhold.js?id=$1" },
     { "src": "/api/ao/ideas/([^/]+)/archive", "dest": "/api/ao/ideas/[id]/archive.js?id=$1" },
+    { "src": "/api/ao/ideas/([^/]+)/generate-social-drafts", "dest": "/api/ao/ideas/[id]/generate-social-drafts.js?id=$1" },
+    { "src": "/api/ao/ideas/([^/]+)/send-to-import", "dest": "/api/ao/ideas/[id]/send-to-import.js?id=$1" },
     { "src": "/api/ao/ideas/([^/]+)", "dest": "/api/ao/ideas/[id].js?id=$1" },
     { "src": "/api/ao/ideas", "dest": "/api/ao/ideas/index.js" },
+    { "src": "/api/ao/publishing/schedule-from-idea", "dest": "/api/ao/publishing/schedule-from-idea.js" },
     { "src": "/api/ao/external-sources/seed", "dest": "/api/ao/external-sources/seed.js" },
     { "src": "/api/ao/external-sources/([^/]+)", "dest": "/api/ao/external-sources/[id].js?id=$1" },
     { "src": "/api/ao/external-sources", "dest": "/api/ao/external-sources/index.js" },

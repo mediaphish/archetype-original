@@ -30,10 +30,16 @@ export default function Publishing() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [publishLoading, setPublishLoading] = useState(false);
-  const [filter, setFilter] = useState('scheduled'); // scheduled | history
+  const [filter, setFilter] = useState('scheduled'); // scheduled | drafts | history
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [patchLoading, setPatchLoading] = useState(false);
+
+  const [draftsLoading, setDraftsLoading] = useState(false);
+  const [readyDrafts, setReadyDrafts] = useState([]);
+  const [draftSchedule, setDraftSchedule] = useState({}); // { [ideaId]: { linkedin, facebook, instagram, x } }
+  const [draftEdits, setDraftEdits] = useState({}); // { [ideaId]: { linkedin, facebook, instagram, x } }
+  const [draftError, setDraftError] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -84,6 +90,28 @@ export default function Publishing() {
     } catch (_) {}
     setLoading(false);
   }, [authChecked, email]);
+
+  const fetchReadyDrafts = useCallback(async () => {
+    if (!authChecked) return;
+    setDraftsLoading(true);
+    setDraftError('');
+    try {
+      const params = new URLSearchParams();
+      params.set('status', 'all');
+      params.set('path', 'ready_post');
+      params.set('limit', '100');
+      params.set('offset', '0');
+      const res = await fetch(`/api/ao/ideas?${params.toString()}`);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to load drafts');
+      const rows = (json.ideas || []).filter((x) => x.ready_social_drafts && x.ready_target_social);
+      setReadyDrafts(rows);
+    } catch (e) {
+      setDraftError(e.message);
+    } finally {
+      setDraftsLoading(false);
+    }
+  }, [authChecked]);
 
   useEffect(() => {
     fetchPosts();
@@ -166,6 +194,13 @@ export default function Publishing() {
           </button>
           <button
             type="button"
+            onClick={() => { setFilter('drafts'); fetchReadyDrafts(); }}
+            className={`px-4 py-2 rounded-lg font-medium ${filter === 'drafts' ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+          >
+            Drafts
+          </button>
+          <button
+            type="button"
             onClick={() => setFilter('history')}
             className={`px-4 py-2 rounded-lg font-medium ${filter === 'history' ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
           >
@@ -175,6 +210,86 @@ export default function Publishing() {
 
         {loading ? (
           <LoadingSpinner />
+        ) : filter === 'drafts' ? (
+          <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Drafts</h2>
+              <p className="text-sm text-gray-600 mt-1">Ready Posts with generated drafts. Schedule the ones you want.</p>
+              {draftError ? <p className="text-sm text-red-600 mt-2">{draftError}</p> : null}
+            </div>
+            {draftsLoading ? (
+              <div className="p-6"><LoadingSpinner message="Loading drafts…" /></div>
+            ) : readyDrafts.length === 0 ? (
+              <p className="p-6 text-gray-500">No drafts yet. Create a Ready Post in Ideas and generate drafts.</p>
+            ) : (
+              <ul className="divide-y divide-gray-200">
+                {readyDrafts.map((idea) => {
+                  const id = idea.id;
+                  const d = idea.ready_social_drafts?.drafts_by_channel || {};
+                  const sched = draftSchedule[id] || {};
+                  const edits = draftEdits[id] || {};
+                  const setSched = (channel, v) => setDraftSchedule((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
+                  const setEdit = (channel, v) => setDraftEdits((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
+                  const scheduleNow = async () => {
+                    try {
+                      const res = await fetch('/api/ao/publishing/schedule-from-idea', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ idea_id: id, schedule: sched, edits }),
+                      });
+                      const json = await res.json().catch(() => ({}));
+                      if (!res.ok || !json.ok) throw new Error(json.error || 'Schedule failed');
+                      await fetchPosts();
+                      setFilter('scheduled');
+                    } catch (e) {
+                      setDraftError(e.message);
+                    }
+                  };
+
+                  return (
+                    <li key={id} className="p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className="font-semibold text-gray-900 truncate">{idea.title || 'Ready Post'}</div>
+                          <div className="text-xs text-gray-500 mt-1">{new Date(idea.created_at).toLocaleString()}</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={scheduleNow}
+                          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700"
+                        >
+                          Schedule selected
+                        </button>
+                      </div>
+
+                      <div className="mt-4 grid gap-4 md:grid-cols-2">
+                        {['linkedin', 'facebook', 'instagram', 'x'].map((c) => (
+                          <div key={c} className="border border-gray-200 rounded p-3">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="text-sm font-semibold text-gray-900">{c}</div>
+                              <input
+                                type="datetime-local"
+                                value={sched[c] || ''}
+                                onChange={(e) => setSched(c, e.target.value)}
+                                className="text-xs border border-gray-300 rounded px-2 py-1"
+                              />
+                            </div>
+                            <textarea
+                              value={edits[c] ?? d[c] ?? ''}
+                              onChange={(e) => setEdit(c, e.target.value)}
+                              rows={4}
+                              className="mt-2 w-full text-sm border border-gray-300 rounded px-2 py-1"
+                              placeholder="Draft text…"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
         ) : filter === 'scheduled' ? (
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
             <h2 className="sr-only">Scheduled posts</h2>

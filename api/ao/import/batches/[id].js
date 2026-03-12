@@ -41,21 +41,56 @@ async function ghJson(url, { token, method = 'GET', body } = {}) {
   return { ok: res.ok, status: res.status, json };
 }
 
+async function createBlob({ token, repo, contentBase64 }) {
+  const base = 'https://api.github.com';
+  const res = await ghJson(`${base}/repos/${repo}/git/blobs`, {
+    token,
+    method: 'POST',
+    body: { content: contentBase64, encoding: 'base64' },
+  });
+  if (!res.ok) {
+    return { ok: false, error: `GitHub blob create failed (${res.status})`, details: res.json };
+  }
+  const sha = res.json?.sha;
+  if (!sha) return { ok: false, error: 'GitHub blob create returned no sha' };
+  return { ok: true, sha };
+}
+
 async function publishBatchToGitHub({ token, repo, branch, items, message }) {
   const base = 'https://api.github.com';
 
-  const tree = [];
-  for (const it of items) {
-    tree.push({
-      path: it.target_path,
-      mode: '100644',
-      type: 'blob',
-      content: it.content,
-    });
-  }
+  // Note: text files can be added as "content" directly, but binary files must be uploaded as blobs first.
 
   // Retry once if branch advanced during publish.
   for (let attempt = 1; attempt <= 2; attempt++) {
+    const tree = [];
+    for (const it of items) {
+      const isBinary = !!it.is_binary;
+      if (!isBinary) {
+        tree.push({
+          path: it.target_path,
+          mode: '100644',
+          type: 'blob',
+          content: it.content,
+        });
+        continue;
+      }
+
+      const contentBase64 = String(it.content_base64 || '').trim();
+      if (!contentBase64) {
+        return { ok: false, error: `Missing content_base64 for binary item: ${it.filename || it.target_path}` };
+      }
+
+      const blob = await createBlob({ token, repo, contentBase64 });
+      if (!blob.ok) return { ok: false, error: blob.error, details: blob.details || null };
+      tree.push({
+        path: it.target_path,
+        mode: '100644',
+        type: 'blob',
+        sha: blob.sha,
+      });
+    }
+
     const refRes = await ghJson(`${base}/repos/${repo}/git/ref/heads/${encodeURIComponent(branch)}`, { token });
     if (!refRes.ok) {
       return { ok: false, error: `GitHub ref lookup failed (${refRes.status})`, details: refRes.json };
