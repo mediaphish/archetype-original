@@ -274,31 +274,13 @@ export default async function handler(req, res) {
               }
             } else {
               // Batch success - check individual results
-              const batchResults = result.data || [];
-              for (let j = 0; j < batchResults.length; j++) {
-                const emailResult = batchResults[j];
-                const failure = batch[j];
-                const newRetryCount = failure.retry_count + 1;
-                
-                if (emailResult.error) {
-                  const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
-                  stillFailedCount++;
-                  errors.push({ email: failure.email, post_slug: slug, error: emailResult.error });
-                  await supabaseAdmin
-                    .from("journal_email_failures")
-                    .update({ 
-                      retry_count: newRetryCount,
-                      last_retry_at: new Date().toISOString(),
-                      status: shouldMarkAsFailed ? 'failed' : 'pending',
-                      resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
-                      error_message: emailResult.error.message || JSON.stringify(emailResult.error)
-                    })
-                    .eq("id", failure.id);
-                  
-                  if (shouldMarkAsFailed) {
-                    maxedOutCount++;
-                  }
-                } else {
+              const raw = result?.data;
+              const batchResults = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : null);
+
+              // Resend batch responses may not include per-recipient results. If they don't, treat the batch as accepted.
+              if (!batchResults) {
+                for (const failure of batch) {
+                  const newRetryCount = failure.retry_count + 1;
                   retriedCount++;
                   await supabaseAdmin
                     .from("journal_email_failures")
@@ -307,9 +289,66 @@ export default async function handler(req, res) {
                       retry_count: newRetryCount,
                       last_retry_at: new Date().toISOString(),
                       resolved_at: new Date().toISOString(),
-                      resend_email_id: emailResult.id || null
+                      resend_email_id: null
                     })
                     .eq("id", failure.id);
+                }
+              } else {
+                const n = Math.min(batchResults.length, batch.length);
+                for (let j = 0; j < n; j++) {
+                  const emailResult = batchResults[j];
+                  const failure = batch[j];
+                  const newRetryCount = failure.retry_count + 1;
+                  
+                  if (emailResult?.error) {
+                    const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
+                    stillFailedCount++;
+                    errors.push({ email: failure.email, post_slug: slug, error: emailResult.error });
+                    await supabaseAdmin
+                      .from("journal_email_failures")
+                      .update({ 
+                        retry_count: newRetryCount,
+                        last_retry_at: new Date().toISOString(),
+                        status: shouldMarkAsFailed ? 'failed' : 'pending',
+                        resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
+                        error_message: emailResult.error.message || JSON.stringify(emailResult.error)
+                      })
+                      .eq("id", failure.id);
+                    
+                    if (shouldMarkAsFailed) {
+                      maxedOutCount++;
+                    }
+                  } else {
+                    retriedCount++;
+                    await supabaseAdmin
+                      .from("journal_email_failures")
+                      .update({ 
+                        status: 'sent',
+                        retry_count: newRetryCount,
+                        last_retry_at: new Date().toISOString(),
+                        resolved_at: new Date().toISOString(),
+                        resend_email_id: emailResult?.id || null
+                      })
+                      .eq("id", failure.id);
+                  }
+                }
+
+                // If Resend returned fewer results than recipients, treat the rest as accepted.
+                if (batch.length > n) {
+                  for (const failure of batch.slice(n)) {
+                    const newRetryCount = failure.retry_count + 1;
+                    retriedCount++;
+                    await supabaseAdmin
+                      .from("journal_email_failures")
+                      .update({ 
+                        status: 'sent',
+                        retry_count: newRetryCount,
+                        last_retry_at: new Date().toISOString(),
+                        resolved_at: new Date().toISOString(),
+                        resend_email_id: null
+                      })
+                      .eq("id", failure.id);
+                  }
                 }
               }
               console.log(`✅ Retry batch ${batchNumber} completed for ${slug}`);

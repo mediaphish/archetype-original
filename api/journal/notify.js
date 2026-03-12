@@ -237,27 +237,41 @@ export default async function handler(req, res) {
             }
           } else {
             // Batch success - check individual results
-            const batchResults = result.data || [];
-            batchResults.forEach((emailResult, index) => {
-              if (emailResult.error) {
-                failedCount++;
-                const subscriber = batch[index];
-                errors.push({ email: subscriber.email, error: emailResult.error });
-                failedEmails.push({
-                  email: subscriber.email,
-                  subscription_id: subscriber.id,
-                  post_slug: slug,
-                  post_type: isDevotional ? 'devotional' : 'journal-post',
-                  post_title: title,
-                  error_type: emailResult.error.name || 'unknown',
-                  error_message: emailResult.error.message || JSON.stringify(emailResult.error),
-                  error_code: emailResult.error.statusCode || 500,
-                  status: 'pending'
-                });
-              } else {
-                sentCount++;
+            const raw = result?.data;
+            const batchResults = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : null);
+
+            // Resend batch responses may not include per-recipient results. If they don't, treat the batch as accepted.
+            if (!batchResults) {
+              sentCount += batch.length;
+            } else {
+              const n = Math.min(batchResults.length, batch.length);
+              for (let j = 0; j < n; j++) {
+                const emailResult = batchResults[j];
+                const subscriber = batch[j];
+                if (emailResult?.error) {
+                  failedCount++;
+                  errors.push({ email: subscriber.email, error: emailResult.error });
+                  failedEmails.push({
+                    email: subscriber.email,
+                    subscription_id: subscriber.id,
+                    post_slug: slug,
+                    post_type: isDevotional ? 'devotional' : 'journal-post',
+                    post_title: title,
+                    error_type: emailResult.error.name || 'unknown',
+                    error_message: emailResult.error.message || JSON.stringify(emailResult.error),
+                    error_code: emailResult.error.statusCode || 500,
+                    status: 'pending'
+                  });
+                } else {
+                  sentCount++;
+                }
               }
-            });
+
+              // If Resend returned fewer results than recipients, treat the rest as accepted.
+              if (batch.length > n) {
+                sentCount += (batch.length - n);
+              }
+            }
             console.log(`✅ Batch ${batchNumber} completed: ${sentCount} sent, ${failedCount} failed`);
             batchSent = true;
           }
