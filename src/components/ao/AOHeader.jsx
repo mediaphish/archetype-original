@@ -5,6 +5,7 @@ import { OptimizedImage } from '../OptimizedImage';
 const TABS = [
   { key: 'command-center', path: '/ao/command-center', label: 'Command Center' },
   { key: 'import', path: '/ao/import', label: 'Import' },
+  { key: 'ideas', path: '/ao/ideas', label: 'Ideas' },
   { key: 'insights', path: '/ao/insights', label: 'Insights' },
   { key: 'review', path: '/ao/review', label: 'Review' },
   { key: 'publishing', path: '/ao/publishing', label: 'Publishing' },
