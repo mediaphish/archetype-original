@@ -280,6 +280,8 @@ export default function Review() {
                       {/** Decision-ready brief (above the fold) */}
                       {(() => {
                         const crit = buildCritique(q);
+                        const trailFrom = safeUrl(q?.scout_discovered_from_url);
+                        const watched = safeUrl(q?.scout_watched_source_url);
                         return (
                           <>
                       <div className="mb-2 text-sm text-gray-800">
@@ -302,6 +304,27 @@ export default function Review() {
                           </span>
                         ) : null}
                       </div>
+                      {(watched || trailFrom) ? (
+                        <div className="mb-2 text-xs text-gray-600">
+                          <span className="font-semibold">Scout trail:</span>{' '}
+                          {watched ? (
+                            <a className="text-blue-700 hover:underline" href={watched} target="_blank" rel="noreferrer">
+                              watched source
+                            </a>
+                          ) : (
+                            <span>watched source</span>
+                          )}
+                          {trailFrom && (!watched || trailFrom !== watched) ? (
+                            <>
+                              {' '}
+                              →{' '}
+                              <a className="text-blue-700 hover:underline" href={trailFrom} target="_blank" rel="noreferrer">
+                                followed lead
+                              </a>
+                            </>
+                          ) : null}
+                        </div>
+                      ) : null}
                       <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                         <div className="min-w-0">
                           <h3 className="text-base font-semibold text-gray-900">
@@ -575,6 +598,8 @@ export default function Review() {
                     <li key={q.id} className="border border-gray-200 rounded p-4">
                       {(() => {
                         const crit = buildCritique(q);
+                        const trailFrom = safeUrl(q?.scout_discovered_from_url);
+                        const watched = safeUrl(q?.scout_watched_source_url);
                         return (
                           <>
                       <div className="mb-2 text-sm text-gray-800">
@@ -590,6 +615,27 @@ export default function Review() {
                           </span>
                         ) : null}
                       </div>
+                      {(watched || trailFrom) ? (
+                        <div className="mb-2 text-xs text-gray-600">
+                          <span className="font-semibold">Scout trail:</span>{' '}
+                          {watched ? (
+                            <a className="text-blue-700 hover:underline" href={watched} target="_blank" rel="noreferrer">
+                              watched source
+                            </a>
+                          ) : (
+                            <span>watched source</span>
+                          )}
+                          {trailFrom && (!watched || trailFrom !== watched) ? (
+                            <>
+                              {' '}
+                              →{' '}
+                              <a className="text-blue-700 hover:underline" href={trailFrom} target="_blank" rel="noreferrer">
+                                followed lead
+                              </a>
+                            </>
+                          ) : null}
+                        </div>
+                      ) : null}
                       <div className="flex items-center justify-between gap-3 mb-2">
                         <h3 className="text-base font-semibold text-gray-900">{q.source_title || q.source_name || 'Held item'}</h3>
                         <Pill tone="gray">held</Pill>

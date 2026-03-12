@@ -57,6 +57,21 @@ export default function Scout() {
   const [dailyRunning, setDailyRunning] = useState(false);
   const [dailyRunMessage, setDailyRunMessage] = useState('');
 
+  // Scout reporter-mode activity + pending sources
+  const [scoutRunsLoading, setScoutRunsLoading] = useState(true);
+  const [scoutRuns, setScoutRuns] = useState([]);
+  const [scoutRunsError, setScoutRunsError] = useState('');
+  const [scoutPassRunning, setScoutPassRunning] = useState(false);
+  const [scoutPassMessage, setScoutPassMessage] = useState('');
+
+  const [capLoading, setCapLoading] = useState(true);
+  const [capStatus, setCapStatus] = useState(null); // { cap, used, remaining, window }
+
+  const [pendingSourcesLoading, setPendingSourcesLoading] = useState(true);
+  const [pendingSources, setPendingSources] = useState([]);
+  const [pendingSourcesError, setPendingSourcesError] = useState('');
+  const [pendingActingId, setPendingActingId] = useState(null);
+
   // URLs we watch (external sources allowlist)
   const [sourcesLoading, setSourcesLoading] = useState(true);
   const [sources, setSources] = useState([]);
@@ -186,13 +201,81 @@ export default function Scout() {
     }
   }, [authChecked]);
 
+  const loadScoutRuns = useCallback(async () => {
+    if (!authChecked) return;
+    setScoutRunsLoading(true);
+    setScoutRunsError('');
+    try {
+      const res = await fetch('/api/ao/scout/runs');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setScoutRuns(Array.isArray(json.runs) ? json.runs : []);
+      } else {
+        setScoutRuns([]);
+        setScoutRunsError(json.error || 'Could not load Scout activity');
+      }
+    } catch (e) {
+      setScoutRuns([]);
+      setScoutRunsError(e.message || 'Could not load Scout activity');
+    } finally {
+      setScoutRunsLoading(false);
+    }
+  }, [authChecked]);
+
+  const loadPendingSources = useCallback(async () => {
+    if (!authChecked) return;
+    setPendingSourcesLoading(true);
+    setPendingSourcesError('');
+    try {
+      const res = await fetch('/api/ao/scout/pending-sources');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setPendingSources(Array.isArray(json.pending) ? json.pending : []);
+      } else {
+        setPendingSources([]);
+        setPendingSourcesError(json.error || 'Could not load pending sources');
+      }
+    } catch (e) {
+      setPendingSources([]);
+      setPendingSourcesError(e.message || 'Could not load pending sources');
+    } finally {
+      setPendingSourcesLoading(false);
+    }
+  }, [authChecked]);
+
+  const loadCapStatus = useCallback(async () => {
+    if (!authChecked) return;
+    setCapLoading(true);
+    try {
+      const res = await fetch('/api/ao/scout/cap-status');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setCapStatus({
+          cap: Number(json.cap || 0),
+          used: Number(json.used || 0),
+          remaining: Number(json.remaining || 0),
+          window: String(json.window || ''),
+        });
+      } else {
+        setCapStatus(null);
+      }
+    } catch (_) {
+      setCapStatus(null);
+    } finally {
+      setCapLoading(false);
+    }
+  }, [authChecked]);
+
   useEffect(() => {
     if (!authChecked) return;
     loadStatus();
     loadSources();
     loadPeople();
     loadAiStatus();
-  }, [authChecked, loadStatus, loadSources, loadPeople, loadAiStatus]);
+    loadScoutRuns();
+    loadPendingSources();
+    loadCapStatus();
+  }, [authChecked, loadStatus, loadSources, loadPeople, loadAiStatus, loadScoutRuns, loadPendingSources, loadCapStatus]);
 
   const runScan = useCallback(async (type) => {
     if (!authChecked || scanning) return;
@@ -228,6 +311,54 @@ export default function Scout() {
       setDailyRunning(false);
     }
   }, [authChecked, dailyRunning, loadStatus]);
+
+  const runScoutPassNow = useCallback(async () => {
+    if (!authChecked || scoutPassRunning) return;
+    setScoutPassMessage('');
+    setScoutRunsError('');
+    setScoutPassRunning(true);
+    try {
+      const res = await fetch('/api/ao/scout-pass-now', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setScoutPassMessage(`Scout pass complete. Read ${json.pages_fetched || 0} page(s). Sent ${json.discoveries_created || 0} item(s) to Analyst.`);
+      } else {
+        setScoutPassMessage(json.error || 'Scout pass failed');
+      }
+    } catch (e) {
+      setScoutPassMessage(e.message || 'Scout pass failed');
+    } finally {
+      setScoutPassRunning(false);
+      await loadScoutRuns();
+      await loadPendingSources();
+      await loadCapStatus();
+    }
+  }, [authChecked, scoutPassRunning, loadScoutRuns, loadPendingSources, loadCapStatus]);
+
+  async function actOnPendingSource(id, action) {
+    if (!authChecked || pendingActingId) return;
+    setPendingActingId(id);
+    setPendingSourcesError('');
+    try {
+      const res = await fetch(`/api/ao/scout/pending-sources/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setPendingSourcesError(json.error || 'Action failed');
+      } else {
+        await loadPendingSources();
+        await loadSources();
+        await loadCapStatus();
+      }
+    } catch (e) {
+      setPendingSourcesError(e.message || 'Action failed');
+    } finally {
+      setPendingActingId(null);
+    }
+  }
 
   async function handleAddSource() {
     if (!authChecked || addSourceLoading) return;
@@ -450,10 +581,101 @@ export default function Scout() {
             <button type="button" onClick={() => runScan('external')} disabled={scanning} className="px-3 py-1.5 bg-gray-700 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50">
               Run external scan
             </button>
+            <button type="button" onClick={runScoutPassNow} disabled={scoutPassRunning} className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50">
+              {scoutPassRunning ? 'Running…' : 'Run Scout pass now'}
+            </button>
           </div>
 
           {dailyRunning ? <IndeterminateBar label="Daily run in progress…" /> : null}
+          {scoutPassRunning ? <IndeterminateBar label="Scout pass in progress…" /> : null}
+          {scoutPassMessage ? (
+            <div className="mt-3 p-3 rounded text-sm bg-gray-50 border border-gray-200 text-gray-800">
+              {scoutPassMessage}
+            </div>
+          ) : null}
         </section>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Scout activity</h2>
+            <p className="text-sm text-gray-600 mb-4">Short passes run automatically on weekdays. This is the recent activity log.</p>
+            <div className="mb-4 text-xs text-gray-600">
+              Daily cap: {capLoading ? '—' : capStatus ? `${capStatus.used}/${capStatus.cap} used` : '—'}
+              {capStatus && capStatus.remaining === 0 ? (
+                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded border border-red-200 bg-red-50 text-red-800">Cap reached</span>
+              ) : null}
+            </div>
+            {scoutRunsError ? <p className="text-sm text-red-700 mb-3">{scoutRunsError}</p> : null}
+            {scoutRunsLoading ? (
+              <LoadingSpinner message="Loading activity…" />
+            ) : scoutRuns.length === 0 ? (
+              <p className="text-sm text-gray-500">No Scout runs yet.</p>
+            ) : (
+              <ul className="divide-y divide-gray-200 border border-gray-200 rounded">
+                {scoutRuns.slice(0, 6).map((r) => (
+                  <li key={r.id} className="p-3 text-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="text-gray-900 font-medium">
+                        {r.started_at ? new Date(r.started_at).toLocaleString() : 'Run'}
+                      </div>
+                      <div className="text-xs text-gray-600">
+                        Pages: {r.pages_fetched ?? 0} · Leads: {r.leads_followed ?? 0} · Sent to Analyst: {r.discoveries_created ?? 0}
+                      </div>
+                    </div>
+                    {r.error_message ? <div className="mt-1 text-xs text-red-700">{r.error_message}</div> : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Needs approval</h2>
+            <p className="text-sm text-gray-600 mb-4">New domains Scout found while following leads. Approve to add them to your watched list.</p>
+            {pendingSourcesError ? <p className="text-sm text-red-700 mb-3">{pendingSourcesError}</p> : null}
+            {pendingSourcesLoading ? (
+              <LoadingSpinner message="Loading pending sources…" />
+            ) : pendingSources.length === 0 ? (
+              <p className="text-sm text-gray-500">No new domains waiting for approval.</p>
+            ) : (
+              <ul className="divide-y divide-gray-200 border border-gray-200 rounded">
+                {pendingSources.slice(0, 20).map((p) => (
+                  <li key={p.id} className="p-3 flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-gray-900 truncate">{p.domain}</div>
+                      {p.example_url ? (
+                        <a className="text-sm text-blue-700 hover:underline break-all" href={safeUrl(p.example_url) || '#'} target="_blank" rel="noreferrer">
+                          {p.example_url}
+                        </a>
+                      ) : null}
+                      <div className="mt-1 text-xs text-gray-500">
+                        First seen: {p.first_seen_at ? new Date(p.first_seen_at).toLocaleString() : '—'}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => actOnPendingSource(p.id, 'approve')}
+                        disabled={pendingActingId === p.id}
+                        className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                      >
+                        {pendingActingId === p.id ? 'Working…' : 'Approve'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => actOnPendingSource(p.id, 'reject')}
+                        disabled={pendingActingId === p.id}
+                        className="px-3 py-1.5 border border-gray-300 text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">

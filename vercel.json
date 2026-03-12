@@ -44,6 +44,10 @@
     { "src": "/api/cron/ao/external-scan", "dest": "/api/cron/ao/external-scan.js" },
     { "src": "/api/cron/ao/internal-scan", "dest": "/api/cron/ao/internal-scan.js" },
     { "src": "/api/cron/ao/daily-run", "dest": "/api/cron/ao/daily-run.js" },
+    { "src": "/api/cron/ao/scout-pass", "dest": "/api/cron/ao/scout-pass.js" },
+    { "src": "/api/cron/ao/scout-pass-morning", "dest": "/api/cron/ao/scout-pass.js" },
+    { "src": "/api/cron/ao/scout-pass-midday", "dest": "/api/cron/ao/scout-pass.js" },
+    { "src": "/api/cron/ao/scout-pass-evening", "dest": "/api/cron/ao/scout-pass.js" },
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
         { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
         { "src": "/api/journal/retry-failed-emails", "dest": "/api/journal/retry-failed-emails.js" },
@@ -112,6 +116,11 @@
     { "src": "/api/ao/scan-external", "dest": "/api/ao/scan-external.js" },
     { "src": "/api/ao/daily-run-now", "dest": "/api/ao/daily-run-now.js" },
     { "src": "/api/ao/ai/status", "dest": "/api/ao/ai/status.js" },
+    { "src": "/api/ao/scout/pending-sources/([^/]+)", "dest": "/api/ao/scout/pending-sources/[id].js?id=$1" },
+    { "src": "/api/ao/scout/pending-sources", "dest": "/api/ao/scout/pending-sources/index.js" },
+    { "src": "/api/ao/scout/cap-status", "dest": "/api/ao/scout/cap-status.js" },
+    { "src": "/api/ao/scout/runs", "dest": "/api/ao/scout/runs.js" },
+    { "src": "/api/ao/scout-pass-now", "dest": "/api/ao/scout-pass-now.js" },
     { "src": "/api/ao/import/upload", "dest": "/api/ao/import/upload.js" },
     { "src": "/api/ao/import/batches/([^/]+)/publish", "dest": "/api/ao/import/batches/[id].js?id=$1&action=publish" },
     { "src": "/api/ao/import/batches/([^/]+)", "dest": "/api/ao/import/batches/[id].js?id=$1" },
@@ -169,6 +178,18 @@
     {
       "path": "/api/cron/ao/daily-run",
       "schedule": "55 12 * * 1-5"
+    },
+    {
+      "path": "/api/cron/ao/scout-pass-morning",
+      "schedule": "10 13 * * 1-5"
+    },
+    {
+      "path": "/api/cron/ao/scout-pass-midday",
+      "schedule": "10 17 * * 1-5"
+    },
+    {
+      "path": "/api/cron/ao/scout-pass-evening",
+      "schedule": "10 21 * * 1-5"
     },
     {
       "path": "/api/cron/publish-scheduled-posts",
