@@ -38,9 +38,16 @@ export default async function handler(req, res) {
     let query = supabaseAdmin
       .from("journal_email_failures")
       .select("*")
-      .eq("status", status)
       .order("created_at", { ascending: true })
       .limit(limit);
+
+    // Status filter
+    // - pending: only pending
+    // - failed: only failed
+    // - all: no status filter
+    if (status && status !== 'all') {
+      query = query.eq("status", status);
+    }
 
     // Optional: filter by error code
     if (error_code) {
