@@ -5,6 +5,7 @@
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
+import { getOpenAiKey } from '../../../../lib/openaiKey.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -37,7 +38,7 @@ export default async function handler(req, res) {
       .update({ status: 'drafting', updated_at: new Date().toISOString() })
       .eq('id', id);
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = getOpenAiKey();
     let draftContent = '';
     if (apiKey) {
       const prompt = `Write a short article draft (2-4 paragraphs) for this topic.\nTitle: ${row.title || 'Untitled'}\nAngle: ${row.angle || 'General'}\nVoice: ${row.voice || 'Professional'}\nLength: ${row.length || 'Medium'}\nSource notes: ${row.source_notes || 'None'}`;
@@ -59,7 +60,7 @@ export default async function handler(req, res) {
       }
     }
     if (!draftContent) {
-      draftContent = `[Draft placeholder for: ${row.title || 'Untitled'}]\n\nAngle: ${row.angle || '—'}\nVoice: ${row.voice || '—'}\n\nAdd OPENAI_API_KEY to generate a real draft.`;
+      draftContent = `[Draft placeholder for: ${row.title || 'Untitled'}]\n\nAngle: ${row.angle || '—'}\nVoice: ${row.voice || '—'}\n\nAdd OPEN_API_KEY to generate a real draft.`;
     }
 
     const { data: updated, error: updateError } = await supabaseAdmin

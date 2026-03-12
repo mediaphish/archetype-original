@@ -34,6 +34,9 @@ export default function Scout() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
 
+  const [aiStatusLoading, setAiStatusLoading] = useState(true);
+  const [aiConfigured, setAiConfigured] = useState(null); // null | boolean
+
   const [scanStatus, setScanStatus] = useState({
     last_internal_scan: null,
     last_external_scan: null,
@@ -157,12 +160,31 @@ export default function Scout() {
     }
   }, [authChecked]);
 
+  const loadAiStatus = useCallback(async () => {
+    if (!authChecked) return;
+    setAiStatusLoading(true);
+    try {
+      const res = await fetch('/api/ao/ai/status');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setAiConfigured(!!json.configured);
+      } else {
+        setAiConfigured(false);
+      }
+    } catch (_) {
+      setAiConfigured(false);
+    } finally {
+      setAiStatusLoading(false);
+    }
+  }, [authChecked]);
+
   useEffect(() => {
     if (!authChecked) return;
     loadStatus();
     loadSources();
     loadPeople();
-  }, [authChecked, loadStatus, loadSources, loadPeople]);
+    loadAiStatus();
+  }, [authChecked, loadStatus, loadSources, loadPeople, loadAiStatus]);
 
   const runScan = useCallback(async (type) => {
     if (!authChecked || scanning) return;
@@ -253,6 +275,10 @@ export default function Scout() {
 
   async function handleRebuildSources() {
     if (!authChecked || rebuildingSources) return;
+    if (aiConfigured === false) {
+      setSourcesError('AI is not set up yet. Add OPEN_API_KEY in your site settings, then try again.');
+      return;
+    }
     const ok = window.confirm('Rebuild watched URLs with AI? This will wipe the list first.');
     if (!ok) return;
     setRebuildingSources(true);
@@ -271,6 +297,7 @@ export default function Scout() {
       }
     } catch (e) {
       setSourcesError(e.message || 'Rebuild failed');
+      await loadAiStatus();
     } finally {
       setRebuildingSources(false);
     }
@@ -412,6 +439,18 @@ export default function Scout() {
             {sourcesMessage ? <p className="text-sm text-green-800 mb-3">{sourcesMessage}</p> : null}
 
             <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span
+                className={`px-2 py-1 rounded text-xs border ${
+                  aiStatusLoading
+                    ? 'bg-gray-50 border-gray-200 text-gray-700'
+                    : aiConfigured
+                      ? 'bg-green-50 border-green-200 text-green-800'
+                      : 'bg-red-50 border-red-200 text-red-800'
+                }`}
+                title={aiStatusLoading ? 'Checking AI status…' : aiConfigured ? 'AI is ready.' : 'AI key is missing.'}
+              >
+                {aiStatusLoading ? 'AI: checking…' : aiConfigured ? 'AI: ready' : 'AI: not set'}
+              </span>
               <button
                 type="button"
                 onClick={handleRebuildSources}

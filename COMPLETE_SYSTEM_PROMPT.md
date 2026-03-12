@@ -228,7 +228,7 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 
 # AI
-OPENAI_API_KEY=sk-your-openai-key
+OPEN_API_KEY=sk-your-openai-key
 
 # Email
 RESEND_API_KEY=re_your-resend-key

@@ -135,7 +135,7 @@ Verify these API endpoints are properly configured in production:
 - [ ] `CONTACT_TO` - Email address to receive contact form submissions
 - [ ] `SUPABASE_URL` - For ALI application storage
 - [ ] `SUPABASE_ANON_KEY` - For ALI application storage
-- [ ] `OPENAI_API_KEY` - For Archy chat functionality
+- [ ] `OPEN_API_KEY` - For Archy chat functionality
 - [ ] `HANDOFF_TO_EMAIL` - For Archy handoff emails (defaults to bart@archetypeoriginal.com)
 - [ ] `REACT_APP_CALENDLY_SCHEDULING_URL` or `NEXT_PUBLIC_CALENDLY_SCHEDULING_URL` (optional, has fallback)
 

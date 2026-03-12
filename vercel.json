@@ -111,6 +111,7 @@
     { "src": "/api/ao/scan-internal", "dest": "/api/ao/scan-internal.js" },
     { "src": "/api/ao/scan-external", "dest": "/api/ao/scan-external.js" },
     { "src": "/api/ao/daily-run-now", "dest": "/api/ao/daily-run-now.js" },
+    { "src": "/api/ao/ai/status", "dest": "/api/ao/ai/status.js" },
     { "src": "/api/ao/import/upload", "dest": "/api/ao/import/upload.js" },
     { "src": "/api/ao/import/batches/([^/]+)/publish", "dest": "/api/ao/import/batches/[id].js?id=$1&action=publish" },
     { "src": "/api/ao/import/batches/([^/]+)", "dest": "/api/ao/import/batches/[id].js?id=$1" },

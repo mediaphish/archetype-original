@@ -408,7 +408,7 @@ All endpoints are Vercel serverless functions in `/api/`:
 - `CONTACT_FROM` - Sender email (e.g., "Archetype Original <noreply@archetypeoriginal.com>")
 - `SUPABASE_URL` - Supabase project URL
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
-- `OPENAI_API_KEY` - OpenAI API key (for chat)
+- `OPEN_API_KEY` - OpenAI API key (for chat)
 - `VITE_SUPABASE_URL` - Supabase URL (client-side)
 - `VITE_SUPABASE_ANON_KEY` - Supabase anon key (client-side)
 - `VITE_CALENDLY_SCHEDULING_URL` - Calendly URL (optional)
