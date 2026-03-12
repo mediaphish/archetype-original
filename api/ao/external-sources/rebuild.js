@@ -27,68 +27,78 @@ export default async function handler(req, res) {
   }
 
   const prompt = typeof req.body?.prompt === 'string' ? req.body.prompt : DEFAULT_SCOUT_SOURCES_PROMPT;
-  const targetCount = clampInt(req.body?.target_count, 20, 10, 40);
+  const targetCount = clampInt(req.body?.target_count, 12, 6, 25);
 
   try {
-    // Wipe AI sources first (keep protected manual sources).
-    const wipe = await supabaseAdmin
-      .from('ao_external_sources')
-      .delete()
-      .eq('is_protected', false);
-    if (wipe.error) {
-      if (String(wipe.error.message || '').includes('ao_external_sources')) {
-        return res.status(500).json({
-          ok: false,
-          error: 'External sources table is not set up yet. Run database/ao_queue_and_scan_schema.sql in Supabase.',
-        });
-      }
-      if (String(wipe.error.message || '').includes('is_protected')) {
-        return res.status(500).json({
-          ok: false,
-          error: 'Sources protection is not set up yet. Run database/ao_external_sources_protected.sql in Supabase.',
-        });
-      }
-      return res.status(500).json({ ok: false, error: wipe.error.message });
+    const startedAt = new Date().toISOString();
+    let inserted = 0;
+    const seenUrls = new Set();
+
+    // Insert as we go so partial progress is saved even if the request is cut short.
+    async function insertOne(v) {
+      const url = String(v?.feed_url || '').trim();
+      if (!url) return;
+      if (seenUrls.has(url)) return;
+      seenUrls.add(url);
+
+      const row = {
+        url,
+        name: `AI — ${String(v?.name || '').trim()}`.slice(0, 120) || 'AI — Source',
+        source_type: 'rss',
+        origin: 'ai',
+        is_protected: false,
+        created_at: new Date().toISOString(),
+      };
+
+      const ins = await supabaseAdmin.from('ao_external_sources').insert(row);
+      if (!ins.error) inserted += 1;
     }
 
-    const built = await buildExternalSourcesFromPrompt({ promptText: prompt, targetCount });
+    const built = await buildExternalSourcesFromPrompt({
+      promptText: prompt,
+      targetCount,
+      onVerified: insertOne,
+      maxCandidates: 30,
+    });
     if (!built.ok) {
       return res.status(500).json({ ok: false, error: built.error || 'Rebuild failed' });
     }
 
     const verified = built.verified || [];
-    if (verified.length === 0) {
+    if (verified.length === 0 || inserted === 0) {
       return res.status(200).json({
         ok: true,
-        inserted: 0,
+        inserted: inserted || 0,
         message: built.note || 'No working feed sources found. Try again or provide a narrower prompt.',
         verified: [],
       });
     }
 
-    const rows = verified.map((v) => ({
-      url: v.feed_url,
-      name: `AI — ${String(v.name || '').trim()}`.slice(0, 120),
-      source_type: 'rss',
-      origin: 'ai',
-      is_protected: false,
-      created_at: new Date().toISOString(),
-    }));
-
-    const ins = await supabaseAdmin.from('ao_external_sources').insert(rows);
-    if (ins.error) {
-      if (String(ins.error.message || '').includes('is_protected') || String(ins.error.message || '').includes('origin')) {
+    // Only after we have at least some new sources, delete older AI sources.
+    const wipeOld = await supabaseAdmin
+      .from('ao_external_sources')
+      .delete()
+      .eq('is_protected', false)
+      .eq('origin', 'ai')
+      .lt('created_at', startedAt);
+    if (wipeOld.error) {
+      if (String(wipeOld.error.message || '').includes('ao_external_sources')) {
+        return res.status(500).json({
+          ok: false,
+          error: 'External sources table is not set up yet. Run database/ao_queue_and_scan_schema.sql in Supabase.',
+        });
+      }
+      if (String(wipeOld.error.message || '').includes('is_protected')) {
         return res.status(500).json({
           ok: false,
           error: 'Sources protection is not set up yet. Run database/ao_external_sources_protected.sql in Supabase.',
         });
       }
-      return res.status(500).json({ ok: false, error: ins.error.message });
     }
 
     return res.status(200).json({
       ok: true,
-      inserted: rows.length,
+      inserted,
       message: built.note || null,
       verified: verified.map((v) => ({ name: v.name, feed_url: v.feed_url, homepage_url: v.homepage_url })),
     });
