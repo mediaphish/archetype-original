@@ -138,19 +138,19 @@ export default function CommandCenter() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">New social candidates</h2>
             <p className="text-gray-700 font-medium">{quotesCount} pending</p>
             <p className="text-gray-500 text-sm mt-1">Quote queue from internal scan.</p>
-            <button type="button" onClick={() => handleNavigate('/ao/review')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Social</button>
+            <button type="button" onClick={() => handleNavigate('/ao/analyst')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Analyst → Social</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">New journal candidates</h2>
             <p className="text-gray-700 font-medium">{journalCount} pending</p>
             <p className="text-gray-500 text-sm mt-1">Journal topic queue.</p>
-            <button type="button" onClick={() => handleNavigate('/ao/review')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Review → Journal</button>
+            <button type="button" onClick={() => handleNavigate('/ao/analyst')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Analyst → Journal</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Expandable ideas</h2>
             <p className="text-gray-700 font-medium">{writingCount} in queue</p>
             <p className="text-gray-500 text-sm mt-1">Writing queue (drafting).</p>
-            <button type="button" onClick={() => handleNavigate('/ao/writing')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Writing</button>
+            <button type="button" onClick={() => handleNavigate('/ao/studio')} className="mt-3 text-blue-600 hover:underline text-sm">Go to Studio</button>
           </section>
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Contradiction / clarification</h2>
@@ -169,12 +169,12 @@ export default function CommandCenter() {
               {scheduled.slice(0, 5).map((p) => (
                 <li key={p.id} className="flex justify-between items-start text-sm">
                   <span className="text-gray-700">{p.platform} / {p.account_id} — {new Date(p.scheduled_at).toLocaleString()}</span>
-                  <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="text-blue-600 hover:underline">View</button>
+                  <button type="button" onClick={() => handleNavigate('/ao/publisher')} className="text-blue-600 hover:underline">View</button>
                 </li>
               ))}
             </ul>
           )}
-          <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="mt-3 text-blue-600 hover:underline text-sm">View all in Publishing</button>
+          <button type="button" onClick={() => handleNavigate('/ao/publisher')} className="mt-3 text-blue-600 hover:underline text-sm">View all in Publisher</button>
         </section>
 
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
@@ -192,7 +192,7 @@ export default function CommandCenter() {
               ))}
             </ul>
           )}
-          <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="mt-3 text-blue-600 hover:underline text-sm">View in Publishing</button>
+          <button type="button" onClick={() => handleNavigate('/ao/publisher')} className="mt-3 text-blue-600 hover:underline text-sm">View in Publisher</button>
         </section>
 
         <section className="mt-8 bg-white rounded-lg border border-gray-200 shadow-sm p-6">

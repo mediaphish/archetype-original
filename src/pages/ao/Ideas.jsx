@@ -267,7 +267,7 @@ export default function Ideas() {
       if (action === 'send-to-import') {
         setMessage('Sent to Import. Open Import to publish it to the site.');
       } else if (action === 'generate-social-drafts') {
-        setMessage('Social drafts generated. Open Publishing to schedule them.');
+        setMessage('Social drafts generated. Open Publisher to schedule them.');
       } else {
         setMessage(action === 'shape-brief' ? 'Brief created.' : 'Done.');
       }

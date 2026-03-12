@@ -3,13 +3,11 @@ import { Menu, X, LogOut } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
 
 const TABS = [
-  { key: 'command-center', path: '/ao/command-center', label: 'Command Center' },
-  { key: 'import', path: '/ao/import', label: 'Import' },
+  { key: 'scout', path: '/ao/scout', label: 'Scout' },
+  { key: 'analyst', path: '/ao/analyst', label: 'Analyst' },
+  { key: 'studio', path: '/ao/studio', label: 'Studio' },
+  { key: 'publisher', path: '/ao/publisher', label: 'Publisher' },
   { key: 'ideas', path: '/ao/ideas', label: 'Ideas' },
-  { key: 'insights', path: '/ao/insights', label: 'Insights' },
-  { key: 'review', path: '/ao/review', label: 'Review' },
-  { key: 'publishing', path: '/ao/publishing', label: 'Publishing' },
-  { key: 'writing', path: '/ao/writing', label: 'Writing' },
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 

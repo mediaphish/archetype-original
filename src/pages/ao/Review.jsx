@@ -27,11 +27,47 @@ function safeUrl(u) {
   }
 }
 
+function buildCritique(q) {
+  const good = [];
+  const weak = [];
+
+  const link = safeUrl(q?.source_url || q?.source_slug_or_url);
+  if (link) good.push('Working source link.');
+  else weak.push('Missing a working source link (hard to verify / trust).');
+
+  if (q?.pull_quote) good.push('Strong pull quote (the signal is clear).');
+  else if (q?.quote_text && String(q.quote_text).trim().length > 30) good.push('Signal text is present.');
+  else weak.push('Signal text is thin (hard to turn into a good post).');
+
+  if (q?.why_it_matters) good.push('Has a “why it matters” angle.');
+  else weak.push('Missing “why it matters” (needs interpretation).');
+
+  if (q?.drafts_by_channel) good.push('Channel drafts are ready.');
+  else weak.push('Channel drafts are not ready yet.');
+
+  if (q?.quote_card_svg) good.push('Branded quote card is ready.');
+
+  if (Array.isArray(q?.risk_flags) && q.risk_flags.length) {
+    weak.push(`Risk flags: ${q.risk_flags.slice(0, 4).map((x) => String(x)).join(', ')}${q.risk_flags.length > 4 ? '…' : ''}`);
+  }
+
+  if (q?.similarity_notes?.matches?.length) {
+    weak.push('Feels close to things you’ve already said (needs a fresh angle).');
+  }
+
+  let recommended = 'studio';
+  if (q?.drafts_by_channel && link && (!Array.isArray(q?.risk_flags) || q.risk_flags.length === 0)) {
+    recommended = 'publisher';
+  }
+
+  return { good, weak, recommended, link };
+}
+
 const TABS = [
-  { key: 'social', label: 'Social Review Queue' },
-  { key: 'held', label: 'Held (Social)' },
-  { key: 'journal', label: 'Journal Review Queue' },
-  { key: 'expandable', label: 'Expandable Ideas Queue' },
+  { key: 'social', label: 'Social signals' },
+  { key: 'held', label: 'Held' },
+  { key: 'journal', label: 'Journal topics' },
+  { key: 'expandable', label: 'Long-form drafts' },
 ];
 
 export default function Review() {
@@ -164,10 +200,10 @@ export default function Review() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AOHeader active="review" email={email} onNavigate={handleNavigate} />
+      <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Review</h1>
-        <p className="text-gray-600 mb-8">Approve, reject, or hold candidates for social and journal.</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Analyst</h1>
+        <p className="text-gray-600 mb-8">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
 
         <div className="flex gap-2 mb-6 border-b border-gray-200">
           {TABS.map(({ key, label }) => (
@@ -188,7 +224,7 @@ export default function Review() {
           ) : activeTab === 'social' && (
             <>
               <p className="text-gray-600 text-sm mb-4">
-                First comment supported on: Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment in <button type="button" onClick={() => handleNavigate('/ao/publishing')} className="text-blue-600 hover:underline">Publishing</button> when scheduling posts.
+                First comment supported on: Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment in <button type="button" onClick={() => handleNavigate('/ao/publisher')} className="text-blue-600 hover:underline">Publisher</button> when scheduling posts.
               </p>
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2 text-sm text-gray-700">
@@ -236,23 +272,28 @@ export default function Review() {
                 </div>
               </div>
               {pendingQuotes.length === 0 ? (
-                <p className="text-gray-500">No pending quotes. Run an internal scan from Command Center to add candidates.</p>
+                <p className="text-gray-500">No pending social items. Run a scan in Scout to add candidates.</p>
               ) : (
                 <ul className="space-y-4">
                   {pendingQuotes.map((q) => (
                     <li key={q.id} className="border border-gray-200 rounded p-4">
+                      {/** Decision-ready brief (above the fold) */}
+                      {(() => {
+                        const crit = buildCritique(q);
+                        return (
+                          <>
                       <div className="mb-2 text-sm text-gray-800">
                         <span className="font-semibold">Source:</span>{' '}
                         <span className="font-medium">
                           {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
                         </span>
                         {q.source_title ? <span> — “{q.source_title}”</span> : null}
-                        {safeUrl(q.source_url || q.source_slug_or_url) ? (
+                        {crit.link ? (
                           <span>
                             {' '}
                             <a
                               className="text-blue-700 hover:underline"
-                              href={safeUrl(q.source_url || q.source_slug_or_url)}
+                              href={crit.link}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -310,13 +351,41 @@ export default function Review() {
                         <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap">{q.why_it_matters}</p>
                       ) : null}
 
-                      {Array.isArray(q.risk_flags) && q.risk_flags.length ? (
-                        <div className="mb-3 flex flex-wrap gap-2">
-                          {q.risk_flags.slice(0, 6).map((rf, idx) => (
-                            <Pill key={idx} tone="yellow">{String(rf)}</Pill>
-                          ))}
+                      <div className="mb-3 grid gap-3 md:grid-cols-3">
+                        <div className="md:col-span-1">
+                          <p className="text-xs font-semibold text-gray-900 mb-1">What’s good</p>
+                          <ul className="text-xs text-gray-700 space-y-1">
+                            {(crit.good.length ? crit.good : ['No clear strengths yet.']).slice(0, 4).map((x, idx) => (
+                              <li key={idx}>- {x}</li>
+                            ))}
+                          </ul>
                         </div>
-                      ) : null}
+                        <div className="md:col-span-1">
+                          <p className="text-xs font-semibold text-gray-900 mb-1">What’s weak</p>
+                          <ul className="text-xs text-gray-700 space-y-1">
+                            {(crit.weak.length ? crit.weak : ['No obvious weaknesses flagged.']).slice(0, 4).map((x, idx) => (
+                              <li key={idx}>- {x}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="md:col-span-1">
+                          <p className="text-xs font-semibold text-gray-900 mb-1">Recommended next step</p>
+                          <div className="text-sm text-gray-900">
+                            {crit.recommended === 'publisher' ? (
+                              <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-green-50 text-green-800 border-green-200">
+                                Approve → Publisher
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-800 border-blue-200">
+                                Approve → Studio
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-600 mt-2">
+                            You can override this with the buttons below.
+                          </p>
+                        </div>
+                      </div>
 
                       <details className="mb-3 border border-gray-200 rounded bg-gray-50 p-3">
                         <summary className="cursor-pointer text-sm font-medium text-gray-800">Details (drafts, quote card, similarity)</summary>
@@ -442,10 +511,28 @@ export default function Review() {
                         </div>
                       </details>
                       <div className="flex gap-2">
-                        <button type="button" onClick={() => act('quote-approve', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">Approve</button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-approve', q.id, { next_stage: 'studio' })}
+                          disabled={acting === q.id}
+                          className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+                        >
+                          Approve → Studio
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-approve', q.id, { next_stage: 'publisher' })}
+                          disabled={acting === q.id}
+                          className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                        >
+                          Approve → Publisher
+                        </button>
                         <button type="button" onClick={() => act('quote-hold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50">Hold</button>
                         <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
                       </div>
+                          </>
+                        );
+                      })()}
                     </li>
                   ))}
                 </ul>
@@ -486,6 +573,23 @@ export default function Review() {
                 <ul className="space-y-4">
                   {heldList.map((q) => (
                     <li key={q.id} className="border border-gray-200 rounded p-4">
+                      {(() => {
+                        const crit = buildCritique(q);
+                        return (
+                          <>
+                      <div className="mb-2 text-sm text-gray-800">
+                        <span className="font-semibold">Source:</span>{' '}
+                        <span className="font-medium">
+                          {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
+                        </span>
+                        {q.source_title ? <span> — “{q.source_title}”</span> : null}
+                        {crit.link ? (
+                          <span>
+                            {' '}
+                            <a className="text-blue-700 hover:underline" href={crit.link} target="_blank" rel="noreferrer">(link)</a>
+                          </span>
+                        ) : null}
+                      </div>
                       <div className="flex items-center justify-between gap-3 mb-2">
                         <h3 className="text-base font-semibold text-gray-900">{q.source_title || q.source_name || 'Held item'}</h3>
                         <Pill tone="gray">held</Pill>
@@ -499,9 +603,27 @@ export default function Review() {
                       )}
                       <div className="flex gap-2">
                         <button type="button" onClick={() => act('quote-unhold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Unhold</button>
-                        <button type="button" onClick={() => act('quote-approve', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">Approve</button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-approve', q.id, { next_stage: 'studio' })}
+                          disabled={acting === q.id}
+                          className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+                        >
+                          Approve → Studio
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-approve', q.id, { next_stage: 'publisher' })}
+                          disabled={acting === q.id}
+                          className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                        >
+                          Approve → Publisher
+                        </button>
                         <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
                       </div>
+                          </>
+                        );
+                      })()}
                     </li>
                   ))}
                 </ul>

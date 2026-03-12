@@ -7,6 +7,13 @@
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
 
+function normNextStage(v) {
+  const s = String(v || '').trim().toLowerCase();
+  if (!s) return null;
+  if (s === 'studio' || s === 'publisher') return s;
+  return null;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
@@ -30,6 +37,8 @@ export default async function handler(req, res) {
     };
     if (body.caption_suggestions != null) updates.caption_suggestions = body.caption_suggestions;
     if (body.suggested_channels != null) updates.suggested_channels = body.suggested_channels;
+    const nextStage = normNextStage(body.next_stage ?? req.query?.next_stage);
+    if (nextStage) updates.next_stage = nextStage;
 
     const { data, error } = await supabaseAdmin
       .from('ao_quote_review_queue')

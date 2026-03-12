@@ -37,8 +37,11 @@ export default function Publishing() {
 
   const [draftsLoading, setDraftsLoading] = useState(false);
   const [readyDrafts, setReadyDrafts] = useState([]);
+  const [studioDrafts, setStudioDrafts] = useState([]);
   const [draftSchedule, setDraftSchedule] = useState({}); // { [ideaId]: { linkedin, facebook, instagram, x } }
   const [draftEdits, setDraftEdits] = useState({}); // { [ideaId]: { linkedin, facebook, instagram, x } }
+  const [studioSchedule, setStudioSchedule] = useState({}); // { [quoteId]: { linkedin, facebook, instagram, x } }
+  const [studioEdits, setStudioEdits] = useState({}); // { [quoteId]: { linkedin, facebook, instagram, x } }
   const [draftError, setDraftError] = useState('');
 
   const handleNavigate = useCallback((path) => {
@@ -113,6 +116,24 @@ export default function Publishing() {
     }
   }, [authChecked]);
 
+  const fetchStudioDrafts = useCallback(async () => {
+    if (!authChecked) return;
+    setDraftsLoading(true);
+    setDraftError('');
+    try {
+      const res = await fetch(`/api/ao/quotes/list?status=approved&limit=200&offset=0`);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to load Studio drafts');
+      const rows = (json.quotes || []).filter((x) => x && x.status === 'approved' && x.next_stage === 'publisher');
+      setStudioDrafts(rows);
+    } catch (e) {
+      setStudioDrafts([]);
+      setDraftError(e.message);
+    } finally {
+      setDraftsLoading(false);
+    }
+  }, [authChecked]);
+
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
@@ -167,12 +188,12 @@ export default function Publishing() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AOHeader active="publishing" email={email} onNavigate={handleNavigate} />
+      <AOHeader active="publisher" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Publishing</h1>
-            <p className="text-gray-600">Scheduled posts, history, and platform status.</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Publisher</h1>
+            <p className="text-gray-600">Schedule and publish. This is where finished work goes live.</p>
           </div>
           <button
             type="button"
@@ -194,7 +215,7 @@ export default function Publishing() {
           </button>
           <button
             type="button"
-            onClick={() => { setFilter('drafts'); fetchReadyDrafts(); }}
+            onClick={() => { setFilter('drafts'); fetchReadyDrafts(); fetchStudioDrafts(); }}
             className={`px-4 py-2 rounded-lg font-medium ${filter === 'drafts' ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
           >
             Drafts
@@ -214,15 +235,94 @@ export default function Publishing() {
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Drafts</h2>
-              <p className="text-sm text-gray-600 mt-1">Ready Posts with generated drafts. Schedule the ones you want.</p>
+              <p className="text-sm text-gray-600 mt-1">Drafts ready for scheduling (from Studio and from Ready Posts).</p>
               {draftError ? <p className="text-sm text-red-600 mt-2">{draftError}</p> : null}
             </div>
             {draftsLoading ? (
               <div className="p-6"><LoadingSpinner message="Loading drafts…" /></div>
-            ) : readyDrafts.length === 0 ? (
-              <p className="p-6 text-gray-500">No drafts yet. Create a Ready Post in Ideas and generate drafts.</p>
+            ) : studioDrafts.length === 0 && readyDrafts.length === 0 ? (
+              <p className="p-6 text-gray-500">No drafts yet. Approve items to Publisher from Studio, or create a Ready Post in Ideas and generate drafts.</p>
             ) : (
-              <ul className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200">
+                {studioDrafts.length ? (
+                  <div className="p-6 border-b border-gray-200">
+                    <h3 className="text-sm font-semibold text-gray-900">From Studio</h3>
+                    <p className="text-xs text-gray-600 mt-1">Approved items routed to Publisher for scheduling.</p>
+                  </div>
+                ) : null}
+                {studioDrafts.map((q) => {
+                  const id = q.id;
+                  const d = q.drafts_by_channel || {};
+                  const sched = studioSchedule[id] || {};
+                  const edits = studioEdits[id] || {};
+                  const setSched = (channel, v) => setStudioSchedule((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
+                  const setEdit = (channel, v) => setStudioEdits((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
+                  const scheduleNow = async () => {
+                    try {
+                      const res = await fetch('/api/ao/publishing/schedule-from-quote', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ quote_id: id, schedule: sched, edits }),
+                      });
+                      const json = await res.json().catch(() => ({}));
+                      if (!res.ok || !json.ok) throw new Error(json.error || 'Schedule failed');
+                      await fetchPosts();
+                      await fetchStudioDrafts();
+                      setFilter('scheduled');
+                    } catch (e) {
+                      setDraftError(e.message);
+                    }
+                  };
+
+                  return (
+                    <div key={id} className="p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className="font-semibold text-gray-900 truncate">{q.source_title || q.source_name || 'Studio item'}</div>
+                          <div className="text-xs text-gray-500 mt-1">{new Date(q.updated_at || q.created_at).toLocaleString()}</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={scheduleNow}
+                          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700"
+                        >
+                          Schedule selected
+                        </button>
+                      </div>
+
+                      <div className="mt-4 grid gap-4 md:grid-cols-2">
+                        {['linkedin', 'facebook', 'instagram', 'x'].map((c) => (
+                          <div key={c} className="border border-gray-200 rounded p-3">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="text-sm font-semibold text-gray-900">{c}</div>
+                              <input
+                                type="datetime-local"
+                                value={sched[c] || ''}
+                                onChange={(e) => setSched(c, e.target.value)}
+                                className="text-xs border border-gray-300 rounded px-2 py-1"
+                              />
+                            </div>
+                            <textarea
+                              value={edits[c] ?? d[c] ?? ''}
+                              onChange={(e) => setEdit(c, e.target.value)}
+                              rows={4}
+                              className="mt-2 w-full text-sm border border-gray-300 rounded px-2 py-1"
+                              placeholder="Draft text…"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {readyDrafts.length ? (
+                  <div className="p-6 border-t border-gray-200 border-b border-gray-200">
+                    <h3 className="text-sm font-semibold text-gray-900">From Ready Posts</h3>
+                    <p className="text-xs text-gray-600 mt-1">Ideas that already have channel drafts generated.</p>
+                  </div>
+                ) : null}
+
                 {readyDrafts.map((idea) => {
                   const id = idea.id;
                   const d = idea.ready_social_drafts?.drafts_by_channel || {};
@@ -247,7 +347,7 @@ export default function Publishing() {
                   };
 
                   return (
-                    <li key={id} className="p-6">
+                    <div key={id} className="p-6">
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <div className="font-semibold text-gray-900 truncate">{idea.title || 'Ready Post'}</div>
@@ -284,10 +384,10 @@ export default function Publishing() {
                           </div>
                         ))}
                       </div>
-                    </li>
+                    </div>
                   );
                 })}
-              </ul>
+              </div>
             )}
           </section>
         ) : filter === 'scheduled' ? (

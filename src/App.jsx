@@ -69,6 +69,7 @@ import AOWriting from "./pages/ao/Writing";
 import AOImport from "./pages/ao/Import";
 import AOIdeas from "./pages/ao/Ideas";
 import AOSettings from "./pages/ao/Settings";
+import AOScout from "./pages/ao/Scout";
 import AOLinkedInHandoff from "./pages/ao/LinkedInHandoff";
 // Operators pages - Lazy loaded for better performance
 const OperatorsLanding = lazy(() => import("./pages/operators/Landing"));
@@ -200,6 +201,10 @@ export default function App() {
       if (path === '/ao/command-center') return 'ao-command-center';
       if (path === '/ao/import') return 'ao-import';
       if (path === '/ao/ideas') return 'ao-ideas';
+      if (path === '/ao/scout') return 'ao-scout';
+      if (path === '/ao/analyst') return 'ao-review';
+      if (path === '/ao/studio') return 'ao-writing';
+      if (path === '/ao/publisher') return 'ao-publishing';
       if (path === '/ao/insights') return 'ao-insights';
       if (path === '/ao/review') return 'ao-review';
       if (path === '/ao/publishing') return 'ao-publishing';
@@ -255,7 +260,22 @@ export default function App() {
 
     // Handle routing and redirects
     const handleRoute = () => {
-      const path = window.location.pathname;
+      let path = window.location.pathname;
+
+      // AO Automation legacy routes -> bot-stage pipeline routes
+      if (path === '/ao/review') {
+        window.history.replaceState({}, '', '/ao/analyst');
+        path = '/ao/analyst';
+      } else if (path === '/ao/publishing') {
+        window.history.replaceState({}, '', '/ao/publisher');
+        path = '/ao/publisher';
+      } else if (path === '/ao/writing') {
+        window.history.replaceState({}, '', '/ao/studio');
+        path = '/ao/studio';
+      } else if (path === '/ao/insights') {
+        window.history.replaceState({}, '', '/ao/scout');
+        path = '/ao/scout';
+      }
       
       // Standalone ALI SaaS routes
       if (path === '/ali') {
@@ -412,6 +432,10 @@ export default function App() {
           return;
         }
         if (path === '/ao/command-center') setCurrentPage('ao-command-center');
+        else if (path === '/ao/scout') setCurrentPage('ao-scout');
+        else if (path === '/ao/analyst') setCurrentPage('ao-review');
+        else if (path === '/ao/studio') setCurrentPage('ao-writing');
+        else if (path === '/ao/publisher') setCurrentPage('ao-publishing');
         else if (path === '/ao/import') setCurrentPage('ao-import');
         else if (path === '/ao/ideas') setCurrentPage('ao-ideas');
         else if (path === '/ao/insights') setCurrentPage('ao-insights');
@@ -1015,6 +1039,9 @@ export default function App() {
   }
   if (currentPage === 'ao-command-center') {
     return <AOCommandCenter />;
+  }
+  if (currentPage === 'ao-scout') {
+    return <AOScout />;
   }
   if (currentPage === 'ao-import') {
     return <AOImport />;

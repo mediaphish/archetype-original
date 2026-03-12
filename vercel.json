@@ -123,6 +123,8 @@
     { "src": "api/ao/external-sources/index.js", "use": "@vercel/node" },
     { "src": "api/ao/external-sources/[id].js", "use": "@vercel/node" },
     { "src": "api/ao/external-sources/seed.js", "use": "@vercel/node" },
+    { "src": "api/ao/brain-trust/index.js", "use": "@vercel/node" },
+    { "src": "api/ao/brain-trust/[id].js", "use": "@vercel/node" },
     { "src": "api/auth/linkedin/callback.js", "use": "@vercel/node" },
     { "src": "api/auth/linkedin/start.js", "use": "@vercel/node" },
     { "src": "api/auth/meta/start.js", "use": "@vercel/node" },
@@ -136,7 +138,8 @@
     { "src": "api/ao/x/status.js", "use": "@vercel/node" },
     { "src": "api/providers/x/test-post.js", "use": "@vercel/node" },
     { "src": "api/providers/facebook/group-post.js", "use": "@vercel/node" },
-    { "src": "api/ao/publishing/schedule-from-idea.js", "use": "@vercel/node" }
+    { "src": "api/ao/publishing/schedule-from-idea.js", "use": "@vercel/node" },
+    { "src": "api/ao/publishing/schedule-from-quote.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -257,9 +260,12 @@
     { "src": "/api/ao/ideas/([^/]+)", "dest": "/api/ao/ideas/[id].js?id=$1" },
     { "src": "/api/ao/ideas", "dest": "/api/ao/ideas/index.js" },
     { "src": "/api/ao/publishing/schedule-from-idea", "dest": "/api/ao/publishing/schedule-from-idea.js" },
+    { "src": "/api/ao/publishing/schedule-from-quote", "dest": "/api/ao/publishing/schedule-from-quote.js" },
     { "src": "/api/ao/external-sources/seed", "dest": "/api/ao/external-sources/seed.js" },
     { "src": "/api/ao/external-sources/([^/]+)", "dest": "/api/ao/external-sources/[id].js?id=$1" },
     { "src": "/api/ao/external-sources", "dest": "/api/ao/external-sources/index.js" },
+    { "src": "/api/ao/brain-trust/([^/]+)", "dest": "/api/ao/brain-trust/[id].js?id=$1" },
+    { "src": "/api/ao/brain-trust", "dest": "/api/ao/brain-trust/index.js" },
     { "src": "/api/auth/linkedin/callback", "dest": "/api/auth/linkedin/callback.js" },
     { "src": "/api/auth/linkedin/start", "dest": "/api/auth/linkedin/start.js" },
     { "src": "/api/auth/meta/start", "dest": "/api/auth/meta/start.js" },
