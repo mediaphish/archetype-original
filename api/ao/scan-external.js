@@ -16,7 +16,14 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
-  const result = await runExternalScan();
+  // Manual "run now" should be decision-ready: extract full article pages when possible
+  // and immediately generate the Analyst brief for the newest items.
+  const result = await runExternalScan({
+    enrichAnalyst: true,
+    enrichLimit: 8,
+    fetchFullText: true,
+    insertedCap: 20,
+  });
   if (!result.ok) {
     const msg = String(result.error || 'External scan failed');
     if (msg.includes('ao_scan_log') || msg.includes('ao_external_sources') || msg.includes('ao_quote_review_queue')) {
