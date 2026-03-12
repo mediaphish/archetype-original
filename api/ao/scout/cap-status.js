@@ -6,7 +6,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
-const DAILY_CAP = 10;
+const DAILY_CAP = 5;
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
