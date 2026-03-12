@@ -315,7 +315,8 @@ export default function Scout() {
       await loadSources();
       const inserted = Number(json.inserted || 0);
       if (!inserted) {
-        setSourcesError(json.message || 'Rebuild finished, but found 0 working sources.');
+        // This is not necessarily an "error" — it can mean the AI returned no usable links this time.
+        setSourcesMessage(json.message || 'Rebuild finished, but added 0 URLs. Try again.');
       } else {
         setSourcesMessage(`Rebuilt watched URLs. Added ${inserted}.${json.message ? ` ${json.message}` : ''}`);
       }

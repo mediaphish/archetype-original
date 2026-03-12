@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         ok: true,
         inserted: 0,
-        message: built.note || 'No working feed sources found. Try again or provide a narrower prompt.',
+        message: 'No feed links were returned this time. Try rebuild again (it can vary) or add a URL manually.',
         verified: [],
       });
     }
@@ -101,7 +101,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       inserted: rows.length,
-      message: built.note || null,
+      message: built.note || 'Saved feed links. Next scan will confirm which ones work.',
       verified: verified.map((v) => ({ name: v.name, feed_url: v.feed_url, homepage_url: v.homepage_url })),
     });
   } catch (e) {
