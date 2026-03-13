@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
+import AOStickyActions from '../../components/ao/AOStickyActions';
 
 function Pill({ tone = 'gray', children }) {
   const tones = {
@@ -85,6 +86,7 @@ export default function Review() {
   const [actionMessage, setActionMessage] = useState('');
   const [briefPrep, setBriefPrep] = useState({ running: false, total: 0, done: 0 });
   const preparingRef = useRef(new Set());
+  const [mobileActiveQuoteId, setMobileActiveQuoteId] = useState(null);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -296,6 +298,24 @@ export default function Review() {
   const pendingTopics = topics.filter((t) => t.status === 'pending');
   const pendingWriting = writing.filter((w) => w.status === 'pending' || w.status === 'drafting');
 
+  useEffect(() => {
+    setMobileActiveQuoteId(null);
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (!mobileActiveQuoteId) return;
+    const current = activeTab === 'social' ? pendingQuotes : activeTab === 'held' ? heldList : [];
+    const exists = Array.isArray(current) && current.some((q) => String(q?.id) === String(mobileActiveQuoteId));
+    if (!exists) setMobileActiveQuoteId(null);
+  }, [mobileActiveQuoteId, activeTab, pendingQuotes, heldList]);
+
+  const mobileActiveQuote =
+    activeTab === 'social'
+      ? pendingQuotes.find((q) => String(q?.id) === String(mobileActiveQuoteId))
+      : activeTab === 'held'
+        ? heldList.find((q) => String(q?.id) === String(mobileActiveQuoteId))
+        : null;
+
   const canPrev = pageOffset > 0;
   const canNext = typeof quotesPage.total === 'number' ? (pageOffset + pageSize) < quotesPage.total : pendingQuotes.length === pageSize;
 
@@ -305,7 +325,7 @@ export default function Review() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-44 md:pb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Analyst</h1>
         <p className="text-gray-600 mb-8">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
         {briefPrep.running ? (
@@ -327,20 +347,28 @@ export default function Review() {
           </div>
         ) : null}
 
-        <div className="flex gap-2 mb-6 border-b border-gray-200">
-          {TABS.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setActiveTab(key)}
-              className={`px-4 py-2 -mb-px font-medium border-b-2 ${activeTab === key ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-900'}`}
-            >
-              {label}
-            </button>
-          ))}
+        <div className="mb-6 border-b border-gray-200">
+          <div className="flex gap-2 overflow-x-auto pb-2 -mb-px">
+            {TABS.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setActiveTab(key)}
+                className={[
+                  'shrink-0 px-3 py-2 text-sm font-medium rounded-full border',
+                  'min-h-[44px]',
+                  activeTab === key
+                    ? 'bg-blue-50 text-blue-700 border-blue-200'
+                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50',
+                ].join(' ')}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8">
           {loading ? (
             <LoadingSpinner />
           ) : activeTab === 'social' && (
@@ -398,7 +426,26 @@ export default function Review() {
               ) : (
                 <ul className="space-y-4">
                   {pendingQuotes.map((q) => (
-                    <li key={q.id} className="border border-gray-200 rounded p-4">
+                    <li
+                      key={q.id}
+                      className={[
+                        'border rounded p-4',
+                        String(q.id) === String(mobileActiveQuoteId) ? 'border-blue-300 bg-blue-50/30' : 'border-gray-200',
+                      ].join(' ')}
+                      onClick={(e) => {
+                        const t = e.target;
+                        if (t && typeof t.closest === 'function') {
+                          if (t.closest('button,a,input,textarea,select,summary,details,label')) return;
+                        }
+                        setMobileActiveQuoteId(q.id);
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') setMobileActiveQuoteId(q.id);
+                      }}
+                      aria-label="Select this item for quick actions"
+                    >
                       {/** Decision-ready brief (above the fold) */}
                       {(() => {
                         const crit = buildCritique(q);
@@ -701,7 +748,7 @@ export default function Review() {
                           )}
                         </div>
                       </details>
-                      <div className="flex gap-2">
+                      <div className="hidden md:flex gap-2">
                         <button
                           type="button"
                           onClick={() => act('quote-brief', q.id)}
@@ -782,7 +829,26 @@ export default function Review() {
               ) : (
                 <ul className="space-y-4">
                   {heldList.map((q) => (
-                    <li key={q.id} className="border border-gray-200 rounded p-4">
+                    <li
+                      key={q.id}
+                      className={[
+                        'border rounded p-4',
+                        String(q.id) === String(mobileActiveQuoteId) ? 'border-blue-300 bg-blue-50/30' : 'border-gray-200',
+                      ].join(' ')}
+                      onClick={(e) => {
+                        const t = e.target;
+                        if (t && typeof t.closest === 'function') {
+                          if (t.closest('button,a,input,textarea,select,summary,details,label')) return;
+                        }
+                        setMobileActiveQuoteId(q.id);
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') setMobileActiveQuoteId(q.id);
+                      }}
+                      aria-label="Select this item for quick actions"
+                    >
                       {(() => {
                         const crit = buildCritique(q);
                         const trailFrom = safeUrl(q?.scout_discovered_from_url);
@@ -839,7 +905,7 @@ export default function Review() {
                           <span className="font-semibold">Hold reason:</span> {q.hold_reason}
                         </div>
                       ) : null}
-                      <div className="flex gap-2">
+                      <div className="hidden md:flex gap-2">
                         <button type="button" onClick={() => act('quote-unhold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Unhold</button>
                         <button
                           type="button"
@@ -919,6 +985,63 @@ export default function Review() {
           )}
         </div>
       </main>
+
+      {(activeTab === 'social' || activeTab === 'held') && mobileActiveQuote?.id ? (
+        <AOStickyActions>
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="text-xs text-gray-600 truncate">
+              <span className="font-semibold text-gray-900">Selected:</span>{' '}
+              {mobileActiveQuote.source_title || mobileActiveQuote.source_name || (mobileActiveQuote.is_internal ? 'AO internal' : 'External')}
+            </div>
+            <button
+              type="button"
+              onClick={() => act('quote-brief', mobileActiveQuote.id)}
+              disabled={acting === mobileActiveQuote.id}
+              className="min-h-[44px] px-3 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+            >
+              Refresh brief
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => act('quote-approve', mobileActiveQuote.id, { next_stage: 'studio' })}
+              disabled={acting === mobileActiveQuote.id}
+              className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+            >
+              Approve → Studio
+            </button>
+            <button
+              type="button"
+              onClick={() => act('quote-approve', mobileActiveQuote.id, { next_stage: 'publisher' })}
+              disabled={acting === mobileActiveQuote.id}
+              className="min-h-[44px] px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 disabled:opacity-50"
+            >
+              Approve → Publisher
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const reason = window.prompt('Why are you holding this? (required)', '');
+                if (!reason || !String(reason).trim()) return;
+                act('quote-hold', mobileActiveQuote.id, { reason: String(reason).trim() });
+              }}
+              disabled={acting === mobileActiveQuote.id}
+              className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
+            >
+              Hold
+            </button>
+            <button
+              type="button"
+              onClick={() => act('quote-reject', mobileActiveQuote.id)}
+              disabled={acting === mobileActiveQuote.id}
+              className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
+            >
+              Reject
+            </button>
+          </div>
+        </AOStickyActions>
+      ) : null}
     </div>
   );
 }

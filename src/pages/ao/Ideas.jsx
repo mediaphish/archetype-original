@@ -376,7 +376,7 @@ export default function Ideas() {
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="library" email={email} onNavigate={handleNavigate} />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6 md:py-8 pb-28 md:pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Library</h1>
@@ -657,7 +657,7 @@ export default function Ideas() {
           </section>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <section className="bg-white border border-gray-200 rounded-lg p-4">
+            <section className={`bg-white border border-gray-200 rounded-lg p-4 ${selectedId ? 'hidden lg:block' : ''}`}>
               <div className="flex flex-wrap items-end gap-3 mb-4">
                 <div className="flex-1 min-w-[220px]">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
@@ -775,8 +775,22 @@ export default function Ideas() {
               </div>
             </section>
 
-            <section className="bg-white border border-gray-200 rounded-lg p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Idea detail</h2>
+            <section className={`bg-white border border-gray-200 rounded-lg p-4 ${!selectedId ? 'hidden lg:block' : ''}`}>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h2 className="text-lg font-semibold text-gray-900">Idea detail</h2>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedId(null);
+                    setDetail(null);
+                    setMessage('');
+                    setError('');
+                  }}
+                  className="lg:hidden min-h-[44px] px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                >
+                  Back to list
+                </button>
+              </div>
               {!selectedId ? (
                 <div className="text-sm text-gray-600 py-8">Select an idea on the left.</div>
               ) : detailLoading ? (

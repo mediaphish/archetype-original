@@ -627,7 +627,7 @@ export default function Scout() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="scout" email={email} onNavigate={handleNavigate} />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-28 md:pb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Scout</h1>
         <p className="text-gray-600 mb-8">Search and collect leadership signals from watched URLs and people.</p>
 

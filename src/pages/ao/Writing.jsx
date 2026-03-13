@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
+import AOStickyActions from '../../components/ao/AOStickyActions';
 
 function getParam(name) {
   try {
@@ -359,7 +360,7 @@ export default function Writing() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="studio" email={email} onNavigate={handleNavigate} />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-56 md:pb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Studio</h1>
         <p className="text-gray-600 mb-8">Finish work here: drafts, edits, and assets before sending to Publisher.</p>
 
@@ -419,7 +420,7 @@ export default function Writing() {
             </p>
           </section>
         ) : (
-          <section ref={openRef} className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+          <section ref={openRef} className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-sm font-semibold text-gray-900">
@@ -437,7 +438,7 @@ export default function Writing() {
                   <p className="mt-3 text-sm text-gray-700 whitespace-pre-wrap">{openRow.why_it_matters}</p>
                 ) : null}
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="hidden md:flex flex-wrap items-center gap-2">
                 {!String(openRow.next_stage || '').trim() ? (
                   <button
                     type="button"
@@ -580,7 +581,7 @@ export default function Writing() {
               <div className="lg:col-span-5 border border-gray-200 rounded-lg bg-white p-4">
                 <div className="flex items-center justify-between gap-2">
                   <div className="text-sm font-semibold text-gray-900">Studio chat</div>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="hidden md:flex flex-wrap items-center gap-2">
                     <button
                       type="button"
                       onClick={() => act('generate-assets', openRow.id)}
@@ -612,7 +613,7 @@ export default function Writing() {
                 {chatError ? (
                   <div className="mt-3 p-2 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{chatError}</div>
                 ) : null}
-                <div className="mt-3 border border-gray-200 rounded bg-gray-50 p-3 h-[420px] overflow-y-auto">
+                <div className="mt-3 border border-gray-200 rounded bg-gray-50 p-3 h-[50vh] md:h-[420px] overflow-y-auto">
                   {chatLoading ? (
                     <div className="text-sm text-gray-600">Loading chat…</div>
                   ) : chatMessages.length === 0 ? (
@@ -646,7 +647,7 @@ export default function Writing() {
                     </div>
                   )}
                 </div>
-                <div className="mt-3">
+                <div className="mt-3 hidden md:block">
                   <textarea
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
@@ -669,7 +670,44 @@ export default function Writing() {
               </div>
 
               <div className="lg:col-span-7 space-y-6">
-                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <details className="md:hidden border border-gray-200 rounded-lg p-4 bg-gray-50" open>
+                  <summary className="cursor-pointer text-sm font-semibold text-gray-900">Quote card</summary>
+                  <div className="mt-3">
+                    {openRow.quote_card_svg ? (
+                      <>
+                        <div className="border border-gray-200 rounded bg-white p-2 overflow-auto">
+                          <div dangerouslySetInnerHTML={{ __html: openRow.quote_card_svg }} />
+                        </div>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => downloadSvg(`ao-quote-card-${openRow.id}.svg`, openRow.quote_card_svg)}
+                            className="min-h-[44px] px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50"
+                          >
+                            Download SVG
+                          </button>
+                        </div>
+                        <div className="mt-3">
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Quote card caption (optional)</label>
+                          <textarea
+                            value={draftEdits?.[openRow.id]?.quote_card_caption ?? openRow.quote_card_caption ?? ''}
+                            onChange={(e) => setDraftEdits((prev) => ({
+                              ...prev,
+                              [openRow.id]: { ...(prev[openRow.id] || {}), quote_card_caption: e.target.value },
+                            }))}
+                            rows={3}
+                            className="w-full border border-gray-300 rounded px-2 py-2 text-sm bg-white"
+                            placeholder="Caption used with the quote card…"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-sm text-gray-600">No quote card yet. Use “Generate drafts + quote card”.</p>
+                    )}
+                  </div>
+                </details>
+
+                <div className="hidden md:block border border-gray-200 rounded-lg p-4 bg-gray-50">
                   <div className="text-sm font-semibold text-gray-900 mb-2">Quote card</div>
                   {openRow.quote_card_svg ? (
                     <>
@@ -704,7 +742,44 @@ export default function Writing() {
                   )}
                 </div>
 
-                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <details className="md:hidden border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <summary className="cursor-pointer text-sm font-semibold text-gray-900">Drafts by channel</summary>
+                  <div className="mt-3">
+                    {openRow.drafts_by_channel ? (
+                      <div className="grid gap-3">
+                        {['linkedin', 'facebook', 'instagram', 'x'].map((ch) => {
+                          const existing = openRow.drafts_by_channel?.[ch] || '';
+                          const text = draftEdits?.[openRow.id]?.drafts_by_channel?.[ch] ?? existing;
+                          return (
+                            <div key={ch} className="border border-gray-200 rounded bg-white p-3">
+                              <div className="text-xs uppercase tracking-wide text-gray-500">{ch}</div>
+                              <textarea
+                                value={text}
+                                onChange={(e) => setDraftEdits((prev) => ({
+                                  ...prev,
+                                  [openRow.id]: {
+                                    ...(prev[openRow.id] || {}),
+                                    drafts_by_channel: {
+                                      ...((prev[openRow.id] || {}).drafts_by_channel || openRow.drafts_by_channel || {}),
+                                      [ch]: e.target.value,
+                                    },
+                                  },
+                                }))}
+                                rows={5}
+                                className="mt-2 w-full border border-gray-300 rounded px-2 py-2 text-sm"
+                                placeholder="Draft text…"
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-600">No drafts yet. Use “Generate drafts + quote card”.</p>
+                    )}
+                  </div>
+                </details>
+
+                <div className="hidden md:block border border-gray-200 rounded-lg p-4 bg-gray-50">
                   <div className="text-sm font-semibold text-gray-900 mb-2">Drafts by channel</div>
                   {openRow.drafts_by_channel ? (
                     <div className="grid gap-3">
@@ -779,6 +854,60 @@ export default function Writing() {
           </section>
         )}
       </main>
+
+      {openRow?.id ? (
+        <AOStickyActions>
+          <div className="grid gap-2">
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => act('generate-assets', openRow.id)}
+                disabled={acting === openRow.id}
+                className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+              >
+                Generate
+              </button>
+              <button
+                type="button"
+                onClick={() => act('save-edits', openRow.id)}
+                disabled={acting === openRow.id || savingId === openRow.id}
+                className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
+              >
+                {savingId === openRow.id ? 'Saving…' : 'Save'}
+              </button>
+              <button
+                type="button"
+                onClick={() => act('send-to-publisher', openRow.id)}
+                disabled={acting === openRow.id}
+                className="min-h-[44px] px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 disabled:opacity-50"
+              >
+                Send
+              </button>
+            </div>
+
+            <div className="flex items-end gap-2">
+              <textarea
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                rows={2}
+                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+                placeholder="Ask Studio…"
+              />
+              <button
+                type="button"
+                onClick={sendChat}
+                disabled={chatSending || !String(chatInput || '').trim()}
+                className="min-h-[44px] px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+              >
+                {chatSending ? '…' : 'Send'}
+              </button>
+            </div>
+            <div className="text-xs text-gray-600">
+              Tip: Studio can propose changes, but nothing is saved until you tap <span className="font-semibold">Save</span>.
+            </div>
+          </div>
+        </AOStickyActions>
+      ) : null}
     </div>
   );
 }

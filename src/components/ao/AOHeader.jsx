@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { Menu, X, LogOut } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
+import AOBottomNav from './AOBottomNav';
+import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 
 const TABS = [
   { key: 'scout', path: '/ao/scout', label: 'Scout' },
@@ -13,6 +15,7 @@ const TABS = [
 
 export default function AOHeader({ active, email, onNavigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const keyboardInset = useKeyboardInset({ enabled: true });
 
   const handleNavigate = useCallback((path) => {
     setMobileMenuOpen(false);
@@ -38,6 +41,7 @@ export default function AOHeader({ active, email, onNavigate }) {
     key === active ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700 hover:bg-gray-50';
 
   return (
+    <>
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
@@ -113,5 +117,7 @@ export default function AOHeader({ active, email, onNavigate }) {
         )}
       </div>
     </header>
+    <AOBottomNav active={active} onNavigate={handleNavigate} keyboardInset={keyboardInset} />
+    </>
   );
 }
