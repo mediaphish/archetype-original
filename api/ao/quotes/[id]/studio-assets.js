@@ -84,26 +84,59 @@ export default async function handler(req, res) {
       updated_at: new Date().toISOString(),
     };
 
-    const { data: updated, error: updErr } = await supabaseAdmin
-      .from('ao_quote_review_queue')
-      .update(patch)
-      .eq('id', id)
-      .select('*')
-      .single();
-
-    if (updErr) {
-      const msg = String(updErr.message || '');
+    let updated = null;
+    let updErr = null;
+    try {
+      const out = await supabaseAdmin
+        .from('ao_quote_review_queue')
+        .update(patch)
+        .eq('id', id)
+        .select('*')
+        .single();
+      updated = out.data;
+      updErr = out.error;
+      if (updErr) throw updErr;
+    } catch (e2) {
+      const msg = String(e2?.message || e2 || '');
+      const missingAltMoves = msg.includes('alt_moves');
       const missingDraftColumns =
         msg.includes('drafts_by_channel') ||
         msg.includes('hashtags_by_channel') ||
         msg.includes('first_comment_suggestions');
+
       if (missingDraftColumns) {
         return res.status(500).json({
           ok: false,
           error: 'Draft fields are not set up yet. Run database/ao_quote_review_queue_add_drafts.sql in Supabase.',
         });
       }
-      return res.status(500).json({ ok: false, error: updErr.message });
+
+      // If the DB is missing some intelligence columns (like alt_moves),
+      // still save the drafts/quote card so Studio is usable.
+      if (missingAltMoves || msg.includes('best_move') || msg.includes('why_it_matters') || msg.includes('pull_quote')) {
+        const minimalPatch = {
+          drafts_by_channel: composed.drafts_by_channel,
+          hashtags_by_channel: composed.hashtags_by_channel,
+          first_comment_suggestions: composed.first_comment_suggestions,
+          ...(quoteCard || {}),
+          updated_at: new Date().toISOString(),
+        };
+        const out2 = await supabaseAdmin
+          .from('ao_quote_review_queue')
+          .update(minimalPatch)
+          .eq('id', id)
+          .select('*')
+          .single();
+        if (out2.error) {
+          return res.status(500).json({
+            ok: false,
+            error: 'Some Studio fields are missing in the database. Run database/ao_quote_review_queue_intelligence_fields.sql and database/ao_quote_review_queue_add_drafts.sql in Supabase.',
+          });
+        }
+        return res.status(200).json({ ok: true, quote: out2.data });
+      }
+
+      throw e2;
     }
 
     return res.status(200).json({ ok: true, quote: updated });
