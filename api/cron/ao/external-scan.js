@@ -23,7 +23,14 @@ export default async function handler(req, res) {
   }
   if (!authorizeCron(req, res)) return;
 
-  const result = await runExternalScan();
+  // Cron should be decision-ready: pull full article text when possible,
+  // and enrich a handful of the newest items with Analyst before you open Analyst.
+  const result = await runExternalScan({
+    enrichAnalyst: true,
+    enrichLimit: 8,
+    fetchFullText: true,
+    insertedCap: 25,
+  });
   if (!result.ok) {
     return res.status(500).json({ ok: false, error: result.error || 'External scan failed', log_id: result.logId || null });
   }

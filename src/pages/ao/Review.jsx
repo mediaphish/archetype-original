@@ -41,19 +41,8 @@ function buildCritique(q) {
   else if (q?.quote_text && String(q.quote_text).trim().length > 30) good.push('Signal text is present.');
   else weak.push('Signal text is thin (hard to turn into a good post).');
 
-  if (q?.why_it_matters) good.push('Has a “why it matters” angle.');
-  else weak.push('Missing “why it matters” (needs interpretation).');
-
-  if (q?.summary_interpretation) good.push('Has a summary + interpretation.');
-  else weak.push('Missing summary + interpretation (hard to judge quickly).');
-
-  if (q?.ao_lane) good.push('Tagged with an AO lane.');
-  else weak.push('Missing lane (hard to route).');
-
-  if (q?.drafts_by_channel) good.push('Channel drafts are ready.');
-  else weak.push('Channel drafts are not ready yet.');
-
-  if (q?.quote_card_svg) good.push('Branded quote card is ready.');
+  const prepared = !!(q?.why_it_matters && q?.summary_interpretation && q?.ao_lane && q?.best_move);
+  if (prepared) good.push('Analyst brief is prepared (direction is clear).');
 
   if (Array.isArray(q?.risk_flags) && q.risk_flags.length) {
     weak.push(`Risk flags: ${q.risk_flags.slice(0, 4).map((x) => String(x)).join(', ')}${q.risk_flags.length > 4 ? '…' : ''}`);
@@ -63,12 +52,10 @@ function buildCritique(q) {
     weak.push('Feels close to things you’ve already said (needs a fresh angle).');
   }
 
-  let recommended = 'studio';
-  if (q?.drafts_by_channel && link && (!Array.isArray(q?.risk_flags) || q.risk_flags.length === 0)) {
-    recommended = 'publisher';
-  }
+  const format = String(q?.studio_playbook?.primary_format || '').trim()
+    || (q?.best_move ? String(q.best_move).replace(/_/g, ' ') : '');
 
-  return { good, weak, recommended, link };
+  return { good, weak, link, prepared, format };
 }
 
 const TABS = [
@@ -96,6 +83,8 @@ export default function Review() {
   const [acting, setActing] = useState(null);
   const [actionError, setActionError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
+  const [briefPrep, setBriefPrep] = useState({ running: false, total: 0, done: 0 });
+  const preparingRef = useRef(new Set());
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -159,6 +148,50 @@ export default function Review() {
     })();
     return () => { cancelled = true; };
   }, [authChecked, email, pageSize, pageOffset, heldOffset]);
+
+  const needsBrief = useCallback((q) => {
+    if (!q) return false;
+    // If key Analyst fields are missing, it’s not decision-ready yet.
+    return !(q.why_it_matters && q.summary_interpretation && q.ao_lane && q.best_move);
+  }, []);
+
+  // Background: prepare a few briefs automatically so Analyst is decision-ready when you arrive.
+  useEffect(() => {
+    if (!authChecked) return;
+    if (activeTab !== 'social') return;
+    if (!Array.isArray(quotes) || quotes.length === 0) return;
+
+    const candidates = quotes
+      .filter((q) => q && q.status === 'pending')
+      .filter((q) => needsBrief(q))
+      .filter((q) => !preparingRef.current.has(q.id))
+      .slice(0, 5);
+
+    if (candidates.length === 0) return;
+
+    let cancelled = false;
+    setBriefPrep({ running: true, total: candidates.length, done: 0 });
+
+    (async () => {
+      let done = 0;
+      for (const q of candidates) {
+        if (cancelled) break;
+        preparingRef.current.add(q.id);
+        try {
+          const res = await fetch(`/api/ao/quotes/${q.id}/brief`, { method: 'POST' });
+          const json = await res.json().catch(() => ({}));
+          if (res.ok && json.ok && json.quote) {
+            setQuotes((prev) => prev.map((x) => (x.id === q.id ? json.quote : x)));
+          }
+        } catch (_) {}
+        done += 1;
+        if (!cancelled) setBriefPrep((p) => ({ ...p, done }));
+      }
+      if (!cancelled) setBriefPrep((p) => ({ ...p, running: false }));
+    })();
+
+    return () => { cancelled = true; };
+  }, [authChecked, activeTab, quotes, needsBrief]);
 
   const act = useCallback(async (kind, id, extra) => {
     if (!authChecked || acting) return;
@@ -275,6 +308,14 @@ export default function Review() {
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Analyst</h1>
         <p className="text-gray-600 mb-8">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
+        {briefPrep.running ? (
+          <div className="mb-6 p-3 rounded border border-blue-200 bg-blue-50 text-blue-900 text-sm flex items-center justify-between gap-3">
+            <span>
+              Preparing Analyst briefs in the background… {briefPrep.done}/{briefPrep.total}
+            </span>
+            <span className="text-xs text-blue-800">You can keep reviewing while this runs.</span>
+          </div>
+        ) : null}
         {actionError ? (
           <div className="mb-6 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
             {actionError}
@@ -475,36 +516,55 @@ export default function Review() {
                         <div className="md:col-span-1">
                           <p className="text-xs font-semibold text-gray-900 mb-1">Recommended next step</p>
                           <div className="text-sm text-gray-900">
-                            {crit.recommended === 'publisher' ? (
-                              <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-green-50 text-green-800 border-green-200">
-                                Approve → Publisher
+                            {crit.format ? (
+                              <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-800 border-blue-200">
+                                {crit.format}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-800 border-blue-200">
-                                Approve → Studio
-                              </span>
+                              <span className="text-xs text-gray-600">Preparing direction…</span>
                             )}
                           </div>
-                          <p className="text-xs text-gray-600 mt-2">
-                            You can override this with the buttons below.
-                          </p>
+                          {q?.studio_playbook?.goal ? (
+                            <p className="text-xs text-gray-600 mt-2">
+                              Goal: <span className="font-medium text-gray-800">{q.studio_playbook.goal}</span>
+                              {q.studio_playbook.goal_rationale ? <span> — {q.studio_playbook.goal_rationale}</span> : null}
+                            </p>
+                          ) : null}
                         </div>
                       </div>
 
-                      <details className="mb-3 border border-gray-200 rounded bg-gray-50 p-3">
-                        <summary className="cursor-pointer text-sm font-medium text-gray-800">Details (drafts, quote card, similarity)</summary>
+                      <div className="mb-3 border border-gray-200 rounded bg-gray-50 p-3">
+                        <div className="text-sm font-medium text-gray-800">Analyst direction</div>
+                        {q.summary_interpretation ? (
+                          <p className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">{q.summary_interpretation}</p>
+                        ) : (
+                          <p className="mt-2 text-sm text-gray-600">Preparing the summary + interpretation…</p>
+                        )}
+                        {Array.isArray(q?.studio_playbook?.angles) && q.studio_playbook.angles.length ? (
+                          <div className="mt-3">
+                            <p className="text-xs font-medium text-gray-700 mb-1">Angles</p>
+                            <ul className="text-xs text-gray-700 space-y-1">
+                              {q.studio_playbook.angles.slice(0, 3).map((a, idx) => <li key={idx}>- {a}</li>)}
+                            </ul>
+                          </div>
+                        ) : null}
+                        {Array.isArray(q?.studio_playbook?.alignment_flags) && q.studio_playbook.alignment_flags.length ? (
+                          <div className="mt-3">
+                            <p className="text-xs font-medium text-gray-700 mb-1">Alignment flags</p>
+                            <ul className="text-xs text-amber-900 space-y-1">
+                              {q.studio_playbook.alignment_flags.slice(0, 6).map((a, idx) => <li key={idx}>- {a}</li>)}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <details className="mb-3 border border-gray-200 rounded bg-white p-3">
+                        <summary className="cursor-pointer text-sm font-medium text-gray-800">More details (source excerpt, similarity, drafts)</summary>
                         <div className="mt-3 space-y-4">
                           {q.source_excerpt ? (
                             <div>
                               <p className="text-xs font-medium text-gray-700 mb-1">Source excerpt</p>
                               <p className="text-xs text-gray-700 whitespace-pre-wrap">{q.source_excerpt}</p>
-                            </div>
-                          ) : null}
-
-                          {q.summary_interpretation ? (
-                            <div>
-                              <p className="text-xs font-medium text-gray-700 mb-1">Summary + interpretation</p>
-                              <p className="text-sm text-gray-800 whitespace-pre-wrap">{q.summary_interpretation}</p>
                             </div>
                           ) : null}
 

@@ -97,6 +97,15 @@ export default async function handler(req, res) {
       }
     }
     try {
+      await checkSelect('id,source_url');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['source_url'])) {
+        addMissing('database/ao_quote_review_queue_intelligence_fields.sql', 'Missing source_url field (needed for URL dedupe)');
+      }
+    }
+    // Note: we can’t reliably detect missing indexes via PostgREST; see notes below for optional dedupe SQL.
+    try {
       await checkSelect('id,drafts_by_channel,hashtags_by_channel,first_comment_suggestions');
     } catch (e) {
       const msg = errText(e);
@@ -137,6 +146,7 @@ export default async function handler(req, res) {
       if (hasAny(msg, ['ao_brand_assets', 'relation'])) addMissing('database/ao_brand_assets.sql', 'Missing Brand assets table');
     }
 
+    notes.push('Optional: to prevent the same URL showing up repeatedly, run: database/ao_quote_review_queue_unique_source_url.sql');
     notes.push('If you just ran a SQL file, it can take 30–90 seconds for the system to “notice.”');
     notes.push('If you still see “schema cache” errors after waiting, run: NOTIFY pgrst, \'reload schema\'; in Supabase SQL editor.');
 

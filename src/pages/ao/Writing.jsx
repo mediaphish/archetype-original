@@ -42,14 +42,25 @@ export default function Writing() {
   const [chatError, setChatError] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
-  const openId = useMemo(() => getParam('open'), []);
-  const from = useMemo(() => getParam('from'), []);
+  const [openId, setOpenId] = useState(getParam('open'));
+  const [from, setFrom] = useState(getParam('from'));
+  const [prefillPrompt, setPrefillPrompt] = useState(getParam('prompt'));
   const openRef = useRef(null);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  useEffect(() => {
+    const onPop = () => {
+      setOpenId(getParam('open'));
+      setFrom(getParam('from'));
+      setPrefillPrompt(getParam('prompt'));
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
   }, []);
 
   useEffect(() => {
@@ -111,6 +122,13 @@ export default function Writing() {
       setRouteError('');
     }
   }, [from]);
+
+  useEffect(() => {
+    if (!prefillPrompt) return;
+    const p = String(prefillPrompt || '').trim();
+    if (!p) return;
+    setChatInput(p);
+  }, [prefillPrompt]);
 
   useEffect(() => {
     // If an item is explicitly opened, reduce confusion by clearing routing errors.
