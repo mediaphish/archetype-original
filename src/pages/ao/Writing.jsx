@@ -1,6 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
+
+function getParam(name) {
+  try {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+  } catch {
+    return null;
+  }
+}
+
+function downloadSvg(filename, svgText) {
+  try {
+    const blob = new Blob([String(svgText || '')], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'quote-card.svg';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (_) {}
+}
 
 export default function Writing() {
   const [email, setEmail] = useState('');
@@ -12,6 +35,11 @@ export default function Writing() {
   const [acting, setActing] = useState(null);
   const [routeError, setRouteError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
+  const [draftEdits, setDraftEdits] = useState({}); // { [quoteId]: { drafts_by_channel, quote_card_caption } }
+  const [savingId, setSavingId] = useState(null);
+  const openId = useMemo(() => getParam('open'), []);
+  const from = useMemo(() => getParam('from'), []);
+  const openRef = useRef(null);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -72,6 +100,20 @@ export default function Writing() {
     return () => { cancelled = true; };
   }, [authChecked, email]);
 
+  useEffect(() => {
+    // If we arrived here from Analyst, don't show stale routing errors by default.
+    if (from === 'analyst') {
+      setRouteError('');
+    }
+  }, [from]);
+
+  useEffect(() => {
+    // If an item is explicitly opened, reduce confusion by clearing routing errors.
+    if (openId) {
+      setRouteError('');
+    }
+  }, [openId]);
+
   const act = useCallback(async (kind, id) => {
     if (!authChecked || acting) return;
     setActing(id);
@@ -106,6 +148,24 @@ export default function Writing() {
         return;
       }
 
+      if (kind === 'save-edits') {
+        const payload = draftEdits?.[id] || {};
+        setSavingId(id);
+        const res = await fetch(`/api/ao/quotes/${id}/studio`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          setRouteError(json.error || 'Could not save changes');
+        } else if (json.quote) {
+          setStudioItems((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
+          setActionMessage('Saved.');
+        }
+        return;
+      }
+
       if (kind === 'route-to-studio') {
         const res = await fetch(`/api/ao/quotes/${id}/approve`, {
           method: 'POST',
@@ -119,6 +179,10 @@ export default function Writing() {
           // Move into Studio list immediately
           setUnroutedApproved((prev) => prev.filter((x) => x.id !== id));
           setStudioItems((prev) => [json.quote, ...prev]);
+          setRouteError('');
+          window.history.pushState({}, '', `/ao/studio?open=${encodeURIComponent(id)}&from=analyst`);
+          window.dispatchEvent(new PopStateEvent('popstate'));
+          window.scrollTo({ top: 0, behavior: 'instant' });
         }
         return;
       }
@@ -132,13 +196,32 @@ export default function Writing() {
       }
     } finally {
       setActing(null);
+      setSavingId(null);
     }
-  }, [authChecked, acting]);
+  }, [authChecked, acting, draftEdits]);
 
   const pending = writing.filter((w) => w.status === 'pending' || w.status === 'drafting');
   const drafted = writing.filter((w) => w.status === 'drafted');
   const approvedToStudio = studioItems || [];
   const needsRouting = unroutedApproved || [];
+  const openRow = useMemo(() => {
+    if (!openId) return null;
+    return (approvedToStudio || []).find((x) => String(x?.id) === String(openId))
+      || (needsRouting || []).find((x) => String(x?.id) === String(openId))
+      || null;
+  }, [openId, approvedToStudio, needsRouting]);
+
+  useEffect(() => {
+    if (!openId) return;
+    if (!openRow) return;
+    // Scroll the opened item into view once data is present.
+    const t = setTimeout(() => {
+      try {
+        openRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (_) {}
+    }, 50);
+    return () => clearTimeout(t);
+  }, [openId, openRow]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -160,7 +243,11 @@ export default function Writing() {
             ) : (
               <ul className="space-y-4">
                 {approvedToStudio.map((q) => (
-                  <li key={q.id} className="border border-gray-200 rounded p-4">
+                  <li
+                    key={q.id}
+                    ref={openId && String(openId) === String(q.id) ? openRef : undefined}
+                    className={`border rounded p-4 ${openId && String(openId) === String(q.id) ? 'border-blue-300 bg-blue-50/40' : 'border-gray-200'}`}
+                  >
                     <div className="text-sm font-semibold text-gray-900">
                       {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
                       {q.source_title ? <span className="font-normal text-gray-700"> — “{q.source_title}”</span> : null}
@@ -176,7 +263,10 @@ export default function Writing() {
                       <p className="mt-3 text-sm text-gray-700 whitespace-pre-wrap">{q.why_it_matters}</p>
                     ) : null}
 
-                    <details className="mt-3 border border-gray-200 rounded bg-gray-50 p-3">
+                    <details
+                      className="mt-3 border border-gray-200 rounded bg-gray-50 p-3"
+                      open={openId && String(openId) === String(q.id) ? true : undefined}
+                    >
                       <summary className="cursor-pointer text-sm font-medium text-gray-800">Drafts + quote card</summary>
                       <div className="mt-3 space-y-4">
                         <div className="flex flex-wrap items-center gap-2">
@@ -188,6 +278,14 @@ export default function Writing() {
                           >
                             Generate drafts + quote card
                           </button>
+                          <button
+                            type="button"
+                            onClick={() => act('save-edits', q.id)}
+                            disabled={acting === q.id || savingId === q.id}
+                            className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+                          >
+                            {savingId === q.id ? 'Saving…' : 'Save changes'}
+                          </button>
                           <span className="text-xs text-gray-500">This may take a moment.</span>
                         </div>
                         {q.quote_card_svg ? (
@@ -196,17 +294,58 @@ export default function Writing() {
                             <div className="border border-gray-200 rounded bg-white p-2 overflow-auto">
                               <div dangerouslySetInnerHTML={{ __html: q.quote_card_svg }} />
                             </div>
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => downloadSvg(`ao-quote-card-${q.id}.svg`, q.quote_card_svg)}
+                                className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50"
+                              >
+                                Download SVG
+                              </button>
+                            </div>
+                          </div>
+                        ) : null}
+                        {q.quote_card_svg ? (
+                          <div className="grid gap-3 md:grid-cols-2">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-700 mb-1">Quote card caption (optional)</label>
+                              <textarea
+                                value={draftEdits?.[q.id]?.quote_card_caption ?? q.quote_card_caption ?? ''}
+                                onChange={(e) => setDraftEdits((prev) => ({
+                                  ...prev,
+                                  [q.id]: { ...(prev[q.id] || {}), quote_card_caption: e.target.value },
+                                }))}
+                                rows={2}
+                                className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                                placeholder="Caption used with the quote card…"
+                              />
+                            </div>
                           </div>
                         ) : null}
                         {q.drafts_by_channel ? (
                           <div className="grid gap-3 md:grid-cols-2">
                             {['linkedin', 'facebook', 'instagram', 'x'].map((ch) => {
-                              const text = q.drafts_by_channel?.[ch] || '';
-                              if (!text) return null;
+                              const existing = q.drafts_by_channel?.[ch] || '';
+                              const text = draftEdits?.[q.id]?.drafts_by_channel?.[ch] ?? existing;
                               return (
                                 <div key={ch} className="border border-gray-200 rounded bg-white p-3">
                                   <div className="text-xs uppercase tracking-wide text-gray-500">{ch}</div>
-                                  <p className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">{text}</p>
+                                  <textarea
+                                    value={text}
+                                    onChange={(e) => setDraftEdits((prev) => ({
+                                      ...prev,
+                                      [q.id]: {
+                                        ...(prev[q.id] || {}),
+                                        drafts_by_channel: {
+                                          ...((prev[q.id] || {}).drafts_by_channel || q.drafts_by_channel || {}),
+                                          [ch]: e.target.value,
+                                        },
+                                      },
+                                    }))}
+                                    rows={4}
+                                    className="mt-2 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                                    placeholder="Draft text…"
+                                  />
                                 </div>
                               );
                             })}
@@ -252,7 +391,11 @@ export default function Writing() {
             ) : (
               <ul className="space-y-4">
                 {needsRouting.slice(0, 50).map((q) => (
-                  <li key={q.id} className="border border-gray-200 rounded p-4">
+                  <li
+                    key={q.id}
+                    ref={openId && String(openId) === String(q.id) ? openRef : undefined}
+                    className={`border rounded p-4 ${openId && String(openId) === String(q.id) ? 'border-blue-300 bg-blue-50/40' : 'border-gray-200'}`}
+                  >
                     <div className="text-sm font-semibold text-gray-900">
                       {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
                       {q.source_title ? <span className="font-normal text-gray-700"> — “{q.source_title}”</span> : null}

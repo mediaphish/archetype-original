@@ -222,6 +222,12 @@ export default function Review() {
         } else if (kind === 'quote-approve') {
           const saved = String(json?.quote?.next_stage || '').toLowerCase();
           setActionMessage(saved === 'publisher' ? 'Approved and sent to Publisher.' : saved === 'studio' ? 'Approved and sent to Studio.' : 'Approved.');
+          if (saved === 'studio') {
+            window.history.pushState({}, '', `/ao/studio?open=${encodeURIComponent(id)}&from=analyst`);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            return;
+          }
         } else if (kind === 'quote-reject') {
           setActionMessage('Rejected.');
         } else if (kind === 'topic-approve') {
@@ -606,7 +612,7 @@ export default function Review() {
                           disabled={acting === q.id}
                           className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
                         >
-                          Approve → Studio
+                          {acting === q.id ? 'Working…' : 'Approve → Studio'}
                         </button>
                         <button
                           type="button"
@@ -729,7 +735,7 @@ export default function Review() {
                           disabled={acting === q.id}
                           className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
                         >
-                          Approve → Studio
+                          {acting === q.id ? 'Working…' : 'Approve → Studio'}
                         </button>
                         <button
                           type="button"
