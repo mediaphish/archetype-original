@@ -113,6 +113,22 @@ export default async function handler(req, res) {
       if (hasAny(msg, ['ao_brain_trust_sources', 'relation'])) addMissing('database/ao_brain_trust_sources.sql', 'Missing Brain Trust table');
     }
 
+    // Studio chat sessions
+    try {
+      await checkTable('ao_studio_sessions', 'id,quote_id,updated_at');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['ao_studio_sessions', 'relation'])) addMissing('database/ao_studio_sessions.sql', 'Missing Studio chat sessions table');
+    }
+
+    // Brand assets (logos)
+    try {
+      await checkTable('ao_brand_assets', 'id,kind,label,variant,public_url,is_default_light,is_default_dark');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['ao_brand_assets', 'relation'])) addMissing('database/ao_brand_assets.sql', 'Missing Brand assets table');
+    }
+
     notes.push('If you just ran a SQL file, it can take 30–90 seconds for the system to “notice.”');
     notes.push('If you still see “schema cache” errors after waiting, run: NOTIFY pgrst, \'reload schema\'; in Supabase SQL editor.');
 

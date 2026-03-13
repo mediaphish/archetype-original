@@ -53,6 +53,14 @@ export default function Settings() {
   const [dbCheckError, setDbCheckError] = useState('');
   const [dbCheckResult, setDbCheckResult] = useState(null); // { missing: [], notes: [] }
 
+  const [brandLoading, setBrandLoading] = useState(true);
+  const [brandAssets, setBrandAssets] = useState([]);
+  const [brandError, setBrandError] = useState('');
+  const [brandUploads, setBrandUploads] = useState([]); // [{ localId, file, label, variant, defaultLight, defaultDark }]
+  const [brandUploading, setBrandUploading] = useState(false);
+  const [brandUploadError, setBrandUploadError] = useState('');
+  const [brandUploadMessage, setBrandUploadMessage] = useState('');
+
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -199,6 +207,96 @@ export default function Settings() {
     }
   }, [authChecked]);
 
+  const refreshBrandAssets = useCallback(async () => {
+    if (!authChecked) return;
+    setBrandLoading(true);
+    setBrandError('');
+    try {
+      const res = await fetch('/api/ao/brand/assets');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not load brand assets');
+      setBrandAssets(Array.isArray(json.assets) ? json.assets : []);
+    } catch (e) {
+      setBrandAssets([]);
+      setBrandError(e.message || 'Could not load brand assets');
+    } finally {
+      setBrandLoading(false);
+    }
+  }, [authChecked]);
+
+  useEffect(() => {
+    if (!authChecked) return;
+    refreshBrandAssets();
+  }, [authChecked, refreshBrandAssets]);
+
+  const uploadBrandAssets = useCallback(async () => {
+    if (!authChecked) return;
+    if (brandUploading) return;
+    setBrandUploadError('');
+    setBrandUploadMessage('');
+
+    const pending = Array.isArray(brandUploads) ? brandUploads : [];
+    if (!pending.length) return;
+
+    const missingLabel = pending.find((u) => !String(u?.label || '').trim());
+    if (missingLabel) {
+      setBrandUploadError('Each file needs a label before uploading.');
+      return;
+    }
+
+    setBrandUploading(true);
+    try {
+      for (const u of pending) {
+        const fd = new FormData();
+        fd.append('label', String(u.label || '').trim());
+        fd.append('variant', String(u.variant || 'other'));
+        fd.append('defaultLight', u.defaultLight ? 'true' : 'false');
+        fd.append('defaultDark', u.defaultDark ? 'true' : 'false');
+        fd.append('file', u.file);
+
+        const res = await fetch('/api/ao/brand/assets', { method: 'POST', body: fd });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Upload failed');
+      }
+      setBrandUploads([]);
+      setBrandUploadMessage('Uploaded.');
+      await refreshBrandAssets();
+    } catch (e) {
+      setBrandUploadError(e.message || 'Upload failed');
+    } finally {
+      setBrandUploading(false);
+    }
+  }, [authChecked, brandUploading, brandUploads, refreshBrandAssets]);
+
+  const patchBrandAsset = useCallback(async (id, patch) => {
+    if (!authChecked) return;
+    try {
+      const res = await fetch(`/api/ao/brand/assets/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch || {}),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Update failed');
+      setBrandAssets((prev) => prev.map((a) => (a.id === id ? json.asset : a)));
+    } catch (e) {
+      setBrandUploadError(e.message || 'Update failed');
+    }
+  }, [authChecked]);
+
+  const deleteBrandAsset = useCallback(async (id) => {
+    if (!authChecked) return;
+    if (!window.confirm('Delete this logo?')) return;
+    try {
+      const res = await fetch(`/api/ao/brand/assets/${id}`, { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Delete failed');
+      setBrandAssets((prev) => prev.filter((a) => a.id !== id));
+    } catch (e) {
+      setBrandUploadError(e.message || 'Delete failed');
+    }
+  }, [authChecked]);
+
   async function handleLinkedInTestPost() {
     if (!authChecked) return;
     setLinkedinTestResult(null);
@@ -324,6 +422,196 @@ export default function Settings() {
               ) : null}
             </div>
           ) : null}
+        </section>
+
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Brand assets</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload AO logos once (SVG + PNG) and label them so Studio can use the right one when generating branded graphics.
+          </p>
+
+          {brandError ? (
+            <div className="mb-3 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{brandError}</div>
+          ) : null}
+          {brandUploadError ? (
+            <div className="mb-3 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{brandUploadError}</div>
+          ) : null}
+          {brandUploadMessage ? (
+            <div className="mb-3 p-3 rounded border border-green-200 bg-green-50 text-green-800 text-sm">{brandUploadMessage}</div>
+          ) : null}
+
+          <div className="border border-gray-200 rounded p-4 bg-gray-50">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="text-sm font-semibold text-gray-900">Upload logos</div>
+              <div className="text-xs text-gray-500">SVG or PNG only</div>
+            </div>
+            <div className="mt-3">
+              <input
+                type="file"
+                accept=".svg,.png,image/svg+xml,image/png"
+                multiple
+                onChange={(e) => {
+                  setBrandUploadError('');
+                  setBrandUploadMessage('');
+                  const files = Array.from(e.target.files || []);
+                  if (!files.length) return;
+                  setBrandUploads((prev) => ([
+                    ...(Array.isArray(prev) ? prev : []),
+                    ...files.map((f) => ({
+                      localId: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                      file: f,
+                      label: '',
+                      variant: 'other',
+                      defaultLight: false,
+                      defaultDark: false,
+                    })),
+                  ]));
+                  e.target.value = '';
+                }}
+                className="block w-full text-sm"
+              />
+            </div>
+
+            {Array.isArray(brandUploads) && brandUploads.length ? (
+              <div className="mt-4 space-y-3">
+                {brandUploads.map((u) => (
+                  <div key={u.localId} className="border border-gray-200 rounded bg-white p-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="text-sm text-gray-900">
+                        <span className="font-semibold">File:</span> {u.file?.name || 'logo'}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setBrandUploads((prev) => (prev || []).filter((x) => x.localId !== u.localId))}
+                        className="px-2.5 py-1 text-xs rounded border border-gray-300 bg-white hover:bg-gray-50"
+                      >
+                        Remove
+                      </button>
+                    </div>
+
+                    <div className="mt-3 grid gap-3 md:grid-cols-2">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Label (required)</label>
+                        <input
+                          value={u.label}
+                          onChange={(e) => setBrandUploads((prev) => (prev || []).map((x) => (x.localId === u.localId ? { ...x, label: e.target.value } : x)))}
+                          className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                          placeholder="e.g., AO mark (white), Wordmark (black), Lockup dark…"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Variant</label>
+                        <select
+                          value={u.variant || 'other'}
+                          onChange={(e) => setBrandUploads((prev) => (prev || []).map((x) => (x.localId === u.localId ? { ...x, variant: e.target.value } : x)))}
+                          className="w-full border border-gray-300 rounded px-2 py-1 text-sm bg-white"
+                        >
+                          <option value="mark">mark</option>
+                          <option value="wordmark">wordmark</option>
+                          <option value="lockup_light">lockup_light</option>
+                          <option value="lockup_dark">lockup_dark</option>
+                          <option value="other">other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={!!u.defaultLight}
+                          onChange={(e) => setBrandUploads((prev) => (prev || []).map((x) => (x.localId === u.localId ? { ...x, defaultLight: e.target.checked } : x)))}
+                        />
+                        Default for light backgrounds
+                      </label>
+                      <label className="inline-flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={!!u.defaultDark}
+                          onChange={(e) => setBrandUploads((prev) => (prev || []).map((x) => (x.localId === u.localId ? { ...x, defaultDark: e.target.checked } : x)))}
+                        />
+                        Default for dark backgrounds
+                      </label>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={uploadBrandAssets}
+                    disabled={brandUploading}
+                    className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
+                  >
+                    {brandUploading ? 'Uploading…' : 'Upload'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBrandUploads([])}
+                    disabled={brandUploading}
+                    className="px-4 py-2 border border-gray-300 bg-white text-gray-700 font-semibold rounded hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Clear
+                  </button>
+                  <span className="text-xs text-gray-500">Labels are required so you can reference them later in Studio.</span>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="mt-5">
+            <div className="text-sm font-semibold text-gray-900 mb-2">Saved logos</div>
+            {brandLoading ? (
+              <p className="text-sm text-gray-500">Loading…</p>
+            ) : Array.isArray(brandAssets) && brandAssets.length ? (
+              <ul className="space-y-3">
+                {brandAssets.slice(0, 50).map((a) => (
+                  <li key={a.id} className="border border-gray-200 rounded p-3 bg-white">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold text-gray-900">{a.label}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {a.variant || 'other'}
+                          {a.is_default_light ? ' · default light' : ''}
+                          {a.is_default_dark ? ' · default dark' : ''}
+                        </div>
+                        {a.public_url ? (
+                          <a className="text-xs text-blue-700 hover:underline break-all" href={a.public_url} target="_blank" rel="noreferrer">
+                            Preview file
+                          </a>
+                        ) : null}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => patchBrandAsset(a.id, { is_default_light: true })}
+                          className="px-2.5 py-1 text-xs rounded border border-gray-300 bg-white hover:bg-gray-50"
+                        >
+                          Set default light
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => patchBrandAsset(a.id, { is_default_dark: true })}
+                          className="px-2.5 py-1 text-xs rounded border border-gray-300 bg-white hover:bg-gray-50"
+                        >
+                          Set default dark
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteBrandAsset(a.id)}
+                          className="px-2.5 py-1 text-xs rounded border border-red-200 bg-red-50 text-red-800 hover:bg-red-100"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-500">No logos uploaded yet.</p>
+            )}
+          </div>
         </section>
 
         {linkedinStatus === 'connected' && (

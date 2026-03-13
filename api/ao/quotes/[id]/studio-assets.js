@@ -8,6 +8,7 @@ import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
 import { analystDecision } from '../../../../lib/ao/analystDecision.js';
 import { editorCompose } from '../../../../lib/ao/editorCompose.js';
 import { renderQuoteCardSvg } from '../../../../lib/ao/quoteCardDesigner.js';
+import { getDefaultLogoUrl } from '../../../../lib/ao/brandLogos.js';
 
 function hasBrief(row) {
   return !!(row?.pull_quote && row?.why_it_matters && row?.summary_interpretation && row?.ao_lane);
@@ -51,7 +52,8 @@ export default async function handler(req, res) {
 
     let quoteCard = null;
     if (decision.best_move === 'pull_quote_card' && decision.quote_card_worthy && decision.pull_quote) {
-      const rendered = renderQuoteCardSvg({ quote: decision.pull_quote, sourceName: row.source_name || row.source_title || '' });
+      const logoUrl = await getDefaultLogoUrl({ background: 'dark' });
+      const rendered = renderQuoteCardSvg({ quote: decision.pull_quote, sourceName: row.source_name || row.source_title || '', logoUrl });
       if (rendered?.ok) {
         quoteCard = {
           quote_card_template: rendered.template,
