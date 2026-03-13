@@ -7,8 +7,10 @@ export default function Writing() {
   const [authChecked, setAuthChecked] = useState(false);
   const [writing, setWriting] = useState([]);
   const [studioItems, setStudioItems] = useState([]);
+  const [unroutedApproved, setUnroutedApproved] = useState([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null);
+  const [routeError, setRouteError] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -55,10 +57,13 @@ export default function Writing() {
         const qJson = await qRes.json().catch(() => ({}));
         if (wJson.ok && Array.isArray(wJson.writing)) setWriting(wJson.writing);
         if (qJson.ok && Array.isArray(qJson.quotes)) {
-          const rows = qJson.quotes.filter((q) => q && q.status === 'approved' && q.next_stage === 'studio');
+          const allApproved = qJson.quotes.filter((q) => q && q.status === 'approved');
+          const rows = allApproved.filter((q) => String(q.next_stage || '').toLowerCase() === 'studio');
           setStudioItems(rows);
+          setUnroutedApproved(allApproved.filter((q) => !String(q.next_stage || '').trim()));
         } else {
           setStudioItems([]);
+          setUnroutedApproved([]);
         }
       } catch (_) {}
       if (!cancelled) setLoading(false);
@@ -69,6 +74,7 @@ export default function Writing() {
   const act = useCallback(async (kind, id) => {
     if (!authChecked || acting) return;
     setActing(id);
+    setRouteError('');
     try {
       if (kind === 'send-to-publisher') {
         const res = await fetch(`/api/ao/quotes/${id}/approve`, {
@@ -77,8 +83,28 @@ export default function Writing() {
           body: JSON.stringify({ next_stage: 'publisher' }),
         });
         const json = await res.json().catch(() => ({}));
-        if (json.ok) {
+        if (!res.ok || !json.ok) {
+          setRouteError(json.error || 'Could not route item to Publisher');
+        } else if (json.ok) {
           setStudioItems((prev) => prev.filter((x) => x.id !== id));
+          setUnroutedApproved((prev) => prev.filter((x) => x.id !== id));
+        }
+        return;
+      }
+
+      if (kind === 'route-to-studio') {
+        const res = await fetch(`/api/ao/quotes/${id}/approve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ next_stage: 'studio' }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          setRouteError(json.error || 'Could not route item to Studio');
+        } else {
+          // Move into Studio list immediately
+          setUnroutedApproved((prev) => prev.filter((x) => x.id !== id));
+          setStudioItems((prev) => [json.quote, ...prev]);
         }
         return;
       }
@@ -98,6 +124,7 @@ export default function Writing() {
   const pending = writing.filter((w) => w.status === 'pending' || w.status === 'drafting');
   const drafted = writing.filter((w) => w.status === 'drafted');
   const approvedToStudio = studioItems || [];
+  const needsRouting = unroutedApproved || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -110,6 +137,7 @@ export default function Writing() {
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Approved from Analyst</h2>
             <p className="text-sm text-gray-600 mb-4">These are approved items that still need finishing before scheduling.</p>
+            {routeError ? <p className="text-sm text-red-700 mb-3">{routeError}</p> : null}
             {loading ? (
               <LoadingSpinner />
             ) : approvedToStudio.length === 0 ? (
@@ -178,6 +206,48 @@ export default function Writing() {
                         className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50"
                       >
                         Go to Publisher
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Approved (needs routing)</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              These items are approved but don’t have a destination yet. This usually means routing isn’t fully set up in the database.
+            </p>
+            {loading ? (
+              <LoadingSpinner />
+            ) : needsRouting.length === 0 ? (
+              <p className="text-sm text-gray-500">Nothing waiting for routing.</p>
+            ) : (
+              <ul className="space-y-4">
+                {needsRouting.slice(0, 50).map((q) => (
+                  <li key={q.id} className="border border-gray-200 rounded p-4">
+                    <div className="text-sm font-semibold text-gray-900">
+                      {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
+                      {q.source_title ? <span className="font-normal text-gray-700"> — “{q.source_title}”</span> : null}
+                    </div>
+                    <p className="text-gray-800 mt-3 whitespace-pre-wrap">{(q.pull_quote || q.quote_text || '').slice(0, 320)}{(q.pull_quote || q.quote_text || '').length > 320 ? '…' : ''}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => act('route-to-studio', q.id)}
+                        disabled={acting === q.id}
+                        className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+                      >
+                        Route to Studio
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => act('send-to-publisher', q.id)}
+                        disabled={acting === q.id}
+                        className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                      >
+                        Route to Publisher
                       </button>
                     </div>
                   </li>

@@ -207,8 +207,8 @@ export default function Review() {
         if (kind === 'writing-draft' || kind === 'writing-discard') setWriting((prev) => prev.filter((x) => x.id !== id));
 
         if (kind === 'quote-approve') {
-          const ns = String(extra?.next_stage || '').toLowerCase();
-          setActionMessage(ns === 'publisher' ? 'Approved and sent to Publisher.' : 'Approved and sent to Studio.');
+          const saved = String(json?.quote?.next_stage || '').toLowerCase();
+          setActionMessage(saved === 'publisher' ? 'Approved and sent to Publisher.' : saved === 'studio' ? 'Approved and sent to Studio.' : 'Approved.');
         } else if (kind === 'quote-reject') {
           setActionMessage('Rejected.');
         } else if (kind === 'topic-approve') {

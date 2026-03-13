@@ -47,13 +47,19 @@ export default async function handler(req, res) {
       .select()
       .single();
 
-    // If the DB is missing newer columns (like next_stage), retry with a minimal update
-    // instead of failing silently in the UI.
+    // If the DB is missing newer columns (like next_stage), handle it explicitly.
     if (result.error) {
       const msg = String(result.error?.message || '');
       const missingNextStage = msg.includes('next_stage');
       const missingSuggestedChannels = msg.includes('suggested_channels');
       const missingCaption = msg.includes('caption_suggestions');
+      if (missingNextStage && nextStage) {
+        return res.status(500).json({
+          ok: false,
+          error: 'Routing is not set up yet (missing next_stage). Run database/ao_queue_next_stage.sql in Supabase, then retry.',
+        });
+      }
+
       if (missingNextStage || missingSuggestedChannels || missingCaption) {
         const minimal = {
           status: 'approved',
