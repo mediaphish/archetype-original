@@ -31,8 +31,10 @@ function buildCritique(q) {
   const good = [];
   const weak = [];
 
+  const isInternal = !!q?.is_internal;
   const link = safeUrl(q?.source_url || q?.source_slug_or_url);
   if (link) good.push('Working source link.');
+  else if (isInternal) good.push('Internal source (trusted).');
   else weak.push('Missing a working source link (hard to verify / trust).');
 
   if (q?.pull_quote) good.push('Strong pull quote (the signal is clear).');

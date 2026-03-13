@@ -54,6 +54,9 @@ export default function Scout() {
   const [statusLoading, setStatusLoading] = useState(true);
 
   const [scanning, setScanning] = useState(false);
+  const [scanRunningType, setScanRunningType] = useState(null); // null | 'internal' | 'external'
+  const [scanMessage, setScanMessage] = useState('');
+  const [scanError, setScanError] = useState('');
   const [dailyRunning, setDailyRunning] = useState(false);
   const [dailyRunMessage, setDailyRunMessage] = useState('');
 
@@ -279,16 +282,30 @@ export default function Scout() {
 
   const runScan = useCallback(async (type) => {
     if (!authChecked || scanning) return;
+    setScanMessage('');
+    setScanError('');
     setScanning(true);
+    setScanRunningType(type === 'internal' ? 'internal' : 'external');
     try {
       const url = `${type === 'internal' ? '/api/ao/scan-internal' : '/api/ao/scan-external'}`;
       const res = await fetch(url, { method: 'POST' });
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.ok) {
         await loadStatus();
+        const inserted = Number(json.candidates_inserted ?? json.candidatesInserted ?? 0) || 0;
+        const found = Number(json.candidates_found ?? json.candidatesFound ?? 0) || 0;
+        const kind = type === 'internal' ? 'Internal scan' : 'External scan';
+        setScanMessage(`${kind} complete. Found ${found}. Added ${inserted} item(s) to Analyst.`);
+      } else {
+        const kind = type === 'internal' ? 'Internal scan' : 'External scan';
+        setScanError(json.error || `${kind} failed`);
       }
+    } catch (e) {
+      const kind = type === 'internal' ? 'Internal scan' : 'External scan';
+      setScanError(e.message || `${kind} failed`);
     } finally {
       setScanning(false);
+      setScanRunningType(null);
     }
   }, [authChecked, scanning, loadStatus]);
 
@@ -587,10 +604,21 @@ export default function Scout() {
           </div>
 
           {dailyRunning ? <IndeterminateBar label="Daily run in progress…" /> : null}
+          {scanning ? <IndeterminateBar label={`${scanRunningType === 'internal' ? 'Internal scan' : 'External scan'} in progress…`} /> : null}
           {scoutPassRunning ? <IndeterminateBar label="Scout pass in progress…" /> : null}
           {scoutPassMessage ? (
             <div className="mt-3 p-3 rounded text-sm bg-gray-50 border border-gray-200 text-gray-800">
               {scoutPassMessage}
+            </div>
+          ) : null}
+          {scanError ? (
+            <div className="mt-3 p-3 rounded text-sm bg-red-50 border border-red-200 text-red-800">
+              {scanError}
+            </div>
+          ) : null}
+          {scanMessage ? (
+            <div className="mt-3 p-3 rounded text-sm bg-green-50 border border-green-200 text-green-800">
+              {scanMessage}
             </div>
           ) : null}
         </section>
