@@ -166,6 +166,23 @@ export default function Review() {
     setActionError('');
     setActionMessage('');
     try {
+      // Enforce the Analyst → Studio playbook: if a user approves to Studio and
+      // the playbook is missing, refresh the brief first (single click).
+      if (kind === 'quote-approve' && extra?.next_stage === 'studio') {
+        const row = (quotes || []).find((x) => x.id === id) || (heldQuotes || []).find((x) => x.id === id) || null;
+        const hasPlaybook = !!row?.studio_playbook;
+        if (!hasPlaybook) {
+          try {
+            const briefRes = await fetch(`/api/ao/quotes/${id}/brief`, { method: 'POST' });
+            const briefJson = await briefRes.json().catch(() => ({}));
+            if (briefRes.ok && briefJson.ok && briefJson.quote) {
+              setQuotes((prev) => prev.map((x) => (x.id === id ? briefJson.quote : x)));
+              setHeldQuotes((prev) => prev.map((x) => (x.id === id ? briefJson.quote : x)));
+            }
+          } catch (_) {}
+        }
+      }
+
       const base = `/api/ao`;
       let url = '';
       if (kind === 'quote-approve') url = `${base}/quotes/${id}/approve`;
@@ -622,7 +639,18 @@ export default function Review() {
                         >
                           Approve → Publisher
                         </button>
-                        <button type="button" onClick={() => act('quote-hold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50">Hold</button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const reason = window.prompt('Why are you holding this? (required)', '');
+                            if (!reason || !String(reason).trim()) return;
+                            act('quote-hold', q.id, { reason: String(reason).trim() });
+                          }}
+                          disabled={acting === q.id}
+                          className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50"
+                        >
+                          Hold
+                        </button>
                         <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
                       </div>
                           </>
@@ -719,6 +747,11 @@ export default function Review() {
                       ) : (
                         <p className="text-gray-800 mb-3">{q.quote_text?.slice(0, 260)}{q.quote_text?.length > 260 ? '…' : ''}</p>
                       )}
+                      {q.hold_reason ? (
+                        <div className="mb-3 p-3 rounded border border-amber-200 bg-amber-50 text-amber-900 text-sm">
+                          <span className="font-semibold">Hold reason:</span> {q.hold_reason}
+                        </div>
+                      ) : null}
                       <div className="flex gap-2">
                         <button type="button" onClick={() => act('quote-unhold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Unhold</button>
                         <button

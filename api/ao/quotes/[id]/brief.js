@@ -48,6 +48,7 @@ export default async function handler(req, res) {
       content_kind: brief.content_kind || null,
       ao_lane: brief.ao_lane || null,
       topic_tags: Array.isArray(brief.topic_tags) ? brief.topic_tags : null,
+      studio_playbook: brief.studio_playbook || null,
       updated_at: new Date().toISOString(),
     };
 
@@ -69,11 +70,12 @@ export default async function handler(req, res) {
         msg.includes('alt_moves') ||
         msg.includes('content_kind') ||
         msg.includes('ao_lane') ||
-        msg.includes('topic_tags');
+        msg.includes('topic_tags') ||
+        msg.includes('studio_playbook');
       if (looksLikeMissingColumns) {
         return res.status(500).json({
           ok: false,
-          error: 'Brief fields are not set up yet. Run database/ao_quote_review_queue_intelligence_fields.sql and database/ao_quote_review_queue_brief_and_hold_fields.sql in Supabase.',
+          error: 'Brief fields are not set up yet. Run database/ao_quote_review_queue_intelligence_fields.sql, database/ao_quote_review_queue_brief_and_hold_fields.sql, and database/ao_quote_review_queue_playbook.sql in Supabase.',
         });
       }
       return res.status(500).json({ ok: false, error: updErr.message });

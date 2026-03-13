@@ -20,6 +20,9 @@ export default async function handler(req, res) {
   }
 
   const reason = req.body?.reason ? String(req.body.reason).trim().slice(0, 300) : null;
+  if (!reason) {
+    return res.status(400).json({ ok: false, error: 'Hold reason is required' });
+  }
 
   try {
     // Try to save hold metadata if columns exist; fall back if they don't.

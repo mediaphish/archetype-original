@@ -7,6 +7,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { getVoiceAnchors } from '../../../lib/ao/voiceAnchors.js';
 
 function clampInt(v, fallback, min, max) {
   const n = Number.parseInt(String(v ?? ''), 10);
@@ -35,7 +36,18 @@ export default async function handler(req, res) {
 
     if (error) return res.status(500).json({ ok: false, error: error.message });
 
-    return res.status(200).json({ ok: true, ideas: data || [] });
+    const rows = Array.isArray(data) ? data : [];
+    const enriched = [];
+    for (const r of rows) {
+      const q = [r.title, r.raw_input, r.hold_reason].filter(Boolean).join(' ').slice(0, 1800);
+      const anchors = await getVoiceAnchors({ queryText: q, limit: 3 });
+      enriched.push({
+        ...r,
+        anchors: anchors.map((a) => ({ title: a.title, url: a.url, excerpt: a.excerpt })),
+      });
+    }
+
+    return res.status(200).json({ ok: true, ideas: enriched });
   } catch (e) {
     console.error('[ao/ideas/resurface]', e);
     return res.status(500).json({ ok: false, error: e.message });

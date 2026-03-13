@@ -89,6 +89,14 @@ export default async function handler(req, res) {
       }
     }
     try {
+      await checkSelect('id,studio_playbook');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['studio_playbook'])) {
+        addMissing('database/ao_quote_review_queue_playbook.sql', 'Missing Analyst → Studio playbook storage field');
+      }
+    }
+    try {
       await checkSelect('id,drafts_by_channel,hashtags_by_channel,first_comment_suggestions');
     } catch (e) {
       const msg = errText(e);

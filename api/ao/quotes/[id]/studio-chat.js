@@ -182,6 +182,39 @@ export default async function handler(req, res) {
 
     const session = await getOrCreateSession({ quoteId: id, email: auth.email });
     const existingMessages = Array.isArray(session?.messages) ? session.messages : [];
+    const playbook = row?.studio_playbook && typeof row.studio_playbook === 'object' ? row.studio_playbook : null;
+    const pullQuoteSeed = safeText(row.pull_quote || row.quote_text, 320);
+
+    // If this is a fresh session, seed it with a helpful opening message (no AI call).
+    if (existingMessages.length === 0) {
+      const goal = safeText(playbook?.goal, 20) || '';
+      const goalWhy = safeText(playbook?.goal_rationale, 240) || '';
+      const primaryFormat = safeText(playbook?.primary_format, 120) || '';
+      const angles = Array.isArray(playbook?.angles) ? playbook.angles.map((x) => safeText(x, 140)).filter(Boolean).slice(0, 3) : [];
+
+      const opening = [
+        `Here’s what we’re working with.`,
+        pullQuoteSeed ? `Pull quote: “${pullQuoteSeed}”` : '',
+        primaryFormat ? `Suggested format: ${primaryFormat}` : '',
+        goal ? `Primary goal: ${goal}${goalWhy ? ` — ${goalWhy}` : ''}` : '',
+        angles.length ? `Angles we can take:\n- ${angles.join('\n- ')}` : '',
+        '',
+        `What do you want to make first (caption, quote card, or channel drafts)?`,
+      ].filter(Boolean).join('\n');
+
+      try {
+        const seeded = [{ role: 'assistant', content: opening, at: new Date().toISOString() }];
+        const updSeed = await supabaseAdmin
+          .from('ao_studio_sessions')
+          .update({ messages: seeded, updated_at: new Date().toISOString() })
+          .eq('id', session.id)
+          .select('id,quote_id,messages')
+          .single();
+        if (!updSeed.error && updSeed.data) {
+          session.messages = updSeed.data.messages;
+        }
+      } catch (_) {}
+    }
 
     if (req.method === 'GET') {
       return res.status(200).json({
@@ -189,7 +222,7 @@ export default async function handler(req, res) {
         session: {
           id: session.id,
           quote_id: session.quote_id,
-          messages: existingMessages.slice(-40),
+          messages: (Array.isArray(session?.messages) ? session.messages : existingMessages).slice(-40),
         },
       });
     }
@@ -248,6 +281,7 @@ Truth panel (do not rewrite these facts):
 - ao_lane: ${JSON.stringify(lane)}
 - topic_tags: ${JSON.stringify(tags)}
 - risk_flags: ${JSON.stringify(risks)}
+- studio_playbook: ${JSON.stringify(playbook || null)}
 
 Current outputs (you may suggest patches to improve these):
 ${JSON.stringify(outputsNow)}

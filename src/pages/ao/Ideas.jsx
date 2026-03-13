@@ -422,6 +422,24 @@ export default function Ideas() {
                       </div>
                       <div className="text-sm font-medium text-gray-900 truncate">{x.title || safePreview(x.raw_input)}</div>
                       {x.hold_reason ? <div className="text-xs text-gray-600 mt-1">Held because: {safePreview(x.hold_reason)}</div> : null}
+                      {Array.isArray(x.anchors) && x.anchors.length ? (
+                        <div className="mt-2">
+                          <div className="text-xs text-gray-500">Closest AO anchors:</div>
+                          <ul className="mt-1 space-y-1">
+                            {x.anchors.slice(0, 2).map((a, idx) => (
+                              <li key={idx} className="text-xs text-gray-700">
+                                {a.url ? (
+                                  <a className="text-blue-700 hover:underline" href={a.url} target="_blank" rel="noreferrer">
+                                    {a.title || 'AO post'}
+                                  </a>
+                                ) : (
+                                  <span>{a.title || 'AO post'}</span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
                     </div>
                     <button
                       type="button"

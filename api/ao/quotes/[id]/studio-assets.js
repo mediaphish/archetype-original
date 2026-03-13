@@ -25,6 +25,7 @@ export default async function handler(req, res) {
   if (!id) {
     return res.status(400).json({ ok: false, error: 'Quote ID required' });
   }
+  const only = String(req.query?.only || '').trim().toLowerCase(); // 'quote_card' to regenerate card only
 
   try {
     const { data: row, error: readErr } = await supabaseAdmin
@@ -45,20 +46,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'This item is marked as discard and cannot be drafted.' });
     }
 
-    const composed = await editorCompose(row, decision);
+    const composed = only === 'quote_card'
+      ? { ok: true, drafts_by_channel: row.drafts_by_channel || null, hashtags_by_channel: row.hashtags_by_channel || null, first_comment_suggestions: row.first_comment_suggestions || null }
+      : await editorCompose(row, decision);
     if (!composed?.ok) {
-      return res.status(500).json({ ok: false, error: 'Could not generate drafts' });
+      return res.status(500).json({ ok: false, error: only === 'quote_card' ? 'Could not load current drafts' : 'Could not generate drafts' });
     }
 
     let quoteCard = null;
-    if (decision.best_move === 'pull_quote_card' && decision.quote_card_worthy && decision.pull_quote) {
+    if ((only === 'quote_card' || decision.best_move === 'pull_quote_card') && decision.pull_quote) {
       const logoUrl = await getDefaultLogoUrl({ background: 'dark' });
       const rendered = renderQuoteCardSvg({ quote: decision.pull_quote, sourceName: row.source_name || row.source_title || '', logoUrl });
       if (rendered?.ok) {
         quoteCard = {
           quote_card_template: rendered.template,
           quote_card_svg: rendered.svg,
-          quote_card_caption: composed.drafts_by_channel?.instagram || null,
+          quote_card_caption: (row.quote_card_caption ?? composed.drafts_by_channel?.instagram) || null,
         };
       }
     }
@@ -76,12 +79,15 @@ export default async function handler(req, res) {
         content_kind: decision.content_kind || null,
         ao_lane: decision.ao_lane || null,
         topic_tags: Array.isArray(decision.topic_tags) ? decision.topic_tags : null,
+        studio_playbook: decision.studio_playbook || null,
         auto_discarded: !!decision.auto_discarded,
         discard_reason: decision.discard_reason || null,
       }),
-      drafts_by_channel: composed.drafts_by_channel,
-      hashtags_by_channel: composed.hashtags_by_channel,
-      first_comment_suggestions: composed.first_comment_suggestions,
+      ...(only === 'quote_card' ? {} : {
+        drafts_by_channel: composed.drafts_by_channel,
+        hashtags_by_channel: composed.hashtags_by_channel,
+        first_comment_suggestions: composed.first_comment_suggestions,
+      }),
       ...(quoteCard || {}),
       updated_at: new Date().toISOString(),
     };
@@ -105,6 +111,7 @@ export default async function handler(req, res) {
         msg.includes('drafts_by_channel') ||
         msg.includes('hashtags_by_channel') ||
         msg.includes('first_comment_suggestions');
+      const missingPlaybook = msg.includes('studio_playbook');
 
       if (missingDraftColumns) {
         return res.status(500).json({
@@ -115,11 +122,13 @@ export default async function handler(req, res) {
 
       // If the DB is missing some intelligence columns (like alt_moves),
       // still save the drafts/quote card so Studio is usable.
-      if (missingAltMoves || msg.includes('best_move') || msg.includes('why_it_matters') || msg.includes('pull_quote')) {
+      if (missingAltMoves || missingPlaybook || msg.includes('best_move') || msg.includes('why_it_matters') || msg.includes('pull_quote')) {
         const minimalPatch = {
-          drafts_by_channel: composed.drafts_by_channel,
-          hashtags_by_channel: composed.hashtags_by_channel,
-          first_comment_suggestions: composed.first_comment_suggestions,
+          ...(only === 'quote_card' ? {} : {
+            drafts_by_channel: composed.drafts_by_channel,
+            hashtags_by_channel: composed.hashtags_by_channel,
+            first_comment_suggestions: composed.first_comment_suggestions,
+          }),
           ...(quoteCard || {}),
           updated_at: new Date().toISOString(),
         };

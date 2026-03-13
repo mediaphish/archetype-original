@@ -469,9 +469,14 @@ export default function Writing() {
               <div className="grid gap-2 md:grid-cols-2 text-sm">
                 <div>
                   <div className="text-xs text-gray-500">Source link</div>
-                  {openRow.source_url ? (
-                    <a className="text-blue-700 hover:underline break-all" href={openRow.source_url} target="_blank" rel="noreferrer">
-                      {openRow.source_url}
+                  {(openRow.source_url || openRow.source_slug_or_url) ? (
+                    <a
+                      className="text-blue-700 hover:underline break-all"
+                      href={openRow.source_url || openRow.source_slug_or_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {openRow.source_url || openRow.source_slug_or_url}
                     </a>
                   ) : (
                     <div className="text-gray-600">No link</div>
@@ -492,20 +497,99 @@ export default function Writing() {
                   <div className="text-gray-800">{Array.isArray(openRow.risk_flags) && openRow.risk_flags.length ? openRow.risk_flags.slice(0, 6).join(' • ') : '—'}</div>
                 </div>
               </div>
+              {openRow.studio_playbook ? (
+                <div className="mt-3 border-t border-gray-200 pt-3 text-sm">
+                  <div className="grid gap-2 md:grid-cols-2">
+                    <div>
+                      <div className="text-xs text-gray-500">Goal</div>
+                      <div className="text-gray-900 font-medium">
+                        {openRow.studio_playbook.goal || '—'}
+                      </div>
+                      {openRow.studio_playbook.goal_rationale ? (
+                        <div className="text-xs text-gray-700 mt-1 whitespace-pre-wrap">{openRow.studio_playbook.goal_rationale}</div>
+                      ) : null}
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500">Primary format</div>
+                      <div className="text-gray-900 font-medium">{openRow.studio_playbook.primary_format || '—'}</div>
+                    </div>
+                  </div>
+                  {Array.isArray(openRow.studio_playbook.angles) && openRow.studio_playbook.angles.length ? (
+                    <div className="mt-3">
+                      <div className="text-xs text-gray-500 mb-1">Angles</div>
+                      <ul className="text-sm text-gray-800 space-y-1">
+                        {openRow.studio_playbook.angles.slice(0, 3).map((a, idx) => (
+                          <li key={idx}>- {a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {Array.isArray(openRow.studio_playbook.alignment_flags) && openRow.studio_playbook.alignment_flags.length ? (
+                    <div className="mt-3">
+                      <div className="text-xs text-gray-500 mb-1">Alignment flags</div>
+                      <ul className="text-sm text-amber-900 space-y-1">
+                        {openRow.studio_playbook.alignment_flags.slice(0, 6).map((a, idx) => (
+                          <li key={idx}>- {a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {Array.isArray(openRow.studio_playbook.corpus_anchors) && openRow.studio_playbook.corpus_anchors.length ? (
+                    <div className="mt-3">
+                      <div className="text-xs text-gray-500 mb-1">AO corpus anchors</div>
+                      <ul className="space-y-2">
+                        {openRow.studio_playbook.corpus_anchors.slice(0, 3).map((a, idx) => (
+                          <li key={idx} className="text-sm text-gray-800">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-medium">{a.title || 'AO post'}</span>
+                              {a.url ? (
+                                <a className="text-blue-700 hover:underline" href={a.url} target="_blank" rel="noreferrer">
+                                  Open
+                                </a>
+                              ) : null}
+                            </div>
+                            {a.excerpt ? <div className="text-xs text-gray-700 mt-1">{a.excerpt}</div> : null}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
 
             <div className="mt-6 grid gap-6 lg:grid-cols-12">
               <div className="lg:col-span-5 border border-gray-200 rounded-lg bg-white p-4">
                 <div className="flex items-center justify-between gap-2">
                   <div className="text-sm font-semibold text-gray-900">Studio chat</div>
-                  <button
-                    type="button"
-                    onClick={() => act('generate-assets', openRow.id)}
-                    disabled={acting === openRow.id}
-                    className="px-2.5 py-1 border border-gray-300 bg-white text-xs rounded hover:bg-gray-50 disabled:opacity-50"
-                  >
-                    Regenerate drafts
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => act('generate-assets', openRow.id)}
+                      disabled={acting === openRow.id}
+                      className="px-2.5 py-1 border border-gray-300 bg-white text-xs rounded hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      Regenerate drafts
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setChatInput('Do light homework on this: suggest a quote-card caption that feels like AO/Bart, plus 2 alternate angles, and one question to invite the right comments. Then propose an outputs_patch to apply.');
+                      }}
+                      className="px-2.5 py-1 border border-gray-300 bg-white text-xs rounded hover:bg-gray-50"
+                    >
+                      Homework
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setChatInput('Research deeper (no paywalls): list what would be worth verifying or reading next, and what risks/nuance we should watch for. If you propose changes, include an outputs_patch.');
+                      }}
+                      className="px-2.5 py-1 border border-gray-300 bg-white text-xs rounded hover:bg-gray-50"
+                    >
+                      Research deeper
+                    </button>
+                  </div>
                 </div>
                 {chatError ? (
                   <div className="mt-3 p-2 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{chatError}</div>
