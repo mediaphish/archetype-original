@@ -18,6 +18,21 @@ function clampInt(v, fallback, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
+function starterSources() {
+  // Small, high-trust starter list to unblock external scanning when AI times out.
+  // These are treated as article/listing pages (not feeds); the scan will follow links.
+  return [
+    { name: 'Center for Creative Leadership', url: 'https://www.ccl.org/articles/', source_type: 'article' },
+    { name: 'Knowledge@Wharton', url: 'https://knowledge.wharton.upenn.edu/', source_type: 'article' },
+    { name: 'First Round Review', url: 'https://review.firstround.com/', source_type: 'article' },
+    { name: 'Atlassian Work Life', url: 'https://www.atlassian.com/blog', source_type: 'article' },
+    { name: 'Gallup Workplace', url: 'https://www.gallup.com/workplace/', source_type: 'article' },
+    { name: 'strategy+business', url: 'https://www.strategy-business.com/', source_type: 'article' },
+    { name: 'Association for Talent Development', url: 'https://www.td.org/insights', source_type: 'article' },
+    { name: 'MIT Sloan Management Review (free articles)', url: 'https://sloanreview.mit.edu/', source_type: 'article' },
+  ];
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -37,9 +52,53 @@ export default async function handler(req, res) {
       maxCandidates: 30,
     });
     if (!built.ok) {
-      return res.status(500).json({
-        ok: false,
-        error: built.error || 'Rebuild failed',
+      const msg = String(built.error || 'Rebuild failed');
+      const shouldFallback =
+        msg.toLowerCase().includes('did not respond in time') ||
+        msg.toLowerCase().includes('returned no candidates');
+      if (!shouldFallback) {
+        return res.status(500).json({ ok: false, error: msg });
+      }
+      const fallback = starterSources().slice(0, Math.max(4, Math.min(12, targetCount)));
+      const rows = fallback.map((v) => ({
+        url: v.url,
+        name: `AI — ${String(v.name || '').trim()}`.slice(0, 120) || 'AI — Source',
+        source_type: 'article',
+        origin: 'ai',
+        is_protected: false,
+        created_at: startedAt,
+      }));
+
+      const ins = await supabaseAdmin.from('ao_external_sources').upsert(rows, { onConflict: 'url', ignoreDuplicates: true });
+      if (ins.error) {
+        if (String(ins.error.message || '').includes('ao_external_sources')) {
+          return res.status(500).json({
+            ok: false,
+            error: 'External sources table is not set up yet. Run database/ao_queue_and_scan_schema.sql in Supabase.',
+          });
+        }
+        if (String(ins.error.message || '').includes('is_protected') || String(ins.error.message || '').includes('origin')) {
+          return res.status(500).json({
+            ok: false,
+            error: 'Sources protection is not set up yet. Run database/ao_external_sources_protected.sql in Supabase.',
+          });
+        }
+        return res.status(500).json({ ok: false, error: ins.error.message });
+      }
+
+      // Only after we have at least some new sources, delete older AI sources.
+      await supabaseAdmin
+        .from('ao_external_sources')
+        .delete()
+        .eq('is_protected', false)
+        .eq('origin', 'ai')
+        .lt('created_at', startedAt);
+
+      return res.status(200).json({
+        ok: true,
+        inserted: rows.length,
+        message: 'AI timed out, so I saved a small starter list of trusted sources. Next scan will confirm which ones work.',
+        verified: fallback.map((v) => ({ name: v.name, url: v.url, source_type: 'article', feed_url: null, homepage_url: v.url })),
       });
     }
 
@@ -62,7 +121,7 @@ export default async function handler(req, res) {
       created_at: startedAt,
     }));
 
-    const ins = await supabaseAdmin.from('ao_external_sources').insert(rows);
+    const ins = await supabaseAdmin.from('ao_external_sources').upsert(rows, { onConflict: 'url', ignoreDuplicates: true });
     if (ins.error) {
       if (String(ins.error.message || '').includes('ao_external_sources')) {
         return res.status(500).json({
