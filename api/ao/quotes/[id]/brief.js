@@ -6,6 +6,7 @@
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
 import { analystDecision } from '../../../../lib/ao/analystDecision.js';
+import { librarianAnnotate } from '../../../../lib/ao/librarianAnnotate.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -35,6 +36,13 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: 'Could not generate brief' });
     }
 
+    // Librarian adds "we've said this before" + repeat warnings (best-effort).
+    let similarityNotes = null;
+    try {
+      const lib = await librarianAnnotate({ candidateRow: row, decision: brief });
+      if (lib?.ok && lib.similarity_notes) similarityNotes = lib.similarity_notes;
+    } catch (_) {}
+
     const patch = {
       best_move: brief.best_move || null,
       objectives_by_channel: brief.objectives_by_channel || null,
@@ -43,6 +51,7 @@ export default async function handler(req, res) {
       risk_flags: Array.isArray(brief.risk_flags) ? brief.risk_flags : null,
       summary_interpretation: brief.summary_interpretation || null,
       alt_moves: brief.alt_moves || null,
+      similarity_notes: similarityNotes,
       auto_discarded: !!brief.auto_discarded,
       discard_reason: brief.discard_reason || null,
       content_kind: brief.content_kind || null,
@@ -68,6 +77,7 @@ export default async function handler(req, res) {
         msg.includes('risk_flags') ||
         msg.includes('summary_interpretation') ||
         msg.includes('alt_moves') ||
+        msg.includes('similarity_notes') ||
         msg.includes('content_kind') ||
         msg.includes('ao_lane') ||
         msg.includes('topic_tags') ||

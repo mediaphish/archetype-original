@@ -607,6 +607,27 @@ export default function Review() {
                             </div>
                           ) : null}
 
+                          {Array.isArray(q.similarity_notes?.recent_posts) && q.similarity_notes.recent_posts.length ? (
+                            <div>
+                              <p className="text-xs font-medium text-gray-700 mb-2">Recently posted (possible repeat)</p>
+                              <ul className="space-y-2">
+                                {q.similarity_notes.recent_posts.slice(0, 3).map((p, idx) => (
+                                  <li key={idx} className="text-xs text-gray-700">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <span className="font-medium text-gray-900">{p.title || 'Posted item'}</span>
+                                      {p.platform ? <span className="text-gray-500">({p.platform})</span> : null}
+                                      {p.published_at ? <span className="text-gray-500">{new Date(p.published_at).toLocaleDateString()}</span> : null}
+                                    </div>
+                                    {Array.isArray(p.topic_tags) && p.topic_tags.length ? (
+                                      <div className="mt-1 text-xs text-gray-500">Tags: {p.topic_tags.slice(0, 6).join(', ')}</div>
+                                    ) : null}
+                                  </li>
+                                ))}
+                              </ul>
+                              <div className="mt-2 text-xs text-gray-500">This is a soft warning. If you still want it, Studio should take a fresh angle.</div>
+                            </div>
+                          ) : null}
+
                           {q.quote_card_svg ? (
                             <div>
                               <p className="text-xs font-medium text-gray-700 mb-2">AO quote card preview</p>

@@ -48,6 +48,7 @@
     { "src": "/api/cron/ao/scout-pass-morning", "dest": "/api/cron/ao/scout-pass.js" },
     { "src": "/api/cron/ao/scout-pass-midday", "dest": "/api/cron/ao/scout-pass.js" },
     { "src": "/api/cron/ao/scout-pass-evening", "dest": "/api/cron/ao/scout-pass.js" },
+    { "src": "/api/cron/ao/editorial-rebuild", "dest": "/api/cron/ao/editorial-rebuild.js" },
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
         { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
         { "src": "/api/journal/retry-failed-emails", "dest": "/api/journal/retry-failed-emails.js" },
@@ -98,6 +99,11 @@
     { "src": "/api/ao/auth/logout", "dest": "/api/ao/auth/logout.js" },
     { "src": "/api/ao/me", "dest": "/api/ao/me.js" },
     { "src": "/api/ao/db-check", "dest": "/api/ao/db-check.js" },
+    { "src": "/api/ao/editorial/rebuild", "dest": "/api/ao/editorial/rebuild.js" },
+    { "src": "/api/ao/editorial/settings", "dest": "/api/ao/editorial/settings.js" },
+    { "src": "/api/ao/editorial/coverage", "dest": "/api/ao/editorial/coverage.js" },
+    { "src": "/api/ao/editorial/chase-list", "dest": "/api/ao/editorial/chase-list.js" },
+    { "src": "/api/ao/editorial/generate-chase-list", "dest": "/api/ao/editorial/generate-chase-list.js" },
     { "src": "/api/ao/scheduled-posts/([^/]+)", "dest": "/api/ao/scheduled-posts/[id].js?id=$1" },
     { "src": "/api/ao/scheduled-posts", "dest": "/api/ao/scheduled-posts.js" },
     { "src": "/api/ao/quotes/list", "dest": "/api/ao/quotes/list.js" },
@@ -200,6 +206,10 @@
     {
       "path": "/api/cron/ao/scout-pass-evening",
       "schedule": "10 21 * * 1-5"
+    },
+    {
+      "path": "/api/cron/ao/editorial-rebuild",
+      "schedule": "25 12 * * 1"
     },
     {
       "path": "/api/cron/publish-scheduled-posts",

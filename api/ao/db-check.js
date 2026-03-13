@@ -146,6 +146,26 @@ export default async function handler(req, res) {
       if (hasAny(msg, ['ao_brand_assets', 'relation'])) addMissing('database/ao_brand_assets.sql', 'Missing Brand assets table');
     }
 
+    // Editorial memory loop (shared newsroom memory)
+    try {
+      await checkTable('ao_editorial_memory_items', 'id,created_by_email,kind,published_at');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['ao_editorial_memory_items', 'relation'])) addMissing('database/ao_editorial_memory_items.sql', 'Missing editorial memory table');
+    }
+    try {
+      await checkTable('ao_editorial_settings', 'created_by_email,beat_priorities,updated_at');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['ao_editorial_settings', 'relation'])) addMissing('database/ao_editorial_settings.sql', 'Missing editorial settings table');
+    }
+    try {
+      await checkTable('ao_scout_chase_list', 'id,created_by_email,topic,status,priority');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['ao_scout_chase_list', 'relation'])) addMissing('database/ao_scout_chase_list.sql', 'Missing Scout chase list table');
+    }
+
     notes.push('Optional: to prevent the same URL showing up repeatedly, run: database/ao_quote_review_queue_unique_source_url.sql');
     notes.push('If you just ran a SQL file, it can take 30–90 seconds for the system to “notice.”');
     notes.push('If you still see “schema cache” errors after waiting, run: NOTIFY pgrst, \'reload schema\'; in Supabase SQL editor.');

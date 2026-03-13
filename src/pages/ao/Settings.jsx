@@ -53,6 +53,14 @@ export default function Settings() {
   const [dbCheckError, setDbCheckError] = useState('');
   const [dbCheckResult, setDbCheckResult] = useState(null); // { missing: [], notes: [] }
 
+  // Editorial memory loop (shared newsroom memory)
+  const [editorialLoading, setEditorialLoading] = useState(false);
+  const [editorialError, setEditorialError] = useState('');
+  const [editorialMessage, setEditorialMessage] = useState('');
+  const [editorialStats, setEditorialStats] = useState(null); // { total, counts }
+  const [beatPrioritiesText, setBeatPrioritiesText] = useState('');
+  const [editorialSettingsUpdatedAt, setEditorialSettingsUpdatedAt] = useState(null);
+
   const [brandLoading, setBrandLoading] = useState(true);
   const [brandAssets, setBrandAssets] = useState([]);
   const [brandError, setBrandError] = useState('');
@@ -206,6 +214,81 @@ export default function Settings() {
       setDbCheckLoading(false);
     }
   }, [authChecked]);
+
+  const refreshEditorial = useCallback(async () => {
+    if (!authChecked) return;
+    setEditorialError('');
+    try {
+      const [settingsRes, statsRes] = await Promise.all([
+        fetch('/api/ao/editorial/settings'),
+        fetch('/api/ao/editorial/rebuild'),
+      ]);
+
+      const settingsJson = await settingsRes.json().catch(() => ({}));
+      if (settingsRes.ok && settingsJson.ok) {
+        const beat = Array.isArray(settingsJson.settings?.beat_priorities) ? settingsJson.settings.beat_priorities : [];
+        setBeatPrioritiesText(beat.join('\n'));
+        setEditorialSettingsUpdatedAt(settingsJson.settings?.updated_at || null);
+      }
+
+      const statsJson = await statsRes.json().catch(() => ({}));
+      if (statsRes.ok && statsJson.ok) {
+        setEditorialStats(statsJson.stats || null);
+      }
+    } catch (e) {
+      setEditorialError(e.message || 'Could not load editorial settings');
+    }
+  }, [authChecked]);
+
+  useEffect(() => {
+    if (!authChecked) return;
+    refreshEditorial();
+  }, [authChecked, refreshEditorial]);
+
+  const saveBeatPriorities = useCallback(async () => {
+    if (!authChecked) return;
+    setEditorialLoading(true);
+    setEditorialError('');
+    setEditorialMessage('');
+    try {
+      const beat = String(beatPrioritiesText || '')
+        .split('\n')
+        .map((x) => x.trim())
+        .filter(Boolean);
+      const res = await fetch('/api/ao/editorial/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ beat_priorities: beat }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Save failed');
+      setEditorialMessage('Saved.');
+      setEditorialSettingsUpdatedAt(json.settings?.updated_at || null);
+    } catch (e) {
+      setEditorialError(e.message || 'Save failed');
+    } finally {
+      setEditorialLoading(false);
+    }
+  }, [authChecked, beatPrioritiesText]);
+
+  const rebuildEditorialMemoryNow = useCallback(async () => {
+    if (!authChecked) return;
+    if (!window.confirm('Rebuild editorial memory now? This can take a minute.')) return;
+    setEditorialLoading(true);
+    setEditorialError('');
+    setEditorialMessage('');
+    try {
+      const res = await fetch('/api/ao/editorial/rebuild', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Rebuild failed');
+      setEditorialMessage(`Rebuilt. Added ${json.totalInserted || 0} items.`);
+      await refreshEditorial();
+    } catch (e) {
+      setEditorialError(e.message || 'Rebuild failed');
+    } finally {
+      setEditorialLoading(false);
+    }
+  }, [authChecked, refreshEditorial]);
 
   const refreshBrandAssets = useCallback(async () => {
     if (!authChecked) return;
@@ -422,6 +505,79 @@ export default function Settings() {
               ) : null}
             </div>
           ) : null}
+        </section>
+
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Editorial memory loop</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            This is the shared “newsroom memory” that helps Scout, Analyst, Studio, and Publisher avoid repeats and chase gaps.
+          </p>
+
+          {editorialError ? (
+            <div className="mb-3 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{editorialError}</div>
+          ) : null}
+          {editorialMessage ? (
+            <div className="mb-3 p-3 rounded border border-green-200 bg-green-50 text-green-800 text-sm">{editorialMessage}</div>
+          ) : null}
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="border border-gray-200 rounded p-4 bg-gray-50">
+              <div className="text-sm font-semibold text-gray-900">Beat priorities (your universe)</div>
+              <div className="text-xs text-gray-600 mt-1">One per line. Scout will use these as “what to chase next.”</div>
+              <textarea
+                value={beatPrioritiesText}
+                onChange={(e) => setBeatPrioritiesText(e.target.value)}
+                rows={8}
+                className="mt-3 w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white"
+                placeholder="e.g.\nServant leadership under pressure\nUnaccountable leaders\nCulture drift\nLeadership courage"
+              />
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={saveBeatPriorities}
+                  disabled={editorialLoading}
+                  className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
+                >
+                  {editorialLoading ? 'Saving…' : 'Save priorities'}
+                </button>
+                <button
+                  type="button"
+                  onClick={rebuildEditorialMemoryNow}
+                  disabled={editorialLoading}
+                  className="px-4 py-2 border border-gray-300 bg-white text-gray-900 font-semibold rounded hover:bg-gray-50 disabled:opacity-50"
+                >
+                  {editorialLoading ? 'Working…' : 'Rebuild editorial memory'}
+                </button>
+              </div>
+              {editorialSettingsUpdatedAt ? (
+                <div className="mt-2 text-xs text-gray-500">Last updated: {new Date(editorialSettingsUpdatedAt).toLocaleString()}</div>
+              ) : null}
+            </div>
+
+            <div className="border border-gray-200 rounded p-4 bg-gray-50">
+              <div className="text-sm font-semibold text-gray-900">Memory status</div>
+              <div className="text-xs text-gray-600 mt-1">What the system currently has on record.</div>
+              <div className="mt-3 text-sm text-gray-800">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Total items</span>
+                  <span className="font-semibold">{editorialStats?.total ?? '—'}</span>
+                </div>
+                <div className="mt-2 space-y-1">
+                  {editorialStats?.counts ? Object.entries(editorialStats.counts).map(([k, v]) => (
+                    <div key={k} className="flex items-center justify-between">
+                      <span className="text-gray-600">{k}</span>
+                      <span className="font-semibold">{v}</span>
+                    </div>
+                  )) : (
+                    <div className="text-gray-500">—</div>
+                  )}
+                </div>
+              </div>
+              <div className="mt-3 text-xs text-gray-500">
+                Tip: if this shows empty, run “System setup check” above to see which one-time database files are missing.
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">

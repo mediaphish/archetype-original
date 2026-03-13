@@ -7,6 +7,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { upsertMemoryFromScheduledPost } from '../../../lib/ao/editorialMemory.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'PATCH') {
@@ -104,6 +105,13 @@ export default async function handler(req, res) {
 
   if (updateError) {
     return res.status(500).json({ ok: false, error: updateError.message });
+  }
+
+  // Learning loop: mirror posted items + feedback into editorial memory (best-effort).
+  if (updatingFeedback && updated && updated.status === 'posted') {
+    try {
+      await upsertMemoryFromScheduledPost({ email: auth.email, scheduledPostRow: updated });
+    } catch (_) {}
   }
   return res.status(200).json({ ok: true, post: updated });
 }

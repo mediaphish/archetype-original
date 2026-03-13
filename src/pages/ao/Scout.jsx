@@ -99,6 +99,13 @@ export default function Scout() {
   const [addPersonLoading, setAddPersonLoading] = useState(false);
   const [togglingPersonId, setTogglingPersonId] = useState(null);
 
+  // Chase list (from editorial memory loop)
+  const [chaseLoading, setChaseLoading] = useState(true);
+  const [chase, setChase] = useState([]);
+  const [chaseError, setChaseError] = useState('');
+  const [chaseMessage, setChaseMessage] = useState('');
+  const [chaseGenerating, setChaseGenerating] = useState(false);
+
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -282,6 +289,49 @@ export default function Scout() {
     }
   }, [authChecked]);
 
+  const loadChaseList = useCallback(async () => {
+    if (!authChecked) return;
+    setChaseLoading(true);
+    setChaseError('');
+    try {
+      const res = await fetch('/api/ao/editorial/chase-list');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setChase(Array.isArray(json.chase) ? json.chase : []);
+      } else {
+        setChase([]);
+        setChaseError(json.error || 'Could not load chase list');
+      }
+    } catch (e) {
+      setChase([]);
+      setChaseError(e.message || 'Could not load chase list');
+    } finally {
+      setChaseLoading(false);
+    }
+  }, [authChecked]);
+
+  const generateChaseList = useCallback(async () => {
+    if (!authChecked || chaseGenerating) return;
+    setChaseMessage('');
+    setChaseError('');
+    setChaseGenerating(true);
+    try {
+      const res = await fetch('/api/ao/editorial/generate-chase-list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ windowDays: 30 }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not generate chase list');
+      setChaseMessage(`Updated chase list. (${json.generated || 0} items)`);
+      await loadChaseList();
+    } catch (e) {
+      setChaseError(e.message || 'Could not generate chase list');
+    } finally {
+      setChaseGenerating(false);
+    }
+  }, [authChecked, chaseGenerating, loadChaseList]);
+
   useEffect(() => {
     if (!authChecked) return;
     loadStatus();
@@ -291,7 +341,8 @@ export default function Scout() {
     loadScoutRuns();
     loadPendingSources();
     loadCapStatus();
-  }, [authChecked, loadStatus, loadSources, loadPeople, loadAiStatus, loadScoutRuns, loadPendingSources, loadCapStatus]);
+    loadChaseList();
+  }, [authChecked, loadStatus, loadSources, loadPeople, loadAiStatus, loadScoutRuns, loadPendingSources, loadCapStatus, loadChaseList]);
 
   const runScan = useCallback(async (type) => {
     if (!authChecked || scanning) return;
@@ -637,6 +688,63 @@ export default function Scout() {
               {scanMessage}
             </div>
           ) : null}
+        </section>
+
+        <section className="mt-6 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-1">Chase list</h2>
+              <p className="text-sm text-gray-600">
+                What Scout should chase next, based on your priorities and what you’ve posted recently.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={generateChaseList}
+                disabled={chaseGenerating}
+                className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50"
+              >
+                {chaseGenerating ? 'Refreshing…' : 'Refresh chase list'}
+              </button>
+              <button
+                type="button"
+                onClick={loadChaseList}
+                disabled={chaseLoading}
+                className="px-3 py-1.5 border border-gray-300 text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+              >
+                {chaseLoading ? 'Loading…' : 'Reload'}
+              </button>
+            </div>
+          </div>
+
+          {chaseError ? (
+            <div className="mt-3 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{chaseError}</div>
+          ) : null}
+          {chaseMessage ? (
+            <div className="mt-3 p-3 rounded border border-green-200 bg-green-50 text-green-800 text-sm">{chaseMessage}</div>
+          ) : null}
+
+          {chaseLoading ? (
+            <div className="mt-3"><LoadingSpinner message="Loading chase list…" /></div>
+          ) : chase.length === 0 ? (
+            <div className="mt-3 text-sm text-gray-600">
+              No chase items yet. Add “Beat priorities” in Settings, then refresh the chase list.
+            </div>
+          ) : (
+            <ul className="mt-4 space-y-2">
+              {chase.slice(0, 12).map((c) => (
+                <li key={c.id} className="border border-gray-200 rounded p-3 bg-white">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="font-semibold text-gray-900">{c.topic}</div>
+                    <div className="text-xs text-gray-600">Priority: {c.priority ?? 50}</div>
+                  </div>
+                  {c.why ? <div className="mt-1 text-sm text-gray-700">{c.why}</div> : null}
+                  {c.expires_at ? <div className="mt-1 text-xs text-gray-500">Expires: {new Date(c.expires_at).toLocaleDateString()}</div> : null}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
