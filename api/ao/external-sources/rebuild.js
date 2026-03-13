@@ -45,15 +45,15 @@ export default async function handler(req, res) {
       return res.status(200).json({
         ok: true,
         inserted: 0,
-        message: 'No feed links were returned this time. Try rebuild again (it can vary) or add a URL manually.',
+        message: 'No URLs were returned this time. Try rebuild again (it can vary) or add a URL manually.',
         verified: [],
       });
     }
 
     const rows = verified.map((v) => ({
-      url: v.feed_url,
+      url: v.url || v.feed_url || v.homepage_url,
       name: `AI — ${String(v.name || '').trim()}`.slice(0, 120) || 'AI — Source',
-      source_type: 'rss',
+      source_type: String(v.source_type || '').toLowerCase() === 'article' ? 'article' : 'rss',
       origin: 'ai',
       is_protected: false,
       created_at: startedAt,
@@ -102,7 +102,13 @@ export default async function handler(req, res) {
       ok: true,
       inserted: rows.length,
       message: built.note || 'Saved feed links. Next scan will confirm which ones work.',
-      verified: verified.map((v) => ({ name: v.name, feed_url: v.feed_url, homepage_url: v.homepage_url })),
+      verified: verified.map((v) => ({
+        name: v.name,
+        url: v.url || v.feed_url || v.homepage_url,
+        source_type: v.source_type || (v.feed_url ? 'rss' : 'article'),
+        feed_url: v.feed_url || null,
+        homepage_url: v.homepage_url,
+      })),
     });
   } catch (e) {
     console.error('[ao/external-sources rebuild]', e);
