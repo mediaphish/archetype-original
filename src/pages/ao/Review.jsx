@@ -88,6 +88,8 @@ export default function Review() {
   const [writing, setWriting] = useState([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null);
+  const [actionError, setActionError] = useState('');
+  const [actionMessage, setActionMessage] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -155,6 +157,8 @@ export default function Review() {
   const act = useCallback(async (kind, id, extra) => {
     if (!authChecked || acting) return;
     setActing(id);
+    setActionError('');
+    setActionMessage('');
     try {
       const base = `/api/ao`;
       let url = '';
@@ -168,8 +172,26 @@ export default function Review() {
       else if (kind === 'writing-draft') url = `${base}/writing/${id}/draft`;
       else if (kind === 'writing-discard') url = `${base}/writing/${id}/discard`;
       if (!url) return;
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: extra ? JSON.stringify(extra) : undefined });
-      const json = await res.json().catch(() => ({}));
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: extra ? JSON.stringify(extra) : undefined,
+      });
+
+      const rawText = await res.text().catch(() => '');
+      let json = {};
+      try {
+        json = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        json = {};
+      }
+
+      if (!res.ok || !json.ok) {
+        const fallback = rawText ? rawText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220) : '';
+        setActionError(json.error || fallback || 'Action failed');
+        return;
+      }
+
       if (json.ok) {
         if (kind === 'quote-approve' || kind === 'quote-reject') setQuotes((prev) => prev.filter((x) => x.id !== id));
         if (kind === 'quote-hold') {
@@ -183,6 +205,17 @@ export default function Review() {
         if (kind === 'topic-approve' || kind === 'topic-reject' || kind === 'topic-approve-draft') setTopics((prev) => prev.filter((x) => x.id !== id));
         if (kind === 'topic-approve-draft' && json.writing) setWriting((prev) => [json.writing, ...prev]);
         if (kind === 'writing-draft' || kind === 'writing-discard') setWriting((prev) => prev.filter((x) => x.id !== id));
+
+        if (kind === 'quote-approve') {
+          const ns = String(extra?.next_stage || '').toLowerCase();
+          setActionMessage(ns === 'publisher' ? 'Approved and sent to Publisher.' : 'Approved and sent to Studio.');
+        } else if (kind === 'quote-reject') {
+          setActionMessage('Rejected.');
+        } else if (kind === 'topic-approve') {
+          setActionMessage('Topic approved.');
+        } else if (kind === 'topic-approve-draft') {
+          setActionMessage('Topic approved and sent to drafting.');
+        }
       }
     } finally {
       setActing(null);
@@ -206,6 +239,16 @@ export default function Review() {
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Analyst</h1>
         <p className="text-gray-600 mb-8">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
+        {actionError ? (
+          <div className="mb-6 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
+            {actionError}
+          </div>
+        ) : null}
+        {actionMessage ? (
+          <div className="mb-6 p-3 rounded border border-green-200 bg-green-50 text-green-800 text-sm">
+            {actionMessage}
+          </div>
+        ) : null}
 
         <div className="flex gap-2 mb-6 border-b border-gray-200">
           {TABS.map(({ key, label }) => (

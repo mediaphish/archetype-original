@@ -40,12 +40,35 @@ export default async function handler(req, res) {
     const nextStage = normNextStage(body.next_stage ?? req.query?.next_stage);
     if (nextStage) updates.next_stage = nextStage;
 
-    const { data, error } = await supabaseAdmin
+    let result = await supabaseAdmin
       .from('ao_quote_review_queue')
       .update(updates)
       .eq('id', id)
       .select()
       .single();
+
+    // If the DB is missing newer columns (like next_stage), retry with a minimal update
+    // instead of failing silently in the UI.
+    if (result.error) {
+      const msg = String(result.error?.message || '');
+      const missingNextStage = msg.includes('next_stage');
+      const missingSuggestedChannels = msg.includes('suggested_channels');
+      const missingCaption = msg.includes('caption_suggestions');
+      if (missingNextStage || missingSuggestedChannels || missingCaption) {
+        const minimal = {
+          status: 'approved',
+          updated_at: new Date().toISOString(),
+        };
+        result = await supabaseAdmin
+          .from('ao_quote_review_queue')
+          .update(minimal)
+          .eq('id', id)
+          .select()
+          .single();
+      }
+    }
+
+    const { data, error } = result;
 
     if (error) {
       if (error.code === 'PGRST116') {
