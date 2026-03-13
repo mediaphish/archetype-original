@@ -62,6 +62,24 @@ export default async function handler(req, res) {
   const topLanes = Object.entries(byLane).sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, v]) => ({ key: k, count: v }));
   const topTags = Object.entries(byTag).sort((a, b) => b[1] - a[1]).slice(0, 50).map(([k, v]) => ({ key: k, count: v }));
 
+  const coolingOff = [];
+  const total = rows.length || 0;
+  if (total > 0) {
+    for (const [k, v] of Object.entries(byTag)) {
+      const count = Number(v || 0);
+      if (count >= 3 && count / total >= 0.25) {
+        coolingOff.push({ kind: 'tag', key: k, count, note: 'High recent frequency — consider a fresh angle or a different theme.' });
+      }
+    }
+    for (const [k, v] of Object.entries(byLane)) {
+      const count = Number(v || 0);
+      if (count >= 3 && count / total >= 0.3) {
+        coolingOff.push({ kind: 'lane', key: k, count, note: 'High recent frequency — consider rotating lanes to avoid repetition.' });
+      }
+    }
+  }
+  coolingOff.sort((a, b) => (b.count || 0) - (a.count || 0));
+
   return res.status(200).json({
     ok: true,
     windowDays,
@@ -70,7 +88,8 @@ export default async function handler(req, res) {
     byLane,
     byTag,
     topLanes,
-    topTags
+    topTags,
+    coolingOff: coolingOff.slice(0, 12),
   });
 }
 

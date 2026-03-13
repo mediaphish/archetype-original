@@ -33,6 +33,45 @@ function starterSources() {
   ];
 }
 
+async function getEditorialPromptAddendum({ supabaseAdmin, email }) {
+  const ownerEmail = String(email || '').toLowerCase().trim();
+  if (!ownerEmail) return '';
+  try {
+    const settingsOut = await supabaseAdmin
+      .from('ao_editorial_settings')
+      .select('beat_priorities')
+      .eq('created_by_email', ownerEmail)
+      .maybeSingle();
+    const beat = Array.isArray(settingsOut.data?.beat_priorities) ? settingsOut.data.beat_priorities : [];
+
+    const chaseOut = await supabaseAdmin
+      .from('ao_scout_chase_list')
+      .select('topic,why,priority')
+      .eq('created_by_email', ownerEmail)
+      .eq('status', 'active')
+      .order('priority', { ascending: false })
+      .order('updated_at', { ascending: false })
+      .limit(12);
+    const chase = Array.isArray(chaseOut.data) ? chaseOut.data : [];
+
+    const beatBlock = beat.length
+      ? `Beat priorities (your universe):\n- ${beat.slice(0, 18).map((x) => String(x || '').trim()).filter(Boolean).join('\n- ')}\n`
+      : '';
+    const chaseBlock = chase.length
+      ? `Chase list (what to pursue next):\n- ${chase.slice(0, 12).map((c) => {
+        const t = String(c?.topic || '').trim();
+        const why = String(c?.why || '').trim();
+        return why ? `${t} — ${why}` : t;
+      }).filter(Boolean).join('\n- ')}\n`
+      : '';
+
+    if (!beatBlock && !chaseBlock) return '';
+    return `\n\nExtra guidance (use this to pick sources that actually fit AO):\n${beatBlock}${chaseBlock}\nRules:\n- Prefer sources that will reliably produce leadership content that matches the beat priorities.\n- Avoid paywalls.\n`;
+  } catch (_) {
+    return '';
+  }
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -41,11 +80,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
-  const prompt = typeof req.body?.prompt === 'string' ? req.body.prompt : DEFAULT_SCOUT_SOURCES_PROMPT;
+  const basePrompt = typeof req.body?.prompt === 'string' ? req.body.prompt : DEFAULT_SCOUT_SOURCES_PROMPT;
   const targetCount = clampInt(req.body?.target_count, 12, 6, 25);
 
   try {
     const startedAt = new Date().toISOString();
+    const addendum = await getEditorialPromptAddendum({ supabaseAdmin, email: auth.email });
+    const prompt = `${String(basePrompt || '').trim()}${addendum}`;
     const built = await buildExternalSourcesFastFromPrompt({
       promptText: prompt,
       targetCount,

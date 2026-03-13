@@ -624,6 +624,12 @@ export default function Review() {
                                   </li>
                                 ))}
                               </ul>
+                              {q.similarity_notes?.fresh_angle_suggestion ? (
+                                <div className="mt-2 text-xs text-gray-700">
+                                  <span className="font-medium text-gray-800">Fresh angle suggestion:</span>{' '}
+                                  {q.similarity_notes.fresh_angle_suggestion}
+                                </div>
+                              ) : null}
                               <div className="mt-2 text-xs text-gray-500">This is a soft warning. If you still want it, Studio should take a fresh angle.</div>
                             </div>
                           ) : null}

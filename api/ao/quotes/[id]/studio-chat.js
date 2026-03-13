@@ -250,6 +250,19 @@ export default async function handler(req, res) {
       const goalWhy = safeText(playbook?.goal_rationale, 240) || '';
       const primaryFormat = safeText(playbook?.primary_format, 120) || '';
       const angles = Array.isArray(playbook?.angles) ? playbook.angles.map((x) => safeText(x, 140)).filter(Boolean).slice(0, 3) : [];
+      const seedQuery = [pullQuoteSeed, row?.why_it_matters, row?.source_title].filter(Boolean).join(' ');
+      let seedAnchors = [];
+      let recentPostedSimilar = [];
+      try {
+        seedAnchors = await getVoiceAnchors({ queryText: seedQuery, limit: 3 });
+      } catch (_) {
+        seedAnchors = [];
+      }
+      try {
+        recentPostedSimilar = await findRecentPostedSimilar({ email: auth.email, queryText: seedQuery });
+      } catch (_) {
+        recentPostedSimilar = [];
+      }
 
       const opening = [
         `Here’s what we’re working with.`,
@@ -257,6 +270,8 @@ export default async function handler(req, res) {
         primaryFormat ? `Suggested format: ${primaryFormat}` : '',
         goal ? `Primary goal: ${goal}${goalWhy ? ` — ${goalWhy}` : ''}` : '',
         angles.length ? `Angles we can take:\n- ${angles.join('\n- ')}` : '',
+        seedAnchors.length ? `\nClosest AO anchors:\n- ${seedAnchors.map((a) => `${a.title}${a.url ? ` (${a.url})` : ''}`).join('\n- ')}` : '',
+        recentPostedSimilar.length ? `\nSoft repeat check (recent posts):\n- ${recentPostedSimilar.map((p) => `${p.title}${p.platform ? ` (${p.platform})` : ''}`).join('\n- ')}\nIf this feels too close, I’ll help you take a fresh angle.` : '',
         '',
         `What do you want to make first (caption, quote card, or channel drafts)?`,
       ].filter(Boolean).join('\n');
