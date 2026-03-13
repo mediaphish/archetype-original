@@ -204,6 +204,19 @@ export default function Scout() {
     }
   }, [authChecked]);
 
+  const displayRecentErrors = useMemo(() => {
+    const errs = Array.isArray(scanStatus?.recent_errors) ? scanStatus.recent_errors : [];
+    const hasSources = !sourcesLoading && Array.isArray(sources) && sources.length > 0;
+    return errs
+      .filter((r) => {
+        const msg = String(r?.error_message || '').toLowerCase();
+        if (!msg) return false;
+        if (hasSources && msg.includes('no external sources configured')) return false;
+        return true;
+      })
+      .slice(0, 3);
+  }, [scanStatus, sources, sourcesLoading]);
+
   const loadScoutRuns = useCallback(async () => {
     if (!authChecked) return;
     setScoutRunsLoading(true);
@@ -574,10 +587,13 @@ export default function Scout() {
             Last internal: {scanStatus.last_internal_scan ? new Date(scanStatus.last_internal_scan).toLocaleString() : '—'} | Last external: {scanStatus.last_external_scan ? new Date(scanStatus.last_external_scan).toLocaleString() : '—'}
           </p>
           {statusLoading ? <div className="mt-3"><LoadingSpinner /></div> : null}
-          {scanStatus.recent_errors?.length ? (
+          {displayRecentErrors.length ? (
             <ul className="mt-3 text-sm text-red-700">
-              {(scanStatus.recent_errors || []).slice(0, 3).map((r, i) => (
-                <li key={i}>{r.error_message}</li>
+              {displayRecentErrors.map((r, i) => (
+                <li key={i}>
+                  <span className="text-red-700">{r.error_message}</span>
+                  {r?.started_at ? <span className="text-xs text-gray-500 ml-2">({new Date(r.started_at).toLocaleString()})</span> : null}
+                </li>
               ))}
             </ul>
           ) : null}

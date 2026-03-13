@@ -97,6 +97,7 @@
     { "src": "/api/ao/auth/verify-magic-link", "dest": "/api/ao/auth/verify-magic-link.js" },
     { "src": "/api/ao/auth/logout", "dest": "/api/ao/auth/logout.js" },
     { "src": "/api/ao/me", "dest": "/api/ao/me.js" },
+    { "src": "/api/ao/db-check", "dest": "/api/ao/db-check.js" },
     { "src": "/api/ao/scheduled-posts/([^/]+)", "dest": "/api/ao/scheduled-posts/[id].js?id=$1" },
     { "src": "/api/ao/scheduled-posts", "dest": "/api/ao/scheduled-posts.js" },
     { "src": "/api/ao/quotes/list", "dest": "/api/ao/quotes/list.js" },

@@ -49,6 +49,10 @@ export default function Settings() {
   const [xTestResult, setXTestResult] = useState(null); // success|error|null
   const [xTestError, setXTestError] = useState('');
 
+  const [dbCheckLoading, setDbCheckLoading] = useState(false);
+  const [dbCheckError, setDbCheckError] = useState('');
+  const [dbCheckResult, setDbCheckResult] = useState(null); // { missing: [], notes: [] }
+
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -178,6 +182,23 @@ export default function Settings() {
 
   const maskedEmail = email ? `${email.slice(0, 2)}***@${email.split('@')[1] || '***'}` : '—';
 
+  const runDbCheck = useCallback(async () => {
+    if (!authChecked) return;
+    setDbCheckLoading(true);
+    setDbCheckError('');
+    try {
+      const res = await fetch('/api/ao/db-check');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Setup check failed');
+      setDbCheckResult({ missing: json.missing || [], notes: json.notes || [] });
+    } catch (e) {
+      setDbCheckResult(null);
+      setDbCheckError(e.message || 'Setup check failed');
+    } finally {
+      setDbCheckLoading(false);
+    }
+  }, [authChecked]);
+
   async function handleLinkedInTestPost() {
     if (!authChecked) return;
     setLinkedinTestResult(null);
@@ -258,6 +279,52 @@ export default function Settings() {
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
         <p className="text-gray-600 mb-8">Owner console and configuration.</p>
+
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">System setup check</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            If something throws a database error (like “missing column”), run this check to see which one-time setup steps are missing.
+          </p>
+          {dbCheckError ? (
+            <div className="mb-3 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{dbCheckError}</div>
+          ) : null}
+          <button
+            type="button"
+            onClick={runDbCheck}
+            disabled={dbCheckLoading}
+            className="px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 disabled:opacity-50"
+          >
+            {dbCheckLoading ? 'Checking…' : 'Run setup check'}
+          </button>
+          {dbCheckResult ? (
+            <div className="mt-4">
+              {Array.isArray(dbCheckResult.missing) && dbCheckResult.missing.length === 0 ? (
+                <div className="p-3 rounded border border-green-200 bg-green-50 text-green-800 text-sm">
+                  Looks good. No missing setup steps detected.
+                </div>
+              ) : (
+                <>
+                  <div className="p-3 rounded border border-amber-200 bg-amber-50 text-amber-900 text-sm">
+                    Missing setup steps detected. Run these files in Supabase SQL editor:
+                  </div>
+                  <ul className="mt-3 space-y-2 text-sm">
+                    {(dbCheckResult.missing || []).map((m, i) => (
+                      <li key={i} className="border border-gray-200 rounded p-3 bg-white">
+                        <div className="font-semibold text-gray-900">{m.sql}</div>
+                        {m.reason ? <div className="text-gray-600 mt-1">{m.reason}</div> : null}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {Array.isArray(dbCheckResult.notes) && dbCheckResult.notes.length ? (
+                <ul className="mt-3 text-xs text-gray-600 list-disc pl-5">
+                  {dbCheckResult.notes.map((n, i) => <li key={i}>{n}</li>)}
+                </ul>
+              ) : null}
+            </div>
+          ) : null}
+        </section>
 
         {linkedinStatus === 'connected' && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">LinkedIn connected. You can use LinkedIn for publishing.</div>
