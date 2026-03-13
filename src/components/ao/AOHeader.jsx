@@ -7,7 +7,7 @@ const TABS = [
   { key: 'analyst', path: '/ao/analyst', label: 'Analyst' },
   { key: 'studio', path: '/ao/studio', label: 'Studio' },
   { key: 'publisher', path: '/ao/publisher', label: 'Publisher' },
-  { key: 'ideas', path: '/ao/ideas', label: 'Ideas' },
+  { key: 'library', path: '/ao/library', label: 'Library' },
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 

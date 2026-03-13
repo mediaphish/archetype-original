@@ -11,6 +11,7 @@ export default function Writing() {
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null);
   const [routeError, setRouteError] = useState('');
+  const [actionMessage, setActionMessage] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -75,6 +76,7 @@ export default function Writing() {
     if (!authChecked || acting) return;
     setActing(id);
     setRouteError('');
+    setActionMessage('');
     try {
       if (kind === 'send-to-publisher') {
         const res = await fetch(`/api/ao/quotes/${id}/approve`, {
@@ -88,6 +90,18 @@ export default function Writing() {
         } else if (json.ok) {
           setStudioItems((prev) => prev.filter((x) => x.id !== id));
           setUnroutedApproved((prev) => prev.filter((x) => x.id !== id));
+        }
+        return;
+      }
+
+      if (kind === 'generate-assets') {
+        const res = await fetch(`/api/ao/quotes/${id}/studio-assets`, { method: 'POST' });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          setRouteError(json.error || 'Could not generate drafts');
+        } else if (json.quote) {
+          setStudioItems((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
+          setActionMessage('Drafts updated.');
         }
         return;
       }
@@ -137,6 +151,7 @@ export default function Writing() {
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Approved from Analyst</h2>
             <p className="text-sm text-gray-600 mb-4">These are approved items that still need finishing before scheduling.</p>
+            {actionMessage ? <p className="text-sm text-green-700 mb-3">{actionMessage}</p> : null}
             {routeError ? <p className="text-sm text-red-700 mb-3">{routeError}</p> : null}
             {loading ? (
               <LoadingSpinner />
@@ -164,6 +179,17 @@ export default function Writing() {
                     <details className="mt-3 border border-gray-200 rounded bg-gray-50 p-3">
                       <summary className="cursor-pointer text-sm font-medium text-gray-800">Drafts + quote card</summary>
                       <div className="mt-3 space-y-4">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => act('generate-assets', q.id)}
+                            disabled={acting === q.id}
+                            className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50"
+                          >
+                            Generate drafts + quote card
+                          </button>
+                          <span className="text-xs text-gray-500">This may take a moment.</span>
+                        </div>
                         {q.quote_card_svg ? (
                           <div>
                             <p className="text-xs font-medium text-gray-700 mb-2">Quote card preview</p>

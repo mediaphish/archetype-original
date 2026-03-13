@@ -77,6 +77,10 @@ export default function Ideas() {
   const [newSourceUrl, setNewSourceUrl] = useState('');
   const [newRaw, setNewRaw] = useState('');
   const [creating, setCreating] = useState(false);
+  const [resurfaceLoading, setResurfaceLoading] = useState(false);
+  const [resurfaced, setResurfaced] = useState([]);
+  const [dupeLoading, setDupeLoading] = useState(false);
+  const [possibleDupes, setPossibleDupes] = useState([]);
 
   const [readyTitle, setReadyTitle] = useState('');
   const [readyMarkdown, setReadyMarkdown] = useState('');
@@ -113,6 +117,25 @@ export default function Ideas() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  const fetchResurface = useCallback(async () => {
+    if (!authChecked) return;
+    setResurfaceLoading(true);
+    try {
+      const res = await fetch('/api/ao/ideas/resurface?count=3');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) setResurfaced(Array.isArray(json.ideas) ? json.ideas : []);
+      else setResurfaced([]);
+    } catch (_) {
+      setResurfaced([]);
+    } finally {
+      setResurfaceLoading(false);
+    }
+  }, [authChecked]);
+
+  useEffect(() => {
+    fetchResurface();
+  }, [fetchResurface]);
 
   const canNext = useMemo(() => {
     const total = page?.total;
@@ -213,6 +236,44 @@ export default function Ideas() {
     }
   }, [newTitle, newRaw, newSourceUrl, fetchList]);
 
+  useEffect(() => {
+    if (!authChecked) return;
+    const q = [newTitle, newRaw].join(' ').trim();
+    if (q.length < 18) {
+      setPossibleDupes([]);
+      return;
+    }
+    let cancelled = false;
+    setDupeLoading(true);
+    const t = setTimeout(async () => {
+      try {
+        const params = new URLSearchParams();
+        params.set('status', 'all');
+        params.set('path', 'all');
+        params.set('limit', '5');
+        params.set('offset', '0');
+        params.set('q', q.slice(0, 120));
+        const res = await fetch(`/api/ao/ideas?${params.toString()}`);
+        const json = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        if (res.ok && json.ok) {
+          const rows = (json.ideas || []).filter((x) => x && x.id).slice(0, 4);
+          setPossibleDupes(rows);
+        } else {
+          setPossibleDupes([]);
+        }
+      } catch (_) {
+        if (!cancelled) setPossibleDupes([]);
+      } finally {
+        if (!cancelled) setDupeLoading(false);
+      }
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [authChecked, newTitle, newRaw]);
+
   const createReadyPost = useCallback(async () => {
     setCreating(true);
     setError('');
@@ -285,8 +346,13 @@ export default function Ideas() {
       await act('unhold');
       return;
     }
-    const reason = window.prompt('Optional: why are you holding this?', detail.hold_reason || '');
-    await act('hold', reason ? { reason } : {});
+    const reason = window.prompt('Why are you holding this? (required)', detail.hold_reason || '');
+    if (reason == null) return;
+    if (!String(reason).trim()) {
+      window.alert('Hold reason is required.');
+      return;
+    }
+    await act('hold', { reason: String(reason).trim().slice(0, 300) });
   }, [detail, act]);
 
   const archive = useCallback(async () => {
@@ -308,12 +374,12 @@ export default function Ideas() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AOHeader active="ideas" email={email} onNavigate={handleNavigate} />
+      <AOHeader active="library" email={email} onNavigate={handleNavigate} />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Ideas</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Library</h1>
             <p className="text-sm text-gray-600 mt-1">
               Two paths: capture raw seeds to shape into a brief, or paste finished posts to go live quickly.
             </p>
@@ -325,6 +391,50 @@ export default function Ideas() {
           {error ? (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{error}</div>
           ) : null}
+
+          <section className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-semibold text-gray-900">Resurface (old gold)</h2>
+                <p className="text-xs text-gray-600 mt-1">A few older items worth revisiting.</p>
+              </div>
+              <button
+                type="button"
+                onClick={fetchResurface}
+                disabled={resurfaceLoading}
+                className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+              >
+                {resurfaceLoading ? 'Refreshing…' : 'Refresh'}
+              </button>
+            </div>
+            {resurfaceLoading ? (
+              <div className="mt-3"><LoadingSpinner message="Loading…" /></div>
+            ) : resurfaced.length === 0 ? (
+              <p className="mt-3 text-sm text-gray-500">Nothing to resurface yet.</p>
+            ) : (
+              <ul className="mt-3 space-y-2">
+                {resurfaced.map((x) => (
+                  <li key={x.id} className="flex items-start justify-between gap-3 border border-gray-200 rounded p-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500">{fmtDate(x.created_at)}</span>
+                        <StatusPill status={x.status} />
+                      </div>
+                      <div className="text-sm font-medium text-gray-900 truncate">{x.title || safePreview(x.raw_input)}</div>
+                      {x.hold_reason ? <div className="text-xs text-gray-600 mt-1">Held because: {safePreview(x.hold_reason)}</div> : null}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onSelect(x)}
+                      className="shrink-0 text-blue-600 hover:underline text-sm"
+                    >
+                      Open
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
 
           <section className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -378,6 +488,23 @@ export default function Ideas() {
                     className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="One line, bullets, or a full draft. Anything works."
                   />
+                  <div className="mt-2">
+                    <div className="text-xs font-medium text-gray-700">Possible duplicates</div>
+                    {dupeLoading ? (
+                      <div className="text-xs text-gray-500 mt-1">Checking…</div>
+                    ) : possibleDupes.length === 0 ? (
+                      <div className="text-xs text-gray-500 mt-1">None found.</div>
+                    ) : (
+                      <ul className="mt-1 space-y-1">
+                        {possibleDupes.map((x) => (
+                          <li key={x.id} className="text-xs text-gray-700 flex items-center justify-between gap-2">
+                            <span className="truncate">{x.title || safePreview(x.raw_input)}</span>
+                            <button type="button" onClick={() => onSelect(x)} className="text-blue-600 hover:underline shrink-0">Open</button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
                   <button

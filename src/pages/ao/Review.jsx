@@ -44,6 +44,12 @@ function buildCritique(q) {
   if (q?.why_it_matters) good.push('Has a “why it matters” angle.');
   else weak.push('Missing “why it matters” (needs interpretation).');
 
+  if (q?.summary_interpretation) good.push('Has a summary + interpretation.');
+  else weak.push('Missing summary + interpretation (hard to judge quickly).');
+
+  if (q?.ao_lane) good.push('Tagged with an AO lane.');
+  else weak.push('Missing lane (hard to route).');
+
   if (q?.drafts_by_channel) good.push('Channel drafts are ready.');
   else weak.push('Channel drafts are not ready yet.');
 
@@ -163,6 +169,7 @@ export default function Review() {
       const base = `/api/ao`;
       let url = '';
       if (kind === 'quote-approve') url = `${base}/quotes/${id}/approve`;
+      else if (kind === 'quote-brief') url = `${base}/quotes/${id}/brief`;
       else if (kind === 'quote-reject') url = `${base}/quotes/${id}/reject`;
       else if (kind === 'quote-hold') url = `${base}/quotes/${id}/hold`;
       else if (kind === 'quote-unhold') url = `${base}/quotes/${id}/unhold`;
@@ -194,6 +201,10 @@ export default function Review() {
 
       if (json.ok) {
         if (kind === 'quote-approve' || kind === 'quote-reject') setQuotes((prev) => prev.filter((x) => x.id !== id));
+        if (kind === 'quote-brief' && json.quote) {
+          setQuotes((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
+          setHeldQuotes((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
+        }
         if (kind === 'quote-hold') {
           setQuotes((prev) => prev.filter((x) => x.id !== id));
           window.location.reload();
@@ -206,7 +217,9 @@ export default function Review() {
         if (kind === 'topic-approve-draft' && json.writing) setWriting((prev) => [json.writing, ...prev]);
         if (kind === 'writing-draft' || kind === 'writing-discard') setWriting((prev) => prev.filter((x) => x.id !== id));
 
-        if (kind === 'quote-approve') {
+        if (kind === 'quote-brief') {
+          setActionMessage('Brief refreshed.');
+        } else if (kind === 'quote-approve') {
           const saved = String(json?.quote?.next_stage || '').toLowerCase();
           setActionMessage(saved === 'publisher' ? 'Approved and sent to Publisher.' : saved === 'studio' ? 'Approved and sent to Studio.' : 'Approved.');
         } else if (kind === 'quote-reject') {
@@ -581,6 +594,14 @@ export default function Review() {
                       <div className="flex gap-2">
                         <button
                           type="button"
+                          onClick={() => act('quote-brief', q.id)}
+                          disabled={acting === q.id}
+                          className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          Refresh brief
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => act('quote-approve', q.id, { next_stage: 'studio' })}
                           disabled={acting === q.id}
                           className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
@@ -694,6 +715,14 @@ export default function Review() {
                       )}
                       <div className="flex gap-2">
                         <button type="button" onClick={() => act('quote-unhold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Unhold</button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-brief', q.id)}
+                          disabled={acting === q.id}
+                          className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          Refresh brief
+                        </button>
                         <button
                           type="button"
                           onClick={() => act('quote-approve', q.id, { next_stage: 'studio' })}

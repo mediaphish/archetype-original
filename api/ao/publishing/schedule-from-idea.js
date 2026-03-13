@@ -68,17 +68,44 @@ export default async function handler(req, res) {
         image_url: null,
         first_comment,
         status: 'scheduled',
+        source_kind: 'idea',
+        source_idea_id: ideaId,
+        intent: {
+          title: idea.title || null,
+          source_url: idea.source_url || null,
+          ao_lane: idea.suggested_ao_lane || null,
+          topic_tags: Array.isArray(idea.suggested_topic_tags) ? idea.suggested_topic_tags : null,
+          why_it_matters: idea.why_it_matters || null,
+        },
+        ao_lane: idea.suggested_ao_lane || null,
+        topic_tags: Array.isArray(idea.suggested_topic_tags) ? idea.suggested_topic_tags : null,
+        why_it_matters: idea.why_it_matters || null,
       });
     }
 
     if (rows.length === 0) return res.status(400).json({ ok: false, error: 'No scheduled channels provided' });
 
-    const { data: inserted, error: insErr } = await supabaseAdmin
-      .from('ao_scheduled_posts')
-      .insert(rows)
-      .select('id, platform, scheduled_at, status');
+    let inserted = null;
+    try {
+      const out = await supabaseAdmin
+        .from('ao_scheduled_posts')
+        .insert(rows)
+        .select('id, platform, scheduled_at, status');
+      if (out.error) throw out.error;
+      inserted = out.data || [];
+    } catch (e2) {
+      const msg = String(e2?.message || '');
+      const missingIntentCols = msg.includes('source_kind') || msg.includes('source_idea_id') || msg.includes('intent');
+      if (!missingIntentCols) return res.status(500).json({ ok: false, error: msg || 'Insert failed' });
 
-    if (insErr) return res.status(500).json({ ok: false, error: insErr.message });
+      const minimalRows = rows.map(({ source_kind, source_idea_id, intent, ...rest }) => rest);
+      const out = await supabaseAdmin
+        .from('ao_scheduled_posts')
+        .insert(minimalRows)
+        .select('id, platform, scheduled_at, status');
+      if (out.error) return res.status(500).json({ ok: false, error: out.error.message });
+      inserted = out.data || [];
+    }
 
     return res.status(200).json({ ok: true, scheduled: inserted || [] });
   } catch (e) {

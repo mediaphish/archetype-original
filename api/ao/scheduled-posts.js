@@ -20,11 +20,20 @@ export default async function handler(req, res) {
   const from = req.query?.from || null;
   const to = req.query?.to || null;
 
-  let query = supabaseAdmin
-    .from('ao_scheduled_posts')
-    .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, created_at, updated_at')
-    .order('scheduled_at', { ascending: false })
-    .limit(limit);
+  let query;
+  try {
+    query = supabaseAdmin
+      .from('ao_scheduled_posts')
+      .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, source_kind, source_quote_id, source_idea_id, intent, best_move, why_it_matters, ao_lane, topic_tags, posted_at, feedback_rating, feedback_notes, feedback_at, created_at, updated_at')
+      .order('scheduled_at', { ascending: false })
+      .limit(limit);
+  } catch (_) {
+    query = supabaseAdmin
+      .from('ao_scheduled_posts')
+      .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, created_at, updated_at')
+      .order('scheduled_at', { ascending: false })
+      .limit(limit);
+  }
 
   if (status) {
     query = query.eq('status', status);
@@ -36,7 +45,24 @@ export default async function handler(req, res) {
     query = query.lte('scheduled_at', to);
   }
 
-  const { data, error } = await query;
+  let data = null;
+  let error = null;
+  try {
+    const out = await query;
+    data = out.data;
+    error = out.error;
+    if (error && String(error.message || '').includes('source_kind')) {
+      const out2 = await supabaseAdmin
+        .from('ao_scheduled_posts')
+        .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, created_at, updated_at')
+        .order('scheduled_at', { ascending: false })
+        .limit(limit);
+      data = out2.data;
+      error = out2.error;
+    }
+  } catch (e2) {
+    error = e2;
+  }
 
   if (error) {
     return res.status(500).json({ ok: false, error: error.message });

@@ -43,6 +43,8 @@ export default function Publishing() {
   const [studioSchedule, setStudioSchedule] = useState({}); // { [quoteId]: { linkedin, facebook, instagram, x } }
   const [studioEdits, setStudioEdits] = useState({}); // { [quoteId]: { linkedin, facebook, instagram, x } }
   const [draftError, setDraftError] = useState('');
+  const [historyMessage, setHistoryMessage] = useState('');
+  const [historyError, setHistoryError] = useState('');
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -171,6 +173,28 @@ export default function Publishing() {
       }
     } catch (_) {}
     setPatchLoading(false);
+  }, [authChecked, fetchPosts]);
+
+  const handleSaveFeedback = useCallback(async (id, feedback_rating, feedback_notes) => {
+    if (!authChecked) return;
+    setHistoryMessage('');
+    setHistoryError('');
+    setPatchLoading(true);
+    try {
+      const res = await fetch(`/api/ao/scheduled-posts/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ feedback_rating, feedback_notes }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Could not save feedback');
+      setHistoryMessage('Feedback saved.');
+      await fetchPosts();
+    } catch (e) {
+      setHistoryError(e.message || 'Could not save feedback');
+    } finally {
+      setPatchLoading(false);
+    }
   }, [authChecked, fetchPosts]);
 
   const startEdit = (post) => {
@@ -403,6 +427,17 @@ export default function Publishing() {
                       <span className="font-medium text-gray-900">{p.platform} / {p.account_id}</span>
                       <span className="text-gray-500 text-sm ml-2">{new Date(p.scheduled_at).toLocaleString()}</span>
                       <p className="text-sm text-gray-600 mt-1 truncate max-w-xl">{p.text}</p>
+                      {(p.why_it_matters || p.ao_lane || p.best_move || p.source_kind) ? (
+                        <details className="mt-2">
+                          <summary className="cursor-pointer text-xs text-gray-600 hover:text-gray-900">Intent</summary>
+                          <div className="mt-2 text-xs text-gray-700 space-y-1">
+                            {p.source_kind ? <div><span className="text-gray-500">From:</span> {p.source_kind}</div> : null}
+                            {p.ao_lane ? <div><span className="text-gray-500">Lane:</span> {p.ao_lane}</div> : null}
+                            {p.best_move ? <div><span className="text-gray-500">Move:</span> {p.best_move}</div> : null}
+                            {p.why_it_matters ? <div className="whitespace-pre-wrap"><span className="text-gray-500">Why:</span> {p.why_it_matters}</div> : null}
+                          </div>
+                        </details>
+                      ) : null}
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <FirstCommentStatusBadge status={p.first_comment_status || (p.first_comment ? 'pending' : null)} errorMessage={p.first_comment_error_message} />
                         {p.first_comment && !editingId && (
@@ -442,6 +477,8 @@ export default function Publishing() {
         ) : (
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
             <h2 className="sr-only">Publishing history</h2>
+            {historyMessage ? <p className="p-4 text-sm text-green-700">{historyMessage}</p> : null}
+            {historyError ? <p className="p-4 text-sm text-red-700">{historyError}</p> : null}
             {history.length === 0 ? (
               <p className="p-6 text-gray-500">No history yet.</p>
             ) : (
@@ -452,6 +489,17 @@ export default function Publishing() {
                       <span className="font-medium text-gray-900">{p.platform} / {p.account_id}</span>
                       <span className="text-gray-500 text-sm ml-2">{new Date(p.updated_at || p.scheduled_at).toLocaleString()}</span>
                       <p className="text-sm text-gray-600 mt-1 truncate max-w-xl">{p.text}</p>
+                      {(p.why_it_matters || p.ao_lane || p.best_move || p.source_kind) ? (
+                        <details className="mt-2">
+                          <summary className="cursor-pointer text-xs text-gray-600 hover:text-gray-900">Intent</summary>
+                          <div className="mt-2 text-xs text-gray-700 space-y-1">
+                            {p.source_kind ? <div><span className="text-gray-500">From:</span> {p.source_kind}</div> : null}
+                            {p.ao_lane ? <div><span className="text-gray-500">Lane:</span> {p.ao_lane}</div> : null}
+                            {p.best_move ? <div><span className="text-gray-500">Move:</span> {p.best_move}</div> : null}
+                            {p.why_it_matters ? <div className="whitespace-pre-wrap"><span className="text-gray-500">Why:</span> {p.why_it_matters}</div> : null}
+                          </div>
+                        </details>
+                      ) : null}
                       <div className="mt-2">
                         <FirstCommentStatusBadge status={p.first_comment_status} errorMessage={p.first_comment_error_message} />
                         {p.first_comment_status === 'failed' && p.first_comment_error_message && (
@@ -461,6 +509,25 @@ export default function Publishing() {
                       {p.status === 'failed' && p.error_message && (
                         <p className="text-sm text-red-600 mt-1">{p.error_message}</p>
                       )}
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        {p.feedback_rating ? (
+                          <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">Feedback: {p.feedback_rating}{p.feedback_notes ? ` — ${p.feedback_notes}` : ''}</span>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={patchLoading}
+                            onClick={() => {
+                              const rating = window.prompt('Feedback rating (good / meh / bad)', 'good');
+                              if (rating == null) return;
+                              const notes = window.prompt('Optional notes (what worked / what didn’t)', '');
+                              handleSaveFeedback(p.id, rating, notes || '');
+                            }}
+                            className="text-xs text-blue-600 hover:underline disabled:opacity-50"
+                          >
+                            Add feedback
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <span className={`text-xs px-2 py-1 rounded ${p.status === 'posted' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{p.status}</span>
                   </li>
