@@ -37,7 +37,10 @@ export default async function handler(req, res) {
       maxCandidates: 30,
     });
     if (!built.ok) {
-      return res.status(500).json({ ok: false, error: built.error || 'Rebuild failed' });
+      return res.status(500).json({
+        ok: false,
+        error: built.error || 'Rebuild failed',
+      });
     }
 
     const verified = built.verified || [];
