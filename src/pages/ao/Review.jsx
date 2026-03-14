@@ -59,6 +59,136 @@ function buildCritique(q) {
   return { good, weak, link, prepared, format };
 }
 
+function moveLabel(move) {
+  const m = String(move || '').toLowerCase().trim();
+  const map = {
+    pull_quote_card: 'Quote card + caption',
+    ao_angle_post: 'Short AO take (text post)',
+    question_post: 'Self-audit question (spark comments)',
+    third_party_summary: 'Share + interpret (with attribution)',
+    journal_topic: 'Journal seed (long-form idea)',
+    thread: 'Thread (multi-step)',
+    carousel: 'Carousel outline',
+    mini_framework: 'Mini framework (3 steps)',
+    story_post: 'Story + takeaway',
+    discard: 'Discard',
+  };
+  return map[m] || (m ? m.replace(/_/g, ' ') : 'Move');
+}
+
+function safeText(x, max = 400) {
+  const s = String(x ?? '').trim();
+  if (!s) return '';
+  return s.length > max ? `${s.slice(0, max)}…` : s;
+}
+
+function canRouteToPublisherNow(q, move) {
+  // Publisher is safest when we already have the core assets ready.
+  const m = String(move || '').toLowerCase().trim();
+  const lowRisk = !(Array.isArray(q?.risk_flags) && q.risk_flags.length);
+  const hasAnyDraft = !!(q?.drafts_by_channel && Object.values(q.drafts_by_channel || {}).some((v) => String(v || '').trim()));
+  const hasCard = !!q?.quote_card_svg;
+  const hasCaption = !!String(q?.quote_card_caption || '').trim();
+
+  if (!lowRisk) return false;
+  if (m === 'pull_quote_card') return hasCard && (hasCaption || hasAnyDraft);
+  if (m === 'third_party_summary') return hasAnyDraft;
+  return false;
+}
+
+function studioPromptForMove({ q, move, why, angle }) {
+  const m = String(move || '').toLowerCase().trim();
+  const pull = safeText(q?.pull_quote || q?.quote_text, 260);
+  const title = safeText(q?.source_title || q?.source_name, 200);
+  const lane = safeText(q?.ao_lane, 120);
+  const tags = Array.isArray(q?.topic_tags) ? q.topic_tags.slice(0, 6).join(', ') : '';
+  const angleLine = angle ? `Angle to take: ${safeText(angle, 220)}` : '';
+
+  const base = [
+    `We are turning one approved Analyst item into ready-to-publish outputs.`,
+    pull ? `Pull quote: "${pull}"` : '',
+    title ? `Source: ${title}` : '',
+    lane ? `Lane: ${lane}` : '',
+    tags ? `Tags: ${tags}` : '',
+    why ? `Analyst note: ${safeText(why, 260)}` : '',
+    angleLine,
+    '',
+  ].filter(Boolean).join('\n');
+
+  if (m === 'question_post') {
+    return `${base}Make this a question-style post that sparks the right comments (no rage bait). Draft for LinkedIn + Instagram + X with distinct wording per channel. Include an outputs_patch if you recommend changes.`;
+  }
+  if (m === 'third_party_summary') {
+    return `${base}Write a short, high-trust summary + interpretation with attribution (no long quotes). Draft for LinkedIn + Facebook + X with distinct wording per channel. Include an outputs_patch if you recommend changes.`;
+  }
+  if (m === 'pull_quote_card') {
+    return `${base}Produce a quote card + caption. If the quote card already exists, improve the caption and propose any edits via outputs_patch. Draft per-channel captions (LinkedIn/Instagram/Facebook/X) with distinct wording.`;
+  }
+  if (m === 'journal_topic') {
+    return `${base}Turn this into a journal seed: propose a strong title, outline, and a short hook that points to the full post. Also draft 2–3 short social teasers with distinct wording.`;
+  }
+  // Default: AO angle post
+  return `${base}Write a concise AO-style takeaway post (what it means + one practical move). Draft per-channel versions with distinct wording. Include an outputs_patch if you recommend changes.`;
+}
+
+function buildWaysToUse(q) {
+  const items = [];
+  const best = String(q?.best_move || '').trim();
+  const angles = Array.isArray(q?.studio_playbook?.angles) ? q.studio_playbook.angles : [];
+  const altMoves = Array.isArray(q?.alt_moves) ? q.alt_moves : [];
+
+  if (best && best !== 'discard') {
+    const why = safeText(q?.why_it_matters, 180);
+    items.push({
+      key: `best:${best}`,
+      label: moveLabel(best),
+      why: why || 'Recommended next step from Analyst.',
+      target: canRouteToPublisherNow(q, best) ? 'publisher' : 'studio',
+      move: best,
+      angle: null,
+    });
+  }
+
+  for (const m of altMoves) {
+    const move = safeText(m?.move, 40);
+    const why = safeText(m?.why, 220);
+    if (!move || move === best || move === 'discard') continue;
+    items.push({
+      key: `alt:${move}`,
+      label: moveLabel(move),
+      why: why || 'Alternate approach.',
+      target: canRouteToPublisherNow(q, move) ? 'publisher' : 'studio',
+      move,
+      angle: null,
+    });
+  }
+
+  for (const a of angles.slice(0, 3)) {
+    const angle = safeText(a, 240);
+    if (!angle) continue;
+    items.push({
+      key: `angle:${angle}`,
+      label: 'Take this angle',
+      why: angle,
+      target: 'studio',
+      move: best && best !== 'discard' ? best : 'ao_angle_post',
+      angle,
+    });
+  }
+
+  // De-dupe by label+why, keep the first 5.
+  const seen = new Set();
+  const out = [];
+  for (const it of items) {
+    const k = `${it.label}::${it.why}`;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(it);
+    if (out.length >= 5) break;
+  }
+  return out;
+}
+
 const TABS = [
   { key: 'social', label: 'Social signals' },
   { key: 'held', label: 'Held' },
@@ -275,7 +405,18 @@ export default function Review() {
           const saved = String(json?.quote?.next_stage || '').toLowerCase();
           setActionMessage(saved === 'publisher' ? 'Approved and sent to Publisher.' : saved === 'studio' ? 'Approved and sent to Studio.' : 'Approved.');
           if (saved === 'studio') {
-            window.history.pushState({}, '', `/ao/studio?open=${encodeURIComponent(id)}&from=analyst`);
+            const prompt = extra?.studio_prompt ? String(extra.studio_prompt) : '';
+            const qs = new URLSearchParams();
+            qs.set('open', String(id));
+            qs.set('from', 'analyst');
+            if (prompt.trim()) qs.set('prompt', prompt);
+            window.history.pushState({}, '', `/ao/studio?${qs.toString()}`);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            return;
+          }
+          if (saved === 'publisher' && extra?.go_to_publisher) {
+            window.history.pushState({}, '', `/ao/publisher`);
             window.dispatchEvent(new PopStateEvent('popstate'));
             window.scrollTo({ top: 0, behavior: 'instant' });
             return;
@@ -587,6 +728,57 @@ export default function Review() {
                         ) : (
                           <p className="mt-2 text-sm text-gray-600">Preparing the summary + interpretation…</p>
                         )}
+
+                        {(() => {
+                          const ways = buildWaysToUse(q);
+                          if (!ways.length) return null;
+                          return (
+                            <div className="mt-3 border-t border-gray-200 pt-3">
+                              <p className="text-xs font-semibold text-gray-900 mb-2">Ways to use this</p>
+                              <div className="grid gap-2">
+                                {ways.map((w) => {
+                                  const prompt = studioPromptForMove({ q, move: w.move, why: w.why, angle: w.angle });
+                                  const isStudio = w.target === 'studio';
+                                  return (
+                                    <div key={w.key} className="rounded border border-gray-200 bg-white p-3">
+                                      <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                          <div className="text-sm font-semibold text-gray-900">{w.label}</div>
+                                          <div className="mt-1 text-xs text-gray-700 whitespace-pre-wrap">{w.why}</div>
+                                        </div>
+                                        <div className="shrink-0">
+                                          {isStudio ? (
+                                            <button
+                                              type="button"
+                                              disabled={acting === q.id}
+                                              onClick={() => act('quote-approve', q.id, { next_stage: 'studio', studio_prompt: prompt })}
+                                              className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                                            >
+                                              Studio
+                                            </button>
+                                          ) : (
+                                            <button
+                                              type="button"
+                                              disabled={acting === q.id}
+                                              onClick={() => act('quote-approve', q.id, { next_stage: 'publisher', go_to_publisher: true })}
+                                              className="min-h-[44px] px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 disabled:opacity-50"
+                                            >
+                                              Publisher
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              <div className="mt-2 text-xs text-gray-500">
+                                Tapping a Studio option opens Studio with the instruction pre-filled.
+                              </div>
+                            </div>
+                          );
+                        })()}
+
                         {Array.isArray(q?.studio_playbook?.angles) && q.studio_playbook.angles.length ? (
                           <div className="mt-3">
                             <p className="text-xs font-medium text-gray-700 mb-1">Angles</p>
@@ -698,7 +890,49 @@ export default function Review() {
                           {q.alt_moves ? (
                             <div>
                               <p className="text-xs font-medium text-gray-700 mb-2">Alternate moves</p>
-                              <pre className="text-xs text-gray-700 whitespace-pre-wrap">{JSON.stringify(q.alt_moves, null, 2)}</pre>
+                              {Array.isArray(q.alt_moves) && q.alt_moves.length ? (
+                                <div className="space-y-2">
+                                  {q.alt_moves.slice(0, 6).map((m, idx) => {
+                                    const mv = safeText(m?.move, 40);
+                                    const why = safeText(m?.why, 240);
+                                    if (!mv) return null;
+                                    const prompt = studioPromptForMove({ q, move: mv, why });
+                                    const allowPublisher = canRouteToPublisherNow(q, mv);
+                                    return (
+                                      <div key={`${mv}:${idx}`} className="rounded border border-gray-200 bg-gray-50 p-3">
+                                        <div className="flex items-start justify-between gap-3">
+                                          <div className="min-w-0">
+                                            <div className="text-sm font-semibold text-gray-900">{moveLabel(mv)}</div>
+                                            {why ? <div className="mt-1 text-xs text-gray-700 whitespace-pre-wrap">{why}</div> : null}
+                                          </div>
+                                          <div className="shrink-0 flex flex-wrap gap-2">
+                                            <button
+                                              type="button"
+                                              disabled={acting === q.id}
+                                              onClick={() => act('quote-approve', q.id, { next_stage: 'studio', studio_prompt: prompt })}
+                                              className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                                            >
+                                              Work in Studio
+                                            </button>
+                                            {allowPublisher ? (
+                                              <button
+                                                type="button"
+                                                disabled={acting === q.id}
+                                                onClick={() => act('quote-approve', q.id, { next_stage: 'publisher', go_to_publisher: true })}
+                                                className="min-h-[44px] px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 disabled:opacity-50"
+                                              >
+                                                Route to Publisher
+                                              </button>
+                                            ) : null}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <div className="text-xs text-gray-600">No alternate moves yet.</div>
+                              )}
                             </div>
                           ) : null}
 
