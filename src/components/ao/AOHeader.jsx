@@ -47,9 +47,9 @@ export default function AOHeader({ active, email, onNavigate }) {
         <div className="flex items-center justify-between">
           <button
             type="button"
-            onClick={() => handleNavigate('/ao/command-center')}
+            onClick={() => handleNavigate('/ao/analyst')}
             className="flex items-center gap-2 text-gray-900 min-h-[44px]"
-            aria-label="Go to Command Center"
+            aria-label="Go to Analyst"
           >
             <OptimizedImage src="/brand/ao-icon.svg" alt="" className="w-6 h-6" loading="eager" width={24} height={24} />
             <span className="font-semibold">AO Automation</span>

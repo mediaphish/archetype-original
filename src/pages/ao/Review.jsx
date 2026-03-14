@@ -28,6 +28,15 @@ function safeUrl(u) {
   }
 }
 
+function getParam(name) {
+  try {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+  } catch {
+    return null;
+  }
+}
+
 function buildCritique(q) {
   const good = [];
   const weak = [];
@@ -218,11 +227,163 @@ export default function Review() {
   const preparingRef = useRef(new Set());
   const [mobileActiveQuoteId, setMobileActiveQuoteId] = useState(null);
 
+  // Analyst Workroom (chat) — stored locally (per device) for MVP.
+  const [workroomOpen, setWorkroomOpen] = useState(false);
+  const [workroomKind, setWorkroomKind] = useState('quote'); // quote | idea
+  const [workroomId, setWorkroomId] = useState(null);
+  const [workroomTitle, setWorkroomTitle] = useState('');
+  const [workroomMessages, setWorkroomMessages] = useState([]);
+  const [workroomInput, setWorkroomInput] = useState('');
+  const [workroomSending, setWorkroomSending] = useState(false);
+  const [workroomError, setWorkroomError] = useState('');
+  const [workroomDraftTitle, setWorkroomDraftTitle] = useState('');
+  const [workroomDraftText, setWorkroomDraftText] = useState('');
+  const [workroomCreating, setWorkroomCreating] = useState(false);
+
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
+
+  const workroomStorageKey = useCallback((kind, id) => {
+    const k = String(kind || '').trim() || 'quote';
+    const i = String(id || '').trim();
+    return `ao_workroom_v1:${k}:${i}`;
+  }, []);
+
+  const openWorkroomForQuote = useCallback((q) => {
+    const id = q?.id;
+    if (!id) return;
+    setWorkroomKind('quote');
+    setWorkroomId(id);
+    setWorkroomTitle(q?.source_title || q?.source_name || (q?.is_internal ? 'AO internal' : 'Item'));
+    setWorkroomError('');
+    setWorkroomInput('');
+    try {
+      const raw = window.localStorage.getItem(workroomStorageKey('quote', id));
+      const parsed = raw ? JSON.parse(raw) : null;
+      setWorkroomMessages(Array.isArray(parsed?.messages) ? parsed.messages : []);
+    } catch {
+      setWorkroomMessages([]);
+    }
+    setWorkroomOpen(true);
+  }, [workroomStorageKey]);
+
+  const openWorkroomForNewIdea = useCallback(() => {
+    setWorkroomKind('idea');
+    setWorkroomId('new');
+    setWorkroomTitle('New idea');
+    setWorkroomMessages([]);
+    setWorkroomError('');
+    setWorkroomInput('');
+    setWorkroomDraftTitle('');
+    setWorkroomDraftText('');
+    setWorkroomOpen(true);
+  }, []);
+
+  const saveWorkroomMessages = useCallback((kind, id, messages) => {
+    try {
+      window.localStorage.setItem(workroomStorageKey(kind, id), JSON.stringify({ messages: Array.isArray(messages) ? messages : [] }));
+    } catch (_) {}
+  }, [workroomStorageKey]);
+
+  const sendWorkroom = useCallback(async () => {
+    if (!authChecked) return;
+    if (!workroomOpen) return;
+    if (!workroomKind || !workroomId) return;
+    if (String(workroomId) === 'new') return;
+    const text = String(workroomInput || '').trim();
+    if (!text) return;
+    if (workroomSending) return;
+    setWorkroomSending(true);
+    setWorkroomError('');
+    const nextMessages = [
+      ...(Array.isArray(workroomMessages) ? workroomMessages : []),
+      { role: 'user', at: new Date().toISOString(), content: text },
+    ];
+    setWorkroomMessages(nextMessages);
+    saveWorkroomMessages(workroomKind, workroomId, nextMessages);
+    setWorkroomInput('');
+    try {
+      const res = await fetch('/api/ao/analyst/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thread_kind: workroomKind,
+          thread_id: workroomId,
+          messages: nextMessages.slice(-12),
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not get Analyst reply');
+      const assistant = {
+        role: 'assistant',
+        at: new Date().toISOString(),
+        content: String(json.assistant_message || '').trim(),
+        suggestions: Array.isArray(json.suggestions) ? json.suggestions : [],
+        go_actions: Array.isArray(json.go_actions) ? json.go_actions : [],
+      };
+      const after = [...nextMessages, assistant];
+      setWorkroomMessages(after);
+      saveWorkroomMessages(workroomKind, workroomId, after);
+    } catch (e) {
+      setWorkroomError(e.message || 'Could not send message');
+    } finally {
+      setWorkroomSending(false);
+    }
+  }, [authChecked, workroomOpen, workroomKind, workroomId, workroomInput, workroomSending, workroomMessages, saveWorkroomMessages]);
+
+  const createIdeaAndStartWorkroom = useCallback(async () => {
+    if (!authChecked) return;
+    if (workroomCreating) return;
+    const raw = String(workroomDraftText || '').trim();
+    const title = String(workroomDraftTitle || '').trim();
+    if (raw.length < 5) {
+      setWorkroomError('Add a little more detail for the idea.');
+      return;
+    }
+    setWorkroomCreating(true);
+    setWorkroomError('');
+    try {
+      const res = await fetch('/api/ao/ideas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: 'idea_seed', raw_input: raw, title: title || null }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok || !json.idea?.id) throw new Error(json.error || 'Could not create idea');
+      const ideaId = json.idea.id;
+      setWorkroomId(ideaId);
+      setWorkroomTitle(json.idea.title || 'Idea');
+      const seed = [{ role: 'user', at: new Date().toISOString(), content: raw }];
+      setWorkroomMessages(seed);
+      saveWorkroomMessages('idea', ideaId, seed);
+      setWorkroomDraftText('');
+      setWorkroomDraftTitle('');
+      const chatRes = await fetch('/api/ao/analyst/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thread_kind: 'idea', thread_id: ideaId, messages: seed }),
+      });
+      const chatJson = await chatRes.json().catch(() => ({}));
+      if (!chatRes.ok || !chatJson.ok) throw new Error(chatJson.error || 'Could not get Analyst reply');
+      const assistant = {
+        role: 'assistant',
+        at: new Date().toISOString(),
+        content: String(chatJson.assistant_message || '').trim(),
+        suggestions: Array.isArray(chatJson.suggestions) ? chatJson.suggestions : [],
+        go_actions: Array.isArray(chatJson.go_actions) ? chatJson.go_actions : [],
+      };
+      const after = [...seed, assistant];
+      setWorkroomMessages(after);
+      saveWorkroomMessages('idea', ideaId, after);
+    } catch (e) {
+      setWorkroomError(e.message || 'Could not create idea');
+    } finally {
+      setWorkroomCreating(false);
+    }
+  }, [authChecked, workroomCreating, workroomDraftText, workroomDraftTitle, saveWorkroomMessages]);
 
   useEffect(() => {
     let cancelled = false;
@@ -444,6 +605,18 @@ export default function Review() {
   }, [activeTab]);
 
   useEffect(() => {
+    // If URL includes ?open=<id>, open Workroom for that quote (best-effort).
+    const open = getParam('open');
+    if (!open) return;
+    const id = String(open).trim();
+    if (!id) return;
+    const row = (quotes || []).find((x) => String(x?.id) === id) || (heldQuotes || []).find((x) => String(x?.id) === id) || null;
+    if (row?.id) {
+      openWorkroomForQuote(row);
+    }
+  }, [quotes, heldQuotes, openWorkroomForQuote]);
+
+  useEffect(() => {
     if (!mobileActiveQuoteId) return;
     const current = activeTab === 'social' ? pendingQuotes : activeTab === 'held' ? heldList : [];
     const exists = Array.isArray(current) && current.some((q) => String(q?.id) === String(mobileActiveQuoteId));
@@ -467,7 +640,16 @@ export default function Review() {
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-44 md:pb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Analyst</h1>
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900">Analyst</h1>
+          <button
+            type="button"
+            onClick={openWorkroomForNewIdea}
+            className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
+          >
+            New
+          </button>
+        </div>
         <p className="text-gray-600 mb-8">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
         {briefPrep.running ? (
           <div className="mb-6 p-3 rounded border border-blue-200 bg-blue-50 text-blue-900 text-sm flex items-center justify-between gap-3">
@@ -594,7 +776,7 @@ export default function Review() {
                         const watched = safeUrl(q?.scout_watched_source_url);
                         return (
                           <>
-                      <div className="mb-2 text-sm text-gray-800">
+                      <div className="mb-2 text-sm text-gray-800 hidden md:block">
                         <span className="font-semibold">Source:</span>{' '}
                         <span className="font-medium">
                           {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
@@ -615,7 +797,7 @@ export default function Review() {
                         ) : null}
                       </div>
                       {(watched || trailFrom) ? (
-                        <div className="mb-2 text-xs text-gray-600">
+                        <div className="mb-2 text-xs text-gray-600 hidden md:block">
                           <span className="font-semibold">Scout trail:</span>{' '}
                           {watched ? (
                             <a className="text-blue-700 hover:underline" href={watched} target="_blank" rel="noreferrer">
@@ -643,7 +825,7 @@ export default function Review() {
                           {q.ao_lane || (Array.isArray(q.topic_tags) && q.topic_tags.length) || q.content_kind ? (
                             <div className="mt-2 flex flex-wrap gap-2">
                               {q.content_kind ? <Pill tone="gray">{String(q.content_kind).replace(/_/g, ' ')}</Pill> : null}
-                              {q.ao_lane ? <Pill tone="blue">{q.ao_lane}</Pill> : null}
+                              {q.ao_lane ? <Pill tone="blue">Theme: {q.ao_lane}</Pill> : null}
                               {Array.isArray(q.topic_tags) ? q.topic_tags.slice(0, 6).map((t, idx) => (
                                 <Pill key={idx} tone="gray">{String(t)}</Pill>
                               )) : null}
@@ -672,19 +854,21 @@ export default function Review() {
                         </div>
                       </div>
 
-                      {q.pull_quote ? (
-                        <blockquote className="border-l-4 border-gray-900 pl-4 py-1 mb-3">
-                          <p className="text-gray-900 font-medium whitespace-pre-wrap">{q.pull_quote}</p>
-                        </blockquote>
-                      ) : (
-                        <p className="text-gray-800 mb-3">{q.quote_text?.slice(0, 260)}{q.quote_text?.length > 260 ? '…' : ''}</p>
-                      )}
+                      <div className="hidden md:block">
+                        {q.pull_quote ? (
+                          <blockquote className="border-l-4 border-gray-900 pl-4 py-1 mb-3">
+                            <p className="text-gray-900 font-medium whitespace-pre-wrap">{q.pull_quote}</p>
+                          </blockquote>
+                        ) : (
+                          <p className="text-gray-800 mb-3">{q.quote_text?.slice(0, 260)}{q.quote_text?.length > 260 ? '…' : ''}</p>
+                        )}
+                      </div>
 
                       {q.why_it_matters ? (
-                        <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap">{q.why_it_matters}</p>
+                        <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap md:whitespace-pre-wrap line-clamp-4 md:line-clamp-none">{q.why_it_matters}</p>
                       ) : null}
 
-                      <div className="mb-3 grid gap-3 md:grid-cols-3">
+                      <div className="mb-3 hidden md:grid gap-3 md:grid-cols-3">
                         <div className="md:col-span-1">
                           <p className="text-xs font-semibold text-gray-900 mb-1">What’s good</p>
                           <ul className="text-xs text-gray-700 space-y-1">
@@ -722,12 +906,14 @@ export default function Review() {
                       </div>
 
                       <div className="mb-3 border border-gray-200 rounded bg-gray-50 p-3">
-                        <div className="text-sm font-medium text-gray-800">Analyst direction</div>
-                        {q.summary_interpretation ? (
-                          <p className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">{q.summary_interpretation}</p>
-                        ) : (
-                          <p className="mt-2 text-sm text-gray-600">Preparing the summary + interpretation…</p>
-                        )}
+                        <div className="text-sm font-medium text-gray-800">Ways to use this</div>
+                        <div className="hidden md:block">
+                          {q.summary_interpretation ? (
+                            <p className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">{q.summary_interpretation}</p>
+                          ) : (
+                            <p className="mt-2 text-sm text-gray-600">Preparing the summary + interpretation…</p>
+                          )}
+                        </div>
 
                         {(() => {
                           const ways = buildWaysToUse(q);
@@ -779,22 +965,56 @@ export default function Review() {
                           );
                         })()}
 
-                        {Array.isArray(q?.studio_playbook?.angles) && q.studio_playbook.angles.length ? (
-                          <div className="mt-3">
-                            <p className="text-xs font-medium text-gray-700 mb-1">Angles</p>
-                            <ul className="text-xs text-gray-700 space-y-1">
-                              {q.studio_playbook.angles.slice(0, 3).map((a, idx) => <li key={idx}>- {a}</li>)}
-                            </ul>
-                          </div>
-                        ) : null}
-                        {Array.isArray(q?.studio_playbook?.alignment_flags) && q.studio_playbook.alignment_flags.length ? (
-                          <div className="mt-3">
-                            <p className="text-xs font-medium text-gray-700 mb-1">Alignment flags</p>
-                            <ul className="text-xs text-amber-900 space-y-1">
-                              {q.studio_playbook.alignment_flags.slice(0, 6).map((a, idx) => <li key={idx}>- {a}</li>)}
-                            </ul>
-                          </div>
-                        ) : null}
+                        <div className="hidden md:block">
+                          {Array.isArray(q?.studio_playbook?.angles) && q.studio_playbook.angles.length ? (
+                            <div className="mt-3">
+                              <p className="text-xs font-medium text-gray-700 mb-1">Angles</p>
+                              <ul className="text-xs text-gray-700 space-y-1">
+                                {q.studio_playbook.angles.slice(0, 3).map((a, idx) => <li key={idx}>- {a}</li>)}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {Array.isArray(q?.studio_playbook?.alignment_flags) && q.studio_playbook.alignment_flags.length ? (
+                            <div className="mt-3">
+                              <p className="text-xs font-medium text-gray-700 mb-1">Alignment flags</p>
+                              <ul className="text-xs text-amber-900 space-y-1">
+                                {q.studio_playbook.alignment_flags.slice(0, 6).map((a, idx) => <li key={idx}>- {a}</li>)}
+                              </ul>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 md:hidden">
+                        <div className="grid grid-cols-3 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => openWorkroomForQuote(q)}
+                            className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+                          >
+                            Discuss
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const reason = window.prompt('Why are you holding this? (required)', '');
+                              if (!reason || !String(reason).trim()) return;
+                              act('quote-hold', q.id, { reason: String(reason).trim() });
+                            }}
+                            disabled={acting === q.id}
+                            className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
+                          >
+                            Hold
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => act('quote-reject', q.id)}
+                            disabled={acting === q.id}
+                            className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
+                          >
+                            Reject
+                          </button>
+                        </div>
                       </div>
 
                       <details className="mb-3 border border-gray-200 rounded bg-white p-3">
@@ -1275,6 +1495,156 @@ export default function Review() {
             </button>
           </div>
         </AOStickyActions>
+      ) : null}
+
+      {workroomOpen ? (
+        <div className="fixed inset-0 z-40 bg-black/40">
+          <div className="absolute inset-x-0 bottom-0 top-0 md:inset-10 md:rounded-xl bg-white shadow-xl flex flex-col">
+            <div className="border-b border-gray-200 px-4 py-3 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-gray-900 truncate">Analyst Workroom</div>
+                <div className="text-xs text-gray-600 truncate">
+                  {workroomTitle || 'Discussion'}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setWorkroomOpen(false);
+                  setWorkroomError('');
+                }}
+                className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50">
+              {workroomError ? (
+                <div className="p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
+                  {workroomError}
+                </div>
+              ) : null}
+
+              {workroomKind === 'idea' && String(workroomId) === 'new' ? (
+                <div className="p-3 rounded border border-gray-200 bg-white">
+                  <div className="text-sm font-semibold text-gray-900">Add an idea</div>
+                  <div className="mt-2 grid gap-2">
+                    <input
+                      value={workroomDraftTitle}
+                      onChange={(e) => setWorkroomDraftTitle(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      placeholder="Title (optional)"
+                    />
+                    <textarea
+                      value={workroomDraftText}
+                      onChange={(e) => setWorkroomDraftText(e.target.value)}
+                      rows={5}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      placeholder="Paste the idea here…"
+                    />
+                    <button
+                      type="button"
+                      onClick={createIdeaAndStartWorkroom}
+                      disabled={workroomCreating || String(workroomDraftText || '').trim().length < 5}
+                      className="min-h-[44px] px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {workroomCreating ? 'Creating…' : 'Create + discuss'}
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+
+              {workroomMessages.length === 0 ? (
+                <div className="text-sm text-gray-600">
+                  Talk it out here. When you’re ready, say what you want (and when you want a step executed, you can say “go”).
+                </div>
+              ) : null}
+
+              {workroomMessages.map((m, idx) => {
+                const isAssistant = String(m?.role) === 'assistant';
+                const suggestions = Array.isArray(m?.suggestions) ? m.suggestions : [];
+                const actions = Array.isArray(m?.go_actions) ? m.go_actions : [];
+                return (
+                  <div key={m?.at || idx} className={isAssistant ? '' : 'text-right'}>
+                    <div className={`inline-block max-w-[92%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${isAssistant ? 'bg-white border border-gray-200 text-gray-900' : 'bg-gray-900 text-white'}`}>
+                      {String(m?.content || '')}
+                    </div>
+                    {isAssistant && suggestions.length ? (
+                      <div className="mt-2 text-left">
+                        <div className="text-xs font-semibold text-gray-700 mb-1">Suggestions</div>
+                        <ul className="text-xs text-gray-700 space-y-1">
+                          {suggestions.slice(0, 6).map((s, i) => <li key={i}>- {String(s)}</li>)}
+                        </ul>
+                      </div>
+                    ) : null}
+                    {isAssistant && actions.length ? (
+                      <div className="mt-2 text-left flex flex-wrap gap-2">
+                        {actions.slice(0, 4).map((a, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => {
+                              const kind = String(a?.action || '').trim();
+                              if (workroomKind === 'quote' && workroomId) {
+                                if (kind === 'approve_to_studio') {
+                                  act('quote-approve', workroomId, { next_stage: 'studio', studio_prompt: String(a?.payload?.studio_prompt || '') });
+                                  return;
+                                }
+                                if (kind === 'approve_to_publisher') {
+                                  act('quote-approve', workroomId, { next_stage: 'publisher', go_to_publisher: true });
+                                  return;
+                                }
+                                if (kind === 'add_hunt_goal') {
+                                  const topic = String(a?.payload?.topic || '').trim();
+                                  const why = String(a?.payload?.why || '').trim();
+                                  if (!topic) return;
+                                  fetch('/api/ao/scout/hunt-goals', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ topic, why }),
+                                  }).catch(() => {});
+                                  handleNavigate('/ao/scout');
+                                  return;
+                                }
+                              }
+                            }}
+                            className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                          >
+                            {String(a?.label || 'Go')}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="border-t border-gray-200 px-4 py-3 bg-white">
+              <div className="flex items-end gap-2">
+                <textarea
+                  value={workroomInput}
+                  onChange={(e) => setWorkroomInput(e.target.value)}
+                  rows={2}
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                  placeholder="Talk to Analyst…"
+                />
+                <button
+                  type="button"
+                  onClick={sendWorkroom}
+                  disabled={workroomSending || !String(workroomInput || '').trim()}
+                  className="min-h-[44px] px-4 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
+                >
+                  {workroomSending ? '…' : 'Send'}
+                </button>
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                Nothing happens automatically — you stay in control.
+              </div>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );

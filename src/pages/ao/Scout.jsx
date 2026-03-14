@@ -693,10 +693,22 @@ export default function Scout() {
         <section className="mt-6 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">Chase list</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-1">Today’s hunt goals</h2>
               <p className="text-sm text-gray-600">
-                What Scout should chase next, based on your priorities and what you’ve posted recently.
+                Read-only mission brief for Scout (built from your priorities + what you’ve posted recently).
               </p>
+              {!chaseLoading && chase.length ? (
+                <div className="mt-1 text-xs text-gray-500">
+                  Updated:{' '}
+                  {new Date(
+                    Math.max(
+                      ...chase
+                        .map((c) => new Date(c.updated_at || c.created_at || 0).getTime())
+                        .filter((n) => Number.isFinite(n))
+                    )
+                  ).toLocaleString()}
+                </div>
+              ) : null}
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button
@@ -733,7 +745,7 @@ export default function Scout() {
             </div>
           ) : (
             <ul className="mt-4 space-y-2">
-              {chase.slice(0, 12).map((c) => (
+              {chase.slice(0, 10).map((c) => (
                 <li key={c.id} className="border border-gray-200 rounded p-3 bg-white">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="font-semibold text-gray-900">{c.topic}</div>
@@ -782,7 +794,7 @@ export default function Scout() {
           </section>
 
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Needs approval</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Extra suggestions (Scout)</h2>
             <p className="text-sm text-gray-600 mb-4">New domains Scout found while following leads. Approve to add them to your watched list.</p>
             {pendingSourcesError ? <p className="text-sm text-red-700 mb-3">{pendingSourcesError}</p> : null}
             {pendingSourcesLoading ? (

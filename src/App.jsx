@@ -419,8 +419,8 @@ export default function App() {
 
       // AO Automation Dashboard routes
       if (path === '/ao' || path === '/ao/') {
-        window.history.replaceState({}, '', '/ao/command-center');
-        setCurrentPage('ao-command-center');
+        window.history.replaceState({}, '', '/ao/analyst');
+        setCurrentPage('ao-review');
         return;
       }
       if (path === '/ao/login') {
@@ -432,7 +432,10 @@ export default function App() {
           setCurrentPage('ao-linkedin-handoff');
           return;
         }
-        if (path === '/ao/command-center') setCurrentPage('ao-command-center');
+        if (path === '/ao/command-center') {
+          window.history.replaceState({}, '', '/ao/analyst');
+          setCurrentPage('ao-review');
+        }
         else if (path === '/ao/scout') setCurrentPage('ao-scout');
         else if (path === '/ao/analyst') setCurrentPage('ao-review');
         else if (path === '/ao/studio') setCurrentPage('ao-writing');
@@ -449,8 +452,8 @@ export default function App() {
         else if (path === '/ao/writing') setCurrentPage('ao-writing');
         else if (path === '/ao/settings') setCurrentPage('ao-settings');
         else {
-          window.history.replaceState({}, '', '/ao/command-center');
-          setCurrentPage('ao-command-center');
+          window.history.replaceState({}, '', '/ao/analyst');
+          setCurrentPage('ao-review');
         }
         return;
       }

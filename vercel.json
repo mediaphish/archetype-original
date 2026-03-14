@@ -104,6 +104,8 @@
     { "src": "/api/ao/editorial/coverage", "dest": "/api/ao/editorial/coverage.js" },
     { "src": "/api/ao/editorial/chase-list", "dest": "/api/ao/editorial/chase-list.js" },
     { "src": "/api/ao/editorial/generate-chase-list", "dest": "/api/ao/editorial/generate-chase-list.js" },
+    { "src": "/api/ao/analyst/chat", "dest": "/api/ao/analyst/chat.js" },
+    { "src": "/api/ao/scout/hunt-goals", "dest": "/api/ao/scout/hunt-goals.js" },
     { "src": "/api/ao/scheduled-posts/([^/]+)", "dest": "/api/ao/scheduled-posts/[id].js?id=$1" },
     { "src": "/api/ao/scheduled-posts", "dest": "/api/ao/scheduled-posts.js" },
     { "src": "/api/ao/quotes/list", "dest": "/api/ao/quotes/list.js" },

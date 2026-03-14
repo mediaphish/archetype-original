@@ -7,7 +7,7 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { setAoSessionCookie } from '../../../lib/ao/requireAoSession.js';
 
 const loginPath = '/ao/login';
-const dashboardPath = '/ao/command-center';
+const dashboardPath = '/ao/analyst';
 
 function errorPage(title, message, linkHref, linkText) {
   return `
