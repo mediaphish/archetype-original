@@ -87,6 +87,16 @@ function normalizeGoActions(raw) {
   return out;
 }
 
+function normalizeExecution(raw) {
+  const x = raw && typeof raw === 'object' ? raw : {};
+  const shouldExecuteNow = !!x.should_execute_now;
+  const riskTierRaw = String(x.risk_tier || '').toLowerCase().trim();
+  const riskTier = riskTierRaw === 'high' ? 'high' : riskTierRaw === 'low' ? 'low' : 'none';
+  const why = safeText(x.why, 240);
+  const actions = normalizeGoActions(x.actions);
+  return { should_execute_now: shouldExecuteNow, risk_tier: riskTier, why, actions };
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -136,19 +146,28 @@ export default async function handler(req, res) {
     `- Ask at most ONE clarifying question when needed.`,
     `- Keep it aligned to AO worldview: leadership, teams, culture, accountability, trust, execution. No politics, no rage bait.`,
     `- Prefer suggestions and reasoning; do not force hard paths.`,
-    `- When proposing execution, offer “go actions” that are explicit and safe.`,
+    `- When Bart clearly asks you to do work, propose concrete actions and (when safe) mark them to execute now.`,
     ``,
     `Return ONLY JSON with exactly these keys:`,
     `- assistant_message (string)`,
     `- suggestions (string[], 0-6)`,
     `- go_actions (array of 0-4 objects: { label, action, payload })`,
+    `- execution (object: { should_execute_now, risk_tier, why, actions })`,
     ``,
     `Allowed go_actions.action values:`,
+    `- generate_studio_assets (payload: { only?: "quote_card" | "all" })`,
     `- approve_to_studio (payload: { studio_prompt })`,
     `- approve_to_publisher (payload: {})`,
     `- add_hunt_goal (payload: { topic, why })`,
     ``,
-    `If unsure, return no go_actions.`,
+    `Execution rules:`,
+    `- Decide whether the LATEST user message is asking you to DO WORK NOW (not just discuss).`,
+    `- If yes: set execution.should_execute_now = true and include 1-3 actions in execution.actions.`,
+    `- If no: set execution.should_execute_now = false and execution.actions = [].`,
+    `- risk_tier is "low" for safe reversible steps (drafts, routing to Studio, adding a hunt goal).`,
+    `- risk_tier is "high" only for public posting or irreversible steps (avoid those here).`,
+    ``,
+    `If unsure, return execution.should_execute_now=false and no actions.`,
   ].join('\n');
 
   const ctx = context?.kind === 'idea'
@@ -197,12 +216,14 @@ export default async function handler(req, res) {
   const assistantMessage = safeText(parsed.assistant_message, 5000);
   const suggestions = Array.isArray(parsed.suggestions) ? parsed.suggestions.map((s) => safeText(s, 220)).filter(Boolean).slice(0, 6) : [];
   const goActions = normalizeGoActions(parsed.go_actions);
+  const execution = normalizeExecution(parsed.execution);
 
   return res.status(200).json({
     ok: true,
     assistant_message: assistantMessage || '—',
     suggestions,
     go_actions: goActions,
+    execution,
   });
 }
 

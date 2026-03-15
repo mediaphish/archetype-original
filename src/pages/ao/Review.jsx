@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
-import AOStickyActions from '../../components/ao/AOStickyActions';
 
 function Pill({ tone = 'gray', children }) {
   const tones = {
@@ -37,37 +36,6 @@ function getParam(name) {
   }
 }
 
-function buildCritique(q) {
-  const good = [];
-  const weak = [];
-
-  const isInternal = !!q?.is_internal;
-  const link = safeUrl(q?.source_url || q?.source_slug_or_url);
-  if (link) good.push('Working source link.');
-  else if (isInternal) good.push('Internal source (trusted).');
-  else weak.push('Missing a working source link (hard to verify / trust).');
-
-  if (q?.pull_quote) good.push('Strong pull quote (the signal is clear).');
-  else if (q?.quote_text && String(q.quote_text).trim().length > 30) good.push('Signal text is present.');
-  else weak.push('Signal text is thin (hard to turn into a good post).');
-
-  const prepared = !!(q?.why_it_matters && q?.summary_interpretation && q?.ao_lane && q?.best_move);
-  if (prepared) good.push('Analyst brief is prepared (direction is clear).');
-
-  if (Array.isArray(q?.risk_flags) && q.risk_flags.length) {
-    weak.push(`Risk flags: ${q.risk_flags.slice(0, 4).map((x) => String(x)).join(', ')}${q.risk_flags.length > 4 ? '…' : ''}`);
-  }
-
-  if (q?.similarity_notes?.matches?.length) {
-    weak.push('Feels close to things you’ve already said (needs a fresh angle).');
-  }
-
-  const format = String(q?.studio_playbook?.primary_format || '').trim()
-    || (q?.best_move ? String(q.best_move).replace(/_/g, ' ') : '');
-
-  return { good, weak, link, prepared, format };
-}
-
 function moveLabel(move) {
   const m = String(move || '').toLowerCase().trim();
   const map = {
@@ -91,111 +59,51 @@ function safeText(x, max = 400) {
   return s.length > max ? `${s.slice(0, max)}…` : s;
 }
 
-function canRouteToPublisherNow(q, move) {
-  // Publisher is safest when we already have the core assets ready.
-  const m = String(move || '').toLowerCase().trim();
-  const lowRisk = !(Array.isArray(q?.risk_flags) && q.risk_flags.length);
-  const hasAnyDraft = !!(q?.drafts_by_channel && Object.values(q.drafts_by_channel || {}).some((v) => String(v || '').trim()));
-  const hasCard = !!q?.quote_card_svg;
-  const hasCaption = !!String(q?.quote_card_caption || '').trim();
-
-  if (!lowRisk) return false;
-  if (m === 'pull_quote_card') return hasCard && (hasCaption || hasAnyDraft);
-  if (m === 'third_party_summary') return hasAnyDraft;
-  return false;
+function whatItIsLabel(q) {
+  const kind = safeText(q?.content_kind, 40).toLowerCase();
+  if (kind) return kind.replace(/_/g, ' ');
+  if (q?.is_internal) return 'internal';
+  return 'signal';
 }
 
-function studioPromptForMove({ q, move, why, angle }) {
-  const m = String(move || '').toLowerCase().trim();
-  const pull = safeText(q?.pull_quote || q?.quote_text, 260);
-  const title = safeText(q?.source_title || q?.source_name, 200);
-  const lane = safeText(q?.ao_lane, 120);
-  const tags = Array.isArray(q?.topic_tags) ? q.topic_tags.slice(0, 6).join(', ') : '';
-  const angleLine = angle ? `Angle to take: ${safeText(angle, 220)}` : '';
-
-  const base = [
-    `We are turning one approved Analyst item into ready-to-publish outputs.`,
-    pull ? `Pull quote: "${pull}"` : '',
-    title ? `Source: ${title}` : '',
-    lane ? `Lane: ${lane}` : '',
-    tags ? `Tags: ${tags}` : '',
-    why ? `Analyst note: ${safeText(why, 260)}` : '',
-    angleLine,
-    '',
-  ].filter(Boolean).join('\n');
-
-  if (m === 'question_post') {
-    return `${base}Make this a question-style post that sparks the right comments (no rage bait). Draft for LinkedIn + Instagram + X with distinct wording per channel. Include an outputs_patch if you recommend changes.`;
-  }
-  if (m === 'third_party_summary') {
-    return `${base}Write a short, high-trust summary + interpretation with attribution (no long quotes). Draft for LinkedIn + Facebook + X with distinct wording per channel. Include an outputs_patch if you recommend changes.`;
-  }
-  if (m === 'pull_quote_card') {
-    return `${base}Produce a quote card + caption. If the quote card already exists, improve the caption and propose any edits via outputs_patch. Draft per-channel captions (LinkedIn/Instagram/Facebook/X) with distinct wording.`;
-  }
-  if (m === 'journal_topic') {
-    return `${base}Turn this into a journal seed: propose a strong title, outline, and a short hook that points to the full post. Also draft 2–3 short social teasers with distinct wording.`;
-  }
-  // Default: AO angle post
-  return `${base}Write a concise AO-style takeaway post (what it means + one practical move). Draft per-channel versions with distinct wording. Include an outputs_patch if you recommend changes.`;
-}
-
-function buildWaysToUse(q) {
-  const items = [];
-  const best = String(q?.best_move || '').trim();
-  const angles = Array.isArray(q?.studio_playbook?.angles) ? q.studio_playbook.angles : [];
-  const altMoves = Array.isArray(q?.alt_moves) ? q.alt_moves : [];
-
-  if (best && best !== 'discard') {
-    const why = safeText(q?.why_it_matters, 180);
-    items.push({
-      key: `best:${best}`,
-      label: moveLabel(best),
-      why: why || 'Recommended next step from Analyst.',
-      target: canRouteToPublisherNow(q, best) ? 'publisher' : 'studio',
-      move: best,
-      angle: null,
-    });
-  }
-
-  for (const m of altMoves) {
-    const move = safeText(m?.move, 40);
-    const why = safeText(m?.why, 220);
-    if (!move || move === best || move === 'discard') continue;
-    items.push({
-      key: `alt:${move}`,
-      label: moveLabel(move),
-      why: why || 'Alternate approach.',
-      target: canRouteToPublisherNow(q, move) ? 'publisher' : 'studio',
-      move,
-      angle: null,
-    });
-  }
-
-  for (const a of angles.slice(0, 3)) {
-    const angle = safeText(a, 240);
-    if (!angle) continue;
-    items.push({
-      key: `angle:${angle}`,
-      label: 'Take this angle',
-      why: angle,
-      target: 'studio',
-      move: best && best !== 'discard' ? best : 'ao_angle_post',
-      angle,
-    });
-  }
-
-  // De-dupe by label+why, keep the first 5.
-  const seen = new Set();
+function buildUseIdeasBullets(q) {
   const out = [];
-  for (const it of items) {
-    const k = `${it.label}::${it.why}`;
+
+  const best = safeText(q?.best_move, 40).toLowerCase();
+  if (best && best !== 'discard') out.push(moveLabel(best));
+
+  const angles = Array.isArray(q?.studio_playbook?.angles) ? q.studio_playbook.angles : [];
+  for (const a of angles.slice(0, 3)) {
+    const s = safeText(a, 220);
+    if (s) out.push(s);
+  }
+
+  const altMoves = Array.isArray(q?.alt_moves) ? q.alt_moves : [];
+  for (const m of altMoves.slice(0, 4)) {
+    const mv = safeText(m?.move, 40).toLowerCase();
+    const why = safeText(m?.why, 140);
+    if (!mv || mv === 'discard') continue;
+    out.push(why ? `${moveLabel(mv)} — ${why}` : moveLabel(mv));
+  }
+
+  const fallback = [
+    'Turn it into a short AO takeaway (what it means + one practical move).',
+    'Convert it into a self-audit question leaders can answer publicly.',
+    'Use it as a seed for a longer journal entry.',
+  ];
+  for (const f of fallback) out.push(f);
+
+  const seen = new Set();
+  const uniq = [];
+  for (const s of out) {
+    const k = String(s || '').trim().toLowerCase();
+    if (!k) continue;
     if (seen.has(k)) continue;
     seen.add(k);
-    out.push(it);
-    if (out.length >= 5) break;
+    uniq.push(String(s).trim());
+    if (uniq.length >= 5) break;
   }
-  return out;
+  return uniq;
 }
 
 const TABS = [
@@ -225,7 +133,6 @@ export default function Review() {
   const [actionMessage, setActionMessage] = useState('');
   const [briefPrep, setBriefPrep] = useState({ running: false, total: 0, done: 0 });
   const preparingRef = useRef(new Set());
-  const [mobileActiveQuoteId, setMobileActiveQuoteId] = useState(null);
 
   // Analyst Workroom (chat) — stored locally (per device) for MVP.
   const [workroomOpen, setWorkroomOpen] = useState(false);
@@ -235,6 +142,7 @@ export default function Review() {
   const [workroomMessages, setWorkroomMessages] = useState([]);
   const [workroomInput, setWorkroomInput] = useState('');
   const [workroomSending, setWorkroomSending] = useState(false);
+  const [workroomExecuting, setWorkroomExecuting] = useState(false);
   const [workroomError, setWorkroomError] = useState('');
   const [workroomDraftTitle, setWorkroomDraftTitle] = useState('');
   const [workroomDraftText, setWorkroomDraftText] = useState('');
@@ -288,6 +196,98 @@ export default function Review() {
     } catch (_) {}
   }, [workroomStorageKey]);
 
+  const appendWorkroomMessage = useCallback((kind, id, msg) => {
+    if (!kind || !id) return;
+    setWorkroomMessages((prev) => {
+      const next = [...(Array.isArray(prev) ? prev : []), msg];
+      saveWorkroomMessages(kind, id, next);
+      return next;
+    });
+  }, [saveWorkroomMessages]);
+
+  const runWorkroomAction = useCallback(async (a) => {
+    const action = String(a?.action || '').trim();
+    const payload = a?.payload && typeof a.payload === 'object' ? a.payload : {};
+
+    if (workroomKind !== 'quote' || !workroomId) {
+      return { ok: false, message: 'This action is only available for quote threads right now.' };
+    }
+
+    if (action === 'generate_studio_assets') {
+      const only = String(payload?.only || '').trim().toLowerCase();
+      const qs = only === 'quote_card' ? '?only=quote_card' : '';
+      const res = await fetch(`/api/ao/quotes/${encodeURIComponent(workroomId)}/studio-assets${qs}`, { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) return { ok: false, message: json.error || 'Could not generate Studio assets.' };
+      return { ok: true, message: only === 'quote_card' ? 'Quote card refreshed.' : 'Drafts (and quote card when needed) are ready.' };
+    }
+
+    if (action === 'approve_to_studio') {
+      const studioPrompt = String(payload?.studio_prompt || '').trim();
+      act('quote-approve', workroomId, { next_stage: 'studio', studio_prompt: studioPrompt });
+      return { ok: true, message: 'Sending to Studio…' };
+    }
+
+    if (action === 'approve_to_publisher') {
+      act('quote-approve', workroomId, { next_stage: 'publisher', go_to_publisher: true });
+      return { ok: true, message: 'Sending to Publisher…' };
+    }
+
+    if (action === 'add_hunt_goal') {
+      const topic = String(payload?.topic || '').trim();
+      const why = String(payload?.why || '').trim();
+      if (!topic) return { ok: false, message: 'Missing a hunt goal topic.' };
+      const res = await fetch('/api/ao/scout/hunt-goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic, why }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) return { ok: false, message: json.error || 'Could not add hunt goal.' };
+      return { ok: true, message: 'Added a hunt goal for Scout.' };
+    }
+
+    return { ok: false, message: 'Unknown action.' };
+  }, [workroomKind, workroomId, act]);
+
+  const runWorkroomExecution = useCallback(async ({ execution, fallbackActions }) => {
+    const should = !!execution?.should_execute_now;
+    if (!should) return;
+
+    const actions = Array.isArray(execution?.actions) && execution.actions.length
+      ? execution.actions
+      : (Array.isArray(fallbackActions) ? fallbackActions : []);
+
+    if (!actions.length) return;
+
+    const risk = String(execution?.risk_tier || '').toLowerCase().trim();
+    if (risk === 'high') {
+      const ok = window.confirm('This is a public or hard-to-undo step. Run it now?');
+      if (!ok) return;
+    }
+
+    if (workroomExecuting) return;
+    setWorkroomExecuting(true);
+    try {
+      appendWorkroomMessage(workroomKind, workroomId, {
+        role: 'assistant',
+        at: new Date().toISOString(),
+        content: 'Working…',
+      });
+      for (const a of actions.slice(0, 3)) {
+        const r = await runWorkroomAction(a);
+        appendWorkroomMessage(workroomKind, workroomId, {
+          role: 'assistant',
+          at: new Date().toISOString(),
+          content: r.ok ? String(r.message || 'Done.') : `Could not do that: ${String(r.message || 'Error')}`,
+        });
+        if (!r.ok) break;
+      }
+    } finally {
+      setWorkroomExecuting(false);
+    }
+  }, [appendWorkroomMessage, runWorkroomAction, workroomExecuting, workroomKind, workroomId]);
+
   const sendWorkroom = useCallback(async () => {
     if (!authChecked) return;
     if (!workroomOpen) return;
@@ -327,12 +327,13 @@ export default function Review() {
       const after = [...nextMessages, assistant];
       setWorkroomMessages(after);
       saveWorkroomMessages(workroomKind, workroomId, after);
+      await runWorkroomExecution({ execution: json.execution, fallbackActions: assistant.go_actions });
     } catch (e) {
       setWorkroomError(e.message || 'Could not send message');
     } finally {
       setWorkroomSending(false);
     }
-  }, [authChecked, workroomOpen, workroomKind, workroomId, workroomInput, workroomSending, workroomMessages, saveWorkroomMessages]);
+  }, [authChecked, workroomOpen, workroomKind, workroomId, workroomInput, workroomSending, workroomMessages, saveWorkroomMessages, runWorkroomExecution]);
 
   const createIdeaAndStartWorkroom = useCallback(async () => {
     if (!authChecked) return;
@@ -378,12 +379,13 @@ export default function Review() {
       const after = [...seed, assistant];
       setWorkroomMessages(after);
       saveWorkroomMessages('idea', ideaId, after);
+      await runWorkroomExecution({ execution: chatJson.execution, fallbackActions: assistant.go_actions });
     } catch (e) {
       setWorkroomError(e.message || 'Could not create idea');
     } finally {
       setWorkroomCreating(false);
     }
-  }, [authChecked, workroomCreating, workroomDraftText, workroomDraftTitle, saveWorkroomMessages]);
+  }, [authChecked, workroomCreating, workroomDraftText, workroomDraftTitle, saveWorkroomMessages, runWorkroomExecution]);
 
   useEffect(() => {
     let cancelled = false;
@@ -601,10 +603,6 @@ export default function Review() {
   const pendingWriting = writing.filter((w) => w.status === 'pending' || w.status === 'drafting');
 
   useEffect(() => {
-    setMobileActiveQuoteId(null);
-  }, [activeTab]);
-
-  useEffect(() => {
     // If URL includes ?open=<id>, open Workroom for that quote (best-effort).
     const open = getParam('open');
     if (!open) return;
@@ -616,19 +614,6 @@ export default function Review() {
     }
   }, [quotes, heldQuotes, openWorkroomForQuote]);
 
-  useEffect(() => {
-    if (!mobileActiveQuoteId) return;
-    const current = activeTab === 'social' ? pendingQuotes : activeTab === 'held' ? heldList : [];
-    const exists = Array.isArray(current) && current.some((q) => String(q?.id) === String(mobileActiveQuoteId));
-    if (!exists) setMobileActiveQuoteId(null);
-  }, [mobileActiveQuoteId, activeTab, pendingQuotes, heldList]);
-
-  const mobileActiveQuote =
-    activeTab === 'social'
-      ? pendingQuotes.find((q) => String(q?.id) === String(mobileActiveQuoteId))
-      : activeTab === 'held'
-        ? heldList.find((q) => String(q?.id) === String(mobileActiveQuoteId))
-        : null;
 
   const canPrev = pageOffset > 0;
   const canNext = typeof quotesPage.total === 'number' ? (pageOffset + pageSize) < quotesPage.total : pendingQuotes.length === pageSize;
@@ -749,483 +734,56 @@ export default function Review() {
               ) : (
                 <ul className="space-y-4">
                   {pendingQuotes.map((q) => (
-                    <li
-                      key={q.id}
-                      className={[
-                        'border rounded p-4',
-                        String(q.id) === String(mobileActiveQuoteId) ? 'border-blue-300 bg-blue-50/30' : 'border-gray-200',
-                      ].join(' ')}
-                      onClick={(e) => {
-                        const t = e.target;
-                        if (t && typeof t.closest === 'function') {
-                          if (t.closest('button,a,input,textarea,select,summary,details,label')) return;
-                        }
-                        setMobileActiveQuoteId(q.id);
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') setMobileActiveQuoteId(q.id);
-                      }}
-                      aria-label="Select this item for quick actions"
-                    >
-                      {/** Decision-ready brief (above the fold) */}
-                      {(() => {
-                        const crit = buildCritique(q);
-                        const trailFrom = safeUrl(q?.scout_discovered_from_url);
-                        const watched = safeUrl(q?.scout_watched_source_url);
-                        return (
-                          <>
-                      <div className="mb-2 text-sm text-gray-800 hidden md:block">
-                        <span className="font-semibold">Source:</span>{' '}
-                        <span className="font-medium">
+                    <li key={q.id} className="border border-gray-200 rounded p-4 bg-white">
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">{whatItIsLabel(q)}</div>
+
+                      <div className="mt-1 text-base font-semibold text-gray-900">
+                        {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
+                      </div>
+
+                      <div className="mt-1 text-sm text-gray-700">
+                        <span className="font-medium text-gray-900">
                           {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
                         </span>
-                        {q.source_title ? <span> — “{q.source_title}”</span> : null}
-                        {crit.link ? (
-                          <span>
+                        {safeUrl(q.source_url || q.source_slug_or_url) ? (
+                          <>
                             {' '}
+                            ·{' '}
                             <a
                               className="text-blue-700 hover:underline"
-                              href={crit.link}
+                              href={safeUrl(q.source_url || q.source_slug_or_url)}
                               target="_blank"
                               rel="noreferrer"
                             >
-                              (link)
+                              open
                             </a>
-                          </span>
+                          </>
                         ) : null}
                       </div>
-                      {(watched || trailFrom) ? (
-                        <div className="mb-2 text-xs text-gray-600 hidden md:block">
-                          <span className="font-semibold">Scout trail:</span>{' '}
-                          {watched ? (
-                            <a className="text-blue-700 hover:underline" href={watched} target="_blank" rel="noreferrer">
-                              watched source
-                            </a>
-                          ) : (
-                            <span>watched source</span>
-                          )}
-                          {trailFrom && (!watched || trailFrom !== watched) ? (
-                            <>
-                              {' '}
-                              →{' '}
-                              <a className="text-blue-700 hover:underline" href={trailFrom} target="_blank" rel="noreferrer">
-                                followed lead
-                              </a>
-                            </>
-                          ) : null}
-                        </div>
-                      ) : null}
-                      <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                        <div className="min-w-0">
-                          <h3 className="text-base font-semibold text-gray-900">
-                            {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
-                          </h3>
-                          {q.ao_lane || (Array.isArray(q.topic_tags) && q.topic_tags.length) || q.content_kind ? (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {q.content_kind ? <Pill tone="gray">{String(q.content_kind).replace(/_/g, ' ')}</Pill> : null}
-                              {q.ao_lane ? <Pill tone="blue">Theme: {q.ao_lane}</Pill> : null}
-                              {Array.isArray(q.topic_tags) ? q.topic_tags.slice(0, 6).map((t, idx) => (
-                                <Pill key={idx} tone="gray">{String(t)}</Pill>
-                              )) : null}
-                            </div>
-                          ) : null}
-                          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-600">
-                            <span className="truncate max-w-[520px]">
-                              {q.source_name ? <span className="font-medium text-gray-700">{q.source_name}</span> : null}
-                              {q.source_author ? <span> · {q.source_author}</span> : null}
-                              {q.source_published_at ? <span> · {new Date(q.source_published_at).toLocaleDateString()}</span> : null}
-                            </span>
-                            {safeUrl(q.source_url) ? (
-                              <a className="text-blue-600 hover:underline" href={safeUrl(q.source_url)} target="_blank" rel="noreferrer">
-                                Open source
-                              </a>
-                            ) : null}
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          {q.best_move ? <Pill tone="blue">{String(q.best_move).replace(/_/g, ' ')}</Pill> : null}
-                          {Array.isArray(q.risk_flags) && q.risk_flags.length ? (
-                            <Pill tone="yellow">{q.risk_flags.length} risk flag{q.risk_flags.length === 1 ? '' : 's'}</Pill>
-                          ) : (
-                            <Pill tone="green">low risk</Pill>
-                          )}
+
+                      <div className="mt-3">
+                        <div className="text-xs font-semibold text-gray-900">Why it matters for AO</div>
+                        <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
+                          {q.why_it_matters ? q.why_it_matters : 'Preparing…'}
                         </div>
                       </div>
 
-                      <div className="hidden md:block">
-                        {q.pull_quote ? (
-                          <blockquote className="border-l-4 border-gray-900 pl-4 py-1 mb-3">
-                            <p className="text-gray-900 font-medium whitespace-pre-wrap">{q.pull_quote}</p>
-                          </blockquote>
-                        ) : (
-                          <p className="text-gray-800 mb-3">{q.quote_text?.slice(0, 260)}{q.quote_text?.length > 260 ? '…' : ''}</p>
-                        )}
+                      <div className="mt-3">
+                        <div className="text-xs font-semibold text-gray-900">Ideas for how to use it</div>
+                        <ul className="mt-1 text-sm text-gray-800 space-y-1">
+                          {buildUseIdeasBullets(q).map((x, idx) => (
+                            <li key={idx} className="whitespace-pre-wrap">- {x}</li>
+                          ))}
+                        </ul>
                       </div>
 
-                      {q.why_it_matters ? (
-                        <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap md:whitespace-pre-wrap line-clamp-4 md:line-clamp-none">{q.why_it_matters}</p>
-                      ) : null}
-
-                      <div className="mb-3 hidden md:grid gap-3 md:grid-cols-3">
-                        <div className="md:col-span-1">
-                          <p className="text-xs font-semibold text-gray-900 mb-1">What’s good</p>
-                          <ul className="text-xs text-gray-700 space-y-1">
-                            {(crit.good.length ? crit.good : ['No clear strengths yet.']).slice(0, 4).map((x, idx) => (
-                              <li key={idx}>- {x}</li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="md:col-span-1">
-                          <p className="text-xs font-semibold text-gray-900 mb-1">What’s weak</p>
-                          <ul className="text-xs text-gray-700 space-y-1">
-                            {(crit.weak.length ? crit.weak : ['No obvious weaknesses flagged.']).slice(0, 4).map((x, idx) => (
-                              <li key={idx}>- {x}</li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="md:col-span-1">
-                          <p className="text-xs font-semibold text-gray-900 mb-1">Recommended next step</p>
-                          <div className="text-sm text-gray-900">
-                            {crit.format ? (
-                              <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-800 border-blue-200">
-                                {crit.format}
-                              </span>
-                            ) : (
-                              <span className="text-xs text-gray-600">Preparing direction…</span>
-                            )}
-                          </div>
-                          {q?.studio_playbook?.goal ? (
-                            <p className="text-xs text-gray-600 mt-2">
-                              Goal: <span className="font-medium text-gray-800">{q.studio_playbook.goal}</span>
-                              {q.studio_playbook.goal_rationale ? <span> — {q.studio_playbook.goal_rationale}</span> : null}
-                            </p>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      <div className="mb-3 border border-gray-200 rounded bg-gray-50 p-3">
-                        <div className="text-sm font-medium text-gray-800">Ways to use this</div>
-                        <div className="hidden md:block">
-                          {q.summary_interpretation ? (
-                            <p className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">{q.summary_interpretation}</p>
-                          ) : (
-                            <p className="mt-2 text-sm text-gray-600">Preparing the summary + interpretation…</p>
-                          )}
-                        </div>
-
-                        {(() => {
-                          const ways = buildWaysToUse(q);
-                          if (!ways.length) return null;
-                          return (
-                            <div className="mt-3 border-t border-gray-200 pt-3">
-                              <p className="text-xs font-semibold text-gray-900 mb-2">Ways to use this</p>
-                              <div className="grid gap-2">
-                                {ways.map((w) => {
-                                  const prompt = studioPromptForMove({ q, move: w.move, why: w.why, angle: w.angle });
-                                  const isStudio = w.target === 'studio';
-                                  return (
-                                    <div key={w.key} className="rounded border border-gray-200 bg-white p-3">
-                                      <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                          <div className="text-sm font-semibold text-gray-900">{w.label}</div>
-                                          <div className="mt-1 text-xs text-gray-700 whitespace-pre-wrap">{w.why}</div>
-                                        </div>
-                                        <div className="shrink-0">
-                                          {isStudio ? (
-                                            <button
-                                              type="button"
-                                              disabled={acting === q.id}
-                                              onClick={() => act('quote-approve', q.id, { next_stage: 'studio', studio_prompt: prompt })}
-                                              className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
-                                            >
-                                              Studio
-                                            </button>
-                                          ) : (
-                                            <button
-                                              type="button"
-                                              disabled={acting === q.id}
-                                              onClick={() => act('quote-approve', q.id, { next_stage: 'publisher', go_to_publisher: true })}
-                                              className="min-h-[44px] px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 disabled:opacity-50"
-                                            >
-                                              Publisher
-                                            </button>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                              <div className="mt-2 text-xs text-gray-500">
-                                Tapping a Studio option opens Studio with the instruction pre-filled.
-                              </div>
-                            </div>
-                          );
-                        })()}
-
-                        <div className="hidden md:block">
-                          {Array.isArray(q?.studio_playbook?.angles) && q.studio_playbook.angles.length ? (
-                            <div className="mt-3">
-                              <p className="text-xs font-medium text-gray-700 mb-1">Angles</p>
-                              <ul className="text-xs text-gray-700 space-y-1">
-                                {q.studio_playbook.angles.slice(0, 3).map((a, idx) => <li key={idx}>- {a}</li>)}
-                              </ul>
-                            </div>
-                          ) : null}
-                          {Array.isArray(q?.studio_playbook?.alignment_flags) && q.studio_playbook.alignment_flags.length ? (
-                            <div className="mt-3">
-                              <p className="text-xs font-medium text-gray-700 mb-1">Alignment flags</p>
-                              <ul className="text-xs text-amber-900 space-y-1">
-                                {q.studio_playbook.alignment_flags.slice(0, 6).map((a, idx) => <li key={idx}>- {a}</li>)}
-                              </ul>
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      <div className="mt-2 md:hidden">
-                        <div className="grid grid-cols-3 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => openWorkroomForQuote(q)}
-                            className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
-                          >
-                            Discuss
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const reason = window.prompt('Why are you holding this? (required)', '');
-                              if (!reason || !String(reason).trim()) return;
-                              act('quote-hold', q.id, { reason: String(reason).trim() });
-                            }}
-                            disabled={acting === q.id}
-                            className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
-                          >
-                            Hold
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => act('quote-reject', q.id)}
-                            disabled={acting === q.id}
-                            className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </div>
-
-                      <details className="mb-3 border border-gray-200 rounded bg-white p-3">
-                        <summary className="cursor-pointer text-sm font-medium text-gray-800">More details (source excerpt, similarity, drafts)</summary>
-                        <div className="mt-3 space-y-4">
-                          {q.source_excerpt ? (
-                            <div>
-                              <p className="text-xs font-medium text-gray-700 mb-1">Source excerpt</p>
-                              <p className="text-xs text-gray-700 whitespace-pre-wrap">{q.source_excerpt}</p>
-                            </div>
-                          ) : null}
-
-                          {q.suggested_schedule?.slots?.length ? (
-                            <div className="text-xs text-gray-600">
-                              <span className="font-medium text-gray-700">Suggested timing:</span>{' '}
-                              {q.suggested_schedule.slots.slice(0, 3).map((s, idx) => (
-                                <span key={idx} className="mr-2">
-                                  {s.kind || 'slot'}: {s.recommended_at_utc ? new Date(s.recommended_at_utc).toLocaleString() : '—'}
-                                </span>
-                              ))}
-                            </div>
-                          ) : null}
-
-                          {q.similarity_notes?.scheduling_hint ? (
-                            <div className="text-xs text-gray-700">
-                              <span className="font-medium text-gray-800">Scheduling hint:</span>{' '}
-                              {q.similarity_notes.scheduling_hint}
-                            </div>
-                          ) : null}
-
-                          {q.similarity_notes?.matches?.length ? (
-                            <div>
-                              <p className="text-xs font-medium text-gray-700 mb-2">We’ve said this before (closest AO matches)</p>
-                              <ul className="space-y-2">
-                                {q.similarity_notes.matches.slice(0, 3).map((m, idx) => (
-                                  <li key={idx} className="text-xs text-gray-700">
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-medium text-gray-900">{m.title || 'AO post'}</span>
-                                      {safeUrl(m.url) ? (
-                                        <a className="text-blue-600 hover:underline" href={safeUrl(m.url)} target="_blank" rel="noreferrer">
-                                          Open
-                                        </a>
-                                      ) : null}
-                                    </div>
-                                    {m.excerpt ? <p className="text-xs text-gray-600 mt-1">{m.excerpt}</p> : null}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-
-                          {Array.isArray(q.similarity_notes?.recent_posts) && q.similarity_notes.recent_posts.length ? (
-                            <div>
-                              <p className="text-xs font-medium text-gray-700 mb-2">Recently posted (possible repeat)</p>
-                              <ul className="space-y-2">
-                                {q.similarity_notes.recent_posts.slice(0, 3).map((p, idx) => (
-                                  <li key={idx} className="text-xs text-gray-700">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <span className="font-medium text-gray-900">{p.title || 'Posted item'}</span>
-                                      {p.platform ? <span className="text-gray-500">({p.platform})</span> : null}
-                                      {p.published_at ? <span className="text-gray-500">{new Date(p.published_at).toLocaleDateString()}</span> : null}
-                                    </div>
-                                    {Array.isArray(p.topic_tags) && p.topic_tags.length ? (
-                                      <div className="mt-1 text-xs text-gray-500">Tags: {p.topic_tags.slice(0, 6).join(', ')}</div>
-                                    ) : null}
-                                  </li>
-                                ))}
-                              </ul>
-                              {q.similarity_notes?.fresh_angle_suggestion ? (
-                                <div className="mt-2 text-xs text-gray-700">
-                                  <span className="font-medium text-gray-800">Fresh angle suggestion:</span>{' '}
-                                  {q.similarity_notes.fresh_angle_suggestion}
-                                </div>
-                              ) : null}
-                              <div className="mt-2 text-xs text-gray-500">This is a soft warning. If you still want it, Studio should take a fresh angle.</div>
-                            </div>
-                          ) : null}
-
-                          {q.quote_card_svg ? (
-                            <div>
-                              <p className="text-xs font-medium text-gray-700 mb-2">AO quote card preview</p>
-                              <div className="border border-gray-200 rounded bg-white p-2 overflow-auto">
-                                <div dangerouslySetInnerHTML={{ __html: q.quote_card_svg }} />
-                              </div>
-                              {q.quote_card_caption ? (
-                                <p className="mt-2 text-xs text-gray-700 whitespace-pre-wrap">
-                                  <span className="font-medium text-gray-800">Caption:</span> {q.quote_card_caption}
-                                </p>
-                              ) : null}
-                            </div>
-                          ) : null}
-
-                          {q.alt_moves ? (
-                            <div>
-                              <p className="text-xs font-medium text-gray-700 mb-2">Alternate moves</p>
-                              {Array.isArray(q.alt_moves) && q.alt_moves.length ? (
-                                <div className="space-y-2">
-                                  {q.alt_moves.slice(0, 6).map((m, idx) => {
-                                    const mv = safeText(m?.move, 40);
-                                    const why = safeText(m?.why, 240);
-                                    if (!mv) return null;
-                                    const prompt = studioPromptForMove({ q, move: mv, why });
-                                    const allowPublisher = canRouteToPublisherNow(q, mv);
-                                    return (
-                                      <div key={`${mv}:${idx}`} className="rounded border border-gray-200 bg-gray-50 p-3">
-                                        <div className="flex items-start justify-between gap-3">
-                                          <div className="min-w-0">
-                                            <div className="text-sm font-semibold text-gray-900">{moveLabel(mv)}</div>
-                                            {why ? <div className="mt-1 text-xs text-gray-700 whitespace-pre-wrap">{why}</div> : null}
-                                          </div>
-                                          <div className="shrink-0 flex flex-wrap gap-2">
-                                            <button
-                                              type="button"
-                                              disabled={acting === q.id}
-                                              onClick={() => act('quote-approve', q.id, { next_stage: 'studio', studio_prompt: prompt })}
-                                              className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
-                                            >
-                                              Work in Studio
-                                            </button>
-                                            {allowPublisher ? (
-                                              <button
-                                                type="button"
-                                                disabled={acting === q.id}
-                                                onClick={() => act('quote-approve', q.id, { next_stage: 'publisher', go_to_publisher: true })}
-                                                className="min-h-[44px] px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 disabled:opacity-50"
-                                              >
-                                                Route to Publisher
-                                              </button>
-                                            ) : null}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                <div className="text-xs text-gray-600">No alternate moves yet.</div>
-                              )}
-                            </div>
-                          ) : null}
-
-                          {q.drafts_by_channel && (
-                            <div>
-                              <p className="text-xs font-medium text-gray-700 mb-2">Channel drafts</p>
-                              <div className="grid gap-3 md:grid-cols-2">
-                                {['linkedin', 'facebook', 'instagram', 'x'].map((ch) => {
-                                  const text = q.drafts_by_channel?.[ch] || '';
-                                  const tags = q.hashtags_by_channel?.[ch] || [];
-                                  const fc = q.first_comment_suggestions?.[ch] || null;
-                                  if (!text) return null;
-                                  return (
-                                    <div key={ch} className="border border-gray-200 rounded bg-white p-3">
-                                      <div className="flex items-center justify-between">
-                                        <span className="text-xs uppercase tracking-wide text-gray-500">{ch}</span>
-                                        <button
-                                          type="button"
-                                          onClick={async () => {
-                                            try {
-                                              await navigator.clipboard.writeText(
-                                                text +
-                                                  (tags?.length ? `\n\n${tags.map((t) => (String(t).startsWith('#') ? t : `#${t}`)).join(' ')}` : '')
-                                              );
-                                            } catch (_) {}
-                                          }}
-                                          className="text-xs text-blue-600 hover:underline"
-                                        >
-                                          Copy
-                                        </button>
-                                      </div>
-                                      <p className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">{text}</p>
-                                      {Array.isArray(tags) && tags.length > 0 && (
-                                        <p className="mt-2 text-xs text-gray-600">{tags.map((t) => (String(t).startsWith('#') ? t : `#${t}`)).join(' ')}</p>
-                                      )}
-                                      {fc && (
-                                        <div className="mt-2">
-                                          <p className="text-xs font-medium text-gray-700">First comment (optional)</p>
-                                          <p className="text-xs text-gray-700 whitespace-pre-wrap">{fc}</p>
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </details>
-                      <div className="hidden md:flex gap-2">
+                      <div className="mt-4 grid grid-cols-3 gap-2">
                         <button
                           type="button"
-                          onClick={() => act('quote-brief', q.id)}
-                          disabled={acting === q.id}
-                          className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+                          onClick={() => openWorkroomForQuote(q)}
+                          className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
                         >
-                          Refresh brief
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => act('quote-approve', q.id, { next_stage: 'studio' })}
-                          disabled={acting === q.id}
-                          className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
-                        >
-                          {acting === q.id ? 'Working…' : 'Approve → Studio'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => act('quote-approve', q.id, { next_stage: 'publisher' })}
-                          disabled={acting === q.id}
-                          className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
-                        >
-                          Approve → Publisher
+                          Discuss
                         </button>
                         <button
                           type="button"
@@ -1235,15 +793,19 @@ export default function Review() {
                             act('quote-hold', q.id, { reason: String(reason).trim() });
                           }}
                           disabled={acting === q.id}
-                          className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 disabled:opacity-50"
+                          className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
                         >
                           Hold
                         </button>
-                        <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-reject', q.id)}
+                          disabled={acting === q.id}
+                          className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
+                        >
+                          Reject
+                        </button>
                       </div>
-                          </>
-                        );
-                      })()}
                     </li>
                   ))}
                 </ul>
@@ -1283,113 +845,74 @@ export default function Review() {
               ) : (
                 <ul className="space-y-4">
                   {heldList.map((q) => (
-                    <li
-                      key={q.id}
-                      className={[
-                        'border rounded p-4',
-                        String(q.id) === String(mobileActiveQuoteId) ? 'border-blue-300 bg-blue-50/30' : 'border-gray-200',
-                      ].join(' ')}
-                      onClick={(e) => {
-                        const t = e.target;
-                        if (t && typeof t.closest === 'function') {
-                          if (t.closest('button,a,input,textarea,select,summary,details,label')) return;
-                        }
-                        setMobileActiveQuoteId(q.id);
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') setMobileActiveQuoteId(q.id);
-                      }}
-                      aria-label="Select this item for quick actions"
-                    >
-                      {(() => {
-                        const crit = buildCritique(q);
-                        const trailFrom = safeUrl(q?.scout_discovered_from_url);
-                        const watched = safeUrl(q?.scout_watched_source_url);
-                        return (
-                          <>
-                      <div className="mb-2 text-sm text-gray-800">
-                        <span className="font-semibold">Source:</span>{' '}
-                        <span className="font-medium">
+                    <li key={q.id} className="border border-gray-200 rounded p-4 bg-white">
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">{whatItIsLabel(q)}</div>
+
+                      <div className="mt-1 text-base font-semibold text-gray-900">
+                        {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
+                      </div>
+
+                      <div className="mt-1 text-sm text-gray-700">
+                        <span className="font-medium text-gray-900">
                           {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
                         </span>
-                        {q.source_title ? <span> — “{q.source_title}”</span> : null}
-                        {crit.link ? (
-                          <span>
+                        {safeUrl(q.source_url || q.source_slug_or_url) ? (
+                          <>
                             {' '}
-                            <a className="text-blue-700 hover:underline" href={crit.link} target="_blank" rel="noreferrer">(link)</a>
-                          </span>
+                            ·{' '}
+                            <a
+                              className="text-blue-700 hover:underline"
+                              href={safeUrl(q.source_url || q.source_slug_or_url)}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              open
+                            </a>
+                          </>
                         ) : null}
                       </div>
-                      {(watched || trailFrom) ? (
-                        <div className="mb-2 text-xs text-gray-600">
-                          <span className="font-semibold">Scout trail:</span>{' '}
-                          {watched ? (
-                            <a className="text-blue-700 hover:underline" href={watched} target="_blank" rel="noreferrer">
-                              watched source
-                            </a>
-                          ) : (
-                            <span>watched source</span>
-                          )}
-                          {trailFrom && (!watched || trailFrom !== watched) ? (
-                            <>
-                              {' '}
-                              →{' '}
-                              <a className="text-blue-700 hover:underline" href={trailFrom} target="_blank" rel="noreferrer">
-                                followed lead
-                              </a>
-                            </>
-                          ) : null}
+
+                      <div className="mt-3">
+                        <div className="text-xs font-semibold text-gray-900">Why it matters for AO</div>
+                        <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
+                          {q.why_it_matters ? q.why_it_matters : 'Preparing…'}
                         </div>
-                      ) : null}
-                      <div className="flex items-center justify-between gap-3 mb-2">
-                        <h3 className="text-base font-semibold text-gray-900">{q.source_title || q.source_name || 'Held item'}</h3>
-                        <Pill tone="gray">held</Pill>
                       </div>
-                      {q.pull_quote ? (
-                        <blockquote className="border-l-4 border-gray-900 pl-4 py-1 mb-3">
-                          <p className="text-gray-900 font-medium whitespace-pre-wrap">{q.pull_quote}</p>
-                        </blockquote>
-                      ) : (
-                        <p className="text-gray-800 mb-3">{q.quote_text?.slice(0, 260)}{q.quote_text?.length > 260 ? '…' : ''}</p>
-                      )}
-                      {q.hold_reason ? (
-                        <div className="mb-3 p-3 rounded border border-amber-200 bg-amber-50 text-amber-900 text-sm">
-                          <span className="font-semibold">Hold reason:</span> {q.hold_reason}
-                        </div>
-                      ) : null}
-                      <div className="hidden md:flex gap-2">
-                        <button type="button" onClick={() => act('quote-unhold', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Unhold</button>
-                        <button
-                          type="button"
-                          onClick={() => act('quote-brief', q.id)}
-                          disabled={acting === q.id}
-                          className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50 disabled:opacity-50"
-                        >
-                          Refresh brief
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => act('quote-approve', q.id, { next_stage: 'studio' })}
-                          disabled={acting === q.id}
-                          className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
-                        >
-                          {acting === q.id ? 'Working…' : 'Approve → Studio'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => act('quote-approve', q.id, { next_stage: 'publisher' })}
-                          disabled={acting === q.id}
-                          className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
-                        >
-                          Approve → Publisher
-                        </button>
-                        <button type="button" onClick={() => act('quote-reject', q.id)} disabled={acting === q.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
+
+                      <div className="mt-3">
+                        <div className="text-xs font-semibold text-gray-900">Ideas for how to use it</div>
+                        <ul className="mt-1 text-sm text-gray-800 space-y-1">
+                          {buildUseIdeasBullets(q).map((x, idx) => (
+                            <li key={idx} className="whitespace-pre-wrap">- {x}</li>
+                          ))}
+                        </ul>
                       </div>
-                          </>
-                        );
-                      })()}
+
+                      <div className="mt-4 grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openWorkroomForQuote(q)}
+                          className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+                        >
+                          Discuss
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-unhold', q.id)}
+                          disabled={acting === q.id}
+                          className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
+                        >
+                          Unhold
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => act('quote-reject', q.id)}
+                          disabled={acting === q.id}
+                          className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
+                        >
+                          Reject
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -1439,63 +962,6 @@ export default function Review() {
           )}
         </div>
       </main>
-
-      {(activeTab === 'social' || activeTab === 'held') && mobileActiveQuote?.id ? (
-        <AOStickyActions>
-          <div className="flex items-center justify-between gap-3 mb-2">
-            <div className="text-xs text-gray-600 truncate">
-              <span className="font-semibold text-gray-900">Selected:</span>{' '}
-              {mobileActiveQuote.source_title || mobileActiveQuote.source_name || (mobileActiveQuote.is_internal ? 'AO internal' : 'External')}
-            </div>
-            <button
-              type="button"
-              onClick={() => act('quote-brief', mobileActiveQuote.id)}
-              disabled={acting === mobileActiveQuote.id}
-              className="min-h-[44px] px-3 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
-            >
-              Refresh brief
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => act('quote-approve', mobileActiveQuote.id, { next_stage: 'studio' })}
-              disabled={acting === mobileActiveQuote.id}
-              className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
-            >
-              Approve → Studio
-            </button>
-            <button
-              type="button"
-              onClick={() => act('quote-approve', mobileActiveQuote.id, { next_stage: 'publisher' })}
-              disabled={acting === mobileActiveQuote.id}
-              className="min-h-[44px] px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 disabled:opacity-50"
-            >
-              Approve → Publisher
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                const reason = window.prompt('Why are you holding this? (required)', '');
-                if (!reason || !String(reason).trim()) return;
-                act('quote-hold', mobileActiveQuote.id, { reason: String(reason).trim() });
-              }}
-              disabled={acting === mobileActiveQuote.id}
-              className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
-            >
-              Hold
-            </button>
-            <button
-              type="button"
-              onClick={() => act('quote-reject', mobileActiveQuote.id)}
-              disabled={acting === mobileActiveQuote.id}
-              className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
-            >
-              Reject
-            </button>
-          </div>
-        </AOStickyActions>
-      ) : null}
 
       {workroomOpen ? (
         <div className="fixed inset-0 z-40 bg-black/40">
@@ -1557,7 +1023,7 @@ export default function Review() {
 
               {workroomMessages.length === 0 ? (
                 <div className="text-sm text-gray-600">
-                  Talk it out here. When you’re ready, say what you want (and when you want a step executed, you can say “go”).
+                  Talk it out here. When you’re ready, just say what you want done (for example: “make the quote card”, “draft this for LinkedIn”, “send to Studio”).
                 </div>
               ) : null}
 
@@ -1584,32 +1050,9 @@ export default function Review() {
                           <button
                             key={i}
                             type="button"
-                            onClick={() => {
-                              const kind = String(a?.action || '').trim();
-                              if (workroomKind === 'quote' && workroomId) {
-                                if (kind === 'approve_to_studio') {
-                                  act('quote-approve', workroomId, { next_stage: 'studio', studio_prompt: String(a?.payload?.studio_prompt || '') });
-                                  return;
-                                }
-                                if (kind === 'approve_to_publisher') {
-                                  act('quote-approve', workroomId, { next_stage: 'publisher', go_to_publisher: true });
-                                  return;
-                                }
-                                if (kind === 'add_hunt_goal') {
-                                  const topic = String(a?.payload?.topic || '').trim();
-                                  const why = String(a?.payload?.why || '').trim();
-                                  if (!topic) return;
-                                  fetch('/api/ao/scout/hunt-goals', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ topic, why }),
-                                  }).catch(() => {});
-                                  handleNavigate('/ao/scout');
-                                  return;
-                                }
-                              }
-                            }}
-                            className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                            onClick={() => runWorkroomExecution({ execution: { should_execute_now: true, risk_tier: 'low', actions: [a] }, fallbackActions: [] })}
+                            disabled={workroomExecuting || workroomSending}
+                            className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
                           >
                             {String(a?.label || 'Go')}
                           </button>
@@ -1640,7 +1083,7 @@ export default function Review() {
                 </button>
               </div>
               <div className="mt-2 text-xs text-gray-500">
-                Nothing happens automatically — you stay in control.
+                When you ask for work, it will run. Anything public will always ask for confirmation first.
               </div>
             </div>
           </div>
