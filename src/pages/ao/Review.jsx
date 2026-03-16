@@ -66,32 +66,60 @@ function whatItIsLabel(q) {
   return 'signal';
 }
 
+function workroomSeedIdeasMessage(q) {
+  const ideas = Array.isArray(q?.studio_playbook?.inbox_ideas) ? q.studio_playbook.inbox_ideas : [];
+  if (!ideas.length) return '';
+
+  const lines = [];
+  lines.push('Here are the ideas I see for this item.');
+  lines.push('');
+  let idx = 1;
+  for (const idea of ideas.slice(0, 5)) {
+    const label = safeText(idea?.label, 120);
+    const why = safeText(idea?.why, 220);
+    const evidence = safeText(idea?.evidence, 220);
+    const quote = safeText(idea?.quote, 220);
+    const outline = Array.isArray(idea?.outline) ? idea.outline.map((x) => safeText(x, 140)).filter(Boolean).slice(0, 6) : [];
+
+    const parts = [];
+    if (label) parts.push(label);
+    if (why) parts.push(why);
+    if (quote) parts.push(`Quote: “${quote}”`);
+    if (outline.length) parts.push(`Outline: ${outline.map((x) => `- ${x}`).join('\\n')}`);
+    if (evidence) parts.push(`Why this fits: ${evidence}`);
+
+    lines.push(`${idx}) ${parts.filter(Boolean).join('\\n')}`.trim());
+    lines.push('');
+    idx += 1;
+  }
+
+  lines.push('Reply with what you want to build (for example: “Let’s do 1 and 3”).');
+  return lines.join('\n').trim();
+}
+
 function buildUseIdeasBullets(q) {
   const out = [];
 
-  const best = safeText(q?.best_move, 40).toLowerCase();
-  if (best && best !== 'discard') out.push(moveLabel(best));
+  const inboxIdeas = Array.isArray(q?.studio_playbook?.inbox_ideas) ? q.studio_playbook.inbox_ideas : [];
+  for (const idea of inboxIdeas.slice(0, 5)) {
+    const label = safeText(idea?.label, 120);
+    const why = safeText(idea?.why, 180);
+    const evidence = safeText(idea?.evidence, 220);
+    const quote = safeText(idea?.quote, 200);
+    const outline = Array.isArray(idea?.outline) ? idea.outline.map((x) => safeText(x, 80)).filter(Boolean).slice(0, 4) : [];
 
-  const angles = Array.isArray(q?.studio_playbook?.angles) ? q.studio_playbook.angles : [];
-  for (const a of angles.slice(0, 3)) {
-    const s = safeText(a, 220);
-    if (s) out.push(s);
+    const bits = [];
+    if (label) bits.push(label);
+    if (quote) bits.push(`“${quote}”`);
+    else if (outline.length) bits.push(`Outline: ${outline.join(' / ')}`);
+    if (why) bits.push(why);
+    if (evidence) bits.push(`Because: ${evidence}`);
+    const line = bits.filter(Boolean).join(' — ');
+    if (line) out.push(line);
   }
 
-  const altMoves = Array.isArray(q?.alt_moves) ? q.alt_moves : [];
-  for (const m of altMoves.slice(0, 4)) {
-    const mv = safeText(m?.move, 40).toLowerCase();
-    const why = safeText(m?.why, 140);
-    if (!mv || mv === 'discard') continue;
-    out.push(why ? `${moveLabel(mv)} — ${why}` : moveLabel(mv));
-  }
-
-  const fallback = [
-    'Turn it into a short AO takeaway (what it means + one practical move).',
-    'Convert it into a self-audit question leaders can answer publicly.',
-    'Use it as a seed for a longer journal entry.',
-  ];
-  for (const f of fallback) out.push(f);
+  // If we don’t have item-specific ideas yet, show nothing (so the card reads “Preparing…” instead of filler).
+  if (!out.length) return [];
 
   const seen = new Set();
   const uniq = [];
@@ -171,9 +199,16 @@ export default function Review() {
     try {
       const raw = window.localStorage.getItem(workroomStorageKey('quote', id));
       const parsed = raw ? JSON.parse(raw) : null;
-      setWorkroomMessages(Array.isArray(parsed?.messages) ? parsed.messages : []);
+      const existing = Array.isArray(parsed?.messages) ? parsed.messages : [];
+      if (existing.length) {
+        setWorkroomMessages(existing);
+      } else {
+        const seedText = workroomSeedIdeasMessage(q);
+        setWorkroomMessages(seedText ? [{ role: 'assistant', at: new Date().toISOString(), content: seedText }] : []);
+      }
     } catch {
-      setWorkroomMessages([]);
+      const seedText = workroomSeedIdeasMessage(q);
+      setWorkroomMessages(seedText ? [{ role: 'assistant', at: new Date().toISOString(), content: seedText }] : []);
     }
     setWorkroomOpen(true);
   }, [workroomStorageKey]);
@@ -627,13 +662,38 @@ export default function Review() {
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-44 md:pb-8">
         <div className="flex items-start justify-between gap-3 mb-2">
           <h1 className="text-3xl font-bold text-gray-900">Analyst</h1>
-          <button
-            type="button"
-            onClick={openWorkroomForNewIdea}
-            className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
-          >
-            New
-          </button>
+          <div className="flex items-center gap-2">
+            {activeTab === 'social' ? (
+              <button
+                type="button"
+                onClick={async () => {
+                  const ok = window.confirm('Clear all pending items from your Inbox? (They will not be rejected.)');
+                  if (!ok) return;
+                  setActionError('');
+                  setActionMessage('');
+                  try {
+                    const res = await fetch('/api/ao/quotes/flush-pending', { method: 'POST' });
+                    const json = await res.json().catch(() => ({}));
+                    if (!res.ok || !json.ok) throw new Error(json.error || 'Could not clear pending items');
+                    setActionMessage('Inbox cleared.');
+                    window.location.reload();
+                  } catch (e) {
+                    setActionError(e.message || 'Could not clear pending items');
+                  }
+                }}
+                className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold hover:bg-gray-50"
+              >
+                Clear inbox
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={openWorkroomForNewIdea}
+              className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
+            >
+              New
+            </button>
+          </div>
         </div>
         <p className="text-gray-600 mb-8">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
         {briefPrep.running ? (
@@ -770,11 +830,18 @@ export default function Review() {
 
                       <div className="mt-3">
                         <div className="text-xs font-semibold text-gray-900">Ideas for how to use it</div>
-                        <ul className="mt-1 text-sm text-gray-800 space-y-1">
-                          {buildUseIdeasBullets(q).map((x, idx) => (
-                            <li key={idx} className="whitespace-pre-wrap">- {x}</li>
-                          ))}
-                        </ul>
+                        {(() => {
+                          const ideas = buildUseIdeasBullets(q);
+                          return ideas.length ? (
+                            <ul className="mt-1 text-sm text-gray-800 space-y-1">
+                              {ideas.map((x, idx) => (
+                                <li key={idx} className="whitespace-pre-wrap">- {x}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <div className="mt-1 text-sm text-gray-500">Preparing…</div>
+                          );
+                        })()}
                       </div>
 
                       <div className="mt-4 grid grid-cols-3 gap-2">
@@ -881,28 +948,27 @@ export default function Review() {
 
                       <div className="mt-3">
                         <div className="text-xs font-semibold text-gray-900">Ideas for how to use it</div>
-                        <ul className="mt-1 text-sm text-gray-800 space-y-1">
-                          {buildUseIdeasBullets(q).map((x, idx) => (
-                            <li key={idx} className="whitespace-pre-wrap">- {x}</li>
-                          ))}
-                        </ul>
+                        {(() => {
+                          const ideas = buildUseIdeasBullets(q);
+                          return ideas.length ? (
+                            <ul className="mt-1 text-sm text-gray-800 space-y-1">
+                              {ideas.map((x, idx) => (
+                                <li key={idx} className="whitespace-pre-wrap">- {x}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <div className="mt-1 text-sm text-gray-500">Preparing…</div>
+                          );
+                        })()}
                       </div>
 
-                      <div className="mt-4 grid grid-cols-3 gap-2">
+                      <div className="mt-4 grid grid-cols-2 gap-2">
                         <button
                           type="button"
                           onClick={() => openWorkroomForQuote(q)}
                           className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
                         >
                           Discuss
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => act('quote-unhold', q.id)}
-                          disabled={acting === q.id}
-                          className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
-                        >
-                          Unhold
                         </button>
                         <button
                           type="button"

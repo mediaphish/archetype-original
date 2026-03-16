@@ -61,6 +61,11 @@ export default async function handler(req, res) {
       updated_at: new Date().toISOString(),
     };
 
+    // If Analyst decides this is not a fit (or is junk), auto-reject it so it never clutters Pending.
+    if (brief.auto_discarded || brief.best_move === 'discard') {
+      patch.status = 'rejected';
+    }
+
     const { data: updated, error: updErr } = await supabaseAdmin
       .from('ao_quote_review_queue')
       .update(patch)
