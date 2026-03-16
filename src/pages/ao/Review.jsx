@@ -190,6 +190,115 @@ export default function Review() {
     setWorkroomOpen(true);
   }, []);
 
+  const act = useCallback(async (kind, id, extra) => {
+    if (!authChecked || acting) return;
+    setActing(id);
+    setActionError('');
+    setActionMessage('');
+    try {
+      // Enforce the Analyst → Studio playbook: if a user approves to Studio and
+      // the playbook is missing, refresh the brief first (single click).
+      if (kind === 'quote-approve' && extra?.next_stage === 'studio') {
+        const row = (quotes || []).find((x) => x.id === id) || (heldQuotes || []).find((x) => x.id === id) || null;
+        const hasPlaybook = !!row?.studio_playbook;
+        if (!hasPlaybook) {
+          try {
+            const briefRes = await fetch(`/api/ao/quotes/${id}/brief`, { method: 'POST' });
+            const briefJson = await briefRes.json().catch(() => ({}));
+            if (briefRes.ok && briefJson.ok && briefJson.quote) {
+              setQuotes((prev) => prev.map((x) => (x.id === id ? briefJson.quote : x)));
+              setHeldQuotes((prev) => prev.map((x) => (x.id === id ? briefJson.quote : x)));
+            }
+          } catch (_) {}
+        }
+      }
+
+      const base = `/api/ao`;
+      let url = '';
+      if (kind === 'quote-approve') url = `${base}/quotes/${id}/approve`;
+      else if (kind === 'quote-brief') url = `${base}/quotes/${id}/brief`;
+      else if (kind === 'quote-reject') url = `${base}/quotes/${id}/reject`;
+      else if (kind === 'quote-hold') url = `${base}/quotes/${id}/hold`;
+      else if (kind === 'quote-unhold') url = `${base}/quotes/${id}/unhold`;
+      else if (kind === 'topic-approve') url = `${base}/journal-topics/${id}/approve`;
+      else if (kind === 'topic-reject') url = `${base}/journal-topics/${id}/reject`;
+      else if (kind === 'topic-approve-draft') url = `${base}/journal-topics/${id}/approve-and-draft`;
+      else if (kind === 'writing-draft') url = `${base}/writing/${id}/draft`;
+      else if (kind === 'writing-discard') url = `${base}/writing/${id}/discard`;
+      if (!url) return;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: extra ? JSON.stringify(extra) : undefined,
+      });
+
+      const rawText = await res.text().catch(() => '');
+      let json = {};
+      try {
+        json = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        json = {};
+      }
+
+      if (!res.ok || !json.ok) {
+        const fallback = rawText ? rawText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220) : '';
+        setActionError(json.error || fallback || 'Action failed');
+        return;
+      }
+
+      if (json.ok) {
+        if (kind === 'quote-approve' || kind === 'quote-reject') setQuotes((prev) => prev.filter((x) => x.id !== id));
+        if (kind === 'quote-brief' && json.quote) {
+          setQuotes((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
+          setHeldQuotes((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
+        }
+        if (kind === 'quote-hold') {
+          setQuotes((prev) => prev.filter((x) => x.id !== id));
+          window.location.reload();
+        }
+        if (kind === 'quote-unhold') {
+          setHeldQuotes((prev) => prev.filter((x) => x.id !== id));
+          window.location.reload();
+        }
+        if (kind === 'topic-approve' || kind === 'topic-reject' || kind === 'topic-approve-draft') setTopics((prev) => prev.filter((x) => x.id !== id));
+        if (kind === 'topic-approve-draft' && json.writing) setWriting((prev) => [json.writing, ...prev]);
+        if (kind === 'writing-draft' || kind === 'writing-discard') setWriting((prev) => prev.filter((x) => x.id !== id));
+
+        if (kind === 'quote-brief') {
+          setActionMessage('Brief refreshed.');
+        } else if (kind === 'quote-approve') {
+          const saved = String(json?.quote?.next_stage || '').toLowerCase();
+          setActionMessage(saved === 'publisher' ? 'Approved and sent to Publisher.' : saved === 'studio' ? 'Approved and sent to Studio.' : 'Approved.');
+          if (saved === 'studio') {
+            const prompt = extra?.studio_prompt ? String(extra.studio_prompt) : '';
+            const qs = new URLSearchParams();
+            qs.set('open', String(id));
+            qs.set('from', 'analyst');
+            if (prompt.trim()) qs.set('prompt', prompt);
+            window.history.pushState({}, '', `/ao/studio?${qs.toString()}`);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            return;
+          }
+          if (saved === 'publisher' && extra?.go_to_publisher) {
+            window.history.pushState({}, '', `/ao/publisher`);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            return;
+          }
+        } else if (kind === 'quote-reject') {
+          setActionMessage('Rejected.');
+        } else if (kind === 'topic-approve') {
+          setActionMessage('Topic approved.');
+        } else if (kind === 'topic-approve-draft') {
+          setActionMessage('Topic approved and sent to drafting.');
+        }
+      }
+    } finally {
+      setActing(null);
+    }
+  }, [authChecked, acting]);
+
   const saveWorkroomMessages = useCallback((kind, id, messages) => {
     try {
       window.localStorage.setItem(workroomStorageKey(kind, id), JSON.stringify({ messages: Array.isArray(messages) ? messages : [] }));
@@ -487,115 +596,6 @@ export default function Review() {
 
     return () => { cancelled = true; };
   }, [authChecked, activeTab, quotes, needsBrief]);
-
-  const act = useCallback(async (kind, id, extra) => {
-    if (!authChecked || acting) return;
-    setActing(id);
-    setActionError('');
-    setActionMessage('');
-    try {
-      // Enforce the Analyst → Studio playbook: if a user approves to Studio and
-      // the playbook is missing, refresh the brief first (single click).
-      if (kind === 'quote-approve' && extra?.next_stage === 'studio') {
-        const row = (quotes || []).find((x) => x.id === id) || (heldQuotes || []).find((x) => x.id === id) || null;
-        const hasPlaybook = !!row?.studio_playbook;
-        if (!hasPlaybook) {
-          try {
-            const briefRes = await fetch(`/api/ao/quotes/${id}/brief`, { method: 'POST' });
-            const briefJson = await briefRes.json().catch(() => ({}));
-            if (briefRes.ok && briefJson.ok && briefJson.quote) {
-              setQuotes((prev) => prev.map((x) => (x.id === id ? briefJson.quote : x)));
-              setHeldQuotes((prev) => prev.map((x) => (x.id === id ? briefJson.quote : x)));
-            }
-          } catch (_) {}
-        }
-      }
-
-      const base = `/api/ao`;
-      let url = '';
-      if (kind === 'quote-approve') url = `${base}/quotes/${id}/approve`;
-      else if (kind === 'quote-brief') url = `${base}/quotes/${id}/brief`;
-      else if (kind === 'quote-reject') url = `${base}/quotes/${id}/reject`;
-      else if (kind === 'quote-hold') url = `${base}/quotes/${id}/hold`;
-      else if (kind === 'quote-unhold') url = `${base}/quotes/${id}/unhold`;
-      else if (kind === 'topic-approve') url = `${base}/journal-topics/${id}/approve`;
-      else if (kind === 'topic-reject') url = `${base}/journal-topics/${id}/reject`;
-      else if (kind === 'topic-approve-draft') url = `${base}/journal-topics/${id}/approve-and-draft`;
-      else if (kind === 'writing-draft') url = `${base}/writing/${id}/draft`;
-      else if (kind === 'writing-discard') url = `${base}/writing/${id}/discard`;
-      if (!url) return;
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: extra ? JSON.stringify(extra) : undefined,
-      });
-
-      const rawText = await res.text().catch(() => '');
-      let json = {};
-      try {
-        json = rawText ? JSON.parse(rawText) : {};
-      } catch {
-        json = {};
-      }
-
-      if (!res.ok || !json.ok) {
-        const fallback = rawText ? rawText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220) : '';
-        setActionError(json.error || fallback || 'Action failed');
-        return;
-      }
-
-      if (json.ok) {
-        if (kind === 'quote-approve' || kind === 'quote-reject') setQuotes((prev) => prev.filter((x) => x.id !== id));
-        if (kind === 'quote-brief' && json.quote) {
-          setQuotes((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
-          setHeldQuotes((prev) => prev.map((x) => (x.id === id ? json.quote : x)));
-        }
-        if (kind === 'quote-hold') {
-          setQuotes((prev) => prev.filter((x) => x.id !== id));
-          window.location.reload();
-        }
-        if (kind === 'quote-unhold') {
-          setHeldQuotes((prev) => prev.filter((x) => x.id !== id));
-          window.location.reload();
-        }
-        if (kind === 'topic-approve' || kind === 'topic-reject' || kind === 'topic-approve-draft') setTopics((prev) => prev.filter((x) => x.id !== id));
-        if (kind === 'topic-approve-draft' && json.writing) setWriting((prev) => [json.writing, ...prev]);
-        if (kind === 'writing-draft' || kind === 'writing-discard') setWriting((prev) => prev.filter((x) => x.id !== id));
-
-        if (kind === 'quote-brief') {
-          setActionMessage('Brief refreshed.');
-        } else if (kind === 'quote-approve') {
-          const saved = String(json?.quote?.next_stage || '').toLowerCase();
-          setActionMessage(saved === 'publisher' ? 'Approved and sent to Publisher.' : saved === 'studio' ? 'Approved and sent to Studio.' : 'Approved.');
-          if (saved === 'studio') {
-            const prompt = extra?.studio_prompt ? String(extra.studio_prompt) : '';
-            const qs = new URLSearchParams();
-            qs.set('open', String(id));
-            qs.set('from', 'analyst');
-            if (prompt.trim()) qs.set('prompt', prompt);
-            window.history.pushState({}, '', `/ao/studio?${qs.toString()}`);
-            window.dispatchEvent(new PopStateEvent('popstate'));
-            window.scrollTo({ top: 0, behavior: 'instant' });
-            return;
-          }
-          if (saved === 'publisher' && extra?.go_to_publisher) {
-            window.history.pushState({}, '', `/ao/publisher`);
-            window.dispatchEvent(new PopStateEvent('popstate'));
-            window.scrollTo({ top: 0, behavior: 'instant' });
-            return;
-          }
-        } else if (kind === 'quote-reject') {
-          setActionMessage('Rejected.');
-        } else if (kind === 'topic-approve') {
-          setActionMessage('Topic approved.');
-        } else if (kind === 'topic-approve-draft') {
-          setActionMessage('Topic approved and sent to drafting.');
-        }
-      }
-    } finally {
-      setActing(null);
-    }
-  }, [authChecked, acting]);
 
   const pendingQuotes = quotes.filter((q) => q.status === 'pending');
   const heldList = heldQuotes.filter((q) => q.status === 'held');
