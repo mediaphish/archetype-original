@@ -135,10 +135,8 @@ function buildUseIdeasBullets(q) {
 }
 
 const TABS = [
-  { key: 'social', label: 'Social signals' },
+  { key: 'social', label: 'Opportunities' },
   { key: 'held', label: 'Held' },
-  { key: 'journal', label: 'Journal topics' },
-  { key: 'expandable', label: 'Long-form drafts' },
 ];
 
 export default function Review() {
@@ -153,8 +151,6 @@ export default function Review() {
   const [heldQuotes, setHeldQuotes] = useState([]);
   const [heldPage, setHeldPage] = useState({ status: 'held', limit: 10, offset: 0, total: null });
   const [heldOffset, setHeldOffset] = useState(0);
-  const [topics, setTopics] = useState([]);
-  const [writing, setWriting] = useState([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null);
   const [actionError, setActionError] = useState('');
@@ -254,12 +250,6 @@ export default function Review() {
       else if (kind === 'quote-brief') url = `${base}/quotes/${id}/brief`;
       else if (kind === 'quote-reject') url = `${base}/quotes/${id}/reject`;
       else if (kind === 'quote-hold') url = `${base}/quotes/${id}/hold`;
-      else if (kind === 'quote-unhold') url = `${base}/quotes/${id}/unhold`;
-      else if (kind === 'topic-approve') url = `${base}/journal-topics/${id}/approve`;
-      else if (kind === 'topic-reject') url = `${base}/journal-topics/${id}/reject`;
-      else if (kind === 'topic-approve-draft') url = `${base}/journal-topics/${id}/approve-and-draft`;
-      else if (kind === 'writing-draft') url = `${base}/writing/${id}/draft`;
-      else if (kind === 'writing-discard') url = `${base}/writing/${id}/discard`;
       if (!url) return;
       const res = await fetch(url, {
         method: 'POST',
@@ -291,13 +281,6 @@ export default function Review() {
           setQuotes((prev) => prev.filter((x) => x.id !== id));
           window.location.reload();
         }
-        if (kind === 'quote-unhold') {
-          setHeldQuotes((prev) => prev.filter((x) => x.id !== id));
-          window.location.reload();
-        }
-        if (kind === 'topic-approve' || kind === 'topic-reject' || kind === 'topic-approve-draft') setTopics((prev) => prev.filter((x) => x.id !== id));
-        if (kind === 'topic-approve-draft' && json.writing) setWriting((prev) => [json.writing, ...prev]);
-        if (kind === 'writing-draft' || kind === 'writing-discard') setWriting((prev) => prev.filter((x) => x.id !== id));
 
         if (kind === 'quote-brief') {
           setActionMessage('Brief refreshed.');
@@ -561,17 +544,13 @@ export default function Review() {
     let cancelled = false;
     (async () => {
       try {
-        const [quotesRes, heldRes, journalRes, writingRes] = await Promise.all([
+        const [quotesRes, heldRes] = await Promise.all([
           fetch(`/api/ao/quotes/list?status=pending&limit=${encodeURIComponent(pageSize)}&offset=${encodeURIComponent(pageOffset)}`),
           fetch(`/api/ao/quotes/list?status=held&limit=${encodeURIComponent(pageSize)}&offset=${encodeURIComponent(heldOffset)}`),
-          fetch(`/api/ao/journal-topics/list`),
-          fetch(`/api/ao/writing/list`),
         ]);
         if (cancelled) return;
         const q = await quotesRes.json().catch(() => ({}));
         const h = await heldRes.json().catch(() => ({}));
-        const j = await journalRes.json().catch(() => ({}));
-        const w = await writingRes.json().catch(() => ({}));
         if (q.ok && Array.isArray(q.quotes)) {
           setQuotes(q.quotes);
           if (q.page) setQuotesPage(q.page);
@@ -580,8 +559,6 @@ export default function Review() {
           setHeldQuotes(h.quotes);
           if (h.page) setHeldPage(h.page);
         }
-        if (j.ok && Array.isArray(j.topics)) setTopics(j.topics);
-        if (w.ok && Array.isArray(w.writing)) setWriting(w.writing);
       } catch (_) {}
       if (!cancelled) setLoading(false);
     })();
@@ -634,8 +611,6 @@ export default function Review() {
 
   const pendingQuotes = quotes.filter((q) => q.status === 'pending');
   const heldList = heldQuotes.filter((q) => q.status === 'held');
-  const pendingTopics = topics.filter((t) => t.status === 'pending');
-  const pendingWriting = writing.filter((w) => w.status === 'pending' || w.status === 'drafting');
 
   useEffect(() => {
     // If URL includes ?open=<id>, open Workroom for that quote (best-effort).
@@ -686,12 +661,66 @@ export default function Review() {
                 Clear inbox
               </button>
             ) : null}
+            {activeTab === 'social' ? (
+              <button
+                type="button"
+                onClick={async () => {
+                  const ok = window.confirm('Delete cleared items forever? (This cannot be undone.)');
+                  if (!ok) return;
+                  setActionError('');
+                  setActionMessage('');
+                  try {
+                    const res = await fetch('/api/ao/quotes/purge', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ mode: 'delete_cleared' }),
+                    });
+                    const json = await res.json().catch(() => ({}));
+                    if (!res.ok || !json.ok) throw new Error(json.error || 'Could not delete cleared items');
+                    setActionMessage('Cleared items deleted.');
+                    window.location.reload();
+                  } catch (e) {
+                    setActionError(e.message || 'Could not delete cleared items');
+                  }
+                }}
+                className="min-h-[44px] px-3 py-2 rounded-lg border border-red-300 bg-white text-sm font-semibold text-red-700 hover:bg-red-50"
+              >
+                Delete cleared
+              </button>
+            ) : null}
+            {activeTab === 'social' ? (
+              <button
+                type="button"
+                onClick={async () => {
+                  const ok = window.confirm('Flush EVERYTHING today (Pending + Held + Approved + Cleared)? This cannot be undone.');
+                  if (!ok) return;
+                  setActionError('');
+                  setActionMessage('');
+                  try {
+                    const res = await fetch('/api/ao/quotes/purge', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ mode: 'flush_everything_today' }),
+                    });
+                    const json = await res.json().catch(() => ({}));
+                    if (!res.ok || !json.ok) throw new Error(json.error || 'Could not flush items');
+                    setActionMessage('System flushed.');
+                    window.location.reload();
+                  } catch (e) {
+                    setActionError(e.message || 'Could not flush items');
+                  }
+                }}
+                className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700"
+              >
+                Flush today
+              </button>
+            ) : null}
             <button
               type="button"
-              onClick={openWorkroomForNewIdea}
+              onClick={() => handleNavigate('/ao/library')}
               className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
             >
-              New
+              New idea
             </button>
           </div>
         </div>
@@ -882,7 +911,7 @@ export default function Review() {
           {!loading && activeTab === 'held' && (
             <>
               <p className="text-gray-600 text-sm mb-4">
-                Held items stay here and do not expire. Bring them back to Pending when you’re ready.
+                Held items are set aside. Come back when you’re ready to Discuss, or Reject if it’s not a fit.
               </p>
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="text-xs text-gray-500">
@@ -978,47 +1007,6 @@ export default function Review() {
                         >
                           Reject
                         </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          )}
-          {!loading && activeTab === 'journal' && (
-            <>
-              {pendingTopics.length === 0 ? (
-                <p className="text-gray-500">No pending journal topics.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {pendingTopics.map((t) => (
-                    <li key={t.id} className="border border-gray-200 rounded p-4">
-                      <h3 className="font-medium text-gray-900">{t.topic_title}</h3>
-                      <p className="text-gray-600 text-sm mt-1">{t.why_it_matters?.slice(0, 200)}</p>
-                      <div className="flex gap-2 mt-3">
-                        <button type="button" onClick={() => act('topic-approve', t.id)} disabled={acting === t.id} className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50">Approve</button>
-                        <button type="button" onClick={() => act('topic-approve-draft', t.id)} disabled={acting === t.id} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Approve & draft</button>
-                        <button type="button" onClick={() => act('topic-reject', t.id)} disabled={acting === t.id} className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-50">Reject</button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          )}
-          {!loading && activeTab === 'expandable' && (
-            <>
-              {pendingWriting.length === 0 ? (
-                <p className="text-gray-500">No items in the writing queue. Approve journal topics with “Approve & draft” to add them.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {pendingWriting.map((w) => (
-                    <li key={w.id} className="border border-gray-200 rounded p-4">
-                      <h3 className="font-medium text-gray-900">{w.title || 'Untitled'}</h3>
-                      <p className="text-gray-600 text-sm mt-1">Status: {w.status}</p>
-                      <div className="flex gap-2 mt-3">
-                        <button type="button" onClick={() => act('writing-draft', w.id)} disabled={acting === w.id || w.status === 'drafting'} className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">Draft</button>
-                        <button type="button" onClick={() => act('writing-discard', w.id)} disabled={acting === w.id} className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 disabled:opacity-50">Discard</button>
                       </div>
                     </li>
                   ))}

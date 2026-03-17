@@ -73,6 +73,15 @@ export default function Ideas() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  // Workroom (chat) for Library ideas — stored locally (per device) for MVP.
+  const [workroomOpen, setWorkroomOpen] = useState(false);
+  const [workroomId, setWorkroomId] = useState(null);
+  const [workroomTitle, setWorkroomTitle] = useState('');
+  const [workroomMessages, setWorkroomMessages] = useState([]);
+  const [workroomInput, setWorkroomInput] = useState('');
+  const [workroomSending, setWorkroomSending] = useState(false);
+  const [workroomError, setWorkroomError] = useState('');
+
   const [newTitle, setNewTitle] = useState('');
   const [newSourceUrl, setNewSourceUrl] = useState('');
   const [newRaw, setNewRaw] = useState('');
@@ -90,12 +99,120 @@ export default function Ideas() {
   const [readyFeatured, setReadyFeatured] = useState(null); // { filename, mime_type, content_base64 }
   const readyMdFileRef = useRef(null);
   const readyImageFileRef = useRef(null);
+  const selectedIdRef = useRef(null);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
+
+  const workroomStorageKey = useCallback((id) => {
+    const i = String(id || '').trim();
+    return `ao_workroom_v1:idea:${i}`;
+  }, []);
+
+  const saveWorkroomMessages = useCallback((id, messages) => {
+    try {
+      const key = workroomStorageKey(id);
+      window.localStorage.setItem(key, JSON.stringify({ v: 1, messages }));
+    } catch (_) {}
+  }, [workroomStorageKey]);
+
+  const seedWorkroomFromIdea = useCallback((idea) => {
+    const title = String(idea?.title || '').trim() || safePreview(idea?.raw_input);
+    const why = String(idea?.why_it_matters || '').trim();
+    const angles = Array.isArray(idea?.angles) ? idea.angles : [];
+    const lines = [];
+    lines.push(`Let’s talk this out: ${title}`);
+    if (why) {
+      lines.push('');
+      lines.push(`Why it matters (brief): ${why}`);
+    }
+    if (angles.length) {
+      lines.push('');
+      lines.push('Here are a few ways to approach it:');
+      lines.push('');
+      angles.slice(0, 5).forEach((a, idx) => {
+        const bullets = Array.isArray(a?.bullets) ? a.bullets : [];
+        lines.push(`${idx + 1}) ${String(a?.title || 'Angle').trim()}`);
+        bullets.slice(0, 6).forEach((b) => lines.push(`- ${String(b || '').trim()}`));
+        lines.push('');
+      });
+      lines.push('Reply with which one you want (for example: “Let’s do 1 and 3”).');
+    } else {
+      lines.push('');
+      lines.push('Tell me what you want to build from this (quote card, short post, long-form seed, etc.).');
+    }
+    return lines.join('\n').trim();
+  }, []);
+
+  const openWorkroomForIdea = useCallback((idea) => {
+    const id = idea?.id;
+    if (!id) return;
+    setWorkroomId(id);
+    setWorkroomTitle(idea?.title || 'Idea');
+    setWorkroomError('');
+    setWorkroomInput('');
+    try {
+      const raw = window.localStorage.getItem(workroomStorageKey(id));
+      const parsed = raw ? JSON.parse(raw) : null;
+      const existing = Array.isArray(parsed?.messages) ? parsed.messages : [];
+      if (existing.length) {
+        setWorkroomMessages(existing);
+      } else {
+        const seed = seedWorkroomFromIdea(idea);
+        setWorkroomMessages(seed ? [{ role: 'assistant', at: new Date().toISOString(), content: seed }] : []);
+      }
+    } catch {
+      const seed = seedWorkroomFromIdea(idea);
+      setWorkroomMessages(seed ? [{ role: 'assistant', at: new Date().toISOString(), content: seed }] : []);
+    }
+    setWorkroomOpen(true);
+  }, [workroomStorageKey, seedWorkroomFromIdea]);
+
+  const sendWorkroom = useCallback(async () => {
+    if (!authChecked) return;
+    if (!workroomOpen || !workroomId) return;
+    const text = String(workroomInput || '').trim();
+    if (!text) return;
+    if (workroomSending) return;
+    setWorkroomSending(true);
+    setWorkroomError('');
+    const nextMessages = [
+      ...(Array.isArray(workroomMessages) ? workroomMessages : []),
+      { role: 'user', at: new Date().toISOString(), content: text },
+    ];
+    setWorkroomMessages(nextMessages);
+    saveWorkroomMessages(workroomId, nextMessages);
+    setWorkroomInput('');
+    try {
+      const res = await fetch('/api/ao/analyst/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thread_kind: 'idea',
+          thread_id: workroomId,
+          messages: nextMessages.slice(-12),
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not get Analyst reply');
+      const assistant = {
+        role: 'assistant',
+        at: new Date().toISOString(),
+        content: String(json.assistant_message || '').trim(),
+        suggestions: Array.isArray(json.suggestions) ? json.suggestions : [],
+      };
+      const after = [...nextMessages, assistant];
+      setWorkroomMessages(after);
+      saveWorkroomMessages(workroomId, after);
+    } catch (e) {
+      setWorkroomError(e.message || 'Could not send message');
+    } finally {
+      setWorkroomSending(false);
+    }
+  }, [authChecked, workroomOpen, workroomId, workroomInput, workroomSending, workroomMessages, saveWorkroomMessages]);
 
   useEffect(() => {
     let cancelled = false;
@@ -117,6 +234,10 @@ export default function Ideas() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    selectedIdRef.current = selectedId;
+  }, [selectedId]);
 
   const fetchResurface = useCallback(async () => {
     if (!authChecked) return;
@@ -164,7 +285,7 @@ export default function Ideas() {
       if (!keepSelection) {
         setSelectedId(null);
         setDetail(null);
-      } else if (selectedId && !(json.ideas || []).some((i) => i.id === selectedId)) {
+      } else if (selectedIdRef.current && !(json.ideas || []).some((i) => i.id === selectedIdRef.current)) {
         setSelectedId(null);
         setDetail(null);
       }
@@ -173,7 +294,7 @@ export default function Ideas() {
     } finally {
       setLoadingList(false);
     }
-  }, [authChecked, statusFilter, pageSize, offset, query, selectedId]);
+  }, [authChecked, statusFilter, pageSize, offset, query]);
 
   const fetchDetail = useCallback(async (id) => {
     if (!id) return;
@@ -222,19 +343,41 @@ export default function Ideas() {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to save idea');
+      const newId = json.idea?.id || null;
 
       setNewTitle('');
       setNewSourceUrl('');
       setNewRaw('');
       setOffset(0);
-      setMessage('Saved. Select it in the list to shape it into a brief.');
-      await fetchList({ keepSelection: false });
+      if (newId) {
+        setSelectedId(newId);
+        setDetail(null);
+        setMessage('Saved. Preparing the brief in the background…');
+        await fetchList({ keepSelection: true });
+        await fetchDetail(newId);
+
+        // Auto-shape in the background (no extra clicks).
+        void (async () => {
+          try {
+            const res2 = await fetch(`/api/ao/ideas/${encodeURIComponent(newId)}/shape-brief`, { method: 'POST' });
+            const json2 = await res2.json().catch(() => ({}));
+            if (res2.ok && json2.ok && json2.idea?.id) {
+              setDetail(json2.idea);
+              setMessage('Brief ready.');
+              await fetchList({ keepSelection: true });
+            }
+          } catch (_) {}
+        })();
+      } else {
+        setMessage('Saved.');
+        await fetchList({ keepSelection: false });
+      }
     } catch (e) {
       setError(e.message);
     } finally {
       setCreating(false);
     }
-  }, [newTitle, newRaw, newSourceUrl, fetchList]);
+  }, [newTitle, newRaw, newSourceUrl, fetchList, fetchDetail]);
 
   useEffect(() => {
     if (!authChecked) return;
@@ -833,6 +976,14 @@ export default function Ideas() {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      disabled={acting}
+                      onClick={() => openWorkroomForIdea(detail)}
+                      className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      Discuss
+                    </button>
                     {detail.path === 'ready_post' ? (
                       <>
                         <button
@@ -985,6 +1136,85 @@ export default function Ideas() {
           </div>
         </div>
       </main>
+
+      {workroomOpen ? (
+        <div className="fixed inset-0 z-40 bg-black/40">
+          <div className="absolute inset-x-0 bottom-0 top-0 md:inset-10 md:rounded-xl bg-white shadow-xl flex flex-col">
+            <div className="border-b border-gray-200 px-4 py-3 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-gray-900 truncate">Workroom</div>
+                <div className="text-xs text-gray-600 truncate">
+                  {workroomTitle || 'Idea'}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setWorkroomOpen(false);
+                  setWorkroomError('');
+                }}
+                className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50">
+              {workroomError ? (
+                <div className="p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
+                  {workroomError}
+                </div>
+              ) : null}
+
+              {workroomMessages.length === 0 ? (
+                <div className="text-sm text-gray-600">
+                  Talk it out here. When you’re ready, just say what you want done (for example: “draft this for LinkedIn”, “turn this into a quote card”, “send this to Studio”).
+                </div>
+              ) : null}
+
+              {workroomMessages.map((m, idx) => {
+                const isAssistant = String(m?.role) === 'assistant';
+                const suggestions = Array.isArray(m?.suggestions) ? m.suggestions : [];
+                return (
+                  <div key={m?.at || idx} className={isAssistant ? '' : 'text-right'}>
+                    <div className={`inline-block max-w-[92%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${isAssistant ? 'bg-white border border-gray-200 text-gray-900' : 'bg-gray-900 text-white'}`}>
+                      {String(m?.content || '')}
+                    </div>
+                    {isAssistant && suggestions.length ? (
+                      <div className="mt-2 text-left">
+                        <div className="text-xs font-semibold text-gray-700 mb-1">Suggestions</div>
+                        <ul className="text-xs text-gray-700 space-y-1">
+                          {suggestions.slice(0, 6).map((s, i) => <li key={i}>- {String(s)}</li>)}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="border-t border-gray-200 px-4 py-3 bg-white">
+              <div className="flex items-end gap-2">
+                <textarea
+                  value={workroomInput}
+                  onChange={(e) => setWorkroomInput(e.target.value)}
+                  rows={2}
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                  placeholder="Type here…"
+                />
+                <button
+                  type="button"
+                  onClick={sendWorkroom}
+                  disabled={workroomSending || !String(workroomInput || '').trim()}
+                  className="min-h-[44px] px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {workroomSending ? 'Sending…' : 'Send'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
