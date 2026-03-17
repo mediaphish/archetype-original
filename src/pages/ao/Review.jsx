@@ -132,8 +132,34 @@ function buildUseIdeasBullets(q) {
     if (line) out.push(line);
   }
 
-  // If we don’t have item-specific ideas yet, show nothing (so the card reads “Preparing…” instead of filler).
-  if (!out.length) return [];
+  // If the structured inbox ideas are missing, derive a grounded fallback from existing fields.
+  // This avoids generic filler while preventing “Preparing…” from sticking on real briefs.
+  if (!out.length) {
+    const pull = safeText(q?.pull_quote || q?.quote_text, 240);
+    const summary = safeText(q?.summary_interpretation, 240);
+
+    const best = safeText(q?.best_move, 40).toLowerCase();
+    if (best && best !== 'discard') {
+      if (best === 'pull_quote_card' && pull) out.push(`Quote card + caption — “${pull}”`);
+      else if (best) out.push(moveLabel(best));
+    }
+
+    const altMoves = Array.isArray(q?.alt_moves) ? q.alt_moves : [];
+    for (const m of altMoves.slice(0, 4)) {
+      const mv = safeText(m?.move, 40).toLowerCase();
+      const why = safeText(m?.why, 180);
+      if (!mv || mv === 'discard') continue;
+      const label = moveLabel(mv);
+      if (mv === 'pull_quote_card' && pull) out.push(`${label} — “${pull}”`);
+      else if (why) out.push(`${label} — ${why}`);
+      else out.push(label);
+    }
+
+    // As a last resort, if we have a real summary, present a single “short take” idea grounded in it.
+    if (out.length === 0 && summary) {
+      out.push(`Short AO take (text post) — ${summary}`);
+    }
+  }
 
   const seen = new Set();
   const uniq = [];
