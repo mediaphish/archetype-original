@@ -59,6 +59,20 @@ function safeText(x, max = 400) {
   return s.length > max ? `${s.slice(0, max)}…` : s;
 }
 
+function fmtFoundShort(iso) {
+  try {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${mm}/${dd}/${yy}`;
+  } catch {
+    return '';
+  }
+}
+
 function whatItIsLabel(q) {
   const kind = safeText(q?.content_kind, 40).toLowerCase();
   if (kind) return kind.replace(/_/g, ' ');
@@ -157,6 +171,8 @@ export default function Review() {
   const [actionMessage, setActionMessage] = useState('');
   const [briefPrep, setBriefPrep] = useState({ running: false, total: 0, done: 0 });
   const preparingRef = useRef(new Set());
+
+  const [deleteThroughDate, setDeleteThroughDate] = useState('');
 
   // Analyst Workroom (chat) — stored locally (per device) for MVP.
   const [workroomOpen, setWorkroomOpen] = useState(false);
@@ -581,7 +597,7 @@ export default function Review() {
       .filter((q) => q && q.status === 'pending')
       .filter((q) => needsBrief(q))
       .filter((q) => !preparingRef.current.has(q.id))
-      .slice(0, 5);
+      .slice(0, 10);
 
     if (candidates.length === 0) return;
 
@@ -590,6 +606,7 @@ export default function Review() {
 
     (async () => {
       let done = 0;
+      let notReadyCount = 0;
       for (const q of candidates) {
         if (cancelled) break;
         preparingRef.current.add(q.id);
@@ -599,9 +616,15 @@ export default function Review() {
           if (res.ok && json.ok && json.quote) {
             setQuotes((prev) => prev.map((x) => (x.id === q.id ? json.quote : x)));
           }
+          if (res.ok && json && json.not_ready) {
+            notReadyCount += 1;
+          }
         } catch (_) {}
         done += 1;
         if (!cancelled) setBriefPrep((p) => ({ ...p, done }));
+      }
+      if (!cancelled && notReadyCount > 0) {
+        setActionMessage('Some items are still preparing. Give it a moment and they’ll fill in.');
       }
       if (!cancelled) setBriefPrep((p) => ({ ...p, running: false }));
     })();
@@ -660,6 +683,46 @@ export default function Review() {
               >
                 Clear inbox
               </button>
+            ) : null}
+            {activeTab === 'social' ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="date"
+                  value={deleteThroughDate}
+                  onChange={(e) => setDeleteThroughDate(e.target.value)}
+                  className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const d = String(deleteThroughDate || '').trim();
+                    if (!d) {
+                      setActionError('Pick a date first.');
+                      return;
+                    }
+                    const ok = window.confirm(`Delete pending items found on or before ${d}? (This cannot be undone.)`);
+                    if (!ok) return;
+                    setActionError('');
+                    setActionMessage('');
+                    try {
+                      const res = await fetch('/api/ao/quotes/purge', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mode: 'delete_pending_through_date', through_date: d }),
+                      });
+                      const json = await res.json().catch(() => ({}));
+                      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not delete pending items');
+                      setActionMessage('Pending items deleted.');
+                      window.location.reload();
+                    } catch (e) {
+                      setActionError(e.message || 'Could not delete pending items');
+                    }
+                  }}
+                  className="min-h-[44px] px-3 py-2 rounded-lg border border-red-300 bg-white text-sm font-semibold text-red-700 hover:bg-red-50"
+                >
+                  Delete through
+                </button>
+              </div>
             ) : null}
             {activeTab === 'social' ? (
               <button
@@ -834,6 +897,9 @@ export default function Review() {
                         <span className="font-medium text-gray-900">
                           {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
                         </span>
+                        {q.created_at ? (
+                          <span className="text-gray-500"> · Found {fmtFoundShort(q.created_at)}</span>
+                        ) : null}
                         {safeUrl(q.source_url || q.source_slug_or_url) ? (
                           <>
                             {' '}

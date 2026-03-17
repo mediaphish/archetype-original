@@ -36,6 +36,17 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: 'Could not generate brief' });
     }
 
+    // If the model fell back (or returned an “empty” brief), do NOT overwrite the row.
+    // This prevents items from getting stuck on “Preparing…” by wiping existing data to null.
+    const hasRealWhy = typeof brief.why_it_matters === 'string' && brief.why_it_matters.trim().length >= 12;
+    const hasRealSummary = typeof brief.summary_interpretation === 'string' && brief.summary_interpretation.trim().length >= 30;
+    const hasMoves = Array.isArray(brief.alt_moves) && brief.alt_moves.length > 0;
+    const hasIdeas = Array.isArray(brief?.studio_playbook?.inbox_ideas) && brief.studio_playbook.inbox_ideas.length > 0;
+    const looksNotReady = !(hasRealWhy || hasRealSummary || hasMoves || hasIdeas);
+    if (looksNotReady) {
+      return res.status(200).json({ ok: true, not_ready: true, quote: row });
+    }
+
     // Librarian adds "we've said this before" + repeat warnings (best-effort).
     let similarityNotes = null;
     try {
@@ -43,26 +54,25 @@ export default async function handler(req, res) {
       if (lib?.ok && lib.similarity_notes) similarityNotes = lib.similarity_notes;
     } catch (_) {}
 
-    const patch = {
-      best_move: brief.best_move || null,
-      objectives_by_channel: brief.objectives_by_channel || null,
-      why_it_matters: brief.why_it_matters || null,
-      pull_quote: brief.pull_quote || null,
-      risk_flags: Array.isArray(brief.risk_flags) ? brief.risk_flags : null,
-      summary_interpretation: brief.summary_interpretation || null,
-      alt_moves: brief.alt_moves || null,
-      similarity_notes: similarityNotes,
-      auto_discarded: !!brief.auto_discarded,
-      discard_reason: brief.discard_reason || null,
-      content_kind: brief.content_kind || null,
-      ao_lane: brief.ao_lane || null,
-      topic_tags: Array.isArray(brief.topic_tags) ? brief.topic_tags : null,
-      studio_playbook: brief.studio_playbook || null,
-      updated_at: new Date().toISOString(),
-    };
+    const patch = { updated_at: new Date().toISOString() };
+    if (brief.best_move) patch.best_move = brief.best_move;
+    if (brief.objectives_by_channel) patch.objectives_by_channel = brief.objectives_by_channel;
+    if (typeof brief.why_it_matters === 'string' && brief.why_it_matters.trim()) patch.why_it_matters = brief.why_it_matters.trim();
+    if (typeof brief.pull_quote === 'string' && brief.pull_quote.trim()) patch.pull_quote = brief.pull_quote.trim();
+    if (Array.isArray(brief.risk_flags)) patch.risk_flags = brief.risk_flags;
+    if (typeof brief.summary_interpretation === 'string' && brief.summary_interpretation.trim()) patch.summary_interpretation = brief.summary_interpretation.trim();
+    if (Array.isArray(brief.alt_moves) && brief.alt_moves.length) patch.alt_moves = brief.alt_moves;
+    if (similarityNotes) patch.similarity_notes = similarityNotes;
+    if (typeof brief.auto_discarded === 'boolean') patch.auto_discarded = brief.auto_discarded;
+    if (brief.discard_reason) patch.discard_reason = brief.discard_reason;
+    if (brief.content_kind) patch.content_kind = brief.content_kind;
+    if (brief.ao_lane) patch.ao_lane = brief.ao_lane;
+    if (Array.isArray(brief.topic_tags)) patch.topic_tags = brief.topic_tags;
+    if (brief.studio_playbook) patch.studio_playbook = brief.studio_playbook;
 
     // If Analyst decides this is not a fit (or is junk), auto-reject it so it never clutters Pending.
-    if (brief.auto_discarded || brief.best_move === 'discard') {
+    // Only do this when we have a real (non-empty) brief — never on fallback.
+    if ((brief.auto_discarded || brief.best_move === 'discard') && (hasRealWhy || hasRealSummary || hasIdeas)) {
       patch.status = 'rejected';
     }
 
