@@ -30,6 +30,13 @@ function normUrl(v) {
   }
 }
 
+function normTier(v) {
+  const s = String(v || '').trim().toLowerCase();
+  if (s === 'competitor') return 'competitor';
+  if (s === 'friendly') return 'friendly';
+  return 'none';
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -61,6 +68,7 @@ export default async function handler(req, res) {
     const url = normUrl(req.body?.url);
     const name = req.body?.name ? String(req.body.name).trim().slice(0, 120) : null;
     const source_type = normType(req.body?.source_type);
+    const competitor_tier = normTier(req.body?.competitor_tier);
     if (!url) {
       return res.status(400).json({ ok: false, error: 'Valid url required (http/https)' });
     }
@@ -72,6 +80,7 @@ export default async function handler(req, res) {
           url,
           name,
           source_type,
+          competitor_tier,
           origin: 'manual',
           is_protected: true,
           created_at: new Date().toISOString(),

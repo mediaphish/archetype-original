@@ -80,6 +80,24 @@ function whatItIsLabel(q) {
   return 'signal';
 }
 
+function competitorLabel(q) {
+  const st = safeText(q?.source_type, 120).toLowerCase();
+  const sn = safeText(q?.source_name, 220).toLowerCase();
+  const isComp = st.startsWith('competitor_') || sn.startsWith('competitor') || sn.startsWith('friendly competitor');
+  if (!isComp) return '';
+  if (sn.startsWith('friendly competitor')) return 'Friendly competitor';
+  return 'Competitor';
+}
+
+function competitorWhatDoing(q) {
+  const title = safeText(q?.source_title, 180);
+  if (title) return title;
+  const s = safeText(q?.summary_interpretation, 240);
+  if (!s) return '';
+  const line = s.split('\n').map((x) => x.trim()).filter(Boolean)[0] || '';
+  return safeText(line, 180);
+}
+
 function workroomSeedIdeasMessage(q) {
   const ideas = Array.isArray(q?.studio_playbook?.inbox_ideas) ? q.studio_playbook.inbox_ideas : [];
   if (!ideas.length) return '';
@@ -177,6 +195,7 @@ function buildUseIdeasBullets(q) {
 const TABS = [
   { key: 'social', label: 'Opportunities' },
   { key: 'held', label: 'Held' },
+  { key: 'profiles', label: 'Profiles' },
 ];
 
 export default function Review() {
@@ -200,6 +219,16 @@ export default function Review() {
 
   const [deleteThroughDate, setDeleteThroughDate] = useState('');
 
+  // Profiles (Phase 2 starter): people/brands view inside Analyst
+  const [profilesLoading, setProfilesLoading] = useState(false);
+  const [profilesError, setProfilesError] = useState('');
+  const [profilesPeople, setProfilesPeople] = useState([]);
+  const [profilesShowAll, setProfilesShowAll] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [profileQuotesLoading, setProfileQuotesLoading] = useState(false);
+  const [profileQuotesError, setProfileQuotesError] = useState('');
+  const [profileQuotes, setProfileQuotes] = useState([]);
+
   // Analyst Workroom (chat) — stored locally (per device) for MVP.
   const [workroomOpen, setWorkroomOpen] = useState(false);
   const [workroomKind, setWorkroomKind] = useState('quote'); // quote | idea
@@ -219,6 +248,43 @@ export default function Review() {
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
+
+  const loadProfilesPeople = useCallback(async () => {
+    if (!authChecked) return;
+    setProfilesLoading(true);
+    setProfilesError('');
+    try {
+      const res = await fetch('/api/ao/brain-trust');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not load profiles');
+      const rows = Array.isArray(json.people) ? json.people : [];
+      setProfilesPeople(rows);
+    } catch (e) {
+      setProfilesPeople([]);
+      setProfilesError(e.message || 'Could not load profiles');
+    } finally {
+      setProfilesLoading(false);
+    }
+  }, [authChecked]);
+
+  const loadProfileQuotes = useCallback(async (person) => {
+    if (!authChecked || !person?.name) return;
+    setProfileQuotesLoading(true);
+    setProfileQuotesError('');
+    setProfileQuotes([]);
+    try {
+      const q = encodeURIComponent(String(person.name || '').trim());
+      const res = await fetch(`/api/ao/quotes/by-source?q=${q}&status=all&competitor_only=true&limit=80`);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not load opportunities for this profile');
+      setProfileQuotes(Array.isArray(json.quotes) ? json.quotes : []);
+    } catch (e) {
+      setProfileQuotes([]);
+      setProfileQuotesError(e.message || 'Could not load opportunities for this profile');
+    } finally {
+      setProfileQuotesLoading(false);
+    }
+  }, [authChecked]);
 
   const workroomStorageKey = useCallback((kind, id) => {
     const k = String(kind || '').trim() || 'quote';
@@ -579,6 +645,12 @@ export default function Review() {
 
   useEffect(() => {
     if (!authChecked) return;
+    if (activeTab !== 'profiles') return;
+    loadProfilesPeople();
+  }, [authChecked, activeTab, loadProfilesPeople]);
+
+  useEffect(() => {
+    if (!authChecked) return;
     if (!email) {
       setLoading(false);
       return;
@@ -913,7 +985,14 @@ export default function Review() {
                 <ul className="space-y-4">
                   {pendingQuotes.map((q) => (
                     <li key={q.id} className="border border-gray-200 rounded p-4 bg-white">
-                      <div className="text-xs text-gray-500 uppercase tracking-wide">{whatItIsLabel(q)}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-xs text-gray-500 uppercase tracking-wide">{whatItIsLabel(q)}</div>
+                        {competitorLabel(q) ? (
+                          <span className={`text-[11px] px-2 py-0.5 rounded border ${competitorLabel(q) === 'Competitor' ? 'bg-red-50 text-red-800 border-red-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
+                            {competitorLabel(q)}
+                          </span>
+                        ) : null}
+                      </div>
 
                       <div className="mt-1 text-base font-semibold text-gray-900">
                         {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
@@ -941,6 +1020,15 @@ export default function Review() {
                           </>
                         ) : null}
                       </div>
+
+                      {competitorLabel(q) ? (
+                        <div className="mt-2 text-sm text-gray-800">
+                          <span className="text-xs font-semibold text-gray-900">What they’re doing</span>
+                          <div className="mt-1 text-sm text-gray-800">
+                            {competitorWhatDoing(q) || 'Preparing…'}
+                          </div>
+                        </div>
+                      ) : null}
 
                       <div className="mt-3">
                         <div className="text-xs font-semibold text-gray-900">Why it matters for AO</div>
@@ -1000,6 +1088,194 @@ export default function Review() {
               )}
             </>
           )}
+          {!loading && activeTab === 'profiles' && (
+            <>
+              <p className="text-gray-600 text-sm mb-4">
+                Profiles are a “mini inbox” per person/brand. For now, it shows competitor-tagged targets and the opportunities we’ve captured about them.
+              </p>
+
+              {profilesError ? (
+                <div className="mb-4 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
+                  {profilesError}
+                </div>
+              ) : null}
+
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <label className="flex items-center gap-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={profilesShowAll}
+                    onChange={(e) => setProfilesShowAll(!!e.target.checked)}
+                  />
+                  Show non-competitors too
+                </label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedProfile(null);
+                      setProfileQuotes([]);
+                      setProfileQuotesError('');
+                    }}
+                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50"
+                    disabled={!selectedProfile}
+                  >
+                    Back to list
+                  </button>
+                  <button
+                    type="button"
+                    onClick={loadProfilesPeople}
+                    disabled={profilesLoading}
+                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    {profilesLoading ? 'Loading…' : 'Refresh'}
+                  </button>
+                </div>
+              </div>
+
+              {!selectedProfile ? (
+                <>
+                  {profilesLoading ? <LoadingSpinner /> : null}
+                  {(() => {
+                    const rows = Array.isArray(profilesPeople) ? profilesPeople : [];
+                    const filtered = profilesShowAll
+                      ? rows
+                      : rows.filter((p) => String(p?.competitor_tier || 'none') !== 'none');
+                    if (!filtered.length && !profilesLoading) {
+                      return <p className="text-gray-500">No profiles yet.</p>;
+                    }
+                    return (
+                      <ul className="space-y-3">
+                        {filtered.slice(0, 250).map((p) => (
+                          <li key={p.id} className="border border-gray-200 rounded p-4 bg-white">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <div className="text-base font-semibold text-gray-900 truncate">{p.name}</div>
+                                  {String(p.competitor_tier || 'none') !== 'none' ? (
+                                    <span className={`text-[11px] px-2 py-0.5 rounded border ${p.competitor_tier === 'competitor' ? 'bg-red-50 text-red-800 border-red-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
+                                      {p.competitor_tier === 'competitor' ? 'Competitor' : 'Friendly competitor'}
+                                    </span>
+                                  ) : null}
+                                  {p.active === false ? (
+                                    <span className="text-[11px] px-2 py-0.5 rounded border bg-gray-50 text-gray-700 border-gray-200">
+                                      Paused
+                                    </span>
+                                  ) : null}
+                                </div>
+                                {Array.isArray(p.categories) && p.categories.length ? (
+                                  <div className="mt-2 flex flex-wrap gap-1">
+                                    {p.categories.slice(0, 8).map((c) => (
+                                      <span key={c} className="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-800">{c}</span>
+                                    ))}
+                                  </div>
+                                ) : null}
+                                {Array.isArray(p.profile_urls) && p.profile_urls.length ? (
+                                  <div className="mt-2 text-sm text-gray-700">
+                                    {p.profile_urls.slice(0, 2).map((u) => (
+                                      <div key={u}>
+                                        <a className="text-blue-700 hover:underline break-all" href={u} target="_blank" rel="noreferrer">{u}</a>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : null}
+                                {p.notes ? <div className="mt-2 text-sm text-gray-600">{p.notes}</div> : null}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedProfile(p);
+                                  loadProfileQuotes(p);
+                                }}
+                                className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
+                              >
+                                Open
+                              </button>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  })()}
+                </>
+              ) : (
+                <div className="border border-gray-200 rounded p-4 bg-white">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-lg font-semibold text-gray-900 truncate">{selectedProfile.name}</div>
+                      <div className="mt-1 text-sm text-gray-600">
+                        {String(selectedProfile.competitor_tier || 'none') === 'competitor'
+                          ? 'Competitor'
+                          : String(selectedProfile.competitor_tier || 'none') === 'friendly'
+                            ? 'Friendly competitor'
+                            : 'Not a competitor'}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => loadProfileQuotes(selectedProfile)}
+                      disabled={profileQuotesLoading}
+                      className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      {profileQuotesLoading ? 'Loading…' : 'Refresh opportunities'}
+                    </button>
+                  </div>
+
+                  {profileQuotesError ? (
+                    <div className="mt-3 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
+                      {profileQuotesError}
+                    </div>
+                  ) : null}
+
+                  <div className="mt-4">
+                    <div className="text-xs font-semibold text-gray-900">Recent opportunities</div>
+                    {profileQuotesLoading ? <div className="mt-2"><LoadingSpinner /></div> : null}
+                    {!profileQuotesLoading && profileQuotes.length === 0 ? (
+                      <div className="mt-2 text-sm text-gray-500">No competitor opportunities found for this profile yet.</div>
+                    ) : null}
+
+                    {profileQuotes.length ? (
+                      <ul className="mt-3 space-y-3">
+                        {profileQuotes.slice(0, 25).map((q) => (
+                          <li key={q.id} className="border border-gray-200 rounded p-3 bg-white">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="min-w-0">
+                                <div className="text-sm font-semibold text-gray-900 truncate">
+                                  {q.source_title || q.source_name || 'Opportunity'}
+                                </div>
+                                <div className="mt-1 text-xs text-gray-600">
+                                  {q.created_at ? `Found ${fmtFoundShort(q.created_at)}` : null}
+                                  {safeUrl(q.source_url || q.source_slug_or_url) ? (
+                                    <>
+                                      {' '}
+                                      ·{' '}
+                                      <a className="text-blue-700 hover:underline" href={safeUrl(q.source_url || q.source_slug_or_url)} target="_blank" rel="noreferrer">
+                                        open
+                                      </a>
+                                    </>
+                                  ) : null}
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => openWorkroomForQuote(q)}
+                                className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+                              >
+                                Discuss
+                              </button>
+                            </div>
+                            <div className="mt-2 text-sm text-gray-800 whitespace-pre-wrap">
+                              {q.why_it_matters ? q.why_it_matters : 'Preparing…'}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
           {!loading && activeTab === 'held' && (
             <>
               <p className="text-gray-600 text-sm mb-4">
@@ -1034,7 +1310,14 @@ export default function Review() {
                 <ul className="space-y-4">
                   {heldList.map((q) => (
                     <li key={q.id} className="border border-gray-200 rounded p-4 bg-white">
-                      <div className="text-xs text-gray-500 uppercase tracking-wide">{whatItIsLabel(q)}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-xs text-gray-500 uppercase tracking-wide">{whatItIsLabel(q)}</div>
+                        {competitorLabel(q) ? (
+                          <span className={`text-[11px] px-2 py-0.5 rounded border ${competitorLabel(q) === 'Competitor' ? 'bg-red-50 text-red-800 border-red-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
+                            {competitorLabel(q)}
+                          </span>
+                        ) : null}
+                      </div>
 
                       <div className="mt-1 text-base font-semibold text-gray-900">
                         {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
@@ -1059,6 +1342,15 @@ export default function Review() {
                           </>
                         ) : null}
                       </div>
+
+                      {competitorLabel(q) ? (
+                        <div className="mt-2 text-sm text-gray-800">
+                          <span className="text-xs font-semibold text-gray-900">What they’re doing</span>
+                          <div className="mt-1 text-sm text-gray-800">
+                            {competitorWhatDoing(q) || 'Preparing…'}
+                          </div>
+                        </div>
+                      ) : null}
 
                       <div className="mt-3">
                         <div className="text-xs font-semibold text-gray-900">Why it matters for AO</div>

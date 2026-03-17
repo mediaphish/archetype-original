@@ -49,6 +49,7 @@
     { "src": "/api/cron/ao/scout-pass-midday", "dest": "/api/cron/ao/scout-pass.js" },
     { "src": "/api/cron/ao/scout-pass-evening", "dest": "/api/cron/ao/scout-pass.js" },
     { "src": "/api/cron/ao/editorial-rebuild", "dest": "/api/cron/ao/editorial-rebuild.js" },
+    { "src": "/api/cron/ao/competitor-digest", "dest": "/api/cron/ao/competitor-digest.js" },
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
         { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
         { "src": "/api/journal/retry-failed-emails", "dest": "/api/journal/retry-failed-emails.js" },
@@ -136,6 +137,9 @@
     { "src": "/api/ao/scout/cap-status", "dest": "/api/ao/scout/cap-status.js" },
     { "src": "/api/ao/scout/runs", "dest": "/api/ao/scout/runs.js" },
     { "src": "/api/ao/scout-pass-now", "dest": "/api/ao/scout-pass-now.js" },
+    { "src": "/api/ao/competitors/digest-status", "dest": "/api/ao/competitors/digest-status.js" },
+    { "src": "/api/ao/competitors/digest-now", "dest": "/api/ao/competitors/digest-now.js" },
+    { "src": "/api/ao/quotes/by-source", "dest": "/api/ao/quotes/by-source.js" },
     { "src": "/api/ao/import/upload", "dest": "/api/ao/import/upload.js" },
     { "src": "/api/ao/import/batches/([^/]+)/publish", "dest": "/api/ao/import/batches/[id].js?id=$1&action=publish" },
     { "src": "/api/ao/import/batches/([^/]+)", "dest": "/api/ao/import/batches/[id].js?id=$1" },
@@ -198,6 +202,10 @@
     {
       "path": "/api/cron/ao/daily-run",
       "schedule": "55 12 * * 1-5"
+    },
+    {
+      "path": "/api/cron/ao/competitor-digest",
+      "schedule": "5 13 * * 1-5"
     },
     {
       "path": "/api/cron/ao/scout-pass-morning",

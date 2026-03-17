@@ -83,6 +83,7 @@ export default function Scout() {
   const [newSourceUrl, setNewSourceUrl] = useState('');
   const [newSourceName, setNewSourceName] = useState('');
   const [newSourceType, setNewSourceType] = useState('rss'); // rss | article
+  const [newSourceCompetitorTier, setNewSourceCompetitorTier] = useState('none'); // none | friendly | competitor
   const [addSourceLoading, setAddSourceLoading] = useState(false);
   const [deleteSourceLoading, setDeleteSourceLoading] = useState(null);
   const [rebuildingSources, setRebuildingSources] = useState(false);
@@ -96,8 +97,16 @@ export default function Scout() {
   const [newPersonCategories, setNewPersonCategories] = useState('');
   const [newPersonProfileUrl, setNewPersonProfileUrl] = useState('');
   const [newPersonNotes, setNewPersonNotes] = useState('');
+  const [newPersonCompetitorTier, setNewPersonCompetitorTier] = useState('none'); // none | friendly | competitor
   const [addPersonLoading, setAddPersonLoading] = useState(false);
   const [togglingPersonId, setTogglingPersonId] = useState(null);
+
+  // Competitor digest lane
+  const [digestLoading, setDigestLoading] = useState(true);
+  const [digestError, setDigestError] = useState('');
+  const [digestStatus, setDigestStatus] = useState(null); // last run row
+  const [digestRunning, setDigestRunning] = useState(false);
+  const [digestMessage, setDigestMessage] = useState('');
 
   // Chase list (from editorial memory loop)
   const [chaseLoading, setChaseLoading] = useState(true);
@@ -289,6 +298,51 @@ export default function Scout() {
     }
   }, [authChecked]);
 
+  const loadDigestStatus = useCallback(async () => {
+    if (!authChecked) return;
+    setDigestLoading(true);
+    setDigestError('');
+    try {
+      const res = await fetch('/api/ao/competitors/digest-status');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        setDigestStatus(json.last_run || null);
+      } else {
+        setDigestStatus(null);
+        setDigestError(json.error || 'Could not load competitor digest status');
+      }
+    } catch (e) {
+      setDigestStatus(null);
+      setDigestError(e.message || 'Could not load competitor digest status');
+    } finally {
+      setDigestLoading(false);
+    }
+  }, [authChecked]);
+
+  const runDigestNow = useCallback(async () => {
+    if (!authChecked || digestRunning) return;
+    setDigestRunning(true);
+    setDigestMessage('');
+    setDigestError('');
+    try {
+      const res = await fetch('/api/ao/competitors/digest-now', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setDigestError(json.error || 'Competitor digest failed');
+      } else {
+        const inserted = Number(json.inserted || 0) || 0;
+        const found = Number(json.candidates_found || 0) || 0;
+        setDigestMessage(`Competitor digest complete. Found ${found}. Added ${inserted} item(s) to Analyst.`);
+        await loadDigestStatus();
+        await loadStatus();
+      }
+    } catch (e) {
+      setDigestError(e.message || 'Competitor digest failed');
+    } finally {
+      setDigestRunning(false);
+    }
+  }, [authChecked, digestRunning, loadDigestStatus, loadStatus]);
+
   const loadChaseList = useCallback(async () => {
     if (!authChecked) return;
     setChaseLoading(true);
@@ -341,8 +395,9 @@ export default function Scout() {
     loadScoutRuns();
     loadPendingSources();
     loadCapStatus();
+    loadDigestStatus();
     loadChaseList();
-  }, [authChecked, loadStatus, loadSources, loadPeople, loadAiStatus, loadScoutRuns, loadPendingSources, loadCapStatus, loadChaseList]);
+  }, [authChecked, loadStatus, loadSources, loadPeople, loadAiStatus, loadScoutRuns, loadPendingSources, loadCapStatus, loadDigestStatus, loadChaseList]);
 
   const runScan = useCallback(async (type) => {
     if (!authChecked || scanning) return;
@@ -455,6 +510,7 @@ export default function Scout() {
           url,
           name: newSourceName.trim() || null,
           source_type: normType(newSourceType),
+          competitor_tier: String(newSourceCompetitorTier || 'none'),
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -464,6 +520,7 @@ export default function Scout() {
         setNewSourceUrl('');
         setNewSourceName('');
         setNewSourceType('rss');
+        setNewSourceCompetitorTier('none');
         await loadSources();
       }
     } catch (e) {
@@ -581,6 +638,7 @@ export default function Scout() {
           categories: categoriesArray,
           profile_urls: url ? [url] : [],
           notes: newPersonNotes.trim() || null,
+          competitor_tier: String(newPersonCompetitorTier || 'none'),
           active: true,
         }),
       });
@@ -592,6 +650,7 @@ export default function Scout() {
         setNewPersonCategories('');
         setNewPersonProfileUrl('');
         setNewPersonNotes('');
+        setNewPersonCompetitorTier('none');
         await loadPeople();
       }
     } catch (e) {
@@ -624,12 +683,57 @@ export default function Scout() {
     }
   }
 
+  async function updateSourceTier(id, competitorTier) {
+    if (!authChecked || !id) return;
+    setSourcesError('');
+    try {
+      const res = await fetch(`/api/ao/external-sources/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ competitor_tier: competitorTier }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setSourcesError(json.error || 'Could not update this URL');
+      } else {
+        await loadSources();
+      }
+    } catch (e) {
+      setSourcesError(e.message || 'Could not update this URL');
+    }
+  }
+
+  async function updatePersonTier(person, competitorTier) {
+    if (!authChecked || togglingPersonId || !person?.id) return;
+    setTogglingPersonId(person.id);
+    setPeopleError('');
+    try {
+      const res = await fetch(`/api/ao/brain-trust/${encodeURIComponent(person.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ competitor_tier: competitorTier }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setPeopleError(json.error || 'Could not update this person');
+      } else {
+        await loadPeople();
+      }
+    } catch (e) {
+      setPeopleError(e.message || 'Could not update this person');
+    } finally {
+      setTogglingPersonId(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="scout" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-28 md:pb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Scout</h1>
-        <p className="text-gray-600 mb-8">Search and collect leadership signals from watched URLs and people.</p>
+        <p className="text-gray-600 mb-8">
+          Search and collect leadership signals from watch targets (sites + people). You can tag targets as competitors to include them in a daily digest lane.
+        </p>
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">Run Scout</h2>
@@ -688,6 +792,69 @@ export default function Scout() {
               {scanMessage}
             </div>
           ) : null}
+
+          <div className="mt-5 pt-4 border-t border-gray-200">
+            <h3 className="text-sm font-semibold text-gray-900">Competitor digest</h3>
+            <p className="text-xs text-gray-600 mt-1">
+              Best-effort daily lane. Some social sites block reading; this panel shows what was reachable.
+            </p>
+
+            {digestLoading ? <div className="mt-2"><LoadingSpinner /></div> : null}
+            {digestError ? (
+              <div className="mt-2 p-3 rounded text-sm bg-red-50 border border-red-200 text-red-800">
+                {digestError}
+              </div>
+            ) : null}
+            {digestMessage ? (
+              <div className="mt-2 p-3 rounded text-sm bg-green-50 border border-green-200 text-green-800">
+                {digestMessage}
+              </div>
+            ) : null}
+
+            <div className="mt-2 text-sm text-gray-700">
+              <div>
+                Last run:{' '}
+                {digestStatus?.started_at ? new Date(digestStatus.started_at).toLocaleString() : '—'}
+              </div>
+              <div className="mt-1">
+                Added to Analyst:{' '}
+                {typeof digestStatus?.inserted_count === 'number' ? digestStatus.inserted_count : '—'}
+              </div>
+              <div className="mt-2 text-xs text-gray-600">
+                Reachable platforms:{' '}
+                {digestStatus?.reachable_platforms
+                  ? Object.entries(digestStatus.reachable_platforms).map(([k, v]) => `${k}:${v}`).join('  ')
+                  : '—'}
+              </div>
+              <div className="mt-1 text-xs text-gray-600">
+                Attempted platforms:{' '}
+                {digestStatus?.attempted_platforms
+                  ? Object.entries(digestStatus.attempted_platforms).map(([k, v]) => `${k}:${v}`).join('  ')
+                  : '—'}
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={runDigestNow}
+                disabled={digestRunning}
+                className="px-3 py-1.5 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {digestRunning ? 'Running…' : 'Run competitor digest now'}
+              </button>
+              <button
+                type="button"
+                onClick={loadDigestStatus}
+                disabled={digestLoading}
+                className="px-3 py-1.5 border border-gray-300 text-sm rounded hover:bg-gray-50 disabled:opacity-50"
+              >
+                Refresh
+              </button>
+            </div>
+
+            {digestRunning ? <IndeterminateBar label="Competitor digest in progress…" /> : null}
+          </div>
         </section>
 
         <section className="mt-6 bg-white rounded-lg border border-gray-200 shadow-sm p-6">
@@ -843,8 +1010,10 @@ export default function Scout() {
 
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">URLs we watch</h2>
-            <p className="text-sm text-gray-600 mb-4">These are the sites Scout checks for leadership signals.</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Watch targets — sites</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              These are the sites Scout checks. If you tag one as a competitor, it becomes eligible for the daily competitor digest.
+            </p>
 
             {sourcesError ? <p className="text-sm text-red-700 mb-3">{sourcesError}</p> : null}
             {sourcesMessage ? <p className="text-sm text-green-800 mb-3">{sourcesMessage}</p> : null}
@@ -906,6 +1075,18 @@ export default function Scout() {
                 </select>
               </div>
               <div className="md:col-span-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Competitor tag</label>
+                <select
+                  value={newSourceCompetitorTier}
+                  onChange={(e) => setNewSourceCompetitorTier(e.target.value)}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white"
+                >
+                  <option value="none">Not a competitor</option>
+                  <option value="friendly">Friendly competitor</option>
+                  <option value="competitor">Competitor</option>
+                </select>
+              </div>
+              <div className="md:col-span-3">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name (optional)</label>
                 <input
                   value={newSourceName}
@@ -952,6 +1133,18 @@ export default function Scout() {
                         <a className="text-sm text-blue-700 hover:underline break-all" href={safeUrl(s.url) || '#'} target="_blank" rel="noreferrer">
                           {s.url}
                         </a>
+                        <div className="mt-2">
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Competitor tag</label>
+                          <select
+                            value={String(s.competitor_tier || 'none')}
+                            onChange={(e) => updateSourceTier(s.id, e.target.value)}
+                            className="border border-gray-300 rounded px-2 py-1 text-sm bg-white"
+                          >
+                            <option value="none">Not a competitor</option>
+                            <option value="friendly">Friendly competitor</option>
+                            <option value="competitor">Competitor</option>
+                          </select>
+                        </div>
                       </div>
                       <button
                         type="button"
@@ -969,8 +1162,8 @@ export default function Scout() {
           </section>
 
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">People we follow</h2>
-            <p className="text-sm text-gray-600 mb-4">A lightweight registry of identifiable people in your leadership universe.</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Watch targets — people/brands</h2>
+            <p className="text-sm text-gray-600 mb-4">A lightweight registry of identifiable people/brands in your leadership universe.</p>
 
             {peopleError ? <p className="text-sm text-red-700 mb-3">{peopleError}</p> : null}
 
@@ -1003,6 +1196,18 @@ export default function Scout() {
                     className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Competitor tag</label>
+                <select
+                  value={newPersonCompetitorTier}
+                  onChange={(e) => setNewPersonCompetitorTier(e.target.value)}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white"
+                >
+                  <option value="none">Not a competitor</option>
+                  <option value="friendly">Friendly competitor</option>
+                  <option value="competitor">Competitor</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
@@ -1049,6 +1254,11 @@ export default function Scout() {
                           <span className={`text-xs px-2 py-0.5 rounded ${p.active ? 'bg-green-50 text-green-800' : 'bg-gray-100 text-gray-700'}`}>
                             {p.active ? 'Active' : 'Paused'}
                           </span>
+                          {String(p.competitor_tier || 'none') !== 'none' ? (
+                            <span className={`text-xs px-2 py-0.5 rounded ${p.competitor_tier === 'competitor' ? 'bg-red-50 text-red-800' : 'bg-amber-50 text-amber-800'}`}>
+                              {p.competitor_tier === 'competitor' ? 'Competitor' : 'Friendly competitor'}
+                            </span>
+                          ) : null}
                         </div>
                         {Array.isArray(p.categories) && p.categories.length ? (
                           <div className="mt-1 flex flex-wrap gap-1">
@@ -1067,6 +1277,18 @@ export default function Scout() {
                           </div>
                         ) : null}
                         {p.notes ? <div className="mt-2 text-sm text-gray-600">{p.notes}</div> : null}
+                        <div className="mt-2">
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Competitor tag</label>
+                          <select
+                            value={String(p.competitor_tier || 'none')}
+                            onChange={(e) => updatePersonTier(p, e.target.value)}
+                            className="border border-gray-300 rounded px-2 py-1 text-sm bg-white"
+                          >
+                            <option value="none">Not a competitor</option>
+                            <option value="friendly">Friendly competitor</option>
+                            <option value="competitor">Competitor</option>
+                          </select>
+                        </div>
                       </div>
                       <button
                         type="button"

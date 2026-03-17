@@ -28,6 +28,13 @@ function normArray(v, maxItems, maxLen) {
   return out;
 }
 
+function normTier(v) {
+  const s = String(v || '').trim().toLowerCase();
+  if (s === 'competitor') return 'competitor';
+  if (s === 'friendly') return 'friendly';
+  return 'none';
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -45,6 +52,7 @@ export default async function handler(req, res) {
     if (req.body?.profile_urls != null) updates.profile_urls = normArray(req.body.profile_urls, 10, 400);
     if (req.body?.notes != null) updates.notes = safeText(req.body.notes, 800) || null;
     if (req.body?.active != null) updates.active = req.body.active === false ? false : true;
+    if (req.body?.competitor_tier != null) updates.competitor_tier = normTier(req.body.competitor_tier);
 
     try {
       const { data, error } = await supabaseAdmin
