@@ -38,8 +38,8 @@ export default async function handler(req, res) {
 
     // If the model fell back (or returned an “empty” brief), do NOT overwrite the row.
     // This prevents items from getting stuck on “Preparing…” by wiping existing data to null.
-    const hasRealWhy = typeof brief.why_it_matters === 'string' && brief.why_it_matters.trim().length >= 12;
-    const hasRealSummary = typeof brief.summary_interpretation === 'string' && brief.summary_interpretation.trim().length >= 30;
+    const hasRealWhy = typeof brief.why_it_matters === 'string' && brief.why_it_matters.trim().length >= 80;
+    const hasRealSummary = typeof brief.summary_interpretation === 'string' && brief.summary_interpretation.trim().length >= 180;
     const hasMoves = Array.isArray(brief.alt_moves) && brief.alt_moves.length > 0;
     const hasIdeas = Array.isArray(brief?.studio_playbook?.inbox_ideas) && brief.studio_playbook.inbox_ideas.length > 0;
     const looksNotReady = !(hasRealWhy || hasRealSummary || hasMoves || hasIdeas);

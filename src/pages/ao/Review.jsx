@@ -215,7 +215,9 @@ export default function Review() {
   const [actionError, setActionError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
   const [briefPrep, setBriefPrep] = useState({ running: false, total: 0, done: 0 });
-  const preparingRef = useRef(new Set());
+  // Track last brief attempt per item so "not ready yet" can retry later.
+  const preparingRef = useRef(new Map()); // id -> lastAttemptMs
+  const BRIEF_RETRY_COOLDOWN_MS = 75_000;
 
   const [deleteThroughDate, setDeleteThroughDate] = useState('');
 
@@ -718,7 +720,11 @@ export default function Review() {
     const candidates = quotes
       .filter((q) => q && q.status === 'pending')
       .filter((q) => needsBrief(q))
-      .filter((q) => !preparingRef.current.has(q.id))
+      .filter((q) => {
+        const last = preparingRef.current.get(q.id);
+        if (!last) return true;
+        return (Date.now() - Number(last || 0)) > BRIEF_RETRY_COOLDOWN_MS;
+      })
       .slice(0, 10);
 
     if (candidates.length === 0) return;
@@ -731,7 +737,7 @@ export default function Review() {
       let notReadyCount = 0;
       for (const q of candidates) {
         if (cancelled) break;
-        preparingRef.current.add(q.id);
+        preparingRef.current.set(q.id, Date.now());
         try {
           const res = await fetch(`/api/ao/quotes/${q.id}/brief`, { method: 'POST' });
           const json = await res.json().catch(() => ({}));
@@ -1043,6 +1049,13 @@ export default function Review() {
                             </a>
                           </>
                         ) : null}
+                      </div>
+
+                      <div className="mt-3">
+                        <div className="text-xs font-semibold text-gray-900">Analyst brief</div>
+                        <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
+                          {q.summary_interpretation ? q.summary_interpretation : 'Preparing…'}
+                        </div>
                       </div>
 
                       {competitorLabel(q) ? (
@@ -1385,6 +1398,13 @@ export default function Review() {
                             </a>
                           </>
                         ) : null}
+                      </div>
+
+                      <div className="mt-3">
+                        <div className="text-xs font-semibold text-gray-900">Analyst brief</div>
+                        <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
+                          {q.summary_interpretation ? q.summary_interpretation : 'Preparing…'}
+                        </div>
                       </div>
 
                       {competitorLabel(q) ? (
