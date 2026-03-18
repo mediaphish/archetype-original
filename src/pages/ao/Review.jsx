@@ -228,6 +228,7 @@ export default function Review() {
   const [profileQuotesLoading, setProfileQuotesLoading] = useState(false);
   const [profileQuotesError, setProfileQuotesError] = useState('');
   const [profileQuotes, setProfileQuotes] = useState([]);
+  const [profileDeletingId, setProfileDeletingId] = useState(null);
 
   // Analyst Workroom (chat) — stored locally (per device) for MVP.
   const [workroomOpen, setWorkroomOpen] = useState(false);
@@ -285,6 +286,29 @@ export default function Review() {
       setProfileQuotesLoading(false);
     }
   }, [authChecked]);
+
+  const deleteProfileTarget = useCallback(async (person) => {
+    if (!authChecked || profileDeletingId || !person?.id) return;
+    const ok = window.confirm(`Delete "${person.name || 'this target'}" from Watch Targets? This does not delete any opportunities already found.`);
+    if (!ok) return;
+    setProfileDeletingId(person.id);
+    setProfilesError('');
+    try {
+      const res = await fetch(`/api/ao/brain-trust/${encodeURIComponent(person.id)}`, { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not delete');
+      if (selectedProfile?.id === person.id) {
+        setSelectedProfile(null);
+        setProfileQuotes([]);
+        setProfileQuotesError('');
+      }
+      await loadProfilesPeople();
+    } catch (e) {
+      setProfilesError(e.message || 'Could not delete');
+    } finally {
+      setProfileDeletingId(null);
+    }
+  }, [authChecked, profileDeletingId, loadProfilesPeople, selectedProfile]);
 
   const workroomStorageKey = useCallback((kind, id) => {
     const k = String(kind || '').trim() || 'quote';
@@ -1181,16 +1205,26 @@ export default function Review() {
                                 ) : null}
                                 {p.notes ? <div className="mt-2 text-sm text-gray-600">{p.notes}</div> : null}
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setSelectedProfile(p);
-                                  loadProfileQuotes(p);
-                                }}
-                                className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
-                              >
-                                Open
-                              </button>
+                              <div className="flex flex-col items-end gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedProfile(p);
+                                    loadProfileQuotes(p);
+                                  }}
+                                  className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
+                                >
+                                  Open
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => deleteProfileTarget(p)}
+                                  disabled={profileDeletingId === p.id}
+                                  className="min-h-[44px] px-3 py-2 rounded-lg border border-red-200 bg-white text-red-700 text-sm font-semibold hover:bg-red-50 disabled:opacity-50"
+                                >
+                                  {profileDeletingId === p.id ? 'Deleting…' : 'Delete'}
+                                </button>
+                              </div>
                             </div>
                           </li>
                         ))}
@@ -1211,14 +1245,24 @@ export default function Review() {
                             : 'Not a competitor'}
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => loadProfileQuotes(selectedProfile)}
-                      disabled={profileQuotesLoading}
-                      className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
-                    >
-                      {profileQuotesLoading ? 'Loading…' : 'Refresh opportunities'}
-                    </button>
+                    <div className="flex flex-col items-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => loadProfileQuotes(selectedProfile)}
+                        disabled={profileQuotesLoading}
+                        className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                      >
+                        {profileQuotesLoading ? 'Loading…' : 'Refresh opportunities'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteProfileTarget(selectedProfile)}
+                        disabled={profileDeletingId === selectedProfile?.id}
+                        className="min-h-[44px] px-3 py-2 rounded-lg border border-red-200 bg-white text-red-700 text-sm font-semibold hover:bg-red-50 disabled:opacity-50"
+                      >
+                        {profileDeletingId === selectedProfile?.id ? 'Deleting…' : 'Delete target'}
+                      </button>
+                    </div>
                   </div>
 
                   {profileQuotesError ? (

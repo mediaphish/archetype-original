@@ -100,6 +100,7 @@ export default function Scout() {
   const [newPersonCompetitorTier, setNewPersonCompetitorTier] = useState('none'); // none | friendly | competitor
   const [addPersonLoading, setAddPersonLoading] = useState(false);
   const [togglingPersonId, setTogglingPersonId] = useState(null);
+  const [deletePersonLoading, setDeletePersonLoading] = useState(null);
 
   // Competitor digest lane
   const [digestLoading, setDigestLoading] = useState(true);
@@ -680,6 +681,27 @@ export default function Scout() {
       setPeopleError(e.message || 'Could not update');
     } finally {
       setTogglingPersonId(null);
+    }
+  }
+
+  async function handleDeletePerson(person) {
+    if (!authChecked || deletePersonLoading || !person?.id) return;
+    const ok = window.confirm(`Delete "${person.name || 'this person'}" from Watch Targets? This does not delete any opportunities already found.`);
+    if (!ok) return;
+    setDeletePersonLoading(person.id);
+    setPeopleError('');
+    try {
+      const res = await fetch(`/api/ao/brain-trust/${encodeURIComponent(person.id)}`, { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setPeopleError(json.error || 'Could not delete');
+      } else {
+        await loadPeople();
+      }
+    } catch (e) {
+      setPeopleError(e.message || 'Could not delete');
+    } finally {
+      setDeletePersonLoading(null);
     }
   }
 
@@ -1290,14 +1312,24 @@ export default function Scout() {
                           </select>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => togglePersonActive(p)}
-                        disabled={togglingPersonId === p.id}
-                        className="text-sm text-gray-700 hover:underline disabled:opacity-50"
-                      >
-                        {togglingPersonId === p.id ? 'Saving…' : (p.active ? 'Pause' : 'Activate')}
-                      </button>
+                      <div className="flex flex-col items-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => togglePersonActive(p)}
+                          disabled={togglingPersonId === p.id}
+                          className="text-sm text-gray-700 hover:underline disabled:opacity-50"
+                        >
+                          {togglingPersonId === p.id ? 'Saving…' : (p.active ? 'Pause' : 'Activate')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeletePerson(p)}
+                          disabled={deletePersonLoading === p.id}
+                          className="text-sm text-red-700 hover:underline disabled:opacity-50"
+                        >
+                          {deletePersonLoading === p.id ? 'Deleting…' : 'Delete'}
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
