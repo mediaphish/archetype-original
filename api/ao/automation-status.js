@@ -32,6 +32,9 @@ export default async function handler(req, res) {
       last_internal_scan: internal?.finished_at || internal?.started_at || null,
       last_external_scan: external?.finished_at || external?.started_at || null,
       last_daily_run: daily?.finished_at || daily?.started_at || null,
+      last_internal: internal || null,
+      last_external: external || null,
+      last_daily: daily || null,
       recent_errors: rows.filter((r) => r.error_message).slice(0, 5),
     });
   } catch (e) {

@@ -217,7 +217,12 @@ export default function Review() {
   const [briefPrep, setBriefPrep] = useState({ running: false, total: 0, done: 0 });
   // Track last brief attempt per item so "not ready yet" can retry later.
   const preparingRef = useRef(new Map()); // id -> lastAttemptMs
-  const BRIEF_RETRY_COOLDOWN_MS = 75_000;
+  const [briefRetryPulse, setBriefRetryPulse] = useState(0);
+  const BRIEF_RETRY_COOLDOWN_MS = 60_000;
+  const BRIEF_PULSE_MS = 25_000;
+
+  // Scan/run visibility (so you can tell if "today" ran yet).
+  const [runInfo, setRunInfo] = useState(null);
 
   const [deleteThroughDate, setDeleteThroughDate] = useState('');
 
@@ -671,6 +676,21 @@ export default function Review() {
 
   useEffect(() => {
     if (!authChecked) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/automation-status');
+        const json = await res.json().catch(() => ({}));
+        if (!cancelled && res.ok && json.ok) {
+          setRunInfo(json);
+        }
+      } catch (_) {}
+    })();
+    return () => { cancelled = true; };
+  }, [authChecked]);
+
+  useEffect(() => {
+    if (!authChecked) return;
     if (activeTab !== 'profiles') return;
     loadProfilesPeople();
   }, [authChecked, activeTab, loadProfilesPeople]);
@@ -717,6 +737,14 @@ export default function Review() {
     if (activeTab !== 'social') return;
     if (!Array.isArray(quotes) || quotes.length === 0) return;
 
+    const stillNeedingCount = quotes
+      .filter((q) => q && q.status === 'pending')
+      .filter((q) => needsBrief(q)).length;
+    if (stillNeedingCount > 0) {
+      const t = setTimeout(() => setBriefRetryPulse((x) => x + 1), BRIEF_PULSE_MS);
+      return () => clearTimeout(t);
+    }
+
     const candidates = quotes
       .filter((q) => q && q.status === 'pending')
       .filter((q) => needsBrief(q))
@@ -752,13 +780,14 @@ export default function Review() {
         if (!cancelled) setBriefPrep((p) => ({ ...p, done }));
       }
       if (!cancelled && notReadyCount > 0) {
-        setActionMessage('Some items are still preparing. Give it a moment and they’ll fill in.');
+        setActionMessage('Some items are still preparing. I’ll keep trying automatically — refresh is optional.');
+        setTimeout(() => setBriefRetryPulse((x) => x + 1), BRIEF_PULSE_MS);
       }
       if (!cancelled) setBriefPrep((p) => ({ ...p, running: false }));
     })();
 
     return () => { cancelled = true; };
-  }, [authChecked, activeTab, quotes, needsBrief]);
+  }, [authChecked, activeTab, quotes, needsBrief, briefRetryPulse]);
 
   const pendingQuotes = quotes.filter((q) => q.status === 'pending');
   const heldList = heldQuotes.filter((q) => q.status === 'held');
@@ -915,7 +944,38 @@ export default function Review() {
             </button>
           </div>
         </div>
-        <p className="text-gray-600 mb-8">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
+        <p className="text-gray-600 mb-4">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
+        {runInfo?.ok ? (
+          <div className="mb-6 p-3 rounded border border-gray-200 bg-white text-sm text-gray-800">
+            <div className="font-semibold text-gray-900">Run status</div>
+            <div className="mt-1 text-gray-700">
+              Last external run:{' '}
+              {runInfo?.last_external?.finished_at || runInfo?.last_external?.started_at
+                ? new Date(runInfo.last_external.finished_at || runInfo.last_external.started_at).toLocaleString()
+                : '—'}
+              {runInfo?.last_external ? (
+                <span className="text-gray-600">
+                  {' '}
+                  · Found {Number(runInfo.last_external.candidates_found || 0)} · Added {Number(runInfo.last_external.candidates_inserted || 0)}
+                  {runInfo.last_external.error_message ? ` · Error: ${runInfo.last_external.error_message}` : ''}
+                </span>
+              ) : null}
+            </div>
+            <div className="mt-1 text-gray-700">
+              Last daily run:{' '}
+              {runInfo?.last_daily?.finished_at || runInfo?.last_daily?.started_at
+                ? new Date(runInfo.last_daily.finished_at || runInfo.last_daily.started_at).toLocaleString()
+                : '—'}
+              {runInfo?.last_daily ? (
+                <span className="text-gray-600">
+                  {' '}
+                  · Found {Number(runInfo.last_daily.candidates_found || 0)} · Added {Number(runInfo.last_daily.candidates_inserted || 0)}
+                  {runInfo.last_daily.error_message ? ` · Error: ${runInfo.last_daily.error_message}` : ''}
+                </span>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
         {briefPrep.running ? (
           <div className="mb-6 p-3 rounded border border-blue-200 bg-blue-50 text-blue-900 text-sm flex items-center justify-between gap-3">
             <span>
