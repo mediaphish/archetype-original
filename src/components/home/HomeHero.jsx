@@ -1,49 +1,19 @@
 /**
- * Homepage Hero Section
- * Editorial Minimal Design - Parallax Hero with Archy
+ * Homepage Hero — Accidental CEO book promotion
+ * Editorial minimal layout consistent with the rest of the public site.
  */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { OptimizedImage } from '../OptimizedImage';
 
+const LULU_ORDER_URL =
+  'https://www.lulu.com/shop/bart-paden/accidental-ceo/paperback/product-zmzpjrv.html';
+
 export default function HomeHero() {
-  const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint - disable parallax on mobile
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    const handleScroll = () => {
-      if (!isMobile) {
-        setScrollY(window.scrollY);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkMobile);
-    };
-  }, [isMobile]);
-
-  const handleLinkClick = (e, href) => {
+  const goInternal = (e, href) => {
     e.preventDefault();
-    if (href.startsWith('#')) {
-      // Anchor link - scroll to section
-      const element = document.getElementById(href.substring(1));
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      window.history.pushState({}, '', href);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-      // Scroll to top when navigating to a new page
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
+    window.history.pushState({}, '', href);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   return (
@@ -51,136 +21,62 @@ export default function HomeHero() {
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-24 items-center">
-            {/* Left Column: Hero Content */}
-            <div className="order-2 md:order-1">
-              {/* Badge */}
+            {/* Text column — first on mobile and desktop left */}
+            <div className="order-1">
               <div className="inline-block mb-6 sm:mb-8">
                 <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
-                  32+ Years Building Leaders
+                  Book
                 </span>
               </div>
-              
-              {/* Title */}
-              <h1 
+
+              <h1
                 className="font-serif font-bold mb-6 sm:mb-8 text-balance text-[#1A1A1A]"
                 style={{
                   fontSize: 'clamp(2.5rem, 5vw + 1rem, 5rem)',
                   lineHeight: '1.1',
-                  letterSpacing: '-0.02em'
+                  letterSpacing: '-0.02em',
                 }}
               >
-                Leadership That Actually Lasts
+                Accidental CEO
               </h1>
-              
-              {/* Body paragraphs */}
-              <div className="space-y-6 mb-8 sm:mb-10">
-                <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light break-words">
-                  Clarity, culture, responsibility, and leadership that strengthens people and transforms environments.
-                </p>
-                
-                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-xl break-words">
-                  I'm Bart — I've spent more than three decades building leaders, teams, companies, and cultures that can hold real weight. Archy is my AI persona, built on the same lived experience, the same philosophy, and the research behind Culture Science.
-                </p>
-                
-                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-xl break-words">
-                  Together, we help leaders lead with clarity — and help teams become places people actually want to belong.
-                </p>
-              </div>
-              
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light mb-6">
+                A leadership story about building something real, carrying more than expected, and
+                choosing to lead anyway.
+              </p>
+
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/65 max-w-xl mb-8 sm:mb-10">
+                For founders, operators, and leaders learning that real leadership is formed under
+                pressure, not just taught in theory.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <a
-                  href="/contact"
-                  onClick={(e) => handleLinkClick(e, '/contact')}
+                  href={LULU_ORDER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-[#1A1A1A] text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center min-h-[44px] flex items-center justify-center"
                 >
-                  Work With Me
+                  👉 Order the Book
                 </a>
                 <a
-                  href="#archy"
-                  onClick={(e) => handleLinkClick(e, '#archy')}
+                  href="/accidental-ceo"
+                  onClick={(e) => goInternal(e, '/accidental-ceo')}
                   className="bg-transparent text-[#1A1A1A] px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center min-h-[44px] flex items-center justify-center"
                 >
-                  Meet Archy →
+                  👉 Learn More
                 </a>
               </div>
             </div>
-          
-            {/* Right Column: 4-Layer Parallax */}
-            <div className="relative h-[250px] sm:h-[350px] md:h-[450px] lg:h-[550px] order-first md:order-last mt-[-20px] sm:mt-0">
-              {/* Layer 4 (Back - Archy's speech bubble): Moves up at different pace than Bart's bubble */}
-              <div 
-                className="absolute inset-0 z-10 flex items-center justify-center"
-                style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(0, ${scrollY * -0.03}px)`,
-                  transition: 'transform 0.1s ease-out'
-                }}
-              >
+
+            {/* Book cover — second on mobile, right on desktop */}
+            <div className="order-2 flex justify-center md:justify-end">
+              <div className="w-full max-w-sm md:max-w-md">
                 <OptimizedImage
-                  src="/images/home-layer-4.png"
-                  alt="Archy's speech bubble"
-                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
+                  src="/images/accidental-ceo/cover.png"
+                  alt="Accidental CEO book cover"
+                  className="w-full h-auto object-contain drop-shadow-md"
                   loading="eager"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </div>
-              
-              {/* Layer 3 (Second middle - Bart's speech bubble): Moves up and right slowly */}
-              <div 
-                className="absolute inset-0 z-20 flex items-center justify-center"
-                style={{ 
-                  transform: isMobile ? 'translate(0, 0)' : `translate(${scrollY * 0.02}px, ${scrollY * -0.04}px)`,
-                  transition: 'transform 0.1s ease-out'
-                }}
-              >
-                <OptimizedImage
-                  src="/images/home-layer-3.png"
-                  alt="Hi, I'm Bart! speech bubble"
-                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
-                  loading="eager"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </div>
-              
-              {/* Layer 2 (First middle - Archy character): Moves left, slower and less distance */}
-              <div 
-                className="absolute inset-0 z-30 flex items-center justify-center"
-                style={{ 
-                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * -0.06}px)`,
-                  transition: 'transform 0.1s ease-out'
-                }}
-              >
-                <OptimizedImage
-                  src="/images/home-layer-2.png"
-                  alt="Archy, the wise leadership guide"
-                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
-                  loading="eager"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </div>
-              
-              {/* Layer 1 (Front - Bart character): Moves right, slower and less distance */}
-              <div 
-                className="absolute inset-0 z-40 flex items-center justify-center"
-                style={{ 
-                  transform: isMobile ? 'translateX(0)' : `translateX(${scrollY * 0.03}px)`,
-                  transition: 'transform 0.1s ease-out'
-                }}
-              >
-                <OptimizedImage
-                  src="/images/home-layer-1.png"
-                  alt="And, I'm Archy! speech bubble"
-                  className="w-full h-auto max-w-[240px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-full object-contain"
-                  loading="eager"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
                 />
               </div>
             </div>

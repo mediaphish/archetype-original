@@ -314,6 +314,26 @@ export default function AccidentalCEO() {
           </div>
         </section>
 
+        {/* Reviews (placeholder until quotes are provided) */}
+        <section
+          className="py-16 md:py-24 border-t border-[#1A1A1A]/10 bg-[#FAFAF9]"
+          aria-labelledby="accidental-ceo-reviews-heading"
+        >
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2
+                id="accidental-ceo-reviews-heading"
+                className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4"
+              >
+                Reviews &amp; endorsements
+              </h2>
+              <p className="text-base sm:text-lg text-[#1A1A1A]/60 leading-relaxed">
+                Reader reviews and endorsements coming soon.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* 7. Archy */}
         <section
           className="py-16 md:py-24"
