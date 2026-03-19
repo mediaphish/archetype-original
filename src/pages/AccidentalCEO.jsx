@@ -2,9 +2,23 @@
  * Accidental CEO — book landing page (Lulu direct order links).
  * Copy and section order are fixed per content spec; styling matches public marketing pages.
  */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import { OptimizedImage } from '../components/OptimizedImage';
+import { markdownToHtml } from '../lib/faqMarkdownToHtml';
+
+const ACCIDENTAL_CEO_FAQ_CATEGORY = 'accidental-ceo';
+
+/** Display order on this page (matches knowledge corpus slugs) */
+const ACCIDENTAL_CEO_FAQ_ORDER = [
+  'accidental-ceo-what-kind-of-book',
+  'accidental-ceo-who-is-this-book-for',
+  'accidental-ceo-how-different-from-other-leadership-books',
+  'accidental-ceo-where-can-i-order',
+  'accidental-ceo-why-order-directly',
+  'accidental-ceo-can-i-use-archy-instead-of-reading',
+  'accidental-ceo-is-bart-available-for-speaking',
+];
 
 const LULU_ORDER_URL =
   'https://www.lulu.com/shop/bart-paden/accidental-ceo/paperback/product-zmzpjrv.html';
@@ -41,6 +55,60 @@ const audienceItems = [
 ];
 
 export default function AccidentalCEO() {
+  const [bookFaqs, setBookFaqs] = useState([]);
+  const [faqsLoading, setFaqsLoading] = useState(true);
+  const [expandedFaqs, setExpandedFaqs] = useState(() => new Set());
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const response = await fetch('/knowledge.json');
+        const data = await response.json();
+        const docs = data.docs || data.documents || [];
+        const raw = docs.filter(
+          (doc) =>
+            doc.type === 'faq' &&
+            Array.isArray(doc.categories) &&
+            doc.categories.some(
+              (c) => c.toLowerCase() === ACCIDENTAL_CEO_FAQ_CATEGORY
+            )
+        );
+        const orderIndex = (slug) => {
+          const i = ACCIDENTAL_CEO_FAQ_ORDER.indexOf(slug);
+          return i === -1 ? 999 : i;
+        };
+        raw.sort((a, b) => orderIndex(a.slug) - orderIndex(b.slug));
+        if (!cancelled) setBookFaqs(raw);
+      } catch (e) {
+        console.error('Accidental CEO FAQs load error:', e);
+        if (!cancelled) setBookFaqs([]);
+      } finally {
+        if (!cancelled) setFaqsLoading(false);
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const toggleFaq = (slug) => {
+    setExpandedFaqs((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  };
+
+  const openFaqsPageFiltered = (e) => {
+    e.preventDefault();
+    window.history.pushState({}, '', '/faqs?category=accidental-ceo');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   return (
     <>
       <SEO pageKey="accidental-ceo" />
@@ -305,6 +373,93 @@ export default function AccidentalCEO() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Book FAQs (same corpus as main FAQ page) */}
+        <section
+          className="py-16 md:py-24 border-t border-[#1A1A1A]/10 bg-white"
+          aria-labelledby="accidental-ceo-faq-heading"
+        >
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="max-w-4xl mx-auto">
+              <h2
+                id="accidental-ceo-faq-heading"
+                className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4"
+              >
+                Accidental CEO — FAQs
+              </h2>
+              <p className="text-base sm:text-lg text-[#1A1A1A]/70 mb-8 max-w-2xl leading-relaxed">
+                Quick answers about the book. These are also part of the site-wide FAQ library.
+              </p>
+
+              {faqsLoading ? (
+                <p className="text-lg text-[#1A1A1A]/60">Loading questions…</p>
+              ) : bookFaqs.length === 0 ? (
+                <p className="text-lg text-[#1A1A1A]/60">
+                  Questions will appear here shortly.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {bookFaqs.map((faq) => {
+                    const isExpanded = expandedFaqs.has(faq.slug);
+                    return (
+                      <div
+                        key={faq.slug}
+                        className="bg-white border border-[#1A1A1A]/10 rounded-lg overflow-hidden hover:shadow-md transition-all duration-300"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleFaq(faq.slug)}
+                          className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-inset"
+                          aria-expanded={isExpanded}
+                        >
+                          <h3 className="text-lg sm:text-xl font-semibold text-[#1A1A1A] flex-1 pr-2">
+                            {faq.title}
+                          </h3>
+                          <svg
+                            className={`w-6 h-6 text-[#6B6B6B] flex-shrink-0 transition-transform duration-200 ${
+                              isExpanded ? 'rotate-180' : ''
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </button>
+                        {isExpanded && (
+                          <div className="px-6 py-5 border-t border-[#1A1A1A]/10 bg-[#FAFAF9]">
+                            <div
+                              className="prose prose-sm max-w-none text-[#1A1A1A]/80 mb-4 space-y-4 [&>p]:mb-4 [&>ul]:mb-4 [&>ol]:mb-4 [&>li]:mb-1"
+                              dangerouslySetInnerHTML={{
+                                __html: markdownToHtml(faq.body || ''),
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <p className="mt-10 text-sm text-[#6B6B6B]">
+                <a
+                  href="/faqs?category=accidental-ceo"
+                  onClick={openFaqsPageFiltered}
+                  className="text-[#C85A3C] font-medium hover:text-[#B54A32] underline"
+                >
+                  Open this category on the full FAQs page
+                </a>
+              </p>
             </div>
           </div>
         </section>

@@ -3,65 +3,7 @@
  * Searchable, filterable, categorized FAQ system
  */
 import React, { useState, useEffect, useMemo } from 'react';
-
-// Simple markdown to HTML converter for FAQ content
-const markdownToHtml = (text) => {
-  if (!text) return '';
-  
-  // Split into blocks (double newlines separate blocks)
-  const blocks = text.split(/\n\n+/);
-  let html = '';
-  
-  blocks.forEach(block => {
-    block = block.trim();
-    if (!block) return;
-    
-    const lines = block.split('\n');
-    const firstLine = lines[0];
-    
-    // Check if this block is a list (starts with - or * or number)
-    if (/^[-*]\s/.test(firstLine) || /^\d+\.\s/.test(firstLine)) {
-      // Process as list
-      const isOrdered = /^\d+\.\s/.test(firstLine);
-      const tag = isOrdered ? 'ol' : 'ul';
-      
-      html += `<${tag} className="list-disc list-inside space-y-2 ml-4 my-4">`;
-      lines.forEach(line => {
-        line = line.trim();
-        if (!line) return;
-        
-        // Remove list marker
-        const content = line.replace(/^[-*]\s/, '').replace(/^\d+\.\s/, '').trim();
-        if (!content) return;
-        
-        // Process inline formatting
-        let processedContent = content
-          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.+?)\*/g, '<em>$1</em>');
-        
-        // Handle markdown links [text](url)
-        processedContent = processedContent.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[#C85A3C] hover:text-[#B54A32] underline">$1</a>');
-        
-        html += `<li>${processedContent}</li>`;
-      });
-      html += `</${tag}>`;
-    } else {
-      // Process as regular paragraph(s)
-      let processedBlock = block
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        // Convert single line breaks to <br> within paragraphs
-        .replace(/\n/g, '<br>');
-      
-      // Handle markdown links [text](url)
-      processedBlock = processedBlock.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[#C85A3C] hover:text-[#B54A32] underline">$1</a>');
-      
-      html += `<p class="mb-4">${processedBlock}</p>`;
-    }
-  });
-  
-  return html || '<p>' + text + '</p>';
-};
+import { markdownToHtml } from '../lib/faqMarkdownToHtml';
 
 export default function FAQs() {
   const [faqs, setFaqs] = useState([]);
