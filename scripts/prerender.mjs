@@ -53,6 +53,7 @@ const routes = [
   '/privacy-policy',
   '/terms-and-conditions',
   '/what-i-do',
+  '/accidental-ceo',
   // AO Automation Dashboard (single-owner console)
   '/ao',
   '/ao/login',

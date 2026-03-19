@@ -102,6 +102,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import TermsAndConditionsPage from "./pages/TermsAndConditions";
 import ALIEULAPage from "./pages/ALIEULA.jsx";
 import EngagementInquiryPage from "./pages/EngagementInquiry";
+import AccidentalCEOPage from "./pages/AccidentalCEO";
 
 export default function App() {
   // Initialize currentPage based on initial pathname
@@ -154,6 +155,7 @@ export default function App() {
     if (path === '/philosophy') return 'philosophy';
     if (path === '/methods' || path.startsWith('/methods/')) return 'methods';
     if (path === '/what-i-do') return 'what-i-do';
+    if (path === '/accidental-ceo') return 'accidental-ceo';
     // Operators Platform routes
     if (path === '/operators') return 'operators-landing';
     if (path === '/operators/login') return 'operators-login';
@@ -581,6 +583,8 @@ export default function App() {
         }
       } else if (path === '/what-i-do') {
         setCurrentPage('what-i-do');
+      } else if (path === '/accidental-ceo') {
+        setCurrentPage('accidental-ceo');
       } else {
         setCurrentPage('home');
       }
@@ -824,6 +828,18 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <WhatIDoPage />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  // Accidental CEO book landing
+  if (currentPage === 'accidental-ceo') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <AccidentalCEOPage />
         <Footer />
         <FloatingArchyButton />
       </main>
