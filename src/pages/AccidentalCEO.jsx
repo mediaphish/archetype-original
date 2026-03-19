@@ -386,13 +386,10 @@ export default function AccidentalCEO() {
             <div className="max-w-4xl mx-auto">
               <h2
                 id="accidental-ceo-faq-heading"
-                className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4"
+                className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-8"
               >
                 Accidental CEO — FAQs
               </h2>
-              <p className="text-base sm:text-lg text-[#1A1A1A]/70 mb-8 max-w-2xl leading-relaxed">
-                Quick answers about the book. These are also part of the site-wide FAQ library.
-              </p>
 
               {faqsLoading ? (
                 <p className="text-lg text-[#1A1A1A]/60">Loading questions…</p>
