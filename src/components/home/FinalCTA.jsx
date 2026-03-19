@@ -14,28 +14,28 @@ export default function FinalCTA() {
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
+    <section className="py-8 sm:py-10 md:py-12 lg:py-14 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-3xl mx-auto text-center">
           {/* Badge */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-5">
             <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
               Limited Spots Available
             </span>
           </div>
           
           {/* Header */}
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 leading-[0.9] break-words">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 sm:mb-5 md:mb-6 leading-[0.9] break-words">
             Ready to Build Something Real?
           </h2>
           
           {/* Body paragraph */}
-          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-10 sm:mb-12">
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-6 sm:mb-8">
             Leadership that lasts starts with a conversation. I work with a limited number of leaders and organizations each year — let's talk about what you're building, what you're facing, and what you want to create.
           </p>
           
           {/* Two CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
             <a
               href="/contact"
               onClick={(e) => handleLinkClick(e, '/contact')}

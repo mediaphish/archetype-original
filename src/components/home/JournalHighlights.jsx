@@ -44,7 +44,7 @@ export default function JournalHighlights() {
 
   if (loading) {
     return (
-      <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
+      <section className="py-8 sm:py-10 md:py-12 lg:py-14 bg-white">
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center">
@@ -60,19 +60,19 @@ export default function JournalHighlights() {
   const otherPosts = posts.slice(1);
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
+    <section className="py-8 sm:py-10 md:py-12 lg:py-14 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] break-words">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-5 leading-[0.9] break-words">
             Latest From The Journal
           </h2>
           
-          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-12 sm:mb-16">
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 md:mb-12">
             Long-form pieces, frameworks, research-backed insights, and real stories from my own leadership journey.
           </p>
 
           {posts.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-8">
               <p className="text-[#6B6B6B]">No journal posts available yet.</p>
             </div>
           ) : (
@@ -80,10 +80,10 @@ export default function JournalHighlights() {
               {/* Featured Article */}
               {featuredPost && (
                 <article 
-                  className="mb-16 sm:mb-20 md:mb-24 group cursor-pointer"
+                  className="mb-10 sm:mb-12 md:mb-14 group cursor-pointer"
                   onClick={() => handlePostClick(featuredPost.slug)}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 items-center">
                     {/* Left: Image */}
                     <div className="bg-[#FAFAF9]">
                       {featuredPost.image ? (
@@ -141,7 +141,7 @@ export default function JournalHighlights() {
 
               {/* Other Articles Grid */}
               {otherPosts.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-14 md:gap-16 mb-16 sm:mb-20 md:mb-24">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 mb-10 sm:mb-12 md:mb-14">
                   {otherPosts.map((post) => (
                     <article 
                       key={post.slug} 
@@ -185,7 +185,7 @@ export default function JournalHighlights() {
               )}
 
               {/* View All CTA */}
-              <div className="text-center mt-16 sm:mt-20 md:mt-24">
+              <div className="text-center mt-10 sm:mt-12 md:mt-14">
                 <a 
                   href="/journal"
                   onClick={(e) => {

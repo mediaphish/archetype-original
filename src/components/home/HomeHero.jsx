@@ -17,20 +17,32 @@ export default function HomeHero() {
   };
 
   return (
-    <section className="min-h-screen bg-white py-16 sm:py-20 md:py-24 lg:py-20">
+    <section className="bg-white py-10 sm:py-12 md:py-14 lg:py-16">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-24 items-center">
-            {/* Text column — first on mobile and desktop left */}
-            <div className="order-1">
-              <div className="inline-block mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12 items-center">
+            {/* Book cover — first column on desktop (left); first on mobile (top) */}
+            <div className="flex justify-center md:justify-start">
+              <div className="w-full max-w-sm md:max-w-md">
+                <OptimizedImage
+                  src="/images/accidental-ceo/cover.png"
+                  alt="Accidental CEO book cover"
+                  className="w-full h-auto object-contain drop-shadow-md"
+                  loading="eager"
+                />
+              </div>
+            </div>
+
+            {/* Text column — second on desktop (right); second on mobile (below image) */}
+            <div>
+              <div className="inline-block mb-4 sm:mb-5">
                 <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
                   Book
                 </span>
               </div>
 
               <h1
-                className="font-serif font-bold mb-6 sm:mb-8 text-balance text-[#1A1A1A]"
+                className="font-serif font-bold mb-4 sm:mb-5 text-balance text-[#1A1A1A]"
                 style={{
                   fontSize: 'clamp(2.5rem, 5vw + 1rem, 5rem)',
                   lineHeight: '1.1',
@@ -40,17 +52,17 @@ export default function HomeHero() {
                 Accidental CEO
               </h1>
 
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light mb-6">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light mb-4 sm:mb-5">
                 A leadership story about building something real, carrying more than expected, and
                 choosing to lead anyway.
               </p>
 
-              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/65 max-w-xl mb-8 sm:mb-10">
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/65 max-w-xl mb-6 sm:mb-7">
                 For founders, operators, and leaders learning that real leadership is formed under
                 pressure, not just taught in theory.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-1">
                 <a
                   href={LULU_ORDER_URL}
                   target="_blank"
@@ -66,18 +78,6 @@ export default function HomeHero() {
                 >
                   👉 Learn More
                 </a>
-              </div>
-            </div>
-
-            {/* Book cover — second on mobile, right on desktop */}
-            <div className="order-2 flex justify-center md:justify-end">
-              <div className="w-full max-w-sm md:max-w-md">
-                <OptimizedImage
-                  src="/images/accidental-ceo/cover.png"
-                  alt="Accidental CEO book cover"
-                  className="w-full h-auto object-contain drop-shadow-md"
-                  loading="eager"
-                />
               </div>
             </div>
           </div>

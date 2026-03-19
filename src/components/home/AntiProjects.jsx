@@ -14,7 +14,7 @@ export default function AntiProjects() {
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
+    <section className="py-8 sm:py-10 md:py-12 lg:py-14 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
@@ -23,12 +23,12 @@ export default function AntiProjects() {
           </h2>
           
           {/* Subtitle */}
-          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-12 sm:mb-16">
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 md:mb-12">
             Research that exposes the patterns destroying leadership and culture — so we can build something better.
           </p>
           
           {/* Two Anti-Projects (vertical layout with thick orange left borders) */}
-          <div className="space-y-12 sm:space-y-16 md:space-y-20">
+          <div className="space-y-8 sm:space-y-10 md:space-y-12">
             {/* ANTI-PROJECT 1: Scoreboard Leadership */}
             <div className="border-l-[6px] border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12 py-4">
               <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight break-words">

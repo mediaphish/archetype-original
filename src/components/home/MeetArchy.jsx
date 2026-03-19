@@ -36,26 +36,26 @@ export default function MeetArchy() {
 
   return (
     <>
-      <section id="archy" className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
+      <section id="archy" className="py-8 sm:py-10 md:py-12 lg:py-14 bg-white">
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-7xl mx-auto">
             {/* Badge */}
-            <div className="inline-block mb-6 sm:mb-8">
+            <div className="inline-block mb-4 sm:mb-5">
               <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
                 Your AI Guide
               </span>
             </div>
-            
-                {/* Header */}
-            <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 lg:mb-12 leading-tight tracking-tight break-words">
+
+            {/* Header */}
+            <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-4 sm:mb-5 md:mb-6 leading-tight tracking-tight break-words">
               Meet Archy
             </h2>
             
             {/* 2-column grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-24 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 items-start">
               {/* Left Column: Content */}
               <div className="order-2 lg:order-1">
-                <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8 md:mb-10 lg:mb-12">
+                <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6 md:mb-7">
                   <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
                     Archy is a digital extension of how I think about people, culture, and leadership. He's grounded in lived experience, sharpened by research, and aligned with the core philosophy that shaped Archetype Original: clarity, responsibility, humility, and strength used in the right way.
                   </p>
@@ -73,7 +73,7 @@ export default function MeetArchy() {
                 <a
                   href="/contact"
                   onClick={(e) => handleLinkClick(e, '/contact')}
-                  className="mt-6 sm:mt-8 md:mt-10 lg:mt-12 inline-block bg-[#1A1A1A] text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors min-h-[44px] flex items-center justify-center"
+                  className="mt-4 sm:mt-5 md:mt-6 inline-block bg-[#1A1A1A] text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors min-h-[44px] flex items-center justify-center"
                 >
                   Start a Conversation →
                 </a>

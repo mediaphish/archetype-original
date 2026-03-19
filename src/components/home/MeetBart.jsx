@@ -15,10 +15,10 @@ export default function MeetBart() {
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
+    <section className="py-8 sm:py-10 md:py-12 lg:py-14 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-8 sm:gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-6 sm:gap-8 lg:gap-10 items-center">
             {/* Left Column: Headshot (order-1 on mobile, order-1 on desktop) */}
             <div className="order-1">
               <div className="relative aspect-[3/4] w-full max-w-[260px] sm:max-w-[300px] mx-auto lg:mx-0">
@@ -37,19 +37,19 @@ export default function MeetBart() {
             {/* Right Column: Content (order-2 on mobile, order-2 on desktop) */}
             <div className="order-2">
               {/* Badge */}
-              <div className="inline-block mb-6 sm:mb-8">
+              <div className="inline-block mb-4 sm:mb-5">
                 <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
                   Meet the Founder
                 </span>
               </div>
               
               {/* Header */}
-              <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 leading-tight tracking-tight break-words">
+              <h2 className="font-serif text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-4 sm:mb-5 md:mb-6 leading-tight tracking-tight break-words">
                 Meet Bart
               </h2>
               
               {/* Body paragraphs */}
-              <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8 md:mb-10">
+              <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6 md:mb-7">
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
                   For more than 32 years I've worked inside the realities of leadership — building teams, leading companies, repairing culture, and studying why people follow some leaders and flee from others. Archetype Original is the work that grew out of those decades: lived leadership, practical clarity, and research that explains what people feel every day inside organizations.
                 </p>

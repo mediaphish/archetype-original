@@ -14,21 +14,21 @@ export default function WhatImBuilding() {
   };
 
   return (
-    <section id="what-im-building" className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
+    <section id="what-im-building" className="py-8 sm:py-10 md:py-12 lg:py-14 bg-white">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9]">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-5 leading-[0.9]">
             What I'm Building
           </h2>
           
           {/* Intro paragraph */}
-          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-12 sm:mb-16 text-center max-w-4xl mx-auto">
+          <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 mb-8 sm:mb-10 md:mb-12 text-center max-w-4xl mx-auto">
             Five interconnected disciplines designed to help leaders lead with clarity, steward culture with intention, and build organizations people trust enough to belong to.
           </p>
           
           {/* Five Pillars (vertical layout with orange left borders) */}
-          <div className="max-w-7xl mx-auto space-y-16 sm:space-y-20 md:space-y-24">
+          <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12 md:space-y-14">
             {/* PILLAR 01: Culture Science */}
             <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
               <div className="relative mb-6 sm:mb-8">
