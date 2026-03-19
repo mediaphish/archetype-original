@@ -1424,8 +1424,8 @@ export default function App() {
       <main>
         <Header />
         <HomeHero />
-        <MeetArchy />
         <MeetBart />
+        <MeetArchy />
         <WhatImBuilding />
         <AntiProjects />
         <WhyArchetypeOriginal />

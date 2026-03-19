@@ -21,11 +21,11 @@ export default function MeetBart() {
           <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-8 sm:gap-12 lg:gap-16 items-center">
             {/* Left Column: Headshot (order-1 on mobile, order-1 on desktop) */}
             <div className="order-1">
-              <div className="relative aspect-[3/4] w-full max-w-[240px] sm:max-w-[280px] mx-auto lg:mx-0">
+              <div className="relative aspect-[3/4] w-full max-w-[260px] sm:max-w-[300px] mx-auto lg:mx-0">
                 <OptimizedImage
-                  src="/images/bart-headshot-003.jpg"
-                  alt="Bart - Founder of Archetype Original"
-                  className="w-full h-full object-cover"
+                  src="/images/bart-headshot-2026.png"
+                  alt="Bart Paden, founder of Archetype Original — professional portrait"
+                  className="w-full h-full object-cover object-[center_15%]"
                   loading="eager"
                   onError={(e) => {
                     e.target.style.display = 'none';
