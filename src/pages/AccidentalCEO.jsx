@@ -115,12 +115,12 @@ export default function AccidentalCEO() {
       <div className="bg-white text-[#1A1A1A]">
         {/* 1. Hero */}
         <section
-          className="py-16 md:py-24"
+          className="py-8 sm:py-12 md:py-20 lg:py-24"
           aria-labelledby="accidental-ceo-hero-heading"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
-              <div className="order-1 flex flex-col justify-center">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8 md:gap-14 items-center">
+              <div className="order-2 md:order-1 flex flex-col justify-center">
                 <h1
                   id="accidental-ceo-hero-heading"
                   className="font-serif font-bold text-balance text-[#1A1A1A] mb-6"
@@ -158,12 +158,12 @@ export default function AccidentalCEO() {
                   </button>
                 </div>
               </div>
-              <div className="order-2 flex justify-center md:justify-end">
-                <div className="w-full max-w-sm md:max-w-md">
+              <div className="order-1 md:order-2 flex justify-center md:justify-end w-full">
+                <div className="w-full max-w-lg sm:max-w-xl md:max-w-xl lg:max-w-2xl rounded-lg overflow-hidden bg-black shadow-md">
                   <OptimizedImage
-                    src="/images/accidental-ceo/cover.png"
-                    alt="Accidental CEO book cover"
-                    className="w-full h-auto object-contain drop-shadow-md"
+                    src="/images/accidental-ceo/front-back.png"
+                    alt="Accidental CEO — front and back cover"
+                    className="w-full h-auto object-contain"
                     loading="eager"
                   />
                 </div>

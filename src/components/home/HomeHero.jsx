@@ -17,17 +17,17 @@ export default function HomeHero() {
   };
 
   return (
-    <section className="bg-white py-10 sm:py-12 md:py-14 lg:py-16">
+    <section className="bg-white py-6 sm:py-10 md:py-14 lg:py-16">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12 items-center">
-            {/* Book cover — first column on desktop (left); first on mobile (top) */}
-            <div className="flex justify-center md:justify-start">
-              <div className="w-full max-w-sm md:max-w-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-10 lg:gap-12 items-center">
+            {/* Front + back mockup — wide art on black; first on mobile (top) */}
+            <div className="flex justify-center md:justify-start w-full">
+              <div className="w-full max-w-lg sm:max-w-xl md:max-w-xl lg:max-w-2xl rounded-lg overflow-hidden bg-black shadow-md">
                 <OptimizedImage
-                  src="/images/accidental-ceo/cover.png"
-                  alt="Accidental CEO book cover"
-                  className="w-full h-auto object-contain drop-shadow-md"
+                  src="/images/accidental-ceo/front-back.png"
+                  alt="Accidental CEO — front and back cover"
+                  className="w-full h-auto object-contain"
                   loading="eager"
                 />
               </div>

@@ -66,7 +66,7 @@ export default function Header() {
     <>
       <nav className="sticky top-0 z-50 bg-white border-b border-[#1A1A1A]/10 backdrop-blur-sm bg-white/95">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col py-2">
+          <div className="flex flex-col py-1.5 sm:py-2">
             {/* Secondary Navigation - Top Row */}
             <div className="hidden md:flex items-center justify-end gap-4 text-sm mb-2">
               <a 
@@ -101,13 +101,13 @@ export default function Header() {
               </a>
             </div>
 
-            {/* Primary Navigation Row - Logo, Main Nav, and Work Together Button */}
-            <div className="flex items-center justify-between h-16">
+            {/* Primary row: logo (left) + desktop nav or mobile menu (right) */}
+            <div className="flex items-center justify-between gap-3 h-14 sm:h-16 min-h-[56px]">
               {/* Logo - Left Side */}
               <a 
                 href="/" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
-                className="flex items-center shrink-0"
+                className="flex items-center shrink-0 min-w-0"
               >
                 <svg 
                   id="Layer_1" 
@@ -332,34 +332,35 @@ export default function Header() {
                   </a>
                 </div>
               </div>
-            </div>
 
-            {/* Mobile Menu Button - 44px touch target */}
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative"
-              aria-label="Toggle menu"
-            >
-              <span className="sr-only">Toggle menu</span>
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* Hamburger Lines */}
-                <span 
-                  className={`absolute block h-0.5 w-6 bg-current transition-all duration-300 ${
-                    mobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'
-                  }`}
-                />
-                <span 
-                  className={`absolute block h-0.5 w-6 bg-current transition-all duration-300 ${
-                    mobileMenuOpen ? 'opacity-0' : 'opacity-100'
-                  }`}
-                />
-                <span 
-                  className={`absolute block h-0.5 w-6 bg-current transition-all duration-300 ${
-                    mobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'
-                  }`}
-                />
-              </div>
-            </button>
+              {/* Mobile menu — same row as logo, top right (not full-width centered row) */}
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative"
+                aria-label="Toggle menu"
+                aria-expanded={mobileMenuOpen}
+              >
+                <span className="sr-only">Toggle menu</span>
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span
+                    className={`absolute block h-0.5 w-6 bg-current transition-all duration-300 ${
+                      mobileMenuOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'
+                    }`}
+                  />
+                  <span
+                    className={`absolute block h-0.5 w-6 bg-current transition-all duration-300 ${
+                      mobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  />
+                  <span
+                    className={`absolute block h-0.5 w-6 bg-current transition-all duration-300 ${
+                      mobileMenuOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'
+                    }`}
+                  />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </nav>
