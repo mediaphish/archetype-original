@@ -23,11 +23,11 @@ export default function HomeHero() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-10 lg:gap-12 items-center">
             {/* Front + back mockup — wide art on black; first on mobile (top) */}
             <div className="flex justify-center md:justify-start w-full">
-              <div className="w-full max-w-lg sm:max-w-xl md:max-w-xl lg:max-w-2xl rounded-lg overflow-hidden bg-black shadow-md">
+              <div className="w-full max-w-lg sm:max-w-xl md:max-w-xl lg:max-w-2xl rounded-lg overflow-hidden">
                 <OptimizedImage
-                  src="/images/accidental-ceo/front-back.png"
+                  src="/images/accidental-ceo/front-back.jpg"
                   alt="Accidental CEO — front and back cover"
-                  className="w-full h-auto object-contain"
+                  className="w-full h-auto object-contain drop-shadow-md"
                   loading="eager"
                 />
               </div>
