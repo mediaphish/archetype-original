@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-Build public/images/accidental-ceo/front-back.png for the site.
+Update public/images/accidental-ceo/accidental-ceo-front-back.png for the site.
 
-1) Put your export in public/images/accidental-ceo/front-back-source.png
-   (or pass a different path as the first argument).
+1) Place or replace your mockup as:
+      public/images/accidental-ceo/accidental-ceo-front-back.png
 
 2) Run:  python3 scripts/accidental-ceo-front-back-transparent.py
 
-If the source already has a real transparency layer (some pixels not fully
-opaque), this script copies it through as a proper PNG.
+   Optional:  python3 scripts/.../accidental-ceo-front-back-transparent.py <src> [dest]
+   Default dest is the same as src (process in place).
 
-If the source is fully opaque (for example a black "studio" backdrop baked in),
-this script removes only black that is connected to the image edges (flood fill),
-so the books and spines usually stay intact.
+If the image already has real transparency, it is re-saved as RGBA PNG unchanged
+(except format). If it is fully opaque (e.g. black studio backdrop), only
+black connected to the image edges is made transparent (flood fill).
 
 Requires: python3 -m pip install pillow
 """
@@ -29,16 +29,12 @@ except ImportError:
     sys.exit(1)
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = ROOT / "public/images/accidental-ceo/front-back.png"
-DEFAULT_SRC = ROOT / "public/images/accidental-ceo/front-back-source.png"
-ALT_SRC = ROOT / "public/images/accidental-ceo/front-back-source.jpg"
+DEFAULT_SRC = ROOT / "public/images/accidental-ceo/accidental-ceo-front-back.png"
 THRESH = 18  # RGB <= this treated as "black" for flood fill from edges
 
 
 def has_transparency(im: Image.Image) -> bool:
     im_rgba = im.convert("RGBA")
-    # Sample for speed on large images
-    w, h = im_rgba.size
     data = im_rgba.getdata()
     step = max(1, len(data) // 50_000)
     for i in range(0, len(data), step):
@@ -93,24 +89,15 @@ def flood_remove_edge_black(im: Image.Image) -> Image.Image:
 
 
 def main() -> None:
-    out = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_OUT
-
-    if len(sys.argv) > 1:
-        src = Path(sys.argv[1])
-    elif DEFAULT_SRC.is_file():
-        src = DEFAULT_SRC
-    elif ALT_SRC.is_file():
-        src = ALT_SRC
-    else:
-        print(
-            f"Missing source. Add {DEFAULT_SRC.name} (or {ALT_SRC.name}), "
-            "or pass the path as the first argument.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    src = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_SRC
+    out = Path(sys.argv[2]) if len(sys.argv) > 2 else src
 
     if not src.is_file():
-        print(f"Missing source: {src}", file=sys.stderr)
+        print(
+            f"Missing source: {src}\n"
+            f"Add your file as: {DEFAULT_SRC}",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     im = Image.open(src)
