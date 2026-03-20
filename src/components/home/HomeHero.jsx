@@ -21,11 +21,11 @@ export default function HomeHero() {
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-10 lg:gap-12 items-center">
-            {/* Front + back mockup (PNG with transparent edge background); first on mobile */}
+            {/* Front + back mockup (accidental-ceo-front-back-01.png, RGBA); first on mobile */}
             <div className="flex justify-center md:justify-start w-full">
               <div className="w-full max-w-lg sm:max-w-xl md:max-w-xl lg:max-w-2xl rounded-lg overflow-hidden">
                 <OptimizedImage
-                  src="/images/accidental-ceo/accidental-ceo-front-back.png"
+                  src="/images/accidental-ceo/accidental-ceo-front-back-01.png"
                   alt="Accidental CEO — front and back cover"
                   className="w-full h-auto object-contain drop-shadow-md"
                   loading="eager"

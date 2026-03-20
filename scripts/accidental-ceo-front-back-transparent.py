@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Update public/images/accidental-ceo/accidental-ceo-front-back.png for the site.
+Update public/images/accidental-ceo/accidental-ceo-front-back-01.png for the site.
 
 1) Place or replace your mockup as:
-      public/images/accidental-ceo/accidental-ceo-front-back.png
+      public/images/accidental-ceo/accidental-ceo-front-back-01.png
 
 2) Run:  python3 scripts/accidental-ceo-front-back-transparent.py
 
@@ -29,7 +29,7 @@ except ImportError:
     sys.exit(1)
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SRC = ROOT / "public/images/accidental-ceo/accidental-ceo-front-back.png"
+DEFAULT_SRC = ROOT / "public/images/accidental-ceo/accidental-ceo-front-back-01.png"
 THRESH = 18  # RGB <= this treated as "black" for flood fill from edges
 
 
