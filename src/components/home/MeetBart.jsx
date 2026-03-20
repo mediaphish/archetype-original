@@ -1,6 +1,6 @@
 /**
  * Meet Bart Section
- * Editorial Minimal Design - 30/70 Split Layout
+ * Editorial Minimal Design - copy left / headshot right on large screens
  */
 import React from 'react';
 import { OptimizedImage } from '../OptimizedImage';
@@ -18,24 +18,9 @@ export default function MeetBart() {
     <section className="py-8 sm:py-10 md:py-12 lg:py-14 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-6 sm:gap-8 lg:gap-10 items-center">
-            {/* Left Column: Headshot (order-1 on mobile, order-1 on desktop) */}
-            <div className="order-1">
-              <div className="relative aspect-[3/4] w-full max-w-[260px] sm:max-w-[300px] mx-auto lg:mx-0">
-                <OptimizedImage
-                  src="/images/bart-headshot-2026.png"
-                  alt="Bart Paden, founder of Archetype Original — professional portrait"
-                  className="w-full h-full object-cover object-[center_15%]"
-                  loading="eager"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </div>
-            </div>
-            
-            {/* Right Column: Content (order-2 on mobile, order-2 on desktop) */}
-            <div className="order-2">
+          <div className="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-6 sm:gap-8 lg:gap-10 items-center">
+            {/* Left column (wide screens): copy; stacks first on mobile */}
+            <div>
               {/* Badge */}
               <div className="inline-block mb-4 sm:mb-5">
                 <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
@@ -67,6 +52,21 @@ export default function MeetBart() {
               >
                 Read My Story →
               </a>
+            </div>
+
+            {/* Right column (wide screens): headshot; stacks below copy on mobile */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative aspect-[3/4] w-full max-w-[260px] sm:max-w-[300px]">
+                <OptimizedImage
+                  src="/images/bart-headshot-2026.png"
+                  alt="Bart Paden, founder of Archetype Original — professional portrait"
+                  className="w-full h-full object-cover object-[center_15%]"
+                  loading="eager"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
