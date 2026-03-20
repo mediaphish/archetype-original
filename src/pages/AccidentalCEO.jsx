@@ -161,7 +161,7 @@ export default function AccidentalCEO() {
               <div className="order-1 md:order-2 flex justify-center md:justify-end w-full">
                 <div className="w-full max-w-lg sm:max-w-xl md:max-w-xl lg:max-w-2xl rounded-lg overflow-hidden">
                   <OptimizedImage
-                    src="/images/accidental-ceo/front-back.jpg"
+                    src="/images/accidental-ceo/front-back.png"
                     alt="Accidental CEO — front and back cover"
                     className="w-full h-auto object-contain drop-shadow-md"
                     loading="eager"
