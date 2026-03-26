@@ -58,7 +58,25 @@ export default function RemainingHuman() {
 
           <div className="relative container mx-auto px-4 sm:px-6 md:px-12 py-5">
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
-              <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-[#A9D8D0]">Remaining Human</p>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="inline-block h-4 w-4 sm:h-5 sm:w-5 bg-[#A9D8D0]"
+                  style={{
+                    WebkitMaskImage: "url('/brand/ao-icon.svg')",
+                    maskImage: "url('/brand/ao-icon.svg')",
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskPosition: 'center',
+                    maskPosition: 'center',
+                    WebkitMaskSize: 'contain',
+                    maskSize: 'contain',
+                  }}
+                  aria-hidden="true"
+                />
+                <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-[#A9D8D0]">
+                  Remaining Human
+                </p>
+              </div>
               <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
                 <a
                   href="/"
@@ -137,7 +155,15 @@ export default function RemainingHuman() {
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#E5F3F0]">
                 You can feel the shift, even if you haven&apos;t named it yet.
               </h2>
-              <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              <div className="mt-10 grid gap-4 md:grid-cols-3">
+                <figure className="overflow-hidden rounded-lg border border-[#7DC7BC]/20">
+                  <img
+                    src="/images/remaining-human/problem-formation.png"
+                    alt="A robot pointing at people in line"
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </figure>
                 <figure className="overflow-hidden rounded-lg border border-[#7DC7BC]/20">
                   <img
                     src="/images/remaining-human/problem-chase.png"
@@ -148,8 +174,8 @@ export default function RemainingHuman() {
                 </figure>
                 <figure className="overflow-hidden rounded-lg border border-[#7DC7BC]/20">
                   <img
-                    src="/images/remaining-human/problem-formation.png"
-                    alt="A line of people in rigid formation around a single leader"
+                    src="/images/remaining-human/c06-sequence.png"
+                    alt="People in formation with rising pressure and conformity"
                     className="h-full w-full object-cover"
                     loading="lazy"
                   />
@@ -171,7 +197,7 @@ export default function RemainingHuman() {
         <section className="relative overflow-hidden bg-[#0C1E1C] py-20 md:py-24">
           <div className="absolute inset-0">
             <img
-              src="/images/remaining-human/problem-formation.png"
+              src="/images/remaining-human/c04-turn.png"
               alt=""
               aria-hidden="true"
               className="h-full w-full object-cover opacity-14"
@@ -229,25 +255,27 @@ export default function RemainingHuman() {
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="relative mx-auto max-w-4xl">
-              <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F1FBF9]">
-                Built from experience, not theory
-              </h2>
-              <figure className="mt-8 overflow-hidden rounded-lg border border-[#A3D9D1]/35">
+            <div className="relative mx-auto grid max-w-5xl gap-8 lg:grid-cols-2 lg:items-start">
+              <div>
+                <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F1FBF9]">
+                  Built from experience, not theory
+                </h2>
+                <p className="mt-7 text-lg leading-relaxed text-[#E4F1EE]">
+                  Written by Bart Paden, an entrepreneur and leader with over three decades of experience building, leading, failing, rebuilding, and carrying the weight of outcomes that affected real people.
+                </p>
+                <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
+                  Remaining Human is not abstract leadership thinking.
+                  It is a response to what leadership becomes when systems get stronger and people risk becoming secondary.
+                </p>
+              </div>
+              <figure className="overflow-hidden rounded-lg border border-[#A3D9D1]/35">
                 <img
-                  src="/images/remaining-human/turn-conversation.png"
-                  alt="Bart in conversation with leaders"
+                  src="/images/remaining-human/epilogue-a-right.png"
+                  alt="Bart in conversation with leaders in a human-centered environment"
                   className="h-full w-full object-cover"
                   loading="lazy"
                 />
               </figure>
-              <p className="mt-7 text-lg leading-relaxed text-[#E4F1EE]">
-                Written by Bart Paden, an entrepreneur and leader with over three decades of experience building, leading, failing, rebuilding, and carrying the weight of outcomes that affected real people.
-              </p>
-              <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
-                Remaining Human is not abstract leadership thinking.
-                It is a response to what leadership becomes when systems get stronger and people risk becoming secondary.
-              </p>
             </div>
           </div>
         </section>
@@ -283,14 +311,6 @@ export default function RemainingHuman() {
 
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="relative mx-auto max-w-4xl text-center">
-              <figure className="mb-8 overflow-hidden rounded-lg border border-[#97C9C1]/45">
-                <img
-                  src="/images/remaining-human/final-light.png"
-                  alt="A single person standing in open space with calm and clarity"
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
-              </figure>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight text-[#123C37]">
                 Clarity is still possible. Human leadership still matters.
               </h2>
