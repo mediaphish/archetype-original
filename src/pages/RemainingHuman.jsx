@@ -228,16 +228,26 @@ export default function RemainingHuman() {
         {/* 4) VALUE */}
         <section className="bg-[#102D2A] py-16 md:py-20">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="mx-auto max-w-4xl">
-              <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#EAF8F5]">
-                What you&apos;ll walk away with
-              </h2>
-              <ul className="mt-9 space-y-4 text-lg leading-relaxed text-[#DCEEEA]">
-                <li>Clarity when everything feels fast</li>
-                <li>A way to lead people, not just systems</li>
-                <li>A grounded approach to decision-making under pressure</li>
-                <li>Language for what leadership must become next</li>
-              </ul>
+            <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-2 lg:items-center">
+              <div>
+                <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#EAF8F5]">
+                  What you&apos;ll walk away with
+                </h2>
+                <ul className="mt-9 space-y-4 text-lg leading-relaxed text-[#DCEEEA]">
+                  <li>Clarity when everything feels fast</li>
+                  <li>A way to lead people, not just systems</li>
+                  <li>A grounded approach to decision-making under pressure</li>
+                  <li>Language for what leadership must become next</li>
+                </ul>
+              </div>
+              <figure className="overflow-hidden rounded-lg border border-[#9CD8CF]/25">
+                <img
+                  src="/images/remaining-human/c08-value-right.png"
+                  alt="People in conversation under dim teal lighting"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </figure>
             </div>
           </div>
         </section>
@@ -261,14 +271,30 @@ export default function RemainingHuman() {
                   Built from experience, not theory
                 </h2>
                 <p className="mt-7 text-lg leading-relaxed text-[#E4F1EE]">
-                  Written by Bart Paden, an entrepreneur and leader with over three decades of experience building, leading, failing, rebuilding, and carrying the weight of outcomes that affected real people.
+                  Written by Bart Paden, an entrepreneur and leader with over three decades of experience building organizations, leading teams, making decisions that carried real consequences, and living with the outcomes of those decisions long after they were made.
                 </p>
                 <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
-                  Remaining Human is not abstract leadership thinking.
-                  It is a response to what leadership becomes when systems get stronger and people risk becoming secondary.
+                  This is not a perspective formed in isolation or hindsight. It comes from operating inside complexity, where pressure is constant, information is incomplete, and the cost of getting it wrong is not abstract. It affects people, culture, and the direction of everything you are responsible for.
+                </p>
+                <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
+                  Remaining Human is not abstract leadership thinking. It is a response to what leadership becomes when systems get stronger, faster, and more dominant, and people risk becoming secondary without anyone explicitly choosing that outcome.
+                </p>
+                <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
+                  It does not offer frameworks or step-by-step tools. It offers something more foundational. It helps you recognize what is already happening beneath the surface, what often goes unspoken, and what becomes visible only after the damage is done.
+                </p>
+                <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
+                  If you have ever felt the tension between what is efficient and what is right, between what scales and what actually matters, this book is written for you.
+                </p>
+                <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
+                  It is meant to sharpen awareness, challenge assumptions, and give language to things you may already sense but have not fully articulated.
+                </p>
+                <p className="mt-6 text-lg leading-relaxed text-[#E4F1EE]">
+                  Because the real risk is not making the wrong decision.
+                  <br />
+                  The real risk is no longer seeing clearly enough to know the difference.
                 </p>
               </div>
-              <figure className="overflow-hidden rounded-lg border border-[#A3D9D1]/35">
+              <figure className="w-full max-w-[250px] justify-self-center overflow-hidden rounded-lg border border-[#A3D9D1]/35 lg:justify-self-end">
                 <img
                   src="/images/remaining-human/epilogue-a-right.png"
                   alt="Bart in conversation with leaders in a human-centered environment"
