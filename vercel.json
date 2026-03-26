@@ -91,6 +91,8 @@
         { "src": "/api/operators/offenses/record", "dest": "/api/operators/offenses/record.js" },
         { "src": "/api/operators/upload-logo", "dest": "/api/operators/upload-logo.js" },
         { "src": "/api/operators/upload-headshot", "dest": "/api/operators/upload-headshot.js" },
+        { "src": "/api/operators/auth/send-magic-link", "dest": "/api/operators/auth/send-magic-link.js" },
+        { "src": "/api/operators/auth/verify-magic-link", "dest": "/api/operators/auth/verify-magic-link.js" },
     { "src": "/api/social/schedule", "dest": "/api/social/schedule.js" },
     { "src": "/api/social/publish-now", "dest": "/api/social/publish-now.js" },
     { "src": "/api/social/post-now", "dest": "/api/social/post-now.js" },
