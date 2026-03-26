@@ -103,6 +103,7 @@ import TermsAndConditionsPage from "./pages/TermsAndConditions";
 import ALIEULAPage from "./pages/ALIEULA.jsx";
 import EngagementInquiryPage from "./pages/EngagementInquiry";
 import AccidentalCEOPage from "./pages/AccidentalCEO";
+import RemainingHumanPage from "./pages/RemainingHuman";
 
 export default function App() {
   // Initialize currentPage based on initial pathname
@@ -156,6 +157,7 @@ export default function App() {
     if (path === '/methods' || path.startsWith('/methods/')) return 'methods';
     if (path === '/what-i-do') return 'what-i-do';
     if (path === '/accidental-ceo') return 'accidental-ceo';
+    if (path === '/remaining-human') return 'remaining-human';
     // Operators Platform routes
     if (path === '/operators') return 'operators-landing';
     if (path === '/operators/login') return 'operators-login';
@@ -585,6 +587,8 @@ export default function App() {
         setCurrentPage('what-i-do');
       } else if (path === '/accidental-ceo') {
         setCurrentPage('accidental-ceo');
+      } else if (path === '/remaining-human') {
+        setCurrentPage('remaining-human');
       } else {
         setCurrentPage('home');
       }
@@ -844,6 +848,11 @@ export default function App() {
         <FloatingArchyButton />
       </main>
     );
+  }
+
+  // Remaining Human standalone landing page (no global nav/footer)
+  if (currentPage === 'remaining-human') {
+    return <RemainingHumanPage />;
   }
 
   // Render Faith page
