@@ -135,6 +135,24 @@ export default function RemainingHuman() {
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#E5F3F0]">
                 You can feel the shift, even if you haven&apos;t named it yet.
               </h2>
+              <div className="mt-10 grid gap-4 sm:grid-cols-2">
+                <figure className="overflow-hidden rounded-lg border border-[#7DC7BC]/20">
+                  <img
+                    src="/images/remaining-human/problem-chase.png"
+                    alt="A leader running under pressure as machines close in"
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </figure>
+                <figure className="overflow-hidden rounded-lg border border-[#7DC7BC]/20">
+                  <img
+                    src="/images/remaining-human/problem-formation.png"
+                    alt="A line of people in rigid formation around a single leader"
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </figure>
+              </div>
               <div className="mt-12 space-y-8 md:space-y-10">
                 <p className="text-2xl sm:text-3xl leading-tight text-[#D9ECE8]">Speed increases. Wisdom gets thinner.</p>
                 <p className="text-2xl sm:text-3xl leading-tight text-[#D9ECE8]">Output grows. Trust erodes.</p>
@@ -213,6 +231,14 @@ export default function RemainingHuman() {
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F1FBF9]">
                 Built from experience, not theory
               </h2>
+              <figure className="mt-8 overflow-hidden rounded-lg border border-[#A3D9D1]/35">
+                <img
+                  src="/images/remaining-human/turn-conversation.png"
+                  alt="Bart in conversation with leaders"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </figure>
               <p className="mt-7 text-lg leading-relaxed text-[#E4F1EE]">
                 Written by Bart Paden, an entrepreneur and leader with over three decades of experience building, leading, failing, rebuilding, and carrying the weight of outcomes that affected real people.
               </p>
@@ -255,6 +281,14 @@ export default function RemainingHuman() {
 
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="relative mx-auto max-w-4xl text-center">
+              <figure className="mb-8 overflow-hidden rounded-lg border border-[#97C9C1]/45">
+                <img
+                  src="/images/remaining-human/final-light.png"
+                  alt="A single person standing in open space with calm and clarity"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </figure>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight text-[#123C37]">
                 Clarity is still possible. Human leadership still matters.
               </h2>
