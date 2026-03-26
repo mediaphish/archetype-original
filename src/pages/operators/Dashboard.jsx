@@ -6,7 +6,7 @@ import { MapPin, ExternalLink } from 'lucide-react';
 import { useToast } from '../../components/operators/ToastProvider';
 import ConfirmModal from '../../components/operators/ConfirmModal';
 import { useUser } from '../../contexts/UserContext';
-import { EmptyDashboard } from '../../components/operators/EmptyState';
+import { EmptyDashboard, EmptyEvents } from '../../components/operators/EmptyState';
 import { handleKeyDown } from '../../lib/operators/accessibility';
 import { trackPageLoad, trackAPIResponseTime } from '../../lib/operators/performance';
 import { trackError } from '../../lib/operators/errorTracking';
@@ -110,6 +110,34 @@ export default function Dashboard() {
     // Only fetch if UserContext has finished loading (or if email is not required for dashboard)
     fetchData();
   }, [email, toast]);
+
+  // Hooks must run unconditionally before any early return (React #310 if placed after loading branch).
+  const getStateColor = useCallback((state) => {
+    switch (state) {
+      case 'LIVE': return 'bg-blue-100 text-blue-800';
+      case 'OPEN': return 'bg-green-100 text-green-800';
+      case 'CLOSED': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  }, []);
+
+  const getMapLink = useCallback((address) => {
+    if (!address) return '';
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  }, []);
+
+  const formatTime = useCallback((timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  }, []);
+
+  const isOperator = useMemo(() => userRoles.includes('operator'), [userRoles]);
+  const canRSVP = useMemo(() => isOperator || userRoles.includes('candidate'), [isOperator, userRoles]);
 
   if (loading) {
     return (
@@ -316,34 +344,6 @@ export default function Dashboard() {
       setActionLoading(false);
     }
   };
-
-  const getStateColor = useCallback((state) => {
-    switch (state) {
-      case 'LIVE': return 'bg-blue-100 text-blue-800';
-      case 'OPEN': return 'bg-green-100 text-green-800';
-      case 'CLOSED': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  }, []);
-
-  const getMapLink = useCallback((address) => {
-    if (!address) return '';
-    const encodedAddress = encodeURIComponent(address);
-    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-  }, []);
-
-  const formatTime = useCallback((timeString) => {
-    if (!timeString) return '';
-    // timeString is in HH:MM format (24-hour)
-    const [hours, minutes] = timeString.split(':');
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${ampm}`;
-  }, []);
-
-  const isOperator = useMemo(() => userRoles.includes('operator'), [userRoles]);
-  const canRSVP = useMemo(() => isOperator || userRoles.includes('candidate'), [isOperator, userRoles]);
 
   // Dashboard data should already be checked above, but add safety check
   if (!dashboard && !loading) {
