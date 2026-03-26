@@ -19,6 +19,15 @@ function goToCheckout(event) {
   }
 }
 
+const heroCtaClasses =
+  'inline-flex min-h-[54px] items-center justify-center rounded-md bg-[#8EE4D8] px-8 py-4 text-base font-semibold text-[#03211F] transition hover:bg-[#A4ECE2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8EE4D8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061312]';
+
+const midCtaClasses =
+  'inline-flex min-h-[54px] items-center justify-center rounded-md bg-[#8EE4D8] px-8 py-4 text-base font-semibold text-[#03211F] transition hover:bg-[#A4ECE2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8EE4D8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#102D2A]';
+
+const finalCtaClasses =
+  'inline-flex min-h-[54px] items-center justify-center rounded-md bg-[#2A8D80] px-8 py-4 text-base font-semibold text-white transition hover:bg-[#24796F] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2A8D80] focus-visible:ring-offset-2 focus-visible:ring-offset-[#EDF5F2]';
+
 function CheckoutButton({ className, children }) {
   const mergedClassName = `${className} ${
     isCheckoutReady ? '' : 'opacity-60 cursor-not-allowed'
@@ -44,7 +53,7 @@ export default function RemainingHuman() {
     <>
       <SEO pageKey="remaining-human" />
       <main className="min-h-screen bg-[#061312] text-[#E7F1EE] [text-rendering:geometricPrecision]">
-        {/* 1) HERO */}
+        {/* 1 — Hook: Hero */}
         <section className="relative overflow-hidden border-b border-[#95DACE]/20">
           <div className="absolute inset-0">
             <img
@@ -107,18 +116,14 @@ export default function RemainingHuman() {
                   <br />
                   It exposed it.
                 </h1>
-                <p className="mt-7 text-base sm:text-lg leading-relaxed text-[#CFE5DF] max-w-[46ch]">
-                  Remaining Human is a field guide for leaders navigating speed, pressure, and automation - without losing clarity, trust, or responsibility.
+                <p className="mt-6 text-base sm:text-lg leading-relaxed text-[#CFE5DF] max-w-[46ch]">
+                  A field guide for leaders navigating speed, pressure, and automation without losing clarity, trust, or
+                  responsibility.
                 </p>
 
-                <div className="mt-10">
-                  <CheckoutButton className="inline-flex min-h-[54px] items-center justify-center rounded-md bg-[#8EE4D8] px-8 py-4 text-base font-semibold text-[#03211F] transition hover:bg-[#A4ECE2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8EE4D8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#061312]">
-                    Get the eBook - $9.99
-                  </CheckoutButton>
+                <div className="mt-8">
+                  <CheckoutButton className={heroCtaClasses}>Get the eBook — $9.99</CheckoutButton>
                   <p className="mt-3 text-sm text-[#C3DFD8]">Launch price. Increasing to $19.99.</p>
-                  <p className="mt-3 text-sm leading-relaxed text-[#AFCFC7]">
-                    For leaders who feel the pressure of faster systems and thinner human connection.
-                  </p>
                 </div>
 
                 {!isCheckoutReady && (
@@ -140,7 +145,7 @@ export default function RemainingHuman() {
           </div>
         </section>
 
-        {/* 2) PROBLEM */}
+        {/* 2 — Agitation: Emotional recognition */}
         <section className="relative overflow-hidden border-y border-[#7DC7BC]/20 bg-[#050F0E] py-16 sm:py-20 md:py-24">
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_15%,rgba(141,228,214,0.10),transparent_40%),radial-gradient(circle_at_88%_70%,rgba(54,145,134,0.12),transparent_48%)]" />
@@ -150,14 +155,14 @@ export default function RemainingHuman() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="relative mx-auto max-w-4xl">
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#E5F3F0]">
-                You can feel the shift, even if you haven&apos;t named it yet.
+                You&apos;ve felt it. You just haven&apos;t named it yet.
               </h2>
-              <div className="mt-10 grid gap-4 md:grid-cols-3">
+              <div className="mt-8 grid gap-4 md:grid-cols-3">
                 <figure className="overflow-hidden rounded-lg border border-[#7DC7BC]/20 bg-black/20 shadow-[0_16px_40px_rgba(0,0,0,0.25)]">
                   <img
                     src="/images/remaining-human/problem-formation.png"
                     alt="A robot pointing at people in line"
-                    className="h-full w-full object-cover aspect-[4/5]"
+                    className="aspect-[4/5] h-full w-full object-cover"
                     loading="lazy"
                   />
                 </figure>
@@ -165,7 +170,7 @@ export default function RemainingHuman() {
                   <img
                     src="/images/remaining-human/problem-chase.png"
                     alt="A leader running under pressure as machines close in"
-                    className="h-full w-full object-cover aspect-[4/5]"
+                    className="aspect-[4/5] h-full w-full object-cover"
                     loading="lazy"
                   />
                 </figure>
@@ -173,30 +178,20 @@ export default function RemainingHuman() {
                   <img
                     src="/images/remaining-human/c06-sequence.png"
                     alt="People in formation with rising pressure and conformity"
-                    className="h-full w-full object-cover aspect-[4/5]"
+                    className="aspect-[4/5] h-full w-full object-cover"
                     loading="lazy"
                   />
                 </figure>
               </div>
-              <div className="mt-12 space-y-7 md:space-y-8">
-                <p className="text-2xl sm:text-3xl leading-tight text-[#D9ECE8]">
-                  Speed increases. Wisdom gets thinner.
-                </p>
-                <p className="text-2xl sm:text-3xl leading-tight text-[#D9ECE8]">
-                  Output grows. Trust erodes.
-                </p>
-                <p className="text-2xl sm:text-3xl leading-tight text-[#D9ECE8]">
-                  Systems get smarter. Responsibility gets harder to see.
-                </p>
-                <p className="text-2xl sm:text-3xl leading-tight text-[#D9ECE8]">
-                  Everything moves faster. People feel less seen.
-                </p>
-              </div>
+              <p className="mt-10 text-lg sm:text-xl leading-relaxed text-[#D9ECE8] max-w-[52ch]">
+                Speed increases. Wisdom gets thinner. Output grows. Trust erodes. Systems get smarter. Responsibility gets
+                harder to see. Everything moves faster. People feel less seen.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* 3) THE TURN */}
+        {/* 3 — Reframe */}
         <section className="relative overflow-hidden bg-[#0C1E1C] py-16 sm:py-20 md:py-24">
           <div className="absolute inset-0">
             <img
@@ -209,26 +204,42 @@ export default function RemainingHuman() {
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="relative mx-auto max-w-4xl">
+            <div className="relative mx-auto max-w-3xl">
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#ECF8F5]">
-                AI isn&apos;t the problem. Leadership is being exposed.
+                The issue isn&apos;t technology. It&apos;s what leadership becomes inside it.
               </h2>
-              <div className="mt-8 space-y-6 text-base sm:text-lg leading-relaxed text-[#D5EAE5] max-w-[72ch]">
-                <p>
-                  The answer isn&apos;t slowing down technology.
-                  It&apos;s becoming the kind of leader who can remain clear, present, and accountable while everything accelerates.
-                </p>
-                <p>
-                  When systems become more powerful, leadership does not become less important.
-                  It becomes more visible.
-                  And more costly when it is absent.
-                </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 4 — Introduce the book */}
+        <section className="relative overflow-hidden bg-[#0E2A27] py-16 sm:py-20 md:py-24">
+          <div className="absolute inset-0">
+            <img
+              src="/images/remaining-human/turn-conversation.png"
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover opacity-12"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,42,39,0.92)_0%,rgba(14,42,39,0.94)_100%)]" />
+          </div>
+
+          <div className="container relative mx-auto px-4 sm:px-6 md:px-12">
+            <div className="mx-auto max-w-3xl">
+              <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#EAF8F5]">Remaining Human</h2>
+              <p className="mt-6 text-base sm:text-lg leading-relaxed text-[#D5EAE5]">
+                Remaining Human is a field guide for leaders operating inside systems that move faster than clarity. Not
+                theory. Not tactics. A way to think clearly when everything else speeds up.
+              </p>
+              <div className="mt-8">
+                <CheckoutButton className={midCtaClasses}>Get the eBook — $9.99</CheckoutButton>
+                <p className="mt-3 text-sm text-[#B8DDD4]">Launch price. Increasing to $19.99.</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 4) VALUE */}
+        {/* 5 — Outcomes */}
         <section className="bg-[#102D2A] py-16 sm:py-20 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-2 lg:items-start">
@@ -237,17 +248,17 @@ export default function RemainingHuman() {
                   What you&apos;ll walk away with
                 </h2>
                 <ul className="mt-8 space-y-3 text-base sm:text-lg leading-relaxed text-[#DCEEEA] max-w-[56ch]">
-                  <li>Clarity when everything feels fast</li>
-                  <li>A way to lead people, not just systems</li>
-                  <li>A grounded approach to decision-making under pressure</li>
-                  <li>Language for what leadership must become next</li>
+                  <li>Clarity when everything feels fast.</li>
+                  <li>A way to lead people, not just systems.</li>
+                  <li>Better decisions under pressure.</li>
+                  <li>Language for what leadership must become.</li>
                 </ul>
               </div>
               <figure className="overflow-hidden rounded-lg border border-[#9CD8CF]/25 bg-black/15 shadow-[0_18px_50px_rgba(0,0,0,0.24)]">
                 <img
                   src="/images/remaining-human/c08-value-right.png"
                   alt="People in conversation under dim teal lighting"
-                  className="h-full w-full object-cover aspect-[16/10]"
+                  className="aspect-[16/10] h-full w-full object-cover"
                   loading="lazy"
                 />
               </figure>
@@ -255,7 +266,7 @@ export default function RemainingHuman() {
           </div>
         </section>
 
-        {/* 5) AUTHOR AUTHORITY */}
+        {/* 6 — Author */}
         <section className="relative overflow-hidden bg-[#17423D] py-16 sm:py-20 md:py-24">
           <div className="absolute inset-0">
             <img
@@ -267,68 +278,55 @@ export default function RemainingHuman() {
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,66,61,0.86)_0%,rgba(23,66,61,0.9)_100%)]" />
           </div>
 
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="relative mx-auto grid max-w-5xl gap-8 lg:grid-cols-2 lg:items-start">
-              <div>
-                <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F1FBF9]">
-                  Built from experience, not theory
-                </h2>
-                <p className="mt-7 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                  Written by Bart Paden, an entrepreneur and leader with over three decades of experience building organizations, leading teams, making decisions that carried real consequences, and living with the outcomes of those decisions long after they were made.
-                </p>
-                <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                  This is not a perspective formed in isolation or hindsight. It comes from operating inside complexity, where pressure is constant, information is incomplete, and the cost of getting it wrong is not abstract. It affects people, culture, and the direction of everything you are responsible for.
-                </p>
-                <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                  Remaining Human is not abstract leadership thinking. It is a response to what leadership becomes when systems get stronger, faster, and more dominant, and people risk becoming secondary without anyone explicitly choosing that outcome.
-                </p>
-                <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                  It does not offer frameworks or step-by-step tools. It offers something more foundational. It helps you recognize what is already happening beneath the surface, what often goes unspoken, and what becomes visible only after the damage is done.
-                </p>
-                <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                  If you have ever felt the tension between what is efficient and what is right, between what scales and what actually matters, this book is written for you.
-                </p>
-                <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                  It is meant to sharpen awareness, challenge assumptions, and give language to things you may already sense but have not fully articulated.
-                </p>
-                <div className="mt-7 rounded-lg border border-[#A3D9D1]/25 bg-black/15 p-5 sm:p-6">
-                  <p className="text-base sm:text-lg leading-relaxed text-[#ECF8F5]">
-                    Because the real risk is not making the wrong decision.
-                    <br />
-                    The real risk is no longer seeing clearly enough to know the difference.
+          <div className="container relative mx-auto px-4 sm:px-6 md:px-12">
+            <div className="relative mx-auto max-w-4xl">
+              <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F1FBF9]">
+                    Built from experience, not theory
+                  </h2>
+                  <p className="mt-6 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
+                    Bart Paden has spent decades building organizations, leading teams, and living with decisions that
+                    carried real consequences for people and culture—not as a story told later, but as daily weight.
+                  </p>
+                  <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
+                    Remaining Human isn&apos;t an abstract take on leadership. It&apos;s written from inside complexity:
+                    incomplete information, constant pressure, and outcomes you still own after the moment passes.
+                  </p>
+                  <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
+                    When systems accelerate, the risk isn&apos;t only a wrong call—it&apos;s losing the clarity to know
+                    what &quot;right&quot; even means for the people you lead.
                   </p>
                 </div>
+                <figure className="mx-auto w-full max-w-[260px] shrink-0 overflow-hidden rounded-lg border border-[#A3D9D1]/35 bg-black/15 shadow-[0_18px_50px_rgba(0,0,0,0.24)] lg:mx-0 lg:max-w-[240px] lg:pt-1">
+                  <img
+                    src="/images/remaining-human/epilogue-a-right.png"
+                    alt="Bart in conversation with leaders in a human-centered environment"
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </figure>
               </div>
-              <figure className="w-full max-w-[220px] justify-self-center overflow-hidden rounded-lg border border-[#A3D9D1]/35 bg-black/15 shadow-[0_18px_50px_rgba(0,0,0,0.24)] lg:justify-self-end">
-                <img
-                  src="/images/remaining-human/epilogue-a-right.png"
-                  alt="Bart in conversation with leaders in a human-centered environment"
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
-              </figure>
             </div>
           </div>
         </section>
 
-        {/* 6) WHO THIS IS FOR */}
+        {/* 7 — Qualification */}
         <section className="bg-[#2A5851] py-16 sm:py-20 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="mx-auto max-w-4xl">
-              <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F2FBF9]">
-                This book is for you if:
-              </h2>
+              <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F2FBF9]">This book is for you if:</h2>
               <ul className="mt-8 space-y-3 text-base sm:text-lg leading-relaxed text-[#EAF5F2]">
-                <li className="border-b border-white/10 pb-3">You lead people in a high-speed environment</li>
-                <li className="border-b border-white/10 pb-3">You feel the pressure to move faster than wisdom allows</li>
-                <li className="border-b border-white/10 pb-3">You don&apos;t want efficiency to quietly replace leadership</li>
-                <li>You believe trust, clarity, and responsibility still matter</li>
+                <li className="border-b border-white/10 pb-3">You lead in a high-speed environment.</li>
+                <li className="border-b border-white/10 pb-3">You feel pressure to move faster than clarity allows.</li>
+                <li className="border-b border-white/10 pb-3">You do not want efficiency to quietly replace leadership.</li>
+                <li>You believe trust, clarity, and responsibility still matter.</li>
               </ul>
             </div>
           </div>
         </section>
 
-        {/* 7) FINAL CLOSE */}
+        {/* 8 — Final close */}
         <section className="relative overflow-hidden bg-[#EDF5F2] py-16 sm:py-20 md:py-24 text-[#102E2A]">
           <div className="absolute inset-0">
             <img
@@ -341,18 +339,16 @@ export default function RemainingHuman() {
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="relative mx-auto max-w-4xl text-center">
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight text-[#123C37]">
-                Clarity is still possible. Human leadership still matters.
+            <div className="relative mx-auto max-w-3xl text-center">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] leading-tight text-[#123C37]">
+                Clarity is still possible. But it will not happen by accident.
               </h2>
               <p className="mt-7 text-base sm:text-lg leading-relaxed text-[#2C504B]">
-                If AI is exposing the quality of leadership already in the room, this book will help you see that clearly - and respond with intention.
+                If you&apos;ve felt the shift, this book will help you see it and respond with intention.
               </p>
               <div className="mt-10">
-                <CheckoutButton className="inline-flex min-h-[54px] items-center justify-center rounded-md bg-[#2A8D80] px-8 py-4 text-base font-semibold text-white transition hover:bg-[#24796F] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2A8D80] focus-visible:ring-offset-2 focus-visible:ring-offset-[#EDF5F2]">
-                  Get the eBook - $9.99
-                </CheckoutButton>
-                <p className="mt-3 text-sm text-[#3D625C]">Immediate access. Price increasing soon.</p>
+                <CheckoutButton className={finalCtaClasses}>Get the eBook — $9.99</CheckoutButton>
+                <p className="mt-3 text-sm text-[#3D625C]">Launch price. Increasing to $19.99.</p>
               </div>
               {!isCheckoutReady && (
                 <p className="mt-4 text-sm text-[#4D716B]">
