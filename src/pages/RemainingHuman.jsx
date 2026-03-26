@@ -1,7 +1,9 @@
 import React from 'react';
 import SEO from '../components/SEO';
 
-const SAMCART_CHECKOUT_URL = import.meta.env.VITE_REMAINING_HUMAN_SAMCART_URL || '';
+const SAMCART_CHECKOUT_URL =
+  import.meta.env.VITE_REMAINING_HUMAN_SAMCART_URL ||
+  'https://aobooks.mysamcart.com/archetype-original/';
 const isCheckoutReady = Boolean(SAMCART_CHECKOUT_URL);
 
 function goToPath(event, path) {
