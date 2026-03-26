@@ -1,3 +1,10 @@
+/**
+ * Changelog — Remaining Human landing (AI as accelerant, not subject)
+ * - Hero: supporting copy names AI-driven systems; keeps leadership frame.
+ * - Agitation: opens with AI accelerating decisions; rest of rhythm matches spec.
+ * - Reframe: AI as force accelerating everything; leadership exposed under that pressure.
+ * - Intro, outcomes, author, qualification, final close: light AI mentions only where they add urgency/clarity.
+ */
 import React from 'react';
 import SEO from '../components/SEO';
 
@@ -117,8 +124,8 @@ export default function RemainingHuman() {
                   It exposed it.
                 </h1>
                 <p className="mt-6 text-base sm:text-lg leading-relaxed text-[#CFE5DF] max-w-[46ch]">
-                  A field guide for leaders navigating speed, pressure, and automation without losing clarity, trust, or
-                  responsibility.
+                  A field guide for leaders navigating speed, pressure, and AI-driven systems without losing clarity,
+                  trust, or responsibility.
                 </p>
 
                 <div className="mt-8">
@@ -184,8 +191,8 @@ export default function RemainingHuman() {
                 </figure>
               </div>
               <p className="mt-10 text-lg sm:text-xl leading-relaxed text-[#D9ECE8] max-w-[52ch]">
-                Speed increases. Wisdom gets thinner. Output grows. Trust erodes. Systems get smarter. Responsibility gets
-                harder to see. Everything moves faster. People feel less seen.
+                Speed increases as AI accelerates decisions. Wisdom gets thinner. Output grows. Trust erodes. Systems get
+                smarter. Responsibility gets harder to see. Everything moves faster. People feel less seen.
               </p>
             </div>
           </div>
@@ -204,10 +211,13 @@ export default function RemainingHuman() {
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="relative mx-auto max-w-3xl">
+            <div className="relative mx-auto max-w-3xl space-y-5">
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#ECF8F5]">
-                The issue isn&apos;t technology. It&apos;s what leadership becomes inside it.
+                AI isn&apos;t the problem. It&apos;s the force accelerating everything.
               </h2>
+              <p className="text-lg sm:text-xl leading-relaxed text-[#D5EAE5]">
+                Leadership is what gets exposed inside it.
+              </p>
             </div>
           </div>
         </section>
@@ -228,8 +238,9 @@ export default function RemainingHuman() {
             <div className="mx-auto max-w-3xl">
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#EAF8F5]">Remaining Human</h2>
               <p className="mt-6 text-base sm:text-lg leading-relaxed text-[#D5EAE5]">
-                Remaining Human is a field guide for leaders operating inside systems that move faster than clarity. Not
-                theory. Not tactics. A way to think clearly when everything else speeds up.
+                Remaining Human is a field guide for leaders operating inside systems that move faster than
+                clarity—especially as AI lifts the tempo across decisions, handoffs, and expectations. Not theory. Not
+                tactics. A way to think clearly when everything else speeds up.
               </p>
               <div className="mt-8">
                 <CheckoutButton className={midCtaClasses}>Get the eBook — $9.99</CheckoutButton>
@@ -248,7 +259,7 @@ export default function RemainingHuman() {
                   What you&apos;ll walk away with
                 </h2>
                 <ul className="mt-8 space-y-3 text-base sm:text-lg leading-relaxed text-[#DCEEEA] max-w-[56ch]">
-                  <li>Clarity when everything feels fast.</li>
+                  <li>Clarity when speed, pressure, and AI-shaped workflows stack together.</li>
                   <li>A way to lead people, not just systems.</li>
                   <li>Better decisions under pressure.</li>
                   <li>Language for what leadership must become.</li>
@@ -294,8 +305,8 @@ export default function RemainingHuman() {
                     incomplete information, constant pressure, and outcomes you still own after the moment passes.
                   </p>
                   <p className="mt-5 text-base sm:text-lg leading-relaxed text-[#E4F1EE]">
-                    When systems accelerate, the risk isn&apos;t only a wrong call—it&apos;s losing the clarity to know
-                    what &quot;right&quot; even means for the people you lead.
+                    When AI and the systems around it accelerate together, the risk isn&apos;t only a wrong call—it&apos;s
+                    losing the clarity to know what &quot;right&quot; even means for the people you lead.
                   </p>
                 </div>
                 <figure className="mx-auto w-full max-w-[260px] shrink-0 overflow-hidden rounded-lg border border-[#A3D9D1]/35 bg-black/15 shadow-[0_18px_50px_rgba(0,0,0,0.24)] lg:mx-0 lg:max-w-[240px] lg:pt-1">
@@ -317,7 +328,9 @@ export default function RemainingHuman() {
             <div className="mx-auto max-w-4xl">
               <h2 className="font-serif text-3xl sm:text-4xl leading-tight text-[#F2FBF9]">This book is for you if:</h2>
               <ul className="mt-8 space-y-3 text-base sm:text-lg leading-relaxed text-[#EAF5F2]">
-                <li className="border-b border-white/10 pb-3">You lead in a high-speed environment.</li>
+                <li className="border-b border-white/10 pb-3">
+                  You lead where the pace is rising—and AI is part of why the tempo won&apos;t relax.
+                </li>
                 <li className="border-b border-white/10 pb-3">You feel pressure to move faster than clarity allows.</li>
                 <li className="border-b border-white/10 pb-3">You do not want efficiency to quietly replace leadership.</li>
                 <li>You believe trust, clarity, and responsibility still matter.</li>
@@ -344,7 +357,8 @@ export default function RemainingHuman() {
                 Clarity is still possible. But it will not happen by accident.
               </h2>
               <p className="mt-7 text-base sm:text-lg leading-relaxed text-[#2C504B]">
-                If you&apos;ve felt the shift, this book will help you see it and respond with intention.
+                If you&apos;ve felt that acceleration—including what AI is doing to the clock inside your
+                organization—this book will help you see it and respond with intention.
               </p>
               <div className="mt-10">
                 <CheckoutButton className={finalCtaClasses}>Get the eBook — $9.99</CheckoutButton>
