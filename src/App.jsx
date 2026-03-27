@@ -104,6 +104,7 @@ import ALIEULAPage from "./pages/ALIEULA.jsx";
 import EngagementInquiryPage from "./pages/EngagementInquiry";
 import AccidentalCEOPage from "./pages/AccidentalCEO";
 import RemainingHumanPage from "./pages/RemainingHuman";
+import { trackMetaPixelPageView } from "./lib/metaPixel";
 
 export default function App() {
   // Initialize currentPage based on initial pathname
@@ -629,10 +630,11 @@ export default function App() {
       }
       
       handleRoute();
+      trackMetaPixelPageView();
     };
 
     window.addEventListener('popstate', handlePopState);
-    handleRoute(); // Check initial route
+    handleRoute(); // Check initial route (Meta Pixel PageView already fired from index.html)
 
     // Save scroll position before unload
     const handleBeforeUnload = () => {

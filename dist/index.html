@@ -20,6 +20,20 @@
 
   <meta name="facebook-domain-verification" content="vt1eug36l0csa467z3tm8b9qan3a8x" />
 
+  <!-- Meta Pixel (sitewide; SPA route changes also tracked in App.jsx) -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2797928414134351');
+    fbq('track', 'PageView');
+  </script>
+
   <!-- Optional: Plausible later
   <script defer data-domain="archetypeoriginal.com" src="https://plausible.io/js/script.js"></script>
   -->
@@ -54,10 +68,14 @@
       }, { capture: true }); // Use capture phase to run before other handlers
     }
   </script>
-  <script type="module" crossorigin src="/assets/index-CNvAu4-K.js"></script>
+  <script type="module" crossorigin src="/assets/index-ahVns5Xl.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-DFsroI02.css">
 </head>
 <body class="bg-warm-offWhite text-warm-charcoal antialiased">
+  <!-- Meta Pixel noscript fallback (must live in body, not head) -->
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2797928414134351&ev=PageView&noscript=1"
+    alt="" /></noscript>
   <div id="root"></div>
 </body>
 </html>
