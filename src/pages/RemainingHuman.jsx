@@ -4,8 +4,9 @@
  * - Agitation: opens with AI accelerating decisions; rest of rhythm matches spec.
  * - Reframe: AI as force accelerating everything; leadership exposed under that pressure.
  * - Intro, outcomes, author, qualification, final close: light AI mentions only where they add urgency/clarity.
+ * - Meta Pixel: ViewContent once on mount (this page only; relies on sitewide fbq in index.html).
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import SEO from '../components/SEO';
 
 const SAMCART_CHECKOUT_URL =
@@ -56,6 +57,12 @@ function CheckoutButton({ className, children }) {
 }
 
 export default function RemainingHuman() {
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+      window.fbq('track', 'ViewContent');
+    }
+  }, []);
+
   return (
     <>
       <SEO pageKey="remaining-human" />
