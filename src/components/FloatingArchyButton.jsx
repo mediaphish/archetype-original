@@ -2,17 +2,35 @@ import React, { useState, useEffect } from 'react';
 import ChatApp from '../app/ChatApp';
 import { OptimizedImage } from './OptimizedImage';
 
+const DEFAULT_FLOATING_BTN_CLASSES =
+  'fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden';
+const REMAINING_HUMAN_FLOATING_BTN_CLASSES =
+  'fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#061312] ring-2 ring-[#8EE4D8]/55 shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden';
+
 export default function FloatingArchyButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [context, setContext] = useState('default');
+  const [avatarSrc, setAvatarSrc] = useState('/images/archy-avatar.png');
+  const [floatingButtonClassName, setFloatingButtonClassName] = useState(DEFAULT_FLOATING_BTN_CLASSES);
 
   // Detect context based on current path
   useEffect(() => {
     const updateContext = () => {
       const path = window.location.pathname;
-      
+
+      setAvatarSrc(
+        path === '/remaining-human'
+          ? '/images/remaining-human/archy-floating-neo.png'
+          : '/images/archy-avatar.png'
+      );
+      setFloatingButtonClassName(
+        path === '/remaining-human' ? REMAINING_HUMAN_FLOATING_BTN_CLASSES : DEFAULT_FLOATING_BTN_CLASSES
+      );
+
       if (path === '/') {
         setContext('home');
+      } else if (path === '/remaining-human') {
+        setContext('remaining-human');
       } else if (path === '/journal' || path.startsWith('/journal/')) {
         setContext('journal');
       } else if (path === '/methods/mentorship') {
@@ -58,11 +76,11 @@ export default function FloatingArchyButton() {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden"
+        className={floatingButtonClassName}
         aria-label="Chat with Archy"
       >
         <OptimizedImage
-          src="/images/archy-avatar.png"
+          src={avatarSrc}
           alt="Archy"
           className="w-full h-full object-cover"
           onError={(e) => {
@@ -81,7 +99,7 @@ export default function FloatingArchyButton() {
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
                     <OptimizedImage
-                      src="/images/archy-avatar.png"
+                      src={avatarSrc}
                       alt="Archy"
                       className="w-10 h-10 rounded-full border-0"
                       width={40}

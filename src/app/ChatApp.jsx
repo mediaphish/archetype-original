@@ -71,6 +71,9 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
       greetingText = "Hi, I'm Archy. You're reading about Bart. I can help answer questions about his background, experience, and approach. What would you like to know?";
     } else if (context === 'contact') {
       greetingText = "Hi, I'm Archy. I see you're on the contact page. I'm here to help answer questions about leadership, culture, methods, or how Bart can help your situation. What would you like to know?";
+    } else if (context === 'remaining-human') {
+      greetingText =
+        "Hi, I'm Archy. You're looking at Remaining Human—Bart's field guide for leading when speed, pressure, and AI-shaped systems stack together. Ask about the ideas in the book, whether it's a fit for you, or how to think clearly when everything accelerates. What would you like to explore?";
     } else {
       greetingText = "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.";
     }

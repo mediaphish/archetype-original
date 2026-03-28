@@ -854,7 +854,12 @@ export default function App() {
 
   // Remaining Human standalone landing page (no global nav/footer)
   if (currentPage === 'remaining-human') {
-    return <RemainingHumanPage />;
+    return (
+      <>
+        <RemainingHumanPage />
+        <FloatingArchyButton />
+      </>
+    );
   }
 
   // Render Faith page
