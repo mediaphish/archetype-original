@@ -102,6 +102,40 @@ function searchKnowledge(query, corpus) {
     .map(item => item.doc);
 }
 
+/**
+ * Short follow-ups that refer to the prior turn or page ("it", "the book") are on-topic.
+ * The AI nonsensical classifier often flags them as "off-topic" because they lack keywords.
+ */
+function isLegitimateFollowUpMessage(message) {
+  if (!message || typeof message !== 'string') return false;
+  const t = message.trim().toLowerCase();
+  const patterns = [
+    /^tell me more( about (it|that|this|the book))?\.?$/,
+    /^more about (it|that|this|the book)\.?$/,
+    /^what about (it|that|this)\.?$/,
+    /^(go on|continue|yes|ok|sure|interesting|right)\.?$/,
+    /^can you (say|tell|explain) more/,
+    /^what'?s (the book|it) about/,
+    /^elaborate\.?$/,
+    /^say more\.?$/,
+    /^i want to (know|hear) more/,
+    /^tell me about (it|that|this|the book)\.?$/,
+  ];
+  return patterns.some((re) => re.test(t));
+}
+
+/** On the Remaining Human landing, always include that book in retrieval so Archy can discuss it. */
+function ensureRemainingHumanInKnowledge(relevantKnowledge, corpus, pageContext) {
+  if (pageContext !== 'remaining-human' || !corpus?.docs?.length) {
+    return relevantKnowledge;
+  }
+  const rh = corpus.docs.find((d) => d.slug === 'remaining-human');
+  if (!rh) return relevantKnowledge;
+  const has = relevantKnowledge.some((d) => d.slug === 'remaining-human');
+  if (has) return relevantKnowledge;
+  return [rh, ...relevantKnowledge].slice(0, 5);
+}
+
 // Get client IP from Vercel headers
 function getClientIP(req) {
   const forwarded = req.headers['x-forwarded-for'];
@@ -197,7 +231,12 @@ export default async function handler(req, res) {
   const knowledgeCorpus = loadKnowledgeCorpus();
   console.log('Knowledge corpus loaded:', knowledgeCorpus.docs ? knowledgeCorpus.docs.length : 0, 'documents');
   
-  const relevantKnowledge = searchKnowledge(message, knowledgeCorpus);
+  let relevantKnowledge = searchKnowledge(message, knowledgeCorpus);
+  relevantKnowledge = ensureRemainingHumanInKnowledge(
+    relevantKnowledge,
+    knowledgeCorpus,
+    context
+  );
   console.log('Searching for:', message);
   console.log('Relevant knowledge found:', relevantKnowledge.length, 'documents');
   if (relevantKnowledge.length > 0) {
@@ -414,9 +453,13 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         ];
         
         let isNonsensical = nonsensicalPatterns.some(pattern => pattern.test(message));
-        
+
+        const skipNonsensicalClassifier =
+          context === 'remaining-human' ||
+          isLegitimateFollowUpMessage(message);
+
         // Use AI to detect nonsensical questions that don't match patterns
-        if (!isNonsensical && message.length > 20) {
+        if (!isNonsensical && message.length > 20 && !skipNonsensicalClassifier) {
           try {
             const nonsensicalCheckPrompt = `You are checking if a question asked to Archy (an AI assistant for Bart Paden, a leadership consultant) is nonsensical, off-topic, or clearly trolling.
 
@@ -427,6 +470,8 @@ A question is nonsensical if it:
 - Is clearly testing/trolling the AI
 - Has no connection to leadership, culture, business, teams, or organizational health
 - Is a joke or prank question
+
+IMPORTANT: Do NOT mark as nonsensical if the user is giving a short follow-up that continues an ongoing conversation (e.g. "Tell me more about it," "What about that?", "Go on")—those refer to the previous message and are on-topic.
 
 Respond with ONLY a JSON object:
 {
