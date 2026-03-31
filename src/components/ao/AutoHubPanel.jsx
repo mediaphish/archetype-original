@@ -62,7 +62,8 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
-  const [memoryOpen, setMemoryOpen] = useState(false);
+  const [successTip, setSuccessTip] = useState('');
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [pendingFiles, setPendingFiles] = useState([]);
   const fileInputRef = useRef(null);
@@ -196,10 +197,10 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
         body: JSON.stringify({ mark_used: true }),
       });
       setInput(bundle.original_input || bundle.title || '');
-      setMemoryOpen(false);
+      setLibraryOpen(false);
     } catch (_) {
       setInput(bundle.original_input || bundle.title || '');
-      setMemoryOpen(false);
+      setLibraryOpen(false);
     }
   }, []);
 
@@ -249,6 +250,24 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
     }
   }, [thread]);
 
+  const sendBundleToImport = useCallback(async (bundle) => {
+    const ideaId = bundle?.source_idea_id;
+    if (!ideaId) {
+      setError('No linked Ready Post for this bundle yet.');
+      return;
+    }
+    setError('');
+    setSuccessTip('');
+    try {
+      const res = await fetch(`/api/ao/ideas/${encodeURIComponent(ideaId)}/send-to-import`, { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not send to Import');
+      setSuccessTip(json.message || 'Sent to Import. Open Import in AO to review and publish.');
+    } catch (e) {
+      setError(e.message || 'Could not send to Import');
+    }
+  }, []);
+
   const undoLastAction = useCallback(async () => {
     const actionLogId = thread?.state?.last_action_log_id;
     if (!actionLogId) return;
@@ -281,10 +300,10 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
           </span>
           <button
             type="button"
-            onClick={() => setMemoryOpen(true)}
+            onClick={() => setLibraryOpen(true)}
             className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
           >
-            Memory
+            Library
           </button>
           <button
             type="button"
@@ -306,6 +325,11 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
         </div>
       </div>
 
+      {successTip ? (
+        <div className="mx-4 mt-4 p-3 rounded border border-emerald-200 bg-emerald-50 text-emerald-900 text-sm">
+          {successTip}
+        </div>
+      ) : null}
       {error ? (
         <div className="mx-4 mt-4 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
           {error}
@@ -332,6 +356,15 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
             <button type="button" onClick={proceedBundle} className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">
               Proceed
             </button>
+            {latestBundle.source_idea_id ? (
+              <button
+                type="button"
+                onClick={() => sendBundleToImport(latestBundle)}
+                className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+              >
+                Send journal to Import
+              </button>
+            ) : null}
             {thread?.state?.last_action_log_id ? (
               <button type="button" onClick={undoLastAction} className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50">
                 Undo last action
@@ -509,15 +542,15 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
         </div>
       </div>
 
-      {memoryOpen ? (
+      {libraryOpen ? (
         <div className="fixed inset-0 z-40 bg-black/40">
           <div className="absolute inset-x-0 bottom-0 top-0 md:inset-12 md:rounded-xl bg-white shadow-xl overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
               <div>
-                <div className="text-lg font-semibold text-gray-900">Memory</div>
+                <div className="text-lg font-semibold text-gray-900">Library</div>
                 <div className="text-xs text-gray-600">Saved bundles, learned guardrails, and series memory.</div>
               </div>
-              <button type="button" onClick={() => setMemoryOpen(false)} className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50">Close</button>
+              <button type="button" onClick={() => setLibraryOpen(false)} className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50">Close</button>
             </div>
             <div className="px-4 py-4 grid gap-6 lg:grid-cols-2">
               <div>

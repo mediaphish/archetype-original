@@ -26,6 +26,62 @@ function looksLikeContent(text) {
   return s.length >= 120 || s.includes('\n\n');
 }
 
+function impliesNoRefine(text) {
+  const s = String(text || '');
+  return /\bdon'?t refine\b|\bdo not refine\b|\bnot refining\b|\bno more edits\b|\bfinished (?:my )?(?:post|draft)\b|\bthis is (?:my )?final\b|\bdo not edit (?:the )?post\b|\bi'?m not refining\b/i.test(s);
+}
+
+/** Prefer packaging when the user clearly pasted a finished piece or attached files (not a short question). */
+function shouldAssumePackageMode(text, hasAttachments) {
+  if (hasAttachments) return true;
+  if (!looksLikeContent(text)) return false;
+  const first = String(text || '').split('\n')[0].trim().toLowerCase();
+  if (/^(what|why|how|when|where|who|show|list|tell me|got any|did you|can you|are you|is there|hey auto)[\s,]/.test(first)) return false;
+  return true;
+}
+
+async function getAutomationProof(email) {
+  const owner = String(email || '').toLowerCase().trim();
+  const lines = [];
+  try {
+    const { data: logs } = await supabaseAdmin
+      .from('ao_scan_log')
+      .select('scan_type, started_at, finished_at, candidates_found, candidates_inserted')
+      .order('started_at', { ascending: false })
+      .limit(40);
+    const rows = Array.isArray(logs) ? logs : [];
+    const lastOf = (type) => rows.find((r) => r.scan_type === type);
+    const ext = lastOf('external');
+    const int = lastOf('internal');
+    const daily = lastOf('full_corpus');
+    const fmt = (row) => {
+      if (!row) return 'not logged yet';
+      const t = row.finished_at || row.started_at;
+      if (!t) return 'not logged yet';
+      try {
+        return new Date(t).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+      } catch {
+        return String(t);
+      }
+    };
+    lines.push(`Last outside scan: ${fmt(ext)}${ext?.candidates_inserted != null ? ` · added ${ext.candidates_inserted} to inbox` : ''}`);
+    lines.push(`Last corpus scan: ${fmt(int)}${int?.candidates_inserted != null ? ` · added ${int.candidates_inserted}` : ''}`);
+    lines.push(`Last daily run: ${fmt(daily)}`);
+
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count } = await supabaseAdmin
+      .from('ao_quote_review_queue')
+      .select('id', { count: 'exact', head: true })
+      .eq('created_by_email', owner)
+      .gte('created_at', cutoff);
+    const n = typeof count === 'number' ? count : 0;
+    lines.push(`Opportunities created for you in the last 24h: ${n}`);
+  } catch {
+    lines.push('Scan log: temporarily unavailable.');
+  }
+  return lines;
+}
+
 /** User explicitly asked for Scout / inbox opportunities — must run even if thread mode is package/publish. */
 function wantsScoutFindings(text) {
   const s = String(text || '').trim().toLowerCase();
@@ -36,6 +92,7 @@ function wantsScoutFindings(text) {
   if (/\bwhat(?:'s| is) new from scout\b|\bscout findings\b|\bwhat did scout find\b|\bwhat has scout found\b/.test(s)) return true;
   if (/\b(pull up|give me|list)\s+(the\s+)?(today'?s\s+)?(opportunities|findings|leads|inbox)\b/.test(s)) return true;
   if (/\bwhat do you have for me today\b|\bwhat did you pick up\b|\banything new (?:in )?the inbox\b/.test(s)) return true;
+  if (/\bwhat should we build from the corpus\b|\bcorpus (?:ideas|picks) for today\b/.test(s)) return true;
   return false;
 }
 
@@ -179,24 +236,38 @@ async function recentFindings(email) {
   };
 }
 
-async function askModel({ mode, message, messages, guardrails, findings, bundleSummary }) {
+async function askModel({
+  mode,
+  message,
+  messages,
+  guardrails,
+  findings,
+  bundleSummary,
+  automationProofLines = [],
+  dontRefine = false,
+}) {
   const apiKey = getOpenAiKey();
   if (!apiKey) return null;
 
   const prompt = `You are Auto inside AO Automation. Bart is the only user.
 
 Current mode: ${JSON.stringify(mode)}
+User asked not to refine / treat post as frozen: ${dontRefine ? 'YES — do not suggest edits; only package, plan, recall, or flag major risks if asked.' : 'no'}
 
-Non-negotiables:
-- Never silently rewrite his words.
-- If "don't refine" is active, only package / plan / warn.
-- Be conversational, direct, and useful.
-- If you are not sure, ask one short clarifying question.
+Non-negotiables (hard rules):
+- Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
+- If he is not refining (see above) or pastes a finished piece: switch mentally to PACKAGING — summarize what you will do (Journal block, channel drafts, schedule suggestion), do not workshop the prose.
+- Modes you respect from context: plan, write, package, publish, recall, training, general.
+- Quality: only challenge wording for major public risks if relevant; do not nitpick style.
+- Be conversational, direct, short paragraphs. If unsure, one clarifying question.
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
 
-Recent findings:
+System proof-of-work (timestamps for trust):
+${automationProofLines.length ? automationProofLines.map((x) => `- ${x}`).join('\n') : '- not available'}
+
+Recent opportunities snapshot (last ~24h lists may be partial):
 ${JSON.stringify(findings)}
 
 Current bundle summary:
@@ -269,6 +340,16 @@ export default async function handler(req, res) {
 
     const currentState = fullState.thread.state && typeof fullState.thread.state === 'object' ? fullState.thread.state : {};
     let nextMode = detectAutoMode(userMessage, fullState.thread.current_mode || 'general');
+    let statePatch = { ...currentState };
+    if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
+    if (
+      shouldAssumePackageMode(userMessage, activeAttachments.length > 0) &&
+      !wantsScoutFindings(userMessage) &&
+      nextMode !== 'training' &&
+      nextMode !== 'recall'
+    ) {
+      nextMode = 'package';
+    }
     const inferredFromMessage = looksLikeContent(userMessage) ? userMessage : '';
     const textAttachment = activeAttachments.filter((a) => a.kind === 'text').map((a) => safeText(a.extracted_text, 20000)).filter(Boolean).join('\n\n');
     const imageAttachment = activeAttachments.filter((a) => a.kind === 'image').slice(-1)[0] || null;
@@ -295,7 +376,6 @@ export default async function handler(req, res) {
     }
 
     let assistantMessage = '';
-    let statePatch = { ...currentState };
     let savedBundle = null;
     let savedIdea = null;
 
@@ -357,6 +437,7 @@ export default async function handler(req, res) {
     } else if (wantsScoutFindings(userMessage)) {
       nextMode = 'plan';
       const findings = await recentFindings(auth.email);
+      const proof = await getAutomationProof(auth.email);
       const lines = [];
       if (findings.external.length) {
         lines.push('From outside sources in the last 24 hours:');
@@ -372,6 +453,9 @@ export default async function handler(req, res) {
       } else {
         lines.push('I do not have a strong corpus opportunity flagged in that window yet.');
       }
+      lines.push('');
+      lines.push('Proof of work (so you know the system has been running):');
+      proof.forEach((p) => lines.push(`- ${p}`));
       assistantMessage = lines.join('\n');
     } else if (nextMode === 'package' || nextMode === 'publish') {
       const pendingQuality = statePatch.pending_quality && typeof statePatch.pending_quality === 'object' ? statePatch.pending_quality : null;
@@ -499,6 +583,7 @@ export default async function handler(req, res) {
       }
     } else {
       const findings = await recentFindings(auth.email);
+      const proofLines = await getAutomationProof(auth.email);
       const model = await askModel({
         mode: nextMode,
         message: userMessage,
@@ -506,6 +591,8 @@ export default async function handler(req, res) {
         guardrails: enabledGuardrails,
         findings,
         bundleSummary: savedBundle ? { id: savedBundle.id, title: savedBundle.title } : null,
+        automationProofLines: proofLines,
+        dontRefine: !!(statePatch.dont_refine || impliesNoRefine(userMessage)),
       });
       assistantMessage = safeText(model?.assistant_message, 4000) || `Mode: ${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}. Tell me what you want to do next.`;
       if (Array.isArray(model?.receipts)) receipts.push(...model.receipts.map((x) => safeText(x, 160)).filter(Boolean));
