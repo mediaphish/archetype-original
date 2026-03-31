@@ -26,6 +26,29 @@ function looksLikeContent(text) {
   return s.length >= 120 || s.includes('\n\n');
 }
 
+/** User explicitly asked for Scout / inbox opportunities — must run even if thread mode is package/publish. */
+function wantsScoutFindings(text) {
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+  if (/\bwhat did you find\b|\bwhat have you found\b/.test(s)) return true;
+  if (/\bshow me what you(?:'ve)?\s+found\b|\bshow me what scout\b/.test(s)) return true;
+  if (/\bgot any new ideas for today\b|\bany new ideas for today\b/.test(s)) return true;
+  if (/\bwhat(?:'s| is) new from scout\b|\bscout findings\b|\bwhat did scout find\b|\bwhat has scout found\b/.test(s)) return true;
+  if (/\b(pull up|give me|list)\s+(the\s+)?(today'?s\s+)?(opportunities|findings|leads|inbox)\b/.test(s)) return true;
+  if (/\bwhat do you have for me today\b|\bwhat did you pick up\b|\banything new (?:in )?the inbox\b/.test(s)) return true;
+  return false;
+}
+
+function formatFindingLine(x) {
+  const title = x.source_title || x.source_name || 'Opportunity';
+  const link = x.is_internal
+    ? safeText(x.source_slug_or_url, 500) || ''
+    : safeText(x.source_url, 2000) || '';
+  if (link && /^https?:\/\//i.test(link)) return `${title}\n   ${link}`;
+  if (link) return `${title}\n   /${link.replace(/^\//, '')}`;
+  return title;
+}
+
 function applyOneFix(text, before, after) {
   if (!before || !after) return text;
   const idx = text.indexOf(before);
@@ -142,7 +165,9 @@ async function recentFindings(email) {
   const cutoff = new Date(Date.now() - (24 * 60 * 60 * 1000)).toISOString();
   const { data } = await supabaseAdmin
     .from('ao_quote_review_queue')
-    .select('id,is_internal,source_title,source_name,why_it_matters,summary_interpretation,created_at')
+    .select(
+      'id,is_internal,source_title,source_name,source_url,source_slug_or_url,why_it_matters,summary_interpretation,created_at'
+    )
     .eq('created_by_email', email)
     .gte('created_at', cutoff)
     .order('created_at', { ascending: false })
@@ -313,7 +338,7 @@ export default async function handler(req, res) {
       const lane1 = bundleMatches.slice(0, 3);
       const lane2 = lane1.length < bundleMatches.length ? bundleMatches.slice(3, 6) : ideaMatches;
       if (!lane1.length && !lane2.length) {
-        assistantMessage = 'I checked Memory and did not find a strong match yet.';
+        assistantMessage = 'I checked Library and did not find a strong match yet.';
       } else {
         const lines = ['I think I remember it. Let me ask the Librarian.', ''];
         if (lane1.length) {
@@ -329,6 +354,25 @@ export default async function handler(req, res) {
         lines.push('If you want, tell me which one to reuse and I’ll pull it into this session.');
         assistantMessage = lines.join('\n');
       }
+    } else if (wantsScoutFindings(userMessage)) {
+      nextMode = 'plan';
+      const findings = await recentFindings(auth.email);
+      const lines = [];
+      if (findings.external.length) {
+        lines.push('From outside sources in the last 24 hours:');
+        findings.external.forEach((x, idx) => lines.push(`${idx + 1}. ${formatFindingLine(x)}`));
+        lines.push('');
+      } else {
+        lines.push('I looked and did not find anything new from outside sources in the last 24 hours.');
+        lines.push('');
+      }
+      if (findings.internal.length) {
+        lines.push('From your corpus:');
+        findings.internal.forEach((x, idx) => lines.push(`${idx + 1}. ${formatFindingLine(x)}`));
+      } else {
+        lines.push('I do not have a strong corpus opportunity flagged in that window yet.');
+      }
+      assistantMessage = lines.join('\n');
     } else if (nextMode === 'package' || nextMode === 'publish') {
       const pendingQuality = statePatch.pending_quality && typeof statePatch.pending_quality === 'object' ? statePatch.pending_quality : null;
       const lower = userMessage.toLowerCase();
@@ -453,24 +497,6 @@ export default async function handler(req, res) {
           }
         }
       }
-    } else if (/what did you find/i.test(userMessage) || /what have you found/i.test(userMessage)) {
-      const findings = await recentFindings(auth.email);
-      const lines = [];
-      if (findings.external.length) {
-        lines.push('From outside sources in the last 24 hours:');
-        findings.external.forEach((x, idx) => lines.push(`${idx + 1}. ${x.source_title || x.source_name || 'Opportunity'}`));
-        lines.push('');
-      } else {
-        lines.push('I looked this morning and did not find anything worth producing from outside sources.');
-        lines.push('');
-      }
-      if (findings.internal.length) {
-        lines.push('From your corpus:');
-        findings.internal.forEach((x, idx) => lines.push(`${idx + 1}. ${x.source_title || x.source_name || 'Corpus opportunity'}`));
-      } else {
-        lines.push('I do not have a strong corpus opportunity ready yet.');
-      }
-      assistantMessage = lines.join('\n');
     } else {
       const findings = await recentFindings(auth.email);
       const model = await askModel({
