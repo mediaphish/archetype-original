@@ -3,6 +3,9 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { getOpenAiKey } from '../../../lib/openaiKey.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage, listGuardrails, searchBundles, detectAutoMode } from '../../../lib/ao/autoHub.js';
 import { buildAutoBundle, detectQualityAlarm } from '../../../lib/ao/autoBundle.js';
+import { getCorpusPullQuotes } from '../../../lib/ao/corpusPullQuotes.js';
+import { renderQuoteCardSvg } from '../../../lib/ao/quoteCardDesigner.js';
+import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -140,6 +143,20 @@ async function getAutomationProof(email) {
 }
 
 /** User explicitly asked for Scout / inbox opportunities — must run even if thread mode is package/publish. */
+/** User wants Auto to search published corpus for pull-quote lines (not Scout inbox). */
+function wantsCorpusPullQuotes(text) {
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+  const corpusHint = /\b(corpus|my (?:published )?writing|published (?:work|pieces)|knowledge base|site content|from (?:the )?archive)\b/.test(s);
+  const quoteHint = /\b(pull[- ]?quotes?|quote cards?|weekly quotes?|candidate quotes?|lines? to (?:quote|post))\b/.test(s);
+  const actionHint = /\b(find|pull|suggest|give me|show me|list|search|look (?:at|in|through)|pick|select)\b/.test(s);
+  if (quoteHint && (corpusHint || /\bfrom (?:my |the )?(?:site|journal|posts|articles)\b/.test(s))) return true;
+  if (actionHint && quoteHint && corpusHint) return true;
+  if (/\bquotes? from (?:my |the )?corpus\b/.test(s)) return true;
+  if (/\bsearch (?:the )?corpus for\b.{0,40}\bquotes?\b/.test(s)) return true;
+  return false;
+}
+
 function wantsScoutFindings(text) {
   const s = String(text || '').trim().toLowerCase();
   if (!s) return false;
@@ -320,7 +337,7 @@ Non-negotiables (hard rules):
 - Modes you respect from context: plan, write, package, publish, recall, training, general.
 - Quality: only challenge wording for major public risks if relevant; do not nitpick style.
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
-${isPlanOrWrite ? '\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest how to pick quotes from the corpus, cadence, and what to design next — without claiming the bundle is already built.\n' : ''}
+${isPlanOrWrite ? '\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
@@ -405,9 +422,12 @@ export default async function handler(req, res) {
     if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
     if (looksLikePlanningOrDiscussionRequest(userMessage)) {
       nextMode = 'plan';
+    } else if (wantsCorpusPullQuotes(userMessage)) {
+      nextMode = 'plan';
     } else if (
       shouldAssumePackageMode(userMessage, activeAttachments.length > 0) &&
       !wantsScoutFindings(userMessage) &&
+      !wantsCorpusPullQuotes(userMessage) &&
       nextMode !== 'training' &&
       nextMode !== 'recall'
     ) {
@@ -455,6 +475,7 @@ export default async function handler(req, res) {
     }
 
     let assistantMessage = '';
+    let assistantMeta = null;
     let savedBundle = null;
     let savedIdea = null;
 
@@ -536,6 +557,43 @@ export default async function handler(req, res) {
       lines.push('Proof of work (so you know the system has been running):');
       proof.forEach((p) => lines.push(`- ${p}`));
       assistantMessage = lines.join('\n');
+    } else if (wantsCorpusPullQuotes(userMessage)) {
+      nextMode = 'plan';
+      const corpus = await getCorpusPullQuotes({ queryText: userMessage, limit: 5 });
+      receipts.push('Searched your published corpus for pull quotes');
+      if (corpus.ok && corpus.quotes.length) {
+        const lines = [
+          'Here are candidate pull quotes from your corpus (short lines only—full posts are not pasted here):',
+          '',
+        ];
+        corpus.quotes.forEach((q, idx) => {
+          lines.push(`${idx + 1}. “${q.quote}”`);
+          lines.push(`   Source: ${q.source_title}${q.url ? ` · ${q.url}` : ''}`);
+          lines.push('');
+        });
+        lines.push('Tell me which numbers you like and we can draft captions and minimal branded cards next.');
+        assistantMessage = lines.join('\n');
+        try {
+          const logoUrl = await getDefaultLogoUrl({ background: 'dark' });
+          const first = corpus.quotes[0];
+          const rendered = renderQuoteCardSvg({
+            quote: first.quote,
+            sourceName: first.source_title,
+            logoUrl,
+            style: 'minimal',
+            minimalVariant: 'dark',
+          });
+          assistantMeta = {
+            corpus_pull_quotes: corpus.quotes,
+            quote_card_preview_svg: rendered.ok ? rendered.svg : null,
+          };
+        } catch (_) {
+          assistantMeta = { corpus_pull_quotes: corpus.quotes };
+        }
+      } else {
+        assistantMessage =
+          'I couldn’t find strong pull-quote lines from the corpus for that ask. Try naming a theme (for example accountability, pressure, or culture) and ask again, or say which topics to prioritize.';
+      }
     } else if (nextMode === 'package' || nextMode === 'publish') {
       const pendingQuality = statePatch.pending_quality && typeof statePatch.pending_quality === 'object' ? statePatch.pending_quality : null;
       const lower = userMessage.toLowerCase();
@@ -693,6 +751,7 @@ export default async function handler(req, res) {
       mode: nextMode,
       content: assistantMessage,
       meta: {
+        ...(assistantMeta && typeof assistantMeta === 'object' ? assistantMeta : {}),
         bundle_id: savedBundle?.id || null,
         idea_id: savedIdea?.id || null,
       },

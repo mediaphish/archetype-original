@@ -56,7 +56,13 @@ export default async function handler(req, res) {
     let quoteCard = null;
     if ((only === 'quote_card' || decision.best_move === 'pull_quote_card') && decision.pull_quote) {
       const logoUrl = await getDefaultLogoUrl({ background: 'dark' });
-      const rendered = renderQuoteCardSvg({ quote: decision.pull_quote, sourceName: row.source_name || row.source_title || '', logoUrl });
+      const rendered = renderQuoteCardSvg({
+        quote: decision.pull_quote,
+        sourceName: row.source_name || row.source_title || '',
+        logoUrl,
+        style: 'minimal',
+        minimalVariant: 'dark',
+      });
       if (rendered?.ok) {
         quoteCard = {
           quote_card_template: rendered.template,

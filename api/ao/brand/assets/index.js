@@ -8,7 +8,7 @@
  * - variant: mark | wordmark | lockup_light | lockup_dark | other
  * - defaultLight: "true" | "false"
  * - defaultDark: "true" | "false"
- * - file (required): SVG or PNG
+ * - file (required): SVG, PNG, or JPEG
  */
 
 import crypto from 'crypto';
@@ -91,7 +91,7 @@ async function ensureBucket() {
     if (exists) return bucket;
     const { error } = await supabaseAdmin.storage.createBucket(bucket, {
       public: true,
-      allowedMimeTypes: ['image/png', 'image/svg+xml'],
+      allowedMimeTypes: ['image/png', 'image/svg+xml', 'image/jpeg'],
       fileSizeLimit: 2 * 1024 * 1024,
     });
     if (error) {
@@ -145,9 +145,9 @@ export default async function handler(req, res) {
     if (!file?.buffer?.length) return res.status(400).json({ ok: false, error: 'File is required' });
 
     const mimetype = String(file.mimetype || '').toLowerCase().trim();
-    const allowedTypes = ['image/png', 'image/svg+xml'];
+    const allowedTypes = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg'];
     if (!allowedTypes.includes(mimetype)) {
-      return res.status(400).json({ ok: false, error: 'File must be SVG or PNG' });
+      return res.status(400).json({ ok: false, error: 'File must be SVG, PNG, or JPEG' });
     }
 
     const maxSize = 2 * 1024 * 1024;
@@ -158,7 +158,8 @@ export default async function handler(req, res) {
     const isDefaultLight = parseBool(fields?.defaultLight);
     const isDefaultDark = parseBool(fields?.defaultDark);
 
-    const ext = mimetype === 'image/svg+xml' ? 'svg' : 'png';
+    const ext =
+      mimetype === 'image/svg+xml' ? 'svg' : mimetype === 'image/jpeg' || mimetype === 'image/jpg' ? 'jpg' : 'png';
     const bucket = await ensureBucket();
     const storagePath = `logos/${crypto.randomUUID()}.${ext}`;
 

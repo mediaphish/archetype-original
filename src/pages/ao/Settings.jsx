@@ -583,7 +583,7 @@ export default function Settings() {
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">Brand assets</h2>
           <p className="text-sm text-gray-600 mb-4">
-            Upload AO logos once (SVG + PNG) and label them so Studio can use the right one when generating branded graphics.
+            Upload AO logos once (SVG, PNG, or JPEG) and label them so Studio can use the right one when generating branded graphics.
           </p>
 
           {brandError ? (
@@ -599,7 +599,7 @@ export default function Settings() {
           <div className="border border-gray-200 rounded p-4 bg-gray-50">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="text-sm font-semibold text-gray-900">Upload logos</div>
-              <div className="text-xs text-gray-500">SVG or PNG only</div>
+              <div className="text-xs text-gray-500">SVG, PNG, or JPEG</div>
             </div>
             <div className="mt-3">
               <input
