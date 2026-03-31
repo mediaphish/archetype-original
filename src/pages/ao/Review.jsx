@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
+import AutoHubPanel from '../../components/ao/AutoHubPanel';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
 
 function Pill({ tone = 'gray', children }) {
@@ -68,6 +69,23 @@ function fmtFoundShort(iso) {
     const dd = String(d.getDate()).padStart(2, '0');
     const yy = String(d.getFullYear()).slice(-2);
     return `${mm}/${dd}/${yy}`;
+  } catch {
+    return '';
+  }
+}
+
+function fmtAgoShort(iso) {
+  try {
+    if (!iso) return '';
+    const ms = Date.now() - new Date(iso).getTime();
+    if (!Number.isFinite(ms) || ms < 0) return '';
+    const mins = Math.round(ms / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins} min ago`;
+    const hours = Math.round(mins / 60);
+    if (hours < 24) return `${hours} hr ago`;
+    const days = Math.round(hours / 24);
+    return `${days} day${days === 1 ? '' : 's'} ago`;
   } catch {
     return '';
   }
@@ -193,7 +211,7 @@ function buildUseIdeasBullets(q) {
 }
 
 const TABS = [
-  { key: 'social', label: 'Opportunities' },
+  { key: 'social', label: 'Inbox' },
   { key: 'held', label: 'Held' },
   { key: 'profiles', label: 'Profiles' },
 ];
@@ -740,10 +758,6 @@ export default function Review() {
     const stillNeedingCount = quotes
       .filter((q) => q && q.status === 'pending')
       .filter((q) => needsBrief(q)).length;
-    if (stillNeedingCount > 0) {
-      const t = setTimeout(() => setBriefRetryPulse((x) => x + 1), BRIEF_PULSE_MS);
-      return () => clearTimeout(t);
-    }
 
     const candidates = quotes
       .filter((q) => q && q.status === 'pending')
@@ -755,7 +769,15 @@ export default function Review() {
       })
       .slice(0, 10);
 
-    if (candidates.length === 0) return;
+    let pulseTimer = null;
+    if (stillNeedingCount > 0) {
+      pulseTimer = setTimeout(() => setBriefRetryPulse((x) => x + 1), BRIEF_PULSE_MS);
+    }
+    if (candidates.length === 0) {
+      return () => {
+        if (pulseTimer) clearTimeout(pulseTimer);
+      };
+    }
 
     let cancelled = false;
     setBriefPrep({ running: true, total: candidates.length, done: 0 });
@@ -772,6 +794,9 @@ export default function Review() {
           if (res.ok && json.ok && json.quote) {
             setQuotes((prev) => prev.map((x) => (x.id === q.id ? json.quote : x)));
           }
+          if (res.ok && json.ok && json.removed) {
+            setQuotes((prev) => prev.filter((x) => x.id !== q.id));
+          }
           if (res.ok && json && json.not_ready) {
             notReadyCount += 1;
           }
@@ -781,12 +806,14 @@ export default function Review() {
       }
       if (!cancelled && notReadyCount > 0) {
         setActionMessage('Some items are still preparing. I’ll keep trying automatically — refresh is optional.');
-        setTimeout(() => setBriefRetryPulse((x) => x + 1), BRIEF_PULSE_MS);
       }
       if (!cancelled) setBriefPrep((p) => ({ ...p, running: false }));
     })();
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      if (pulseTimer) clearTimeout(pulseTimer);
+    };
   }, [authChecked, activeTab, quotes, needsBrief, briefRetryPulse]);
 
   const pendingQuotes = quotes.filter((q) => q.status === 'pending');
@@ -815,8 +842,10 @@ export default function Review() {
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-44 md:pb-8">
+        <AutoHubPanel onNavigate={handleNavigate} inboxAnchorId="auto-inbox" />
+
         <div className="flex items-start justify-between gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-gray-900">Analyst</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Inbox</h1>
           <div className="flex items-center gap-2">
             {activeTab === 'social' ? (
               <button
@@ -935,16 +964,9 @@ export default function Review() {
                 Flush today
               </button>
             ) : null}
-            <button
-              type="button"
-              onClick={() => handleNavigate('/ao/library')}
-              className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
-            >
-              New idea
-            </button>
           </div>
         </div>
-        <p className="text-gray-600 mb-4">Decision desk: approve, reject, or hold. This is where items get their next home.</p>
+        <p className="text-gray-600 mb-4">Decision desk: Auto is your front door. The inbox stays here when you want to review opportunities directly.</p>
         {runInfo?.ok ? (
           <div className="mb-6 p-3 rounded border border-gray-200 bg-white text-sm text-gray-800">
             <div className="font-semibold text-gray-900">Run status</div>
@@ -1016,7 +1038,7 @@ export default function Review() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8">
+        <div id="auto-inbox" className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8">
           {loading ? (
             <LoadingSpinner />
           ) : activeTab === 'social' && (
@@ -1116,6 +1138,12 @@ export default function Review() {
                         <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
                           {q.summary_interpretation ? q.summary_interpretation : 'Preparing…'}
                         </div>
+                        {!q.summary_interpretation && (q.brief_attempts || q.brief_last_attempt_at) ? (
+                          <div className="mt-1 text-xs text-gray-500">
+                            Brief attempt {Number(q.brief_attempts || 0)}/3
+                            {q.brief_last_attempt_at ? ` · last tried ${fmtAgoShort(q.brief_last_attempt_at)}` : ''}
+                          </div>
+                        ) : null}
                       </div>
 
                       {competitorLabel(q) ? (
@@ -1465,6 +1493,12 @@ export default function Review() {
                         <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
                           {q.summary_interpretation ? q.summary_interpretation : 'Preparing…'}
                         </div>
+                        {!q.summary_interpretation && (q.brief_attempts || q.brief_last_attempt_at) ? (
+                          <div className="mt-1 text-xs text-gray-500">
+                            Brief attempt {Number(q.brief_attempts || 0)}/3
+                            {q.brief_last_attempt_at ? ` · last tried ${fmtAgoShort(q.brief_last_attempt_at)}` : ''}
+                          </div>
+                        ) : null}
                       </div>
 
                       {competitorLabel(q) ? (

@@ -1,11 +1,8 @@
 import React from 'react';
 
 const DEFAULT_TABS = [
-  { key: 'scout', path: '/ao/scout', label: 'Scout' },
-  { key: 'analyst', path: '/ao/analyst', label: 'Analyst' },
-  { key: 'studio', path: '/ao/studio', label: 'Studio' },
-  { key: 'publisher', path: '/ao/publisher', label: 'Publisher' },
-  { key: 'library', path: '/ao/library', label: 'Library' },
+  { key: 'analyst', path: '/ao/analyst', label: 'Auto' },
+  { key: 'library', path: '/ao/library', label: 'Memory' },
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 
@@ -30,7 +27,7 @@ export default function AOBottomNav({
       }}
     >
       <div className="mx-auto max-w-7xl px-3">
-        <div className="grid grid-cols-6 gap-1 py-2">
+        <div className={`grid gap-1 py-2 ${tabs.length <= 3 ? 'grid-cols-3' : 'grid-cols-6'}`}>
           {tabs.slice(0, 6).map((t) => {
             const isActive = t.key === active;
             return (

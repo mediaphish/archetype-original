@@ -5,11 +5,8 @@ import AOBottomNav from './AOBottomNav';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 
 const TABS = [
-  { key: 'scout', path: '/ao/scout', label: 'Scout' },
-  { key: 'analyst', path: '/ao/analyst', label: 'Analyst' },
-  { key: 'studio', path: '/ao/studio', label: 'Studio' },
-  { key: 'publisher', path: '/ao/publisher', label: 'Publisher' },
-  { key: 'library', path: '/ao/library', label: 'Library' },
+  { key: 'analyst', path: '/ao/analyst', label: 'Auto' },
+  { key: 'library', path: '/ao/library', label: 'Memory' },
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 
@@ -49,7 +46,7 @@ export default function AOHeader({ active, email, onNavigate }) {
             type="button"
             onClick={() => handleNavigate('/ao/analyst')}
             className="flex items-center gap-2 text-gray-900 min-h-[44px]"
-            aria-label="Go to Analyst"
+            aria-label="Go to Auto"
           >
             <OptimizedImage src="/brand/ao-icon.svg" alt="" className="w-6 h-6" loading="eager" width={24} height={24} />
             <span className="font-semibold">AO Automation</span>

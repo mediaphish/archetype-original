@@ -100,6 +100,8 @@ export default function Ideas() {
   const readyMdFileRef = useRef(null);
   const readyImageFileRef = useRef(null);
   const selectedIdRef = useRef(null);
+  const [savedBundles, setSavedBundles] = useState([]);
+  const [guardrails, setGuardrails] = useState([]);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -257,6 +259,28 @@ export default function Ideas() {
   useEffect(() => {
     fetchResurface();
   }, [fetchResurface]);
+
+  useEffect(() => {
+    if (!authChecked) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [bundlesRes, guardrailsRes] = await Promise.all([
+          fetch('/api/ao/auto/bundles'),
+          fetch('/api/ao/auto/guardrails'),
+        ]);
+        const bundlesJson = await bundlesRes.json().catch(() => ({}));
+        const guardrailsJson = await guardrailsRes.json().catch(() => ({}));
+        if (!cancelled && bundlesRes.ok && bundlesJson.ok) {
+          setSavedBundles(Array.isArray(bundlesJson.bundles) ? bundlesJson.bundles : []);
+        }
+        if (!cancelled && guardrailsRes.ok && guardrailsJson.ok) {
+          setGuardrails(Array.isArray(guardrailsJson.guardrails) ? guardrailsJson.guardrails : []);
+        }
+      } catch (_) {}
+    })();
+    return () => { cancelled = true; };
+  }, [authChecked]);
 
   const canNext = useMemo(() => {
     const total = page?.total;
@@ -522,9 +546,9 @@ export default function Ideas() {
       <main className="container mx-auto px-4 py-6 md:py-8 pb-28 md:pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Library</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Memory</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Two paths: capture raw seeds to shape into a brief, or paste finished posts to go live quickly.
+              Saved bundles, learned guardrails, and older material live here. New work should start in Auto.
             </p>
           </div>
 
@@ -534,6 +558,57 @@ export default function Ideas() {
           {error ? (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">{error}</div>
           ) : null}
+
+          <section className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-semibold text-gray-900">Saved bundles</h2>
+                    <p className="text-xs text-gray-600 mt-1">Auto’s ready-to-publish packets.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate('/ao/analyst')}
+                    className="px-3 py-1.5 border border-gray-300 bg-white text-sm rounded hover:bg-gray-50"
+                  >
+                    Open Auto
+                  </button>
+                </div>
+                <div className="mt-3 space-y-2">
+                  {savedBundles.length === 0 ? (
+                    <p className="text-sm text-gray-500">No saved bundles yet.</p>
+                  ) : savedBundles.slice(0, 6).map((b) => (
+                    <div key={b.id} className="border border-gray-200 rounded p-3">
+                      <div className="text-sm font-semibold text-gray-900">{b.title || 'Untitled bundle'}</div>
+                      <div className="text-xs text-gray-500 mt-1">{b.series_name || 'No series'}</div>
+                      <div className="text-sm text-gray-700 mt-2">{safePreview(b.summary)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div>
+                  <h2 className="text-sm font-semibold text-gray-900">Guardrails</h2>
+                  <p className="text-xs text-gray-600 mt-1">What Auto has learned to do or avoid.</p>
+                </div>
+                <div className="mt-3 space-y-2">
+                  {guardrails.length === 0 ? (
+                    <p className="text-sm text-gray-500">No learned guardrails yet.</p>
+                  ) : guardrails.slice(0, 8).map((g) => (
+                    <div key={g.id} className="border border-gray-200 rounded p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="text-sm font-semibold text-gray-900">{g.title || 'Learned guardrail'}</div>
+                        <StatusPill status={g.enabled ? 'brief_ready' : 'archived'} />
+                      </div>
+                      <div className="text-sm text-gray-700 mt-2 whitespace-pre-wrap">{g.rule_text}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
 
           <section className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between gap-3">
@@ -599,7 +674,7 @@ export default function Ideas() {
 
           <section className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">New</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Direct entry</h2>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -620,6 +695,9 @@ export default function Ideas() {
 
             {activePathTab === 'idea_seed' ? (
               <div>
+                <div className="mb-3 text-xs text-gray-500">
+                  Auto is the preferred entry point now. This section remains here for direct/manual work when needed.
+                </div>
                 <div className="grid gap-3 md:grid-cols-3">
                   <div className="md:col-span-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Title (optional)</label>
@@ -681,6 +759,9 @@ export default function Ideas() {
               </div>
             ) : (
               <div>
+                <div className="mb-3 text-xs text-gray-500">
+                  Auto can create ready posts for you in chat. This direct path is still available if you want it.
+                </div>
                 <div className="grid gap-3 md:grid-cols-3">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Title (optional)</label>
@@ -731,6 +812,7 @@ export default function Ideas() {
                     onChange={setReadyMarkdown}
                     placeholder="Paste your finished post. You can format it here."
                     onUploadMarkdown={() => readyMdFileRef.current?.click()}
+                    enableSectionLocks
                   />
                   <input
                     ref={readyMdFileRef}

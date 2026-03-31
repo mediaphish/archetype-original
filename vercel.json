@@ -50,6 +50,7 @@
     { "src": "/api/cron/ao/scout-pass-morning", "dest": "/api/cron/ao/scout-pass.js" },
     { "src": "/api/cron/ao/scout-pass-midday", "dest": "/api/cron/ao/scout-pass.js" },
     { "src": "/api/cron/ao/scout-pass-evening", "dest": "/api/cron/ao/scout-pass.js" },
+    { "src": "/api/cron/ao/brief-prep", "dest": "/api/cron/ao/brief-prep.js" },
     { "src": "/api/cron/ao/editorial-rebuild", "dest": "/api/cron/ao/editorial-rebuild.js" },
     { "src": "/api/cron/ao/competitor-digest", "dest": "/api/cron/ao/competitor-digest.js" },
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
@@ -109,6 +110,14 @@
     { "src": "/api/ao/editorial/coverage", "dest": "/api/ao/editorial/coverage.js" },
     { "src": "/api/ao/editorial/chase-list", "dest": "/api/ao/editorial/chase-list.js" },
     { "src": "/api/ao/editorial/generate-chase-list", "dest": "/api/ao/editorial/generate-chase-list.js" },
+    { "src": "/api/ao/auto/session", "dest": "/api/ao/auto/session.js" },
+    { "src": "/api/ao/auto/chat", "dest": "/api/ao/auto/chat.js" },
+    { "src": "/api/ao/auto/attachments", "dest": "/api/ao/auto/attachments.js" },
+    { "src": "/api/ao/auto/undo", "dest": "/api/ao/auto/undo.js" },
+    { "src": "/api/ao/auto/bundles/([^/]+)", "dest": "/api/ao/auto/bundles/[id].js?id=$1" },
+    { "src": "/api/ao/auto/bundles", "dest": "/api/ao/auto/bundles/index.js" },
+    { "src": "/api/ao/auto/guardrails/([^/]+)", "dest": "/api/ao/auto/guardrails/[id].js?id=$1" },
+    { "src": "/api/ao/auto/guardrails", "dest": "/api/ao/auto/guardrails/index.js" },
     { "src": "/api/ao/analyst/chat", "dest": "/api/ao/analyst/chat.js" },
     { "src": "/api/ao/scout/hunt-goals", "dest": "/api/ao/scout/hunt-goals.js" },
     { "src": "/api/ao/scheduled-posts/([^/]+)", "dest": "/api/ao/scheduled-posts/[id].js?id=$1" },
@@ -222,6 +231,10 @@
     {
       "path": "/api/cron/ao/scout-pass-evening",
       "schedule": "10 21 * * 1-5"
+    },
+    {
+      "path": "/api/cron/ao/brief-prep",
+      "schedule": "*/10 * * * *"
     },
     {
       "path": "/api/cron/ao/editorial-rebuild",

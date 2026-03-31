@@ -1,0 +1,535 @@
+import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { getOpenAiKey } from '../../../lib/openaiKey.js';
+import { ensureAutoThread, getAutoThreadState, addAutoMessage, listGuardrails, searchBundles, detectAutoMode } from '../../../lib/ao/autoHub.js';
+import { buildAutoBundle, detectQualityAlarm } from '../../../lib/ao/autoBundle.js';
+
+function safeText(v, maxLen = 0) {
+  const s = String(v || '').trim();
+  if (!s) return '';
+  return maxLen ? s.slice(0, maxLen) : s;
+}
+
+function cleanChannels(arr) {
+  const allowed = new Set(['linkedin', 'facebook', 'instagram', 'x']);
+  const out = [];
+  for (const item of Array.isArray(arr) ? arr : []) {
+    const s = String(item || '').trim().toLowerCase();
+    if (!allowed.has(s)) continue;
+    if (!out.includes(s)) out.push(s);
+  }
+  return out.length ? out : ['linkedin', 'facebook', 'instagram', 'x'];
+}
+
+function looksLikeContent(text) {
+  const s = String(text || '').trim();
+  return s.length >= 120 || s.includes('\n\n');
+}
+
+function applyOneFix(text, before, after) {
+  if (!before || !after) return text;
+  const idx = text.indexOf(before);
+  if (idx < 0) return text;
+  return `${text.slice(0, idx)}${after}${text.slice(idx + before.length)}`;
+}
+
+async function saveReadyPostFromBundle({ email, bundle, imageAttachment }) {
+  const ideaInsert = await supabaseAdmin
+    .from('ao_ideas')
+    .insert({
+      path: 'ready_post',
+      title: bundle.title,
+      raw_input: bundle.original_input || '',
+      markdown_content: bundle.original_input || '',
+      status: 'new',
+      created_by_email: email,
+      ready_target_site: true,
+      ready_target_social: true,
+      ready_social_channels: Object.keys(bundle.channel_drafts?.drafts_by_channel || {}),
+      ready_social_drafts: bundle.channel_drafts || null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .select('*')
+    .single();
+  if (ideaInsert.error) throw ideaInsert.error;
+
+  if (imageAttachment?.public_url) {
+    let contentBase64 = '';
+    if (imageAttachment.storage_bucket && imageAttachment.storage_path) {
+      try {
+        const dl = await supabaseAdmin.storage
+          .from(imageAttachment.storage_bucket)
+          .download(imageAttachment.storage_path);
+        if (!dl.error && dl.data) {
+          const buffer = Buffer.from(await dl.data.arrayBuffer());
+          contentBase64 = buffer.toString('base64');
+        }
+      } catch (_) {}
+    }
+    await supabaseAdmin.from('ao_idea_assets').insert({
+      idea_id: ideaInsert.data.id,
+      kind: 'featured_image',
+      filename: imageAttachment.file_name,
+      mime_type: imageAttachment.mime_type,
+      content_base64: contentBase64,
+      created_at: new Date().toISOString(),
+    });
+    await supabaseAdmin
+      .from('ao_ideas')
+      .update({
+        ready_featured_image_filename: imageAttachment.file_name,
+        ready_featured_image_mime_type: imageAttachment.mime_type,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', ideaInsert.data.id);
+  }
+
+  return ideaInsert.data;
+}
+
+async function scheduleReadyPost({ email, idea, bundle, threadId }) {
+  const draftsByChannel = bundle?.channel_drafts?.drafts_by_channel || {};
+  const firstByChannel = bundle?.channel_drafts?.first_comment_suggestions || {};
+  const schedule = bundle?.schedule_suggestion || {};
+  const rows = [];
+  for (const [channel, text] of Object.entries(draftsByChannel)) {
+    const when = schedule[channel];
+    if (!text || !when) continue;
+    rows.push({
+      platform: channel === 'x' ? 'twitter' : channel,
+      account_id: channel === 'facebook' || channel === 'instagram' ? 'meta' : 'personal',
+      scheduled_at: when,
+      text,
+      image_url: null,
+      first_comment: safeText(firstByChannel[channel], 400) || null,
+      status: 'scheduled',
+      source_kind: 'idea',
+      source_idea_id: idea.id,
+      intent: {
+        title: idea.title || null,
+        why_it_matters: bundle.summary || null,
+      },
+      why_it_matters: bundle.summary || null,
+    });
+  }
+  if (!rows.length) return { ok: false, error: 'No schedule rows available' };
+
+  const inserted = await supabaseAdmin
+    .from('ao_scheduled_posts')
+    .insert(rows)
+    .select('id, platform, scheduled_at, status');
+  if (inserted.error) throw inserted.error;
+
+  const log = await supabaseAdmin
+    .from('ao_auto_action_log')
+    .insert({
+      created_by_email: email,
+      thread_id: threadId,
+      bundle_id: bundle.id,
+      action_type: 'schedule_ready_post',
+      payload: { idea_id: idea.id },
+      undo_payload: { scheduled_post_ids: (inserted.data || []).map((x) => x.id) },
+      created_at: new Date().toISOString(),
+    })
+    .select('*')
+    .single();
+
+  return { ok: true, scheduled: inserted.data || [], actionLog: log.data || null };
+}
+
+async function recentFindings(email) {
+  const cutoff = new Date(Date.now() - (24 * 60 * 60 * 1000)).toISOString();
+  const { data } = await supabaseAdmin
+    .from('ao_quote_review_queue')
+    .select('id,is_internal,source_title,source_name,why_it_matters,summary_interpretation,created_at')
+    .eq('created_by_email', email)
+    .gte('created_at', cutoff)
+    .order('created_at', { ascending: false })
+    .limit(12);
+  const rows = Array.isArray(data) ? data : [];
+  return {
+    external: rows.filter((x) => x.is_internal === false).slice(0, 5),
+    internal: rows.filter((x) => x.is_internal === true).slice(0, 5),
+  };
+}
+
+async function askModel({ mode, message, messages, guardrails, findings, bundleSummary }) {
+  const apiKey = getOpenAiKey();
+  if (!apiKey) return null;
+
+  const prompt = `You are Auto inside AO Automation. Bart is the only user.
+
+Current mode: ${JSON.stringify(mode)}
+
+Non-negotiables:
+- Never silently rewrite his words.
+- If "don't refine" is active, only package / plan / warn.
+- Be conversational, direct, and useful.
+- If you are not sure, ask one short clarifying question.
+
+Guardrails:
+${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
+
+Recent findings:
+${JSON.stringify(findings)}
+
+Current bundle summary:
+${JSON.stringify(bundleSummary || null)}
+
+Recent conversation:
+${JSON.stringify(messages.slice(-8).map((m) => ({ role: m.role, content: m.content })))}
+
+Latest user message:
+${JSON.stringify(message)}
+
+Return ONLY JSON:
+{
+  "assistant_message": string,
+  "receipts": string[]
+}`;
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.AO_AUTO_MODEL || 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 900,
+        temperature: 0.3,
+      }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json().catch(() => ({}));
+    const content = json.choices?.[0]?.message?.content?.trim() || '';
+    if (!content) return null;
+    try {
+      return JSON.parse(content);
+    } catch {
+      const start = content.indexOf('{');
+      const end = content.lastIndexOf('}');
+      if (start >= 0 && end > start) return JSON.parse(content.slice(start, end + 1));
+      return null;
+    }
+  } catch {
+    return null;
+  }
+}
+
+export default async function handler(req, res) {
+  const auth = requireAoSession(req, res);
+  if (!auth) return;
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
+
+  try {
+    const thread = await ensureAutoThread(auth.email, req.body?.thread_id || '');
+    const fullState = await getAutoThreadState(auth.email, thread.id);
+    const existingMessages = fullState.messages || [];
+    const attachments = fullState.attachments || [];
+    const requestedAttachmentIds = Array.isArray(req.body?.attachment_ids) ? req.body.attachment_ids.map((x) => String(x || '').trim()).filter(Boolean) : [];
+    const activeAttachments = requestedAttachmentIds.length
+      ? attachments.filter((a) => requestedAttachmentIds.includes(String(a.id)))
+      : attachments.filter((a) => !a.message_id);
+    const enabledGuardrails = (await listGuardrails(auth.email)).filter((g) => g.enabled);
+
+    const userMessage = safeText(req.body?.message, 6000);
+    if (!userMessage) return res.status(400).json({ ok: false, error: 'message required' });
+
+    const currentState = fullState.thread.state && typeof fullState.thread.state === 'object' ? fullState.thread.state : {};
+    let nextMode = detectAutoMode(userMessage, fullState.thread.current_mode || 'general');
+    const inferredFromMessage = looksLikeContent(userMessage) ? userMessage : '';
+    const textAttachment = activeAttachments.filter((a) => a.kind === 'text').map((a) => safeText(a.extracted_text, 20000)).filter(Boolean).join('\n\n');
+    const imageAttachment = activeAttachments.filter((a) => a.kind === 'image').slice(-1)[0] || null;
+    let sourceText = safeText(currentState?.draft_input, 30000) || inferredFromMessage || textAttachment;
+
+    const userRow = await addAutoMessage({
+      threadId: thread.id,
+      role: 'user',
+      mode: nextMode,
+      content: userMessage,
+      meta: { attachment_ids: activeAttachments.map((a) => a.id) },
+    });
+
+    if (activeAttachments.length) {
+      await supabaseAdmin
+        .from('ao_auto_attachments')
+        .update({ message_id: userRow.id })
+        .in('id', activeAttachments.map((a) => a.id));
+    }
+
+    const receipts = [];
+    if (nextMode !== fullState.thread.current_mode) {
+      receipts.push(`Mode: ${nextMode === 'write' ? 'Writing' : nextMode === 'publish' ? 'Publishing' : nextMode === 'package' ? 'Packaging' : nextMode === 'training' ? 'Training' : nextMode === 'recall' ? 'Recall' : 'Planning'}`);
+    }
+
+    let assistantMessage = '';
+    let statePatch = { ...currentState };
+    let savedBundle = null;
+    let savedIdea = null;
+
+    if (nextMode === 'training') {
+      const cleanRule = userMessage
+        .replace(/switch to training mode/i, '')
+        .replace(/training mode/i, '')
+        .trim();
+      if (!cleanRule) {
+        assistantMessage = 'Mode: Training. Tell me the behavior you want to lock in, and I’ll turn it into a guardrail.';
+      } else {
+        const title = cleanRule.length > 80 ? `${cleanRule.slice(0, 77)}...` : cleanRule;
+        const created = await supabaseAdmin
+          .from('ao_auto_guardrails')
+          .insert({
+            created_by_email: auth.email,
+            title,
+            rule_text: cleanRule,
+            enabled: true,
+            scope: 'global',
+            source: 'user',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .select('*')
+          .single();
+        if (created.error) throw created.error;
+        receipts.push('Training mode: saved new guardrail');
+        assistantMessage = `Locked in. I saved this as a global guardrail: "${cleanRule}"`;
+      }
+    } else if (nextMode === 'recall') {
+      const bundleMatches = await searchBundles(auth.email, userMessage);
+      const ideaOut = await supabaseAdmin
+        .from('ao_ideas')
+        .select('id,title,raw_input,updated_at,path')
+        .eq('created_by_email', auth.email)
+        .order('updated_at', { ascending: false })
+        .limit(6);
+      const ideaMatches = Array.isArray(ideaOut.data) ? ideaOut.data.slice(0, 3) : [];
+      const lane1 = bundleMatches.slice(0, 3);
+      const lane2 = lane1.length < bundleMatches.length ? bundleMatches.slice(3, 6) : ideaMatches;
+      if (!lane1.length && !lane2.length) {
+        assistantMessage = 'I checked Memory and did not find a strong match yet.';
+      } else {
+        const lines = ['I think I remember it. Let me ask the Librarian.', ''];
+        if (lane1.length) {
+          lines.push('Closest matches:');
+          lane1.forEach((b, idx) => lines.push(`${idx + 1}. ${b.title || 'Untitled bundle'} (${b.series_name || 'no series'})`));
+          lines.push('');
+        }
+        if (lane2.length) {
+          lines.push('Nearby matches:');
+          lane2.forEach((b, idx) => lines.push(`${idx + 1}. ${b.title || b.raw_input?.slice(0, 60) || 'Saved item'}`));
+        }
+        lines.push('');
+        lines.push('If you want, tell me which one to reuse and I’ll pull it into this session.');
+        assistantMessage = lines.join('\n');
+      }
+    } else if (nextMode === 'package' || nextMode === 'publish') {
+      const pendingQuality = statePatch.pending_quality && typeof statePatch.pending_quality === 'object' ? statePatch.pending_quality : null;
+      const lower = userMessage.toLowerCase();
+      if (!pendingQuality && lower.includes('proceed') && currentState?.bundle_id) {
+        const bundleOut = await supabaseAdmin
+          .from('ao_auto_bundles')
+          .select('*')
+          .eq('id', currentState.bundle_id)
+          .eq('created_by_email', auth.email)
+          .single();
+        if (!bundleOut.error && bundleOut.data?.source_idea_id) {
+          const ideaOut = await supabaseAdmin
+            .from('ao_ideas')
+            .select('*')
+            .eq('id', bundleOut.data.source_idea_id)
+            .eq('created_by_email', auth.email)
+            .single();
+          if (!ideaOut.error && ideaOut.data) {
+            const scheduled = await scheduleReadyPost({
+              email: auth.email,
+              idea: ideaOut.data,
+              bundle: bundleOut.data,
+              threadId: thread.id,
+            });
+            if (scheduled.ok) {
+              receipts.push('Scheduled posts');
+              statePatch.last_action_log_id = scheduled.actionLog?.id || null;
+              assistantMessage = `Proceed confirmed. I scheduled ${scheduled.scheduled.length} post(s).`;
+            }
+          }
+        }
+      }
+
+      if (pendingQuality) {
+        if (lower.includes('apply this fix') || lower.includes('apply fix')) {
+          sourceText = applyOneFix(statePatch.draft_input || sourceText, pendingQuality.before, pendingQuality.after);
+          statePatch.draft_input = sourceText;
+          statePatch.pending_quality = null;
+          receipts.push('Applied approved fix');
+        } else if (lower.includes('keep as-is') || lower.includes('proceed anyway')) {
+          statePatch.pending_quality = null;
+          receipts.push('Keeping original wording');
+        } else {
+          assistantMessage = `Quality alarm: ${pendingQuality.explanation}\n\nBefore: ${pendingQuality.before}\nAfter: ${pendingQuality.after}\n\nReply with "Apply this fix" or "Keep as-is".`;
+        }
+      }
+
+      if (!assistantMessage) {
+        if (inferredFromMessage) {
+          statePatch.draft_input = inferredFromMessage;
+          sourceText = inferredFromMessage;
+        }
+        if (!sourceText) {
+          assistantMessage = 'Paste the finished post here, or add a text file/image, and I’ll package it.';
+        } else {
+          const quality = await detectQualityAlarm({ text: sourceText });
+          if (quality.has_issue) {
+            statePatch.pending_quality = quality;
+            statePatch.draft_input = sourceText;
+            assistantMessage = `I know we are not refining, but I found a major issue that should be addressed before this goes out.\n\nWhy it matters: ${quality.explanation}\n\nBefore: ${quality.before}\nAfter: ${quality.after}\n\nReply with "Apply this fix" or "Keep as-is".`;
+          } else {
+            const bundle = await buildAutoBundle({
+              title: currentState?.bundle_title || '',
+              text: sourceText,
+              channels: cleanChannels(req.body?.channels),
+              imageAttachment,
+            });
+            if (!bundle.ok) throw new Error(bundle.error || 'Could not build bundle');
+
+            const idea = await saveReadyPostFromBundle({
+              email: auth.email,
+              bundle: {
+                ...bundle,
+                original_input: sourceText,
+              },
+              imageAttachment,
+            });
+
+            const bundleInsert = await supabaseAdmin
+              .from('ao_auto_bundles')
+              .insert({
+                created_by_email: auth.email,
+                thread_id: thread.id,
+                source_idea_id: idea.id,
+                title: bundle.title,
+                summary: bundle.summary,
+                original_input: sourceText,
+                original_input_frozen: true,
+                journal_markdown: bundle.journal_markdown,
+                channel_drafts: bundle.channel_drafts,
+                pull_quote_companions: bundle.pull_quote_companions,
+                schedule_suggestion: bundle.schedule_suggestion,
+                attachment_refs: bundle.attachment_refs,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              })
+              .select('*')
+              .single();
+            if (bundleInsert.error) throw bundleInsert.error;
+
+            savedBundle = bundleInsert.data;
+            savedIdea = idea;
+            statePatch.bundle_id = savedBundle.id;
+            statePatch.bundle_title = bundle.title;
+            statePatch.draft_input = sourceText;
+            receipts.push('Saved your post');
+            receipts.push('Generated channel versions');
+            receipts.push('Prepared Journal format');
+            receipts.push('Prepared schedule suggestion');
+            receipts.push('Saved bundle to Library');
+
+            assistantMessage = [
+              `I packaged this into a ready-to-publish bundle: ${bundle.title}`,
+              '',
+              `Journal: ready`,
+              `Channels: ${Object.keys(bundle.channel_drafts?.drafts_by_channel || {}).join(', ') || 'none'}`,
+              `Pull-quote companions: ${Array.isArray(bundle.pull_quote_companions) ? bundle.pull_quote_companions.length : 0}`,
+              '',
+              'Nothing will go live until you say Proceed.',
+            ].join('\n');
+
+          }
+        }
+      }
+    } else if (/what did you find/i.test(userMessage) || /what have you found/i.test(userMessage)) {
+      const findings = await recentFindings(auth.email);
+      const lines = [];
+      if (findings.external.length) {
+        lines.push('From outside sources in the last 24 hours:');
+        findings.external.forEach((x, idx) => lines.push(`${idx + 1}. ${x.source_title || x.source_name || 'Opportunity'}`));
+        lines.push('');
+      } else {
+        lines.push('I looked this morning and did not find anything worth producing from outside sources.');
+        lines.push('');
+      }
+      if (findings.internal.length) {
+        lines.push('From your corpus:');
+        findings.internal.forEach((x, idx) => lines.push(`${idx + 1}. ${x.source_title || x.source_name || 'Corpus opportunity'}`));
+      } else {
+        lines.push('I do not have a strong corpus opportunity ready yet.');
+      }
+      assistantMessage = lines.join('\n');
+    } else {
+      const findings = await recentFindings(auth.email);
+      const model = await askModel({
+        mode: nextMode,
+        message: userMessage,
+        messages: [...existingMessages, userRow],
+        guardrails: enabledGuardrails,
+        findings,
+        bundleSummary: savedBundle ? { id: savedBundle.id, title: savedBundle.title } : null,
+      });
+      assistantMessage = safeText(model?.assistant_message, 4000) || `Mode: ${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}. Tell me what you want to do next.`;
+      if (Array.isArray(model?.receipts)) receipts.push(...model.receipts.map((x) => safeText(x, 160)).filter(Boolean));
+    }
+
+    await supabaseAdmin
+      .from('ao_auto_threads')
+      .update({
+        current_mode: nextMode,
+        state: statePatch,
+        updated_at: new Date().toISOString(),
+        last_message_at: new Date().toISOString(),
+      })
+      .eq('id', thread.id);
+
+    const assistantRow = await addAutoMessage({
+      threadId: thread.id,
+      role: 'assistant',
+      mode: nextMode,
+      content: assistantMessage,
+      meta: {
+        bundle_id: savedBundle?.id || null,
+        idea_id: savedIdea?.id || null,
+      },
+    });
+
+    const receiptRows = [];
+    for (const receipt of receipts) {
+      const row = await addAutoMessage({
+        threadId: thread.id,
+        role: 'receipt',
+        mode: nextMode,
+        content: receipt,
+      });
+      receiptRows.push(row);
+    }
+
+    const finalState = await getAutoThreadState(auth.email, thread.id);
+    return res.status(200).json({
+      ok: true,
+      thread: finalState.thread,
+      messages: finalState.messages,
+      attachments: finalState.attachments,
+      assistant_message: assistantRow.content,
+      receipts: receiptRows.map((x) => x.content),
+      bundle_id: savedBundle?.id || statePatch.bundle_id || null,
+      idea_id: savedIdea?.id || null,
+      action_log_id: statePatch.last_action_log_id || null,
+    });
+  } catch (e) {
+    return res.status(500).json({ ok: false, error: e.message });
+  }
+}

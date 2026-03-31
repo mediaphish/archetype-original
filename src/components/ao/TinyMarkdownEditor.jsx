@@ -100,9 +100,62 @@ function prefixLines(text, start, end, prefix) {
   return before + next + after;
 }
 
-export default function TinyMarkdownEditor({ value, onChange, onUploadMarkdown, placeholder }) {
+function parseSections(md) {
+  const text = String(md || '');
+  const lines = text.split('\n');
+  const sections = [];
+  let current = { key: '__whole__', title: 'Whole draft', lines: [], startLine: 0 };
+
+  const pushCurrent = () => {
+    const content = current.lines.join('\n');
+    sections.push({ ...current, content });
+  };
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (/^#{1,3}\s+/.test(line) && current.lines.length) {
+      pushCurrent();
+      const title = line.replace(/^#{1,3}\s+/, '').trim() || `Section ${sections.length + 1}`;
+      current = { key: line.trim().toLowerCase(), title, lines: [line], startLine: i };
+    } else {
+      if (sections.length === 0 && current.key === '__whole__' && /^#{1,3}\s+/.test(line) && current.lines.length === 0) {
+        current = { key: line.trim().toLowerCase(), title: line.replace(/^#{1,3}\s+/, '').trim(), lines: [line], startLine: i };
+      } else {
+        current.lines.push(line);
+      }
+    }
+  }
+  pushCurrent();
+  return sections;
+}
+
+function rebuildSections(sections) {
+  return (sections || []).map((s) => s.content).join('\n');
+}
+
+function enforceLockedSections(prevText, nextText, lockedMap) {
+  const prevSections = parseSections(prevText);
+  const nextSections = parseSections(nextText);
+  const lockKeys = Object.keys(lockedMap || {});
+  if (!lockKeys.length) return nextText;
+  const patched = nextSections.map((section) => {
+    const locked = lockedMap[section.key];
+    if (!locked) return section;
+    return { ...section, content: locked };
+  });
+  // Preserve locked sections even if a heading vanished in the edit.
+  for (const prev of prevSections) {
+    if (!lockedMap[prev.key]) continue;
+    const exists = patched.some((x) => x.key === prev.key);
+    if (!exists) patched.push({ ...prev, content: lockedMap[prev.key] });
+  }
+  return rebuildSections(patched);
+}
+
+export default function TinyMarkdownEditor({ value, onChange, onUploadMarkdown, placeholder, enableSectionLocks = false }) {
   const [mode, setMode] = useState('write'); // write | preview
   const textareaRef = useRef(null);
+  const [lockedSections, setLockedSections] = useState({});
 
   const html = useMemo(() => renderMarkdownToHtml(value), [value]);
 
@@ -116,11 +169,11 @@ export default function TinyMarkdownEditor({ value, onChange, onUploadMarkdown, 
     const start = el.selectionStart || 0;
     const end = el.selectionEnd || 0;
     const next = fn(t, start, end);
-    onChange(next);
+    onChange(enableSectionLocks ? enforceLockedSections(t, next, lockedSections) : next);
     requestAnimationFrame(() => {
       try { el.focus(); } catch {}
     });
-  }, [value, onChange]);
+  }, [value, onChange, enableSectionLocks, lockedSections]);
 
   const cmdBold = () => apply((t, s, e) => wrapSelection(t, s, e, '**', '**'));
   const cmdItalic = () => apply((t, s, e) => wrapSelection(t, s, e, '*', '*'));
@@ -142,6 +195,29 @@ export default function TinyMarkdownEditor({ value, onChange, onUploadMarkdown, 
     if (!url) return;
     apply((t, s, e) => wrapSelection(t, s, e, '[', `](${url})`));
   };
+
+  const lockCurrentSection = useCallback(() => {
+    const el = textareaRef.current;
+    const text = String(value || '');
+    const cursor = el?.selectionStart || 0;
+    const sections = parseSections(text);
+    let offset = 0;
+    const current = sections.find((section) => {
+      const start = offset;
+      offset += section.content.length + 1;
+      return cursor >= start && cursor <= offset;
+    }) || sections[0];
+    if (!current) return;
+    setLockedSections((prev) => ({ ...prev, [current.key]: current.content }));
+  }, [value]);
+
+  const unlockSection = useCallback((key) => {
+    setLockedSections((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  }, []);
 
   const onKeyDown = (e) => {
     if (!e.metaKey && !e.ctrlKey) return;
@@ -187,6 +263,15 @@ export default function TinyMarkdownEditor({ value, onChange, onUploadMarkdown, 
               Upload .md
             </button>
           ) : null}
+          {enableSectionLocks ? (
+            <button
+              type="button"
+              onClick={lockCurrentSection}
+              className="ml-2 px-2 py-1 text-sm border border-gray-300 rounded hover:bg-white"
+            >
+              Lock section
+            </button>
+          ) : null}
         </div>
 
         <div className="flex items-center gap-2">
@@ -208,15 +293,36 @@ export default function TinyMarkdownEditor({ value, onChange, onUploadMarkdown, 
       </div>
 
       {mode === 'write' ? (
-        <textarea
-          ref={textareaRef}
-          value={clamp(value, 40000)}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={onKeyDown}
-          rows={10}
-          placeholder={placeholder || 'Write your post…'}
-          className="w-full p-3 text-sm outline-none resize-y"
-        />
+        <>
+          {enableSectionLocks && Object.keys(lockedSections).length ? (
+            <div className="px-3 pt-3 pb-0">
+              <div className="flex flex-wrap gap-2">
+                {Object.keys(lockedSections).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => unlockSection(key)}
+                    className="px-2 py-1 text-xs rounded-full border border-amber-300 bg-amber-50 text-amber-900"
+                  >
+                    Locked: {key === '__whole__' ? 'Whole draft' : key.replace(/^#+\s*/, '')} ×
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          <textarea
+            ref={textareaRef}
+            value={clamp(value, 40000)}
+            onChange={(e) => {
+              const next = e.target.value;
+              onChange(enableSectionLocks ? enforceLockedSections(value, next, lockedSections) : next);
+            }}
+            onKeyDown={onKeyDown}
+            rows={10}
+            placeholder={placeholder || 'Write your post…'}
+            className="w-full p-3 text-sm outline-none resize-y"
+          />
+        </>
       ) : (
         <div className="p-4 prose prose-sm max-w-none">
           {/* eslint-disable-next-line react/no-danger */}
