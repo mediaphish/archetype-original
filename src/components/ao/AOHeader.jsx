@@ -6,7 +6,7 @@ import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 
 const TABS = [
   { key: 'analyst', path: '/ao/analyst', label: 'Auto' },
-  { key: 'library', path: '/ao/library', label: 'Memory' },
+  { key: 'library', path: '/ao/library', label: 'Library' },
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 

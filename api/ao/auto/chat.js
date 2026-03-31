@@ -31,13 +31,70 @@ function impliesNoRefine(text) {
   return /\bdon'?t refine\b|\bdo not refine\b|\bnot refining\b|\bno more edits\b|\bfinished (?:my )?(?:post|draft)\b|\bthis is (?:my )?final\b|\bdo not edit (?:the )?post\b|\bi'?m not refining\b/i.test(s);
 }
 
-/** Prefer packaging when the user clearly pasted a finished piece or attached files (not a short question). */
+/**
+ * Planning, design, or collaboration — do NOT treat as a finished post to package.
+ * (Long “I need to…” messages were incorrectly forced into Packaging before.)
+ */
+function looksLikePlanningOrDiscussionRequest(text) {
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+  if (/\?/.test(s)) return true;
+  const patterns = [
+    /\bhelp me (plan|design|figure|think|brainstorm|decide)\b/,
+    /\bcan you help\b/,
+    /\bcould we\b.*\b(plan|talk|design)\b/,
+    /\bneed to (talk|plan|figure|brainstorm|explore|discuss|think through)\b/,
+    /\blet'?s (plan|talk|discuss|figure|brainstorm|design|work on)\b/,
+    /\bwe need to (talk|spend time|plan|figure)\b/,
+    /\btalk (?:it )?through\b/,
+    /\bbrainstorm\b/,
+    /\bwork with me\b/,
+    /\b(collaborat|together)\b.*\b(plan|design)\b/,
+    /\bnot what I wanted\b/,
+    /\bis that not part\b/,
+    /\bneed to see them\b/,
+    /\b(spend time|take time)\b.*\b(talk|right|through)\b/,
+    /\b(planning|design)(?:ing)?\s+(?:a |the |some )?(?:series|campaign|pull|pull[- ]?quote|quotes)\b/,
+    /\b(pull[- ]?quote|pull[- ]?quotes|quote cards?)\b.{0,100}\b(plan|help|design|series|weekly|corpus|talk)\b/,
+    /\b(plan|help|design|weekly|series)\b.{0,100}\b(pull[- ]?quote|pull[- ]?quotes|quote cards?|from my corpus)\b/,
+    /\bi need to (generate|create|build|figure out)\b.{0,140}\b(plan|help|can you|could you|series|weekly|how)\b/,
+    /\bfrom my corpus\b.{0,80}\b(plan|help|design|series|pull)\b/,
+  ];
+  return patterns.some((re) => re.test(s));
+}
+
+function hasExplicitPackageIntent(text) {
+  const s = String(text || '').toLowerCase();
+  return /\b(here'?s (?:my )?(?:post|draft|article)|full (?:post|text|draft) below|below is (?:my |the )?(?:post|draft|article)|paste below|ready to package|package this (?:now)?|ship this|don'?t refine|finished (?:my )?(?:post|draft)|this is (?:the )?final (?:draft|version|post))\b/.test(
+    s
+  );
+}
+
+/** True when text looks like pasted article body, not a planning note. */
+function looksLikeFinishedArticlePaste(text) {
+  if (!looksLikeContent(text)) return false;
+  const s = String(text || '').trim();
+  const paragraphs = s.split(/\n\n+/).map((p) => p.trim()).filter((p) => p.length > 60);
+  return paragraphs.length >= 2;
+}
+
+/**
+ * Only assume packaging for long text when it looks like a finished piece or user said so.
+ * Attachments still imply “send something through” unless clearly planning-only (handled above).
+ */
 function shouldAssumePackageMode(text, hasAttachments) {
+  if (looksLikePlanningOrDiscussionRequest(text)) return false;
   if (hasAttachments) return true;
   if (!looksLikeContent(text)) return false;
+  if (hasExplicitPackageIntent(text)) return true;
   const first = String(text || '').split('\n')[0].trim().toLowerCase();
-  if (/^(what|why|how|when|where|who|show|list|tell me|got any|did you|can you|are you|is there|hey auto)[\s,]/.test(first)) return false;
-  return true;
+  if (
+    /^(what|why|how|when|where|who|show|list|tell me|got any|did you|can you|are you|is there|hey auto|i need to|i want to|i'?m trying to)[\s,]/.test(first)
+  ) {
+    return false;
+  }
+  if (looksLikeFinishedArticlePaste(text)) return true;
+  return false;
 }
 
 async function getAutomationProof(email) {
@@ -249,6 +306,8 @@ async function askModel({
   const apiKey = getOpenAiKey();
   if (!apiKey) return null;
 
+  const isPlanOrWrite = mode === 'plan' || mode === 'write' || mode === 'general';
+
   const prompt = `You are Auto inside AO Automation. Bart is the only user.
 
 Current mode: ${JSON.stringify(mode)}
@@ -256,10 +315,12 @@ User asked not to refine / treat post as frozen: ${dontRefine ? 'YES — do not 
 
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
-- If he is not refining (see above) or pastes a finished piece: switch mentally to PACKAGING — summarize what you will do (Journal block, channel drafts, schedule suggestion), do not workshop the prose.
+- If current mode is "plan" or "write" or he is asking to plan, design, brainstorm, or figure out pull quotes / a series / campaigns: stay in conversation. Offer steps, tradeoffs, and questions. Do NOT say you already packaged a post, do NOT list fake receipts, and do NOT tell him to tap Proceed — there is no bundle until he pastes a finished post or explicitly asks to package.
+- If current mode is "package" and he pasted a finished piece: then describe packaging (Journal + channel drafts + schedule) without rewriting his words.
 - Modes you respect from context: plan, write, package, publish, recall, training, general.
 - Quality: only challenge wording for major public risks if relevant; do not nitpick style.
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
+${isPlanOrWrite ? '\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest how to pick quotes from the corpus, cadence, and what to design next — without claiming the bundle is already built.\n' : ''}
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
@@ -342,7 +403,9 @@ export default async function handler(req, res) {
     let nextMode = detectAutoMode(userMessage, fullState.thread.current_mode || 'general');
     let statePatch = { ...currentState };
     if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
-    if (
+    if (looksLikePlanningOrDiscussionRequest(userMessage)) {
+      nextMode = 'plan';
+    } else if (
       shouldAssumePackageMode(userMessage, activeAttachments.length > 0) &&
       !wantsScoutFindings(userMessage) &&
       nextMode !== 'training' &&
@@ -372,7 +435,23 @@ export default async function handler(req, res) {
 
     const receipts = [];
     if (nextMode !== fullState.thread.current_mode) {
-      receipts.push(`Mode: ${nextMode === 'write' ? 'Writing' : nextMode === 'publish' ? 'Publishing' : nextMode === 'package' ? 'Packaging' : nextMode === 'training' ? 'Training' : nextMode === 'recall' ? 'Recall' : 'Planning'}`);
+      receipts.push(
+        `Mode: ${
+          nextMode === 'write'
+            ? 'Writing'
+            : nextMode === 'publish'
+              ? 'Publishing'
+              : nextMode === 'package'
+                ? 'Packaging'
+                : nextMode === 'training'
+                  ? 'Training'
+                  : nextMode === 'recall'
+                    ? 'Recall'
+                    : nextMode === 'plan'
+                      ? 'Planning'
+                      : 'Auto'
+        }`
+      );
     }
 
     let assistantMessage = '';
