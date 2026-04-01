@@ -66,6 +66,7 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [pendingFiles, setPendingFiles] = useState([]);
+  const [startingNew, setStartingNew] = useState(false);
   const fileInputRef = useRef(null);
   const scrollRef = useRef(null);
   const latestBundle = bundles[0] || null;
@@ -285,19 +286,50 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
     }
   }, [thread, loadSession]);
 
+  const startNewChat = useCallback(async () => {
+    if (startingNew || sending || loading) return;
+    const ok = window.confirm(
+      'Start a new conversation? This chat will be set aside (not deleted). You will see an empty thread so you can begin fresh.'
+    );
+    if (!ok) return;
+    setStartingNew(true);
+    setError('');
+    setSuccessTip('');
+    try {
+      const res = await fetch('/api/ao/auto/thread/new', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not start a new chat');
+      setInput('');
+      setPendingFiles([]);
+      await loadSession();
+    } catch (e) {
+      setError(e.message || 'Could not start a new chat');
+    } finally {
+      setStartingNew(false);
+    }
+  }, [startingNew, sending, loading, loadSession]);
+
   return (
     <section className="mb-6 border border-gray-200 rounded-xl bg-white shadow-sm">
       <div className="px-4 py-4 border-b border-gray-200 flex items-start justify-between gap-3">
         <div>
           <div className="text-2xl font-bold text-gray-900">Auto</div>
           <div className="text-sm text-gray-600 mt-1">
-            One continuous conversation. Tell Auto what you want, and it shifts modes inside the chat.
+            One conversation at a time, kept when you leave the page. Use New chat when you want a clean thread; older chats stay on file but out of the way.
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 justify-end">
           <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
             Mode: {modeLabel(thread?.current_mode)}
           </span>
+          <button
+            type="button"
+            onClick={startNewChat}
+            disabled={startingNew || sending || loading}
+            className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+          >
+            {startingNew ? 'Starting…' : 'New chat'}
+          </button>
           <button
             type="button"
             onClick={() => setLibraryOpen(true)}
