@@ -3,7 +3,7 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { getOpenAiKey } from '../../../lib/openaiKey.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage, listGuardrails, searchBundles, detectAutoMode } from '../../../lib/ao/autoHub.js';
 import { buildAutoBundle, detectQualityAlarm } from '../../../lib/ao/autoBundle.js';
-import { getCorpusPullQuotes } from '../../../lib/ao/corpusPullQuotes.js';
+import { getCorpusPullQuotes, getCorpusTopicSnippets } from '../../../lib/ao/corpusPullQuotes.js';
 import { renderQuoteCardSvg } from '../../../lib/ao/quoteCardDesigner.js';
 import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 
@@ -155,6 +155,39 @@ function wantsCorpusPullQuotes(text) {
   if (/\bquotes? from (?:my |the )?corpus\b/.test(s)) return true;
   if (/\bsearch (?:the )?corpus for\b.{0,40}\bquotes?\b/.test(s)) return true;
   return false;
+}
+
+/** Thematic / research questions over published corpus (paragraph excerpts, not pull-quote cards). */
+function wantsCorpusThemeSearch(text) {
+  if (wantsCorpusPullQuotes(text)) return false;
+  if (wantsScoutFindings(text)) return false;
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+
+  if (/\bwhere (?:in|on|from) (?:my|our) (?:corpus|site|journal|writing|published)\b/.test(s)) return true;
+  if (/\b(find|search|show)\s+(?:me\s+)?(?:passages|excerpts|mentions|places)\s+(?:in|from)\s+(?:my|our)\s+(?:corpus|writing|journal|site)\b/.test(s)) return true;
+
+  const corpusHint =
+    /\b(corpus|my (?:published )?writing|published (?:work|pieces)|knowledge base|site content|from (?:the )?archive|my (?:site|journal|posts|articles)|on my site|in my corpus|our (?:published )?content)\b/.test(s) ||
+    /\b(?:in|from) (?:my|our) (?:corpus|writing|journal|posts|articles|site)\b/.test(s);
+
+  const researchHint =
+    /\bwhere (?:did|do) we\b/.test(s) ||
+    /\bwhat (?:have I|did we) (?:say|write|cover|publish|address)\b/.test(s) ||
+    /\bfind (?:passages|places|mentions|where)\b/.test(s) ||
+    /\banything (?:on|about)\b/.test(s) ||
+    /\b(talked|written|wrote|discussed)\s+about\b/.test(s) ||
+    /\b(talk about|write about|covered)\b/.test(s) ||
+    /\b(pitfalls|risk(?:s)?|drawbacks|downsides|concerns?)\s+(?:of|with|about)\b/.test(s) ||
+    /\b(theme|coverage|angle)\s+(?:of|on)\b/.test(s) ||
+    /\bpoint me to\b/.test(s) ||
+    /\breferences?\s+to\b/.test(s) ||
+    /\bexamples?\s+of\b/.test(s) ||
+    /\bhave we (?:written|said|covered|addressed)\b/.test(s) ||
+    /\banywhere we (?:talked|wrote|discussed)\b/.test(s) ||
+    /\b(search|look)\s+(?:in|through)\s+(?:my|our)\b/.test(s);
+
+  return !!(corpusHint && researchHint);
 }
 
 function wantsScoutFindings(text) {
@@ -337,7 +370,7 @@ Non-negotiables (hard rules):
 - Modes you respect from context: plan, write, package, publish, recall, training, general.
 - Quality: only challenge wording for major public risks if relevant; do not nitpick style.
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
-${isPlanOrWrite ? '\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
+${isPlanOrWrite ? '\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask using "in my corpus" / "in my published writing" or similar so retrieval can run.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
@@ -424,10 +457,13 @@ export default async function handler(req, res) {
       nextMode = 'plan';
     } else if (wantsCorpusPullQuotes(userMessage)) {
       nextMode = 'plan';
+    } else if (wantsCorpusThemeSearch(userMessage)) {
+      nextMode = 'plan';
     } else if (
       shouldAssumePackageMode(userMessage, activeAttachments.length > 0) &&
       !wantsScoutFindings(userMessage) &&
       !wantsCorpusPullQuotes(userMessage) &&
+      !wantsCorpusThemeSearch(userMessage) &&
       nextMode !== 'training' &&
       nextMode !== 'recall'
     ) {
@@ -593,6 +629,40 @@ export default async function handler(req, res) {
       } else {
         assistantMessage =
           'I couldn’t find strong pull-quote lines from the corpus for that ask. Try naming a theme (for example accountability, pressure, or culture) and ask again, or say which topics to prioritize.';
+      }
+    } else if (wantsCorpusThemeSearch(userMessage)) {
+      nextMode = 'plan';
+      const topic = await getCorpusTopicSnippets({
+        queryText: userMessage,
+        limitSnippets: 8,
+        topDocs: 30,
+        maxCharsPerSnippet: 680,
+        maxSnippetsPerDoc: 2,
+      });
+      receipts.push('Searched your corpus for topic matches');
+      if (topic.ok && topic.snippets.length) {
+        const slim = topic.snippets.map((x) => ({
+          excerpt: String(x.excerpt || '').slice(0, 700),
+          source_title: x.source_title,
+          slug: x.slug,
+          type: x.type,
+          url: x.url,
+        }));
+        const lines = [
+          'Here are passages from your published corpus that overlap your question (retrieval matches—not a full read of every post):',
+          '',
+        ];
+        slim.forEach((sn, idx) => {
+          lines.push(`${idx + 1}. ${sn.excerpt}`);
+          lines.push(`   Source: ${sn.source_title}${sn.url ? ` · ${sn.url}` : ''}`);
+          lines.push('');
+        });
+        lines.push('Open the links to verify context. If this misses the idea, try different keywords (synonyms aren’t always matched yet).');
+        assistantMessage = lines.join('\n');
+        assistantMeta = { corpus_theme_snippets: slim };
+      } else {
+        assistantMessage =
+          'I didn’t find strong paragraph matches in the corpus for that wording. Try rephrasing with keywords that appear in your posts, or name the topic more directly (e.g. “servant leadership risks in my corpus”).';
       }
     } else if (nextMode === 'package' || nextMode === 'publish') {
       const pendingQuality = statePatch.pending_quality && typeof statePatch.pending_quality === 'object' ? statePatch.pending_quality : null;
