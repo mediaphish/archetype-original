@@ -6,6 +6,7 @@ import { buildAutoBundle, detectQualityAlarm } from '../../../lib/ao/autoBundle.
 import { getCorpusPullQuotes, getCorpusTopicSnippets } from '../../../lib/ao/corpusPullQuotes.js';
 import { renderQuoteCardSvg } from '../../../lib/ao/quoteCardDesigner.js';
 import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
+import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -610,7 +611,8 @@ export default async function handler(req, res) {
         lines.push('Tell me which numbers you like and we can draft captions and minimal branded cards next.');
         assistantMessage = lines.join('\n');
         try {
-          const logoUrl = await getDefaultLogoUrl({ background: 'dark' });
+          const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
+          const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
           const first = corpus.quotes[0];
           const rendered = renderQuoteCardSvg({
             quote: first.quote,
