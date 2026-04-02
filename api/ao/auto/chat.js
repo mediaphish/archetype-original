@@ -273,11 +273,22 @@ async function generateInstagramCaptionsForQuotes(selectedQuotes) {
         messages: [
           {
             role: 'user',
-            content: `For each item, write ONE short Instagram caption (under 220 characters) that complements the quote—not repeating it verbatim. Tone: thoughtful, leader-to-leader. Return JSON only: {"captions":["...","..."]}\n\nItems:\n${JSON.stringify(payload)}`,
+            content: `For each item, write ONE Instagram caption to go under the quote image (the image already shows the quote—do not repeat it).
+
+Each caption should:
+- Name the tension, risk, or recognition the line points at (why it stings or matters).
+- Answer an implicit question the quote might leave open, or name what the reader might be feeling ("seen that before," "this is the part we skip," "where it breaks down").
+- Optionally end with one short, honest question—only if it fits.
+
+Aim for about 2–4 sentences, under 520 characters per caption. Tone: grounded, leader-to-leader, no hype, no empty praise.
+
+Return JSON only: {"captions":["...","..."]}
+
+Items:\n${JSON.stringify(payload)}`,
           },
         ],
-        max_tokens: 900,
-        temperature: 0.45,
+        max_tokens: 1100,
+        temperature: 0.4,
       }),
     });
     if (!res.ok) throw new Error('caption api');
@@ -294,7 +305,7 @@ async function generateInstagramCaptionsForQuotes(selectedQuotes) {
     const caps = Array.isArray(parsed?.captions) ? parsed.captions : [];
     return selectedQuotes.map((q, i) => {
       const c = String(caps[i] || '').trim();
-      return c || `Reflection — “${safeText(q.source_title, 100)}”.`;
+      return safeText(c, 560) || `Reflection — “${safeText(q.source_title, 100)}”.`;
     });
   } catch {
     return selectedQuotes.map((q) => `From the writing: ${safeText(q.source_title, 100)}.`);
@@ -707,7 +718,7 @@ export default async function handler(req, res) {
     } else if (wantsCorpusPullQuotes(userMessage)) {
       nextMode = 'plan';
       const corpus = await getCorpusPullQuotes({ queryText: userMessage, limit: 5 });
-      receipts.push('Searched your published corpus for pull quotes');
+      receipts.push('Searched your published corpus for stand-alone, high-impact pull quotes');
       if (corpus.ok && corpus.quotes.length) {
         const lines = [
           'Here are candidate pull quotes from your corpus (short lines only—full posts are not pasted here):',
@@ -718,7 +729,9 @@ export default async function handler(req, res) {
           lines.push(`   Source: ${q.source_title}${q.url ? ` · ${q.url}` : ''}`);
           lines.push('');
         });
-        lines.push('Tell me which numbers you like and we can draft captions and minimal branded cards next.');
+        lines.push(
+          'These are chosen to work on their own (no article required) and to hit with stakes, not just pleasant wording. Tell me which numbers you want and I’ll draft captions and minimal branded cards next.'
+        );
         assistantMessage = lines.join('\n');
         try {
           const rawLogo = await getDefaultLogoUrl({ background: 'dark' });

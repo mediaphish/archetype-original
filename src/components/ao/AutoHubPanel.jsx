@@ -465,15 +465,19 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
                 {m.content}
               </div>
               {isAssistant && cardBlocks.length ? (
-                <div className="mt-2 space-y-3 max-w-md mx-auto text-left">
+                <div className="mt-2 space-y-3 max-w-lg mx-auto text-left">
                   {cardBlocks.map((block, bi) => (
                     <div key={`${m.id}-card-${bi}`} className="border border-gray-200 rounded-lg overflow-hidden bg-neutral-100">
-                      <div className="text-xs font-semibold text-gray-600 px-2 py-1 bg-white border-b border-gray-100">
-                        {multiPreviews && multiPreviews.length > 1
-                          ? `Card ${block.index != null ? block.index : bi + 1}`
-                          : 'Minimal card preview'}
+                      <div className="px-3 py-2.5 bg-white border-b border-gray-100">
+                        <div className="text-sm font-semibold text-gray-800">
+                          {multiPreviews && multiPreviews.length > 1
+                            ? `Card ${block.index != null ? block.index : bi + 1}`
+                            : 'Minimal card preview'}
+                        </div>
                         {block.caption ? (
-                          <div className="font-normal text-gray-700 mt-1 whitespace-normal">{block.caption}</div>
+                          <div className="font-normal text-gray-900 mt-2 text-[15px] sm:text-base leading-relaxed whitespace-normal">
+                            {block.caption}
+                          </div>
                         ) : null}
                       </div>
                       <img
