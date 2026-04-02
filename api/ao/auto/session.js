@@ -1,5 +1,10 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { getAutoThreadState, searchBundles, listGuardrails } from '../../../lib/ao/autoHub.js';
+import {
+  getAutoThreadState,
+  searchBundles,
+  listGuardrails,
+  fetchBundleByIdForOwner,
+} from '../../../lib/ao/autoHub.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -15,12 +20,24 @@ export default async function handler(req, res) {
       searchBundles(auth.email, ''),
       listGuardrails(auth.email),
     ]);
+    let bundleList = bundles.slice(0, 8);
+    const activeBundleId =
+      state.thread?.state && typeof state.thread.state === 'object'
+        ? state.thread.state.bundle_id
+        : null;
+    if (
+      activeBundleId &&
+      !bundleList.some((b) => String(b?.id) === String(activeBundleId))
+    ) {
+      const extra = await fetchBundleByIdForOwner(auth.email, activeBundleId);
+      if (extra) bundleList = [extra, ...bundleList].slice(0, 8);
+    }
     return res.status(200).json({
       ok: true,
       thread: state.thread,
       messages: state.messages,
       attachments: state.attachments,
-      bundles: bundles.slice(0, 8),
+      bundles: bundleList,
       guardrails: guardrails.slice(0, 12),
     });
   } catch (e) {

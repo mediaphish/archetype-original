@@ -69,7 +69,14 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
   const [startingNew, setStartingNew] = useState(false);
   const fileInputRef = useRef(null);
   const scrollRef = useRef(null);
-  const latestBundle = bundles[0] || null;
+  /** Only show the bundle card for this thread’s active bundle — not the latest global Library item. */
+  const latestBundle = useMemo(() => {
+    const bid =
+      thread?.state && typeof thread.state === 'object' ? thread.state.bundle_id : null;
+    if (!bid) return null;
+    const list = Array.isArray(bundles) ? bundles : [];
+    return list.find((b) => String(b?.id) === String(bid)) || null;
+  }, [thread, bundles]);
 
   const loadSession = useCallback(async () => {
     setLoading(true);
