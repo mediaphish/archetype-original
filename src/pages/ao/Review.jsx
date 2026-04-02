@@ -41,6 +41,7 @@ function moveLabel(move) {
   const m = String(move || '').toLowerCase().trim();
   const map = {
     pull_quote_card: 'Quote card + caption',
+    weekly_pull_bundle: 'Weekly corpus pull quotes',
     ao_angle_post: 'Short AO take (text post)',
     question_post: 'Self-audit question (spark comments)',
     third_party_summary: 'Share + interpret (with attribution)',
@@ -93,6 +94,7 @@ function fmtAgoShort(iso) {
 
 function whatItIsLabel(q) {
   const kind = safeText(q?.content_kind, 40).toLowerCase();
+  if (kind === 'weekly_corpus_bundle') return 'weekly pull bundle';
   if (kind) return kind.replace(/_/g, ' ');
   if (q?.is_internal) return 'internal';
   return 'signal';
@@ -1092,7 +1094,9 @@ export default function Review() {
                 </div>
               </div>
               {pendingQuotes.length === 0 ? (
-                <p className="text-gray-500">No pending social items. Run a scan in Scout to add candidates.</p>
+                <p className="text-gray-500">
+                  No pending social items. Run a scan in Scout to add candidates. When the weekly corpus job runs (Mondays), approved pull-quote bundles with cards and captions can show up here for your review.
+                </p>
               ) : (
                 <ul className="space-y-4">
                   {pendingQuotes.map((q) => (
@@ -1132,6 +1136,69 @@ export default function Review() {
                           </>
                         ) : null}
                       </div>
+
+                      {q.studio_playbook?.weekly_corpus_pull?.items?.length ? (
+                        <div className="mt-4 border-t border-gray-100 pt-4">
+                          <div className="text-xs font-semibold text-gray-900 mb-2">Weekly pull quotes — cards and captions (review)</div>
+                          <div className="space-y-4">
+                            {q.studio_playbook.weekly_corpus_pull.items.map((it, idx) => (
+                              <div key={idx} className="border border-gray-100 rounded-lg overflow-hidden bg-neutral-50">
+                                {it.quote_card_svg ? (
+                                  <img
+                                    src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(it.quote_card_svg)}`}
+                                    alt=""
+                                    className="w-full max-w-md mx-auto block"
+                                  />
+                                ) : null}
+                                <div className="p-3 text-[15px] sm:text-base text-gray-900 whitespace-pre-wrap leading-relaxed">{it.caption}</div>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              disabled={acting === q.id}
+                              onClick={async () => {
+                                setActing(q.id);
+                                setActionError('');
+                                setActionMessage('');
+                                try {
+                                  const res = await fetch('/api/ao/publishing/schedule-weekly-pull-bundle', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ quote_id: q.id }),
+                                  });
+                                  const json = await res.json().catch(() => ({}));
+                                  if (!res.ok || !json.ok) throw new Error(json.error || 'Schedule failed');
+                                  setActionMessage(json.message || 'Queued for Instagram.');
+                                  setQuotes((prev) => prev.filter((x) => x.id !== q.id));
+                                } catch (e) {
+                                  setActionError(e.message || 'Failed');
+                                } finally {
+                                  setActing(null);
+                                }
+                              }}
+                              className="min-h-[44px] px-4 py-2 rounded-lg bg-green-700 text-white text-sm font-semibold hover:bg-green-800 disabled:opacity-50"
+                            >
+                              Schedule Instagram week
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                try {
+                                  window.open('/ao/publisher', '_blank', 'noopener');
+                                } catch (_) {}
+                              }}
+                              className="min-h-[44px] px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+                            >
+                              Open Publisher
+                            </button>
+                          </div>
+                          <p className="mt-2 text-xs text-gray-500">
+                            Each post includes caption, quote, and source link. Adjust times and text in Publisher. Add the square card image there if you want it on Instagram.
+                          </p>
+                        </div>
+                      ) : null}
 
                       <div className="mt-3">
                         <div className="text-xs font-semibold text-gray-900">Analyst brief</div>

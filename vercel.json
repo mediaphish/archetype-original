@@ -52,6 +52,9 @@
     { "src": "/api/cron/ao/scout-pass-evening", "dest": "/api/cron/ao/scout-pass.js" },
     { "src": "/api/cron/ao/brief-prep", "dest": "/api/cron/ao/brief-prep.js" },
     { "src": "/api/cron/ao/corpus-pull-seed", "dest": "/api/cron/ao/corpus-pull-seed.js" },
+    { "src": "/api/cron/ao/weekly-pull-quotes", "dest": "/api/cron/ao/weekly-pull-quotes.js" },
+    { "src": "/api/ao/publishing/schedule-weekly-pull-bundle", "dest": "/api/ao/publishing/schedule-weekly-pull-bundle.js" },
+    { "src": "/api/ao/weekly-pull-bundle-now", "dest": "/api/ao/weekly-pull-bundle-now.js" },
     { "src": "/api/cron/ao/editorial-rebuild", "dest": "/api/cron/ao/editorial-rebuild.js" },
     { "src": "/api/cron/ao/competitor-digest", "dest": "/api/cron/ao/competitor-digest.js" },
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
@@ -241,6 +244,10 @@
     {
       "path": "/api/cron/ao/corpus-pull-seed",
       "schedule": "30 8 * * 1"
+    },
+    {
+      "path": "/api/cron/ao/weekly-pull-quotes",
+      "schedule": "0 14 * * 1"
     },
     {
       "path": "/api/cron/ao/editorial-rebuild",

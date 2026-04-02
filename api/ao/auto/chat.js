@@ -7,6 +7,7 @@ import { getCorpusPullQuotes, getCorpusTopicSnippets } from '../../../lib/ao/cor
 import { renderQuoteCardSvg } from '../../../lib/ao/quoteCardDesigner.js';
 import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
+import { generatePullQuoteCaptionsForQuotes } from '../../../lib/ao/pullQuoteCaptions.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -249,67 +250,6 @@ function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
   const deliver =
     /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square)\b/.test(s);
   return hasDigit || deliver;
-}
-
-async function generateInstagramCaptionsForQuotes(selectedQuotes) {
-  const apiKey = getOpenAiKey();
-  if (!apiKey || !selectedQuotes.length) {
-    return selectedQuotes.map((q) => `From “${safeText(q.source_title, 80)}”.`);
-  }
-  const payload = selectedQuotes.map((q, i) => ({
-    n: i + 1,
-    quote: safeText(q.quote, 480),
-    source: safeText(q.source_title, 200),
-  }));
-  try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: process.env.AO_AUTO_MODEL || 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'user',
-            content: `For each item, write ONE Instagram caption to go under the quote image (the image already shows the quote—do not repeat it).
-
-Each caption should:
-- Name the tension, risk, or recognition the line points at (why it stings or matters).
-- Answer an implicit question the quote might leave open, or name what the reader might be feeling ("seen that before," "this is the part we skip," "where it breaks down").
-- Optionally end with one short, honest question—only if it fits.
-
-Aim for about 2–4 sentences, under 520 characters per caption. Tone: grounded, leader-to-leader, no hype, no empty praise.
-
-Return JSON only: {"captions":["...","..."]}
-
-Items:\n${JSON.stringify(payload)}`,
-          },
-        ],
-        max_tokens: 1100,
-        temperature: 0.4,
-      }),
-    });
-    if (!res.ok) throw new Error('caption api');
-    const json = await res.json().catch(() => ({}));
-    const content = json.choices?.[0]?.message?.content?.trim() || '';
-    let parsed = null;
-    try {
-      parsed = JSON.parse(content);
-    } catch {
-      const start = content.indexOf('{');
-      const end = content.lastIndexOf('}');
-      if (start >= 0 && end > start) parsed = JSON.parse(content.slice(start, end + 1));
-    }
-    const caps = Array.isArray(parsed?.captions) ? parsed.captions : [];
-    return selectedQuotes.map((q, i) => {
-      const c = String(caps[i] || '').trim();
-      return safeText(c, 560) || `Reflection — “${safeText(q.source_title, 100)}”.`;
-    });
-  } catch {
-    return selectedQuotes.map((q) => `From the writing: ${safeText(q.source_title, 100)}.`);
-  }
 }
 
 function wantsScoutFindings(text) {
@@ -780,7 +720,7 @@ export default async function handler(req, res) {
         statePatch.corpus_pull_quote_selection = indices;
         const selected = indices.map((n) => allQuotes[n - 1]).filter(Boolean);
         receipts.push('Drafted captions and minimal square cards for your picks');
-        const captions = await generateInstagramCaptionsForQuotes(selected);
+        const captions = await generatePullQuoteCaptionsForQuotes(selected, { maxChars: 2000 });
         const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
         const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
         const previews = [];
