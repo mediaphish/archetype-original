@@ -208,6 +208,99 @@ function wantsCorpusThemeSearch(text) {
   return !!(corpusHint && researchHint);
 }
 
+/** Digits 1–9 only — for “quote #3” style picks (avoids matching years like 2024 as indices). */
+function parseQuoteIndicesFromMessage(text) {
+  const nums = new Set();
+  const s = String(text || '');
+  const re = /\b([1-9])\b/g;
+  let m = re.exec(s);
+  while (m) {
+    nums.add(Number(m[1]));
+    m = re.exec(s);
+  }
+  return [...nums].sort((a, b) => a - b);
+}
+
+function parseIndicesFromAssistantThread(messages) {
+  if (!Array.isArray(messages)) return null;
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const row = messages[i];
+    if (row.role !== 'assistant' && row.role !== 'receipt') continue;
+    const c = String(row.content || '');
+    const receipt = /selected\s+quotes?\s*[:\s]*([0-9,\s]+)/i.exec(c);
+    if (receipt) {
+      const nums = receipt[1].match(/\b[1-9]\b/g);
+      if (nums?.length) return [...new Set(nums.map(Number))].sort((a, b) => a - b);
+    }
+  }
+  return null;
+}
+
+/**
+ * User is continuing the pull-quote flow: pick numbers and/or ask for captions + cards.
+ * Requires a prior corpus search stored on thread state (corpus_pull_quotes).
+ */
+function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
+  const quotes = state?.corpus_pull_quotes;
+  if (!Array.isArray(quotes) || !quotes.length) return false;
+  if (wantsCorpusPullQuotes(userMessage)) return false;
+  const s = String(userMessage || '').trim().toLowerCase();
+  const hasDigit = /\b[1-9]\b/.test(s);
+  const deliver =
+    /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square)\b/.test(s);
+  return hasDigit || deliver;
+}
+
+async function generateInstagramCaptionsForQuotes(selectedQuotes) {
+  const apiKey = getOpenAiKey();
+  if (!apiKey || !selectedQuotes.length) {
+    return selectedQuotes.map((q) => `From “${safeText(q.source_title, 80)}”.`);
+  }
+  const payload = selectedQuotes.map((q, i) => ({
+    n: i + 1,
+    quote: safeText(q.quote, 480),
+    source: safeText(q.source_title, 200),
+  }));
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.AO_AUTO_MODEL || 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'user',
+            content: `For each item, write ONE short Instagram caption (under 220 characters) that complements the quote—not repeating it verbatim. Tone: thoughtful, leader-to-leader. Return JSON only: {"captions":["...","..."]}\n\nItems:\n${JSON.stringify(payload)}`,
+          },
+        ],
+        max_tokens: 900,
+        temperature: 0.45,
+      }),
+    });
+    if (!res.ok) throw new Error('caption api');
+    const json = await res.json().catch(() => ({}));
+    const content = json.choices?.[0]?.message?.content?.trim() || '';
+    let parsed = null;
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      const start = content.indexOf('{');
+      const end = content.lastIndexOf('}');
+      if (start >= 0 && end > start) parsed = JSON.parse(content.slice(start, end + 1));
+    }
+    const caps = Array.isArray(parsed?.captions) ? parsed.captions : [];
+    return selectedQuotes.map((q, i) => {
+      const c = String(caps[i] || '').trim();
+      return c || `Reflection — “${safeText(q.source_title, 100)}”.`;
+    });
+  } catch {
+    return selectedQuotes.map((q) => `From the writing: ${safeText(q.source_title, 100)}.`);
+  }
+}
+
 function wantsScoutFindings(text) {
   const s = String(text || '').trim().toLowerCase();
   if (!s) return false;
@@ -388,7 +481,7 @@ Non-negotiables (hard rules):
 - Modes you respect from context: plan, write, package, publish, recall, training, general.
 - Quality: only challenge wording for major public risks if relevant; do not nitpick style.
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
-${isPlanOrWrite ? '\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask using "in my corpus" / "in my published writing" or similar so retrieval can run.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
+${isPlanOrWrite ? '\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask using "in my corpus" / "in my published writing" or similar so retrieval can run.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
@@ -637,6 +730,7 @@ export default async function handler(req, res) {
             logoUrl,
             style: 'minimal',
             minimalVariant: 'dark',
+            forceLightLogo: true,
           });
           assistantMeta = {
             corpus_pull_quotes: corpus.quotes,
@@ -645,9 +739,74 @@ export default async function handler(req, res) {
         } catch (_) {
           assistantMeta = { corpus_pull_quotes: corpus.quotes };
         }
+        statePatch.corpus_pull_quotes = corpus.quotes;
       } else {
         assistantMessage =
           'I couldn’t find strong pull-quote lines from the corpus for that ask. Try naming a theme (for example accountability, pressure, or culture) and ask again, or say which topics to prioritize.';
+      }
+    } else if (wantsCorpusPullQuoteDeliverables(userMessage, currentState, existingMessages)) {
+      nextMode = 'plan';
+      const allQuotes = currentState.corpus_pull_quotes;
+      let indices = parseQuoteIndicesFromMessage(userMessage);
+      if (!indices.length) {
+        const fromThread = parseIndicesFromAssistantThread(existingMessages);
+        if (fromThread?.length) indices = fromThread;
+      }
+      if (!indices.length && Array.isArray(currentState.corpus_pull_quote_selection) && currentState.corpus_pull_quote_selection.length) {
+        indices = [...currentState.corpus_pull_quote_selection];
+      }
+      const maxN = allQuotes.length;
+      if (!indices.length) {
+        indices = allQuotes.slice(0, Math.min(5, maxN)).map((_, i) => i + 1);
+      }
+      indices = indices.filter((n) => n >= 1 && n <= maxN).slice(0, 6);
+      if (!indices.length) {
+        assistantMessage =
+          'Tell me which quote numbers to use from the list above (for example 1, 3, and 5), or say “all.”';
+      } else {
+        statePatch.corpus_pull_quote_selection = indices;
+        const selected = indices.map((n) => allQuotes[n - 1]).filter(Boolean);
+        receipts.push('Drafted captions and minimal square cards for your picks');
+        const captions = await generateInstagramCaptionsForQuotes(selected);
+        const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
+        const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
+        const previews = [];
+        const lines = [
+          'Here are short Instagram captions and minimal black square cards (same style as the preview—larger type, logo lightened for contrast).',
+          '',
+          'Captions (copy under each image in the thread):',
+          '',
+        ];
+        for (let i = 0; i < selected.length; i += 1) {
+          const q = selected[i];
+          const cap = captions[i] || '';
+          lines.push(`${i + 1}. ${cap}`);
+          lines.push(`   “${safeText(q.quote, 280)}”`);
+          lines.push(`   — ${q.source_title}${q.url ? ` · ${q.url}` : ''}`);
+          lines.push('');
+          const rendered = renderQuoteCardSvg({
+            quote: q.quote,
+            sourceName: q.source_title,
+            logoUrl,
+            style: 'minimal',
+            minimalVariant: 'dark',
+            forceLightLogo: true,
+          });
+          if (rendered.ok) {
+            previews.push({
+              svg: rendered.svg,
+              index: indices[i],
+              caption: cap,
+              source_title: q.source_title,
+            });
+          }
+        }
+        assistantMessage = lines.join('\n');
+        assistantMeta = {
+          corpus_pull_quotes: allQuotes,
+          quote_card_previews: previews,
+          quote_card_preview_svg: previews[0]?.svg || null,
+        };
       }
     } else if (wantsCorpusThemeSearch(userMessage)) {
       nextMode = 'plan';

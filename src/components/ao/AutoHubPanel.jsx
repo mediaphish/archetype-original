@@ -442,7 +442,14 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
         {messages.map((m) => {
           const isAssistant = m.role === 'assistant' || m.role === 'receipt' || m.role === 'system';
           const linked = attachmentsByMessage.get(m.id) || [];
+          const multiPreviews = Array.isArray(m.meta?.quote_card_previews) ? m.meta.quote_card_previews : null;
           const previewSvg = m.meta?.quote_card_preview_svg;
+          const cardBlocks =
+            multiPreviews && multiPreviews.length
+              ? multiPreviews
+              : previewSvg
+                ? [{ svg: previewSvg, caption: '', index: 1 }]
+                : [];
           return (
             <div key={m.id} className={isAssistant ? '' : 'text-right'}>
               <div
@@ -457,16 +464,25 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
               >
                 {m.content}
               </div>
-              {isAssistant && previewSvg ? (
-                <div className="mt-2 max-w-md border border-gray-200 rounded-lg overflow-hidden bg-neutral-100 mx-auto text-left">
-                  <div className="text-xs font-semibold text-gray-600 px-2 py-1 bg-white border-b border-gray-100">
-                    Minimal card preview (first quote)
-                  </div>
-                  <img
-                    src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(previewSvg)}`}
-                    alt="Quote card preview"
-                    className="w-full h-auto block"
-                  />
+              {isAssistant && cardBlocks.length ? (
+                <div className="mt-2 space-y-3 max-w-md mx-auto text-left">
+                  {cardBlocks.map((block, bi) => (
+                    <div key={`${m.id}-card-${bi}`} className="border border-gray-200 rounded-lg overflow-hidden bg-neutral-100">
+                      <div className="text-xs font-semibold text-gray-600 px-2 py-1 bg-white border-b border-gray-100">
+                        {multiPreviews && multiPreviews.length > 1
+                          ? `Card ${block.index != null ? block.index : bi + 1}`
+                          : 'Minimal card preview'}
+                        {block.caption ? (
+                          <div className="font-normal text-gray-700 mt-1 whitespace-normal">{block.caption}</div>
+                        ) : null}
+                      </div>
+                      <img
+                        src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(block.svg)}`}
+                        alt={block.caption ? 'Quote card with caption' : 'Quote card preview'}
+                        className="w-full h-auto block"
+                      />
+                    </div>
+                  ))}
                 </div>
               ) : null}
               {linked.length ? (
