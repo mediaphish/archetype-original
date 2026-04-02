@@ -87,6 +87,7 @@ function looksLikeFinishedArticlePaste(text) {
  * Attachments still imply “send something through” unless clearly planning-only (handled above).
  */
 function shouldAssumePackageMode(text, hasAttachments) {
+  if (wantsCorpusPullQuotes(text)) return false;
   if (looksLikePlanningOrDiscussionRequest(text)) return false;
   if (hasAttachments) return true;
   if (!looksLikeContent(text)) return false;
@@ -148,13 +149,29 @@ async function getAutomationProof(email) {
 function wantsCorpusPullQuotes(text) {
   const s = String(text || '').trim().toLowerCase();
   if (!s) return false;
-  const corpusHint = /\b(corpus|my (?:published )?writing|published (?:work|pieces)|knowledge base|site content|from (?:the )?archive)\b/.test(s);
-  const quoteHint = /\b(pull[- ]?quotes?|quote cards?|weekly quotes?|candidate quotes?|lines? to (?:quote|post))\b/.test(s);
-  const actionHint = /\b(find|pull|suggest|give me|show me|list|search|look (?:at|in|through)|pick|select)\b/.test(s);
-  if (quoteHint && (corpusHint || /\bfrom (?:my |the )?(?:site|journal|posts|articles)\b/.test(s))) return true;
+
+  const corpusHint =
+    /\b(corpus|my (?:published )?writing|published (?:work|pieces)|knowledge base|site content|from (?:the )?archive)\b/.test(s) ||
+    /\bfrom (?:my |the |our )?(?:site|journal|posts|articles|corpus|book|books)\b/.test(s) ||
+    /\b(accidental\s+ceo|remaining\s+human|my\s+book|the\s+ebook|published\s+work)\b/.test(s);
+
+  const quoteHint =
+    /\b(pull[- ]?quotes?|quote\s+cards?|weekly\s+pull\s+quotes?|weekly\s+quotes?|candidate\s+quotes?|lines?\s+to\s+(?:quote|post))\b/.test(
+      s
+    ) || /\bweekly\b.{0,80}\bpull\b.{0,40}\bquotes?\b/.test(s);
+
+  const actionHint =
+    /\b(find|pull|suggest|give me|show me|list|search|look (?:at|in|through)|pick|select|generate|creating|create|build|need to (?:generate|create|pull|get))\b/.test(
+      s
+    );
+
+  if (quoteHint && (corpusHint || /\bfrom (?:my |the |our )?(?:site|journal|posts|articles)\b/.test(s))) return true;
   if (actionHint && quoteHint && corpusHint) return true;
-  if (/\bquotes? from (?:my |the )?corpus\b/.test(s)) return true;
+  if (/\bquotes? from (?:my |the |our )?corpus\b/.test(s)) return true;
   if (/\bsearch (?:the )?corpus for\b.{0,40}\bquotes?\b/.test(s)) return true;
+
+  if (quoteHint && actionHint && /\b(series|weekly|generate|creating)\b/.test(s) && /\b(my|our|the)\b/.test(s)) return true;
+
   return false;
 }
 
