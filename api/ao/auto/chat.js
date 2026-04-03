@@ -719,21 +719,23 @@ export default async function handler(req, res) {
       } else {
         statePatch.corpus_pull_quote_selection = indices;
         const selected = indices.map((n) => allQuotes[n - 1]).filter(Boolean);
-        receipts.push('Drafted captions and minimal square cards for your picks');
-        const captions = await generatePullQuoteCaptionsForQuotes(selected, { maxChars: 2000 });
+        receipts.push('Drafted interpretive captions and minimal square cards for your picks');
+        const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(selected, { maxChars: 2000 });
         const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
         const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
         const previews = [];
         const lines = [
-          'Here are short Instagram captions and minimal black square cards (same style as the preview—larger type, logo lightened for contrast).',
+          'Here are interpretive captions (they explain or enhance the line—the image carries the quote) and minimal black square cards (same style as the preview—larger type, logo lightened for contrast).',
           '',
-          'Captions (copy under each image in the thread):',
+          'Captions (copy under each image in the thread; X-sized line included where useful):',
           '',
         ];
         for (let i = 0; i < selected.length; i += 1) {
           const q = selected[i];
           const cap = captions[i] || '';
+          const capX = captionsX[i] || '';
           lines.push(`${i + 1}. ${cap}`);
+          if (capX) lines.push(`   (X: ${capX})`);
           lines.push(`   “${safeText(q.quote, 280)}”`);
           lines.push(`   — ${q.source_title}${q.url ? ` · ${q.url}` : ''}`);
           lines.push('');

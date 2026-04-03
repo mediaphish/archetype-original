@@ -1170,7 +1170,7 @@ export default function Review() {
                                   });
                                   const json = await res.json().catch(() => ({}));
                                   if (!res.ok || !json.ok) throw new Error(json.error || 'Schedule failed');
-                                  setActionMessage(json.message || 'Queued for Instagram.');
+                                  setActionMessage(json.message || 'Queued for your channels.');
                                   setQuotes((prev) => prev.filter((x) => x.id !== q.id));
                                 } catch (e) {
                                   setActionError(e.message || 'Failed');
@@ -1180,7 +1180,7 @@ export default function Review() {
                               }}
                               className="min-h-[44px] px-4 py-2 rounded-lg bg-green-700 text-white text-sm font-semibold hover:bg-green-800 disabled:opacity-50"
                             >
-                              Schedule Instagram week
+                              Schedule week (all channels)
                             </button>
                             <button
                               type="button"
@@ -1195,7 +1195,7 @@ export default function Review() {
                             </button>
                           </div>
                           <p className="mt-2 text-xs text-gray-500">
-                            Each post includes caption, quote, and source link. Adjust times and text in Publisher. Add the square card image there if you want it on Instagram.
+                            Each post uses the square card image plus an interpretive caption (and source). Captions should explain or enhance the line—not repeat it or swap in a fragment of it. Adjust times and text in Publisher if needed.
                           </p>
                         </div>
                       ) : null}

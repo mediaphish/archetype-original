@@ -20,16 +20,21 @@ function toPlatform(channel) {
   return channel;
 }
 
-/** Caption only: the quote lives on the image; text adds context + source (Instagram-style). */
+/**
+ * Image shows the quote; caption text should interpret or enhance (never a quote fragment as a shortcut).
+ * X uses caption_x when present—written for clarity in ~200 chars, not blind truncation of the long caption.
+ */
 function buildCaptionForCardPost(item, platform) {
-  const cap = String(item.caption || '').trim();
+  const longCap = String(item.caption || '').trim();
+  const xCap = String(item.caption_x || '').trim();
+  const cap = platform === 'twitter' ? (xCap || longCap) : longCap;
   const title = String(item.source_title || '').trim();
   const url = String(item.url || '').trim();
   const tail = [title, url].filter(Boolean).join(' · ');
   let body = [cap, tail].filter(Boolean).join('\n\n').trim();
   if (!body) body = '—';
   if (platform === 'twitter') {
-    body = body.slice(0, 270);
+    body = body.slice(0, 280);
   } else {
     body = body.slice(0, 2200);
   }
