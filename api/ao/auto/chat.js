@@ -209,16 +209,55 @@ function wantsCorpusThemeSearch(text) {
   return !!(corpusHint && researchHint);
 }
 
+/** Pull digits 1–9 from a fragment (list like "4, 5" or "4 and 5"). */
+function extractQuoteIndexDigits(fragment) {
+  const out = new Set();
+  String(fragment || '')
+    .match(/\b[1-9]\b/g)
+    ?.forEach((d) => out.add(Number(d)));
+  return out;
+}
+
+/**
+ * Indices the user explicitly rules out (so we do not treat every digit in the message as a pick).
+ * Handles e.g. "4 and 5 would not work as pull quotes", "but not 4", "skip 4 and 5".
+ */
+function parseExcludedQuoteIndicesFromMessage(text) {
+  const excluded = new Set();
+  const s = String(text || '');
+  const patterns = [
+    // "4 and 5 would not work", "4, 5 wouldn't work"
+    /\b([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\s+(?:would|will|do)\s+not\b/gi,
+    /\b([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\s+wouldn'?t\s+work\b/gi,
+    // "but not 4", "not 4 and 5"
+    /\b(?:but\s+)?not\s+([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\b/gi,
+    /\b(?:skip|exclude|excluding|reject|rule\s+out|without)\s+([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\b/gi,
+    /\b(?:don'?t|do\s+not)\s+want\s+([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\b/gi,
+  ];
+  for (const re of patterns) {
+    re.lastIndex = 0;
+    let m = re.exec(s);
+    while (m) {
+      const group = m[1];
+      if (group) extractQuoteIndexDigits(group).forEach((n) => excluded.add(n));
+      m = re.exec(s);
+    }
+  }
+  return excluded;
+}
+
 /** Digits 1–9 only — for “quote #3” style picks (avoids matching years like 2024 as indices). */
 function parseQuoteIndicesFromMessage(text) {
-  const nums = new Set();
   const s = String(text || '');
+  const nums = new Set();
   const re = /\b([1-9])\b/g;
   let m = re.exec(s);
   while (m) {
     nums.add(Number(m[1]));
     m = re.exec(s);
   }
+  const excluded = parseExcludedQuoteIndicesFromMessage(s);
+  excluded.forEach((n) => nums.delete(n));
   return [...nums].sort((a, b) => a - b);
 }
 
