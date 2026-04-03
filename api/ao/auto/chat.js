@@ -9,11 +9,13 @@ import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
 import { generatePullQuoteCaptionsForQuotes } from '../../../lib/ao/pullQuoteCaptions.js';
 import {
-  suggestChannelsForQuoteCards,
   proposeQuoteCardTimes,
   executeQuoteCardSchedule,
   formatQuoteCardPublishPlan,
+  buildQuoteCardPublishContext,
 } from '../../../lib/ao/publishWizardQuoteCards.js';
+import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishContentTypes.js';
+import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -282,8 +284,15 @@ function parseIndicesFromAssistantThread(messages) {
   return null;
 }
 
+function wantsPublishRouteGuidance(userMessage) {
+  const s = String(userMessage || '').trim().toLowerCase();
+  if (!/\b(publish|schedule)\b/.test(s)) return false;
+  return /\b(devotional|devotionals|journal series|weekly bundle|faith series)\b/.test(s);
+}
+
 function wantsPublishQuoteCardsIntent(userMessage, state) {
   const s = String(userMessage || '').trim().toLowerCase();
+  if (/\b(devotional|devotionals)\b/.test(s) && !/\b(card|quote|pull)\b/.test(s)) return false;
   if (!/\b(publish|schedule|queue)\b/.test(s)) return false;
   const hasCorpus = Array.isArray(state?.corpus_pull_quotes) && state.corpus_pull_quotes.length > 0;
   const hasCandidates = Array.isArray(state?.publish_candidates) && state.publish_candidates.length > 0;
@@ -316,7 +325,7 @@ function rebuildPublishCandidatesFromMessages(messages, corpusQuotes) {
         const idx = Number(p.index);
         const q = corpusQuotes[idx - 1];
         if (!q) return null;
-        return {
+        return normalizePublishCandidate({
           corpus_index: idx,
           quote: q.quote,
           source_title: q.source_title || p.source_title,
@@ -324,7 +333,7 @@ function rebuildPublishCandidatesFromMessages(messages, corpusQuotes) {
           caption: String(p.caption || ''),
           caption_x: String(p.caption_x || ''),
           svg: p.svg || '',
-        };
+        });
       })
       .filter(Boolean);
   }
@@ -791,6 +800,9 @@ export default async function handler(req, res) {
         assistantMessage =
           'I couldn’t find strong pull-quote lines from the corpus for that ask. Try naming a theme (for example accountability, pressure, or culture) and ask again, or say which topics to prioritize.';
       }
+    } else if (wantsPublishRouteGuidance(userMessage)) {
+      nextMode = 'plan';
+      assistantMessage = messageForDevotionalOrSeriesPublish();
     } else if (
       currentState.publish_wizard &&
       currentState.publish_wizard.step === 'await_confirm' &&
@@ -802,6 +814,7 @@ export default async function handler(req, res) {
         items: pending.items,
         timesIso: pending.times_iso,
         email: auth.email,
+        use_platforms: pending.classification?.use_platforms,
       });
       if (result.ok) {
         receipts.push(`Scheduled ${result.count || 0} Publisher slot(s)`);
@@ -846,13 +859,20 @@ export default async function handler(req, res) {
           assistantMessage =
             'I could not find those cards in this thread. Pick quote numbers and ask for captions and cards first—then say Publish.';
         } else {
-          const ch = suggestChannelsForQuoteCards();
           const timesIso = await proposeQuoteCardTimes(items.length, { gapDays: 1 });
+          const { coverageLines, classification } = await buildQuoteCardPublishContext(auth.email, items);
+          const ch = { summaryLines: classification.summaryLines || [] };
           statePatch.publish_wizard = {
             step: 'await_confirm',
-            pending: { items, times_iso: timesIso },
+            pending: { items, times_iso: timesIso, classification },
           };
-          assistantMessage = formatQuoteCardPublishPlan({ items, timesIso, channelHelp: ch });
+          assistantMessage = formatQuoteCardPublishPlan({
+            items,
+            timesIso,
+            channelHelp: ch,
+            classification,
+            coverageLines,
+          });
         }
       }
       }
@@ -926,7 +946,7 @@ export default async function handler(req, res) {
           .map((n, i) => {
             const q = selected[i];
             const pr = previews[i];
-            return {
+            return normalizePublishCandidate({
               corpus_index: n,
               quote: q.quote,
               source_title: q.source_title,
@@ -934,9 +954,9 @@ export default async function handler(req, res) {
               caption: captions[i] || '',
               caption_x: captionsX[i] || '',
               svg: pr?.svg || null,
-            };
+            });
           })
-          .filter((x) => x.svg);
+          .filter(Boolean);
       }
     } else if (wantsCorpusThemeSearch(userMessage)) {
       nextMode = 'plan';
@@ -975,7 +995,13 @@ export default async function handler(req, res) {
     } else if (nextMode === 'package' || nextMode === 'publish') {
       const pendingQuality = statePatch.pending_quality && typeof statePatch.pending_quality === 'object' ? statePatch.pending_quality : null;
       const lower = userMessage.toLowerCase();
-      if (!pendingQuality && lower.includes('proceed') && currentState?.bundle_id) {
+      if (
+        !pendingQuality &&
+        (lower.includes('proceed') ||
+          /\b(schedule|confirm)\s+(this\s+)?(package|bundle|posts?)\b/.test(lower) ||
+          /\b(schedule|publish)\s+this\s+(package|bundle)\b/.test(lower)) &&
+        currentState?.bundle_id
+      ) {
         const bundleOut = await supabaseAdmin
           .from('ao_auto_bundles')
           .select('*')
