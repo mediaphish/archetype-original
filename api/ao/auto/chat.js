@@ -8,6 +8,12 @@ import { renderQuoteCardSvg } from '../../../lib/ao/quoteCardDesigner.js';
 import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
 import { generatePullQuoteCaptionsForQuotes } from '../../../lib/ao/pullQuoteCaptions.js';
+import {
+  suggestChannelsForQuoteCards,
+  proposeQuoteCardTimes,
+  executeQuoteCardSchedule,
+  formatQuoteCardPublishPlan,
+} from '../../../lib/ao/publishWizardQuoteCards.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -274,6 +280,55 @@ function parseIndicesFromAssistantThread(messages) {
     }
   }
   return null;
+}
+
+function wantsPublishQuoteCardsIntent(userMessage, state) {
+  const s = String(userMessage || '').trim().toLowerCase();
+  if (!/\b(publish|schedule|queue)\b/.test(s)) return false;
+  const hasCorpus = Array.isArray(state?.corpus_pull_quotes) && state.corpus_pull_quotes.length > 0;
+  const hasCandidates = Array.isArray(state?.publish_candidates) && state.publish_candidates.length > 0;
+  if (!hasCorpus && !hasCandidates) return false;
+  if (
+    /\b(package|packaging|paste my finished|finished post below|ready to package)\b/.test(s) &&
+    !/\b(card|quote|pull)\b/.test(s)
+  ) {
+    return false;
+  }
+  return (
+    /\bcards?\b/.test(s) ||
+    /\bquotes?\b/.test(s) ||
+    /\bpull[- ]?quote\b/.test(s) ||
+    /\b[1-9]\b/.test(s) ||
+    /\ball\b/.test(s)
+  );
+}
+
+function rebuildPublishCandidatesFromMessages(messages, corpusQuotes) {
+  if (!Array.isArray(corpusQuotes) || !corpusQuotes.length) return [];
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const row = messages[i];
+    if (row.role !== 'assistant') continue;
+    const meta = row.meta && typeof row.meta === 'object' ? row.meta : null;
+    const previews = meta?.quote_card_previews;
+    if (!Array.isArray(previews) || !previews.length) continue;
+    return previews
+      .map((p) => {
+        const idx = Number(p.index);
+        const q = corpusQuotes[idx - 1];
+        if (!q) return null;
+        return {
+          corpus_index: idx,
+          quote: q.quote,
+          source_title: q.source_title || p.source_title,
+          url: q.url || '',
+          caption: String(p.caption || ''),
+          caption_x: String(p.caption_x || ''),
+          svg: p.svg || '',
+        };
+      })
+      .filter(Boolean);
+  }
+  return [];
 }
 
 /**
@@ -736,6 +791,71 @@ export default async function handler(req, res) {
         assistantMessage =
           'I couldn’t find strong pull-quote lines from the corpus for that ask. Try naming a theme (for example accountability, pressure, or culture) and ask again, or say which topics to prioritize.';
       }
+    } else if (
+      currentState.publish_wizard &&
+      currentState.publish_wizard.step === 'await_confirm' &&
+      /\b(confirm\s+publish|yes\s*,?\s*schedule|proceed\s+with\s+publish)\b/i.test(userMessage)
+    ) {
+      nextMode = 'plan';
+      const pending = currentState.publish_wizard.pending;
+      const result = await executeQuoteCardSchedule({
+        items: pending.items,
+        timesIso: pending.times_iso,
+        email: auth.email,
+      });
+      if (result.ok) {
+        receipts.push(`Scheduled ${result.count || 0} Publisher slot(s)`);
+        assistantMessage = `Done. ${result.count || 0} row(s) queued (image + caption per network). Open Publisher to review or adjust times.`;
+        statePatch.publish_wizard = null;
+      } else {
+        assistantMessage = `Could not schedule: ${result.error || 'Unknown error'}`;
+      }
+    } else if (
+      currentState.publish_wizard &&
+      currentState.publish_wizard.step === 'await_confirm' &&
+      /\b(cancel|abort|stop)\b/i.test(userMessage)
+    ) {
+      nextMode = 'plan';
+      statePatch.publish_wizard = null;
+      assistantMessage = 'Cancelled. When you are ready, say Publish cards … with the numbers you want.';
+    } else if (wantsPublishQuoteCardsIntent(userMessage, currentState)) {
+      nextMode = 'plan';
+      const corpusQuotes = currentState.corpus_pull_quotes || [];
+      let pool =
+        Array.isArray(currentState.publish_candidates) && currentState.publish_candidates.length
+          ? currentState.publish_candidates
+          : rebuildPublishCandidatesFromMessages(existingMessages, corpusQuotes);
+      statePatch.publish_candidates = pool;
+
+      if (!pool.length) {
+        assistantMessage =
+          'I do not have quote cards saved in this thread yet. Pick quote numbers so I can draft captions and cards—then say Publish.';
+      } else {
+      let indices = parseQuoteIndicesFromMessage(userMessage);
+      if (/\ball\b/i.test(userMessage)) {
+        indices = pool.map((x) => x.corpus_index).sort((a, b) => a - b);
+      }
+      indices = indices.filter((n) => n >= 1 && n <= (corpusQuotes.length || 99)).slice(0, 12);
+
+      if (!indices.length) {
+        assistantMessage =
+          'Say which card numbers to publish (for example: Publish cards 1, 2, and 4), or say all.';
+      } else {
+        const items = indices.map((n) => pool.find((x) => x.corpus_index === n)).filter(Boolean);
+        if (!items.length || items.some((x) => !x.svg)) {
+          assistantMessage =
+            'I could not find those cards in this thread. Pick quote numbers and ask for captions and cards first—then say Publish.';
+        } else {
+          const ch = suggestChannelsForQuoteCards();
+          const timesIso = await proposeQuoteCardTimes(items.length, { gapDays: 1 });
+          statePatch.publish_wizard = {
+            step: 'await_confirm',
+            pending: { items, times_iso: timesIso },
+          };
+          assistantMessage = formatQuoteCardPublishPlan({ items, timesIso, channelHelp: ch });
+        }
+      }
+      }
     } else if (wantsCorpusPullQuoteDeliverables(userMessage, currentState, existingMessages)) {
       nextMode = 'plan';
       const allQuotes = currentState.corpus_pull_quotes;
@@ -791,6 +911,7 @@ export default async function handler(req, res) {
               svg: rendered.svg,
               index: indices[i],
               caption: cap,
+              caption_x: capX,
               source_title: q.source_title,
             });
           }
@@ -801,6 +922,21 @@ export default async function handler(req, res) {
           quote_card_previews: previews,
           quote_card_preview_svg: previews[0]?.svg || null,
         };
+        statePatch.publish_candidates = indices
+          .map((n, i) => {
+            const q = selected[i];
+            const pr = previews[i];
+            return {
+              corpus_index: n,
+              quote: q.quote,
+              source_title: q.source_title,
+              url: q.url || '',
+              caption: captions[i] || '',
+              caption_x: captionsX[i] || '',
+              svg: pr?.svg || null,
+            };
+          })
+          .filter((x) => x.svg);
       }
     } else if (wantsCorpusThemeSearch(userMessage)) {
       nextMode = 'plan';
