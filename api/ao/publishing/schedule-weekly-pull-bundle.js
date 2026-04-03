@@ -1,11 +1,12 @@
 /**
- * Schedule Instagram posts from a weekly corpus pull bundle row (Review inbox).
+ * Schedule social posts (image + caption) from a weekly corpus pull bundle row (Review inbox).
  * POST /api/ao/publishing/schedule-weekly-pull-bundle
  * Body: { quote_id, start_at?: ISO datetime (first slot), gap_days?: number (default 1) }
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -19,15 +20,28 @@ function toPlatform(channel) {
   return channel;
 }
 
-function buildInstagramBody(item) {
+/** Caption only: the quote lives on the image; text adds context + source (Instagram-style). */
+function buildCaptionForCardPost(item, platform) {
   const cap = String(item.caption || '').trim();
-  const quote = String(item.quote || '').trim();
   const title = String(item.source_title || '').trim();
   const url = String(item.url || '').trim();
   const tail = [title, url].filter(Boolean).join(' · ');
-  const parts = [cap, quote ? `“${quote}”` : '', tail].filter(Boolean);
-  return parts.join('\n\n').trim().slice(0, 2200);
+  let body = [cap, tail].filter(Boolean).join('\n\n').trim();
+  if (!body) body = '—';
+  if (platform === 'twitter') {
+    body = body.slice(0, 270);
+  } else {
+    body = body.slice(0, 2200);
+  }
+  return body;
 }
+
+const BUNDLE_PLATFORMS = [
+  { platform: 'instagram', account_id: 'meta' },
+  { platform: 'facebook', account_id: 'meta' },
+  { platform: 'linkedin', account_id: 'personal' },
+  { platform: 'twitter', account_id: 'personal' },
+];
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -71,34 +85,56 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'Not a weekly corpus bundle or empty items' });
     }
 
+    for (let j = 0; j < items.length; j += 1) {
+      if (!String(items[j].quote_card_svg || '').trim()) {
+        return res.status(400).json({
+          ok: false,
+          error: `Bundle item ${j + 1} has no quote card image. Regenerate the weekly bundle in Review.`,
+        });
+      }
+    }
+
     const rows = [];
     for (let i = 0; i < items.length; i += 1) {
       const when = new Date(start.getTime() + i * gapDays * 86400000);
-      const text = buildInstagramBody(items[i]);
-      if (!text) continue;
-      rows.push({
-        platform: 'instagram',
-        account_id: 'meta',
-        scheduled_at: when.toISOString(),
-        text,
-        image_url: null,
-        first_comment: null,
-        status: 'scheduled',
-        source_kind: 'weekly_pull_bundle',
-        source_quote_id: quoteId,
-        intent: {
-          weekly_pull: true,
-          week_start: bundle.week_start || null,
-          theme_query: bundle.theme_query || null,
-          index: i + 1,
+      const item = items[i];
+      const svg = String(item.quote_card_svg || '').trim();
+      let imageUrl = null;
+      if (svg) {
+        const up = await uploadQuoteCardSvgToPublicUrl(svg, { subfolder: 'weekly-pull-quote-cards' });
+        if (!up.ok) {
+          return res.status(500).json({ ok: false, error: up.error || 'Could not create image for quote card' });
+        }
+        imageUrl = up.publicUrl;
+      }
+
+      for (const ch of BUNDLE_PLATFORMS) {
+        const text = buildCaptionForCardPost(item, ch.platform);
+        if (!text) continue;
+        rows.push({
+          platform: ch.platform,
+          account_id: ch.account_id,
+          scheduled_at: when.toISOString(),
+          text,
+          image_url: imageUrl,
+          first_comment: null,
+          status: 'scheduled',
+          source_kind: 'weekly_pull_bundle',
+          source_quote_id: quoteId,
+          intent: {
+            weekly_pull: true,
+            week_start: bundle.week_start || null,
+            theme_query: bundle.theme_query || null,
+            index: i + 1,
+            why_it_matters: row.why_it_matters || null,
+            ao_lane: row.ao_lane || null,
+          },
+          best_move: 'weekly_pull_bundle',
           why_it_matters: row.why_it_matters || null,
           ao_lane: row.ao_lane || null,
-        },
-        best_move: 'weekly_pull_bundle',
-        why_it_matters: row.why_it_matters || null,
-        ao_lane: row.ao_lane || null,
-        topic_tags: Array.isArray(row.topic_tags) ? row.topic_tags : null,
-      });
+          topic_tags: Array.isArray(row.topic_tags) ? row.topic_tags : null,
+        });
+      }
     }
 
     if (!rows.length) return res.status(400).json({ ok: false, error: 'Nothing to schedule' });
@@ -131,7 +167,12 @@ export default async function handler(req, res) {
         .eq('id', quoteId);
     } catch (_) {}
 
-    return res.status(200).json({ ok: true, scheduled: inserted || [], message: 'Queued for Instagram. Open Publisher to adjust times or text.' });
+    return res.status(200).json({
+      ok: true,
+      scheduled: inserted || [],
+      message:
+        'Queued with image + caption for Instagram, Facebook, LinkedIn, and X. Open Publisher to adjust times or text.',
+    });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message || 'Error' });
   }

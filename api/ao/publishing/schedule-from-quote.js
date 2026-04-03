@@ -6,6 +6,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -51,6 +52,16 @@ export default async function handler(req, res) {
     const draftsByChannel = quote.drafts_by_channel && typeof quote.drafts_by_channel === 'object' ? quote.drafts_by_channel : {};
     const firstByChannel = quote.first_comment_suggestions && typeof quote.first_comment_suggestions === 'object' ? quote.first_comment_suggestions : {};
 
+    let sharedImageUrl = null;
+    const svg = String(quote.quote_card_svg || '').trim();
+    if (svg) {
+      const up = await uploadQuoteCardSvgToPublicUrl(svg, { subfolder: 'studio-quote-cards' });
+      if (!up.ok) {
+        return res.status(500).json({ ok: false, error: up.error || 'Could not create image for quote card' });
+      }
+      sharedImageUrl = up.publicUrl;
+    }
+
     const rows = [];
     const channels = ['linkedin', 'facebook', 'instagram', 'x'];
     for (const c of channels) {
@@ -65,7 +76,7 @@ export default async function handler(req, res) {
         account_id: platform === 'facebook' || platform === 'instagram' ? 'meta' : 'personal',
         scheduled_at: when,
         text,
-        image_url: null,
+        image_url: sharedImageUrl,
         first_comment,
         status: 'scheduled',
         source_kind: 'quote',
