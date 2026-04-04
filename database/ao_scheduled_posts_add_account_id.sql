@@ -1,6 +1,6 @@
--- Fix: "Could not find the 'account_id' column of 'ao_scheduled_posts' in the schema cache"
--- Run once in the Supabase SQL editor if your table predates database/ao_scheduled_posts.sql.
--- Safe to re-run: IF NOT EXISTS guards the add; backfill only touches NULL account_id rows.
+-- Fix: missing account_id only (narrow case).
+-- If other columns are missing too (e.g. platform), use database/ao_scheduled_posts_align_to_app.sql instead.
+-- Run once in the Supabase SQL editor. Safe to re-run: IF NOT EXISTS guards the add.
 
 ALTER TABLE ao_scheduled_posts
   ADD COLUMN IF NOT EXISTS account_id TEXT;
