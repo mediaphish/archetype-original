@@ -322,7 +322,7 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
         <div>
           <div className="text-2xl font-bold text-gray-900">Auto</div>
           <div className="text-sm text-gray-600 mt-1">
-            One conversation at a time, kept when you leave the page. Use New chat when you want a clean thread; older chats stay on file but out of the way.
+            Internal research and packaging — not the public Archy chat. One conversation at a time; use New chat for a clean thread.
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 justify-end">
@@ -431,9 +431,10 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
           <div className="text-sm text-gray-600">
             Try:
             <div className="mt-2 space-y-1 text-xs text-gray-500">
-              <div>“Let’s plan this.”</div>
-              <div>“Let’s write this post.”</div>
-              <div>“I have a post I have ready to go out.”</div>
+              <div>“CORPUS TL;DR: [topic]” — landscape, corpus gaps, AO fit (briefing).</div>
+              <div>“CORPUS outline: [topic]” — section skeleton only.</div>
+              <div>“Let’s plan this.” / “Let’s write this post.” / “I have a post ready to go out.”</div>
+              <div>“Save this brief to drafts” after a CORPUS reply.</div>
               <div>“Switch to training mode.”</div>
             </div>
           </div>

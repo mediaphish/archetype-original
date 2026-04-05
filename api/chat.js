@@ -2,6 +2,9 @@ import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
+import { getArchyRetrievalDepthFromPaid } from '../lib/ao/archyAccess.js';
+import { isArchyPaidSessionAsync } from '../lib/ao/archyEntitlements.js';
+import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyThreadMemory.js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -38,15 +41,16 @@ function loadKnowledgeCorpus() {
 }
 
 // Search knowledge corpus for relevant content
-function searchKnowledge(query, corpus) {
-  if (!query || !corpus.docs) return corpus.docs.slice(0, 3); // Return first 3 docs if no query
-  
+function searchKnowledge(query, corpus, opts = {}) {
+  const maxResults = Math.max(3, Math.min(24, Number(opts.maxDocs) || 5));
+  if (!query || !corpus.docs) return corpus.docs.slice(0, maxResults);
+
   const searchTerm = query.toLowerCase();
   const words = searchTerm.split(' ').filter(word => word.length > 2);
-  
+
   // If no meaningful words, return some general docs
   if (words.length === 0) {
-    return corpus.docs.slice(0, 3);
+    return corpus.docs.slice(0, maxResults);
   }
   
   const scoredDocs = corpus.docs.map(doc => {
@@ -94,11 +98,10 @@ function searchKnowledge(query, corpus) {
     return { doc, score };
   });
   
-  // Sort by score and return top 5
   return scoredDocs
     .filter(item => item.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
+    .slice(0, maxResults)
     .map(item => item.doc);
 }
 
@@ -227,11 +230,15 @@ export default async function handler(req, res) {
     });
   }
 
-  // Load and search knowledge corpus
+  // Load and search knowledge corpus (paid Archy sessions retrieve more docs + longer excerpts)
   const knowledgeCorpus = loadKnowledgeCorpus();
   console.log('Knowledge corpus loaded:', knowledgeCorpus.docs ? knowledgeCorpus.docs.length : 0, 'documents');
-  
-  let relevantKnowledge = searchKnowledge(message, knowledgeCorpus);
+
+  const archyPaid = await isArchyPaidSessionAsync(sessionId);
+  const archyDepth = getArchyRetrievalDepthFromPaid(archyPaid);
+  const archyMemory = archyPaid ? await loadArchyThreadMemory(sessionId) : null;
+
+  let relevantKnowledge = searchKnowledge(message, knowledgeCorpus, { maxDocs: archyDepth.maxDocs });
   relevantKnowledge = ensureRemainingHumanInKnowledge(
     relevantKnowledge,
     knowledgeCorpus,
@@ -265,7 +272,8 @@ export default async function handler(req, res) {
                           doc.tags?.includes('canon') ||
                           doc.tags?.includes('doctrine') ||
                           doc.summary?.toLowerCase().includes('canonical');
-      const contentLength = isCanonical ? 1200 : 800; // More content for all documents
+      const cap = archyDepth.maxBodyChars;
+      const contentLength = isCanonical ? Math.min(Math.floor(cap * 1.15), 2000) : cap;
       knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}...\n\n`;
     });
   }
@@ -290,6 +298,10 @@ export default async function handler(req, res) {
     : 'IMPORTANT: When referring to Bart Paden, use natural, conversational references. After the first mention of "Bart Paden" in a response, use "Bart" or "he" instead of repeating the full name. This makes the conversation feel more natural and human, like you\'re actually talking about someone you know well.';
 
   const systemPrompt = `You are Archy, the digital reflection of Bart Paden. You are having a real conversation with a real person. You must listen, understand, and respond authentically.
+
+You are the visitor-facing assistant named Archy. Do not mention internal automation tools or names that only Bart's team uses; visitors only need to know you as Archy.
+${archyPaid ? '\nThis session has deeper access to Bart’s published library—use the retrieved passages below as your primary ground.\n' : ''}
+${archyMemory?.summary ? `\nContinuity from earlier in this conversation (paraphrase, do not quote verbatim):\n${archyMemory.summary.slice(0, 3000)}\n` : ''}
 
 ABOUT BART PADEN:
 Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. 
@@ -769,12 +781,7 @@ Respond with ONLY a JSON object:
 
         if (!isDarkHours && !cannotAnswer) {
           try {
-            const escalationCheck = await openai.chat.completions.create({
-              model: "gpt-4o-mini",
-              messages: [
-                {
-                  role: "system",
-                  content: `You are evaluating whether to offer a user direct contact with Bart Paden. 
+            const escalationPrompt = `You are evaluating whether to offer a user direct contact with Bart Paden.
 Answer ONLY "yes" or "no".
 
 Offer contact ONLY if:
@@ -786,24 +793,35 @@ Do NOT offer contact if:
 - User is asking informational questions (about the book, philosophy, methods, etc.)
 - User is exploring or learning
 - User just started the conversation
-- The AI successfully answered their question`
-                },
-                {
-                  role: "user",
-                  content: `User's message: "${message}"
+- The AI successfully answered their question
+
+User's message: "${message}"
 
 AI's response: "${response}"
 
 Conversation length: ${conversationHistory.length} messages
 
-Should we offer direct contact with Bart?`
-                }
-              ],
-              max_tokens: 10,
-              temperature: 0
+Should we offer direct contact with Bart?`;
+
+            const escalationCheck = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${process.env.OPEN_API_KEY}`,
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [
+                  { role: 'system', content: 'Answer only yes or no.' },
+                  { role: 'user', content: escalationPrompt },
+                ],
+                max_tokens: 10,
+                temperature: 0,
+              }),
             });
-            
-            shouldOfferEscalation = escalationCheck.choices[0]?.message?.content?.toLowerCase().includes('yes');
+            const escData = await escalationCheck.json().catch(() => ({}));
+            const escText = escData.choices?.[0]?.message?.content?.toLowerCase() || '';
+            shouldOfferEscalation = escText.includes('yes');
           } catch (err) {
             console.error('Escalation check failed:', err);
             shouldOfferEscalation = false;
@@ -876,6 +894,10 @@ Should we offer direct contact with Bart?`
         } catch (error) {
           console.error('Error logging question for corpus analysis:', error);
           // Don't fail the request if logging fails
+        }
+
+        if (archyPaid && sessionId) {
+          appendArchyThreadMemory(sessionId, { userLine: message, assistantLine: response }).catch(() => {});
         }
 
         return res.status(200).json({ 

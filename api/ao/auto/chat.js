@@ -16,6 +16,7 @@ import {
 } from '../../../lib/ao/publishWizardQuoteCards.js';
 import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishContentTypes.js';
 import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
+import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../lib/ao/corpusTldrReport.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -355,6 +356,41 @@ function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
   return hasDigit || deliver;
 }
 
+function extractCorpusTldrTopic(text) {
+  let s = String(text || '').trim();
+  s = s.replace(/^\s*corpus\s*[:.]?\s*/i, '');
+  s = s.replace(/\b(tl;?dr|tldr|briefing|brief|report)\s*[:.]?\s*/gi, '');
+  s = s.replace(/\boutline\s*[:.]?\s*/gi, '');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s.slice(0, 500);
+}
+
+function isCorpusOutlineOnly(text) {
+  const s = String(text || '').trim().toLowerCase();
+  return /\boutline\b/.test(s) && !/\btl;?dr\b|\btldr\b|\bbriefing\b/.test(s);
+}
+
+/** CORPUS research / TL;DR / outline (internal Auto — not public Archy). */
+function wantsCorpusTldrWork(text) {
+  if (wantsCorpusPullQuotes(text)) return false;
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+  if (!/\bcorpus\b/.test(s)) return false;
+  if (/\bpull[- ]?quotes?\b/.test(s)) return false;
+  if (/\btl;?dr\b|\btldr\b|\bbriefing\b|\boutline\b|\bcorpus\s+gap\b|\blandscape\b/.test(s)) return true;
+  if (/^corpus\s*[:.]/.test(s) && s.length > 12) return true;
+  if (/^corpus\s+/.test(s) && s.length > 15) return true;
+  return false;
+}
+
+function wantsQueueCorpusDraft(text) {
+  const s = String(text || '').trim().toLowerCase();
+  return (
+    /\b(save|queue|store)\b/.test(s) &&
+    /\b(draft|drafts|brief|tldr|report|corpus brief)\b/.test(s)
+  );
+}
+
 function wantsScoutFindings(text) {
   const s = String(text || '').trim().toLowerCase();
   if (!s) return false;
@@ -525,6 +561,8 @@ async function askModel({
 
   const prompt = `You are Auto inside AO Automation. Bart is the only user.
 
+You are NOT Archy. Archy is the public-facing assistant on the website; you are Auto — internal research and packaging for Bart and the automation team only. Never confuse those names in receipts or advice.
+
 Current mode: ${JSON.stringify(mode)}
 User asked not to refine / treat post as frozen: ${dontRefine ? 'YES — do not suggest edits; only package, plan, recall, or flag major risks if asked.' : 'no'}
 
@@ -620,6 +658,10 @@ export default async function handler(req, res) {
     if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
     if (looksLikePlanningOrDiscussionRequest(userMessage)) {
       nextMode = 'plan';
+    } else if (wantsCorpusTldrWork(userMessage)) {
+      nextMode = 'plan';
+    } else if (wantsQueueCorpusDraft(userMessage)) {
+      nextMode = 'plan';
     } else if (wantsCorpusPullQuotes(userMessage)) {
       nextMode = 'plan';
     } else if (wantsCorpusThemeSearch(userMessage)) {
@@ -629,6 +671,8 @@ export default async function handler(req, res) {
       !wantsScoutFindings(userMessage) &&
       !wantsCorpusPullQuotes(userMessage) &&
       !wantsCorpusThemeSearch(userMessage) &&
+      !wantsCorpusTldrWork(userMessage) &&
+      !wantsQueueCorpusDraft(userMessage) &&
       nextMode !== 'training' &&
       nextMode !== 'recall'
     ) {
@@ -734,6 +778,61 @@ export default async function handler(req, res) {
         lines.push('');
         lines.push('If you want, tell me which one to reuse and I’ll pull it into this session.');
         assistantMessage = lines.join('\n');
+      }
+    } else if (wantsQueueCorpusDraft(userMessage)) {
+      nextMode = 'plan';
+      let lastAssistant = '';
+      for (let i = existingMessages.length - 1; i >= 0; i -= 1) {
+        if (existingMessages[i].role === 'assistant') {
+          lastAssistant = String(existingMessages[i].content || '');
+          break;
+        }
+      }
+      if (!lastAssistant.trim()) {
+        assistantMessage =
+          'I don’t have a recent assistant message to save. Ask for a CORPUS TL;DR (or outline) first, then say something like “save this brief to drafts.”';
+      } else {
+        const ins = await supabaseAdmin
+          .from('ao_corpus_drafts')
+          .insert({
+            created_by_email: auth.email,
+            topic: 'Queued from Auto chat',
+            status: 'draft',
+            tldr_markdown: lastAssistant,
+            meta: { source: 'auto_chat' },
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .select('id')
+          .single();
+        if (ins.error) {
+          assistantMessage = String(ins.error.message || '').includes('ao_corpus_drafts')
+            ? 'The drafts queue isn’t set up in the database yet—your brief is still in this thread to copy. Run database/ao_corpus_and_archy.sql when ready.'
+            : `Could not save draft: ${ins.error.message}`;
+        } else {
+          receipts.push('Saved to corpus drafts queue');
+          assistantMessage =
+            'Saved the last assistant reply to your corpus drafts queue for review. Nothing goes public until you use the secured publish step (overlap-checked).';
+        }
+      }
+    } else if (wantsCorpusTldrWork(userMessage)) {
+      nextMode = 'plan';
+      const topic = extractCorpusTldrTopic(userMessage);
+      const outlineOnly = isCorpusOutlineOnly(userMessage);
+      const out = outlineOnly
+        ? await buildCorpusOutlineMarkdown({ topic, email: auth.email })
+        : await buildCorpusTldrMarkdown({ topic, email: auth.email });
+      receipts.push(outlineOnly ? 'Generated CORPUS outline (internal research)' : 'Generated CORPUS TL;DR (landscape / gaps / AO fit)');
+      if (out.ok && out.report) {
+        assistantMessage = [
+          outlineOnly ? 'Here is a CORPUS outline (internal research — not public):' : 'Here is your CORPUS TL;DR (internal research — not public):',
+          '',
+          out.report,
+          '',
+          'Tip: say “save this brief to drafts” to queue it for review, or refine the topic and ask again.',
+        ].join('\n');
+      } else {
+        assistantMessage = out.error || 'Could not generate CORPUS briefing.';
       }
     } else if (wantsScoutFindings(userMessage)) {
       nextMode = 'plan';
