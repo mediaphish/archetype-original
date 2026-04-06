@@ -16,6 +16,7 @@ import {
 } from '../../../lib/ao/publishWizardQuoteCards.js';
 import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishContentTypes.js';
 import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
+import { uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../lib/ao/corpusTldrReport.js';
 
 function safeText(v, maxLen = 0) {
@@ -334,6 +335,7 @@ function rebuildPublishCandidatesFromMessages(messages, corpusQuotes) {
           caption: String(p.caption || ''),
           caption_x: String(p.caption_x || ''),
           svg: p.svg || '',
+          image_url: String(p.image_url || ''),
         });
       })
       .filter(Boolean);
@@ -887,9 +889,17 @@ export default async function handler(req, res) {
             minimalVariant: 'dark',
             forceLightLogo: true,
           });
+          let quote_card_preview_image_url = null;
+          if (rendered.ok && rendered.svg) {
+            try {
+              const up = await uploadQuoteCardSvgToPublicUrl(rendered.svg, { subfolder: 'auto-hub-quote-cards' });
+              if (up.ok) quote_card_preview_image_url = up.publicUrl;
+            } catch (_) {}
+          }
           assistantMeta = {
             corpus_pull_quotes: corpus.quotes,
             quote_card_preview_svg: rendered.ok ? rendered.svg : null,
+            quote_card_preview_image_url,
           };
         } catch (_) {
           assistantMeta = { corpus_pull_quotes: corpus.quotes };
@@ -1026,8 +1036,14 @@ export default async function handler(req, res) {
             forceLightLogo: true,
           });
           if (rendered.ok) {
+            let image_url = '';
+            try {
+              const up = await uploadQuoteCardSvgToPublicUrl(rendered.svg, { subfolder: 'auto-hub-quote-cards' });
+              if (up.ok) image_url = up.publicUrl;
+            } catch (_) {}
             previews.push({
               svg: rendered.svg,
+              image_url,
               index: indices[i],
               caption: cap,
               caption_x: capX,
@@ -1040,6 +1056,7 @@ export default async function handler(req, res) {
           corpus_pull_quotes: allQuotes,
           quote_card_previews: previews,
           quote_card_preview_svg: previews[0]?.svg || null,
+          quote_card_preview_image_url: previews[0]?.image_url || null,
         };
         statePatch.publish_candidates = indices
           .map((n, i) => {
@@ -1053,6 +1070,7 @@ export default async function handler(req, res) {
               caption: captions[i] || '',
               caption_x: captionsX[i] || '',
               svg: pr?.svg || null,
+              image_url: pr?.image_url || '',
             });
           })
           .filter(Boolean);

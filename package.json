@@ -17,6 +17,7 @@
     "list-journal": "node scripts/manage-journal.mjs list",
     "test": "jest",
     "test:ali-lib": "node scripts/run-ali-lib-tests.mjs",
+    "test:quote-card-raster": "node scripts/quote-card-raster-golden.mjs",
     "test:e2e": "cypress run",
     "test:e2e:ali": "CYPRESS_BASE_URL=https://www.archetypeoriginal.com cypress run --spec cypress/e2e/ali/ali-links-nav.cy.js",
     "test:e2e:open": "cypress open",

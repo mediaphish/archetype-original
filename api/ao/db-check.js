@@ -89,6 +89,17 @@ export default async function handler(req, res) {
       }
     }
     try {
+      await checkSelect('id,quote_card_image_url');
+    } catch (e) {
+      const msg = errText(e);
+      if (hasAny(msg, ['quote_card_image_url'])) {
+        addMissing(
+          'database/ao_quote_review_queue_quote_card_image_url.sql',
+          'Missing quote card PNG URL (preview parity with social)'
+        );
+      }
+    }
+    try {
       await checkSelect('id,studio_playbook');
     } catch (e) {
       const msg = errText(e);

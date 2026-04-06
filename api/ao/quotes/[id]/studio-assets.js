@@ -10,6 +10,7 @@ import { editorCompose } from '../../../../lib/ao/editorCompose.js';
 import { renderQuoteCardSvg } from '../../../../lib/ao/quoteCardDesigner.js';
 import { getDefaultLogoUrl } from '../../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../../lib/ao/remoteAssetDataUrl.js';
+import { uploadQuoteCardSvgToPublicUrl } from '../../../../lib/ao/quoteCardImageUrl.js';
 
 function hasBrief(row) {
   return !!(row?.pull_quote && row?.why_it_matters && row?.summary_interpretation && row?.ao_lane);
@@ -71,6 +72,12 @@ export default async function handler(req, res) {
           quote_card_svg: rendered.svg,
           quote_card_caption: (row.quote_card_caption ?? composed.drafts_by_channel?.instagram) || null,
         };
+        try {
+          const up = await uploadQuoteCardSvgToPublicUrl(rendered.svg, { subfolder: 'studio-quote-cards' });
+          if (up.ok) quoteCard.quote_card_image_url = up.publicUrl;
+        } catch (_) {
+          /* parity PNG optional if storage fails */
+        }
       }
     }
 

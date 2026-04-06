@@ -675,6 +675,16 @@ export default function Writing() {
                   <div className="mt-3">
                     {openRow.quote_card_svg ? (
                       <>
+                        {openRow.quote_card_image_url && String(openRow.quote_card_image_url).startsWith('https://') ? (
+                          <div className="mb-3">
+                            <p className="text-xs text-gray-600 mb-2">Social preview (same PNG used when you schedule)</p>
+                            <img
+                              src={openRow.quote_card_image_url}
+                              alt=""
+                              className="w-full max-w-md border border-gray-200 rounded bg-black"
+                            />
+                          </div>
+                        ) : null}
                         <div className="border border-gray-200 rounded bg-white p-2 overflow-auto">
                           <div dangerouslySetInnerHTML={{ __html: openRow.quote_card_svg }} />
                         </div>
@@ -711,6 +721,16 @@ export default function Writing() {
                   <div className="text-sm font-semibold text-gray-900 mb-2">Quote card</div>
                   {openRow.quote_card_svg ? (
                     <>
+                      {openRow.quote_card_image_url && String(openRow.quote_card_image_url).startsWith('https://') ? (
+                        <div className="mb-3">
+                          <p className="text-xs text-gray-600 mb-2">Social preview (same PNG used when you schedule)</p>
+                          <img
+                            src={openRow.quote_card_image_url}
+                            alt=""
+                            className="w-full max-w-md border border-gray-200 rounded bg-black"
+                          />
+                        </div>
+                      ) : null}
                       <div className="border border-gray-200 rounded bg-white p-2 overflow-auto">
                         <div dangerouslySetInnerHTML={{ __html: openRow.quote_card_svg }} />
                       </div>

@@ -103,9 +103,12 @@ export default async function handler(req, res) {
     for (let i = 0; i < items.length; i += 1) {
       const when = new Date(start.getTime() + i * gapDays * 86400000);
       const item = items[i];
+      let imageUrl = String(item.quote_card_image_url || '').trim();
+      if (imageUrl && !/^https:\/\//i.test(imageUrl)) {
+        imageUrl = '';
+      }
       const svg = String(item.quote_card_svg || '').trim();
-      let imageUrl = null;
-      if (svg) {
+      if (!imageUrl && svg) {
         const up = await uploadQuoteCardSvgToPublicUrl(svg, { subfolder: 'weekly-pull-quote-cards' });
         if (!up.ok) {
           return res.status(500).json({ ok: false, error: up.error || 'Could not create image for quote card' });

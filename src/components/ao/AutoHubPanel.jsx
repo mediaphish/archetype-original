@@ -445,11 +445,12 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
           const linked = attachmentsByMessage.get(m.id) || [];
           const multiPreviews = Array.isArray(m.meta?.quote_card_previews) ? m.meta.quote_card_previews : null;
           const previewSvg = m.meta?.quote_card_preview_svg;
+          const previewPng = m.meta?.quote_card_preview_image_url;
           const cardBlocks =
             multiPreviews && multiPreviews.length
               ? multiPreviews
               : previewSvg
-                ? [{ svg: previewSvg, caption: '', index: 1 }]
+                ? [{ svg: previewSvg, image_url: previewPng, caption: '', index: 1 }]
                 : [];
           return (
             <div key={m.id} className={isAssistant ? '' : 'text-right'}>
@@ -480,9 +481,16 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
                             {block.caption}
                           </div>
                         ) : null}
+                        {block.image_url ? (
+                          <div className="text-[11px] text-gray-500 mt-1">Preview matches the image sent to social (server PNG).</div>
+                        ) : null}
                       </div>
                       <img
-                        src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(block.svg)}`}
+                        src={
+                          block.image_url && String(block.image_url).startsWith('https://')
+                            ? block.image_url
+                            : `data:image/svg+xml;charset=utf-8,${encodeURIComponent(block.svg)}`
+                        }
                         alt={block.caption ? 'Quote card with caption' : 'Quote card preview'}
                         className="w-full h-auto block"
                       />

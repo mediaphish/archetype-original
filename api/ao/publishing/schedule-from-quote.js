@@ -52,9 +52,12 @@ export default async function handler(req, res) {
     const draftsByChannel = quote.drafts_by_channel && typeof quote.drafts_by_channel === 'object' ? quote.drafts_by_channel : {};
     const firstByChannel = quote.first_comment_suggestions && typeof quote.first_comment_suggestions === 'object' ? quote.first_comment_suggestions : {};
 
-    let sharedImageUrl = null;
+    let sharedImageUrl = String(quote.quote_card_image_url || '').trim();
+    if (sharedImageUrl && !/^https:\/\//i.test(sharedImageUrl)) {
+      sharedImageUrl = '';
+    }
     const svg = String(quote.quote_card_svg || '').trim();
-    if (svg) {
+    if (!sharedImageUrl && svg) {
       const up = await uploadQuoteCardSvgToPublicUrl(svg, { subfolder: 'studio-quote-cards' });
       if (!up.ok) {
         return res.status(500).json({ ok: false, error: up.error || 'Could not create image for quote card' });

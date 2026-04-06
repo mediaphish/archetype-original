@@ -1143,7 +1143,13 @@ export default function Review() {
                           <div className="space-y-4">
                             {q.studio_playbook.weekly_corpus_pull.items.map((it, idx) => (
                               <div key={idx} className="border border-gray-100 rounded-lg overflow-hidden bg-neutral-50">
-                                {it.quote_card_svg ? (
+                                {it.quote_card_image_url && String(it.quote_card_image_url).startsWith('https://') ? (
+                                  <img
+                                    src={it.quote_card_image_url}
+                                    alt=""
+                                    className="w-full max-w-md mx-auto block border border-gray-200 bg-black"
+                                  />
+                                ) : it.quote_card_svg ? (
                                   <img
                                     src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(it.quote_card_svg)}`}
                                     alt=""
