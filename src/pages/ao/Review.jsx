@@ -1266,7 +1266,6 @@ export default function Review() {
               )}
             </>
           )}
-        </div>
       </main>
 
       {workroomOpen ? (
