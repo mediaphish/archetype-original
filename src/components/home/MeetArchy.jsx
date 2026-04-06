@@ -128,15 +128,15 @@ export default function MeetArchy() {
         </div>
       </section>
 
-      {/* Chat Overlay - Opens when form is submitted */}
+      {/* Chat Overlay — full-width sheet on phone, centered card on md+ */}
       {isChatOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/50 pointer-events-auto">
-          <div className="w-full md:w-[55%] h-[85vh] max-h-[800px] pointer-events-auto flex flex-col">
-            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-8 bg-black/50 pointer-events-auto">
+          <div className="w-full md:w-[55%] md:max-w-3xl h-[min(92dvh,100dvh)] md:h-[85vh] md:max-h-[800px] pointer-events-auto flex flex-col max-h-[100dvh]">
+            <div className="bg-white rounded-t-2xl md:rounded-2xl shadow-2xl h-full min-h-0 flex flex-col overflow-hidden pt-[max(0.5rem,env(safe-area-inset-top))]">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0 bg-white">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-10 h-10">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 flex-shrink-0 bg-white">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="relative w-10 h-10 flex-shrink-0">
                     <OptimizedImage
                       src="/images/archy-avatar.png"
                       alt="Archy"
@@ -145,18 +145,19 @@ export default function MeetArchy() {
                       height={40}
                     />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
                     <p className="text-xs text-gray-500">AI Leadership Assistant</p>
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => {
                     setIsChatOpen(false);
                     setInitialMessage('');
                     setInputValue('');
                   }}
-                  className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors p-2 rounded-lg"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors rounded-lg flex-shrink-0"
                   aria-label="Close chat"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,7 +167,7 @@ export default function MeetArchy() {
               </div>
 
               {/* Chat Content */}
-              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+              <div className="flex-1 min-h-0 overflow-hidden flex flex-col bg-gray-50">
                 <ChatApp context="home" initialMessage={initialMessage} />
               </div>
             </div>

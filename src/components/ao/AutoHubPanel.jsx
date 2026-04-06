@@ -349,15 +349,15 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   }, [savingDraft, startingNew, sending, loading]);
 
   return (
-    <section className="mb-6 border border-gray-200 rounded-xl bg-white shadow-sm">
-      <div className="px-4 py-4 border-b border-gray-200 flex items-start justify-between gap-3">
-        <div>
+    <section className="mb-6 border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden">
+      <div className="px-4 py-4 border-b border-gray-200 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
+        <div className="min-w-0">
           <div className="text-2xl font-bold text-gray-900">Auto</div>
           <div className="text-sm text-gray-600 mt-1">
             Internal research and packaging — not the public Archy chat. One conversation at a time; use New chat for a clean thread.
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2 justify-end">
+        <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 lg:flex-wrap lg:justify-end lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0">
           <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
             Mode: {modeLabel(thread?.current_mode)}
           </span>
@@ -549,7 +549,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
                         <div className="mt-1 text-xs text-gray-600">{a.label || a.file_name}</div>
                       </div>
                     ) : (
-                      <div key={a.id} className="border border-gray-200 rounded-lg bg-white p-2 max-w-[220px] text-left">
+                      <div key={a.id} className="border border-gray-200 rounded-lg bg-white p-2 max-w-[min(220px,85vw)] text-left">
                         <div className="text-xs font-semibold text-gray-900">{a.label || a.file_name}</div>
                         <div className="mt-1 text-xs text-gray-600 whitespace-pre-wrap">
                           {safeText(a.extracted_text, 180) || 'Text file'}

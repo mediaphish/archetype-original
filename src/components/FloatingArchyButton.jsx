@@ -89,13 +89,13 @@ export default function FloatingArchyButton() {
         />
       </button>
 
-      {/* Chat Overlay - Opens when button is clicked */}
+      {/* Chat Overlay — full-width bottom sheet on small screens; card on md+ */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-end p-4 md:p-8 pointer-events-none">
-          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
-            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-end justify-center md:items-end md:justify-end md:p-8 pointer-events-none">
+          <div className="w-full md:max-w-xl h-[min(92dvh,100dvh)] md:h-[85vh] md:max-h-[700px] pointer-events-auto flex flex-col max-h-[100dvh]">
+            <div className="bg-white rounded-t-2xl md:rounded-2xl shadow-2xl h-full min-h-0 flex flex-col overflow-hidden border border-gray-200/80 md:border-0 pt-[max(0.5rem,env(safe-area-inset-top))]">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+              <div className="flex items-center justify-between px-4 pb-3 pt-0 border-b border-gray-200 flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="relative w-10 h-10">
                     <OptimizedImage
@@ -123,7 +123,7 @@ export default function FloatingArchyButton() {
               </div>
 
               {/* Chat Content */}
-              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+              <div className="flex-1 min-h-0 overflow-hidden flex flex-col p-0 bg-gray-50">
                 <ChatApp context={context} />
               </div>
             </div>

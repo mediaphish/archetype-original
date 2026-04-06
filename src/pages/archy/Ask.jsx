@@ -33,8 +33,8 @@ export default function Ask() {
         <section className="bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
 
-          {/* ChatApp Wrapper - Do NOT modify ChatApp logic */}
-          <div className="max-w-4xl mx-auto">
+          {/* ChatApp Wrapper — give flex height on mobile so messages + input layout works */}
+          <div className="max-w-4xl mx-auto min-h-[min(70vh,640px)] flex flex-col rounded-lg border border-[#1A1A1A]/10 overflow-hidden bg-white">
             <ChatApp />
           </div>
           </div>

@@ -99,8 +99,8 @@ export default function ContactPage() {
                 </div>
 
                 {/* Embedded Archy Chat Interface */}
-                <div className="flex-1 flex flex-col min-h-[400px] sm:min-h-[500px] max-h-[500px] sm:max-h-[600px] border border-[#1A1A1A]/10 rounded-md overflow-hidden">
-                  <div className="h-full">
+                <div className="flex-1 flex flex-col min-h-[min(70vh,520px)] sm:min-h-[500px] max-h-[min(75vh,640px)] sm:max-h-[600px] border border-[#1A1A1A]/10 rounded-md overflow-hidden">
+                  <div className="h-full min-h-0 flex flex-col">
                     <ChatApp key={chatKey} context="contact" initialMessage={archyInitialMessage} />
                   </div>
                 </div>

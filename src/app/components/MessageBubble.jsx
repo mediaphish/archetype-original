@@ -107,14 +107,22 @@ export default function MessageBubble({ message, isUser = false, showButtons = f
   const renderedMessage = isUser ? message : parseMarkdown(message);
   
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6 px-2`}>
-      <div className={`max-w-[60%] ${isUser ? 'text-right' : 'text-left'}`}>
-        <div className={`flex ${isUser ? 'flex-row-reverse' : 'flex-row'} gap-3`}>
+    <div className={`flex w-full min-w-0 ${isUser ? 'justify-end' : 'justify-start'} mb-6 px-1 sm:px-2`}>
+      <div
+        className={
+          isUser
+            ? 'w-fit max-w-[min(92%,36rem)] text-right'
+            : 'w-full max-w-[min(100%,36rem)] sm:max-w-[min(92%,36rem)] text-left'
+        }
+      >
+        <div
+          className={`flex items-start gap-2 sm:gap-3 ${isUser ? 'flex-row-reverse w-fit max-w-full' : 'flex-row w-full'}`}
+        >
           {!isUser && (
             <OptimizedImage
               src="/images/archy-avatar.png"
               alt="Archy"
-              className="w-10 h-10 rounded-full flex-shrink-0 object-cover border-0"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 object-cover border-0 mt-0.5"
               width={40}
               height={40}
               onError={(e) => {
@@ -122,17 +130,19 @@ export default function MessageBubble({ message, isUser = false, showButtons = f
               }}
             />
           )}
-          <div className={`px-4 py-3 rounded-2xl ${isUser 
-            ? 'bg-amber text-white rounded-br-md' 
-            : 'bg-warm-offWhiteAlt text-warm-charcoal rounded-bl-md border border-warm-border'
-          }`}>
+          <div
+            className={`min-w-0 px-4 py-3 rounded-2xl break-words ${isUser ? 'max-w-[min(92vw,36rem)]' : 'flex-1'} ${isUser
+              ? 'bg-amber text-white rounded-br-md'
+              : 'bg-warm-offWhiteAlt text-warm-charcoal rounded-bl-md border border-warm-border'
+            }`}
+          >
             {isUser ? (
-              <p className="text-base sm:text-lg whitespace-pre-wrap leading-relaxed" style={{ lineHeight: '1.6' }}>
+              <p className="text-base sm:text-lg whitespace-pre-wrap leading-relaxed break-words" style={{ lineHeight: '1.6' }}>
                 {message}
               </p>
             ) : (
-              <div 
-                className="text-base sm:text-lg leading-relaxed" 
+              <div
+                className="text-base sm:text-lg leading-relaxed break-words [&_a]:break-all"
                 style={{ lineHeight: '1.6' }}
                 dangerouslySetInnerHTML={{ __html: renderedMessage }}
               />

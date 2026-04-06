@@ -590,12 +590,12 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white relative chat-container">
-      <div className="flex-1 flex flex-col w-full mx-auto px-4 md:px-6 h-full">
-        {/* Messages Area - Scrollable container with fixed height */}
-        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto min-h-0" style={{ maxHeight: 'calc(100% - 120px)' }}>
+    <div className="h-full min-h-0 flex flex-col bg-white relative chat-container">
+      <div className="flex-1 flex flex-col w-full mx-auto px-3 sm:px-4 md:px-6 min-h-0 h-full">
+        {/* Messages — flex-1 scrolls; no fixed pixel max height (breaks on short mobile viewports) */}
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
           {messages.length > 0 && (
-            <div className="py-8">
+            <div className="py-4 md:py-8">
               {messages.map((message, index) => (
                 <MessageBubble
                   key={index}
@@ -645,8 +645,8 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
           )}
         </div>
 
-        {/* Input Area - Fixed at bottom */}
-        <div className="flex-shrink-0 w-full p-4 bg-white border-t border-gray-200">
+        {/* Input Area - Fixed at bottom; safe area for home indicator on iOS */}
+        <div className="flex-shrink-0 w-full px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white border-t border-gray-200">
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 

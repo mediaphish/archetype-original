@@ -851,7 +851,7 @@ export default function Review() {
           </div>
         ) : null}
 
-        <div className="mb-6 border-b border-gray-200">
+        <div className="mb-6 border-b border-gray-200 -mx-1 px-1 sm:mx-0 sm:px-0">
           <div className="flex gap-2 overflow-x-auto pb-2 -mb-px">
             {TABS.map(({ key, label }) => (
               <button
