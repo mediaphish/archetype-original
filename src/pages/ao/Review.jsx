@@ -213,7 +213,7 @@ function buildUseIdeasBullets(q) {
 }
 
 const TABS = [
-  { key: 'social', label: 'Inbox' },
+  { key: 'drafts', label: 'Drafts' },
   { key: 'held', label: 'Held' },
   { key: 'profiles', label: 'Profiles' },
 ];
@@ -221,7 +221,7 @@ const TABS = [
 export default function Review() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
-  const [activeTab, setActiveTab] = useState('social');
+  const [activeTab, setActiveTab] = useState('drafts');
   const [quotes, setQuotes] = useState([]);
   const [quotesPage, setQuotesPage] = useState({ status: 'pending', limit: 10, offset: 0, total: null });
   const [pageSize, setPageSize] = useState(10);
@@ -234,17 +234,11 @@ export default function Review() {
   const [acting, setActing] = useState(null);
   const [actionError, setActionError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
-  const [briefPrep, setBriefPrep] = useState({ running: false, total: 0, done: 0 });
-  // Track last brief attempt per item so "not ready yet" can retry later.
-  const preparingRef = useRef(new Map()); // id -> lastAttemptMs
-  const [briefRetryPulse, setBriefRetryPulse] = useState(0);
-  const BRIEF_RETRY_COOLDOWN_MS = 60_000;
-  const BRIEF_PULSE_MS = 25_000;
 
-  // Scan/run visibility (so you can tell if "today" ran yet).
-  const [runInfo, setRunInfo] = useState(null);
-
-  const [deleteThroughDate, setDeleteThroughDate] = useState('');
+  const [autoDrafts, setAutoDrafts] = useState([]);
+  const [draftsLoading, setDraftsLoading] = useState(false);
+  const [draftActingId, setDraftActingId] = useState(null);
+  const [autoHubKey, setAutoHubKey] = useState(0);
 
   // Profiles (Phase 2 starter): people/brands view inside Analyst
   const [profilesLoading, setProfilesLoading] = useState(false);
@@ -696,24 +690,91 @@ export default function Review() {
 
   useEffect(() => {
     if (!authChecked) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch('/api/ao/automation-status');
-        const json = await res.json().catch(() => ({}));
-        if (!cancelled && res.ok && json.ok) {
-          setRunInfo(json);
-        }
-      } catch (_) {}
-    })();
-    return () => { cancelled = true; };
-  }, [authChecked]);
-
-  useEffect(() => {
-    if (!authChecked) return;
     if (activeTab !== 'profiles') return;
     loadProfilesPeople();
   }, [authChecked, activeTab, loadProfilesPeople]);
+
+  const loadAutoDrafts = useCallback(async () => {
+    if (!authChecked) return;
+    setDraftsLoading(true);
+    try {
+      const res = await fetch('/api/ao/auto/drafts');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok && Array.isArray(json.drafts)) {
+        setAutoDrafts(json.drafts);
+      } else {
+        setAutoDrafts([]);
+      }
+    } catch (_) {
+      setAutoDrafts([]);
+    } finally {
+      setDraftsLoading(false);
+    }
+  }, [authChecked]);
+
+  useEffect(() => {
+    if (!authChecked || activeTab !== 'drafts') return;
+    loadAutoDrafts();
+  }, [authChecked, activeTab, loadAutoDrafts]);
+
+  useEffect(() => {
+    const onSaved = () => {
+      loadAutoDrafts();
+    };
+    window.addEventListener('ao-auto-draft-saved', onSaved);
+    return () => window.removeEventListener('ao-auto-draft-saved', onSaved);
+  }, [loadAutoDrafts]);
+
+  const resumeAutoDraft = useCallback(
+    async (threadId) => {
+      const id = String(threadId || '').trim();
+      if (!id) return;
+      setDraftActingId(id);
+      setActionError('');
+      try {
+        const res = await fetch('/api/ao/auto/thread/resume', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ thread_id: id }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Could not open draft');
+        setAutoHubKey((k) => k + 1);
+        setActionMessage('Draft opened in Auto above.');
+        try {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (_) {}
+      } catch (e) {
+        setActionError(e.message || 'Could not open draft');
+      } finally {
+        setDraftActingId(null);
+      }
+    },
+    []
+  );
+
+  const deleteAutoDraft = useCallback(
+    async (threadId) => {
+      const id = String(threadId || '').trim();
+      if (!id) return;
+      const ok = window.confirm('Are you sure you want to delete this draft?');
+      if (!ok) return;
+      setDraftActingId(id);
+      setActionError('');
+      try {
+        const res = await fetch(`/api/ao/auto/thread/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Could not delete draft');
+        setActionMessage('Draft deleted.');
+        await loadAutoDrafts();
+      } catch (e) {
+        setActionError(e.message || 'Could not delete draft');
+      } finally {
+        setDraftActingId(null);
+      }
+    },
+    [loadAutoDrafts]
+  );
 
   useEffect(() => {
     if (!authChecked) return;
@@ -745,80 +806,6 @@ export default function Review() {
     return () => { cancelled = true; };
   }, [authChecked, email, pageSize, pageOffset, heldOffset]);
 
-  const needsBrief = useCallback((q) => {
-    if (!q) return false;
-    // If key Analyst fields are missing, it’s not decision-ready yet.
-    return !(q.why_it_matters && q.summary_interpretation && q.ao_lane && q.best_move);
-  }, []);
-
-  // Background: prepare a few briefs automatically so Analyst is decision-ready when you arrive.
-  useEffect(() => {
-    if (!authChecked) return;
-    if (activeTab !== 'social') return;
-    if (!Array.isArray(quotes) || quotes.length === 0) return;
-
-    const stillNeedingCount = quotes
-      .filter((q) => q && q.status === 'pending')
-      .filter((q) => needsBrief(q)).length;
-
-    const candidates = quotes
-      .filter((q) => q && q.status === 'pending')
-      .filter((q) => needsBrief(q))
-      .filter((q) => {
-        const last = preparingRef.current.get(q.id);
-        if (!last) return true;
-        return (Date.now() - Number(last || 0)) > BRIEF_RETRY_COOLDOWN_MS;
-      })
-      .slice(0, 10);
-
-    let pulseTimer = null;
-    if (stillNeedingCount > 0) {
-      pulseTimer = setTimeout(() => setBriefRetryPulse((x) => x + 1), BRIEF_PULSE_MS);
-    }
-    if (candidates.length === 0) {
-      return () => {
-        if (pulseTimer) clearTimeout(pulseTimer);
-      };
-    }
-
-    let cancelled = false;
-    setBriefPrep({ running: true, total: candidates.length, done: 0 });
-
-    (async () => {
-      let done = 0;
-      let notReadyCount = 0;
-      for (const q of candidates) {
-        if (cancelled) break;
-        preparingRef.current.set(q.id, Date.now());
-        try {
-          const res = await fetch(`/api/ao/quotes/${q.id}/brief`, { method: 'POST' });
-          const json = await res.json().catch(() => ({}));
-          if (res.ok && json.ok && json.quote) {
-            setQuotes((prev) => prev.map((x) => (x.id === q.id ? json.quote : x)));
-          }
-          if (res.ok && json.ok && json.removed) {
-            setQuotes((prev) => prev.filter((x) => x.id !== q.id));
-          }
-          if (res.ok && json && json.not_ready) {
-            notReadyCount += 1;
-          }
-        } catch (_) {}
-        done += 1;
-        if (!cancelled) setBriefPrep((p) => ({ ...p, done }));
-      }
-      if (!cancelled && notReadyCount > 0) {
-        setActionMessage('Some items are still preparing. I’ll keep trying automatically — refresh is optional.');
-      }
-      if (!cancelled) setBriefPrep((p) => ({ ...p, running: false }));
-    })();
-
-    return () => {
-      cancelled = true;
-      if (pulseTimer) clearTimeout(pulseTimer);
-    };
-  }, [authChecked, activeTab, quotes, needsBrief, briefRetryPulse]);
-
-  const pendingQuotes = quotes.filter((q) => q.status === 'pending');
   const heldList = heldQuotes.filter((q) => q.status === 'held');
 
   useEffect(() => {
@@ -834,9 +821,6 @@ export default function Review() {
   }, [quotes, heldQuotes, openWorkroomForQuote]);
 
 
-  const canPrev = pageOffset > 0;
-  const canNext = typeof quotesPage.total === 'number' ? (pageOffset + pageSize) < quotesPage.total : pendingQuotes.length === pageSize;
-
   const canHeldPrev = heldOffset > 0;
   const canHeldNext = typeof heldPage.total === 'number' ? (heldOffset + pageSize) < heldPage.total : heldList.length === pageSize;
 
@@ -844,170 +828,18 @@ export default function Review() {
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-44 md:pb-8">
-        <AutoHubPanel onNavigate={handleNavigate} inboxAnchorId="auto-inbox" />
+        <AutoHubPanel key={autoHubKey} onNavigate={handleNavigate} draftsAnchorId="auto-drafts" />
 
-        <div className="flex items-start justify-between gap-3 mb-2">
-          <h1 className="text-3xl font-bold text-gray-900">Inbox</h1>
-          <div className="flex items-center gap-2">
-            {activeTab === 'social' ? (
-              <button
-                type="button"
-                onClick={async () => {
-                  const ok = window.confirm('Clear all pending items from your Inbox? (They will not be rejected.)');
-                  if (!ok) return;
-                  setActionError('');
-                  setActionMessage('');
-                  try {
-                    const res = await fetch('/api/ao/quotes/flush-pending', { method: 'POST' });
-                    const json = await res.json().catch(() => ({}));
-                    if (!res.ok || !json.ok) throw new Error(json.error || 'Could not clear pending items');
-                    setActionMessage('Inbox cleared.');
-                    window.location.reload();
-                  } catch (e) {
-                    setActionError(e.message || 'Could not clear pending items');
-                  }
-                }}
-                className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold hover:bg-gray-50"
-              >
-                Clear inbox
-              </button>
-            ) : null}
-            {activeTab === 'social' ? (
-              <div className="flex items-center gap-2">
-                <input
-                  type="date"
-                  value={deleteThroughDate}
-                  onChange={(e) => setDeleteThroughDate(e.target.value)}
-                  className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const d = String(deleteThroughDate || '').trim();
-                    if (!d) {
-                      setActionError('Pick a date first.');
-                      return;
-                    }
-                    const ok = window.confirm(`Delete pending items found on or before ${d}? (This cannot be undone.)`);
-                    if (!ok) return;
-                    setActionError('');
-                    setActionMessage('');
-                    try {
-                      const res = await fetch('/api/ao/quotes/purge', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mode: 'delete_pending_through_date', through_date: d }),
-                      });
-                      const json = await res.json().catch(() => ({}));
-                      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not delete pending items');
-                      setActionMessage('Pending items deleted.');
-                      window.location.reload();
-                    } catch (e) {
-                      setActionError(e.message || 'Could not delete pending items');
-                    }
-                  }}
-                  className="min-h-[44px] px-3 py-2 rounded-lg border border-red-300 bg-white text-sm font-semibold text-red-700 hover:bg-red-50"
-                >
-                  Delete through
-                </button>
-              </div>
-            ) : null}
-            {activeTab === 'social' ? (
-              <button
-                type="button"
-                onClick={async () => {
-                  const ok = window.confirm('Delete cleared items forever? (This cannot be undone.)');
-                  if (!ok) return;
-                  setActionError('');
-                  setActionMessage('');
-                  try {
-                    const res = await fetch('/api/ao/quotes/purge', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ mode: 'delete_cleared' }),
-                    });
-                    const json = await res.json().catch(() => ({}));
-                    if (!res.ok || !json.ok) throw new Error(json.error || 'Could not delete cleared items');
-                    setActionMessage('Cleared items deleted.');
-                    window.location.reload();
-                  } catch (e) {
-                    setActionError(e.message || 'Could not delete cleared items');
-                  }
-                }}
-                className="min-h-[44px] px-3 py-2 rounded-lg border border-red-300 bg-white text-sm font-semibold text-red-700 hover:bg-red-50"
-              >
-                Delete cleared
-              </button>
-            ) : null}
-            {activeTab === 'social' ? (
-              <button
-                type="button"
-                onClick={async () => {
-                  const ok = window.confirm('Flush EVERYTHING today (Pending + Held + Approved + Cleared)? This cannot be undone.');
-                  if (!ok) return;
-                  setActionError('');
-                  setActionMessage('');
-                  try {
-                    const res = await fetch('/api/ao/quotes/purge', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ mode: 'flush_everything_today' }),
-                    });
-                    const json = await res.json().catch(() => ({}));
-                    if (!res.ok || !json.ok) throw new Error(json.error || 'Could not flush items');
-                    setActionMessage('System flushed.');
-                    window.location.reload();
-                  } catch (e) {
-                    setActionError(e.message || 'Could not flush items');
-                  }
-                }}
-                className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700"
-              >
-                Flush today
-              </button>
-            ) : null}
-          </div>
+        <div className="mb-2">
+          <h1 className="text-3xl font-bold text-gray-900">
+            {activeTab === 'drafts' ? 'Drafts' : activeTab === 'held' ? 'Held' : 'Profiles'}
+          </h1>
+          {activeTab === 'drafts' ? (
+            <p className="text-gray-600 mt-1 text-sm">
+              Saved Auto conversations. Use <strong>Edit</strong> to continue in the chat above, or <strong>Delete</strong> to remove one draft forever.
+            </p>
+          ) : null}
         </div>
-        <p className="text-gray-600 mb-4">Decision desk: Auto is your front door. The inbox stays here when you want to review opportunities directly.</p>
-        {runInfo?.ok ? (
-          <div className="mb-6 p-3 rounded border border-gray-200 bg-white text-sm text-gray-800">
-            <div className="font-semibold text-gray-900">Run status</div>
-            <div className="mt-1 text-gray-700">
-              Last external run:{' '}
-              {runInfo?.last_external?.finished_at || runInfo?.last_external?.started_at
-                ? new Date(runInfo.last_external.finished_at || runInfo.last_external.started_at).toLocaleString()
-                : '—'}
-              {runInfo?.last_external ? (
-                <span className="text-gray-600">
-                  {' '}
-                  · Found {Number(runInfo.last_external.candidates_found || 0)} · Added {Number(runInfo.last_external.candidates_inserted || 0)}
-                  {runInfo.last_external.error_message ? ` · Error: ${runInfo.last_external.error_message}` : ''}
-                </span>
-              ) : null}
-            </div>
-            <div className="mt-1 text-gray-700">
-              Last daily run:{' '}
-              {runInfo?.last_daily?.finished_at || runInfo?.last_daily?.started_at
-                ? new Date(runInfo.last_daily.finished_at || runInfo.last_daily.started_at).toLocaleString()
-                : '—'}
-              {runInfo?.last_daily ? (
-                <span className="text-gray-600">
-                  {' '}
-                  · Found {Number(runInfo.last_daily.candidates_found || 0)} · Added {Number(runInfo.last_daily.candidates_inserted || 0)}
-                  {runInfo.last_daily.error_message ? ` · Error: ${runInfo.last_daily.error_message}` : ''}
-                </span>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
-        {briefPrep.running ? (
-          <div className="mb-6 p-3 rounded border border-blue-200 bg-blue-50 text-blue-900 text-sm flex items-center justify-between gap-3">
-            <span>
-              Preparing Analyst briefs in the background… {briefPrep.done}/{briefPrep.total}
-            </span>
-            <span className="text-xs text-blue-800">You can keep reviewing while this runs.</span>
-          </div>
-        ) : null}
         {actionError ? (
           <div className="mb-6 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
             {actionError}
@@ -1040,253 +872,58 @@ export default function Review() {
           </div>
         </div>
 
-        <div id="auto-inbox" className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8">
-          {loading ? (
-            <LoadingSpinner />
-          ) : activeTab === 'social' && (
-            <>
-              <p className="text-gray-600 text-sm mb-4">
-                First comment supported on: Facebook Page, Instagram, LinkedIn, X. You can add, edit, or remove an optional first comment in <button type="button" onClick={() => handleNavigate('/ao/publisher')} className="text-blue-600 hover:underline">Publisher</button> when scheduling posts.
-              </p>
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <span className="font-medium">Show</span>
-                  <select
-                    value={String(pageSize >= 200 ? 'all' : pageSize)}
-                    onChange={(e) => {
-                      const v = String(e.target.value);
-                      const n = v === 'all' ? 200 : Number.parseInt(v, 10);
-                      setPageSize(Number.isFinite(n) ? n : 10);
-                      setPageOffset(0);
-                    }}
-                    className="border border-gray-300 rounded px-2 py-1 text-sm bg-white"
-                  >
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                    <option value="all">All</option>
-                  </select>
-                  <span>per page</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    disabled={!canPrev}
-                    onClick={() => setPageOffset((x) => Math.max(0, x - pageSize))}
-                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
-                  >
-                    Prev
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!canNext}
-                    onClick={() => setPageOffset((x) => x + pageSize)}
-                    className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
-                  >
-                    Next
-                  </button>
-                  {typeof quotesPage.total === 'number' ? (
-                    <span className="text-xs text-gray-500">
-                      {Math.min(quotesPage.total, pageOffset + 1)}–{Math.min(quotesPage.total, pageOffset + pendingQuotes.length)} of {quotesPage.total}
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-              {pendingQuotes.length === 0 ? (
-                <p className="text-gray-500">
-                  No pending social items. Run a scan in Scout to add candidates. When the weekly corpus job runs (Mondays), approved pull-quote bundles with cards and captions can show up here for your review.
-                </p>
-              ) : (
-                <ul className="space-y-4">
-                  {pendingQuotes.map((q) => (
-                    <li key={q.id} className="border border-gray-200 rounded p-4 bg-white">
-                      <div className="flex items-center gap-2">
-                        <div className="text-xs text-gray-500 uppercase tracking-wide">{whatItIsLabel(q)}</div>
-                        {competitorLabel(q) ? (
-                          <span className={`text-[11px] px-2 py-0.5 rounded border ${competitorLabel(q) === 'Competitor' ? 'bg-red-50 text-red-800 border-red-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
-                            {competitorLabel(q)}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      <div className="mt-1 text-base font-semibold text-gray-900">
-                        {q.source_title || q.source_name || (q.is_internal ? 'AO internal' : 'External')}
-                      </div>
-
-                      <div className="mt-1 text-sm text-gray-700">
-                        <span className="font-medium text-gray-900">
-                          {q.source_name || (q.is_internal ? 'Archetype Original' : 'External')}
-                        </span>
-                        {q.created_at ? (
-                          <span className="text-gray-500"> · Found {fmtFoundShort(q.created_at)}</span>
-                        ) : null}
-                        {safeUrl(q.source_url || q.source_slug_or_url) ? (
-                          <>
-                            {' '}
-                            ·{' '}
-                            <a
-                              className="text-blue-700 hover:underline"
-                              href={safeUrl(q.source_url || q.source_slug_or_url)}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              open
-                            </a>
-                          </>
-                        ) : null}
-                      </div>
-
-                      {q.studio_playbook?.weekly_corpus_pull?.items?.length ? (
-                        <div className="mt-4 border-t border-gray-100 pt-4">
-                          <div className="text-xs font-semibold text-gray-900 mb-2">Weekly pull quotes — cards and captions (review)</div>
-                          <div className="space-y-4">
-                            {q.studio_playbook.weekly_corpus_pull.items.map((it, idx) => (
-                              <div key={idx} className="border border-gray-100 rounded-lg overflow-hidden bg-neutral-50">
-                                {it.quote_card_image_url && String(it.quote_card_image_url).startsWith('https://') ? (
-                                  <img
-                                    src={it.quote_card_image_url}
-                                    alt=""
-                                    className="w-full max-w-md mx-auto block border border-gray-200 bg-black"
-                                  />
-                                ) : it.quote_card_svg ? (
-                                  <img
-                                    src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(it.quote_card_svg)}`}
-                                    alt=""
-                                    className="w-full max-w-md mx-auto block"
-                                  />
-                                ) : null}
-                                <div className="p-3 text-[15px] sm:text-base text-gray-900 whitespace-pre-wrap leading-relaxed">{it.caption}</div>
-                              </div>
-                            ))}
-                          </div>
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              disabled={acting === q.id}
-                              onClick={async () => {
-                                setActing(q.id);
-                                setActionError('');
-                                setActionMessage('');
-                                try {
-                                  const res = await fetch('/api/ao/publishing/schedule-weekly-pull-bundle', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ quote_id: q.id }),
-                                  });
-                                  const json = await res.json().catch(() => ({}));
-                                  if (!res.ok || !json.ok) throw new Error(json.error || 'Schedule failed');
-                                  setActionMessage(json.message || 'Queued for your channels.');
-                                  setQuotes((prev) => prev.filter((x) => x.id !== q.id));
-                                } catch (e) {
-                                  setActionError(e.message || 'Failed');
-                                } finally {
-                                  setActing(null);
-                                }
-                              }}
-                              className="min-h-[44px] px-4 py-2 rounded-lg bg-green-700 text-white text-sm font-semibold hover:bg-green-800 disabled:opacity-50"
-                            >
-                              Schedule week (all channels)
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                try {
-                                  window.open('/ao/publisher', '_blank', 'noopener');
-                                } catch (_) {}
-                              }}
-                              className="min-h-[44px] px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
-                            >
-                              Open Publisher
-                            </button>
-                          </div>
-                          <p className="mt-2 text-xs text-gray-500">
-                            Each post uses the square card image plus an interpretive caption (and source). Captions should explain or enhance the line—not repeat it or swap in a fragment of it. Adjust times and text in Publisher if needed.
-                          </p>
+        {(loading || activeTab === 'drafts') && (
+          <div id="auto-drafts" className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8 mb-6">
+            {loading ? (
+              <LoadingSpinner />
+            ) : (
+              <>
+                {draftsLoading ? (
+                  <div className="text-sm text-gray-500">Loading drafts…</div>
+                ) : autoDrafts.length === 0 ? (
+                  <p className="text-gray-500">
+                    No drafts yet. Use <strong>Save draft</strong> in Auto when you want to park this conversation and start fresh.
+                  </p>
+                ) : (
+                  <ul className="space-y-3">
+                    {autoDrafts.map((d) => (
+                      <li key={d.id} className="flex flex-wrap items-start justify-between gap-3 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-gray-900 truncate">{d.title || 'Draft'}</div>
+                          {d.updated_at ? (
+                            <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
+                          ) : null}
+                          {d.preview ? (
+                            <div className="text-sm text-gray-700 mt-2 line-clamp-3 whitespace-pre-wrap">{d.preview}</div>
+                          ) : null}
                         </div>
-                      ) : null}
-
-                      <div className="mt-3">
-                        <div className="text-xs font-semibold text-gray-900">Analyst brief</div>
-                        <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
-                          {q.summary_interpretation ? q.summary_interpretation : 'Preparing…'}
+                        <div className="flex flex-wrap gap-2 shrink-0">
+                          <button
+                            type="button"
+                            disabled={draftActingId === d.id}
+                            onClick={() => resumeAutoDraft(d.id)}
+                            className="min-h-[44px] px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                          >
+                            {draftActingId === d.id ? 'Opening…' : 'Edit'}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={draftActingId === d.id}
+                            onClick={() => deleteAutoDraft(d.id)}
+                            className="min-h-[44px] px-4 py-2 rounded-lg border border-red-300 bg-white text-red-700 text-sm font-semibold hover:bg-red-50 disabled:opacity-50"
+                          >
+                            Delete
+                          </button>
                         </div>
-                        {!q.summary_interpretation && (q.brief_attempts || q.brief_last_attempt_at) ? (
-                          <div className="mt-1 text-xs text-gray-500">
-                            Brief attempt {Number(q.brief_attempts || 0)}/3
-                            {q.brief_last_attempt_at ? ` · last tried ${fmtAgoShort(q.brief_last_attempt_at)}` : ''}
-                          </div>
-                        ) : null}
-                      </div>
-
-                      {competitorLabel(q) ? (
-                        <div className="mt-2 text-sm text-gray-800">
-                          <span className="text-xs font-semibold text-gray-900">What they’re doing</span>
-                          <div className="mt-1 text-sm text-gray-800">
-                            {competitorWhatDoing(q) || 'Preparing…'}
-                          </div>
-                        </div>
-                      ) : null}
-
-                      <div className="mt-3">
-                        <div className="text-xs font-semibold text-gray-900">Why it matters for AO</div>
-                        <div className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">
-                          {q.why_it_matters ? q.why_it_matters : 'Preparing…'}
-                        </div>
-                      </div>
-
-                      <div className="mt-3">
-                        <div className="text-xs font-semibold text-gray-900">Ideas for how to use it</div>
-                        {(() => {
-                          const ideas = buildUseIdeasBullets(q);
-                          return ideas.length ? (
-                            <ul className="mt-1 text-sm text-gray-800 space-y-1">
-                              {ideas.map((x, idx) => (
-                                <li key={idx} className="whitespace-pre-wrap">- {x}</li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <div className="mt-1 text-sm text-gray-500">Preparing…</div>
-                          );
-                        })()}
-                      </div>
-
-                      <div className="mt-4 grid grid-cols-3 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openWorkroomForQuote(q)}
-                          className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
-                        >
-                          Discuss
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const reason = window.prompt('Why are you holding this? (required)', '');
-                            if (!reason || !String(reason).trim()) return;
-                            act('quote-hold', q.id, { reason: String(reason).trim() });
-                          }}
-                          disabled={acting === q.id}
-                          className="min-h-[44px] px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
-                        >
-                          Hold
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => act('quote-reject', q.id)}
-                          disabled={acting === q.id}
-                          className="min-h-[44px] px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 disabled:opacity-50"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          )}
-          {!loading && activeTab === 'profiles' && (
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            )}
+          </div>
+        )}
+        {!loading && activeTab === 'profiles' && (
             <>
               <p className="text-gray-600 text-sm mb-4">
                 Profiles are a “mini inbox” per person/brand. For now, it shows competitor-tagged targets and the opportunities we’ve captured about them.

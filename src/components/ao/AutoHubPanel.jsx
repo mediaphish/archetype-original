@@ -52,7 +52,7 @@ async function fileToPayload(file) {
   };
 }
 
-export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' }) {
+export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts' }) {
   const [loading, setLoading] = useState(true);
   const [thread, setThread] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -67,6 +67,7 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [pendingFiles, setPendingFiles] = useState([]);
   const [startingNew, setStartingNew] = useState(false);
+  const [savingDraft, setSavingDraft] = useState(false);
   const fileInputRef = useRef(null);
   const scrollRef = useRef(null);
   /** Only show the bundle card for this thread’s active bundle — not the latest global Library item. */
@@ -294,7 +295,7 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
   }, [thread, loadSession]);
 
   const startNewChat = useCallback(async () => {
-    if (startingNew || sending || loading) return;
+    if (startingNew || savingDraft || sending || loading) return;
     const ok = window.confirm(
       'Start a new conversation? This chat will be set aside (not deleted). You will see an empty thread so you can begin fresh.'
     );
@@ -314,7 +315,38 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
     } finally {
       setStartingNew(false);
     }
-  }, [startingNew, sending, loading, loadSession]);
+  }, [startingNew, savingDraft, sending, loading, loadSession]);
+
+  const saveDraft = useCallback(async () => {
+    if (savingDraft || startingNew || sending || loading) return;
+    setSavingDraft(true);
+    setError('');
+    setSuccessTip('');
+    try {
+      const res = await fetch('/api/ao/auto/drafts/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not save draft');
+      setThread(json.thread || null);
+      setMessages(Array.isArray(json.messages) ? json.messages : []);
+      setAttachments(Array.isArray(json.attachments) ? json.attachments : []);
+      setInput('');
+      setPendingFiles([]);
+      const sessionRes = await fetch('/api/ao/auto/session');
+      const sessionJson = await sessionRes.json().catch(() => ({}));
+      if (sessionRes.ok && sessionJson.ok) {
+        setBundles(Array.isArray(sessionJson.bundles) ? sessionJson.bundles : []);
+        setGuardrails(Array.isArray(sessionJson.guardrails) ? sessionJson.guardrails : []);
+      }
+      setSuccessTip('Saved as a draft. You’re in a fresh thread — open Drafts below to resume anytime.');
+      try {
+        window.dispatchEvent(new CustomEvent('ao-auto-draft-saved'));
+      } catch (_) {}
+    } catch (e) {
+      setError(e.message || 'Could not save draft');
+    } finally {
+      setSavingDraft(false);
+    }
+  }, [savingDraft, startingNew, sending, loading]);
 
   return (
     <section className="mb-6 border border-gray-200 rounded-xl bg-white shadow-sm">
@@ -331,8 +363,16 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
           </span>
           <button
             type="button"
+            onClick={saveDraft}
+            disabled={savingDraft || startingNew || sending || loading}
+            className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+          >
+            {savingDraft ? 'Saving…' : 'Save draft'}
+          </button>
+          <button
+            type="button"
             onClick={startNewChat}
-            disabled={startingNew || sending || loading}
+            disabled={startingNew || savingDraft || sending || loading}
             className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
           >
             {startingNew ? 'Starting…' : 'New chat'}
@@ -347,12 +387,12 @@ export default function AutoHubPanel({ onNavigate, inboxAnchorId = 'auto-inbox' 
           <button
             type="button"
             onClick={() => {
-              const el = document.getElementById(inboxAnchorId);
+              const el = document.getElementById(draftsAnchorId);
               if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
             className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
           >
-            Inbox
+            Drafts
           </button>
           <button
             type="button"
