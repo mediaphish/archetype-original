@@ -80,6 +80,14 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     return list.find((b) => String(b?.id) === String(bid)) || null;
   }, [thread, bundles]);
 
+  const publishPlanBanner = useMemo(() => {
+    const st = thread?.state && typeof thread.state === 'object' ? thread.state : null;
+    if (!st || st.publish_wizard?.step !== 'await_confirm') return null;
+    const n = st.publish_wizard?.pending?.items?.length || 0;
+    const gap = st.publish_wizard?.pending?.gap_days;
+    return { n, gap };
+  }, [thread]);
+
   const loadSession = useCallback(async () => {
     setLoading(true);
     setError('');
@@ -487,6 +495,15 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
               Bad
             </button>
           </div>
+        </div>
+      ) : null}
+
+      {publishPlanBanner ? (
+        <div className="mx-4 mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+          <span className="font-semibold">Publish plan ready:</span>{' '}
+          {publishPlanBanner.n} card(s)
+          {publishPlanBanner.gap != null ? ` · ${publishPlanBanner.gap} day(s) between posts` : ''}. Reply{' '}
+          <strong>CONFIRM PUBLISH</strong>, <strong>CANCEL</strong>, or ask to change spacing (e.g. every 2–3 days).
         </div>
       ) : null}
 

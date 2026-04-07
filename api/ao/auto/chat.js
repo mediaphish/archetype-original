@@ -19,6 +19,16 @@ import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 import { wantsUserSuppliedQuoteCards, parseUserSuppliedQuoteCards } from '../../../lib/ao/userSuppliedQuoteCards.js';
 import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../lib/ao/corpusTldrReport.js';
+import {
+  buildThreadStateSnapshot,
+  wantsPublishScheduleTweak,
+  parseGapDaysFromMessage,
+  stripGapPhrasesForCardIndexParse,
+  pushTransparencyReceipt,
+  workflowHintFromState,
+} from '../../../lib/ao/autoIntent.js';
+import { appendSessionSummary } from '../../../lib/ao/autoSessionSummary.js';
+import { isAutoAgentToolsEnabled, runAutoAgentToolLoop } from '../../../lib/ao/autoAgentLoop.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -556,6 +566,14 @@ async function recentFindings(email) {
   };
 }
 
+function trimMessagesForAskModel(messages, historyMax, perMsgMax) {
+  const slice = (Array.isArray(messages) ? messages : []).slice(-historyMax);
+  return slice.map((m) => ({
+    role: m.role,
+    content: safeText(m.content, perMsgMax),
+  }));
+}
+
 async function askModel({
   mode,
   message,
@@ -565,9 +583,15 @@ async function askModel({
   bundleSummary,
   automationProofLines = [],
   dontRefine = false,
+  threadSnapshot = null,
+  workflowHint = '',
 }) {
   const apiKey = getOpenAiKey();
   if (!apiKey) return null;
+
+  const historyMax = Math.min(80, Math.max(12, Number(process.env.AO_AUTO_CHAT_HISTORY_MESSAGES) || 40));
+  const perMsgMax = Math.min(8000, Math.max(400, Number(process.env.AO_AUTO_CHAT_MESSAGE_MAX_CHARS) || 2500));
+  const recentForPrompt = trimMessagesForAskModel(messages, historyMax, perMsgMax);
 
   const isPlanOrWrite = mode === 'plan' || mode === 'write' || mode === 'general';
 
@@ -577,6 +601,10 @@ You are NOT Archy. Archy is the public-facing assistant on the website; you are 
 
 Current mode: ${JSON.stringify(mode)}
 User asked not to refine / treat post as frozen: ${dontRefine ? 'YES — do not suggest edits; only package, plan, recall, or flag major risks if asked.' : 'no'}
+
+Authoritative thread snapshot (from the product database for this conversation — do not contradict counts or pending steps):
+${JSON.stringify(threadSnapshot && typeof threadSnapshot === 'object' ? threadSnapshot : {})}
+${workflowHint ? `\nWorkflow hint: ${workflowHint}\n` : ''}
 
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
@@ -599,11 +627,11 @@ ${JSON.stringify(findings)}
 Current bundle summary:
 ${JSON.stringify(bundleSummary || null)}
 
-Recent conversation:
-${JSON.stringify(messages.slice(-8).map((m) => ({ role: m.role, content: m.content })))}
+Recent conversation (${recentForPrompt.length} turns, oldest first in this block):
+${JSON.stringify(recentForPrompt)}
 
 Latest user message:
-${JSON.stringify(message)}
+${JSON.stringify(safeText(message, 6000))}
 
 Return ONLY JSON:
 {
@@ -621,7 +649,7 @@ Return ONLY JSON:
       body: JSON.stringify({
         model: process.env.AO_AUTO_MODEL || 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 900,
+        max_tokens: Math.min(2500, Math.max(600, Number(process.env.AO_AUTO_MAX_TOKENS) || 1200)),
         temperature: 0.3,
       }),
     });
@@ -651,6 +679,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (isAutoAgentToolsEnabled()) {
+      await runAutoAgentToolLoop();
+    }
+
     const thread = await ensureAutoThread(auth.email, req.body?.thread_id || '');
     const fullState = await getAutoThreadState(auth.email, thread.id);
     const existingMessages = fullState.messages || [];
@@ -873,6 +905,7 @@ export default async function handler(req, res) {
       nextMode = 'plan';
       const userQuotes = parseUserSuppliedQuoteCards(userMessage);
       receipts.push('Generated minimal quote cards from the text you pasted (verbatim on the images)');
+      pushTransparencyReceipt(receipts, `Quote cards from your paste (${userQuotes.length} line(s)); say Publish cards when ready.`);
       const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
       const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
       const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(userQuotes, {
@@ -951,6 +984,10 @@ export default async function handler(req, res) {
       const corpus = await getCorpusPullQuotes({ queryText: userMessage, limit: 5 });
       receipts.push('Searched your published corpus for stand-alone, high-impact pull quotes');
       if (corpus.ok && corpus.quotes.length) {
+        pushTransparencyReceipt(
+          receipts,
+          `Corpus pull quotes: ${corpus.quotes.length} candidate(s) — pick numbers, then ask for captions/cards.`
+        );
         const lines = [
           'Here are candidate pull quotes from your corpus (short lines only—full posts are not pasted here):',
           '',
@@ -1018,6 +1055,7 @@ export default async function handler(req, res) {
       });
       if (result.ok) {
         receipts.push(`Scheduled ${result.count || 0} Publisher slot(s)`);
+        pushTransparencyReceipt(receipts, `Queued ${result.count || 0} Publisher slot(s) from your confirmed plan.`);
         assistantMessage = `Done. ${result.count || 0} row(s) queued (image + caption per network). Open Publisher to review or adjust times.`;
         statePatch.publish_wizard = null;
       } else {
@@ -1031,6 +1069,45 @@ export default async function handler(req, res) {
       nextMode = 'plan';
       statePatch.publish_wizard = null;
       assistantMessage = 'Cancelled. When you are ready, say Publish cards … with the numbers you want.';
+    } else if (
+      currentState.publish_wizard &&
+      currentState.publish_wizard.step === 'await_confirm' &&
+      wantsPublishScheduleTweak(userMessage)
+    ) {
+      nextMode = 'plan';
+      const pending = currentState.publish_wizard.pending;
+      const items = Array.isArray(pending?.items) ? pending.items : [];
+      if (!items.length) {
+        assistantMessage =
+          'No publish plan is waiting. Say **Publish cards** with numbers (or **all**) to build a plan first.';
+      } else {
+        const gapDays = parseGapDaysFromMessage(userMessage) ?? pending.gap_days ?? 2;
+        const timesIso = await proposeQuoteCardTimes(items.length, { gapDays });
+        const classification = pending.classification && typeof pending.classification === 'object' ? pending.classification : {};
+        const ch = { summaryLines: classification.summaryLines || [] };
+        const { coverageLines } = await buildQuoteCardPublishContext(auth.email, items);
+        statePatch.publish_wizard = {
+          step: 'await_confirm',
+          pending: {
+            ...pending,
+            items,
+            times_iso: timesIso,
+            gap_days: gapDays,
+            classification,
+          },
+        };
+        pushTransparencyReceipt(
+          receipts,
+          `Updated publish spacing: same ${items.length} card(s), ${gapDays} day(s) between posts (you can confirm or adjust again).`
+        );
+        assistantMessage = formatQuoteCardPublishPlan({
+          items,
+          timesIso,
+          channelHelp: ch,
+          classification,
+          coverageLines,
+        });
+      }
     } else if (wantsPublishQuoteCardsIntent(userMessage, currentState)) {
       nextMode = 'plan';
       const corpusQuotes = currentState.corpus_pull_quotes || [];
@@ -1044,7 +1121,7 @@ export default async function handler(req, res) {
         assistantMessage =
           'I do not have quote cards saved in this thread yet. Pick quote numbers so I can draft captions and cards—then say Publish.';
       } else {
-      let indices = parseQuoteIndicesFromMessage(userMessage);
+      let indices = parseQuoteIndicesFromMessage(stripGapPhrasesForCardIndexParse(userMessage));
       if (/\ball\b/i.test(userMessage)) {
         indices = pool.map((x) => x.corpus_index).sort((a, b) => a - b);
       }
@@ -1065,8 +1142,12 @@ export default async function handler(req, res) {
           const ch = { summaryLines: classification.summaryLines || [] };
           statePatch.publish_wizard = {
             step: 'await_confirm',
-            pending: { items, times_iso: timesIso, classification },
+            pending: { items, times_iso: timesIso, classification, gap_days: 1 },
           };
+          pushTransparencyReceipt(
+            receipts,
+            `Publish plan ready for ${items.length} card(s) — confirm, cancel, or ask to change days between posts.`
+          );
           assistantMessage = formatQuoteCardPublishPlan({
             items,
             timesIso,
@@ -1080,7 +1161,7 @@ export default async function handler(req, res) {
     } else if (wantsCorpusPullQuoteDeliverables(userMessage, currentState, existingMessages)) {
       nextMode = 'plan';
       const allQuotes = currentState.corpus_pull_quotes;
-      let indices = parseQuoteIndicesFromMessage(userMessage);
+      let indices = parseQuoteIndicesFromMessage(stripGapPhrasesForCardIndexParse(userMessage));
       if (!indices.length) {
         const fromThread = parseIndicesFromAssistantThread(existingMessages);
         if (fromThread?.length) indices = fromThread;
@@ -1103,6 +1184,7 @@ export default async function handler(req, res) {
         statePatch.corpus_pull_quote_selection = indices;
         const selected = indices.map((n) => allQuotes[n - 1]).filter(Boolean);
         receipts.push('Drafted interpretive captions and minimal square cards for your picks');
+        pushTransparencyReceipt(receipts, `Built ${selected.length} quote card(s) for your numbered picks.`);
         const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(selected, { maxChars: 2000 });
         const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
         const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
@@ -1350,10 +1432,19 @@ export default async function handler(req, res) {
         bundleSummary: savedBundle ? { id: savedBundle.id, title: savedBundle.title } : null,
         automationProofLines: proofLines,
         dontRefine: !!(statePatch.dont_refine || impliesNoRefine(userMessage)),
+        threadSnapshot: buildThreadStateSnapshot(statePatch),
+        workflowHint: workflowHintFromState(statePatch),
       });
       assistantMessage = safeText(model?.assistant_message, 4000) || `Mode: ${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}. Tell me what you want to do next.`;
       if (Array.isArray(model?.receipts)) receipts.push(...model.receipts.map((x) => safeText(x, 160)).filter(Boolean));
     }
+
+    statePatch.session_summary = appendSessionSummary(currentState.session_summary, {
+      userMessage,
+      receipts,
+      assistantPreview: assistantMessage,
+      mode: nextMode,
+    });
 
     await supabaseAdmin
       .from('ao_auto_threads')
