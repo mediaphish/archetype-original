@@ -6,7 +6,9 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
+import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
+import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
+import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -99,6 +101,9 @@ export default async function handler(req, res) {
       }
     }
 
+    const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
+    const bundleLogoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
+
     const rows = [];
     for (let i = 0; i < items.length; i += 1) {
       const when = new Date(start.getTime() + i * gapDays * 86400000);
@@ -108,6 +113,14 @@ export default async function handler(req, res) {
         imageUrl = '';
       }
       const svg = String(item.quote_card_svg || '').trim();
+      const qtext = String(item.quote || '').trim();
+      if (!imageUrl && qtext) {
+        const up = await uploadMinimalQuoteCardToPublicUrl(
+          { quote: qtext, sourceName: item.source_title || '', logoUrl: bundleLogoUrl },
+          { subfolder: 'weekly-pull-quote-cards' }
+        );
+        if (up.ok) imageUrl = up.publicUrl;
+      }
       if (!imageUrl && svg) {
         const up = await uploadQuoteCardSvgToPublicUrl(svg, { subfolder: 'weekly-pull-quote-cards' });
         if (!up.ok) {

@@ -16,7 +16,8 @@ import {
 } from '../../../lib/ao/publishWizardQuoteCards.js';
 import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishContentTypes.js';
 import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
-import { uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
+import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
+import { wantsUserSuppliedQuoteCards, parseUserSuppliedQuoteCards } from '../../../lib/ao/userSuppliedQuoteCards.js';
 import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../lib/ao/corpusTldrReport.js';
 
 function safeText(v, maxLen = 0) {
@@ -98,6 +99,7 @@ function looksLikeFinishedArticlePaste(text) {
  * Attachments still imply “send something through” unless clearly planning-only (handled above).
  */
 function shouldAssumePackageMode(text, hasAttachments) {
+  if (wantsUserSuppliedQuoteCards(text)) return false;
   if (wantsCorpusPullQuotes(text)) return false;
   if (looksLikePlanningOrDiscussionRequest(text)) return false;
   if (hasAttachments) return true;
@@ -156,16 +158,12 @@ async function getAutomationProof(email) {
 }
 
 /** User explicitly asked for Scout / inbox opportunities — must run even if thread mode is package/publish. */
-/** User wants Auto to search published corpus for pull-quote lines (not Scout inbox). */
+/** User wants Auto to search published corpus for pull-quote lines (not Scout inbox). Word "corpus" required. */
 function wantsCorpusPullQuotes(text) {
-  const s = String(text || '').trim().toLowerCase();
-  if (!s) return false;
+  const raw = String(text || '').trim();
+  if (!raw || !/\bcorpus\b/i.test(raw)) return false;
 
-  const corpusHint =
-    /\b(corpus|my (?:published )?writing|published (?:work|pieces)|knowledge base|site content|from (?:the )?archive)\b/.test(s) ||
-    /\bfrom (?:my |the |our )?(?:site|journal|posts|articles|corpus|book|books)\b/.test(s) ||
-    /\b(accidental\s+ceo|remaining\s+human|my\s+book|the\s+ebook|published\s+work)\b/.test(s);
-
+  const s = raw.toLowerCase();
   const quoteHint =
     /\b(pull[- ]?quotes?|quote\s+cards?|weekly\s+pull\s+quotes?|weekly\s+quotes?|candidate\s+quotes?|lines?\s+to\s+(?:quote|post))\b/.test(
       s
@@ -176,12 +174,12 @@ function wantsCorpusPullQuotes(text) {
       s
     );
 
-  if (quoteHint && (corpusHint || /\bfrom (?:my |the |our )?(?:site|journal|posts|articles)\b/.test(s))) return true;
-  if (actionHint && quoteHint && corpusHint) return true;
-  if (/\bquotes? from (?:my |the |our )?corpus\b/.test(s)) return true;
-  if (/\bsearch (?:the )?corpus for\b.{0,40}\bquotes?\b/.test(s)) return true;
-
-  if (quoteHint && actionHint && /\b(series|weekly|generate|creating)\b/.test(s) && /\b(my|our|the)\b/.test(s)) return true;
+  if (/\bquotes? from (?:my |the |our )?corpus\b/.test(s)) return quoteHint || actionHint;
+  if (/\bsearch (?:the )?corpus for\b/i.test(raw)) return true;
+  if (quoteHint && actionHint) return true;
+  if (quoteHint && /\b(from|in|about|on|for)\s+(?:my|the|our)\s+corpus\b/.test(s)) return true;
+  if (/\b(build|grow|add to|expand)\s+(?:the |my |our )?corpus\b/.test(s) && (quoteHint || /\b(pull|quote|card|lines?)\b/.test(s)))
+    return true;
 
   return false;
 }
@@ -350,8 +348,10 @@ function rebuildPublishCandidatesFromMessages(messages, corpusQuotes) {
 function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
   const quotes = state?.corpus_pull_quotes;
   if (!Array.isArray(quotes) || !quotes.length) return false;
-  if (wantsCorpusPullQuotes(userMessage)) return false;
-  const s = String(userMessage || '').trim().toLowerCase();
+  const s0 = String(userMessage || '').trim();
+  const s = s0.toLowerCase();
+  const picking = /\b[1-9]\b/.test(s0) || /\ball\b/i.test(userMessage);
+  if (wantsCorpusPullQuotes(userMessage) && !picking) return false;
   const hasDigit = /\b[1-9]\b/.test(s);
   const deliver =
     /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square)\b/.test(s);
@@ -575,7 +575,7 @@ Non-negotiables (hard rules):
 - Modes you respect from context: plan, write, package, publish, recall, training, general.
 - Quality: only challenge wording for major public risks if relevant; do not nitpick style.
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
-${isPlanOrWrite ? '\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask using "in my corpus" / "in my published writing" or similar so retrieval can run.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
+${isPlanOrWrite ? '\n- Corpus pull-quote search runs only when his message includes the word **corpus** (any casing). If he pasted his own quote lines and asked for cards without saying corpus, the system uses his pasted text verbatim on the images—not a library search.\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask using "in my corpus" / "in my published writing" or similar so retrieval can run.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
@@ -859,6 +859,80 @@ export default async function handler(req, res) {
       lines.push('Proof of work (so you know the system has been running):');
       proof.forEach((p) => lines.push(`- ${p}`));
       assistantMessage = lines.join('\n');
+    } else if (wantsUserSuppliedQuoteCards(userMessage)) {
+      nextMode = 'plan';
+      const userQuotes = parseUserSuppliedQuoteCards(userMessage);
+      receipts.push('Generated minimal quote cards from the text you pasted (verbatim on the images)');
+      const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
+      const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
+      const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(userQuotes, {
+        maxChars: 2000,
+      });
+      const previews = [];
+      const lines = [
+        'Here are interpretive captions and minimal black square cards using **your pasted lines** (the images show your wording, not corpus search results).',
+        '',
+        'Captions (copy under each image in the thread; X-sized line included where useful):',
+        '',
+      ];
+      for (let i = 0; i < userQuotes.length; i += 1) {
+        const q = userQuotes[i];
+        const cap = captions[i] || '';
+        const capX = captionsX[i] || '';
+        lines.push(`${i + 1}. ${cap}`);
+        if (capX) lines.push(`   (X: ${capX})`);
+        lines.push(`   “${safeText(q.quote, 280)}”`);
+        lines.push('');
+        const rendered = renderQuoteCardSvg({
+          quote: q.quote,
+          sourceName: q.source_title,
+          logoUrl,
+          style: 'minimal',
+          minimalVariant: 'dark',
+          forceLightLogo: true,
+        });
+        let image_url = '';
+        if (rendered.ok) {
+          try {
+            const up = await uploadMinimalQuoteCardToPublicUrl(
+              { quote: q.quote, sourceName: q.source_title, logoUrl },
+              { subfolder: 'auto-hub-quote-cards' }
+            );
+            if (up.ok) image_url = up.publicUrl;
+          } catch (_) {}
+        }
+        if (rendered.ok) {
+          previews.push({
+            svg: rendered.svg,
+            image_url,
+            index: i + 1,
+            caption: cap,
+            caption_x: capX,
+            source_title: q.source_title,
+          });
+        }
+      }
+      assistantMessage = lines.join('\n');
+      assistantMeta = {
+        corpus_pull_quotes: userQuotes,
+        quote_card_previews: previews,
+        quote_card_preview_svg: previews[0]?.svg || null,
+        quote_card_preview_image_url: previews[0]?.image_url || null,
+      };
+      statePatch.corpus_pull_quotes = userQuotes;
+      statePatch.publish_candidates = userQuotes.map((q, i) => {
+        const pr = previews[i];
+        return normalizePublishCandidate({
+          corpus_index: i + 1,
+          quote: q.quote,
+          source_title: q.source_title,
+          url: q.url || '',
+          caption: captions[i] || '',
+          caption_x: captionsX[i] || '',
+          svg: pr?.svg || null,
+          image_url: pr?.image_url || '',
+        });
+      });
     } else if (wantsCorpusPullQuotes(userMessage)) {
       nextMode = 'plan';
       const corpus = await getCorpusPullQuotes({ queryText: userMessage, limit: 5 });
@@ -892,7 +966,10 @@ export default async function handler(req, res) {
           let quote_card_preview_image_url = null;
           if (rendered.ok && rendered.svg) {
             try {
-              const up = await uploadQuoteCardSvgToPublicUrl(rendered.svg, { subfolder: 'auto-hub-quote-cards' });
+              const up = await uploadMinimalQuoteCardToPublicUrl(
+                { quote: first.quote, sourceName: first.source_title, logoUrl },
+                { subfolder: 'auto-hub-quote-cards' }
+              );
               if (up.ok) quote_card_preview_image_url = up.publicUrl;
             } catch (_) {}
           }
@@ -964,7 +1041,7 @@ export default async function handler(req, res) {
           'Say which card numbers to publish (for example: Publish cards 1, 2, and 4), or say all.';
       } else {
         const items = indices.map((n) => pool.find((x) => x.corpus_index === n)).filter(Boolean);
-        if (!items.length || items.some((x) => !x.svg)) {
+        if (!items.length || items.some((x) => !String(x.quote || '').trim() && !String(x.svg || '').trim())) {
           assistantMessage =
             'I could not find those cards in this thread. Pick quote numbers and ask for captions and cards first—then say Publish.';
         } else {
@@ -1038,7 +1115,10 @@ export default async function handler(req, res) {
           if (rendered.ok) {
             let image_url = '';
             try {
-              const up = await uploadQuoteCardSvgToPublicUrl(rendered.svg, { subfolder: 'auto-hub-quote-cards' });
+              const up = await uploadMinimalQuoteCardToPublicUrl(
+                { quote: q.quote, sourceName: q.source_title, logoUrl },
+                { subfolder: 'auto-hub-quote-cards' }
+              );
               if (up.ok) image_url = up.publicUrl;
             } catch (_) {}
             previews.push({

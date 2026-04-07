@@ -1,24 +1,17 @@
 #!/usr/bin/env node
 /**
- * CI guard: quote-card SVG rasterizes to 1080 PNG with valid signature (same path as production).
+ * CI guard: minimal quote card renders to 1080 PNG with valid signature (canvas + bundled font).
  */
-import { readFile } from 'fs/promises';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 import sharp from 'sharp';
-import {
-  rasterizeQuoteCardSvgToPngBuffer,
-  QUOTE_CARD_OUTPUT_SIZE,
-} from '../lib/ao/quoteCardRasterize.js';
+import { renderMinimalQuoteCardPngBuffer, QUOTE_CARD_CANVAS_SIZE } from '../lib/ao/quoteCardCanvasPng.js';
+import { QUOTE_CARD_OUTPUT_SIZE } from '../lib/ao/quoteCardRasterize.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const root = join(__dirname, '..');
-const fixturePath = join(root, 'tests/fixtures/quote-card-minimal.svg');
-
-const svg = await readFile(fixturePath, 'utf8');
-const r = await rasterizeQuoteCardSvgToPngBuffer(svg);
+const r = await renderMinimalQuoteCardPngBuffer({
+  quote: 'Raster golden fixture — quote card body text must be readable pixels, not tofu.',
+  sourceName: 'Test',
+});
 if (!r.ok) {
-  console.error('Raster failed:', r.error);
+  console.error('Canvas render failed:', r.error);
   process.exit(1);
 }
 const buf = r.buffer;
@@ -30,7 +23,13 @@ if (b0 !== 0x89 || b1 !== 0x50) {
 }
 const meta = await sharp(buf).metadata();
 if (meta.width !== QUOTE_CARD_OUTPUT_SIZE || meta.height !== QUOTE_CARD_OUTPUT_SIZE) {
-  console.error(`Expected ${QUOTE_CARD_OUTPUT_SIZE}x${QUOTE_CARD_OUTPUT_SIZE}, got ${meta.width}x${meta.height}`);
+  if (meta.width !== QUOTE_CARD_CANVAS_SIZE || meta.height !== QUOTE_CARD_CANVAS_SIZE) {
+    console.error(`Expected ${QUOTE_CARD_OUTPUT_SIZE}x${QUOTE_CARD_OUTPUT_SIZE}, got ${meta.width}x${meta.height}`);
+    process.exit(1);
+  }
+}
+if (buf.length < 8000) {
+  console.error('PNG suspiciously small — text may not have rendered');
   process.exit(1);
 }
 console.log('quote-card-raster-golden: ok');

@@ -65,6 +65,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   const [successTip, setSuccessTip] = useState('');
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [phraseLegendOpen, setPhraseLegendOpen] = useState(false);
   const [pendingFiles, setPendingFiles] = useState([]);
   const [startingNew, setStartingNew] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
@@ -402,6 +403,33 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             Advanced tools
           </button>
         </div>
+      </div>
+
+      <div className="border-t border-gray-100 bg-stone-50/90">
+        <button
+          type="button"
+          onClick={() => setPhraseLegendOpen((o) => !o)}
+          className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-800 flex items-center justify-between gap-2 hover:bg-stone-100/80 min-h-[44px]"
+        >
+          <span>How phrases work (quote cards and corpus)</span>
+          <span className="text-gray-500 shrink-0" aria-hidden>
+            {phraseLegendOpen ? '−' : '+'}
+          </span>
+        </button>
+        {phraseLegendOpen ? (
+          <div className="px-4 pb-3 text-sm text-gray-600 space-y-2 border-b border-gray-100">
+            <p>
+              <span className="font-semibold text-gray-800">Pull ideas from your published library: </span>
+              include the word <em>corpus</em> (any capitalization). For example: “pull quote cards from my corpus on
+              power,” “build the corpus,” “search the corpus for lines about culture.”
+            </p>
+            <p>
+              <span className="font-semibold text-gray-800">Use your own text on the square cards: </span>
+              paste your quotes in the same message, then ask to generate or make the cards. You do not need to say{' '}
+              <em>corpus</em> for that.
+            </p>
+          </div>
+        ) : null}
       </div>
 
       {successTip ? (

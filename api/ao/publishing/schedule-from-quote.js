@@ -6,7 +6,9 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
+import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
+import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
+import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -57,6 +59,18 @@ export default async function handler(req, res) {
       sharedImageUrl = '';
     }
     const svg = String(quote.quote_card_svg || '').trim();
+    const pull = String(quote.pull_quote || '').trim();
+    if (!sharedImageUrl && pull) {
+      const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
+      const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
+      const up = await uploadMinimalQuoteCardToPublicUrl(
+        { quote: pull, sourceName: quote.source_name || quote.source_title || '', logoUrl },
+        { subfolder: 'studio-quote-cards' }
+      );
+      if (up.ok) {
+        sharedImageUrl = up.publicUrl;
+      }
+    }
     if (!sharedImageUrl && svg) {
       const up = await uploadQuoteCardSvgToPublicUrl(svg, { subfolder: 'studio-quote-cards' });
       if (!up.ok) {
