@@ -345,6 +345,14 @@ function rebuildPublishCandidatesFromMessages(messages, corpusQuotes) {
  * User is continuing the pull-quote flow: pick numbers and/or ask for captions + cards.
  * Requires a prior corpus search stored on thread state (corpus_pull_quotes).
  */
+/** Pasted / project quotes vs corpus crawl: different caps (see deliverables + publish). */
+function isUserPasteQuoteBatch(state, quotes) {
+  if (state?.quote_card_origin === 'user_paste') return true;
+  if (state?.quote_card_origin === 'corpus_pull') return false;
+  if (!Array.isArray(quotes) || !quotes.length) return false;
+  return quotes.every((q) => !String(q?.url || '').trim());
+}
+
 function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
   const quotes = state?.corpus_pull_quotes;
   if (!Array.isArray(quotes) || !quotes.length) return false;
@@ -354,7 +362,9 @@ function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
   if (wantsCorpusPullQuotes(userMessage) && !picking) return false;
   const hasDigit = /\b[1-9]\b/.test(s);
   const deliver =
-    /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square)\b/.test(s);
+    /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square|fix|correct|repair|update|redo|rebuild|regenerat|refresh|logo)\b/.test(
+      s
+    );
   return hasDigit || deliver;
 }
 
@@ -882,6 +892,8 @@ export default async function handler(req, res) {
         lines.push(`${i + 1}. ${cap}`);
         if (capX) lines.push(`   (X: ${capX})`);
         lines.push(`   “${safeText(q.quote, 280)}”`);
+        const pasteTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
+        if (pasteTail.length) lines.push(`   — ${pasteTail.join(' · ')}`);
         lines.push('');
         const rendered = renderQuoteCardSvg({
           quote: q.quote,
@@ -933,6 +945,7 @@ export default async function handler(req, res) {
           image_url: pr?.image_url || '',
         });
       });
+      statePatch.quote_card_origin = 'user_paste';
     } else if (wantsCorpusPullQuotes(userMessage)) {
       nextMode = 'plan';
       const corpus = await getCorpusPullQuotes({ queryText: userMessage, limit: 5 });
@@ -982,6 +995,7 @@ export default async function handler(req, res) {
           assistantMeta = { corpus_pull_quotes: corpus.quotes };
         }
         statePatch.corpus_pull_quotes = corpus.quotes;
+        statePatch.quote_card_origin = 'corpus_pull';
       } else {
         assistantMessage =
           'I couldn’t find strong pull-quote lines from the corpus for that ask. Try naming a theme (for example accountability, pressure, or culture) and ask again, or say which topics to prioritize.';
@@ -1034,7 +1048,8 @@ export default async function handler(req, res) {
       if (/\ball\b/i.test(userMessage)) {
         indices = pool.map((x) => x.corpus_index).sort((a, b) => a - b);
       }
-      indices = indices.filter((n) => n >= 1 && n <= (corpusQuotes.length || 99)).slice(0, 12);
+      const publishCap = isUserPasteQuoteBatch(currentState, corpusQuotes) ? 50 : 12;
+      indices = indices.filter((n) => n >= 1 && n <= (corpusQuotes.length || 99)).slice(0, publishCap);
 
       if (!indices.length) {
         assistantMessage =
@@ -1074,10 +1089,13 @@ export default async function handler(req, res) {
         indices = [...currentState.corpus_pull_quote_selection];
       }
       const maxN = allQuotes.length;
+      const fromPaste = isUserPasteQuoteBatch(currentState, allQuotes);
       if (!indices.length) {
-        indices = allQuotes.slice(0, Math.min(5, maxN)).map((_, i) => i + 1);
+        const defaultCap = fromPaste ? maxN : Math.min(5, maxN);
+        indices = allQuotes.slice(0, defaultCap).map((_, i) => i + 1);
       }
-      indices = indices.filter((n) => n >= 1 && n <= maxN).slice(0, 6);
+      const batchCap = fromPaste ? Math.min(50, maxN) : 6;
+      indices = indices.filter((n) => n >= 1 && n <= maxN).slice(0, batchCap);
       if (!indices.length) {
         assistantMessage =
           'Tell me which quote numbers to use from the list above (for example 1, 3, and 5), or say “all.”';
@@ -1102,7 +1120,8 @@ export default async function handler(req, res) {
           lines.push(`${i + 1}. ${cap}`);
           if (capX) lines.push(`   (X: ${capX})`);
           lines.push(`   “${safeText(q.quote, 280)}”`);
-          lines.push(`   — ${q.source_title}${q.url ? ` · ${q.url}` : ''}`);
+          const attrTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
+          if (attrTail.length) lines.push(`   — ${attrTail.join(' · ')}`);
           lines.push('');
           const rendered = renderQuoteCardSvg({
             quote: q.quote,
