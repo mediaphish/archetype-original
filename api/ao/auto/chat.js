@@ -22,11 +22,11 @@ import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../li
 import {
   buildThreadStateSnapshot,
   wantsPublishScheduleTweak,
-  parseGapDaysFromMessage,
   stripGapPhrasesForCardIndexParse,
   pushTransparencyReceipt,
   workflowHintFromState,
 } from '../../../lib/ao/autoIntent.js';
+import { extractPublishScheduleConstraints, mergeScheduleOpts } from '../../../lib/ao/publishScheduleExtract.js';
 import { appendSessionSummary, appendReceiptLog } from '../../../lib/ao/autoSessionSummary.js';
 import { isAutoAgentToolsEnabled, runAutoAgentToolLoop } from '../../../lib/ao/autoAgentLoop.js';
 
@@ -1081,24 +1081,38 @@ export default async function handler(req, res) {
         assistantMessage =
           'No publish plan is waiting. Say **Publish cards** with numbers (or **all**) to build a plan first.';
       } else {
-        const gapDays = parseGapDaysFromMessage(userMessage) ?? pending.gap_days ?? 2;
-        const timesIso = await proposeQuoteCardTimes(items.length, { gapDays });
+        const extracted = await extractPublishScheduleConstraints(userMessage, {
+          cardCount: items.length,
+          currentGapDays: pending.gap_days ?? null,
+          currentLocalHour: pending.preferred_local_hour ?? null,
+          currentLocalMinute: pending.preferred_local_minute ?? null,
+        });
+        const merged = mergeScheduleOpts({ extracted: extracted || {}, pending, message: userMessage });
+        const timesIso = await proposeQuoteCardTimes(items.length, {
+          gapDays: merged.gapDays,
+          localHour: merged.localHour,
+          localMinute: merged.localMinute,
+        });
         const classification = pending.classification && typeof pending.classification === 'object' ? pending.classification : {};
         const ch = { summaryLines: classification.summaryLines || [] };
         const { coverageLines } = await buildQuoteCardPublishContext(auth.email, items);
+        const scheduleNote = (merged.userFacingNote || pending.schedule_note || '').trim();
         statePatch.publish_wizard = {
           step: 'await_confirm',
           pending: {
             ...pending,
             items,
             times_iso: timesIso,
-            gap_days: gapDays,
+            gap_days: merged.gapDays,
+            preferred_local_hour: merged.localHour,
+            preferred_local_minute: merged.localMinute,
+            schedule_note: scheduleNote,
             classification,
           },
         };
         pushTransparencyReceipt(
           receipts,
-          `Updated publish spacing: same ${items.length} card(s), ${gapDays} day(s) between posts (you can confirm or adjust again).`
+          `Updated publish plan: same ${items.length} card(s); ${merged.gapDays} day(s) between posts${merged.localHour != null ? `; around ${merged.localHour}:${String(merged.localMinute ?? 0).padStart(2, '0')} local time` : ''}.`
         );
         assistantMessage = formatQuoteCardPublishPlan({
           items,
@@ -1106,6 +1120,7 @@ export default async function handler(req, res) {
           channelHelp: ch,
           classification,
           coverageLines,
+          scheduleNote: scheduleNote || undefined,
         });
       }
     } else if (wantsPublishQuoteCardsIntent(userMessage, currentState)) {
@@ -1137,16 +1152,35 @@ export default async function handler(req, res) {
           assistantMessage =
             'I could not find those cards in this thread. Pick quote numbers and ask for captions and cards first—then say Publish.';
         } else {
-          const timesIso = await proposeQuoteCardTimes(items.length, { gapDays: 1 });
+          const extracted = await extractPublishScheduleConstraints(userMessage, {
+            cardCount: items.length,
+            currentGapDays: null,
+            currentLocalHour: null,
+            currentLocalMinute: null,
+          });
+          const merged = mergeScheduleOpts({ extracted: extracted || {}, pending: null, message: userMessage });
+          const timesIso = await proposeQuoteCardTimes(items.length, {
+            gapDays: merged.gapDays,
+            localHour: merged.localHour,
+            localMinute: merged.localMinute,
+          });
           const { coverageLines, classification } = await buildQuoteCardPublishContext(auth.email, items);
           const ch = { summaryLines: classification.summaryLines || [] };
           statePatch.publish_wizard = {
             step: 'await_confirm',
-            pending: { items, times_iso: timesIso, classification, gap_days: 1 },
+            pending: {
+              items,
+              times_iso: timesIso,
+              classification,
+              gap_days: merged.gapDays,
+              preferred_local_hour: merged.localHour,
+              preferred_local_minute: merged.localMinute,
+              schedule_note: merged.userFacingNote || '',
+            },
           };
           pushTransparencyReceipt(
             receipts,
-            `Publish plan ready for ${items.length} card(s) — confirm, cancel, or ask to change days between posts.`
+            `Publish plan ready for ${items.length} card(s) — confirm, cancel, or describe spacing and time in plain language.`
           );
           assistantMessage = formatQuoteCardPublishPlan({
             items,
@@ -1154,6 +1188,7 @@ export default async function handler(req, res) {
             channelHelp: ch,
             classification,
             coverageLines,
+            scheduleNote: merged.userFacingNote || undefined,
           });
         }
       }
