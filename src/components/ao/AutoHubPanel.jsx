@@ -66,6 +66,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [phraseLegendOpen, setPhraseLegendOpen] = useState(false);
+  const [activityLogOpen, setActivityLogOpen] = useState(false);
   const [pendingFiles, setPendingFiles] = useState([]);
   const [startingNew, setStartingNew] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
@@ -86,6 +87,18 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     const n = st.publish_wizard?.pending?.items?.length || 0;
     const gap = st.publish_wizard?.pending?.gap_days;
     return { n, gap };
+  }, [thread]);
+
+  /** Main transcript only — system receipts are kept in thread state (activity log), not as chat bubbles. */
+  const visibleChatMessages = useMemo(
+    () => (Array.isArray(messages) ? messages.filter((m) => m.role !== 'receipt') : []),
+    [messages]
+  );
+
+  const activityLogEntries = useMemo(() => {
+    const st = thread?.state && typeof thread.state === 'object' ? thread.state : null;
+    const log = st?.receipt_log;
+    return Array.isArray(log) ? log : [];
   }, [thread]);
 
   const loadSession = useCallback(async () => {
@@ -512,7 +525,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           <div className="text-sm text-gray-500">Loading Auto…</div>
         ) : null}
 
-        {!loading && messages.length === 0 ? (
+        {!loading && visibleChatMessages.length === 0 ? (
           <div className="text-sm text-gray-600">
             Try:
             <div className="mt-2 space-y-1 text-xs text-gray-500">
@@ -525,8 +538,8 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           </div>
         ) : null}
 
-        {messages.map((m) => {
-          const isAssistant = m.role === 'assistant' || m.role === 'receipt' || m.role === 'system';
+        {visibleChatMessages.map((m) => {
+          const isAssistant = m.role === 'assistant' || m.role === 'system';
           const linked = attachmentsByMessage.get(m.id) || [];
           const multiPreviews = Array.isArray(m.meta?.quote_card_previews) ? m.meta.quote_card_previews : null;
           const previewSvg = m.meta?.quote_card_preview_svg;
@@ -542,11 +555,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
               <div
                 className={[
                   'inline-block max-w-[94%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap',
-                  m.role === 'receipt'
-                    ? 'bg-blue-50 border border-blue-100 text-blue-800'
-                    : isAssistant
-                      ? 'bg-white border border-gray-200 text-gray-900'
-                      : 'bg-gray-900 text-white',
+                  isAssistant ? 'bg-white border border-gray-200 text-gray-900' : 'bg-gray-900 text-white',
                 ].join(' ')}
               >
                 {m.content}
@@ -608,6 +617,44 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           );
         })}
       </div>
+
+      {activityLogEntries.length ? (
+        <div className="mx-4 mb-2 rounded-lg border border-gray-200 bg-white text-xs">
+          <button
+            type="button"
+            onClick={() => setActivityLogOpen((o) => !o)}
+            className="w-full text-left px-3 py-2 font-medium text-gray-700 flex justify-between items-center gap-2 hover:bg-gray-50 rounded-lg"
+          >
+            <span>
+              Activity log — what Auto recorded this session ({activityLogEntries.length}). Optional; does not add to your main thread.
+            </span>
+            <span className="shrink-0 text-gray-500">{activityLogOpen ? 'Hide' : 'Show'}</span>
+          </button>
+          {activityLogOpen ? (
+            <ul className="px-3 pb-3 space-y-2 max-h-44 overflow-y-auto text-gray-600 border-t border-gray-100">
+              {[...activityLogEntries].reverse().map((e, i) => {
+                let when = '';
+                try {
+                  when = new Date(e.at).toLocaleString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  });
+                } catch (_) {
+                  when = '';
+                }
+                return (
+                  <li key={`${e.at}-${i}`} className="whitespace-pre-wrap pt-2 first:pt-0 border-t border-gray-100 first:border-0">
+                    {when ? <span className="text-gray-400 block mb-0.5">{when}</span> : null}
+                    {e.text}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+        </div>
+      ) : null}
 
       <div
         className="border-t border-gray-200 px-4 py-3 bg-white"

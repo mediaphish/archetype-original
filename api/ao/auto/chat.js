@@ -27,7 +27,7 @@ import {
   pushTransparencyReceipt,
   workflowHintFromState,
 } from '../../../lib/ao/autoIntent.js';
-import { appendSessionSummary } from '../../../lib/ao/autoSessionSummary.js';
+import { appendSessionSummary, appendReceiptLog } from '../../../lib/ao/autoSessionSummary.js';
 import { isAutoAgentToolsEnabled, runAutoAgentToolLoop } from '../../../lib/ao/autoAgentLoop.js';
 
 function safeText(v, maxLen = 0) {
@@ -1445,6 +1445,7 @@ export default async function handler(req, res) {
       assistantPreview: assistantMessage,
       mode: nextMode,
     });
+    statePatch.receipt_log = appendReceiptLog(currentState.receipt_log, receipts);
 
     await supabaseAdmin
       .from('ao_auto_threads')
@@ -1468,17 +1469,6 @@ export default async function handler(req, res) {
       },
     });
 
-    const receiptRows = [];
-    for (const receipt of receipts) {
-      const row = await addAutoMessage({
-        threadId: thread.id,
-        role: 'receipt',
-        mode: nextMode,
-        content: receipt,
-      });
-      receiptRows.push(row);
-    }
-
     const finalState = await getAutoThreadState(auth.email, thread.id);
     return res.status(200).json({
       ok: true,
@@ -1486,7 +1476,7 @@ export default async function handler(req, res) {
       messages: finalState.messages,
       attachments: finalState.attachments,
       assistant_message: assistantRow.content,
-      receipts: receiptRows.map((x) => x.content),
+      receipts,
       bundle_id: savedBundle?.id || statePatch.bundle_id || null,
       idea_id: savedIdea?.id || null,
       action_log_id: statePatch.last_action_log_id || null,
