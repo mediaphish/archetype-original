@@ -1056,7 +1056,7 @@ export default async function handler(req, res) {
       if (result.ok) {
         receipts.push(`Scheduled ${result.count || 0} Publisher slot(s)`);
         pushTransparencyReceipt(receipts, `Queued ${result.count || 0} Publisher slot(s) from your confirmed plan.`);
-        assistantMessage = `Done. ${result.count || 0} row(s) queued (image + caption per network). Open Publisher to review or adjust times.`;
+        assistantMessage = `Done. ${result.count || 0} row(s) queued (image + caption per network). Let me know and I'll talk to Publisher if you need to review or adjust times.`;
         statePatch.publish_wizard = null;
       } else {
         assistantMessage = `Could not schedule: ${result.error || 'Unknown error'}`;
