@@ -37,6 +37,9 @@ import {
   parseOrExtractRapidWriteSeeds,
   validateRapidWriteSeeds,
   writeRapidWritePost,
+  normalizeRapidWriteDraftState,
+  parseRapidWriteDraftOrDiscussIntent,
+  reviseRapidWriteDraft,
   wantsRunAllSeeds,
   wantsNextSeed,
   wantsDoItAnyway,
@@ -617,7 +620,7 @@ User asked not to refine / treat post as frozen: ${dontRefine ? 'YES — do not 
 Authoritative thread snapshot (from the product database for this conversation — do not contradict counts or pending steps):
 ${JSON.stringify(threadSnapshot && typeof threadSnapshot === 'object' ? threadSnapshot : {})}
 ${workflowHint ? `\nWorkflow hint: ${workflowHint}\n` : ''}
-${threadSnapshot && threadSnapshot.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_seeds (ids, ideas, flags). Questions about strategy, overlap, or whether to extend an existing corpus post must get a direct answer—not a menu of commands unless he only wants that.\n' : ''}
+${threadSnapshot && threadSnapshot.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_seeds (ids, ideas, flags). If rapid_write_drafts is present, saved draft text is there—only the system revision path actually changes those drafts; do not claim you saved edits unless a system step did. Questions about strategy, overlap, or extending a corpus post must get a direct answer—not a menu of commands unless he only wants that.\n' : ''}
 
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
@@ -823,6 +826,7 @@ export default async function handler(req, res) {
           overrides: [],
           agent_training: Array.isArray(rwExisting?.agent_training) ? rwExisting.agent_training : [],
           written_ids: [],
+          drafts_by_seed_id: {},
           queue: parsed.seeds.map((s) => s.id),
           step: 'validated',
           last_ask_batch: null,
@@ -843,7 +847,7 @@ export default async function handler(req, res) {
         });
         lines.push(
           '',
-          'Reply **Run all seeds** to draft every ready seed, **Next seed** to draft one at a time, or **do it anyway** to clear flags and proceed. Say **Exit Rapid Write** to leave this mode.'
+          'Reply **Run all seeds** to draft every ready seed, **Next seed** to draft one at a time, or **do it anyway** to clear flags and proceed. After drafts exist, you can ask Auto in plain language to **change a draft by seed id** (for example tighten rw-3). Say **Exit Rapid Write** to leave this mode.'
         );
         assistantMessage = lines.join('\n');
       }
@@ -880,30 +884,43 @@ export default async function handler(req, res) {
           'No seeds left to write, or remaining seeds are still flagged. Say **do it anyway** first, or **Exit Rapid Write**.';
       } else {
         const drafts = [];
+        const draftsBySeed =
+          rwExisting.drafts_by_seed_id && typeof rwExisting.drafts_by_seed_id === 'object'
+            ? { ...rwExisting.drafts_by_seed_id }
+            : {};
         for (const seed of pending) {
           const w = await writeRapidWritePost(seed, { agentTrainingNotes: agentTraining });
           if (w.ok) {
             writtenIds.add(seed.id);
             drafts.push(w);
+            let corpusDraftId = null;
             try {
-              await supabaseAdmin.from('ao_corpus_drafts').insert({
-                created_by_email: auth.email,
-                topic: w.title || 'Rapid Write',
-                status: 'draft',
-                tldr_markdown: w.markdown,
-                meta: { source: 'rapid_write', seed_id: seed.id, slug: w.slug },
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              });
+              const ins = await supabaseAdmin
+                .from('ao_corpus_drafts')
+                .insert({
+                  created_by_email: auth.email,
+                  topic: w.title || 'Rapid Write',
+                  status: 'draft',
+                  tldr_markdown: w.markdown,
+                  meta: { source: 'rapid_write', seed_id: seed.id, slug: w.slug },
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                })
+                .select('id')
+                .single();
+              if (!ins.error && ins.data?.id) corpusDraftId = ins.data.id;
             } catch {
               /* table may be missing */
             }
+            const rec = normalizeRapidWriteDraftState(w, corpusDraftId);
+            if (rec) draftsBySeed[seed.id] = rec;
           }
         }
         statePatch.rapid_write = {
           ...rwExisting,
           overrides: [...overrides],
           written_ids: [...writtenIds],
+          drafts_by_seed_id: draftsBySeed,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'all',
         };
@@ -912,6 +929,8 @@ export default async function handler(req, res) {
           `Generated **${drafts.length}** Rapid Write draft(s). Saved to your corpus drafts queue when the table is available; full text below.`,
           '',
           ...parts,
+          '',
+          'You can ask Auto to **revise any draft by seed id** in your own words (same spirit as refining seeds).',
         ].join('\n');
       }
     } else if (rwExisting?.active && wantsNextSeed(userMessage)) {
@@ -935,33 +954,151 @@ export default async function handler(req, res) {
           'No seeds left to write, or remaining seeds are still flagged. Say **do it anyway** first, or **Exit Rapid Write**.';
       } else {
         const seed = pending[0];
+        const draftsBySeed =
+          rwExisting.drafts_by_seed_id && typeof rwExisting.drafts_by_seed_id === 'object'
+            ? { ...rwExisting.drafts_by_seed_id }
+            : {};
         const w = await writeRapidWritePost(seed, { agentTrainingNotes: agentTraining });
         if (w.ok) {
           writtenIds.add(seed.id);
+          let corpusDraftId = null;
           try {
-            await supabaseAdmin.from('ao_corpus_drafts').insert({
-              created_by_email: auth.email,
-              topic: w.title || 'Rapid Write',
-              status: 'draft',
-              tldr_markdown: w.markdown,
-              meta: { source: 'rapid_write', seed_id: seed.id, slug: w.slug },
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            });
+            const ins = await supabaseAdmin
+              .from('ao_corpus_drafts')
+              .insert({
+                created_by_email: auth.email,
+                topic: w.title || 'Rapid Write',
+                status: 'draft',
+                tldr_markdown: w.markdown,
+                meta: { source: 'rapid_write', seed_id: seed.id, slug: w.slug },
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              })
+              .select('id')
+              .single();
+            if (!ins.error && ins.data?.id) corpusDraftId = ins.data.id;
           } catch {
             /* optional */
           }
+          const rec = normalizeRapidWriteDraftState(w, corpusDraftId);
+          if (rec) draftsBySeed[seed.id] = rec;
         }
         statePatch.rapid_write = {
           ...rwExisting,
           overrides: [...overrides],
           written_ids: [...writtenIds],
+          drafts_by_seed_id: draftsBySeed,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'next',
         };
         assistantMessage = w.ok
-          ? [`**Next seed** (${seed.id})`, '', w.markdown, '', 'Say **Next seed** again or **Run all seeds** for the rest.'].join('\n')
+          ? [
+              `**Next seed** (${seed.id})`,
+              '',
+              w.markdown,
+              '',
+              'Say **Next seed** again or **Run all seeds** for the rest. You can also ask Auto to **revise this draft** (or any draft by seed id) in plain language.',
+            ].join('\n')
           : `Could not generate draft: ${w.error || 'unknown'}`;
+      }
+    } else if (rwExisting?.active) {
+      const draftsMap =
+        rwExisting.drafts_by_seed_id && typeof rwExisting.drafts_by_seed_id === 'object'
+          ? rwExisting.drafts_by_seed_id
+          : {};
+      if (Object.keys(draftsMap).length > 0) {
+        const intent = await parseRapidWriteDraftOrDiscussIntent(userMessage, {
+          seeds: Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [],
+          drafts_by_seed_id: draftsMap,
+        });
+        if (
+          intent.intent === 'revise_draft' &&
+          intent.instruction &&
+          Array.isArray(intent.seed_ids) &&
+          intent.seed_ids.length > 0
+        ) {
+          rapidWriteHandled = true;
+          nextMode = 'plan';
+          const seeds = Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [];
+          const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
+          const agentTraining = Array.isArray(rwExisting.agent_training) ? rwExisting.agent_training : [];
+          const nextDrafts = { ...draftsMap };
+          const outLines = [];
+          let anyOk = false;
+          let successCount = 0;
+          for (const sidRaw of intent.seed_ids) {
+            const sid =
+              Object.keys(nextDrafts).find((k) => k.toLowerCase() === String(sidRaw).toLowerCase()) ||
+              String(sidRaw);
+            const seed = seeds.find((s) => s.id === sid);
+            const cur = nextDrafts[sid];
+            if (!seed || !cur) {
+              outLines.push(`**${sidRaw}** — no draft found for that seed id.`);
+              continue;
+            }
+            const v = validation.find((x) => x.id === sid);
+            const overlapHint = v?.flags?.length ? v.flags.map((f) => f.detail).join(' ') : '';
+            const w = await reviseRapidWriteDraft(seed, cur, intent.instruction, {
+              agentTrainingNotes: agentTraining,
+              overlapHint: overlapHint || undefined,
+            });
+            if (!w.ok) {
+              outLines.push(`**${sid}** — could not revise: ${w.error || 'unknown'}`);
+              continue;
+            }
+            const prevId = cur.corpus_draft_id || null;
+            let corpusId = prevId;
+            try {
+              if (prevId) {
+                const upd = await supabaseAdmin
+                  .from('ao_corpus_drafts')
+                  .update({
+                    topic: w.title || 'Rapid Write',
+                    tldr_markdown: w.markdown,
+                    updated_at: new Date().toISOString(),
+                  })
+                  .eq('id', prevId)
+                  .eq('created_by_email', auth.email);
+                if (upd.error) corpusId = prevId;
+              } else {
+                const ins = await supabaseAdmin
+                  .from('ao_corpus_drafts')
+                  .insert({
+                    created_by_email: auth.email,
+                    topic: w.title || 'Rapid Write',
+                    status: 'draft',
+                    tldr_markdown: w.markdown,
+                    meta: { source: 'rapid_write', seed_id: w.seed_id, slug: w.slug },
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                  })
+                  .select('id')
+                  .single();
+                if (!ins.error && ins.data?.id) corpusId = ins.data.id;
+              }
+            } catch {
+              /* optional */
+            }
+            const rec = normalizeRapidWriteDraftState(w, corpusId);
+            if (rec) {
+              nextDrafts[sid] = rec;
+              anyOk = true;
+              successCount += 1;
+            }
+            outLines.push(`### ${w.title} (${sid})\n**Slug:** ${w.slug}\n\n${w.body}\n\n*${w.reflection_question}*`);
+          }
+          if (anyOk) {
+            statePatch.rapid_write = { ...rwExisting, drafts_by_seed_id: nextDrafts };
+            receipts.push('Rapid Write: draft revision(s) saved on this thread');
+          }
+          assistantMessage = [
+            anyOk
+              ? `Updated **${successCount}** Rapid Write draft(s). Corpus drafts queue updated when available.`
+              : 'No drafts were revised this turn.',
+            '',
+            ...outLines,
+          ].join('\n');
+        }
       }
     }
     /* Rapid Write: questions and strategy (not exact commands) fall through to normal Auto reply — snapshot + workflow hint carry seed ids and flags. */

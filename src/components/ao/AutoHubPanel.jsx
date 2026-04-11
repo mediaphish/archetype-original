@@ -93,7 +93,9 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     const st = thread?.state && typeof thread.state === 'object' ? thread.state : null;
     if (!st?.rapid_write?.active) return null;
     const n = Array.isArray(st.rapid_write.seeds) ? st.rapid_write.seeds.length : 0;
-    return { n };
+    const d = st.rapid_write.drafts_by_seed_id;
+    const draftCount = d && typeof d === 'object' ? Object.keys(d).length : 0;
+    return { n, draftCount };
   }, [thread]);
 
   /** Main transcript only — system receipts are kept in thread state (activity log), not as chat bubbles. */
@@ -391,8 +393,12 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             Mode: {modeLabel(thread?.current_mode)}
           </span>
           {rapidWriteBanner && (
-            <span className="px-2 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-semibold" title="Rapid Write recipe">
+            <span
+              className="px-2 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-semibold"
+              title="Rapid Write recipe — ask Auto to revise drafts by seed id"
+            >
               Rapid Write · {rapidWriteBanner.n} seed(s)
+              {rapidWriteBanner.draftCount > 0 ? ` · ${rapidWriteBanner.draftCount} draft(s)` : ''}
             </span>
           )}
           <button
