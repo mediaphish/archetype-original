@@ -1,9 +1,12 @@
 /**
  * Rapid Write seed parser regression. Run: node scripts/rapid-write-regression.mjs
+ *
+ * Tests the optional JSON-array path (fenced block). Freeform paste is handled
+ * server-side via parseOrExtractRapidWriteSeeds (needs an API key at runtime).
  */
 
 import {
-  parseRapidWriteSeeds,
+  parseRapidWriteSeedsJson,
   wantsRapidWriteActivation,
   wantsExitRapidWrite,
   wantsRapidWriteAgentTraining,
@@ -25,7 +28,7 @@ const msg = `Rapid Write
 `;
 
 ok('activation detected', wantsRapidWriteActivation(msg));
-const p = parseRapidWriteSeeds(msg);
+const p = parseRapidWriteSeedsJson(msg);
 ok('parse ok', p.ok && p.seeds.length === 1 && p.seeds[0].id === 'a');
 ok('exit phrase', wantsExitRapidWrite('Exit Rapid Write'));
 ok('agent training line', wantsRapidWriteAgentTraining('Agent Training:\nUse shorter sentences.'));

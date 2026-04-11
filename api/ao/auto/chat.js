@@ -34,7 +34,7 @@ import {
   wantsExitRapidWrite,
   wantsRapidWriteAgentTraining,
   extractAgentTrainingBody,
-  parseRapidWriteSeeds,
+  parseOrExtractRapidWriteSeeds,
   validateRapidWriteSeeds,
   writeRapidWritePost,
   wantsRunAllSeeds,
@@ -789,7 +789,7 @@ export default async function handler(req, res) {
       statePatch.rapid_write = null;
       receipts.push('Exited Rapid Write mode');
       assistantMessage =
-        'Rapid Write mode ended. Your thread is back to general Auto. Say **Rapid Write** with a JSON seed array when you want to start again.';
+        'Rapid Write mode ended. Your thread is back to general Auto. Say **Rapid Write** and paste your seed list when you want to start again.';
     } else if (wantsRapidWriteAgentTraining(userMessage) && rwExisting?.active) {
       rapidWriteHandled = true;
       nextMode = 'plan';
@@ -804,17 +804,14 @@ export default async function handler(req, res) {
     } else if (wantsRapidWriteActivation(userMessage)) {
       rapidWriteHandled = true;
       nextMode = 'plan';
-      const parsed = parseRapidWriteSeeds(userMessage);
+      const parsed = await parseOrExtractRapidWriteSeeds(userMessage);
       if (!parsed.ok) {
         assistantMessage = [
-          '**Rapid Write** needs a JSON array of seeds in a fenced `json` block. Each object requires at least `core_idea`, `leadership_category`, `psychological_outcome`, plus `real_world_context`, `research_notes`, `insight_anchor` (recommended).',
+          '**Rapid Write** could not turn your message into seeds.',
           '',
-          `Parse error: ${parsed.error}`,
+          safeText(parsed.error, 1200),
           '',
-          'Example:',
-          '```json',
-          '[{"id":"rw-1","core_idea":"…","leadership_category":"…","psychological_outcome":"…","real_world_context":"…","research_notes":"…","insight_anchor":"…"}]',
-          '```',
+          'Tip: On the first line write **Rapid Write**, then paste your list (bullets, numbers, or paragraphs—no special format required). The system interprets it. If you use a JSON array in a code block, that still works.',
         ].join('\n');
       } else {
         const validation = await validateRapidWriteSeeds(parsed.seeds, auth.email);
@@ -969,7 +966,7 @@ export default async function handler(req, res) {
       rapidWriteHandled = true;
       nextMode = 'plan';
       assistantMessage =
-        'You are in **Rapid Write** mode. Use **Run all seeds**, **Next seed**, **do it anyway** (if something was flagged), **Agent Training:** …, or **Exit Rapid Write**. To load a new batch, send a new message starting with **Rapid Write** and your JSON seeds.';
+        'You are in **Rapid Write** mode. Use **Run all seeds**, **Next seed**, **do it anyway** (if something was flagged), **Agent Training:** …, or **Exit Rapid Write**. To load a new batch, start a message with **Rapid Write** and paste your seed list.';
     }
 
     if (!rapidWriteHandled) {
