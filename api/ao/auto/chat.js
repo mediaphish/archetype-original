@@ -29,6 +29,18 @@ import {
 import { extractPublishScheduleConstraints, mergeScheduleOpts } from '../../../lib/ao/publishScheduleExtract.js';
 import { appendSessionSummary, appendReceiptLog } from '../../../lib/ao/autoSessionSummary.js';
 import { isAutoAgentToolsEnabled, runAutoAgentToolLoop } from '../../../lib/ao/autoAgentLoop.js';
+import {
+  wantsRapidWriteActivation,
+  wantsExitRapidWrite,
+  wantsRapidWriteAgentTraining,
+  extractAgentTrainingBody,
+  parseRapidWriteSeeds,
+  validateRapidWriteSeeds,
+  writeRapidWritePost,
+  wantsRunAllSeeds,
+  wantsNextSeed,
+  wantsDoItAnyway,
+} from '../../../lib/ao/rapidWriteMode.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -767,7 +779,200 @@ export default async function handler(req, res) {
     let assistantMeta = null;
     let savedBundle = null;
     let savedIdea = null;
+    let rapidWriteHandled = false;
 
+    const rwExisting = currentState.rapid_write && typeof currentState.rapid_write === 'object' ? currentState.rapid_write : null;
+
+    if (wantsExitRapidWrite(userMessage) && rwExisting?.active) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      statePatch.rapid_write = null;
+      receipts.push('Exited Rapid Write mode');
+      assistantMessage =
+        'Rapid Write mode ended. Your thread is back to general Auto. Say **Rapid Write** with a JSON seed array when you want to start again.';
+    } else if (wantsRapidWriteAgentTraining(userMessage) && rwExisting?.active) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      const body = extractAgentTrainingBody(userMessage);
+      const prev = Array.isArray(rwExisting.agent_training) ? [...rwExisting.agent_training] : [];
+      if (body) prev.push(body);
+      statePatch.rapid_write = { ...rwExisting, agent_training: prev.slice(-20) };
+      receipts.push('Agent Training (Rapid Write): instruction stored for this thread');
+      assistantMessage =
+        '**Agent Training** received. I will apply these instructions to Rapid Write drafting in this thread. No publishable draft was generated this turn.\n\n' +
+        (body ? `Stored:\n${body.slice(0, 1200)}${body.length > 1200 ? '…' : ''}` : '(Empty instruction — add text after **Agent Training:** or on following lines.)');
+    } else if (wantsRapidWriteActivation(userMessage)) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      const parsed = parseRapidWriteSeeds(userMessage);
+      if (!parsed.ok) {
+        assistantMessage = [
+          '**Rapid Write** needs a JSON array of seeds in a fenced `json` block. Each object requires at least `core_idea`, `leadership_category`, `psychological_outcome`, plus `real_world_context`, `research_notes`, `insight_anchor` (recommended).',
+          '',
+          `Parse error: ${parsed.error}`,
+          '',
+          'Example:',
+          '```json',
+          '[{"id":"rw-1","core_idea":"…","leadership_category":"…","psychological_outcome":"…","real_world_context":"…","research_notes":"…","insight_anchor":"…"}]',
+          '```',
+        ].join('\n');
+      } else {
+        const validation = await validateRapidWriteSeeds(parsed.seeds, auth.email);
+        statePatch.rapid_write = {
+          active: true,
+          seeds: parsed.seeds,
+          validation,
+          overrides: [],
+          agent_training: Array.isArray(rwExisting?.agent_training) ? rwExisting.agent_training : [],
+          written_ids: [],
+          queue: parsed.seeds.map((s) => s.id),
+          step: 'validated',
+          last_ask_batch: null,
+        };
+        receipts.push(`Rapid Write: loaded ${parsed.seeds.length} seed(s); validation run`);
+        const lines = [
+          `**Rapid Write** loaded **${parsed.seeds.length}** seed(s). Validation (corpus overlap + falsity check) is complete.`,
+          '',
+        ];
+        validation.forEach((v) => {
+          const seed = parsed.seeds.find((s) => s.id === v.id);
+          const title = seed ? safeText(seed.core_idea, 80) : v.id;
+          if (v.flags.length) {
+            lines.push(`- **${v.id}** — FLAGGED: ${v.flags.map((f) => `[${f.type}] ${f.detail}`).join(' ')}`);
+          } else {
+            lines.push(`- **${v.id}** — OK — ${title}${title.length >= 80 ? '…' : ''}`);
+          }
+        });
+        lines.push(
+          '',
+          'Reply **Run all seeds** to draft every ready seed, **Next seed** to draft one at a time, or **do it anyway** to clear flags and proceed. Say **Exit Rapid Write** to leave this mode.'
+        );
+        assistantMessage = lines.join('\n');
+      }
+    } else if (rwExisting?.active && wantsDoItAnyway(userMessage) && !wantsRunAllSeeds(userMessage) && !wantsNextSeed(userMessage)) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
+      const overrides = new Set(Array.isArray(rwExisting.overrides) ? rwExisting.overrides : []);
+      validation.forEach((v) => {
+        if (v.flags?.length) overrides.add(v.id);
+      });
+      statePatch.rapid_write = { ...rwExisting, overrides: [...overrides] };
+      receipts.push('Rapid Write: owner override — flags cleared for all flagged seeds');
+      assistantMessage =
+        'Understood. I will treat flagged seeds as approved for this batch. Say **Run all seeds** or **Next seed** to generate drafts.';
+    } else if (rwExisting?.active && wantsRunAllSeeds(userMessage)) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      const seeds = Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [];
+      const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
+      const overrides = new Set(Array.isArray(rwExisting.overrides) ? rwExisting.overrides : []);
+      const writtenIds = new Set(Array.isArray(rwExisting.written_ids) ? rwExisting.written_ids : []);
+      const agentTraining = Array.isArray(rwExisting.agent_training) ? rwExisting.agent_training : [];
+      const isWritable = (sid) => {
+        const v = validation.find((x) => x.id === sid);
+        const flagged = v && v.flags && v.flags.length > 0;
+        if (!flagged) return true;
+        return overrides.has(sid);
+      };
+      const pending = seeds.filter((s) => !writtenIds.has(s.id) && isWritable(s.id));
+      if (!pending.length) {
+        statePatch.rapid_write = { ...rwExisting, overrides: [...overrides] };
+        assistantMessage =
+          'No seeds left to write, or remaining seeds are still flagged. Say **do it anyway** first, or **Exit Rapid Write**.';
+      } else {
+        const drafts = [];
+        for (const seed of pending) {
+          const w = await writeRapidWritePost(seed, { agentTrainingNotes: agentTraining });
+          if (w.ok) {
+            writtenIds.add(seed.id);
+            drafts.push(w);
+            try {
+              await supabaseAdmin.from('ao_corpus_drafts').insert({
+                created_by_email: auth.email,
+                topic: w.title || 'Rapid Write',
+                status: 'draft',
+                tldr_markdown: w.markdown,
+                meta: { source: 'rapid_write', seed_id: seed.id, slug: w.slug },
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              });
+            } catch {
+              /* table may be missing */
+            }
+          }
+        }
+        statePatch.rapid_write = {
+          ...rwExisting,
+          overrides: [...overrides],
+          written_ids: [...writtenIds],
+          queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
+          last_ask_batch: 'all',
+        };
+        const parts = drafts.map((d) => `### ${d.title}\n**Slug:** ${d.slug}\n\n${d.body}\n\n*${d.reflection_question}*\n`);
+        assistantMessage = [
+          `Generated **${drafts.length}** Rapid Write draft(s). Saved to your corpus drafts queue when the table is available; full text below.`,
+          '',
+          ...parts,
+        ].join('\n');
+      }
+    } else if (rwExisting?.active && wantsNextSeed(userMessage)) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      const seeds = Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [];
+      const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
+      const overrides = new Set(Array.isArray(rwExisting.overrides) ? rwExisting.overrides : []);
+      const writtenIds = new Set(Array.isArray(rwExisting.written_ids) ? rwExisting.written_ids : []);
+      const agentTraining = Array.isArray(rwExisting.agent_training) ? rwExisting.agent_training : [];
+      const isWritable = (sid) => {
+        const v = validation.find((x) => x.id === sid);
+        const flagged = v && v.flags && v.flags.length > 0;
+        if (!flagged) return true;
+        return overrides.has(sid);
+      };
+      const pending = seeds.filter((s) => !writtenIds.has(s.id) && isWritable(s.id));
+      if (!pending.length) {
+        statePatch.rapid_write = { ...rwExisting, overrides: [...overrides] };
+        assistantMessage =
+          'No seeds left to write, or remaining seeds are still flagged. Say **do it anyway** first, or **Exit Rapid Write**.';
+      } else {
+        const seed = pending[0];
+        const w = await writeRapidWritePost(seed, { agentTrainingNotes: agentTraining });
+        if (w.ok) {
+          writtenIds.add(seed.id);
+          try {
+            await supabaseAdmin.from('ao_corpus_drafts').insert({
+              created_by_email: auth.email,
+              topic: w.title || 'Rapid Write',
+              status: 'draft',
+              tldr_markdown: w.markdown,
+              meta: { source: 'rapid_write', seed_id: seed.id, slug: w.slug },
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            });
+          } catch {
+            /* optional */
+          }
+        }
+        statePatch.rapid_write = {
+          ...rwExisting,
+          overrides: [...overrides],
+          written_ids: [...writtenIds],
+          queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
+          last_ask_batch: 'next',
+        };
+        assistantMessage = w.ok
+          ? [`**Next seed** (${seed.id})`, '', w.markdown, '', 'Say **Next seed** again or **Run all seeds** for the rest.'].join('\n')
+          : `Could not generate draft: ${w.error || 'unknown'}`;
+      }
+    } else if (rwExisting?.active && userMessage.trim().length > 0) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      assistantMessage =
+        'You are in **Rapid Write** mode. Use **Run all seeds**, **Next seed**, **do it anyway** (if something was flagged), **Agent Training:** …, or **Exit Rapid Write**. To load a new batch, send a new message starting with **Rapid Write** and your JSON seeds.';
+    }
+
+    if (!rapidWriteHandled) {
     if (nextMode === 'training') {
       const cleanRule = userMessage
         .replace(/switch to training mode/i, '')
@@ -1472,6 +1677,7 @@ export default async function handler(req, res) {
       });
       assistantMessage = safeText(model?.assistant_message, 4000) || `Mode: ${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}. Tell me what you want to do next.`;
       if (Array.isArray(model?.receipts)) receipts.push(...model.receipts.map((x) => safeText(x, 160)).filter(Boolean));
+    }
     }
 
     statePatch.session_summary = appendSessionSummary(currentState.session_summary, {

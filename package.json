@@ -20,6 +20,7 @@
     "test:quote-card-raster": "node scripts/quote-card-raster-golden.mjs",
     "test:auto-intent": "node scripts/auto-intent-regression.mjs",
     "test:publish-schedule-merge": "node scripts/publish-schedule-merge-test.mjs",
+    "test:rapid-write": "node scripts/rapid-write-regression.mjs",
     "test:e2e": "cypress run",
     "test:e2e:ali": "CYPRESS_BASE_URL=https://www.archetypeoriginal.com cypress run --spec cypress/e2e/ali/ali-links-nav.cy.js",
     "test:e2e:open": "cypress open",

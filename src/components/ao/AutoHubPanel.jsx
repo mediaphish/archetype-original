@@ -89,6 +89,13 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     return { n, gap };
   }, [thread]);
 
+  const rapidWriteBanner = useMemo(() => {
+    const st = thread?.state && typeof thread.state === 'object' ? thread.state : null;
+    if (!st?.rapid_write?.active) return null;
+    const n = Array.isArray(st.rapid_write.seeds) ? st.rapid_write.seeds.length : 0;
+    return { n };
+  }, [thread]);
+
   /** Main transcript only — system receipts are kept in thread state (activity log), not as chat bubbles. */
   const visibleChatMessages = useMemo(
     () => (Array.isArray(messages) ? messages.filter((m) => m.role !== 'receipt') : []),
@@ -383,6 +390,11 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
             Mode: {modeLabel(thread?.current_mode)}
           </span>
+          {rapidWriteBanner && (
+            <span className="px-2 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-semibold" title="Rapid Write recipe">
+              Rapid Write · {rapidWriteBanner.n} seed(s)
+            </span>
+          )}
           <button
             type="button"
             onClick={saveDraft}
