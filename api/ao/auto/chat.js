@@ -617,6 +617,7 @@ User asked not to refine / treat post as frozen: ${dontRefine ? 'YES — do not 
 Authoritative thread snapshot (from the product database for this conversation — do not contradict counts or pending steps):
 ${JSON.stringify(threadSnapshot && typeof threadSnapshot === 'object' ? threadSnapshot : {})}
 ${workflowHint ? `\nWorkflow hint: ${workflowHint}\n` : ''}
+${threadSnapshot && threadSnapshot.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_seeds (ids, ideas, flags). Questions about strategy, overlap, or whether to extend an existing corpus post must get a direct answer—not a menu of commands unless he only wants that.\n' : ''}
 
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
@@ -962,12 +963,8 @@ export default async function handler(req, res) {
           ? [`**Next seed** (${seed.id})`, '', w.markdown, '', 'Say **Next seed** again or **Run all seeds** for the rest.'].join('\n')
           : `Could not generate draft: ${w.error || 'unknown'}`;
       }
-    } else if (rwExisting?.active && userMessage.trim().length > 0) {
-      rapidWriteHandled = true;
-      nextMode = 'plan';
-      assistantMessage =
-        'You are in **Rapid Write** mode. Use **Run all seeds**, **Next seed**, **do it anyway** (if something was flagged), **Agent Training:** …, or **Exit Rapid Write**. To load a new batch, start a message with **Rapid Write** and paste your seed list.';
     }
+    /* Rapid Write: questions and strategy (not exact commands) fall through to normal Auto reply — snapshot + workflow hint carry seed ids and flags. */
 
     if (!rapidWriteHandled) {
     if (nextMode === 'training') {
