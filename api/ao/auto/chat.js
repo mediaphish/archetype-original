@@ -44,7 +44,12 @@ import {
   wantsNextSeed,
   collectRapidWriteOverrideIds,
   rapidWriteOpeningSnippet,
+  wantsGenerateRapidWriteHeroImages,
+  wantsRegenerateRapidWriteHeroImage,
+  wantsApproveRapidWriteHeroImage,
+  extractRapidWriteSeedIdsFromMessage as extractRwSeedIdsFromMessage,
 } from '../../../lib/ao/rapidWriteMode.js';
+import { generateRapidWriteHeroForDraft, setRapidWriteHeroStatus } from '../../../lib/ao/rapidWriteImage.js';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -1082,6 +1087,95 @@ export default async function handler(req, res) {
           ? rwAfterOverrides.drafts_by_seed_id
           : {};
       if (Object.keys(draftsMap).length > 0) {
+        const heroReg = wantsRegenerateRapidWriteHeroImage(userMessage);
+        const heroGen = wantsGenerateRapidWriteHeroImages(userMessage);
+        const heroAppr = wantsApproveRapidWriteHeroImage(userMessage);
+
+        if (heroReg || heroGen || heroAppr) {
+          rapidWriteHandled = true;
+          nextMode = 'plan';
+          const idsFromMsg = extractRwSeedIdsFromMessage(userMessage, new Set(Object.keys(draftsMap)));
+          const withCorpus = Object.keys(draftsMap).filter((k) => draftsMap[k]?.corpus_draft_id);
+          let targetSeeds = idsFromMsg.length
+            ? idsFromMsg
+                .map((raw) => {
+                  const sid =
+                    Object.keys(draftsMap).find((k) => k.toLowerCase() === String(raw).toLowerCase()) ||
+                    String(raw);
+                  return sid;
+                })
+                .filter((sid) => draftsMap[sid]?.corpus_draft_id)
+            : withCorpus;
+          if (!targetSeeds.length) {
+            assistantMessage =
+              'No Rapid Write drafts with a saved corpus row were found for that request. Use **Run all seeds** or **Next seed** first so drafts are saved.';
+          } else {
+            const lines = [];
+            let nextDrafts = { ...draftsMap };
+            for (const sid of targetSeeds) {
+              const cid = draftsMap[sid]?.corpus_draft_id;
+              if (!cid) {
+                lines.push(`**${sid}** — no saved corpus draft id.`);
+                // eslint-disable-next-line no-continue
+                continue;
+              }
+              let out;
+              if (heroAppr) {
+                out = await setRapidWriteHeroStatus(supabaseAdmin, cid, auth.email, 'approved');
+              } else if (heroReg) {
+                out = await generateRapidWriteHeroForDraft(supabaseAdmin, cid, auth.email, { force: true });
+              } else {
+                out = await generateRapidWriteHeroForDraft(supabaseAdmin, cid, auth.email, { force: false });
+              }
+              if (!out.ok) {
+                lines.push(`**${sid}** — ${out.error || 'failed'}`);
+                // eslint-disable-next-line no-continue
+                continue;
+              }
+              const { data: row } = await supabaseAdmin
+                .from('ao_corpus_drafts')
+                .select('meta,id')
+                .eq('id', cid)
+                .eq('created_by_email', auth.email)
+                .maybeSingle();
+              const img = row?.meta?.rapid_write_image;
+              if (img?.url) {
+                nextDrafts[sid] = {
+                  ...nextDrafts[sid],
+                  hero_image: {
+                    url: img.url,
+                    status: img.status,
+                    corpus_draft_id: String(row.id),
+                  },
+                };
+              }
+              if (heroAppr) {
+                lines.push(`**${sid}** — hero image **approved** for publish.\n${img?.url || ''}`);
+              } else {
+                lines.push(
+                  `**${sid}** — hero image generated (pending review). Open Analyst → **Corpus drafts** to approve, or say **approve hero image ${sid}**.`
+                );
+                lines.push(img?.url ? `\n${img.url}` : '');
+              }
+            }
+            statePatch.rapid_write = {
+              ...rwAfterOverrides,
+              drafts_by_seed_id: nextDrafts,
+              memory: {
+                ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+                standing_instructions: Array.isArray(rwAfterOverrides.agent_training)
+                  ? rwAfterOverrides.agent_training.slice(-6)
+                  : [],
+                last_action: heroAppr ? 'hero_approve' : heroReg ? 'hero_regenerate' : 'hero_generate',
+                updated_at: new Date().toISOString(),
+              },
+            };
+            receipts.push(
+              heroAppr ? 'Rapid Write: hero image(s) approved' : 'Rapid Write: hero image(s) generated'
+            );
+            assistantMessage = ['**Rapid Write — hero images**', '', ...lines].join('\n');
+          }
+        } else {
         const intent = await parseRapidWriteDraftOrDiscussIntent(userMessage, {
           seeds: Array.isArray(rwAfterOverrides.seeds) ? rwAfterOverrides.seeds : [],
           drafts_by_seed_id: draftsMap,
@@ -1202,6 +1296,7 @@ export default async function handler(req, res) {
             '',
             ...outLines,
           ].join('\n');
+        }
         }
       }
     }

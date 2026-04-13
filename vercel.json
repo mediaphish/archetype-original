@@ -121,6 +121,7 @@
     { "src": "/api/ao/auto/drafts/save", "dest": "/api/ao/auto/drafts/save.js" },
     { "src": "/api/ao/auto/drafts", "dest": "/api/ao/auto/drafts/index.js" },
     { "src": "/api/ao/auto/chat", "dest": "/api/ao/auto/chat.js" },
+    { "src": "/api/ao/corpus/drafts/([^/]+)/hero-image", "dest": "/api/ao/corpus/drafts/[id]/hero-image.js?id=$1" },
     { "src": "/api/ao/corpus/drafts/([^/]+)", "dest": "/api/ao/corpus/drafts/[id].js?id=$1" },
     { "src": "/api/ao/corpus/drafts", "dest": "/api/ao/corpus/drafts/index.js" },
     { "src": "/api/ao/corpus/publish", "dest": "/api/ao/corpus/publish.js" },

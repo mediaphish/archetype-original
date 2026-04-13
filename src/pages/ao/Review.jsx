@@ -214,6 +214,7 @@ function buildUseIdeasBullets(q) {
 
 const TABS = [
   { key: 'drafts', label: 'Drafts' },
+  { key: 'corpus', label: 'Corpus drafts' },
   { key: 'held', label: 'Held' },
   { key: 'profiles', label: 'Profiles' },
 ];
@@ -239,6 +240,10 @@ export default function Review() {
   const [draftsLoading, setDraftsLoading] = useState(false);
   const [draftActingId, setDraftActingId] = useState(null);
   const [autoHubKey, setAutoHubKey] = useState(0);
+
+  const [corpusDrafts, setCorpusDrafts] = useState([]);
+  const [corpusLoading, setCorpusLoading] = useState(false);
+  const [corpusActionId, setCorpusActionId] = useState(null);
 
   // Profiles (Phase 2 starter): people/brands view inside Analyst
   const [profilesLoading, setProfilesLoading] = useState(false);
@@ -725,6 +730,60 @@ export default function Review() {
     return () => window.removeEventListener('ao-auto-draft-saved', onSaved);
   }, [loadAutoDrafts]);
 
+  const loadCorpusDrafts = useCallback(async () => {
+    if (!authChecked) return;
+    setCorpusLoading(true);
+    try {
+      const res = await fetch('/api/ao/corpus/drafts');
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok && Array.isArray(json.drafts)) {
+        setCorpusDrafts(json.drafts);
+      } else {
+        setCorpusDrafts([]);
+      }
+    } catch (_) {
+      setCorpusDrafts([]);
+    } finally {
+      setCorpusLoading(false);
+    }
+  }, [authChecked]);
+
+  useEffect(() => {
+    if (!authChecked || activeTab !== 'corpus') return;
+    loadCorpusDrafts();
+  }, [authChecked, activeTab, loadCorpusDrafts]);
+
+  const runCorpusHeroAction = useCallback(
+    async (draftId, action) => {
+      const id = String(draftId || '').trim();
+      if (!id) return;
+      setCorpusActionId(id);
+      setActionError('');
+      try {
+        const res = await fetch(`/api/ao/corpus/drafts/${encodeURIComponent(id)}/hero-image`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Action failed');
+        setActionMessage(
+          action === 'approve'
+            ? 'Hero image approved for publish.'
+            : action === 'reject'
+              ? 'Hero image marked rejected.'
+              : 'Hero image updated.'
+        );
+        await loadCorpusDrafts();
+      } catch (e) {
+        setActionError(e.message || 'Could not update hero image');
+      } finally {
+        setCorpusActionId(null);
+      }
+    },
+    [loadCorpusDrafts]
+  );
+
   const resumeAutoDraft = useCallback(
     async (threadId) => {
       const id = String(threadId || '').trim();
@@ -832,11 +891,22 @@ export default function Review() {
 
         <div className="mb-2">
           <h1 className="text-3xl font-bold text-gray-900">
-            {activeTab === 'drafts' ? 'Drafts' : activeTab === 'held' ? 'Held' : 'Profiles'}
+            {activeTab === 'drafts'
+              ? 'Drafts'
+              : activeTab === 'corpus'
+                ? 'Corpus drafts'
+                : activeTab === 'held'
+                  ? 'Held'
+                  : 'Profiles'}
           </h1>
           {activeTab === 'drafts' ? (
             <p className="text-gray-600 mt-1 text-sm">
               Saved Auto conversations. Use <strong>Edit</strong> to continue in the chat above, or <strong>Delete</strong> to remove one draft forever.
+            </p>
+          ) : null}
+          {activeTab === 'corpus' ? (
+            <p className="text-gray-600 mt-1 text-sm">
+              Rapid Write and other corpus queue items. Generate a <strong>hero image</strong> (16:9, no text in the frame), then approve it before publishing so it can flow into the journal file.
             </p>
           ) : null}
         </div>
@@ -913,6 +983,102 @@ export default function Review() {
                     </div>
                   </li>
                 ))}
+              </ul>
+            )}
+          </div>
+        )}
+        {activeTab === 'corpus' && (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8 mb-6">
+            {corpusLoading ? (
+              <div className="text-sm text-gray-500">Loading corpus drafts…</div>
+            ) : corpusDrafts.length === 0 ? (
+              <p className="text-gray-500">No corpus drafts yet. Use Rapid Write in Auto above to create drafts.</p>
+            ) : (
+              <ul className="space-y-6">
+                {corpusDrafts.map((row) => {
+                  const id = row?.id;
+                  const meta = row?.meta && typeof row.meta === 'object' ? row.meta : {};
+                  const img = meta.rapid_write_image && typeof meta.rapid_write_image === 'object' ? meta.rapid_write_image : null;
+                  const seedLabel = meta.seed_id ? String(meta.seed_id) : '';
+                  const busy = corpusActionId === id;
+                  return (
+                    <li
+                      key={id}
+                      className="border border-gray-200 rounded-lg p-4 bg-gray-50 flex flex-col gap-4 md:flex-row md:items-start"
+                    >
+                      <div className="shrink-0 w-full md:w-56 aspect-video rounded-md overflow-hidden bg-gray-200 border border-gray-300">
+                        {img?.url ? (
+                          <img src={img.url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-xs text-gray-500 p-2 text-center">
+                            No hero image yet
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold text-gray-900">{row.topic || 'Untitled'}</div>
+                        {seedLabel ? (
+                          <div className="text-xs text-gray-500 mt-1">
+                            Seed <span className="font-mono">{seedLabel}</span>
+                          </div>
+                        ) : null}
+                        {img?.status ? (
+                          <div className="mt-2">
+                            <span
+                              className={[
+                                'text-xs font-semibold px-2 py-0.5 rounded',
+                                img.status === 'approved'
+                                  ? 'bg-green-100 text-green-900'
+                                  : img.status === 'rejected'
+                                    ? 'bg-red-50 text-red-800'
+                                    : 'bg-amber-50 text-amber-900',
+                              ].join(' ')}
+                            >
+                              Image: {img.status}
+                            </span>
+                          </div>
+                        ) : null}
+                        {img?.url ? (
+                          <div className="text-xs text-gray-500 mt-2 break-all">{img.url}</div>
+                        ) : null}
+                      </div>
+                      <div className="flex flex-wrap gap-2 shrink-0">
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => runCorpusHeroAction(id, 'generate')}
+                          className="min-h-[44px] px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                        >
+                          {busy ? '…' : 'Generate'}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busy || !img?.url}
+                          onClick={() => runCorpusHeroAction(id, 'regenerate')}
+                          className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm font-semibold hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          Regenerate
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busy || !img?.url || img?.status === 'approved'}
+                          onClick={() => runCorpusHeroAction(id, 'approve')}
+                          className="min-h-[44px] px-3 py-2 rounded-lg border border-green-600 bg-green-50 text-green-900 text-sm font-semibold hover:bg-green-100 disabled:opacity-50"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busy || !img?.url}
+                          onClick={() => runCorpusHeroAction(id, 'reject')}
+                          className="min-h-[44px] px-3 py-2 rounded-lg border border-red-300 bg-white text-red-800 text-sm font-semibold hover:bg-red-50 disabled:opacity-50"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

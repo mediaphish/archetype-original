@@ -18,8 +18,12 @@ function slugify(s) {
     .slice(0, 120);
 }
 
-function buildMarkdownFile({ title, slug, summary, tags, body }) {
+function buildMarkdownFile({ title, slug, summary, tags, body, featured_image }) {
   const tagLine = Array.isArray(tags) && tags.length ? `tags: [${tags.map((t) => `"${String(t).replace(/"/g, '')}"`).join(', ')}]` : 'tags: []';
+  const heroLine =
+    featured_image && String(featured_image).trim().startsWith('http')
+      ? `featured_image: "${String(featured_image).replace(/"/g, '\\"').slice(0, 800)}"\n`
+      : '';
   const front = `---
 title: "${String(title).replace(/"/g, '\\"')}"
 slug: ${slug}
@@ -27,7 +31,7 @@ type: article
 status: published
 summary: "${String(summary || '').replace(/"/g, '\\"').slice(0, 400)}"
 ${tagLine}
-created_at: "${new Date().toISOString()}"
+${heroLine}created_at: "${new Date().toISOString()}"
 updated_at: "${new Date().toISOString()}"
 ---
 
@@ -51,6 +55,8 @@ export default async function handler(req, res) {
     let body_md = String(body.body_md || body.body || '').trim();
     let tags = Array.isArray(body.tags) ? body.tags.map((t) => String(t).slice(0, 80)) : [];
     let draftId = body.draft_id || body.draftId || null;
+    /** @type {Record<string, unknown>|null} */
+    let draftMeta = null;
 
     if (draftId) {
       const { data: row, error } = await supabaseAdmin
@@ -61,6 +67,7 @@ export default async function handler(req, res) {
         .maybeSingle();
       if (error) return res.status(500).json({ ok: false, error: error.message });
       if (!row) return res.status(404).json({ ok: false, error: 'Draft not found' });
+      draftMeta = row.meta && typeof row.meta === 'object' ? row.meta : {};
       title = title || String(row.topic || 'Untitled');
       summary = summary || String(row.meta?.summary || '').slice(0, 500) || String(row.tldr_markdown || '').slice(0, 300);
       body_md = body_md || String(row.full_markdown || row.outline_markdown || row.tldr_markdown || '').trim();
@@ -81,8 +88,19 @@ export default async function handler(req, res) {
       });
     }
 
+    const rwImg = draftMeta?.rapid_write_image && typeof draftMeta.rapid_write_image === 'object' ? draftMeta.rapid_write_image : null;
+    const approvedHeroUrl =
+      rwImg?.status === 'approved' && rwImg?.url && String(rwImg.url).startsWith('https://') ? String(rwImg.url) : null;
+
     const relativePath = `ao-knowledge-hq-kit/journal/${slug}.md`;
-    const fileContent = buildMarkdownFile({ title, slug, summary, tags, body: body_md });
+    const fileContent = buildMarkdownFile({
+      title,
+      slug,
+      summary,
+      tags,
+      body: body_md,
+      featured_image: approvedHeroUrl || undefined,
+    });
 
     const gh = await pushMarkdownFileToGithub({
       path: relativePath,
@@ -90,14 +108,21 @@ export default async function handler(req, res) {
       message: `Add corpus: ${title}`,
     });
 
-    if (draftId) {
+    if (draftId && draftMeta) {
+      const mergedMeta = {
+        ...draftMeta,
+        slug,
+        published_via: 'github',
+        github_ok: gh.ok,
+        ...(approvedHeroUrl ? { published_featured_image_url: approvedHeroUrl } : {}),
+      };
       await supabaseAdmin
         .from('ao_corpus_drafts')
         .update({
           status: 'published',
           target_path: relativePath,
           full_markdown: body_md,
-          meta: { slug, published_via: 'github', github_ok: gh.ok },
+          meta: mergedMeta,
           updated_at: new Date().toISOString(),
         })
         .eq('id', draftId)

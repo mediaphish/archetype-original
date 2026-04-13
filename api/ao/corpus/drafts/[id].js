@@ -19,6 +19,20 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'object' && req.body ? req.body : {};
     const updates = { updated_at: new Date().toISOString() };
 
+    if (body.meta != null && typeof body.meta === 'object' && !Array.isArray(body.meta)) {
+      const { data: existingRow, error: fetchErr } = await supabaseAdmin
+        .from('ao_corpus_drafts')
+        .select('meta')
+        .eq('id', id)
+        .eq('created_by_email', auth.email)
+        .maybeSingle();
+      if (fetchErr) {
+        return res.status(500).json({ ok: false, error: fetchErr.message });
+      }
+      const prevMeta = existingRow?.meta && typeof existingRow.meta === 'object' ? existingRow.meta : {};
+      updates.meta = { ...prevMeta, ...body.meta };
+    }
+
     if (['draft', 'approved', 'rejected', 'published'].includes(body.status)) {
       updates.status = body.status;
     }
