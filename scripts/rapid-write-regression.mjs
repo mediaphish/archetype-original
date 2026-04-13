@@ -16,6 +16,7 @@ import {
   wantsRapidWriteAgentTraining,
   wantsRunAllSeeds,
   collectRapidWriteOverrideIds,
+  RAPID_WRITE_LENGTH_DISCIPLINE,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -138,5 +139,9 @@ ok(
     snapOv.rapid_write_seeds?.[0]?.owner_approved_despite_flags === true
 );
 ok('snapshot batch intent', snapOv.rapid_write_batch_intent?.kind === 'revise');
+ok(
+  'length discipline string',
+  RAPID_WRITE_LENGTH_DISCIPLINE.includes('425') && RAPID_WRITE_LENGTH_DISCIPLINE.includes('575')
+);
 
 process.exit(failed ? 1 : 0);
