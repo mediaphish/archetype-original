@@ -872,54 +872,48 @@ export default function Review() {
           </div>
         </div>
 
-        {(loading || activeTab === 'drafts') && (
+        {activeTab === 'drafts' && (
           <div id="auto-drafts" className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8 mb-6">
-            {loading ? (
-              <LoadingSpinner />
+            {draftsLoading ? (
+              <div className="text-sm text-gray-500">Loading drafts…</div>
+            ) : autoDrafts.length === 0 ? (
+              <p className="text-gray-500">
+                No drafts yet. Use <strong>Save draft</strong> in Auto when you want to park this conversation and start fresh.
+              </p>
             ) : (
-              <>
-                {draftsLoading ? (
-                  <div className="text-sm text-gray-500">Loading drafts…</div>
-                ) : autoDrafts.length === 0 ? (
-                  <p className="text-gray-500">
-                    No drafts yet. Use <strong>Save draft</strong> in Auto when you want to park this conversation and start fresh.
-                  </p>
-                ) : (
-                  <ul className="space-y-3">
-                    {autoDrafts.map((d) => (
-                      <li key={d.id} className="flex flex-wrap items-start justify-between gap-3 border border-gray-200 rounded-lg p-4 bg-gray-50">
-                        <div className="min-w-0 flex-1">
-                          <div className="font-semibold text-gray-900 truncate">{d.title || 'Draft'}</div>
-                          {d.updated_at ? (
-                            <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
-                          ) : null}
-                          {d.preview ? (
-                            <div className="text-sm text-gray-700 mt-2 line-clamp-3 whitespace-pre-wrap">{d.preview}</div>
-                          ) : null}
-                        </div>
-                        <div className="flex flex-wrap gap-2 shrink-0">
-                          <button
-                            type="button"
-                            disabled={draftActingId === d.id}
-                            onClick={() => resumeAutoDraft(d.id)}
-                            className="min-h-[44px] px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
-                          >
-                            {draftActingId === d.id ? 'Opening…' : 'Edit'}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={draftActingId === d.id}
-                            onClick={() => deleteAutoDraft(d.id)}
-                            className="min-h-[44px] px-4 py-2 rounded-lg border border-red-300 bg-white text-red-700 text-sm font-semibold hover:bg-red-50 disabled:opacity-50"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </>
+              <ul className="space-y-3">
+                {autoDrafts.map((d) => (
+                  <li key={d.id} className="flex flex-wrap items-start justify-between gap-3 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold text-gray-900 truncate">{d.title || 'Draft'}</div>
+                      {d.updated_at ? (
+                        <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
+                      ) : null}
+                      {d.preview ? (
+                        <div className="text-sm text-gray-700 mt-2 line-clamp-3 whitespace-pre-wrap">{d.preview}</div>
+                      ) : null}
+                    </div>
+                    <div className="flex flex-wrap gap-2 shrink-0">
+                      <button
+                        type="button"
+                        disabled={draftActingId === d.id}
+                        onClick={() => resumeAutoDraft(d.id)}
+                        className="min-h-[44px] px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                      >
+                        {draftActingId === d.id ? 'Opening…' : 'Edit'}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={draftActingId === d.id}
+                        onClick={() => deleteAutoDraft(d.id)}
+                        className="min-h-[44px] px-4 py-2 rounded-lg border border-red-300 bg-white text-red-700 text-sm font-semibold hover:bg-red-50 disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         )}
