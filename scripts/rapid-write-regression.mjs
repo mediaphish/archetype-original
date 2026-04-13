@@ -8,6 +8,7 @@
 import {
   parseRapidWriteSeedsJson,
   extractRelatedCorpusBlock,
+  extractTagsLineFromMarkdown,
   buildRapidWriteMarkdownFromParts,
   normalizeRapidWriteDraftState,
   wantsRapidWriteActivation,
@@ -37,10 +38,12 @@ ok('parse ok', p.ok && p.seeds.length === 1 && p.seeds[0].id === 'a');
 ok('exit phrase', wantsExitRapidWrite('Exit Rapid Write'));
 ok('agent training line', wantsRapidWriteAgentTraining('Agent Training:\nUse shorter sentences.'));
 
-const md = '## Hi\n\nBody.\n\n*Q?*\n\n**Related (corpus)**\n- [A](u)';
+const md = '## Hi\n\nBody.\n\n*Q?*\n\n**Tags:** L, P\n\n**Related (corpus)**\n- [A](u)';
 ok('extract related block', extractRelatedCorpusBlock(md).startsWith('**Related (corpus)**'));
-const rebuilt = buildRapidWriteMarkdownFromParts('T', 'B', 'R?', extractRelatedCorpusBlock(md));
+ok('extract tags line', extractTagsLineFromMarkdown(md).join(',') === 'L,P');
+const rebuilt = buildRapidWriteMarkdownFromParts('T', 'B', 'R?', extractRelatedCorpusBlock(md), ['L', 'P']);
 ok('rebuild keeps related', rebuilt.includes('**Related (corpus)**'));
+ok('rebuild has tags', rebuilt.includes('**Tags:**'));
 const norm = normalizeRapidWriteDraftState(
   {
     markdown: md,

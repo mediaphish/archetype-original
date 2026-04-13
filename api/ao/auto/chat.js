@@ -924,11 +924,22 @@ export default async function handler(req, res) {
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'all',
         };
-        const parts = drafts.map((d) => `### ${d.title}\n**Slug:** ${d.slug}\n\n${d.body}\n\n*${d.reflection_question}*\n`);
+        const draftedIds = new Set(drafts.map((d) => d.seed_id));
+        const skippedSeeds = seeds.filter((s) => !draftedIds.has(s.id));
+        const skipNote =
+          skippedSeeds.length > 0
+            ? `\n\n**Note:** ${skippedSeeds.length} seed(s) were not drafted this run (still **flagged** until you say **do it anyway**, or not generated).`
+            : '';
+        const parts = drafts.map((d) => {
+          const sid = safeText(d.seed_id, 80);
+          const head = sid ? `### ${sid}\n\n` : '';
+          return `${head}${safeText(d.markdown, 50000)}\n`;
+        });
         assistantMessage = [
-          `Generated **${drafts.length}** Rapid Write draft(s). Saved to your corpus drafts queue when the table is available; full text below.`,
+          `Generated **${drafts.length}** Rapid Write draft(s). Saved to your corpus drafts queue when the table is available. Each block below is the **full draft** (tags, reflection, and corpus cross-links)—nothing extra needed to “show links.”`,
           '',
           ...parts,
+          skipNote,
           '',
           'You can ask Auto to **revise any draft by seed id** in your own words (same spirit as refining seeds).',
         ].join('\n');
