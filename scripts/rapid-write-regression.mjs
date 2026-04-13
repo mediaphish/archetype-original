@@ -14,6 +14,8 @@ import {
   wantsRapidWriteActivation,
   wantsExitRapidWrite,
   wantsRapidWriteAgentTraining,
+  wantsRunAllSeeds,
+  collectRapidWriteOverrideIds,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -86,5 +88,55 @@ const snap = buildThreadStateSnapshot({
   },
 });
 ok('snapshot draft count', snap.rapid_write_draft_count === 1 && snap.rapid_write_drafts?.[0]?.truncated === false);
+
+ok('wantsRunAll write all N posts', wantsRunAllSeeds('Please write all 10 posts. Make sure to include links.'));
+ok('wantsRunAll draft every seed', wantsRunAllSeeds('draft every seed'));
+
+const rwGolden = {
+  seeds: [{ id: 'rw-4' }, { id: 'rw-6' }, { id: 'rw-10' }],
+  validation: [
+    { id: 'rw-4', flags: [{ type: 'overlap', detail: 'x' }] },
+    { id: 'rw-6', flags: [{ type: 'overlap', detail: 'x' }] },
+    { id: 'rw-10', flags: [{ type: 'overlap', detail: 'x' }] },
+  ],
+  overrides: [],
+};
+const goldenMsg =
+  'rw-4, rw-6, and rw-10 can all be enhanced or added to. They should not have been flagged. Please write all 10 posts.';
+const ov = collectRapidWriteOverrideIds(goldenMsg, rwGolden);
+ok(
+  'golden message adds overrides',
+  ov.source === 'named_approval' && ov.overrides.has('rw-4') && ov.overrides.has('rw-6') && ov.overrides.has('rw-10')
+);
+ok('golden message also run-all', wantsRunAllSeeds(goldenMsg));
+
+const snapOv = buildThreadStateSnapshot({
+  rapid_write: {
+    active: true,
+    seeds: [
+      {
+        id: 'rw-1',
+        core_idea: 'idea',
+        leadership_category: 'L',
+        psychological_outcome: 'P',
+        real_world_context: '',
+        research_notes: '',
+        insight_anchor: 'i',
+        new_angle: '',
+      },
+    ],
+    validation: [{ id: 'rw-1', flags: [{ type: 'overlap', detail: 'advisory' }] }],
+    overrides: ['rw-1'],
+    memory: { last_action: 'overrides_updated', batch_intent: { kind: 'revise', seed_ids: ['rw-1'], status: 'done' } },
+    drafts_by_seed_id: {},
+  },
+});
+ok('snapshot lists overrides', Array.isArray(snapOv.rapid_write_overrides) && snapOv.rapid_write_overrides.includes('rw-1'));
+ok(
+  'effective_blocked false when overridden',
+  snapOv.rapid_write_seeds?.[0]?.effective_blocked_for_generation === false &&
+    snapOv.rapid_write_seeds?.[0]?.owner_approved_despite_flags === true
+);
+ok('snapshot batch intent', snapOv.rapid_write_batch_intent?.kind === 'revise');
 
 process.exit(failed ? 1 : 0);

@@ -42,7 +42,8 @@ import {
   reviseRapidWriteDraft,
   wantsRunAllSeeds,
   wantsNextSeed,
-  wantsDoItAnyway,
+  collectRapidWriteOverrideIds,
+  rapidWriteOpeningSnippet,
 } from '../../../lib/ao/rapidWriteMode.js';
 
 function safeText(v, maxLen = 0) {
@@ -851,26 +852,36 @@ export default async function handler(req, res) {
         );
         assistantMessage = lines.join('\n');
       }
-    } else if (rwExisting?.active && wantsDoItAnyway(userMessage) && !wantsRunAllSeeds(userMessage) && !wantsNextSeed(userMessage)) {
+    } else if (rwExisting?.active) {
+      const overrideResult = collectRapidWriteOverrideIds(userMessage, rwExisting);
+      const rwAfterOverrides =
+        overrideResult.source !== 'none'
+          ? { ...rwExisting, overrides: [...overrideResult.overrides] }
+          : rwExisting;
+      if (overrideResult.source !== 'none') {
+        statePatch.rapid_write = {
+          ...rwAfterOverrides,
+          memory: {
+            ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+            standing_instructions: Array.isArray(rwAfterOverrides.agent_training)
+              ? rwAfterOverrides.agent_training.slice(-6)
+              : [],
+            last_action: 'overrides_updated',
+            last_override_source: overrideResult.source,
+            updated_at: new Date().toISOString(),
+          },
+        };
+        receipts.push(`Rapid Write: seed approval updated (${overrideResult.source})`);
+      }
+
+      if (wantsRunAllSeeds(userMessage)) {
       rapidWriteHandled = true;
       nextMode = 'plan';
-      const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
-      const overrides = new Set(Array.isArray(rwExisting.overrides) ? rwExisting.overrides : []);
-      validation.forEach((v) => {
-        if (v.flags?.length) overrides.add(v.id);
-      });
-      statePatch.rapid_write = { ...rwExisting, overrides: [...overrides] };
-      receipts.push('Rapid Write: owner override — flags cleared for all flagged seeds');
-      assistantMessage =
-        'Understood. I will treat flagged seeds as approved for this batch. Say **Run all seeds** or **Next seed** to generate drafts.';
-    } else if (rwExisting?.active && wantsRunAllSeeds(userMessage)) {
-      rapidWriteHandled = true;
-      nextMode = 'plan';
-      const seeds = Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [];
-      const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
-      const overrides = new Set(Array.isArray(rwExisting.overrides) ? rwExisting.overrides : []);
-      const writtenIds = new Set(Array.isArray(rwExisting.written_ids) ? rwExisting.written_ids : []);
-      const agentTraining = Array.isArray(rwExisting.agent_training) ? rwExisting.agent_training : [];
+      const seeds = Array.isArray(rwAfterOverrides.seeds) ? rwAfterOverrides.seeds : [];
+      const validation = Array.isArray(rwAfterOverrides.validation) ? rwAfterOverrides.validation : [];
+      const overrides = new Set(Array.isArray(rwAfterOverrides.overrides) ? rwAfterOverrides.overrides : []);
+      const writtenIds = new Set(Array.isArray(rwAfterOverrides.written_ids) ? rwAfterOverrides.written_ids : []);
+      const agentTraining = Array.isArray(rwAfterOverrides.agent_training) ? rwAfterOverrides.agent_training : [];
       const isWritable = (sid) => {
         const v = validation.find((x) => x.id === sid);
         const flagged = v && v.flags && v.flags.length > 0;
@@ -879,20 +890,35 @@ export default async function handler(req, res) {
       };
       const pending = seeds.filter((s) => !writtenIds.has(s.id) && isWritable(s.id));
       if (!pending.length) {
-        statePatch.rapid_write = { ...rwExisting, overrides: [...overrides] };
+        statePatch.rapid_write = {
+          ...rwAfterOverrides,
+          memory: {
+            ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+            last_action: 'run_all_blocked',
+            updated_at: new Date().toISOString(),
+          },
+        };
         assistantMessage =
-          'No seeds left to write, or remaining seeds are still flagged. Say **do it anyway** first, or **Exit Rapid Write**.';
+          'No seeds left to write, or remaining seeds are still flagged. Approve flagged seeds in plain language (or **do it anyway**), or **Exit Rapid Write**.';
       } else {
         const drafts = [];
         const draftsBySeed =
-          rwExisting.drafts_by_seed_id && typeof rwExisting.drafts_by_seed_id === 'object'
-            ? { ...rwExisting.drafts_by_seed_id }
+          rwAfterOverrides.drafts_by_seed_id && typeof rwAfterOverrides.drafts_by_seed_id === 'object'
+            ? { ...rwAfterOverrides.drafts_by_seed_id }
             : {};
+        const openingSnips = [];
         for (const seed of pending) {
-          const w = await writeRapidWritePost(seed, { agentTrainingNotes: agentTraining });
+          const vRow = validation.find((x) => x.id === seed.id);
+          const diffHint = vRow?.differentiation_hint ? safeText(vRow.differentiation_hint, 1200) : '';
+          const w = await writeRapidWritePost(seed, {
+            agentTrainingNotes: agentTraining,
+            batchOpeningSnippets: [...openingSnips],
+            differentiationHint: diffHint,
+          });
           if (w.ok) {
             writtenIds.add(seed.id);
             drafts.push(w);
+            openingSnips.push(rapidWriteOpeningSnippet(w.body));
             let corpusDraftId = null;
             try {
               const ins = await supabaseAdmin
@@ -917,18 +943,27 @@ export default async function handler(req, res) {
           }
         }
         statePatch.rapid_write = {
-          ...rwExisting,
+          ...rwAfterOverrides,
           overrides: [...overrides],
           written_ids: [...writtenIds],
           drafts_by_seed_id: draftsBySeed,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'all',
+          memory: {
+            ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+            standing_instructions: Array.isArray(rwAfterOverrides.agent_training)
+              ? rwAfterOverrides.agent_training.slice(-6)
+              : [],
+            last_action: 'run_all',
+            last_batch_draft_count: drafts.length,
+            updated_at: new Date().toISOString(),
+          },
         };
         const draftedIds = new Set(drafts.map((d) => d.seed_id));
         const skippedSeeds = seeds.filter((s) => !draftedIds.has(s.id));
         const skipNote =
           skippedSeeds.length > 0
-            ? `\n\n**Note:** ${skippedSeeds.length} seed(s) were not drafted this run (still **flagged** until you say **do it anyway**, or not generated).`
+            ? `\n\n**Note:** ${skippedSeeds.length} seed(s) were not drafted this run (still **flagged** until you approve them or say **do it anyway**).`
             : '';
         const parts = drafts.map((d) => {
           const sid = safeText(d.seed_id, 80);
@@ -944,14 +979,14 @@ export default async function handler(req, res) {
           'You can ask Auto to **revise any draft by seed id** in your own words (same spirit as refining seeds).',
         ].join('\n');
       }
-    } else if (rwExisting?.active && wantsNextSeed(userMessage)) {
+      } else if (wantsNextSeed(userMessage)) {
       rapidWriteHandled = true;
       nextMode = 'plan';
-      const seeds = Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [];
-      const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
-      const overrides = new Set(Array.isArray(rwExisting.overrides) ? rwExisting.overrides : []);
-      const writtenIds = new Set(Array.isArray(rwExisting.written_ids) ? rwExisting.written_ids : []);
-      const agentTraining = Array.isArray(rwExisting.agent_training) ? rwExisting.agent_training : [];
+      const seeds = Array.isArray(rwAfterOverrides.seeds) ? rwAfterOverrides.seeds : [];
+      const validation = Array.isArray(rwAfterOverrides.validation) ? rwAfterOverrides.validation : [];
+      const overrides = new Set(Array.isArray(rwAfterOverrides.overrides) ? rwAfterOverrides.overrides : []);
+      const writtenIds = new Set(Array.isArray(rwAfterOverrides.written_ids) ? rwAfterOverrides.written_ids : []);
+      const agentTraining = Array.isArray(rwAfterOverrides.agent_training) ? rwAfterOverrides.agent_training : [];
       const isWritable = (sid) => {
         const v = validation.find((x) => x.id === sid);
         const flagged = v && v.flags && v.flags.length > 0;
@@ -960,16 +995,32 @@ export default async function handler(req, res) {
       };
       const pending = seeds.filter((s) => !writtenIds.has(s.id) && isWritable(s.id));
       if (!pending.length) {
-        statePatch.rapid_write = { ...rwExisting, overrides: [...overrides] };
+        statePatch.rapid_write = {
+          ...rwAfterOverrides,
+          memory: {
+            ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+            last_action: 'next_blocked',
+            updated_at: new Date().toISOString(),
+          },
+        };
         assistantMessage =
-          'No seeds left to write, or remaining seeds are still flagged. Say **do it anyway** first, or **Exit Rapid Write**.';
+          'No seeds left to write, or remaining seeds are still flagged. Approve flagged seeds in plain language (or **do it anyway**), or **Exit Rapid Write**.';
       } else {
         const seed = pending[0];
         const draftsBySeed =
-          rwExisting.drafts_by_seed_id && typeof rwExisting.drafts_by_seed_id === 'object'
-            ? { ...rwExisting.drafts_by_seed_id }
+          rwAfterOverrides.drafts_by_seed_id && typeof rwAfterOverrides.drafts_by_seed_id === 'object'
+            ? { ...rwAfterOverrides.drafts_by_seed_id }
             : {};
-        const w = await writeRapidWritePost(seed, { agentTrainingNotes: agentTraining });
+        const priorSnips = Object.values(draftsBySeed)
+          .map((d) => rapidWriteOpeningSnippet(d?.body))
+          .filter(Boolean);
+        const vRow = validation.find((x) => x.id === seed.id);
+        const diffHint = vRow?.differentiation_hint ? safeText(vRow.differentiation_hint, 1200) : '';
+        const w = await writeRapidWritePost(seed, {
+          agentTrainingNotes: agentTraining,
+          batchOpeningSnippets: priorSnips,
+          differentiationHint: diffHint,
+        });
         if (w.ok) {
           writtenIds.add(seed.id);
           let corpusDraftId = null;
@@ -995,12 +1046,20 @@ export default async function handler(req, res) {
           if (rec) draftsBySeed[seed.id] = rec;
         }
         statePatch.rapid_write = {
-          ...rwExisting,
+          ...rwAfterOverrides,
           overrides: [...overrides],
           written_ids: [...writtenIds],
           drafts_by_seed_id: draftsBySeed,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'next',
+          memory: {
+            ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+            standing_instructions: Array.isArray(rwAfterOverrides.agent_training)
+              ? rwAfterOverrides.agent_training.slice(-6)
+              : [],
+            last_action: 'next_seed',
+            updated_at: new Date().toISOString(),
+          },
         };
         assistantMessage = w.ok
           ? [
@@ -1012,14 +1071,19 @@ export default async function handler(req, res) {
             ].join('\n')
           : `Could not generate draft: ${w.error || 'unknown'}`;
       }
-    } else if (rwExisting?.active) {
+    } else if (overrideResult.source !== 'none') {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      assistantMessage =
+        'Understood. Flagged seeds you approved will be drafted when you say **Run all seeds** or **Next seed**.';
+    } else {
       const draftsMap =
-        rwExisting.drafts_by_seed_id && typeof rwExisting.drafts_by_seed_id === 'object'
-          ? rwExisting.drafts_by_seed_id
+        rwAfterOverrides.drafts_by_seed_id && typeof rwAfterOverrides.drafts_by_seed_id === 'object'
+          ? rwAfterOverrides.drafts_by_seed_id
           : {};
       if (Object.keys(draftsMap).length > 0) {
         const intent = await parseRapidWriteDraftOrDiscussIntent(userMessage, {
-          seeds: Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [],
+          seeds: Array.isArray(rwAfterOverrides.seeds) ? rwAfterOverrides.seeds : [],
           drafts_by_seed_id: draftsMap,
         });
         if (
@@ -1030,13 +1094,17 @@ export default async function handler(req, res) {
         ) {
           rapidWriteHandled = true;
           nextMode = 'plan';
-          const seeds = Array.isArray(rwExisting.seeds) ? rwExisting.seeds : [];
-          const validation = Array.isArray(rwExisting.validation) ? rwExisting.validation : [];
-          const agentTraining = Array.isArray(rwExisting.agent_training) ? rwExisting.agent_training : [];
+          const seeds = Array.isArray(rwAfterOverrides.seeds) ? rwAfterOverrides.seeds : [];
+          const validation = Array.isArray(rwAfterOverrides.validation) ? rwAfterOverrides.validation : [];
+          const agentTraining = Array.isArray(rwAfterOverrides.agent_training) ? rwAfterOverrides.agent_training : [];
           const nextDrafts = { ...draftsMap };
           const outLines = [];
           let anyOk = false;
           let successCount = 0;
+          const openingBySid = {};
+          for (const k of Object.keys(nextDrafts)) {
+            openingBySid[k] = rapidWriteOpeningSnippet(nextDrafts[k]?.body);
+          }
           for (const sidRaw of intent.seed_ids) {
             const sid =
               Object.keys(nextDrafts).find((k) => k.toLowerCase() === String(sidRaw).toLowerCase()) ||
@@ -1049,9 +1117,16 @@ export default async function handler(req, res) {
             }
             const v = validation.find((x) => x.id === sid);
             const overlapHint = v?.flags?.length ? v.flags.map((f) => f.detail).join(' ') : '';
+            const diffHint = v?.differentiation_hint ? safeText(v.differentiation_hint, 1200) : '';
+            const siblingOpeningSnippets = Object.entries(openingBySid)
+              .filter(([k]) => k !== sid)
+              .map(([, o]) => o)
+              .filter(Boolean);
             const w = await reviseRapidWriteDraft(seed, cur, intent.instruction, {
               agentTrainingNotes: agentTraining,
               overlapHint: overlapHint || undefined,
+              differentiationHint: diffHint || undefined,
+              siblingOpeningSnippets,
             });
             if (!w.ok) {
               outLines.push(`**${sid}** — could not revise: ${w.error || 'unknown'}`);
@@ -1093,24 +1168,43 @@ export default async function handler(req, res) {
             const rec = normalizeRapidWriteDraftState(w, corpusId);
             if (rec) {
               nextDrafts[sid] = rec;
+              openingBySid[sid] = rapidWriteOpeningSnippet(rec.body);
               anyOk = true;
               successCount += 1;
             }
-            outLines.push(`### ${w.title} (${sid})\n**Slug:** ${w.slug}\n\n${w.body}\n\n*${w.reflection_question}*`);
+            outLines.push(`### ${sid}\n\n${safeText(w.markdown, 50000)}`);
           }
           if (anyOk) {
-            statePatch.rapid_write = { ...rwExisting, drafts_by_seed_id: nextDrafts };
+            statePatch.rapid_write = {
+              ...rwAfterOverrides,
+              drafts_by_seed_id: nextDrafts,
+              memory: {
+                ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+                standing_instructions: Array.isArray(rwAfterOverrides.agent_training)
+                  ? rwAfterOverrides.agent_training.slice(-6)
+                  : [],
+                last_action: 'revise_drafts',
+                batch_intent: {
+                  kind: 'revise',
+                  seed_ids: intent.seed_ids.slice(),
+                  status: 'done',
+                  updated_at: new Date().toISOString(),
+                },
+                updated_at: new Date().toISOString(),
+              },
+            };
             receipts.push('Rapid Write: draft revision(s) saved on this thread');
           }
           assistantMessage = [
             anyOk
-              ? `Updated **${successCount}** Rapid Write draft(s). Corpus drafts queue updated when available.`
+              ? `Updated **${successCount}** Rapid Write draft(s). Full markdown below (tags and corpus links). Corpus drafts queue updated when available.`
               : 'No drafts were revised this turn.',
             '',
             ...outLines,
           ].join('\n');
         }
       }
+    }
     }
     /* Rapid Write: questions and strategy (not exact commands) fall through to normal Auto reply — snapshot + workflow hint carry seed ids and flags. */
 
