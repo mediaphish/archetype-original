@@ -22,6 +22,8 @@ import {
   isRapidWriteDraftTextRevisionMessage,
   wantsRapidWriteManualPolishPass,
   rapidWriteSeedIsDraftable,
+  extractRapidWriteFirstNamesFromBody,
+  rapidWriteBodySignatureSnippets,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -160,6 +162,8 @@ ok(
   RAPID_WRITE_LENGTH_DISCIPLINE.includes('Story settings and names') &&
     RAPID_WRITE_LENGTH_DISCIPLINE.includes('software engineering')
 );
+ok('anti-formula block present', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Anti-formula'));
+ok('reflection ban How can you', RAPID_WRITE_LENGTH_DISCIPLINE.includes('How can you'));
 
 const reviseAllMsg =
   'Revise every Rapid Write draft (rw-1 through rw-10). Cut anything that repeats the same insight in new paragraphs—merge or delete until each paragraph adds a real new layer.';
@@ -170,13 +174,17 @@ ok('hero generate explicit', wantsGenerateRapidWriteHeroImages('Generate hero im
 ok('manual polish phrase', wantsRapidWriteManualPolishPass('Editor pass for rw-2 in Rapid Write'));
 
 const valOverlap = [{ id: 'rw-1', flags: [{ type: 'overlap', detail: 'x' }] }];
-const valFalsity = [{ id: 'rw-2', flags: [{ type: 'falsity', detail: 'x' }] }];
+const valPlainFact = [{ id: 'rw-2', flags: [{ type: 'plain_fact', detail: 'x' }] }];
 const emptyOverrides = new Set();
 ok('run_all: unflagged draftable', rapidWriteSeedIsDraftable('rw-0', [], emptyOverrides, 'run_all'));
-ok('run_all: overlap draftable', rapidWriteSeedIsDraftable('rw-1', valOverlap, emptyOverrides, 'run_all'));
-ok('run_all: falsity blocked', !rapidWriteSeedIsDraftable('rw-2', valFalsity, emptyOverrides, 'run_all'));
-ok('run_all: falsity allowed if override', rapidWriteSeedIsDraftable('rw-2', valFalsity, new Set(['rw-2']), 'run_all'));
+ok('run_all: overlap still draftable', rapidWriteSeedIsDraftable('rw-1', valOverlap, emptyOverrides, 'run_all'));
+ok('run_all: plain_fact does not block', rapidWriteSeedIsDraftable('rw-2', valPlainFact, emptyOverrides, 'run_all'));
 ok('next: overlap blocked without override', !rapidWriteSeedIsDraftable('rw-1', valOverlap, emptyOverrides, 'next'));
 ok('next: overlap ok with override', rapidWriteSeedIsDraftable('rw-1', valOverlap, new Set(['rw-1']), 'next'));
+ok('next: plain_fact blocked without override', !rapidWriteSeedIsDraftable('rw-2', valPlainFact, emptyOverrides, 'next'));
+ok('next: plain_fact ok with override', rapidWriteSeedIsDraftable('rw-2', valPlainFact, new Set(['rw-2']), 'next'));
+
+ok('name extract sarah', extractRapidWriteFirstNamesFromBody('Sarah met Claire.').includes('Sarah'));
+ok('body signature snippets', rapidWriteBodySignatureSnippets('x'.repeat(300)).length === 2);
 
 process.exit(failed ? 1 : 0);

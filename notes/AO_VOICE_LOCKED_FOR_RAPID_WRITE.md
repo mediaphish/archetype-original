@@ -21,7 +21,7 @@
 
 **Operational habit:** Whenever you add or change markdown under `ao-knowledge-hq-kit/knowledge/`, run the knowledge build and commit the updated **`public/knowledge.json`** so the live site and Rapid Write stay in sync with your files.
 
-**Rapid Write guardrails (in code):** `lib/ao/rapidWriteMode.js` includes discipline rules for **default industry setting** (avoid unnecessary tech/software specificity that invites “is this about us?”) and **name rotation** (no default Sarah/Mark every post; limited names per post; standalone fiction unless a labeled series). Adjust there when taste shifts.
+**Rapid Write guardrails (in code):** `lib/ao/rapidWriteMode.js` includes discipline for **default industry setting**, **batch name reuse** (first names already used in the thread’s batch are passed back into the writer so they are not reused), **anti-formula** (avoid the default “one meeting fixes everything” arc), **banned stock phrases** (e.g. elephant-in-the-room / hum-of-computers crutches), and **reflection variety** (avoid repeating “How can you…” stems across posts). **`Run all seeds`** drafts every seed; overlap and **plain-fact** advisories do not block that command. **Next seed** still skips flagged seeds until you approve or say **do it anyway**. To turn off the optional plain-fact API check entirely, set env **`AO_RAPID_WRITE_SKIP_FALSITY_CHECK=1`** (technical owner only). Adjust prompts there when taste shifts.
 
 ---
 

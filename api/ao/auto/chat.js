@@ -47,6 +47,8 @@ import {
   rapidWriteSeedIsDraftable,
   collectRapidWriteOverrideIds,
   rapidWriteOpeningSnippet,
+  extractRapidWriteFirstNamesFromBody,
+  rapidWriteBodySignatureSnippets,
   wantsGenerateRapidWriteHeroImages,
   wantsRegenerateRapidWriteHeroImage,
   wantsApproveRapidWriteHeroImage,
@@ -837,27 +839,37 @@ export default async function handler(req, res) {
           agent_training: Array.isArray(rwExisting?.agent_training) ? rwExisting.agent_training : [],
           written_ids: [],
           drafts_by_seed_id: {},
+          batch_used_first_names: [],
+          batch_prior_reflection_questions: [],
+          batch_anti_repeat_snippets: [],
           queue: parsed.seeds.map((s) => s.id),
           step: 'validated',
           last_ask_batch: null,
         };
         receipts.push(`Rapid Write: loaded ${parsed.seeds.length} seed(s); validation run`);
         const lines = [
-          `**Rapid Write** loaded **${parsed.seeds.length}** seed(s). Validation (corpus overlap + falsity check) is complete.`,
+          `**Rapid Write** loaded **${parsed.seeds.length}** seed(s). Validation (corpus overlap + optional plain-fact check) is complete.`,
           '',
         ];
         validation.forEach((v) => {
           const seed = parsed.seeds.find((s) => s.id === v.id);
           const title = seed ? safeText(seed.core_idea, 80) : v.id;
           if (v.flags.length) {
-            lines.push(`- **${v.id}** — FLAGGED: ${v.flags.map((f) => `[${f.type}] ${f.detail}`).join(' ')}`);
+            lines.push(
+              `- **${v.id}** — FLAGGED: ${v.flags
+                .map((f) => {
+                  const tag = f.type === 'plain_fact' ? 'plain-fact' : f.type;
+                  return `[${tag}] ${f.detail}`;
+                })
+                .join(' ')}`
+            );
           } else {
             lines.push(`- **${v.id}** — OK — ${title}${title.length >= 80 ? '…' : ''}`);
           }
         });
         lines.push(
           '',
-          'Reply **Run all seeds** to draft the **whole batch** (overlap advisories are included automatically; only **falsity** review flags need **do it anyway** first). **Next seed** drafts one at a time and still skips flagged seeds until you approve them or say **do it anyway**. Say **Exit Rapid Write** to leave this mode.'
+          'Reply **Run all seeds** to draft the **whole batch** (every seed—overlap and plain-fact advisories do not block run-all). **Next seed** drafts one at a time and still skips flagged seeds until you approve them or say **do it anyway**. Say **Exit Rapid Write** to leave this mode.'
         );
         assistantMessage = lines.join('\n');
       }
@@ -903,7 +915,7 @@ export default async function handler(req, res) {
           },
         };
         assistantMessage =
-          'No seeds left to write, or every remaining seed needs a **falsity** review—say **do it anyway** for those ids, or **Exit Rapid Write**.';
+          'No seeds left to draft in this batch—everything may already have a draft—or there are no seeds loaded. Say **Exit Rapid Write** or start again with **Rapid Write** and your seed list.';
       } else {
         const drafts = [];
         const draftsBySeed =
@@ -911,18 +923,42 @@ export default async function handler(req, res) {
             ? { ...rwAfterOverrides.drafts_by_seed_id }
             : {};
         const openingSnips = [];
+        let batchUsedFirstNames = Array.isArray(rwAfterOverrides.batch_used_first_names)
+          ? [...rwAfterOverrides.batch_used_first_names]
+          : [];
+        let batchPriorReflectionQuestions = Array.isArray(rwAfterOverrides.batch_prior_reflection_questions)
+          ? [...rwAfterOverrides.batch_prior_reflection_questions]
+          : [];
+        let batchAntiRepeatSnippets = Array.isArray(rwAfterOverrides.batch_anti_repeat_snippets)
+          ? [...rwAfterOverrides.batch_anti_repeat_snippets]
+          : [];
         for (const seed of pending) {
           const vRow = validation.find((x) => x.id === seed.id);
           const diffHint = vRow?.differentiation_hint ? safeText(vRow.differentiation_hint, 1200) : '';
           const w = await writeRapidWritePost(seed, {
             agentTrainingNotes: agentTraining,
             batchOpeningSnippets: [...openingSnips],
+            batchUsedFirstNames,
+            batchPriorReflectionQuestions,
+            batchAntiRepeatSnippets,
             differentiationHint: diffHint,
           });
           if (w.ok) {
             writtenIds.add(seed.id);
             drafts.push(w);
             openingSnips.push(rapidWriteOpeningSnippet(w.body));
+            for (const n of extractRapidWriteFirstNamesFromBody(w.body)) {
+              if (!batchUsedFirstNames.some((x) => String(x).toLowerCase() === n.toLowerCase())) {
+                batchUsedFirstNames.push(n);
+              }
+            }
+            if (w.reflection_question) {
+              batchPriorReflectionQuestions.push(safeText(w.reflection_question, 500));
+            }
+            batchAntiRepeatSnippets.push(...rapidWriteBodySignatureSnippets(w.body));
+            if (batchAntiRepeatSnippets.length > 48) {
+              batchAntiRepeatSnippets = batchAntiRepeatSnippets.slice(-48);
+            }
             let corpusDraftId = null;
             try {
               const ins = await supabaseAdmin
@@ -951,6 +987,9 @@ export default async function handler(req, res) {
           overrides: [...overrides],
           written_ids: [...writtenIds],
           drafts_by_seed_id: draftsBySeed,
+          batch_used_first_names: batchUsedFirstNames,
+          batch_prior_reflection_questions: batchPriorReflectionQuestions,
+          batch_anti_repeat_snippets: batchAntiRepeatSnippets,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'all',
           memory: {
@@ -967,7 +1006,7 @@ export default async function handler(req, res) {
         const skippedSeeds = seeds.filter((s) => !draftedIds.has(s.id));
         const skipNote =
           skippedSeeds.length > 0
-            ? `\n\n**Note:** ${skippedSeeds.length} seed(s) were not drafted this run (failed write, or **falsity** flag—say **do it anyway** for those ids if you want to force them).`
+            ? `\n\n**Note:** ${skippedSeeds.length} seed(s) were not drafted this run (writer error). Try **Run all seeds** again or ask for a single seed by id.`
             : '';
         const parts = drafts.map((d) => {
           const sid = safeText(d.seed_id, 80);
@@ -1013,15 +1052,39 @@ export default async function handler(req, res) {
         const priorSnips = Object.values(draftsBySeed)
           .map((d) => rapidWriteOpeningSnippet(d?.body))
           .filter(Boolean);
+        let batchUsedFirstNames = Array.isArray(rwAfterOverrides.batch_used_first_names)
+          ? [...rwAfterOverrides.batch_used_first_names]
+          : [];
+        let batchPriorReflectionQuestions = Array.isArray(rwAfterOverrides.batch_prior_reflection_questions)
+          ? [...rwAfterOverrides.batch_prior_reflection_questions]
+          : [];
+        let batchAntiRepeatSnippets = Array.isArray(rwAfterOverrides.batch_anti_repeat_snippets)
+          ? [...rwAfterOverrides.batch_anti_repeat_snippets]
+          : [];
         const vRow = validation.find((x) => x.id === seed.id);
         const diffHint = vRow?.differentiation_hint ? safeText(vRow.differentiation_hint, 1200) : '';
         const w = await writeRapidWritePost(seed, {
           agentTrainingNotes: agentTraining,
           batchOpeningSnippets: priorSnips,
+          batchUsedFirstNames,
+          batchPriorReflectionQuestions,
+          batchAntiRepeatSnippets,
           differentiationHint: diffHint,
         });
         if (w.ok) {
           writtenIds.add(seed.id);
+          for (const n of extractRapidWriteFirstNamesFromBody(w.body)) {
+            if (!batchUsedFirstNames.some((x) => String(x).toLowerCase() === n.toLowerCase())) {
+              batchUsedFirstNames.push(n);
+            }
+          }
+          if (w.reflection_question) {
+            batchPriorReflectionQuestions.push(safeText(w.reflection_question, 500));
+          }
+          batchAntiRepeatSnippets.push(...rapidWriteBodySignatureSnippets(w.body));
+          if (batchAntiRepeatSnippets.length > 48) {
+            batchAntiRepeatSnippets = batchAntiRepeatSnippets.slice(-48);
+          }
           let corpusDraftId = null;
           try {
             const ins = await supabaseAdmin
@@ -1049,6 +1112,9 @@ export default async function handler(req, res) {
           overrides: [...overrides],
           written_ids: [...writtenIds],
           drafts_by_seed_id: draftsBySeed,
+          batch_used_first_names: batchUsedFirstNames,
+          batch_prior_reflection_questions: batchPriorReflectionQuestions,
+          batch_anti_repeat_snippets: batchAntiRepeatSnippets,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'next',
           memory: {
