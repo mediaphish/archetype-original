@@ -17,6 +17,9 @@ import {
   wantsRunAllSeeds,
   collectRapidWriteOverrideIds,
   RAPID_WRITE_LENGTH_DISCIPLINE,
+  wantsRegenerateRapidWriteHeroImage,
+  wantsGenerateRapidWriteHeroImages,
+  isRapidWriteDraftTextRevisionMessage,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -143,5 +146,12 @@ ok(
   'length discipline string',
   RAPID_WRITE_LENGTH_DISCIPLINE.includes('425') && RAPID_WRITE_LENGTH_DISCIPLINE.includes('575')
 );
+
+const reviseAllMsg =
+  'Revise every Rapid Write draft (rw-1 through rw-10). Cut anything that repeats the same insight in new paragraphs—merge or delete until each paragraph adds a real new layer.';
+ok('revise-all: not misread as hero regenerate', !wantsRegenerateRapidWriteHeroImage(reviseAllMsg));
+ok('revise-all: classified as draft text revision', isRapidWriteDraftTextRevisionMessage(reviseAllMsg));
+ok('hero regenerate explicit', wantsRegenerateRapidWriteHeroImage('Regenerate hero image for rw-3 in Rapid Write'));
+ok('hero generate explicit', wantsGenerateRapidWriteHeroImages('Generate hero images for all Rapid Write drafts'));
 
 process.exit(failed ? 1 : 0);

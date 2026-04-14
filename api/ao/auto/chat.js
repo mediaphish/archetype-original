@@ -48,6 +48,7 @@ import {
   wantsRegenerateRapidWriteHeroImage,
   wantsApproveRapidWriteHeroImage,
   extractRapidWriteSeedIdsFromMessage as extractRwSeedIdsFromMessage,
+  isRapidWriteDraftTextRevisionMessage,
 } from '../../../lib/ao/rapidWriteMode.js';
 import { generateRapidWriteHeroForDraft, setRapidWriteHeroStatus } from '../../../lib/ao/rapidWriteImage.js';
 
@@ -1087,9 +1088,10 @@ export default async function handler(req, res) {
           ? rwAfterOverrides.drafts_by_seed_id
           : {};
       if (Object.keys(draftsMap).length > 0) {
-        const heroReg = wantsRegenerateRapidWriteHeroImage(userMessage);
-        const heroGen = wantsGenerateRapidWriteHeroImages(userMessage);
-        const heroAppr = wantsApproveRapidWriteHeroImage(userMessage);
+        const skipHeroForTextRevision = isRapidWriteDraftTextRevisionMessage(userMessage);
+        const heroReg = !skipHeroForTextRevision && wantsRegenerateRapidWriteHeroImage(userMessage);
+        const heroGen = !skipHeroForTextRevision && wantsGenerateRapidWriteHeroImages(userMessage);
+        const heroAppr = !skipHeroForTextRevision && wantsApproveRapidWriteHeroImage(userMessage);
 
         if (heroReg || heroGen || heroAppr) {
           rapidWriteHandled = true;
