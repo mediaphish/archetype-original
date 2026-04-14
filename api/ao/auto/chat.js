@@ -44,6 +44,7 @@ import {
   wantsRapidWriteManualPolishPass,
   wantsRunAllSeeds,
   wantsNextSeed,
+  rapidWriteSeedIsDraftable,
   collectRapidWriteOverrideIds,
   rapidWriteOpeningSnippet,
   wantsGenerateRapidWriteHeroImages,
@@ -856,7 +857,7 @@ export default async function handler(req, res) {
         });
         lines.push(
           '',
-          'Reply **Run all seeds** to draft every ready seed, **Next seed** to draft one at a time, or **do it anyway** to clear flags and proceed. After drafts exist, you can ask Auto in plain language to **change a draft by seed id** (for example tighten rw-3). Say **Exit Rapid Write** to leave this mode.'
+          'Reply **Run all seeds** to draft the **whole batch** (overlap advisories are included automatically; only **falsity** review flags need **do it anyway** first). **Next seed** drafts one at a time and still skips flagged seeds until you approve them or say **do it anyway**. Say **Exit Rapid Write** to leave this mode.'
         );
         assistantMessage = lines.join('\n');
       }
@@ -890,12 +891,7 @@ export default async function handler(req, res) {
       const overrides = new Set(Array.isArray(rwAfterOverrides.overrides) ? rwAfterOverrides.overrides : []);
       const writtenIds = new Set(Array.isArray(rwAfterOverrides.written_ids) ? rwAfterOverrides.written_ids : []);
       const agentTraining = Array.isArray(rwAfterOverrides.agent_training) ? rwAfterOverrides.agent_training : [];
-      const isWritable = (sid) => {
-        const v = validation.find((x) => x.id === sid);
-        const flagged = v && v.flags && v.flags.length > 0;
-        if (!flagged) return true;
-        return overrides.has(sid);
-      };
+      const isWritable = (sid) => rapidWriteSeedIsDraftable(sid, validation, overrides, 'run_all');
       const pending = seeds.filter((s) => !writtenIds.has(s.id) && isWritable(s.id));
       if (!pending.length) {
         statePatch.rapid_write = {
@@ -907,7 +903,7 @@ export default async function handler(req, res) {
           },
         };
         assistantMessage =
-          'No seeds left to write, or remaining seeds are still flagged. Approve flagged seeds in plain language (or **do it anyway**), or **Exit Rapid Write**.';
+          'No seeds left to write, or every remaining seed needs a **falsity** review—say **do it anyway** for those ids, or **Exit Rapid Write**.';
       } else {
         const drafts = [];
         const draftsBySeed =
@@ -971,7 +967,7 @@ export default async function handler(req, res) {
         const skippedSeeds = seeds.filter((s) => !draftedIds.has(s.id));
         const skipNote =
           skippedSeeds.length > 0
-            ? `\n\n**Note:** ${skippedSeeds.length} seed(s) were not drafted this run (still **flagged** until you approve them or say **do it anyway**).`
+            ? `\n\n**Note:** ${skippedSeeds.length} seed(s) were not drafted this run (failed write, or **falsity** flag—say **do it anyway** for those ids if you want to force them).`
             : '';
         const parts = drafts.map((d) => {
           const sid = safeText(d.seed_id, 80);
@@ -995,12 +991,7 @@ export default async function handler(req, res) {
       const overrides = new Set(Array.isArray(rwAfterOverrides.overrides) ? rwAfterOverrides.overrides : []);
       const writtenIds = new Set(Array.isArray(rwAfterOverrides.written_ids) ? rwAfterOverrides.written_ids : []);
       const agentTraining = Array.isArray(rwAfterOverrides.agent_training) ? rwAfterOverrides.agent_training : [];
-      const isWritable = (sid) => {
-        const v = validation.find((x) => x.id === sid);
-        const flagged = v && v.flags && v.flags.length > 0;
-        if (!flagged) return true;
-        return overrides.has(sid);
-      };
+      const isWritable = (sid) => rapidWriteSeedIsDraftable(sid, validation, overrides, 'next');
       const pending = seeds.filter((s) => !writtenIds.has(s.id) && isWritable(s.id));
       if (!pending.length) {
         statePatch.rapid_write = {
@@ -1012,7 +1003,7 @@ export default async function handler(req, res) {
           },
         };
         assistantMessage =
-          'No seeds left to write, or remaining seeds are still flagged. Approve flagged seeds in plain language (or **do it anyway**), or **Exit Rapid Write**.';
+          'No seeds left to write, or the next seed is still flagged—say **do it anyway** or approve it, or **Exit Rapid Write**.';
       } else {
         const seed = pending[0];
         const draftsBySeed =

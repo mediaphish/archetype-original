@@ -21,6 +21,7 @@ import {
   wantsGenerateRapidWriteHeroImages,
   isRapidWriteDraftTextRevisionMessage,
   wantsRapidWriteManualPolishPass,
+  rapidWriteSeedIsDraftable,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -167,5 +168,15 @@ ok('revise-all: classified as draft text revision', isRapidWriteDraftTextRevisio
 ok('hero regenerate explicit', wantsRegenerateRapidWriteHeroImage('Regenerate hero image for rw-3 in Rapid Write'));
 ok('hero generate explicit', wantsGenerateRapidWriteHeroImages('Generate hero images for all Rapid Write drafts'));
 ok('manual polish phrase', wantsRapidWriteManualPolishPass('Editor pass for rw-2 in Rapid Write'));
+
+const valOverlap = [{ id: 'rw-1', flags: [{ type: 'overlap', detail: 'x' }] }];
+const valFalsity = [{ id: 'rw-2', flags: [{ type: 'falsity', detail: 'x' }] }];
+const emptyOverrides = new Set();
+ok('run_all: unflagged draftable', rapidWriteSeedIsDraftable('rw-0', [], emptyOverrides, 'run_all'));
+ok('run_all: overlap draftable', rapidWriteSeedIsDraftable('rw-1', valOverlap, emptyOverrides, 'run_all'));
+ok('run_all: falsity blocked', !rapidWriteSeedIsDraftable('rw-2', valFalsity, emptyOverrides, 'run_all'));
+ok('run_all: falsity allowed if override', rapidWriteSeedIsDraftable('rw-2', valFalsity, new Set(['rw-2']), 'run_all'));
+ok('next: overlap blocked without override', !rapidWriteSeedIsDraftable('rw-1', valOverlap, emptyOverrides, 'next'));
+ok('next: overlap ok with override', rapidWriteSeedIsDraftable('rw-1', valOverlap, new Set(['rw-1']), 'next'));
 
 process.exit(failed ? 1 : 0);
