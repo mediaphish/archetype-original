@@ -40,6 +40,8 @@ import {
   normalizeRapidWriteDraftState,
   parseRapidWriteDraftOrDiscussIntent,
   reviseRapidWriteDraft,
+  polishRapidWriteDraft,
+  wantsRapidWriteManualPolishPass,
   wantsRunAllSeeds,
   wantsNextSeed,
   collectRapidWriteOverrideIds,
@@ -1089,11 +1091,112 @@ export default async function handler(req, res) {
           : {};
       if (Object.keys(draftsMap).length > 0) {
         const skipHeroForTextRevision = isRapidWriteDraftTextRevisionMessage(userMessage);
+        const wantsPolish = wantsRapidWriteManualPolishPass(userMessage);
         const heroReg = !skipHeroForTextRevision && wantsRegenerateRapidWriteHeroImage(userMessage);
         const heroGen = !skipHeroForTextRevision && wantsGenerateRapidWriteHeroImages(userMessage);
         const heroAppr = !skipHeroForTextRevision && wantsApproveRapidWriteHeroImage(userMessage);
 
-        if (heroReg || heroGen || heroAppr) {
+        if (wantsPolish) {
+          rapidWriteHandled = true;
+          nextMode = 'plan';
+          const seeds = Array.isArray(rwAfterOverrides.seeds) ? rwAfterOverrides.seeds : [];
+          const idsFromMsg = extractRwSeedIdsFromMessage(userMessage, new Set(Object.keys(draftsMap)));
+          const allKeys = Object.keys(draftsMap);
+          let targetSeeds = idsFromMsg.length
+            ? idsFromMsg
+                .map((raw) => {
+                  const sid =
+                    Object.keys(draftsMap).find((k) => k.toLowerCase() === String(raw).toLowerCase()) ||
+                    String(raw);
+                  return sid;
+                })
+                .filter((sid) => draftsMap[sid])
+            : allKeys;
+          if (!targetSeeds.length) {
+            assistantMessage = 'No matching Rapid Write drafts for that polish request.';
+          } else {
+            const nextDrafts = { ...draftsMap };
+            const outLines = [];
+            let anyOk = false;
+            let okCount = 0;
+            for (const sid of targetSeeds) {
+              const seed = seeds.find((s) => s.id === sid);
+              const cur = nextDrafts[sid];
+              if (!seed || !cur) {
+                outLines.push(`**${sid}** — no draft on this thread for that seed id.`);
+                // eslint-disable-next-line no-continue
+                continue;
+              }
+              const w = await polishRapidWriteDraft(seed, cur);
+              if (!w.ok) {
+                outLines.push(`**${sid}** — polish failed: ${w.error || 'unknown'}`);
+                // eslint-disable-next-line no-continue
+                continue;
+              }
+              const prevId = cur.corpus_draft_id || null;
+              let corpusId = prevId;
+              try {
+                if (prevId) {
+                  await supabaseAdmin
+                    .from('ao_corpus_drafts')
+                    .update({
+                      topic: w.title || 'Rapid Write',
+                      tldr_markdown: w.markdown,
+                      updated_at: new Date().toISOString(),
+                    })
+                    .eq('id', prevId)
+                    .eq('created_by_email', auth.email);
+                } else {
+                  const ins = await supabaseAdmin
+                    .from('ao_corpus_drafts')
+                    .insert({
+                      created_by_email: auth.email,
+                      topic: w.title || 'Rapid Write',
+                      status: 'draft',
+                      tldr_markdown: w.markdown,
+                      meta: { source: 'rapid_write', seed_id: w.seed_id, slug: w.slug },
+                      created_at: new Date().toISOString(),
+                      updated_at: new Date().toISOString(),
+                    })
+                    .select('id')
+                    .single();
+                  if (!ins.error && ins.data?.id) corpusId = ins.data.id;
+                }
+              } catch {
+                /* optional */
+              }
+              const rec = normalizeRapidWriteDraftState(w, corpusId);
+              if (rec) {
+                nextDrafts[sid] = rec;
+                anyOk = true;
+                okCount += 1;
+              }
+              outLines.push(`### ${sid}\n\n${safeText(w.markdown, 50000)}`);
+            }
+            if (anyOk) {
+              statePatch.rapid_write = {
+                ...rwAfterOverrides,
+                drafts_by_seed_id: nextDrafts,
+                memory: {
+                  ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
+                  standing_instructions: Array.isArray(rwAfterOverrides.agent_training)
+                    ? rwAfterOverrides.agent_training.slice(-6)
+                    : [],
+                  last_action: 'polish_pass',
+                  updated_at: new Date().toISOString(),
+                },
+              };
+              receipts.push('Rapid Write: register polish pass');
+            }
+            assistantMessage = [
+              anyOk
+                ? `**Editor / polish pass** — updated **${okCount}** draft(s). Full markdown below.`
+                : 'No drafts were polished this turn.',
+              '',
+              ...outLines,
+            ].join('\n');
+          }
+        } else if (heroReg || heroGen || heroAppr) {
           rapidWriteHandled = true;
           nextMode = 'plan';
           const idsFromMsg = extractRwSeedIdsFromMessage(userMessage, new Set(Object.keys(draftsMap)));
