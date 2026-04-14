@@ -7,16 +7,19 @@
 - *Accidental CEO* — about **44,000 words** (published KDP manuscript; e.g. `accidental-ceo-manuscript-published-kdp.pdf` on the author’s machine).
 - *RemAIning Human* — about **30,000 words** author expectation; the Markdown manuscript checked in workspace was **~25,700 words** (`RemAIning Human.md` — line breaks/spacing can shift counts slightly).
 
-**What the live site actually indexes today**
+**Where the manuscript lives vs what the site searches**
 
-The Archetype Original app builds its searchable “library” from **`public/knowledge.json`**. That file is **not** a guaranteed byte-for-byte copy of every full book. For the two books:
+- **Source of truth on disk:** Full *Accidental CEO* text is in **`ao-knowledge-hq-kit/knowledge/accidental-ceo/`** — one markdown file per chapter (including `a-note-to-the-reader` and `chapter-1` … `chapter-24`). The site does **not** read those files directly at runtime.
+- **What the app and Rapid Write actually use:** Everything is compiled into **`public/knowledge.json`** by **`scripts/build-knowledge.mjs`**. That script walks the whole knowledge folder and pulls every `.md` file. **If that JSON file is out of date in git, searches and tone tools only see an old snapshot** — even when your local markdown is complete.
 
-| Work | Rough words in `knowledge.json` (book/chapter entries) | Full manuscript (above) |
-|------|----------------------------------------------------------|-------------------------|
-| *Accidental CEO* (chapters + related entries tagged for the book) | **~21,700** | **~44,000** |
-| *RemAIning Human* (single book entry) | **~25,400** | **~25,700–30,000** |
+**Why earlier counts looked “half” of *Accidental CEO* (and searches missed chapters 14–24)**
 
-So the words did not “disappear” — they were never all duplicated into the site bundle as full-length book text. *RemAIning Human* is largely present in one entry; *Accidental CEO* on the site is roughly **half** the published manuscript length in the indexed bodies, which can reflect web editing, chapter packaging, or material that lives in the print/PDF version but not in the same form online. **Rapid Write’s style context reads from `knowledge.json`**, so until the full manuscripts are imported (if you choose to), the model is calibrated partly on **site-shaped** excerpts, not automatically on every word of the PDF.
+1. **`public/knowledge.json` had not been rebuilt** after Part II (Fundamentals) chapters were added — so the live bundle was missing a big block of words until the knowledge build was run again and committed.
+2. **Slugs in the bundle don’t match filenames for Part II.** Files are named `chapter-14-clarity-beats-chaos.md`, etc., but each file’s front matter sets something like `slug: fundamentals-clarity-beats-chaos`. In `knowledge.json` those pieces appear under **`fundamentals-*`**, not `chapter-14-*`. Grepping for `chapter-14` in the JSON will find nothing even when the text is there.
+
+**After a fresh knowledge build**, *Accidental CEO* body text in `knowledge.json` (note + Part I chapters + Part II fundamentals) lands at **about 44,000 words**, aligned with the full manuscript. *RemAIning Human* remains a single long entry (~25–26k words in the bundle, depending on version).
+
+**Operational habit:** Whenever you add or change markdown under `ao-knowledge-hq-kit/knowledge/`, run the knowledge build and commit the updated **`public/knowledge.json`** so the live site and Rapid Write stay in sync with your files.
 
 ---
 
@@ -72,4 +75,4 @@ If automatic tone matching is still off on specific posts, short owner-curated p
 
 ---
 
-*Last updated: 2026-04-14 — voice notes locked per owner; manuscript vs site counts documented.*
+*Last updated: 2026-04-14 — voice notes locked per owner; corrected: full ACEO is in repo markdown; stale `knowledge.json` and `fundamentals-*` slugs explained.*
