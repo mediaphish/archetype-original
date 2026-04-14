@@ -21,6 +21,8 @@
 
 **Operational habit:** Whenever you add or change markdown under `ao-knowledge-hq-kit/knowledge/`, run the knowledge build and commit the updated **`public/knowledge.json`** so the live site and Rapid Write stay in sync with your files.
 
+**Rapid Write guardrails (in code):** `lib/ao/rapidWriteMode.js` includes discipline rules for **default industry setting** (avoid unnecessary tech/software specificity that invites “is this about us?”) and **name rotation** (no default Sarah/Mark every post; limited names per post; standalone fiction unless a labeled series). Adjust there when taste shifts.
+
 ---
 
 ## Voice and tone — locked characterization

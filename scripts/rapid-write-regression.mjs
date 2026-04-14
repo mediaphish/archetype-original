@@ -154,6 +154,11 @@ ok(
   RAPID_WRITE_LENGTH_DISCIPLINE.includes('Register (anti-feed') &&
     RAPID_WRITE_LENGTH_DISCIPLINE.includes('throat-clearing')
 );
+ok(
+  'story settings and names block present',
+  RAPID_WRITE_LENGTH_DISCIPLINE.includes('Story settings and names') &&
+    RAPID_WRITE_LENGTH_DISCIPLINE.includes('software engineering')
+);
 
 const reviseAllMsg =
   'Revise every Rapid Write draft (rw-1 through rw-10). Cut anything that repeats the same insight in new paragraphs—merge or delete until each paragraph adds a real new layer.';
