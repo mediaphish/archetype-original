@@ -146,6 +146,10 @@ ok(
   'length discipline string',
   RAPID_WRITE_LENGTH_DISCIPLINE.includes('425') && RAPID_WRITE_LENGTH_DISCIPLINE.includes('575')
 );
+ok(
+  'landing discipline present',
+  RAPID_WRITE_LENGTH_DISCIPLINE.includes('Landing and stop') && RAPID_WRITE_LENGTH_DISCIPLINE.includes('behavior')
+);
 
 const reviseAllMsg =
   'Revise every Rapid Write draft (rw-1 through rw-10). Cut anything that repeats the same insight in new paragraphs—merge or delete until each paragraph adds a real new layer.';
