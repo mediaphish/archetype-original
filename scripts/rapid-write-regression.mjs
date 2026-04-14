@@ -149,6 +149,11 @@ ok(
 );
 ok('editorial reader block present', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Reader'));
 ok('reflection question rules present', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Reflection question'));
+ok(
+  'register anti-feed block present',
+  RAPID_WRITE_LENGTH_DISCIPLINE.includes('Register (anti-feed') &&
+    RAPID_WRITE_LENGTH_DISCIPLINE.includes('throat-clearing')
+);
 
 const reviseAllMsg =
   'Revise every Rapid Write draft (rw-1 through rw-10). Cut anything that repeats the same insight in new paragraphs—merge or delete until each paragraph adds a real new layer.';
