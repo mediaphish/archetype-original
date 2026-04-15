@@ -24,6 +24,9 @@ import {
   rapidWriteSeedIsDraftable,
   extractRapidWriteFirstNamesFromBody,
   rapidWriteBodySignatureSnippets,
+  rapidWriteClosingSnippet,
+  rapidWriteStoryPatternForBatchIndex,
+  RAPID_WRITE_STORY_PATTERN_COUNT,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -164,6 +167,21 @@ ok(
 );
 ok('anti-formula block present', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Anti-formula'));
 ok('reflection ban How can you', RAPID_WRITE_LENGTH_DISCIPLINE.includes('How can you'));
+ok('batch uniqueness block', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Run all') && RAPID_WRITE_LENGTH_DISCIPLINE.includes('batch'));
+ok('hum-of ban broadened', RAPID_WRITE_LENGTH_DISCIPLINE.includes('hum of'));
+ok('default stock scene guard', RAPID_WRITE_LENGTH_DISCIPLINE.includes('conference room'));
+ok('story pattern count is 12', RAPID_WRITE_STORY_PATTERN_COUNT === 12);
+ok(
+  'story patterns differ by index',
+  rapidWriteStoryPatternForBatchIndex(0) !== rapidWriteStoryPatternForBatchIndex(1) &&
+    rapidWriteStoryPatternForBatchIndex(0).includes('Pattern 1')
+);
+const longHetero = Array.from({ length: 100 }, (_, i) => `seg${String(i).padStart(3, '0')}`).join(' ');
+ok('body signature multi-slice on long text', rapidWriteBodySignatureSnippets(longHetero).length >= 3);
+ok(
+  'closing snippet last paragraph',
+  rapidWriteClosingSnippet('First para.\n\nLast paragraph here.').includes('Last paragraph')
+);
 
 const reviseAllMsg =
   'Revise every Rapid Write draft (rw-1 through rw-10). Cut anything that repeats the same insight in new paragraphs—merge or delete until each paragraph adds a real new layer.';
@@ -185,6 +203,6 @@ ok('next: plain_fact blocked without override', !rapidWriteSeedIsDraftable('rw-2
 ok('next: plain_fact ok with override', rapidWriteSeedIsDraftable('rw-2', valPlainFact, new Set(['rw-2']), 'next'));
 
 ok('name extract sarah', extractRapidWriteFirstNamesFromBody('Sarah met Claire.').includes('Sarah'));
-ok('body signature snippets', rapidWriteBodySignatureSnippets('x'.repeat(300)).length === 2);
+ok('body signature short body single chunk', rapidWriteBodySignatureSnippets('x'.repeat(80)).length === 1);
 
 process.exit(failed ? 1 : 0);

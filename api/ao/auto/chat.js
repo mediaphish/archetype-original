@@ -47,8 +47,10 @@ import {
   rapidWriteSeedIsDraftable,
   collectRapidWriteOverrideIds,
   rapidWriteOpeningSnippet,
+  rapidWriteClosingSnippet,
   extractRapidWriteFirstNamesFromBody,
   rapidWriteBodySignatureSnippets,
+  rapidWriteStoryPatternForBatchIndex,
   wantsGenerateRapidWriteHeroImages,
   wantsRegenerateRapidWriteHeroImage,
   wantsApproveRapidWriteHeroImage,
@@ -840,6 +842,8 @@ export default async function handler(req, res) {
           written_ids: [],
           drafts_by_seed_id: {},
           batch_used_first_names: [],
+          batch_prior_titles: [],
+          batch_prior_closing_snippets: [],
           batch_prior_reflection_questions: [],
           batch_anti_repeat_snippets: [],
           queue: parsed.seeds.map((s) => s.id),
@@ -932,15 +936,25 @@ export default async function handler(req, res) {
         let batchAntiRepeatSnippets = Array.isArray(rwAfterOverrides.batch_anti_repeat_snippets)
           ? [...rwAfterOverrides.batch_anti_repeat_snippets]
           : [];
+        let batchPriorTitles = Array.isArray(rwAfterOverrides.batch_prior_titles)
+          ? [...rwAfterOverrides.batch_prior_titles]
+          : [];
+        let batchPriorClosingSnippets = Array.isArray(rwAfterOverrides.batch_prior_closing_snippets)
+          ? [...rwAfterOverrides.batch_prior_closing_snippets]
+          : [];
         for (const seed of pending) {
           const vRow = validation.find((x) => x.id === seed.id);
           const diffHint = vRow?.differentiation_hint ? safeText(vRow.differentiation_hint, 1200) : '';
+          const batchPatternIndex = Math.max(0, seeds.findIndex((s) => s.id === seed.id));
           const w = await writeRapidWritePost(seed, {
             agentTrainingNotes: agentTraining,
             batchOpeningSnippets: [...openingSnips],
             batchUsedFirstNames,
             batchPriorReflectionQuestions,
             batchAntiRepeatSnippets,
+            batchPriorTitles,
+            batchPriorClosingSnippets,
+            batchPatternIndex,
             differentiationHint: diffHint,
           });
           if (w.ok) {
@@ -956,8 +970,14 @@ export default async function handler(req, res) {
               batchPriorReflectionQuestions.push(safeText(w.reflection_question, 500));
             }
             batchAntiRepeatSnippets.push(...rapidWriteBodySignatureSnippets(w.body));
-            if (batchAntiRepeatSnippets.length > 48) {
-              batchAntiRepeatSnippets = batchAntiRepeatSnippets.slice(-48);
+            if (batchAntiRepeatSnippets.length > 64) {
+              batchAntiRepeatSnippets = batchAntiRepeatSnippets.slice(-64);
+            }
+            if (w.title) batchPriorTitles.push(safeText(w.title, 220));
+            batchPriorClosingSnippets.push(rapidWriteClosingSnippet(w.body));
+            if (batchPriorTitles.length > 48) batchPriorTitles = batchPriorTitles.slice(-48);
+            if (batchPriorClosingSnippets.length > 48) {
+              batchPriorClosingSnippets = batchPriorClosingSnippets.slice(-48);
             }
             let corpusDraftId = null;
             try {
@@ -988,6 +1008,8 @@ export default async function handler(req, res) {
           written_ids: [...writtenIds],
           drafts_by_seed_id: draftsBySeed,
           batch_used_first_names: batchUsedFirstNames,
+          batch_prior_titles: batchPriorTitles,
+          batch_prior_closing_snippets: batchPriorClosingSnippets,
           batch_prior_reflection_questions: batchPriorReflectionQuestions,
           batch_anti_repeat_snippets: batchAntiRepeatSnippets,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
@@ -1061,14 +1083,24 @@ export default async function handler(req, res) {
         let batchAntiRepeatSnippets = Array.isArray(rwAfterOverrides.batch_anti_repeat_snippets)
           ? [...rwAfterOverrides.batch_anti_repeat_snippets]
           : [];
+        let batchPriorTitles = Array.isArray(rwAfterOverrides.batch_prior_titles)
+          ? [...rwAfterOverrides.batch_prior_titles]
+          : [];
+        let batchPriorClosingSnippets = Array.isArray(rwAfterOverrides.batch_prior_closing_snippets)
+          ? [...rwAfterOverrides.batch_prior_closing_snippets]
+          : [];
         const vRow = validation.find((x) => x.id === seed.id);
         const diffHint = vRow?.differentiation_hint ? safeText(vRow.differentiation_hint, 1200) : '';
+        const batchPatternIndex = Math.max(0, seeds.findIndex((s) => s.id === seed.id));
         const w = await writeRapidWritePost(seed, {
           agentTrainingNotes: agentTraining,
           batchOpeningSnippets: priorSnips,
           batchUsedFirstNames,
           batchPriorReflectionQuestions,
           batchAntiRepeatSnippets,
+          batchPriorTitles,
+          batchPriorClosingSnippets,
+          batchPatternIndex,
           differentiationHint: diffHint,
         });
         if (w.ok) {
@@ -1082,8 +1114,14 @@ export default async function handler(req, res) {
             batchPriorReflectionQuestions.push(safeText(w.reflection_question, 500));
           }
           batchAntiRepeatSnippets.push(...rapidWriteBodySignatureSnippets(w.body));
-          if (batchAntiRepeatSnippets.length > 48) {
-            batchAntiRepeatSnippets = batchAntiRepeatSnippets.slice(-48);
+          if (batchAntiRepeatSnippets.length > 64) {
+            batchAntiRepeatSnippets = batchAntiRepeatSnippets.slice(-64);
+          }
+          if (w.title) batchPriorTitles.push(safeText(w.title, 220));
+          batchPriorClosingSnippets.push(rapidWriteClosingSnippet(w.body));
+          if (batchPriorTitles.length > 48) batchPriorTitles = batchPriorTitles.slice(-48);
+          if (batchPriorClosingSnippets.length > 48) {
+            batchPriorClosingSnippets = batchPriorClosingSnippets.slice(-48);
           }
           let corpusDraftId = null;
           try {
@@ -1113,6 +1151,8 @@ export default async function handler(req, res) {
           written_ids: [...writtenIds],
           drafts_by_seed_id: draftsBySeed,
           batch_used_first_names: batchUsedFirstNames,
+          batch_prior_titles: batchPriorTitles,
+          batch_prior_closing_snippets: batchPriorClosingSnippets,
           batch_prior_reflection_questions: batchPriorReflectionQuestions,
           batch_anti_repeat_snippets: batchAntiRepeatSnippets,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
@@ -1378,11 +1418,32 @@ export default async function handler(req, res) {
               .filter(([k]) => k !== sid)
               .map(([, o]) => o)
               .filter(Boolean);
+            const batchPriorTitlesSib = [];
+            const batchPriorClosingSnippetsSib = [];
+            const batchPriorReflectionSib = [];
+            const batchAntiRepeatSib = [];
+            for (const [k, d] of Object.entries(nextDrafts)) {
+              if (k === sid || !d) continue;
+              if (d.title) batchPriorTitlesSib.push(safeText(d.title, 200));
+              if (d.body) {
+                batchPriorClosingSnippetsSib.push(rapidWriteClosingSnippet(d.body));
+                batchAntiRepeatSib.push(...rapidWriteBodySignatureSnippets(d.body));
+              }
+              if (d.reflection_question) batchPriorReflectionSib.push(safeText(d.reflection_question, 400));
+            }
+            if (batchAntiRepeatSib.length > 40) batchAntiRepeatSib.splice(0, batchAntiRepeatSib.length - 40);
+            const patIdx = seeds.findIndex((s) => s.id === sid);
+            const assignedStoryPattern = patIdx >= 0 ? rapidWriteStoryPatternForBatchIndex(patIdx) : '';
             const w = await reviseRapidWriteDraft(seed, cur, intent.instruction, {
               agentTrainingNotes: agentTraining,
               overlapHint: overlapHint || undefined,
               differentiationHint: diffHint || undefined,
               siblingOpeningSnippets,
+              batchPriorTitles: batchPriorTitlesSib,
+              batchPriorClosingSnippets: batchPriorClosingSnippetsSib,
+              batchPriorReflectionQuestions: batchPriorReflectionSib,
+              batchAntiRepeatSnippets: batchAntiRepeatSib,
+              assignedStoryPattern,
             });
             if (!w.ok) {
               outLines.push(`**${sid}** — could not revise: ${w.error || 'unknown'}`);
