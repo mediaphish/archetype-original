@@ -37,7 +37,7 @@ export default function AOBottomNav({
                 onClick={() => onNavigate?.(t.path)}
                 aria-current={isActive ? 'page' : undefined}
                 className={[
-                  'min-h-[44px] rounded-lg px-1.5 py-2 text-[11px] leading-tight',
+                  'min-h-[44px] rounded-lg px-1.5 py-2 text-xs leading-tight',
                   'flex items-center justify-center text-center',
                   isActive ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-50',
                 ].join(' ')}

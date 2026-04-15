@@ -70,8 +70,9 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   const [pendingFiles, setPendingFiles] = useState([]);
   const [startingNew, setStartingNew] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const fileInputRef = useRef(null);
-  const scrollRef = useRef(null);
+  const messagesEndRef = useRef(null);
   /** Only show the bundle card for this thread’s active bundle — not the latest global Library item. */
   const latestBundle = useMemo(() => {
     const bid =
@@ -134,9 +135,17 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   }, [loadSession]);
 
   useEffect(() => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages]);
+
+  useEffect(() => {
+    if (!mobileMoreOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMobileMoreOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileMoreOpen]);
 
   const attachmentsByMessage = useMemo(() => {
     const map = new Map();
@@ -388,7 +397,30 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             Internal research and packaging — not the public Archy chat. One conversation at a time; use New chat for a clean thread.
           </div>
         </div>
-        <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 lg:flex-wrap lg:justify-end lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0">
+        {/* Mobile: badges + single More — avoids horizontal button sprawl */}
+        <div className="flex md:hidden flex-wrap items-center gap-2">
+          <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+            Mode: {modeLabel(thread?.current_mode)}
+          </span>
+          {rapidWriteBanner && (
+            <span
+              className="px-2 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-semibold"
+              title="Rapid Write recipe — ask Auto to revise drafts by seed id"
+            >
+              Rapid Write · {rapidWriteBanner.n} seed(s)
+              {rapidWriteBanner.draftCount > 0 ? ` · ${rapidWriteBanner.draftCount} draft(s)` : ''}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => setMobileMoreOpen(true)}
+            className="min-h-[44px] px-4 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-900 hover:bg-gray-50"
+          >
+            More
+          </button>
+        </div>
+        {/* Desktop: full toolbar */}
+        <div className="hidden md:flex flex-wrap items-center justify-end gap-2">
           <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
             Mode: {modeLabel(thread?.current_mode)}
           </span>
@@ -538,7 +570,8 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
         </div>
       ) : null}
 
-      <div ref={scrollRef} className="max-h-[560px] overflow-y-auto px-4 py-4 bg-gray-50 space-y-3">
+      {/* Single page scroll: no max-height inner scroll (avoids scroll-within-scroll on phones) */}
+      <div className="px-4 py-4 bg-gray-50 space-y-3">
         {loading ? (
           <div className="text-sm text-gray-500">Loading Auto…</div>
         ) : null}
@@ -634,6 +667,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             </div>
           );
         })}
+        <div ref={messagesEndRef} className="h-px w-full shrink-0" aria-hidden />
       </div>
 
       {activityLogEntries.length ? (
@@ -756,7 +790,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={3}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-base md:text-sm"
             placeholder="Talk to Auto…"
           />
           <button
@@ -827,6 +861,80 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      ) : null}
+
+      {mobileMoreOpen ? (
+        <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-label="Auto actions">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            aria-label="Close menu"
+            onClick={() => setMobileMoreOpen(false)}
+          />
+          <div className="absolute bottom-0 left-0 right-0 max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl border-t border-gray-200 px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-2">
+            <div className="text-sm font-semibold text-gray-900 pb-1">Actions</div>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMoreOpen(false);
+                saveDraft();
+              }}
+              disabled={savingDraft || startingNew || sending || loading}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-gray-300 bg-white text-left text-sm font-medium text-gray-900 hover:bg-gray-50 disabled:opacity-50"
+            >
+              {savingDraft ? 'Saving…' : 'Save draft'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMoreOpen(false);
+                startNewChat();
+              }}
+              disabled={startingNew || savingDraft || sending || loading}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-gray-300 bg-white text-left text-sm font-medium text-gray-900 hover:bg-gray-50 disabled:opacity-50"
+            >
+              {startingNew ? 'Starting…' : 'New chat'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMoreOpen(false);
+                setLibraryOpen(true);
+              }}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-gray-300 bg-white text-left text-sm font-medium text-gray-900 hover:bg-gray-50"
+            >
+              Library
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMoreOpen(false);
+                const el = document.getElementById(draftsAnchorId);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-gray-300 bg-white text-left text-sm font-medium text-gray-900 hover:bg-gray-50"
+            >
+              Jump to Drafts
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMoreOpen(false);
+                setAdvancedOpen(true);
+              }}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-gray-300 bg-white text-left text-sm font-medium text-gray-900 hover:bg-gray-50"
+            >
+              Advanced tools
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileMoreOpen(false)}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl bg-gray-100 text-sm font-medium text-gray-800"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       ) : null}

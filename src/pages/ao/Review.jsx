@@ -239,6 +239,7 @@ export default function Review() {
   const [autoDrafts, setAutoDrafts] = useState([]);
   const [draftsLoading, setDraftsLoading] = useState(false);
   const [draftActingId, setDraftActingId] = useState(null);
+  const [draftMenuOpen, setDraftMenuOpen] = useState(null);
   const [autoHubKey, setAutoHubKey] = useState(0);
 
   const [corpusDrafts, setCorpusDrafts] = useState([]);
@@ -275,6 +276,15 @@ export default function Review() {
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
+
+  useEffect(() => {
+    if (!draftMenuOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setDraftMenuOpen(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [draftMenuOpen]);
 
   const loadProfilesPeople = useCallback(async () => {
     if (!authChecked) return;
@@ -901,7 +911,7 @@ export default function Review() {
           </h1>
           {activeTab === 'drafts' ? (
             <p className="text-gray-600 mt-1 text-sm">
-              Saved Auto conversations. Use <strong>Edit</strong> to continue in the chat above, or <strong>Delete</strong> to remove one draft forever.
+              Saved Auto conversations. <strong>Tap a draft</strong> to continue in Auto above. Use <strong>⋯</strong> on a card to delete.
             </p>
           ) : null}
           {activeTab === 'corpus' ? (
@@ -953,33 +963,66 @@ export default function Review() {
             ) : (
               <ul className="space-y-3">
                 {autoDrafts.map((d) => (
-                  <li key={d.id} className="flex flex-wrap items-start justify-between gap-3 border border-gray-200 rounded-lg p-4 bg-gray-50">
-                    <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-gray-900 truncate">{d.title || 'Draft'}</div>
-                      {d.updated_at ? (
-                        <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
-                      ) : null}
-                      {d.preview ? (
-                        <div className="text-sm text-gray-700 mt-2 line-clamp-3 whitespace-pre-wrap">{d.preview}</div>
-                      ) : null}
-                    </div>
-                    <div className="flex flex-wrap gap-2 shrink-0">
+                  <li key={d.id} className="relative border border-gray-200 rounded-lg bg-gray-50 overflow-visible">
+                    <div className="flex items-stretch gap-2 p-4">
                       <button
                         type="button"
                         disabled={draftActingId === d.id}
-                        onClick={() => resumeAutoDraft(d.id)}
-                        className="min-h-[44px] px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                        onClick={() => {
+                          setDraftMenuOpen(null);
+                          resumeAutoDraft(d.id);
+                        }}
+                        className="min-w-0 flex-1 text-left rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 active:bg-gray-100/80"
                       >
-                        {draftActingId === d.id ? 'Opening…' : 'Edit'}
+                        <div className="font-semibold text-gray-900 truncate">{d.title || 'Draft'}</div>
+                        {d.updated_at ? (
+                          <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
+                        ) : null}
+                        {d.preview ? (
+                          <div className="text-sm text-gray-700 mt-2 line-clamp-3 whitespace-pre-wrap">{d.preview}</div>
+                        ) : null}
+                        {draftActingId === d.id ? (
+                          <div className="text-xs text-blue-600 mt-2">Opening…</div>
+                        ) : (
+                          <div className="text-xs text-blue-600 mt-2 md:hidden">Tap to open in Auto</div>
+                        )}
                       </button>
-                      <button
-                        type="button"
-                        disabled={draftActingId === d.id}
-                        onClick={() => deleteAutoDraft(d.id)}
-                        className="min-h-[44px] px-4 py-2 rounded-lg border border-red-300 bg-white text-red-700 text-sm font-semibold hover:bg-red-50 disabled:opacity-50"
-                      >
-                        Delete
-                      </button>
+                      <div className="relative shrink-0 flex flex-col justify-start">
+                        <button
+                          type="button"
+                          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 text-xl leading-none hover:bg-gray-50"
+                          aria-label="Draft actions"
+                          aria-expanded={draftMenuOpen === d.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDraftMenuOpen((prev) => (prev === d.id ? null : d.id));
+                          }}
+                        >
+                          ⋯
+                        </button>
+                        {draftMenuOpen === d.id ? (
+                          <>
+                            <button
+                              type="button"
+                              className="fixed inset-0 z-20 cursor-default bg-black/20 md:bg-transparent"
+                              aria-label="Close menu"
+                              onClick={() => setDraftMenuOpen(null)}
+                            />
+                            <div className="absolute right-0 top-full z-30 mt-1 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg md:right-0">
+                              <button
+                                type="button"
+                                className="w-full px-4 py-3 text-left text-sm font-medium text-red-700 hover:bg-red-50"
+                                onClick={() => {
+                                  setDraftMenuOpen(null);
+                                  deleteAutoDraft(d.id);
+                                }}
+                              >
+                                Delete draft…
+                              </button>
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
                     </div>
                   </li>
                 ))}
