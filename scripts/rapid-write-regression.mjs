@@ -33,6 +33,8 @@ import {
   rapidWriteBodyHasBannedLeaderIntros,
   rapidWriteReflectionTooSimilar,
   RAPID_WRITE_MAX_COST_OF_TITLES_PER_BATCH,
+  rapidWriteTitleCollidesWithBatch,
+  sortRapidWriteSeedIds,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -239,5 +241,19 @@ const qB =
   'What barriers to innovation and ownership might your team be facing as they navigate a culture of overcontrol?';
 ok('reflection too similar on long shared stem', rapidWriteReflectionTooSimilar(qB, [qA]));
 ok('reflection not similar when different shape', !rapidWriteReflectionTooSimilar('Who pays the price when praise is hollow?', [qA]));
+
+ok(
+  'title collision detects thin cost-of variant',
+  rapidWriteTitleCollidesWithBatch('The Cost of Leadership Silence', ['The Cost of Silence'])
+);
+ok(
+  'title collision does not flag unrelated cost-of pair',
+  !rapidWriteTitleCollidesWithBatch('The Cost of Drift', ['The Cost of Certainty'])
+);
+ok('sort rw ids numeric', sortRapidWriteSeedIds(['rw-10', 'rw-2', 'rw-1']).join(',') === 'rw-1,rw-2,rw-10');
+ok(
+  'respected for intro banned',
+  rapidWriteBodyHasBannedLeaderIntros('The leader, respected for his calm demeanor, said little.')
+);
 
 process.exit(failed ? 1 : 0);

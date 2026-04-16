@@ -51,6 +51,7 @@ import {
   extractRapidWriteFirstNamesFromBody,
   rapidWriteBodySignatureSnippets,
   rapidWriteStoryPatternForBatchIndex,
+  sortRapidWriteSeedIds,
   wantsGenerateRapidWriteHeroImages,
   wantsRegenerateRapidWriteHeroImage,
   wantsApproveRapidWriteHeroImage,
@@ -1401,7 +1402,7 @@ export default async function handler(req, res) {
           for (const k of Object.keys(nextDrafts)) {
             openingBySid[k] = rapidWriteOpeningSnippet(nextDrafts[k]?.body);
           }
-          for (const sidRaw of intent.seed_ids) {
+          for (const sidRaw of sortRapidWriteSeedIds(intent.seed_ids)) {
             const sid =
               Object.keys(nextDrafts).find((k) => k.toLowerCase() === String(sidRaw).toLowerCase()) ||
               String(sidRaw);
