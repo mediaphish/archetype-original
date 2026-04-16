@@ -709,7 +709,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
       ) : null}
 
       <div
-        className="border-t border-gray-200 px-4 py-3 bg-white"
+        className="border-t border-gray-200 px-4 py-3 bg-white md:static max-md:sticky max-md:z-30 max-md:bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px))] max-md:shadow-[0_-8px_28px_rgba(0,0,0,0.07)]"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
