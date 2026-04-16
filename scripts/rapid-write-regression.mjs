@@ -27,6 +27,12 @@ import {
   rapidWriteClosingSnippet,
   rapidWriteStoryPatternForBatchIndex,
   RAPID_WRITE_STORY_PATTERN_COUNT,
+  normalizeRapidWriteTitleKey,
+  rapidWriteTitleDuplicatesPrior,
+  countRapidWriteCostOfTitles,
+  rapidWriteBodyHasBannedLeaderIntros,
+  rapidWriteReflectionTooSimilar,
+  RAPID_WRITE_MAX_COST_OF_TITLES_PER_BATCH,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -168,6 +174,7 @@ ok(
 ok('anti-formula block present', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Anti-formula'));
 ok('reflection ban How can you', RAPID_WRITE_LENGTH_DISCIPLINE.includes('How can you'));
 ok('batch uniqueness block', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Run all') && RAPID_WRITE_LENGTH_DISCIPLINE.includes('batch'));
+ok('anti-model prose / banned leader intros', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Banned leader intros'));
 ok('hum-of ban broadened', RAPID_WRITE_LENGTH_DISCIPLINE.includes('hum of'));
 ok('default stock scene guard', RAPID_WRITE_LENGTH_DISCIPLINE.includes('conference room'));
 ok('story pattern count is 12', RAPID_WRITE_STORY_PATTERN_COUNT === 12);
@@ -204,5 +211,33 @@ ok('next: plain_fact ok with override', rapidWriteSeedIsDraftable('rw-2', valPla
 
 ok('name extract sarah', extractRapidWriteFirstNamesFromBody('Sarah met Claire.').includes('Sarah'));
 ok('body signature short body single chunk', rapidWriteBodySignatureSnippets('x'.repeat(80)).length === 1);
+
+ok(
+  'title key normalizes punctuation',
+  normalizeRapidWriteTitleKey('The Cost of Avoidance!') === normalizeRapidWriteTitleKey('the cost of avoidance')
+);
+ok(
+  'duplicate title detected vs batch',
+  rapidWriteTitleDuplicatesPrior('The Cost of Avoidance', ['Other', 'the cost of avoidance.'])
+);
+ok(
+  'cost-of title count',
+  countRapidWriteCostOfTitles(['The Cost of X', 'Hello', 'the cost of y']) === 2
+);
+ok('max cost-of constant is 2', RAPID_WRITE_MAX_COST_OF_TITLES_PER_BATCH === 2);
+ok(
+  'banned leader intro detected',
+  rapidWriteBodyHasBannedLeaderIntros('The leader, known for his calm, said nothing.')
+);
+ok(
+  'banned leader intro absent for clean prose',
+  !rapidWriteBodyHasBannedLeaderIntros('The room went quiet when she set down the folder.')
+);
+const qA =
+  'What barriers to innovation and ownership might your team be facing as they navigate a culture of control?';
+const qB =
+  'What barriers to innovation and ownership might your team be facing as they navigate a culture of overcontrol?';
+ok('reflection too similar on long shared stem', rapidWriteReflectionTooSimilar(qB, [qA]));
+ok('reflection not similar when different shape', !rapidWriteReflectionTooSimilar('Who pays the price when praise is hollow?', [qA]));
 
 process.exit(failed ? 1 : 0);
