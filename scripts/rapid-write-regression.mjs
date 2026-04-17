@@ -33,11 +33,13 @@ import {
   rapidWriteBodyHasBannedLeaderIntros,
   rapidWriteReflectionTooSimilar,
   RAPID_WRITE_MAX_COST_OF_TITLES_PER_BATCH,
+  RAPID_WRITE_MAX_ABSTRACT_SHELL_TITLES,
+  countRapidWriteAbstractShellTitles,
+  rapidWriteBodyOpensWithMeetingSpine,
+  countRapidWriteMeetingSpineOpenings,
+  rapidWriteOpeningTooSimilarToPrior,
   rapidWriteTitleCollidesWithBatch,
   sortRapidWriteSeedIds,
-  rapidWriteDetectScenarioMoldsInLead,
-  rapidWriteScenarioMoldsExhausted,
-  rapidWriteTitleShellQuotaViolated,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -179,6 +181,7 @@ ok(
 ok('anti-formula block present', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Anti-formula'));
 ok('reflection ban How can you', RAPID_WRITE_LENGTH_DISCIPLINE.includes('How can you'));
 ok('batch uniqueness block', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Run all') && RAPID_WRITE_LENGTH_DISCIPLINE.includes('batch'));
+ok('batch spine / container discipline', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Batch spine'));
 ok('anti-model prose / banned leader intros', RAPID_WRITE_LENGTH_DISCIPLINE.includes('Banned leader intros'));
 ok('hum-of ban broadened', RAPID_WRITE_LENGTH_DISCIPLINE.includes('hum of'));
 ok('default stock scene guard', RAPID_WRITE_LENGTH_DISCIPLINE.includes('conference room'));
@@ -230,6 +233,30 @@ ok(
   countRapidWriteCostOfTitles(['The Cost of X', 'Hello', 'the cost of y']) === 2
 );
 ok('max cost-of constant is 2', RAPID_WRITE_MAX_COST_OF_TITLES_PER_BATCH === 2);
+ok('max abstract shell constant is 2', RAPID_WRITE_MAX_ABSTRACT_SHELL_TITLES === 2);
+ok(
+  'abstract shell title count includes burden',
+  countRapidWriteAbstractShellTitles(['The Cost of X', 'The Burden of Y', 'Hello']) === 2
+);
+ok(
+  'meeting spine detected',
+  rapidWriteBodyOpensWithMeetingSpine(
+    'In a conference room with stark white walls, the team gathered for their quarterly review. Metrics flashed on the screen.'
+  )
+);
+ok(
+  'meeting spine count',
+  countRapidWriteMeetingSpineOpenings([
+    'conference room tension',
+    'She walked the warehouse floor.',
+  ]) === 1
+);
+const twinA =
+  'In a busy office, the clatter of keyboards masked a rising tension. A team faced a relentless barrage of shifting priorities.';
+const twinB =
+  'In a busy office, the clatter of keyboards masked a rising tension. A team faced a relentless barrage of shifting priorities and new rules.';
+ok('opening twin detected', rapidWriteOpeningTooSimilarToPrior(twinB, [twinA]));
+ok('opening twin absent when different', !rapidWriteOpeningTooSimilarToPrior('The loading dock smelled like rain and diesel.', [twinA]));
 ok(
   'banned leader intro detected',
   rapidWriteBodyHasBannedLeaderIntros('The leader, known for his calm, said nothing.')
@@ -257,28 +284,6 @@ ok('sort rw ids numeric', sortRapidWriteSeedIds(['rw-10', 'rw-2', 'rw-1']).join(
 ok(
   'respected for intro banned',
   rapidWriteBodyHasBannedLeaderIntros('The leader, respected for his calm demeanor, said little.')
-);
-
-ok(
-  'scenario mold detects conference room spine',
-  rapidWriteDetectScenarioMoldsInLead('In a conference room with stark white walls, the team sat.').includes(
-    'formal_group_meeting_spine'
-  )
-);
-ok(
-  'scenario quota blocks third meeting spine when cap is 2',
-  rapidWriteScenarioMoldsExhausted(
-    'The strategy meeting dragged on in the conference room.',
-    [
-      'We filed into the conference room for the quarterly review.',
-      'A monthly strategy meeting opened with tense silence.',
-    ],
-    { formal_group_meeting_spine: 2 }
-  ).exhausted === true
-);
-ok(
-  'title shell quota: second Burden title fails',
-  rapidWriteTitleShellQuotaViolated('The Burden of Change', ['The Burden of Uncertainty']).violated === true
 );
 
 process.exit(failed ? 1 : 0);

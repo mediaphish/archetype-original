@@ -943,8 +943,8 @@ export default async function handler(req, res) {
         let batchPriorClosingSnippets = Array.isArray(rwAfterOverrides.batch_prior_closing_snippets)
           ? [...rwAfterOverrides.batch_prior_closing_snippets]
           : [];
-        let batchPriorBodies = Array.isArray(rwAfterOverrides.batch_prior_bodies)
-          ? [...rwAfterOverrides.batch_prior_bodies]
+        let batchPriorBodyHeads = Array.isArray(rwAfterOverrides.batch_prior_body_heads)
+          ? [...rwAfterOverrides.batch_prior_body_heads]
           : [];
         for (const seed of pending) {
           const vRow = validation.find((x) => x.id === seed.id);
@@ -958,15 +958,13 @@ export default async function handler(req, res) {
             batchAntiRepeatSnippets,
             batchPriorTitles,
             batchPriorClosingSnippets,
-            batchPriorBodies,
+            batchPriorBodyHeads,
             batchPatternIndex,
             differentiationHint: diffHint,
           });
           if (w.ok) {
             writtenIds.add(seed.id);
             drafts.push(w);
-            batchPriorBodies.push(safeText(w.body, 12000));
-            if (batchPriorBodies.length > 14) batchPriorBodies = batchPriorBodies.slice(-14);
             openingSnips.push(rapidWriteOpeningSnippet(w.body));
             for (const n of extractRapidWriteFirstNamesFromBody(w.body)) {
               if (!batchUsedFirstNames.some((x) => String(x).toLowerCase() === n.toLowerCase())) {
@@ -982,10 +980,12 @@ export default async function handler(req, res) {
             }
             if (w.title) batchPriorTitles.push(safeText(w.title, 220));
             batchPriorClosingSnippets.push(rapidWriteClosingSnippet(w.body));
+            batchPriorBodyHeads.push(String(w.body || '').slice(0, 560));
             if (batchPriorTitles.length > 48) batchPriorTitles = batchPriorTitles.slice(-48);
             if (batchPriorClosingSnippets.length > 48) {
               batchPriorClosingSnippets = batchPriorClosingSnippets.slice(-48);
             }
+            if (batchPriorBodyHeads.length > 16) batchPriorBodyHeads = batchPriorBodyHeads.slice(-16);
             let corpusDraftId = null;
             try {
               const ins = await supabaseAdmin
@@ -1017,9 +1017,9 @@ export default async function handler(req, res) {
           batch_used_first_names: batchUsedFirstNames,
           batch_prior_titles: batchPriorTitles,
           batch_prior_closing_snippets: batchPriorClosingSnippets,
+          batch_prior_body_heads: batchPriorBodyHeads,
           batch_prior_reflection_questions: batchPriorReflectionQuestions,
           batch_anti_repeat_snippets: batchAntiRepeatSnippets,
-          batch_prior_bodies: batchPriorBodies,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'all',
           memory: {
@@ -1082,6 +1082,14 @@ export default async function handler(req, res) {
         const priorSnips = Object.values(draftsBySeed)
           .map((d) => rapidWriteOpeningSnippet(d?.body))
           .filter(Boolean);
+        let batchPriorBodyHeads = Array.isArray(rwAfterOverrides.batch_prior_body_heads)
+          ? [...rwAfterOverrides.batch_prior_body_heads]
+          : [];
+        if (!batchPriorBodyHeads.length) {
+          batchPriorBodyHeads = sortRapidWriteSeedIds(Object.keys(draftsBySeed))
+            .map((kid) => (draftsBySeed[kid]?.body ? String(draftsBySeed[kid].body).slice(0, 560) : ''))
+            .filter(Boolean);
+        }
         let batchUsedFirstNames = Array.isArray(rwAfterOverrides.batch_used_first_names)
           ? [...rwAfterOverrides.batch_used_first_names]
           : [];
@@ -1097,11 +1105,6 @@ export default async function handler(req, res) {
         let batchPriorClosingSnippets = Array.isArray(rwAfterOverrides.batch_prior_closing_snippets)
           ? [...rwAfterOverrides.batch_prior_closing_snippets]
           : [];
-        const batchPriorBodies = Object.entries(draftsBySeed)
-          .filter(([k]) => k !== seed.id)
-          .map(([, d]) => (d?.body ? safeText(d.body, 12000) : ''))
-          .filter(Boolean)
-          .slice(-14);
         const vRow = validation.find((x) => x.id === seed.id);
         const diffHint = vRow?.differentiation_hint ? safeText(vRow.differentiation_hint, 1200) : '';
         const batchPatternIndex = Math.max(0, seeds.findIndex((s) => s.id === seed.id));
@@ -1113,7 +1116,7 @@ export default async function handler(req, res) {
           batchAntiRepeatSnippets,
           batchPriorTitles,
           batchPriorClosingSnippets,
-          batchPriorBodies,
+          batchPriorBodyHeads,
           batchPatternIndex,
           differentiationHint: diffHint,
         });
@@ -1133,10 +1136,12 @@ export default async function handler(req, res) {
           }
           if (w.title) batchPriorTitles.push(safeText(w.title, 220));
           batchPriorClosingSnippets.push(rapidWriteClosingSnippet(w.body));
+          batchPriorBodyHeads.push(String(w.body || '').slice(0, 560));
           if (batchPriorTitles.length > 48) batchPriorTitles = batchPriorTitles.slice(-48);
           if (batchPriorClosingSnippets.length > 48) {
             batchPriorClosingSnippets = batchPriorClosingSnippets.slice(-48);
           }
+          if (batchPriorBodyHeads.length > 16) batchPriorBodyHeads = batchPriorBodyHeads.slice(-16);
           let corpusDraftId = null;
           try {
             const ins = await supabaseAdmin
@@ -1159,12 +1164,6 @@ export default async function handler(req, res) {
           const rec = normalizeRapidWriteDraftState(w, corpusDraftId);
           if (rec) draftsBySeed[seed.id] = rec;
         }
-        const nextBatchBodies =
-          w.ok && w.body
-            ? [...batchPriorBodies, safeText(w.body, 12000)].slice(-14)
-            : Array.isArray(rwAfterOverrides.batch_prior_bodies)
-              ? rwAfterOverrides.batch_prior_bodies
-              : batchPriorBodies;
         statePatch.rapid_write = {
           ...rwAfterOverrides,
           overrides: [...overrides],
@@ -1173,9 +1172,9 @@ export default async function handler(req, res) {
           batch_used_first_names: batchUsedFirstNames,
           batch_prior_titles: batchPriorTitles,
           batch_prior_closing_snippets: batchPriorClosingSnippets,
+          batch_prior_body_heads: batchPriorBodyHeads,
           batch_prior_reflection_questions: batchPriorReflectionQuestions,
           batch_anti_repeat_snippets: batchAntiRepeatSnippets,
-          batch_prior_bodies: nextBatchBodies,
           queue: seeds.map((s) => s.id).filter((id) => !writtenIds.has(id)),
           last_ask_batch: 'next',
           memory: {
@@ -1443,19 +1442,18 @@ export default async function handler(req, res) {
             const batchPriorClosingSnippetsSib = [];
             const batchPriorReflectionSib = [];
             const batchAntiRepeatSib = [];
-            const batchPriorBodiesSib = [];
+            const batchPriorBodyHeadsSib = [];
             for (const [k, d] of Object.entries(nextDrafts)) {
               if (k === sid || !d) continue;
               if (d.title) batchPriorTitlesSib.push(safeText(d.title, 200));
               if (d.body) {
-                batchPriorBodiesSib.push(safeText(d.body, 12000));
                 batchPriorClosingSnippetsSib.push(rapidWriteClosingSnippet(d.body));
+                batchPriorBodyHeadsSib.push(String(d.body).slice(0, 560));
                 batchAntiRepeatSib.push(...rapidWriteBodySignatureSnippets(d.body));
               }
               if (d.reflection_question) batchPriorReflectionSib.push(safeText(d.reflection_question, 400));
             }
             if (batchAntiRepeatSib.length > 40) batchAntiRepeatSib.splice(0, batchAntiRepeatSib.length - 40);
-            if (batchPriorBodiesSib.length > 14) batchPriorBodiesSib.splice(0, batchPriorBodiesSib.length - 14);
             const patIdx = seeds.findIndex((s) => s.id === sid);
             const assignedStoryPattern = patIdx >= 0 ? rapidWriteStoryPatternForBatchIndex(patIdx) : '';
             const w = await reviseRapidWriteDraft(seed, cur, intent.instruction, {
@@ -1467,7 +1465,7 @@ export default async function handler(req, res) {
               batchPriorClosingSnippets: batchPriorClosingSnippetsSib,
               batchPriorReflectionQuestions: batchPriorReflectionSib,
               batchAntiRepeatSnippets: batchAntiRepeatSib,
-              batchPriorBodiesForScenario: batchPriorBodiesSib,
+              batchPriorBodyHeads: batchPriorBodyHeadsSib,
               assignedStoryPattern,
             });
             if (!w.ok) {
@@ -1517,9 +1515,18 @@ export default async function handler(req, res) {
             outLines.push(`### ${sid}\n\n${safeText(w.markdown, 50000)}`);
           }
           if (anyOk) {
+            const rebuiltBodyHeads = [];
+            const rebuiltTitles = [];
+            for (const s of seeds) {
+              const d = nextDrafts[s.id];
+              if (d?.body) rebuiltBodyHeads.push(String(d.body).slice(0, 560));
+              if (d?.title) rebuiltTitles.push(safeText(d.title, 220));
+            }
             statePatch.rapid_write = {
               ...rwAfterOverrides,
               drafts_by_seed_id: nextDrafts,
+              batch_prior_body_heads: rebuiltBodyHeads.slice(-16),
+              batch_prior_titles: rebuiltTitles.slice(-48),
               memory: {
                 ...(rwAfterOverrides.memory && typeof rwAfterOverrides.memory === 'object' ? rwAfterOverrides.memory : {}),
                 standing_instructions: Array.isArray(rwAfterOverrides.agent_training)
