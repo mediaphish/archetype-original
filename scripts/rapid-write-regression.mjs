@@ -35,6 +35,9 @@ import {
   RAPID_WRITE_MAX_COST_OF_TITLES_PER_BATCH,
   rapidWriteTitleCollidesWithBatch,
   sortRapidWriteSeedIds,
+  rapidWriteDetectScenarioMoldsInLead,
+  rapidWriteScenarioMoldsExhausted,
+  rapidWriteTitleShellQuotaViolated,
 } from '../lib/ao/rapidWriteMode.js';
 import { buildThreadStateSnapshot } from '../lib/ao/autoIntent.js';
 
@@ -254,6 +257,28 @@ ok('sort rw ids numeric', sortRapidWriteSeedIds(['rw-10', 'rw-2', 'rw-1']).join(
 ok(
   'respected for intro banned',
   rapidWriteBodyHasBannedLeaderIntros('The leader, respected for his calm demeanor, said little.')
+);
+
+ok(
+  'scenario mold detects conference room spine',
+  rapidWriteDetectScenarioMoldsInLead('In a conference room with stark white walls, the team sat.').includes(
+    'formal_group_meeting_spine'
+  )
+);
+ok(
+  'scenario quota blocks third meeting spine when cap is 2',
+  rapidWriteScenarioMoldsExhausted(
+    'The strategy meeting dragged on in the conference room.',
+    [
+      'We filed into the conference room for the quarterly review.',
+      'A monthly strategy meeting opened with tense silence.',
+    ],
+    { formal_group_meeting_spine: 2 }
+  ).exhausted === true
+);
+ok(
+  'title shell quota: second Burden title fails',
+  rapidWriteTitleShellQuotaViolated('The Burden of Change', ['The Burden of Uncertainty']).violated === true
 );
 
 process.exit(failed ? 1 : 0);
