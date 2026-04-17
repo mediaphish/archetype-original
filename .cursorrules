@@ -341,6 +341,18 @@ If any duplicates/overlaps are found:
 - **After running the knowledge build** (`node scripts/build-knowledge.mjs`): Commit `public/knowledge.json` and any new journal/devotional source files, then push. Do not leave knowledge or content changes uncommitted or undeployed.
 - **After other content or site-affecting changes**: Commit and push **all** changed project files so the live site is updated. The AI commits and deploys to the host routinely; this is expected.
 
+#### Content pipeline: expected auto-publish + generated output (do not treat as “surprise”)
+
+This project intentionally has automatic routines that:
+- Pull journal/devotional markdown into the site’s content list based on the **publish date inside the file**
+- Generate and store **site output files** as part of normal publishing (pre-rendered pages and related output files)
+
+Therefore:
+- Do **not** describe new/changed content or generated output files as unexpected or as if “someone else” is editing the repo.
+- When a publish flow results in additional content files being included (e.g. a scheduled journal entry being pulled in) or generated output files being updated/created, treat that as **working as intended**.
+- When committing a publish, include the full publish package (new/updated markdown + refreshed `public/knowledge.json` + any expected generated output files) so the live site stays consistent.
+- If a push is rejected because the remote has new commits, assume those may be from the project’s normal automated routines (not another person). Pull, resolve conflicts (prefer keeping the version that includes the new content), and push so the live site updates.
+
 ### Process
 1. Stage **all** modified and new project files (excluding only what the project explicitly excludes, e.g. `node_modules`, `cypress/videos`, env secrets).
 2. Commit with a clear message.
