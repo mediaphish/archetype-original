@@ -34,6 +34,7 @@ import {
   stripGapPhrasesForCardIndexParse,
   pushTransparencyReceipt,
   workflowHintFromState,
+  restoreCorpusPullQuotesFromMessages,
 } from '../../../lib/ao/autoIntent.js';
 import { extractPublishScheduleConstraints, mergeScheduleOpts } from '../../../lib/ao/publishScheduleExtract.js';
 import { appendSessionSummary, appendReceiptLog } from '../../../lib/ao/autoSessionSummary.js';
@@ -418,10 +419,111 @@ function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
   if (wantsCorpusPullQuotes(userMessage) && !picking) return false;
   const hasDigit = /\b[1-9]\b/.test(s);
   const deliver =
-    /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square|fix|correct|repair|update|redo|rebuild|regenerat|refresh|logo)\b/.test(
+    /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square|fix|correct|repair|update|redo|rebuild|regenerat|refresh|logo|show|see|display|preview|read|pull up)\b/.test(
       s
     );
   return hasDigit || deliver;
+}
+
+/** User wants the text (and optional preview) of existing numbered quote cards — not a new corpus pull or batch generation. */
+function wantsQuoteCardInspect(userMessage) {
+  const s = String(userMessage || '').trim().toLowerCase();
+  if (!s) return false;
+  if (/\b\d+\s+more\s+(?:quote\s+)?cards?\s+about\b/.test(s)) return false;
+  if (/\b(generate|create|make|build)\s+(?:me\s+)?(?:\d+\s+)?(?:new\s+)?(?:more\s+)?(?:quote\s+)?cards?\b/.test(s) && !/\b(show|see|text|what|which|read)\b/.test(s)) {
+    return false;
+  }
+
+  const hasCardRef = /\b(card|cards|quote|quotes)\b/.test(s);
+  if (!hasCardRef) return false;
+
+  const inspectIntent =
+    /\b(show|see|display|preview|pull up|what(?:'s| is)|what are|text|words|copy|lines?|tell me|give me|need to see|look at|read (?:back|out|me))\b/.test(s) ||
+    /\b(which|what)\b.*\b(card|quote)\b/.test(s);
+  const shortCardIndex = /\b(card|quote)\s*#?\s*(1[0-2]|[1-9])\b/.test(s) && s.length < 120;
+
+  if (!inspectIntent && !shortCardIndex) return false;
+
+  if (
+    wantsCorpusPullQuotes(userMessage) &&
+    /\b(find|pull|search|suggest|give me lines)\b/.test(s) &&
+    /\b(from|in)\s+(?:my\s+)?corpus\b/.test(s) &&
+    !inspectIntent
+  ) {
+    return false;
+  }
+
+  return (
+    /\b(1[0-2]|[1-9])\b/.test(s) ||
+    /\b(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b/.test(s) ||
+    shortCardIndex
+  );
+}
+
+function normalizeOrdinalWordsForCardParse(text) {
+  let s = String(text || '');
+  const pairs = [
+    ['first', '1'],
+    ['second', '2'],
+    ['third', '3'],
+    ['fourth', '4'],
+    ['fifth', '5'],
+    ['sixth', '6'],
+    ['seventh', '7'],
+    ['eighth', '8'],
+    ['ninth', '9'],
+    ['tenth', '10'],
+  ];
+  for (const [w, d] of pairs) {
+    s = s.replace(new RegExp(`\\b${w}\\b`, 'gi'), d);
+  }
+  return s;
+}
+
+/** Card indices for inspect/show (supports card 10–12 and ordinals normalized to digits). */
+function parseQuoteCardInspectIndices(text) {
+  const s = normalizeOrdinalWordsForCardParse(stripGapPhrasesForCardIndexParse(String(text || '')));
+  const nums = new Set();
+  const labeled = s.match(/\b(?:card|quote)\s*#?\s*(1[0-2]|[1-9])\b/gi);
+  if (labeled) {
+    for (const frag of labeled) {
+      const m = frag.match(/(1[0-2]|[1-9])/);
+      if (m) nums.add(Number(m[1]));
+    }
+  }
+  if (!nums.size) {
+    const re = /\b(1[0-2]|[1-9])\b/g;
+    let m;
+    while ((m = re.exec(s))) {
+      nums.add(Number(m[1]));
+    }
+  }
+  const excluded = parseExcludedQuoteIndicesFromMessage(s);
+  return [...nums].filter((n) => !excluded.has(n) && n >= 1 && n <= 50).sort((a, b) => a - b);
+}
+
+/** Messages are oldest-first; walk newest-to-oldest so the latest caption wins per index. */
+function extractLatestPreviewCaptionsByIndex(messages) {
+  const map = new Map();
+  if (!Array.isArray(messages)) return map;
+  for (let mi = messages.length - 1; mi >= 0; mi -= 1) {
+    const row = messages[mi];
+    if (row.role !== 'assistant') continue;
+    const meta = row.meta && typeof row.meta === 'object' ? row.meta : null;
+    const previews = meta?.quote_card_previews;
+    if (!Array.isArray(previews)) continue;
+    for (const p of previews) {
+      const idx = Number(p.index);
+      if (!Number.isFinite(idx) || idx < 1) continue;
+      if (!map.has(idx)) {
+        map.set(idx, {
+          caption: String(p.caption || ''),
+          caption_x: String(p.caption_x || ''),
+        });
+      }
+    }
+  }
+  return map;
 }
 
 function extractCorpusTldrTopic(text) {
@@ -644,6 +746,10 @@ async function askModel({
   const snap = threadSnapshot && typeof threadSnapshot === 'object' ? threadSnapshot : {};
   const hasAccountQuoteCardMemory =
     Array.isArray(snap.recent_quote_card_context_from_account) && snap.recent_quote_card_context_from_account.length > 0;
+  const hasThreadQuoteCardData =
+    Number(snap.corpus_pull_quotes_count) > 0 ||
+    Number(snap.publish_candidates_count) > 0 ||
+    (Array.isArray(snap.quote_previews) && snap.quote_previews.length > 0);
 
   const prompt = `You are Auto inside AO Automation. Bart is the only user.
 
@@ -656,6 +762,7 @@ Authoritative thread snapshot (from the product database for this conversation �
 ${JSON.stringify(snap)}
 ${workflowHint ? `\nWorkflow hint: ${workflowHint}\n` : ''}
 ${hasAccountQuoteCardMemory ? '\nAccount quote-card memory: **recent_quote_card_context_from_account** in the snapshot is real prior work (saved Auto sessions and/or your publish trail). If Bart asks to continue quote-card work, avoid overlap with past lines, jump back in after a new chat, or recall what was already generated: summarize and use this context. Do **not** say recall is impossible or that this reply has no access to prior cards when that array is non-empty.\n' : ''}
+${hasThreadQuoteCardData ? '\nThis thread snapshot includes **quote_previews** / quote-card counts (corpus_pull_quotes / publish_candidates). If Bart asks for the **text** of a specific card number, those lines are in the snapshot—do **not** claim you cannot access or show them; repeat the relevant preview text or say clearly which card index is out of range.\n' : ''}
 ${snap.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_seeds (ids, ideas, flags). If rapid_write_drafts is present, saved draft text is there—only the system revision path actually changes those drafts; do not claim you saved edits unless a system step did. Questions about strategy, overlap, or extending a corpus post must get a direct answer—not a menu of commands unless he only wants that.\n' : ''}
 
 Non-negotiables (hard rules):
@@ -1730,6 +1837,93 @@ export default async function handler(req, res) {
       lines.push('Proof of work (so you know the system has been running):');
       proof.forEach((p) => lines.push(`- ${p}`));
       assistantMessage = lines.join('\n');
+    } else if (wantsQuoteCardInspect(userMessage)) {
+      nextMode = 'plan';
+      let allQuotes =
+        Array.isArray(currentState.corpus_pull_quotes) && currentState.corpus_pull_quotes.length
+          ? currentState.corpus_pull_quotes
+          : restoreCorpusPullQuotesFromMessages(existingMessages);
+      if (!Array.isArray(allQuotes) || !allQuotes.length) {
+        assistantMessage =
+          'I do not have quote lines stored in this thread yet. Pull quotes from your corpus (include the word **corpus** and your topic) or paste lines for cards—then ask again.';
+      } else {
+        let candidates =
+          Array.isArray(currentState.publish_candidates) && currentState.publish_candidates.length
+            ? currentState.publish_candidates
+            : rebuildPublishCandidatesFromMessages(existingMessages, allQuotes);
+        let indices = parseQuoteCardInspectIndices(userMessage);
+        if (!indices.length) {
+          assistantMessage =
+            'Which card number? (For example: **Show card 3** or **What is the text on card 1?**)';
+        } else {
+          const maxN = allQuotes.length;
+          indices = indices.filter((n) => n >= 1 && n <= maxN);
+          if (!indices.length) {
+            assistantMessage = `I only have cards **1–${maxN}** in this thread. Pick a number in that range.`;
+          } else {
+            statePatch.corpus_pull_quotes = allQuotes;
+            if (candidates.length) statePatch.publish_candidates = candidates;
+            const captionByIndex = extractLatestPreviewCaptionsByIndex(existingMessages);
+            receipts.push('Card text from this thread (deterministic)');
+            pushTransparencyReceipt(receipts, `Echoed quote/caption text for card(s): ${indices.join(', ')}.`);
+            const lines = [];
+            const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
+            const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
+            const previews = [];
+            for (const n of indices) {
+              const q = allQuotes[n - 1];
+              if (!q) continue;
+              const cand = (candidates || []).find((c) => c.corpus_index === n);
+              const capFromPrev = captionByIndex.get(n);
+              const cap = cand?.caption || capFromPrev?.caption || '';
+              const capX = cand?.caption_x || capFromPrev?.caption_x || '';
+              const src = [q.source_title, q.url].filter((x) => String(x || '').trim());
+              lines.push(`**Card ${n}**`, '');
+              lines.push('**Pull quote**');
+              lines.push(`"${safeText(q.quote, 2000)}"`);
+              if (src.length) lines.push(`Source: ${src.join(' · ')}`);
+              if (cap) lines.push(`Caption: ${cap}`);
+              if (capX) lines.push(`X / short: ${capX}`);
+              lines.push('');
+              const rendered = renderQuoteCardSvg({
+                quote: q.quote,
+                sourceName: q.source_title,
+                logoUrl,
+                style: 'minimal',
+                minimalVariant: 'dark',
+                forceLightLogo: true,
+              });
+              if (rendered.ok) {
+                let image_url = '';
+                try {
+                  const up = await uploadMinimalQuoteCardToPublicUrl(
+                    { quote: q.quote, sourceName: q.source_title, logoUrl },
+                    { subfolder: 'auto-hub-quote-cards' }
+                  );
+                  if (up.ok) image_url = up.publicUrl;
+                } catch (_) {}
+                previews.push({
+                  svg: rendered.svg,
+                  image_url,
+                  index: n,
+                  caption: cap,
+                  caption_x: capX,
+                  source_title: q.source_title,
+                });
+              }
+            }
+            assistantMessage = lines.join('\n').trim();
+            if (previews.length) {
+              assistantMeta = {
+                corpus_pull_quotes: allQuotes,
+                quote_card_previews: previews,
+                quote_card_preview_svg: previews[0]?.svg || null,
+                quote_card_preview_image_url: previews[0]?.image_url || null,
+              };
+            }
+          }
+        }
+      }
     } else if (wantsUserSuppliedQuoteCards(userMessage)) {
       nextMode = 'plan';
       const userQuotes = parseUserSuppliedQuoteCards(userMessage);
