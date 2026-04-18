@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Pre-rendering script for SEO
- * 
- * This script builds the site, starts a local server, uses Puppeteer to visit
- * all routes and capture the fully-rendered HTML, then saves it as static files.
- * 
- * This makes the site crawlable by Google without requiring SSR.
+ * Pre-rendering: visit each public route with headless Chrome, save fully rendered HTML to dist.
+ * Runs on Vercel builds (puppeteer-core + @sparticuz/chromium) and locally (puppeteer).
+ *
+ * When PRERENDER_SKIP_INNER_BUILD=1, skips npm run build:no-prerender (used after build:prerender / prerender:local).
  */
 
 import { execSync } from 'child_process';
@@ -14,73 +12,30 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
-import { readdirSync, statSync } from 'fs';
+import { readdirSync } from 'fs';
+import { getPublicStaticPaths } from './lib/public-static-routes.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 const distDir = join(rootDir, 'dist');
 
-// Routes to pre-render
-const routes = [
-  '/',
-  '/journal',
-  '/meet-bart',
-  '/archy',
-  '/philosophy',
-  '/methods',
-  '/methods/mentorship',
-  '/methods/consulting',
-  '/methods/fractional-roles',
-  '/methods/fractional-roles/cco',
-  '/methods/speaking-seminars',
-  '/methods/training-education',
-  '/culture-science',
-  '/culture-science/ali',
-  '/culture-science/ali/why-ali-exists',
-  '/culture-science/ali/method',
-  '/culture-science/ali/early-warning',
-  '/culture-science/ali/dashboard',
-  '/culture-science/ali/six-leadership-conditions',
-  '/culture-science/scoreboard-leadership',
-  '/culture-science/bad-leader-project',
-  '/culture-science/research',
-  '/culture-science/industry-reports',
-  '/culture-science/ethics',
-  '/faqs',
-  '/contact',
-  '/engagement-inquiry',
-  '/privacy-policy',
-  '/terms-and-conditions',
-  '/what-i-do',
-  '/accidental-ceo',
-  // AO Automation Dashboard (single-owner console)
-  '/ao',
-  '/ao/login',
-  '/ao/command-center',
-  '/ao/insights',
-  '/ao/review',
-  '/ao/publishing',
-  '/ao/writing',
-  '/ao/settings',
-];
+const staticPaths = getPublicStaticPaths();
+const routes = [...staticPaths];
 
-// Get all journal post slugs
 function getJournalSlugs() {
   const journalDir = join(rootDir, 'ao-knowledge-hq-kit', 'journal');
   const slugs = [];
-  
+
   try {
     const files = readdirSync(journalDir);
     for (const file of files) {
       if (file.endsWith('.md') && !file.endsWith('.md.md')) {
-        // Read frontmatter to get slug
         const content = readFileSync(join(journalDir, file), 'utf-8');
         const slugMatch = content.match(/slug:\s*["']([^"']+)["']/);
         if (slugMatch) {
           slugs.push(`/journal/${slugMatch[1]}`);
         } else {
-          // Fallback: use filename without extension
           const slug = file.replace(/\.md$/, '');
           slugs.push(`/journal/${slug}`);
         }
@@ -89,128 +44,192 @@ function getJournalSlugs() {
   } catch (err) {
     console.error('Error reading journal directory:', err);
   }
-  
+
   return slugs;
 }
 
-// Add journal posts to routes
-const journalSlugs = getJournalSlugs();
-routes.push(...journalSlugs);
+routes.push(...getJournalSlugs());
 
-console.log(`📋 Found ${journalSlugs.length} journal posts to pre-render`);
+console.log(`📋 Static marketing routes: ${staticPaths.length}`);
+console.log(`📋 Journal routes: ${routes.length - staticPaths.length}`);
 console.log(`📋 Total routes to pre-render: ${routes.length}`);
 
-// Check if we're on Vercel (skip pre-rendering there - will use static files)
-const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
+function filterKnowledgeDocs(corpus, searchParams) {
+  const q = searchParams.get('q') || '';
+  const tag = searchParams.get('tag') || '';
+  const typeRaw = searchParams.get('type') || '';
+  const type = String(typeRaw).toLowerCase();
 
-if (isVercel) {
-  console.log('⚠️  Running on Vercel - skipping pre-rendering');
-  console.log('   Pre-rendered files should be committed to the repository');
-  console.log('   Or use a pre-rendering service like Prerender.io');
-  process.exit(0);
+  let filteredDocs = corpus.docs || [];
+
+  if (tag) {
+    filteredDocs = filteredDocs.filter(
+      (doc) =>
+        doc.tags &&
+        doc.tags.some((t) => t.toLowerCase().includes(tag.toLowerCase()))
+    );
+  }
+
+  if (type && type !== 'all') {
+    filteredDocs = filteredDocs.filter(
+      (doc) =>
+        doc.type && doc.type.toLowerCase().includes(type)
+    );
+  }
+
+  if (q) {
+    const query = q.toLowerCase();
+    filteredDocs = filteredDocs.filter((doc) => {
+      const title = (doc.title || '').toLowerCase();
+      const summary = (doc.summary || '').toLowerCase();
+      const body = (doc.body || '').toLowerCase();
+      return (
+        title.includes(query) ||
+        summary.includes(query) ||
+        body.includes(query)
+      );
+    });
+  }
+
+  return {
+    generated_at: corpus.generated_at,
+    count: filteredDocs.length,
+    docs: filteredDocs,
+  };
 }
 
-// Check if Puppeteer is available
-let puppeteer;
-let useSystemChrome = false;
-
-try {
-  puppeteer = await import('puppeteer');
-} catch (err) {
-  // Puppeteer is optional - skip pre-rendering if not available
-  console.log('⚠️  Puppeteer not available (optional dependency)');
-  console.log('   Skipping pre-rendering. This is normal on Vercel.');
-  console.log('   To enable pre-rendering locally for SEO, run: npm install puppeteer');
-  console.log('   Pre-rendered files should be committed to git for Google to crawl.');
-  process.exit(0);
-}
-
-// Start a simple HTTP server to serve the built site
 function startServer(port) {
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
-      let filePath = join(distDir, req.url === '/' ? 'index.html' : req.url);
-      
-      // Handle routes - serve index.html for all routes
+      const host = `http://127.0.0.1:${port}`;
+      const u = new URL(req.url, host);
+      const pathname = u.pathname;
+
+      // Mirror production /api/knowledge for Journal / Faith / JournalPost
+      if (pathname === '/api/knowledge' || pathname.startsWith('/api/knowledge')) {
+        try {
+          const knowledgePath = join(rootDir, 'public', 'knowledge.json');
+          if (!existsSync(knowledgePath)) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(
+              JSON.stringify({
+                error: 'Knowledge corpus not found',
+                generated_at: new Date().toISOString(),
+                count: 0,
+                docs: [],
+              })
+            );
+            return;
+          }
+          const rawData = readFileSync(knowledgePath, 'utf8');
+          const corpus = JSON.parse(rawData);
+          const searchParams = u.searchParams;
+          const body = JSON.stringify(filterKnowledgeDocs(corpus, searchParams));
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(body);
+          return;
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: String(e.message) }));
+          return;
+        }
+      }
+
+      let filePath = join(distDir, pathname === '/' ? 'index.html' : pathname);
+
       if (!filePath.endsWith('.html') && !filePath.includes('.')) {
         filePath = join(distDir, 'index.html');
       }
-      
-      // Check if file exists
+
       if (!existsSync(filePath)) {
         filePath = join(distDir, 'index.html');
       }
-      
+
       try {
         const content = readFileSync(filePath);
         const ext = filePath.split('.').pop();
         const contentType = {
-          'html': 'text/html',
-          'js': 'application/javascript',
-          'css': 'text/css',
-          'json': 'application/json',
-          'png': 'image/png',
-          'jpg': 'image/jpeg',
-          'svg': 'image/svg+xml',
+          html: 'text/html',
+          js: 'application/javascript',
+          css: 'text/css',
+          json: 'application/json',
+          png: 'image/png',
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+          svg: 'image/svg+xml',
         }[ext] || 'text/plain';
-        
+
         res.writeHead(200, { 'Content-Type': contentType });
         res.end(content);
-      } catch (err) {
+      } catch {
         res.writeHead(404);
         res.end('Not found');
       }
     });
-    
-    server.listen(port, () => {
-      console.log(`🚀 Server started on http://localhost:${port}`);
+
+    server.listen(port, '127.0.0.1', () => {
+      console.log(`🚀 Server started on http://127.0.0.1:${port}`);
       resolve(server);
     });
   });
 }
 
-// Pre-render a single route
-async function prerenderRoute(browser, route, port) {
-  const url = `http://localhost:${port}${route}`;
-  console.log(`  📄 Pre-rendering: ${route}`);
-  
-  const page = await browser.newPage();
-  
-  try {
-    // Wait for the page to fully load
-    await page.goto(url, { 
-      waitUntil: 'networkidle0',
-      timeout: 30000 
+async function launchBrowser() {
+  if (process.env.VERCEL) {
+    const puppeteer = await import('puppeteer-core');
+    const chromium = (await import('@sparticuz/chromium')).default;
+    return puppeteer.default.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
-    
-    // Wait a bit more for any async content
-    await page.waitForTimeout(1000);
-    
-    // Get the fully rendered HTML
+  }
+
+  // Local dev: full puppeteer bundles Chromium (works on macOS/Windows).
+
+  try {
+    const puppeteer = await import('puppeteer');
+    return puppeteer.default.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+  } catch (e) {
+    console.error(
+      '❌ Install devDependencies: puppeteer (local) or use Vercel for @sparticuz/chromium build.'
+    );
+    throw e;
+  }
+}
+
+async function prerenderRoute(browser, route, port) {
+  const url = `http://127.0.0.1:${port}${route}`;
+  console.log(`  📄 Pre-rendering: ${route}`);
+
+  const page = await browser.newPage();
+
+  try {
+    await page.goto(url, {
+      waitUntil: 'networkidle0',
+      timeout: 60000,
+    });
+
+    await new Promise((r) => setTimeout(r, 1000));
+
     const html = await page.content();
-    
-    // Extract the body content (we'll inject it into index.html structure)
     const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
     const headMatch = html.match(/<head[^>]*>([\s\S]*)<\/head>/i);
-    
+
     if (bodyMatch && headMatch) {
-      // Read the original index.html
       const indexPath = join(distDir, 'index.html');
       let indexHtml = readFileSync(indexPath, 'utf-8');
-      
-      // Replace head content with rendered head (to get meta tags)
-      indexHtml = indexHtml.replace(
-        /<head[^>]*>[\s\S]*<\/head>/i,
-        headMatch[0]
-      );
-      
-      // Replace body content with rendered body
+
+      indexHtml = indexHtml.replace(/<head[^>]*>[\s\S]*<\/head>/i, headMatch[0]);
       indexHtml = indexHtml.replace(
         /<body[^>]*>[\s\S]*<\/body>/i,
         bodyMatch[0]
       );
-      
-      // Save to appropriate path
+
       let filePath;
       if (route === '/') {
         filePath = join(distDir, 'index.html');
@@ -218,7 +237,7 @@ async function prerenderRoute(browser, route, port) {
         filePath = join(distDir, route, 'index.html');
         mkdirSync(dirname(filePath), { recursive: true });
       }
-      
+
       writeFileSync(filePath, indexHtml);
       console.log(`  ✅ Saved: ${filePath}`);
     } else {
@@ -231,58 +250,35 @@ async function prerenderRoute(browser, route, port) {
   }
 }
 
-// Main pre-rendering function
 async function prerender() {
-  console.log('🔨 Building site...');
-  try {
-    // Use build:no-prerender to avoid infinite loop
-    execSync('npm run build:no-prerender', { cwd: rootDir, stdio: 'inherit' });
-  } catch (err) {
-    console.error('❌ Build failed:', err);
-    process.exit(1);
-  }
-  
-  console.log('✅ Build complete');
-  console.log('🌐 Starting pre-rendering...');
-  
-  const port = 4173; // Vite preview default port
-  const server = await startServer(port);
-  
-  const launchOptions = {
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  };
-  
-  // If using puppeteer-core, try to find system Chrome
-  if (useSystemChrome) {
-    const chromePaths = [
-      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-      '/usr/bin/google-chrome',
-      '/usr/bin/chromium',
-      '/usr/bin/chromium-browser'
-    ];
-    
-    for (const chromePath of chromePaths) {
-      if (existsSync(chromePath)) {
-        launchOptions.executablePath = chromePath;
-        console.log(`✅ Using system Chrome: ${chromePath}`);
-        break;
-      }
-    }
-    
-    if (!launchOptions.executablePath) {
-      console.error('❌ Could not find system Chrome. Please install Google Chrome or use full Puppeteer.');
+  if (process.env.PRERENDER_SKIP_INNER_BUILD === '1') {
+    console.log('⏭️  Skipping inner build (PRERENDER_SKIP_INNER_BUILD=1)');
+  } else {
+    console.log('🔨 Building site...');
+    try {
+      execSync('npm run build:no-prerender', { cwd: rootDir, stdio: 'inherit' });
+    } catch (err) {
+      console.error('❌ Build failed:', err);
       process.exit(1);
     }
+    console.log('✅ Build complete');
   }
-  
-  const browser = await puppeteer.default.launch(launchOptions);
-  
+
+  if (!existsSync(join(distDir, 'index.html'))) {
+    console.error('❌ dist/index.html missing. Run a full build first.');
+    process.exit(1);
+  }
+
+  console.log('🌐 Starting pre-rendering...');
+
+  const port = 4173;
+  const server = await startServer(port);
+  const browser = await launchBrowser();
+
   try {
     for (const route of routes) {
       await prerenderRoute(browser, route, port);
     }
-    
     console.log(`\n✅ Pre-rendering complete! ${routes.length} routes processed.`);
   } catch (err) {
     console.error('❌ Pre-rendering failed:', err);
@@ -293,9 +289,7 @@ async function prerender() {
   }
 }
 
-// Run pre-rendering
-prerender().catch(err => {
+prerender().catch((err) => {
   console.error('Fatal error:', err);
   process.exit(1);
 });
-
