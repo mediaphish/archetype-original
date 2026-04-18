@@ -1,7 +1,16 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { getOpenAiKey } from '../../../lib/openaiKey.js';
-import { ensureAutoThread, getAutoThreadState, addAutoMessage, listGuardrails, searchBundles, detectAutoMode } from '../../../lib/ao/autoHub.js';
+import {
+  ensureAutoThread,
+  getAutoThreadState,
+  addAutoMessage,
+  listGuardrails,
+  searchBundles,
+  detectAutoMode,
+  shouldLoadAccountQuoteCardContext,
+} from '../../../lib/ao/autoHub.js';
+import { fetchAccountQuoteCardContext, formatQuoteCardContextBlock } from '../../../lib/ao/autoQuoteCardRecall.js';
 import { buildAutoBundle, detectQualityAlarm } from '../../../lib/ao/autoBundle.js';
 import { getCorpusPullQuotes, getCorpusTopicSnippets } from '../../../lib/ao/corpusPullQuotes.js';
 import { renderQuoteCardSvg } from '../../../lib/ao/quoteCardDesigner.js';
@@ -255,6 +264,13 @@ function wantsCorpusThemeSearch(text) {
     /\b(search|look)\s+(?:in|through)\s+(?:my|our)\b/.test(s);
 
   return !!(corpusHint && researchHint);
+}
+
+/** Merge durable quote-card lines/themes into Planning (and related) when the user is continuing work or overlap-checking. */
+function shouldMergeQuoteCardContext(userMessage) {
+  if (shouldLoadAccountQuoteCardContext(userMessage)) return true;
+  if (wantsCorpusPullQuotes(userMessage) && /\b(overlap|repeat|previous|last batch|already|same lines)\b/i.test(userMessage)) return true;
+  return false;
 }
 
 /** Pull digits 1–9 from a fragment (list like "4, 5" or "4 and 5"). */
@@ -625,6 +641,10 @@ async function askModel({
 
   const isPlanOrWrite = mode === 'plan' || mode === 'write' || mode === 'general';
 
+  const snap = threadSnapshot && typeof threadSnapshot === 'object' ? threadSnapshot : {};
+  const hasAccountQuoteCardMemory =
+    Array.isArray(snap.recent_quote_card_context_from_account) && snap.recent_quote_card_context_from_account.length > 0;
+
   const prompt = `You are Auto inside AO Automation. Bart is the only user.
 
 You are NOT Archy. Archy is the public-facing assistant on the website; you are Auto — internal research and packaging for Bart and the automation team only. Never confuse those names in receipts or advice.
@@ -633,9 +653,10 @@ Current mode: ${JSON.stringify(mode)}
 User asked not to refine / treat post as frozen: ${dontRefine ? 'YES — do not suggest edits; only package, plan, recall, or flag major risks if asked.' : 'no'}
 
 Authoritative thread snapshot (from the product database for this conversation — do not contradict counts or pending steps):
-${JSON.stringify(threadSnapshot && typeof threadSnapshot === 'object' ? threadSnapshot : {})}
+${JSON.stringify(snap)}
 ${workflowHint ? `\nWorkflow hint: ${workflowHint}\n` : ''}
-${threadSnapshot && threadSnapshot.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_seeds (ids, ideas, flags). If rapid_write_drafts is present, saved draft text is there—only the system revision path actually changes those drafts; do not claim you saved edits unless a system step did. Questions about strategy, overlap, or extending a corpus post must get a direct answer—not a menu of commands unless he only wants that.\n' : ''}
+${hasAccountQuoteCardMemory ? '\nAccount quote-card memory: **recent_quote_card_context_from_account** in the snapshot is real prior work (saved Auto sessions and/or your publish trail). If Bart asks to continue quote-card work, avoid overlap with past lines, jump back in after a new chat, or recall what was already generated: summarize and use this context. Do **not** say recall is impossible or that this reply has no access to prior cards when that array is non-empty.\n' : ''}
+${snap.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_seeds (ids, ideas, flags). If rapid_write_drafts is present, saved draft text is there—only the system revision path actually changes those drafts; do not claim you saved edits unless a system step did. Questions about strategy, overlap, or extending a corpus post must get a direct answer—not a menu of commands unless he only wants that.\n' : ''}
 
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
@@ -731,7 +752,7 @@ export default async function handler(req, res) {
     let nextMode = detectAutoMode(userMessage, fullState.thread.current_mode || 'general');
     let statePatch = { ...currentState };
     if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
-    if (looksLikePlanningOrDiscussionRequest(userMessage)) {
+    if (looksLikePlanningOrDiscussionRequest(userMessage) && nextMode !== 'recall') {
       nextMode = 'plan';
     } else if (wantsCorpusTldrWork(userMessage)) {
       nextMode = 'plan';
@@ -753,6 +774,17 @@ export default async function handler(req, res) {
     ) {
       nextMode = 'package';
     }
+
+    let accountQuoteCardContextItems = null;
+    if (shouldMergeQuoteCardContext(userMessage) || nextMode === 'recall') {
+      try {
+        const ctx = await fetchAccountQuoteCardContext(auth.email);
+        if (ctx.items?.length) accountQuoteCardContextItems = ctx.items;
+      } catch (_) {
+        /* ignore */
+      }
+    }
+
     const inferredFromMessage = looksLikeContent(userMessage) ? userMessage : '';
     const textAttachment = activeAttachments.filter((a) => a.kind === 'text').map((a) => safeText(a.extracted_text, 20000)).filter(Boolean).join('\n\n');
     const imageAttachment = activeAttachments.filter((a) => a.kind === 'image').slice(-1)[0] || null;
@@ -774,6 +806,9 @@ export default async function handler(req, res) {
     }
 
     const receipts = [];
+    if (accountQuoteCardContextItems?.length) {
+      receipts.push('Loaded quote-card memory from your account for continuity');
+    }
     if (nextMode !== fullState.thread.current_mode) {
       receipts.push(
         `Mode: ${
@@ -1587,6 +1622,7 @@ export default async function handler(req, res) {
         assistantMessage = `Locked in. I saved this as a global guardrail: "${cleanRule}"`;
       }
     } else if (nextMode === 'recall') {
+      const qcBlock = accountQuoteCardContextItems?.length ? formatQuoteCardContextBlock(accountQuoteCardContextItems) : [];
       const bundleMatches = await searchBundles(auth.email, userMessage);
       const ideaOut = await supabaseAdmin
         .from('ao_ideas')
@@ -1597,10 +1633,12 @@ export default async function handler(req, res) {
       const ideaMatches = Array.isArray(ideaOut.data) ? ideaOut.data.slice(0, 3) : [];
       const lane1 = bundleMatches.slice(0, 3);
       const lane2 = lane1.length < bundleMatches.length ? bundleMatches.slice(3, 6) : ideaMatches;
-      if (!lane1.length && !lane2.length) {
+      if (!lane1.length && !lane2.length && !accountQuoteCardContextItems?.length) {
         assistantMessage = 'I checked Library and did not find a strong match yet.';
       } else {
-        const lines = ['I think I remember it. Let me ask the Librarian.', ''];
+        const lines = [];
+        if (qcBlock.length) lines.push(...qcBlock, '');
+        lines.push('I think I remember it. Let me ask the Librarian.', '');
         if (lane1.length) {
           lines.push('Closest matches:');
           lane1.forEach((b, idx) => lines.push(`${idx + 1}. ${b.title || 'Untitled bundle'} (${b.series_name || 'no series'})`));
@@ -1609,8 +1647,8 @@ export default async function handler(req, res) {
         if (lane2.length) {
           lines.push('Nearby matches:');
           lane2.forEach((b, idx) => lines.push(`${idx + 1}. ${b.title || b.raw_input?.slice(0, 60) || 'Saved item'}`));
+          lines.push('');
         }
-        lines.push('');
         lines.push('If you want, tell me which one to reuse and I’ll pull it into this session.');
         assistantMessage = lines.join('\n');
       }
@@ -2249,6 +2287,22 @@ export default async function handler(req, res) {
     } else {
       const findings = await recentFindings(auth.email);
       const proofLines = await getAutomationProof(auth.email);
+      const snapshotBase = buildThreadStateSnapshot(statePatch);
+      const threadSnapshotForModel =
+        accountQuoteCardContextItems?.length > 0
+          ? {
+              ...snapshotBase,
+              recent_quote_card_context_from_account: accountQuoteCardContextItems,
+            }
+          : snapshotBase;
+      const workflowCombined = [
+        workflowHintFromState(statePatch),
+        accountQuoteCardContextItems?.length
+          ? 'Account quote-card memory is in the snapshot (recent_quote_card_context_from_account). Use it when Bart continues prior work, checks overlap, or recalls cards—do not claim recall is impossible.'
+          : '',
+      ]
+        .filter(Boolean)
+        .join('\n');
       const model = await askModel({
         mode: nextMode,
         message: userMessage,
@@ -2258,8 +2312,8 @@ export default async function handler(req, res) {
         bundleSummary: savedBundle ? { id: savedBundle.id, title: savedBundle.title } : null,
         automationProofLines: proofLines,
         dontRefine: !!(statePatch.dont_refine || impliesNoRefine(userMessage)),
-        threadSnapshot: buildThreadStateSnapshot(statePatch),
-        workflowHint: workflowHintFromState(statePatch),
+        threadSnapshot: threadSnapshotForModel,
+        workflowHint: workflowCombined,
       });
       assistantMessage = safeText(model?.assistant_message, 4000) || `Mode: ${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}. Tell me what you want to do next.`;
       if (Array.isArray(model?.receipts)) receipts.push(...model.receipts.map((x) => safeText(x, 160)).filter(Boolean));
