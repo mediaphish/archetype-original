@@ -28,7 +28,11 @@ import {
 import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishContentTypes.js';
 import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
-import { wantsUserSuppliedQuoteCards, parseUserSuppliedQuoteCards } from '../../../lib/ao/userSuppliedQuoteCards.js';
+import {
+  wantsUserSuppliedQuoteCards,
+  parseUserSuppliedQuoteCards,
+  looksLikeFreshPastedCardBatch,
+} from '../../../lib/ao/userSuppliedQuoteCards.js';
 import { resolveQuoteRoutingMessage } from '../../../lib/ao/autoIntentRouter.js';
 import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../lib/ao/corpusTldrReport.js';
 import {
@@ -433,6 +437,8 @@ function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
 function wantsQuoteCardInspect(userMessage) {
   const s = String(userMessage || '').trim().toLowerCase();
   if (!s) return false;
+  if (looksLikeFreshPastedCardBatch(userMessage)) return false;
+  if (wantsUserSuppliedQuoteCards(userMessage)) return false;
   if (/\b\d+\s+more\s+(?:quote\s+)?cards?\s+about\b/.test(s)) return false;
   if (/\b(generate|create|make|build)\s+(?:me\s+)?(?:\d+\s+)?(?:new\s+)?(?:more\s+)?(?:quote\s+)?cards?\b/.test(s) && !/\b(show|see|text|what|which|read)\b/.test(s)) {
     return false;
@@ -634,6 +640,8 @@ async function mergePublishCandidatesForAllQuotes({
 function wantsQuoteCardInventory(userMessage) {
   const s = String(userMessage || '').trim().toLowerCase();
   if (!s) return false;
+  if (looksLikeFreshPastedCardBatch(userMessage)) return false;
+  if (wantsUserSuppliedQuoteCards(userMessage)) return false;
   if (wantsQuoteCardInspect(userMessage)) return false;
   return (
     /\b(where (?:did|are)|what happened to|lost|missing|disappear)\b.*\b(card|quote|line|lines)\b/.test(s) ||
@@ -2013,6 +2021,84 @@ export default async function handler(req, res) {
       nextMode = 'plan';
       assistantMessage =
         'I’m Auto inside AO Automation on your site—I don’t run external task lists or edit attached plan files. For quote cards here: pull or paste lines, pick numbers, then ask **Show card N** for text, or **list all quotes in this thread** if the count looks wrong.';
+    } else if (wantsUserSuppliedQuoteCards(msgForQuoteRouting)) {
+      nextMode = 'plan';
+      const userQuotes = parseUserSuppliedQuoteCards(msgForQuoteRouting);
+      receipts.push('Generated minimal quote cards from the text you pasted (verbatim on the images)');
+      pushTransparencyReceipt(receipts, `Quote cards from your paste (${userQuotes.length} line(s)); say Publish cards when ready.`);
+      const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
+      const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
+      const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(userQuotes, {
+        maxChars: 2000,
+      });
+      const previews = [];
+      const lines = [
+        'Here are interpretive captions and minimal black square cards using **your pasted lines** (the images show your wording, not corpus search results).',
+        '',
+        'Captions (copy under each image in the thread; X-sized line included where useful):',
+        '',
+      ];
+      for (let i = 0; i < userQuotes.length; i += 1) {
+        const q = userQuotes[i];
+        const cap = captions[i] || '';
+        const capX = captionsX[i] || '';
+        lines.push(`${i + 1}. ${cap}`);
+        if (capX) lines.push(`   (X: ${capX})`);
+        lines.push(`   “${safeText(q.quote, 280)}”`);
+        const pasteTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
+        if (pasteTail.length) lines.push(`   — ${pasteTail.join(' · ')}`);
+        lines.push('');
+        const rendered = renderQuoteCardSvg({
+          quote: q.quote,
+          sourceName: q.source_title,
+          logoUrl,
+          style: 'minimal',
+          minimalVariant: 'dark',
+          forceLightLogo: true,
+        });
+        let image_url = '';
+        if (rendered.ok) {
+          try {
+            const up = await uploadMinimalQuoteCardToPublicUrl(
+              { quote: q.quote, sourceName: q.source_title, logoUrl },
+              { subfolder: 'auto-hub-quote-cards' }
+            );
+            if (up.ok) image_url = up.publicUrl;
+          } catch (_) {}
+        }
+        if (rendered.ok) {
+          previews.push({
+            svg: rendered.svg,
+            image_url,
+            index: i + 1,
+            caption: cap,
+            caption_x: capX,
+            source_title: q.source_title,
+          });
+        }
+      }
+      assistantMessage = lines.join('\n');
+      assistantMeta = {
+        corpus_pull_quotes: userQuotes,
+        quote_card_previews: previews,
+        quote_card_preview_svg: previews[0]?.svg || null,
+        quote_card_preview_image_url: previews[0]?.image_url || null,
+      };
+      statePatch.corpus_pull_quotes = userQuotes;
+      statePatch.publish_candidates = userQuotes.map((q, i) => {
+        const pr = previews[i];
+        return normalizePublishCandidate({
+          corpus_index: i + 1,
+          quote: q.quote,
+          source_title: q.source_title,
+          url: q.url || '',
+          caption: captions[i] || '',
+          caption_x: captionsX[i] || '',
+          svg: pr?.svg || null,
+          image_url: pr?.image_url || '',
+        });
+      });
+      statePatch.quote_card_origin = 'user_paste';
     } else if (wantsQuoteCardInventory(msgForQuoteRouting)) {
       nextMode = 'plan';
       let allQuotes =
@@ -2157,84 +2243,6 @@ export default async function handler(req, res) {
           }
         }
       }
-    } else if (wantsUserSuppliedQuoteCards(msgForQuoteRouting)) {
-      nextMode = 'plan';
-      const userQuotes = parseUserSuppliedQuoteCards(msgForQuoteRouting);
-      receipts.push('Generated minimal quote cards from the text you pasted (verbatim on the images)');
-      pushTransparencyReceipt(receipts, `Quote cards from your paste (${userQuotes.length} line(s)); say Publish cards when ready.`);
-      const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
-      const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
-      const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(userQuotes, {
-        maxChars: 2000,
-      });
-      const previews = [];
-      const lines = [
-        'Here are interpretive captions and minimal black square cards using **your pasted lines** (the images show your wording, not corpus search results).',
-        '',
-        'Captions (copy under each image in the thread; X-sized line included where useful):',
-        '',
-      ];
-      for (let i = 0; i < userQuotes.length; i += 1) {
-        const q = userQuotes[i];
-        const cap = captions[i] || '';
-        const capX = captionsX[i] || '';
-        lines.push(`${i + 1}. ${cap}`);
-        if (capX) lines.push(`   (X: ${capX})`);
-        lines.push(`   “${safeText(q.quote, 280)}”`);
-        const pasteTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
-        if (pasteTail.length) lines.push(`   — ${pasteTail.join(' · ')}`);
-        lines.push('');
-        const rendered = renderQuoteCardSvg({
-          quote: q.quote,
-          sourceName: q.source_title,
-          logoUrl,
-          style: 'minimal',
-          minimalVariant: 'dark',
-          forceLightLogo: true,
-        });
-        let image_url = '';
-        if (rendered.ok) {
-          try {
-            const up = await uploadMinimalQuoteCardToPublicUrl(
-              { quote: q.quote, sourceName: q.source_title, logoUrl },
-              { subfolder: 'auto-hub-quote-cards' }
-            );
-            if (up.ok) image_url = up.publicUrl;
-          } catch (_) {}
-        }
-        if (rendered.ok) {
-          previews.push({
-            svg: rendered.svg,
-            image_url,
-            index: i + 1,
-            caption: cap,
-            caption_x: capX,
-            source_title: q.source_title,
-          });
-        }
-      }
-      assistantMessage = lines.join('\n');
-      assistantMeta = {
-        corpus_pull_quotes: userQuotes,
-        quote_card_previews: previews,
-        quote_card_preview_svg: previews[0]?.svg || null,
-        quote_card_preview_image_url: previews[0]?.image_url || null,
-      };
-      statePatch.corpus_pull_quotes = userQuotes;
-      statePatch.publish_candidates = userQuotes.map((q, i) => {
-        const pr = previews[i];
-        return normalizePublishCandidate({
-          corpus_index: i + 1,
-          quote: q.quote,
-          source_title: q.source_title,
-          url: q.url || '',
-          caption: captions[i] || '',
-          caption_x: captionsX[i] || '',
-          svg: pr?.svg || null,
-          image_url: pr?.image_url || '',
-        });
-      });
-      statePatch.quote_card_origin = 'user_paste';
     } else if (
       wantsCorpusPullQuotes(msgForQuoteRouting) ||
       (intentRoute?.intent === 'corpus_pull' && intentRoute.confidence >= 0.6)
