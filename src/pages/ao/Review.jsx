@@ -896,7 +896,7 @@ export default function Review() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
-      <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-44 md:pb-8">
+      <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-8">
         <AutoHubPanel key={autoHubKey} onNavigate={handleNavigate} draftsAnchorId="auto-drafts" />
 
         <div className="mb-2">
@@ -974,12 +974,12 @@ export default function Review() {
                         }}
                         className="min-w-0 flex-1 text-left rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 active:bg-gray-100/80"
                       >
-                        <div className="font-semibold text-gray-900 truncate">{d.title || 'Draft'}</div>
+                        <div className="font-semibold text-gray-900 line-clamp-2 break-words">{d.title || 'Draft'}</div>
                         {d.updated_at ? (
                           <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
                         ) : null}
                         {d.preview ? (
-                          <div className="text-sm text-gray-700 mt-2 line-clamp-3 whitespace-pre-wrap">{d.preview}</div>
+                          <div className="text-sm text-gray-700 mt-2 line-clamp-4 whitespace-pre-wrap break-words">{d.preview}</div>
                         ) : null}
                         {draftActingId === d.id ? (
                           <div className="text-xs text-blue-600 mt-2">Opening…</div>
@@ -1189,7 +1189,7 @@ export default function Review() {
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0">
                                 <div className="flex items-center gap-2">
-                                  <div className="text-base font-semibold text-gray-900 truncate">{p.name}</div>
+                                  <div className="text-base font-semibold text-gray-900 line-clamp-2 break-words">{p.name}</div>
                                   {String(p.competitor_tier || 'none') !== 'none' ? (
                                     <span className={`text-[11px] px-2 py-0.5 rounded border ${p.competitor_tier === 'competitor' ? 'bg-red-50 text-red-800 border-red-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
                                       {p.competitor_tier === 'competitor' ? 'Competitor' : 'Friendly competitor'}

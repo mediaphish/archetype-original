@@ -543,7 +543,7 @@ export default function Ideas() {
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="library" email={email} onNavigate={handleNavigate} />
 
-      <main className="container mx-auto px-4 py-6 md:py-8 pb-28 md:pb-8">
+      <main className="container mx-auto px-4 py-6 md:py-8 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Library</h1>
@@ -638,7 +638,7 @@ export default function Ideas() {
                         <span className="text-xs text-gray-500">{fmtDate(x.created_at)}</span>
                         <StatusPill status={x.status} />
                       </div>
-                      <div className="text-sm font-medium text-gray-900 truncate">{x.title || safePreview(x.raw_input)}</div>
+                      <div className="text-sm font-medium text-gray-900 line-clamp-2 break-words">{x.title || safePreview(x.raw_input)}</div>
                       {x.hold_reason ? <div className="text-xs text-gray-600 mt-1">Held because: {safePreview(x.hold_reason)}</div> : null}
                       {Array.isArray(x.anchors) && x.anchors.length ? (
                         <div className="mt-2">
@@ -737,7 +737,7 @@ export default function Ideas() {
                       <ul className="mt-1 space-y-1">
                         {possibleDupes.map((x) => (
                           <li key={x.id} className="text-xs text-gray-700 flex items-center justify-between gap-2">
-                            <span className="truncate">{x.title || safePreview(x.raw_input)}</span>
+                            <span className="line-clamp-2 break-words min-w-0">{x.title || safePreview(x.raw_input)}</span>
                             <button type="button" onClick={() => onSelect(x)} className="text-blue-600 hover:underline shrink-0">Open</button>
                           </li>
                         ))}
@@ -947,7 +947,7 @@ export default function Ideas() {
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <div className="font-medium text-gray-900 truncate">
+                          <div className="font-medium text-gray-900 line-clamp-2 break-words">
                             {i.title ? i.title : safePreview(i.raw_input)}
                           </div>
                           <div className="text-xs text-gray-500 mt-0.5">

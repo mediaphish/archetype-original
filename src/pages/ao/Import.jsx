@@ -210,7 +210,7 @@ export default function Import() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="import" email={email} onNavigate={handleNavigate} />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 pt-8 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:py-8 max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Import</h1>
         <p className="text-gray-600 mb-8">Upload devotionals in batches, review validation, then publish when ready.</p>
 

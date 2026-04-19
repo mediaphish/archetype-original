@@ -40,7 +40,7 @@ export default function Insights() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AOHeader active="insights" email={email} onNavigate={handleNavigate} />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 pt-8 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:py-8 max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Insights</h1>
         <p className="text-gray-600 mb-8">Discoveries from internal and external scans, and corpus relationship analysis.</p>
 

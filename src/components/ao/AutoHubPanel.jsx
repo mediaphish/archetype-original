@@ -604,8 +604,8 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
         </div>
       ) : null}
 
-      {/* Single page scroll: no max-height inner scroll (avoids scroll-within-scroll on phones) */}
-      <div className="px-4 py-4 bg-gray-50 space-y-3">
+      {/* Desktop: page scrolls with the thread. Mobile: thread scrolls inside a capped area so the composer stays below the thread and does not cover Drafts / Activity log when you scroll the page. */}
+      <div className="px-4 py-4 bg-gray-50 space-y-3 max-md:max-h-[min(58dvh,560px)] max-md:overflow-y-auto max-md:overscroll-y-contain">
         {loading ? (
           <div className="text-sm text-gray-500">Loading Auto…</div>
         ) : null}
@@ -752,7 +752,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
       ) : null}
 
       <div
-        className="border-t border-gray-200 px-4 py-3 bg-white md:static max-md:sticky max-md:z-30 max-md:bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px))] max-md:shadow-[0_-8px_28px_rgba(0,0,0,0.07)]"
+        className="border-t border-gray-200 px-4 py-3 bg-white"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
@@ -853,7 +853,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             {sending ? 'Sending…' : 'Send'}
           </button>
         </div>
-        <div className="mt-2 text-xs text-gray-500">
+        <div className="mt-2 pb-1 text-xs text-gray-500 leading-snug">
           Drag and drop works here too. Images and text files will show in the thread.
         </div>
       </div>

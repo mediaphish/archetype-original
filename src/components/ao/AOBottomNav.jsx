@@ -18,7 +18,7 @@ export default function AOBottomNav({
 
   return (
     <nav
-      className="md:hidden fixed left-0 right-0 z-20 border-t border-gray-200 bg-white/95 backdrop-blur"
+      className="md:hidden fixed left-0 right-0 z-30 border-t border-gray-200 bg-white shadow-[0_-4px_14px_rgba(0,0,0,0.07)]"
       role="navigation"
       aria-label="AO Mobile Navigation"
       style={{
