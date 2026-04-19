@@ -27,6 +27,7 @@ import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishCont
 import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 import { wantsUserSuppliedQuoteCards, parseUserSuppliedQuoteCards } from '../../../lib/ao/userSuppliedQuoteCards.js';
+import { messageIsInThreadQuoteWork } from '../../../lib/ao/quoteWorkIntent.js';
 import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../lib/ao/corpusTldrReport.js';
 import {
   buildThreadStateSnapshot,
@@ -1008,6 +1009,10 @@ export default async function handler(req, res) {
       nextMode !== 'recall'
     ) {
       nextMode = 'package';
+    }
+
+    if (nextMode === 'recall' && messageIsInThreadQuoteWork(userMessage)) {
+      nextMode = 'plan';
     }
 
     let accountQuoteCardContextItems = null;

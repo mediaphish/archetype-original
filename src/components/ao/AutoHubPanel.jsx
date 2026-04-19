@@ -73,6 +73,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const composerDraftKey = (threadId) => `ao-auto-composer:${threadId || 'none'}`;
   /** Only show the bundle card for this thread’s active bundle — not the latest global Library item. */
   const latestBundle = useMemo(() => {
     const bid =
@@ -111,8 +112,9 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     return Array.isArray(log) ? log : [];
   }, [thread]);
 
-  const loadSession = useCallback(async () => {
-    setLoading(true);
+  const loadSession = useCallback(async (opts = {}) => {
+    const silent = opts.silent === true;
+    if (!silent) setLoading(true);
     setError('');
     try {
       const res = await fetch('/api/ao/auto/session');
@@ -126,7 +128,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     } catch (e) {
       setError(e.message || 'Could not load Auto');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
@@ -134,8 +136,39 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     loadSession();
   }, [loadSession]);
 
+  /** When the active thread changes, restore that thread’s saved composer draft (if any). */
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const tid = thread?.id;
+    if (!tid) return;
+    try {
+      const saved = sessionStorage.getItem(composerDraftKey(tid));
+      if (saved) setInput(String(saved));
+    } catch (_) {}
+  }, [thread?.id]);
+
+  /** Persist composer while typing so a failed send or refresh does not wipe long text. */
+  useEffect(() => {
+    const tid = thread?.id;
+    if (!tid) return undefined;
+    const t = setTimeout(() => {
+      try {
+        const s = String(input || '').trim();
+        if (s) sessionStorage.setItem(composerDraftKey(tid), input);
+        else sessionStorage.removeItem(composerDraftKey(tid));
+      } catch (_) {}
+    }, 400);
+    return () => clearTimeout(t);
+  }, [input, thread?.id]);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        try {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        } catch (_) {}
+      });
+    });
+    return () => cancelAnimationFrame(id);
   }, [messages]);
 
   useEffect(() => {
@@ -210,18 +243,16 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
       setAttachments(Array.isArray(json.attachments) ? json.attachments : []);
       setInput('');
       setPendingFiles([]);
-      const sessionRes = await fetch('/api/ao/auto/session');
-      const sessionJson = await sessionRes.json().catch(() => ({}));
-      if (sessionRes.ok && sessionJson.ok) {
-        setBundles(Array.isArray(sessionJson.bundles) ? sessionJson.bundles : []);
-        setGuardrails(Array.isArray(sessionJson.guardrails) ? sessionJson.guardrails : []);
-      }
+      try {
+        if (thread?.id) sessionStorage.removeItem(composerDraftKey(thread.id));
+      } catch (_) {}
+      await loadSession({ silent: true });
     } catch (e) {
       setError(e.message || 'Could not send message');
     } finally {
       setSending(false);
     }
-  }, [input, pendingFiles, sending, thread]);
+  }, [input, pendingFiles, sending, thread, loadSession]);
 
   const toggleGuardrail = useCallback(async (id, enabled) => {
     try {
@@ -509,7 +540,10 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
         </div>
       ) : null}
       {error ? (
-        <div className="mx-4 mt-4 p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
+        <div
+          className="mx-4 mt-4 p-3 rounded-lg border-2 border-red-300 bg-red-50 text-red-900 text-base font-medium"
+          role="alert"
+        >
           {error}
         </div>
       ) : null}
@@ -722,6 +756,14 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           void onFiles(e.dataTransfer?.files || []);
         }}
       >
+        {error ? (
+          <div
+            className="mb-3 md:hidden p-3 rounded-lg border-2 border-red-400 bg-red-50 text-red-950 text-base font-medium"
+            role="alert"
+          >
+            {error}
+          </div>
+        ) : null}
         {pendingFiles.length ? (
           <div className="mb-3 flex flex-wrap gap-2">
             {pendingFiles.map((f, idx) => (
