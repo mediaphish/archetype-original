@@ -582,7 +582,8 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             <div className="mt-2 space-y-1 text-xs text-gray-500">
               <div>
                 <span className="font-medium text-gray-700">Quote cards:</span> pull quotes (say <strong>corpus</strong> + topic) or paste lines → pick numbers (e.g. 1, 3, 5) → cards
-                generate. Ask <strong>“Show card 3”</strong> or <strong>“What’s the text on card 2?”</strong> anytime—the reply includes the quote and caption text; optional image previews
+                generate. Corpus pulls return a few lines at a time with per-message build limits; pasted batches can be larger—if the count looks wrong, ask{' '}
+                <strong>“list all quotes in this thread.”</strong> Ask <strong>“Show card 3”</strong> or <strong>“What’s the text on card 2?”</strong> anytime—the reply includes the quote and caption text; optional image previews
                 appear below when available.
               </div>
               <div>“CORPUS TL;DR: [topic]” — landscape, corpus gaps, AO fit (briefing).</div>

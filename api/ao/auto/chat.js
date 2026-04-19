@@ -411,6 +411,7 @@ function isUserPasteQuoteBatch(state, quotes) {
 }
 
 function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
+  if (wantsQuoteCardInventory(userMessage)) return false;
   const quotes = state?.corpus_pull_quotes;
   if (!Array.isArray(quotes) || !quotes.length) return false;
   const s0 = String(userMessage || '').trim();
@@ -524,6 +525,131 @@ function extractLatestPreviewCaptionsByIndex(messages) {
     }
   }
   return map;
+}
+
+/** Latest assistant turn that included quote_card_previews — which indices were built. */
+function extractLastBuiltIndicesFromMessages(messages) {
+  const out = new Set();
+  if (!Array.isArray(messages)) return [];
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const row = messages[i];
+    if (row.role !== 'assistant') continue;
+    const meta = row.meta && typeof row.meta === 'object' ? row.meta : null;
+    const previews = meta?.quote_card_previews;
+    if (!Array.isArray(previews) || !previews.length) continue;
+    for (const p of previews) {
+      const idx = Number(p.index);
+      if (Number.isFinite(idx) && idx >= 1) out.add(idx);
+    }
+    break;
+  }
+  return [...out].sort((a, b) => a - b);
+}
+
+/**
+ * After a partial card build, keep every index 1..N in publish_candidates so edits and Publish
+ * still see the full pool (merge new rows with previous state; stub missing SVG only when needed).
+ */
+async function mergePublishCandidatesForAllQuotes({
+  allQuotes,
+  currentState,
+  existingMessages,
+  indices,
+  selected,
+  previews,
+  captions,
+  captionsX,
+  logoUrl,
+}) {
+  const PLACEHOLDER_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>';
+  const maxN = allQuotes.length;
+  const prevList =
+    Array.isArray(currentState.publish_candidates) && currentState.publish_candidates.length
+      ? currentState.publish_candidates
+      : rebuildPublishCandidatesFromMessages(existingMessages, allQuotes);
+  const prevByIdx = new Map(prevList.map((c) => [c.corpus_index, c]));
+  const built = new Map();
+  indices.forEach((n, i) => {
+    const q = selected[i];
+    const pr = previews[i];
+    const svg = pr?.svg && String(pr.svg).trim() ? pr.svg : PLACEHOLDER_SVG;
+    const row = normalizePublishCandidate({
+      corpus_index: n,
+      quote: q.quote,
+      source_title: q.source_title,
+      url: q.url || '',
+      caption: captions[i] || '',
+      caption_x: captionsX[i] || '',
+      svg,
+      image_url: pr?.image_url || '',
+    });
+    if (row) built.set(n, row);
+  });
+  const out = [];
+  for (let n = 1; n <= maxN; n += 1) {
+    if (built.has(n)) {
+      out.push(built.get(n));
+    } else if (prevByIdx.has(n)) {
+      out.push(prevByIdx.get(n));
+    } else {
+      const q = allQuotes[n - 1];
+      const rendered = renderQuoteCardSvg({
+        quote: q.quote,
+        sourceName: q.source_title,
+        logoUrl,
+        style: 'minimal',
+        minimalVariant: 'dark',
+        forceLightLogo: true,
+      });
+      let image_url = '';
+      if (rendered.ok) {
+        try {
+          const up = await uploadMinimalQuoteCardToPublicUrl(
+            { quote: q.quote, sourceName: q.source_title, logoUrl },
+            { subfolder: 'auto-hub-quote-cards' }
+          );
+          if (up.ok) image_url = up.publicUrl;
+        } catch (_) {}
+      }
+      const row = normalizePublishCandidate({
+        corpus_index: n,
+        quote: q.quote,
+        source_title: q.source_title,
+        url: q.url || '',
+        caption: '',
+        caption_x: '',
+        svg: rendered.ok ? rendered.svg : PLACEHOLDER_SVG,
+        image_url,
+      });
+      if (row) out.push(row);
+    }
+  }
+  return out;
+}
+
+/** “Where are my cards / list all quotes / inventory” — factual list from thread state (before inspect/deliverables). */
+function wantsQuoteCardInventory(userMessage) {
+  const s = String(userMessage || '').trim().toLowerCase();
+  if (!s) return false;
+  if (wantsQuoteCardInspect(userMessage)) return false;
+  return (
+    /\b(where (?:did|are)|what happened to|lost|missing|disappear)\b.*\b(card|quote|line|lines)\b/.test(s) ||
+    /\b(how many|full list|list all|inventory|every quote|all candidates|all cards|all lines)\b/.test(s) ||
+    /\bwhere\b.*\b(my|the)\b.*\b(card|quote|quotes|lines)\b/.test(s) ||
+    /\b(show|give)\s+me\s+(?:a\s+)?(?:full\s+)?(?:list|inventory)\b/.test(s)
+  );
+}
+
+/** Meta-instructions meant for external dev tools — not Auto on this site. */
+function wantsMetaDevAgentInstruction(userMessage) {
+  const s = String(userMessage || '').trim().toLowerCase();
+  if (!s) return false;
+  return (
+    /\bimplement the plan\b/.test(s) ||
+    /\bdo not edit the plan file\b/.test(s) ||
+    /\bmark\s+.*\s+as\s+in_?progress\b/.test(s) ||
+    /\bto-?dos?\b.*\b(from the plan|already created|in progress)\b/.test(s)
+  );
 }
 
 function extractCorpusTldrTopic(text) {
@@ -767,6 +893,8 @@ ${snap.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_se
 
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
+- Do **not** invent numbered **software / implementation / compliance** task lists, fake **todo boards**, or pretend you are **executing** a development plan, Cursor todos, or edits to an attached plan file. You are Auto inside this product only.
+- If his message sounds like meta-instructions for an external task system ("implement the plan," "mark todos in progress"), answer in one short paragraph: you do not run those systems here; give **one** concrete next step for quote cards in AO (e.g. pick numbers, **Show card N**, or ask for a full list of lines in this thread).
 - If current mode is "plan" or "write" or he is asking to plan, design, brainstorm, or figure out pull quotes / a series / campaigns: stay in conversation. Offer steps, tradeoffs, and questions. Do NOT say you already packaged a post, do NOT list fake receipts, and do NOT tell him to tap Proceed — there is no bundle until he pastes a finished post or explicitly asks to package.
 - If current mode is "package" and he pasted a finished piece: then describe packaging (Journal + channel drafts + schedule) without rewriting his words.
 - Modes you respect from context: plan, write, package, publish, recall, training, general.
@@ -1837,6 +1965,67 @@ export default async function handler(req, res) {
       lines.push('Proof of work (so you know the system has been running):');
       proof.forEach((p) => lines.push(`- ${p}`));
       assistantMessage = lines.join('\n');
+    } else if (wantsMetaDevAgentInstruction(userMessage)) {
+      nextMode = 'plan';
+      assistantMessage =
+        'I’m Auto inside AO Automation on your site—I don’t run external task lists or edit attached plan files. For quote cards here: pull or paste lines, pick numbers, then ask **Show card N** for text, or **list all quotes in this thread** if the count looks wrong.';
+    } else if (wantsQuoteCardInventory(userMessage)) {
+      nextMode = 'plan';
+      let allQuotes =
+        Array.isArray(currentState.corpus_pull_quotes) && currentState.corpus_pull_quotes.length
+          ? currentState.corpus_pull_quotes
+          : restoreCorpusPullQuotesFromMessages(existingMessages);
+      if (!Array.isArray(allQuotes) || !allQuotes.length) {
+        assistantMessage =
+          'I do not have quote lines stored in this thread yet. Pull quotes from your corpus (include the word **corpus** and your topic) or paste lines for cards—then ask again.';
+      } else {
+        const origin =
+          currentState.quote_card_origin === 'user_paste'
+            ? 'pasted lines (your text)'
+            : currentState.quote_card_origin === 'corpus_pull'
+              ? 'corpus search (up to five candidates per search)'
+              : isUserPasteQuoteBatch(currentState, allQuotes)
+                ? 'pasted lines (your text)'
+                : 'corpus search (up to five candidates per search)';
+        const pool =
+          Array.isArray(currentState.publish_candidates) && currentState.publish_candidates.length
+            ? currentState.publish_candidates
+            : rebuildPublishCandidatesFromMessages(existingMessages, allQuotes);
+        const lastBuilt = extractLastBuiltIndicesFromMessages(existingMessages);
+        const lastSel = Array.isArray(currentState.corpus_pull_quote_selection)
+          ? [...currentState.corpus_pull_quote_selection].filter((n) => Number.isFinite(n) && n >= 1)
+          : [];
+        const lines = [
+          `**Quote pool in this thread (${allQuotes.length} line(s))** — source: ${origin}.`,
+          '',
+          '**All candidate lines (numbered):**',
+          '',
+        ];
+        allQuotes.forEach((q, idx) => {
+          const n = idx + 1;
+          lines.push(`${n}. “${safeText(q.quote, 400)}”`);
+          const tail = [q.source_title, q.url].filter((x) => String(x || '').trim());
+          if (tail.length) lines.push(`   — ${tail.join(' · ')}`);
+          lines.push('');
+        });
+        lines.push('**What was last built as image cards (this thread):**');
+        if (lastBuilt.length) {
+          lines.push(`Indices **${lastBuilt.join(', ')}** (from the latest assistant reply with previews).`);
+        } else {
+          lines.push('No image-card previews recorded in the latest turn yet.');
+        }
+        if (lastSel.length) {
+          lines.push(`Last numbered picks stored for this flow: **${lastSel.join(', ')}**.`);
+        }
+        lines.push(
+          `**Publish-ready rows in memory:** **${pool.length}** (one per card index when present). If a number is missing from previews, say the numbers you want or **all** to build more—nothing is silently discarded from the numbered list above.`
+        );
+        receipts.push('Quoted thread inventory (deterministic)');
+        pushTransparencyReceipt(receipts, `Listed ${allQuotes.length} candidate line(s) and last-built indices from thread state.`);
+        statePatch.corpus_pull_quotes = allQuotes;
+        if (pool.length) statePatch.publish_candidates = pool;
+        assistantMessage = lines.join('\n');
+      }
     } else if (wantsQuoteCardInspect(userMessage)) {
       nextMode = 'plan';
       let allQuotes =
@@ -2020,6 +2209,9 @@ export default async function handler(req, res) {
           lines.push(`   Source: ${q.source_title}${q.url ? ` · ${q.url}` : ''}`);
           lines.push('');
         });
+        lines.push(
+          `Each corpus search returns up to **five** candidate lines at a time${corpus.quotes.length >= 5 ? ' (you may be seeing the full set from this search)' : ''}. Ask again with another topic or angle if you want more lines.`
+        );
         lines.push(
           'These are chosen to work on their own (no article required) and to hit with stakes, not just pleasant wording. Tell me which numbers you want and I’ll draft captions and minimal branded cards next.'
         );
@@ -2229,16 +2421,22 @@ export default async function handler(req, res) {
       }
       const maxN = allQuotes.length;
       const fromPaste = isUserPasteQuoteBatch(currentState, allQuotes);
+      let filledDefaultIndices = false;
       if (!indices.length) {
         const defaultCap = fromPaste ? maxN : Math.min(5, maxN);
+        filledDefaultIndices = true;
         indices = allQuotes.slice(0, defaultCap).map((_, i) => i + 1);
       }
+      const usedDefaultCorpusFirstFive = !fromPaste && filledDefaultIndices && maxN > 5;
       const batchCap = fromPaste ? Math.min(50, maxN) : 6;
-      indices = indices.filter((n) => n >= 1 && n <= maxN).slice(0, batchCap);
+      const indicesBeforeBatchCap = indices.filter((n) => n >= 1 && n <= maxN);
+      const truncatedByBatchCap = indicesBeforeBatchCap.length > batchCap;
+      indices = indicesBeforeBatchCap.slice(0, batchCap);
       if (!indices.length) {
         assistantMessage =
           'Tell me which quote numbers to use from the list above (for example 1, 3, and 5), or say “all.”';
       } else {
+        statePatch.corpus_pull_quotes = allQuotes;
         statePatch.corpus_pull_quote_selection = indices;
         const selected = indices.map((n) => allQuotes[n - 1]).filter(Boolean);
         receipts.push('Drafted interpretive captions and minimal square cards for your picks');
@@ -2271,8 +2469,10 @@ export default async function handler(req, res) {
             minimalVariant: 'dark',
             forceLightLogo: true,
           });
+          let image_url = '';
+          let svg = null;
           if (rendered.ok) {
-            let image_url = '';
+            svg = rendered.svg;
             try {
               const up = await uploadMinimalQuoteCardToPublicUrl(
                 { quote: q.quote, sourceName: q.source_title, logoUrl },
@@ -2280,39 +2480,57 @@ export default async function handler(req, res) {
               );
               if (up.ok) image_url = up.publicUrl;
             } catch (_) {}
-            previews.push({
-              svg: rendered.svg,
-              image_url,
-              index: indices[i],
-              caption: cap,
-              caption_x: capX,
-              source_title: q.source_title,
-            });
           }
+          previews.push({
+            svg,
+            image_url,
+            index: indices[i],
+            caption: cap,
+            caption_x: capX,
+            source_title: q.source_title,
+          });
         }
         assistantMessage = lines.join('\n');
+        if (!fromPaste) {
+          const footer = [];
+          footer.push('');
+          footer.push('---');
+          footer.push(
+            `**Thread pool:** ${maxN} quote line(s) stored from your last pull. Corpus search returns up to **five** candidates per search; caps below apply when building cards **without** a pasted batch.`
+          );
+          if (usedDefaultCorpusFirstFive) {
+            footer.push(
+              `This turn used the default **first five** of **${maxN}** because no numbers were in your message. Say **6–10**, **7–12**, or **all** to build more in the next message.`
+            );
+          }
+          if (truncatedByBatchCap) {
+            footer.push(
+              `**Built ${selected.length} of ${indicesBeforeBatchCap.length}** requested this turn (corpus flow: up to **${batchCap}** cards per message). Say the remaining numbers in your next message to finish the batch.`
+            );
+          } else if (maxN > selected.length && !usedDefaultCorpusFirstFive && !truncatedByBatchCap) {
+            footer.push(
+              `This turn built **${selected.length}** card(s) from your picks; **${maxN}** line(s) remain in the pool. Ask for more numbers anytime.`
+            );
+          }
+          assistantMessage = `${assistantMessage}\n${footer.join('\n')}`;
+        }
         assistantMeta = {
           corpus_pull_quotes: allQuotes,
-          quote_card_previews: previews,
-          quote_card_preview_svg: previews[0]?.svg || null,
-          quote_card_preview_image_url: previews[0]?.image_url || null,
+          quote_card_previews: previews.filter((p) => p && p.svg),
+          quote_card_preview_svg: previews.find((p) => p?.svg)?.svg || null,
+          quote_card_preview_image_url: previews.find((p) => p?.svg)?.image_url || null,
         };
-        statePatch.publish_candidates = indices
-          .map((n, i) => {
-            const q = selected[i];
-            const pr = previews[i];
-            return normalizePublishCandidate({
-              corpus_index: n,
-              quote: q.quote,
-              source_title: q.source_title,
-              url: q.url || '',
-              caption: captions[i] || '',
-              caption_x: captionsX[i] || '',
-              svg: pr?.svg || null,
-              image_url: pr?.image_url || '',
-            });
-          })
-          .filter(Boolean);
+        statePatch.publish_candidates = await mergePublishCandidatesForAllQuotes({
+          allQuotes,
+          currentState,
+          existingMessages,
+          indices,
+          selected,
+          previews,
+          captions,
+          captionsX,
+          logoUrl,
+        });
       }
     } else if (wantsCorpusThemeSearch(userMessage)) {
       nextMode = 'plan';
