@@ -9,6 +9,7 @@ import {
   searchBundles,
   detectAutoMode,
   shouldLoadAccountQuoteCardContext,
+  wantsExitTrainingMode,
 } from '../../../lib/ao/autoHub.js';
 import { fetchAccountQuoteCardContext, formatQuoteCardContextBlock } from '../../../lib/ao/autoQuoteCardRecall.js';
 import { buildAutoBundle, detectQualityAlarm } from '../../../lib/ao/autoBundle.js';
@@ -1012,6 +1013,10 @@ export default async function handler(req, res) {
     }
 
     if (nextMode === 'recall' && messageIsInThreadQuoteWork(userMessage)) {
+      nextMode = 'plan';
+    }
+
+    if (wantsExitTrainingMode(userMessage)) {
       nextMode = 'plan';
     }
 

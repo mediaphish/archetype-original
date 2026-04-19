@@ -624,7 +624,10 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
               <div>“CORPUS outline: [topic]” — section skeleton only.</div>
               <div>“Let’s plan this.” / “Let’s write this post.” / “I have a post ready to go out.”</div>
               <div>“Save this brief to drafts” after a CORPUS reply.</div>
-              <div>“Switch to training mode.”</div>
+              <div>
+                “Switch to training mode.” To leave Training without starting a new chat: <strong>exit training mode</strong>,{' '}
+                <strong>back to plan</strong>, or <strong>I don’t want training</strong>.
+              </div>
             </div>
           </div>
         ) : null}
