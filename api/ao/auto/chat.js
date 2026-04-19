@@ -28,6 +28,7 @@ import {
 import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishContentTypes.js';
 import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
+import { stripMarkdownBoldForCardDisplay } from '../../../lib/ao/quoteCardMarkdown.js';
 import {
   wantsUserSuppliedQuoteCards,
   parseUserSuppliedQuoteCards,
@@ -2044,7 +2045,7 @@ export default async function handler(req, res) {
         const capX = captionsX[i] || '';
         lines.push(`${i + 1}. ${cap}`);
         if (capX) lines.push(`   (X: ${capX})`);
-        lines.push(`   “${safeText(q.quote, 280)}”`);
+        lines.push(`   “${safeText(stripMarkdownBoldForCardDisplay(q.quote), 280)}”`);
         const pasteTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
         if (pasteTail.length) lines.push(`   — ${pasteTail.join(' · ')}`);
         lines.push('');
@@ -2133,7 +2134,7 @@ export default async function handler(req, res) {
         ];
         allQuotes.forEach((q, idx) => {
           const n = idx + 1;
-          lines.push(`${n}. “${safeText(q.quote, 400)}”`);
+          lines.push(`${n}. “${safeText(stripMarkdownBoldForCardDisplay(q.quote), 400)}”`);
           const tail = [q.source_title, q.url].filter((x) => String(x || '').trim());
           if (tail.length) lines.push(`   — ${tail.join(' · ')}`);
           lines.push('');
@@ -2199,7 +2200,7 @@ export default async function handler(req, res) {
               const src = [q.source_title, q.url].filter((x) => String(x || '').trim());
               lines.push(`**Card ${n}**`, '');
               lines.push('**Pull quote**');
-              lines.push(`"${safeText(q.quote, 2000)}"`);
+              lines.push(`"${safeText(stripMarkdownBoldForCardDisplay(q.quote), 2000)}"`);
               if (src.length) lines.push(`Source: ${src.join(' · ')}`);
               if (cap) lines.push(`Caption: ${cap}`);
               if (capX) lines.push(`X / short: ${capX}`);
@@ -2260,7 +2261,7 @@ export default async function handler(req, res) {
           '',
         ];
         corpus.quotes.forEach((q, idx) => {
-          lines.push(`${idx + 1}. “${q.quote}”`);
+          lines.push(`${idx + 1}. “${stripMarkdownBoldForCardDisplay(q.quote)}”`);
           lines.push(`   Source: ${q.source_title}${q.url ? ` · ${q.url}` : ''}`);
           lines.push('');
         });
@@ -2512,7 +2513,7 @@ export default async function handler(req, res) {
           const capX = captionsX[i] || '';
           lines.push(`${i + 1}. ${cap}`);
           if (capX) lines.push(`   (X: ${capX})`);
-          lines.push(`   “${safeText(q.quote, 280)}”`);
+          lines.push(`   “${safeText(stripMarkdownBoldForCardDisplay(q.quote), 280)}”`);
           const attrTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
           if (attrTail.length) lines.push(`   — ${attrTail.join(' · ')}`);
           lines.push('');
