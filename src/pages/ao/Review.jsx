@@ -979,7 +979,7 @@ export default function Review() {
                           <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
                         ) : null}
                         {d.preview ? (
-                          <div className="text-sm text-gray-700 mt-2 line-clamp-4 whitespace-pre-wrap break-words">{d.preview}</div>
+                          <div className="text-sm text-gray-700 mt-2 line-clamp-6 whitespace-pre-wrap break-words">{d.preview}</div>
                         ) : null}
                         {draftActingId === d.id ? (
                           <div className="text-xs text-blue-600 mt-2">Opening…</div>

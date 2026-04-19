@@ -29,6 +29,7 @@ import { messageForDevotionalOrSeriesPublish } from '../../../lib/ao/publishCont
 import { normalizePublishCandidate } from '../../../lib/ao/publishQueueSchema.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 import { wantsUserSuppliedQuoteCards, parseUserSuppliedQuoteCards } from '../../../lib/ao/userSuppliedQuoteCards.js';
+import { resolveQuoteRoutingMessage } from '../../../lib/ao/autoIntentRouter.js';
 import { buildCorpusTldrMarkdown, buildCorpusOutlineMarkdown } from '../../../lib/ao/corpusTldrReport.js';
 import {
   buildThreadStateSnapshot,
@@ -988,21 +989,42 @@ export default async function handler(req, res) {
     const currentState = fullState.thread.state && typeof fullState.thread.state === 'object' ? fullState.thread.state : {};
     let nextMode = detectAutoMode(userMessage, fullState.thread.current_mode || 'general');
     let statePatch = { ...currentState };
+
+    let msgForQuoteRouting = userMessage;
+    let intentRoute = null;
+    const rwPre = currentState.rapid_write && typeof currentState.rapid_write === 'object' ? currentState.rapid_write : null;
+    if (!rwPre?.active) {
+      try {
+        const resolved = await resolveQuoteRoutingMessage(userMessage, {
+          currentState,
+          existingMessages,
+          nextMode,
+          email: auth.email,
+        });
+        msgForQuoteRouting = resolved.msgForQuoteRouting;
+        intentRoute = resolved.intentRoute;
+      } catch (_) {
+        msgForQuoteRouting = userMessage;
+      }
+    }
+
     if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
-    if (looksLikePlanningOrDiscussionRequest(userMessage) && nextMode !== 'recall') {
+    if (intentRoute?.intent === 'corpus_pull' && intentRoute.confidence >= 0.6) {
+      nextMode = 'plan';
+    } else if (looksLikePlanningOrDiscussionRequest(userMessage) && nextMode !== 'recall') {
       nextMode = 'plan';
     } else if (wantsCorpusTldrWork(userMessage)) {
       nextMode = 'plan';
     } else if (wantsQueueCorpusDraft(userMessage)) {
       nextMode = 'plan';
-    } else if (wantsCorpusPullQuotes(userMessage)) {
+    } else if (wantsCorpusPullQuotes(msgForQuoteRouting)) {
       nextMode = 'plan';
     } else if (wantsCorpusThemeSearch(userMessage)) {
       nextMode = 'plan';
     } else if (
       shouldAssumePackageMode(userMessage, activeAttachments.length > 0) &&
       !wantsScoutFindings(userMessage) &&
-      !wantsCorpusPullQuotes(userMessage) &&
+      !wantsCorpusPullQuotes(msgForQuoteRouting) &&
       !wantsCorpusThemeSearch(userMessage) &&
       !wantsCorpusTldrWork(userMessage) &&
       !wantsQueueCorpusDraft(userMessage) &&
@@ -1019,7 +1041,15 @@ export default async function handler(req, res) {
     }
 
     let accountQuoteCardContextItems = null;
-    if (shouldMergeQuoteCardContext(userMessage) || nextMode === 'recall') {
+    const mergeQuoteCardCtx =
+      shouldMergeQuoteCardContext(userMessage) ||
+      nextMode === 'recall' ||
+      (intentRoute &&
+        intentRoute.confidence >= 0.5 &&
+        (intentRoute.entities?.references_prior_work ||
+          intentRoute.intent === 'continue_quote_series' ||
+          intentRoute.intent === 'paste_quote_batch'));
+    if (mergeQuoteCardCtx) {
       try {
         const ctx = await fetchAccountQuoteCardContext(auth.email);
         if (ctx.items?.length) accountQuoteCardContextItems = ctx.items;
@@ -1051,6 +1081,12 @@ export default async function handler(req, res) {
     const receipts = [];
     if (accountQuoteCardContextItems?.length) {
       receipts.push('Loaded quote-card memory from your account for continuity');
+    }
+    if (intentRoute?.continuationGenerated) {
+      pushTransparencyReceipt(receipts, 'Continuation: new quote lines generated to match your account/publish style, then routed into the card builder.');
+    }
+    if (intentRoute?.model && intentRoute?.intent === 'paste_quote_batch' && intentRoute.extracted_quotes?.length >= 2) {
+      pushTransparencyReceipt(receipts, 'Intent routing: extracted quote lines from your message for the card pipeline.');
     }
     if (nextMode !== fullState.thread.current_mode) {
       receipts.push(
@@ -1977,7 +2013,7 @@ export default async function handler(req, res) {
       nextMode = 'plan';
       assistantMessage =
         'I’m Auto inside AO Automation on your site—I don’t run external task lists or edit attached plan files. For quote cards here: pull or paste lines, pick numbers, then ask **Show card N** for text, or **list all quotes in this thread** if the count looks wrong.';
-    } else if (wantsQuoteCardInventory(userMessage)) {
+    } else if (wantsQuoteCardInventory(msgForQuoteRouting)) {
       nextMode = 'plan';
       let allQuotes =
         Array.isArray(currentState.corpus_pull_quotes) && currentState.corpus_pull_quotes.length
@@ -2034,7 +2070,7 @@ export default async function handler(req, res) {
         if (pool.length) statePatch.publish_candidates = pool;
         assistantMessage = lines.join('\n');
       }
-    } else if (wantsQuoteCardInspect(userMessage)) {
+    } else if (wantsQuoteCardInspect(msgForQuoteRouting)) {
       nextMode = 'plan';
       let allQuotes =
         Array.isArray(currentState.corpus_pull_quotes) && currentState.corpus_pull_quotes.length
@@ -2121,9 +2157,9 @@ export default async function handler(req, res) {
           }
         }
       }
-    } else if (wantsUserSuppliedQuoteCards(userMessage)) {
+    } else if (wantsUserSuppliedQuoteCards(msgForQuoteRouting)) {
       nextMode = 'plan';
-      const userQuotes = parseUserSuppliedQuoteCards(userMessage);
+      const userQuotes = parseUserSuppliedQuoteCards(msgForQuoteRouting);
       receipts.push('Generated minimal quote cards from the text you pasted (verbatim on the images)');
       pushTransparencyReceipt(receipts, `Quote cards from your paste (${userQuotes.length} line(s)); say Publish cards when ready.`);
       const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
@@ -2199,7 +2235,10 @@ export default async function handler(req, res) {
         });
       });
       statePatch.quote_card_origin = 'user_paste';
-    } else if (wantsCorpusPullQuotes(userMessage)) {
+    } else if (
+      wantsCorpusPullQuotes(msgForQuoteRouting) ||
+      (intentRoute?.intent === 'corpus_pull' && intentRoute.confidence >= 0.6)
+    ) {
       nextMode = 'plan';
       const corpus = await getCorpusPullQuotes({ queryText: userMessage, limit: 5 });
       receipts.push('Searched your published corpus for stand-alone, high-impact pull quotes');
@@ -2346,7 +2385,7 @@ export default async function handler(req, res) {
           scheduleNote: scheduleNote || undefined,
         });
       }
-    } else if (wantsPublishQuoteCardsIntent(userMessage, currentState)) {
+    } else if (wantsPublishQuoteCardsIntent(msgForQuoteRouting, currentState)) {
       nextMode = 'plan';
       const corpusQuotes = currentState.corpus_pull_quotes || [];
       let pool =
@@ -2416,7 +2455,7 @@ export default async function handler(req, res) {
         }
       }
       }
-    } else if (wantsCorpusPullQuoteDeliverables(userMessage, currentState, existingMessages)) {
+    } else if (wantsCorpusPullQuoteDeliverables(msgForQuoteRouting, currentState, existingMessages)) {
       nextMode = 'plan';
       const allQuotes = currentState.corpus_pull_quotes;
       let indices = parseQuoteIndicesFromMessage(stripGapPhrasesForCardIndexParse(userMessage));
