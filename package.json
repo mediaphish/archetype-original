@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run build-knowledge && node scripts/verify-publish-eligibility.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-static-journal-html.mjs && node scripts/copy-public-to-dist.mjs",
+    "build": "npm run build:prerender",
     "build:prerender": "vite build && npm run build-knowledge && node scripts/verify-publish-eligibility.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-static-journal-html.mjs && node scripts/copy-public-to-dist.mjs && PRERENDER_SKIP_INNER_BUILD=1 node scripts/prerender.mjs && node scripts/verify-dist-html.mjs && node scripts/verify-dist-marketing-html.mjs && node scripts/verify-deployment-html.mjs",
     "build:no-prerender": "vite build && npm run build-knowledge && node scripts/verify-publish-eligibility.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-static-journal-html.mjs && node scripts/copy-public-to-dist.mjs && node scripts/verify-dist-html.mjs",
     "prerender:local": "npm run build:no-prerender && PRERENDER_SKIP_INNER_BUILD=1 node scripts/prerender.mjs",
