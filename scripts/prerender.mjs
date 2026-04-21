@@ -2,10 +2,10 @@
 
 /**
  * Pre-rendering: visit each public route with headless Chrome, save fully rendered HTML to dist.
- * On Linux (including Vercel's build machines), uses puppeteer-core + @sparticuz/chromium — the
- * stock Chromium bundled with `puppeteer` expects host libraries (e.g. NSS) that minimal Linux
- * images often lack. On macOS/Windows, uses full `puppeteer`. Set PRERENDER_USE_PUPPETEER=1 on
- * Linux to force the bundled browser (e.g. desktop Linux with deps installed).
+ * Server / CI environments (anything that is not macOS or Windows) use puppeteer-core +
+ * @sparticuz/chromium — the stock Chromium bundled with `puppeteer` expects host libraries (e.g.
+ * NSS) that minimal Linux images often lack. Local macOS/Windows dev uses full `puppeteer`.
+ * Set PRERENDER_USE_PUPPETEER=1 (or true) on a server OS only if you must force the bundled browser.
  *
  * When PRERENDER_SKIP_INNER_BUILD=1, skips npm run build:no-prerender (used after build:prerender / prerender:local).
  */
@@ -151,10 +151,21 @@ function startServer(port) {
   });
 }
 
+function wantsBundledPuppeteerBrowser() {
+  const v = String(process.env.PRERENDER_USE_PUPPETEER ?? '')
+    .trim()
+    .toLowerCase();
+  return v === '1' || v === 'true' || v === 'yes';
+}
+
 async function launchBrowser() {
-  const forceBundledPuppeteer = process.env.PRERENDER_USE_PUPPETEER === '1';
-  const useSparticuz =
-    process.platform === 'linux' && !forceBundledPuppeteer;
+  const forceBundled = wantsBundledPuppeteerBrowser();
+  const isDesktopDevOs =
+    process.platform === 'darwin' || process.platform === 'win32';
+
+  // Do not rely only on process.platform === 'linux': some builders report other values.
+  // Any non-desktop OS (Vercel, GitHub Ubuntu, containers) must use Sparticuz, never stock Puppeteer.
+  const useSparticuz = !isDesktopDevOs && !forceBundled;
 
   if (useSparticuz) {
     const puppeteer = await import('puppeteer-core');
@@ -167,7 +178,7 @@ async function launchBrowser() {
     });
   }
 
-  // macOS / Windows / Linux with PRERENDER_USE_PUPPETEER=1: full puppeteer bundles Chromium.
+  // macOS / Windows (local dev), or server + PRERENDER_USE_PUPPETEER: full puppeteer bundles Chromium.
 
   try {
     const puppeteer = await import('puppeteer');
@@ -177,7 +188,7 @@ async function launchBrowser() {
     });
   } catch (e) {
     console.error(
-      '❌ Install devDependencies: puppeteer (macOS/Windows) or puppeteer-core + @sparticuz/chromium (Linux).'
+      '❌ Install devDependencies: puppeteer (macOS/Windows) or puppeteer-core + @sparticuz/chromium (servers).'
     );
     throw e;
   }
