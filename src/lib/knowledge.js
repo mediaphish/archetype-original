@@ -1,3 +1,5 @@
+import { filterPublishedScheduledDocs } from '../../lib/publish-eligibility.mjs';
+
 let knowledgeCache = null;
 let loadPromise = null;
 
@@ -20,7 +22,10 @@ async function load() {
       if (!response.ok) {
         throw new Error(`Failed to load knowledge: ${response.status}`);
       }
-      knowledgeCache = await response.json();
+      const raw = await response.json();
+      raw.docs = filterPublishedScheduledDocs(raw.docs || []);
+      raw.count = raw.docs.length;
+      knowledgeCache = raw;
       return knowledgeCache;
     } catch (error) {
       console.error('Error loading knowledge corpus:', error);

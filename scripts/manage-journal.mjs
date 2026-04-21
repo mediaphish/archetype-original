@@ -5,6 +5,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { shouldSkipFutureScheduledMarkdown } from '../lib/publish-eligibility.mjs';
 
 const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
 const OUTPUT_FILE = 'public/knowledge.json';
@@ -29,13 +30,10 @@ function processJournalPosts() {
       const content = fs.readFileSync(filePath, 'utf8');
       const { data: frontmatter, content: body } = matter(content);
       
-      // Check if post should be published
-      const publishDate = frontmatter.publish_date ? new Date(frontmatter.publish_date) : null;
-      const now = new Date();
-      
-      if (publishDate && publishDate > now) {
-        console.log(`⏰ Post "${frontmatter.title}" scheduled for ${publishDate.toISOString()}`);
-        continue; // Skip future posts
+      // Same calendar-day rule as build-knowledge (America/Chicago default)
+      if (shouldSkipFutureScheduledMarkdown(frontmatter, { isJournalOrDevotional: true })) {
+        console.log(`⏰ Post "${frontmatter.title}" not yet eligible (publish_date in future)`);
+        continue;
       }
       
       const slug = frontmatter.slug || path.basename(filePath, '.md');

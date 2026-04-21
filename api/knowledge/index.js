@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { filterPublishedScheduledDocs } from '../../lib/publish-eligibility.mjs';
 
 export default function handler(req, res) {
   // Internal API only - no CORS needed
@@ -24,10 +25,11 @@ export default function handler(req, res) {
     const rawData = fs.readFileSync(knowledgePath, 'utf8');
     const corpus = JSON.parse(rawData);
 
+    // Same schedule rule as build + static HTML: never expose future journal/devotional by API
+    let filteredDocs = filterPublishedScheduledDocs(corpus.docs || []);
+
     // Extract query parameters
     const { q = '', tag = '', type = '' } = req.query;
-
-    let filteredDocs = corpus.docs || [];
 
     // Filter by tag
     if (tag) {

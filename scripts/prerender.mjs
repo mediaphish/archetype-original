@@ -13,6 +13,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
 import { getPublicStaticPaths } from './lib/public-static-routes.mjs';
+import { filterPublishedScheduledDocs } from '../lib/publish-eligibility.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,7 +34,7 @@ function filterKnowledgeDocs(corpus, searchParams) {
   const typeRaw = searchParams.get('type') || '';
   const type = String(typeRaw).toLowerCase();
 
-  let filteredDocs = corpus.docs || [];
+  let filteredDocs = filterPublishedScheduledDocs(corpus.docs || []);
 
   if (tag) {
     filteredDocs = filteredDocs.filter(

@@ -5,6 +5,13 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import {
+  shouldSkipFutureScheduledMarkdown,
+  publishDateCalendarOnly,
+  calendarTodayPublicationTz,
+  filterPublishedScheduledDocs,
+  publicationTimeZone,
+} from '../lib/publish-eligibility.mjs';
 
 const KNOWLEDGE_DIR = 'ao-knowledge-hq-kit/knowledge';
 const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
@@ -68,6 +75,7 @@ function processMarkdownFile(filePath) {
 // Main build function
 async function buildKnowledgeCorpus() {
   console.log('🔍 Scanning for knowledge files...');
+  console.log(`📅 Publication calendar: ${publicationTimeZone()} (override with PUBLICATION_TIME_ZONE)`);
   
   if (!fs.existsSync(KNOWLEDGE_DIR)) {
     console.error(`❌ Knowledge directory not found: ${KNOWLEDGE_DIR}`);
@@ -203,58 +211,35 @@ async function buildKnowledgeCorpus() {
           }
         }
         body = body.trim();
-        
-        // Check if post should be published
-        let publishDate = null;
+
+        const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
+
         if (frontmatter.publish_date) {
           try {
-            publishDate = new Date(frontmatter.publish_date);
-            // Validate date
-            if (isNaN(publishDate.getTime())) {
-              console.warn(`⚠️  Invalid publish_date for "${frontmatter.title || path.basename(filePath)}", using current date`);
-              publishDate = null;
+            const pd = new Date(frontmatter.publish_date);
+            if (isNaN(pd.getTime())) {
+              console.warn(`⚠️  Invalid publish_date for "${frontmatter.title || path.basename(filePath)}"`);
             }
           } catch (e) {
             console.warn(`⚠️  Error parsing publish_date for "${frontmatter.title || path.basename(filePath)}":`, e.message);
-            publishDate = null;
           }
         }
-        
-        // Get today's date in YYYY-MM-DD format using local timezone (not UTC)
-        // This prevents timezone shifts that cause dates to be off by a day
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const todayStr = `${year}-${month}-${day}`; // "2026-01-21" in local timezone
-        
-        // Skip future posts - INCLUDING devotionals (only show devotionals on or before their publish date)
-        const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
-        if (publishDate) {
-          // Parse publish_date as YYYY-MM-DD string for accurate comparison
-          let publishDateStr = null;
-          if (typeof frontmatter.publish_date === 'string') {
-            // Extract just the date part (YYYY-MM-DD) if it includes time
-            publishDateStr = frontmatter.publish_date.split('T')[0].split(' ')[0];
-          } else if (publishDate instanceof Date) {
-            // Use local date methods to avoid UTC conversion issues
-            const pubYear = publishDate.getFullYear();
-            const pubMonth = String(publishDate.getMonth() + 1).padStart(2, '0');
-            const pubDay = String(publishDate.getDate()).padStart(2, '0');
-            publishDateStr = `${pubYear}-${pubMonth}-${pubDay}`;
-          }
-          
-          // Compare date strings directly (YYYY-MM-DD format)
-          // Use > (not >=) so posts go live ON their publish date (same calendar day).
-          // Future-dated posts stay out of the corpus until that day — journals and devotionals.
-          if (publishDateStr && publishDateStr > todayStr) {
-            const kind = isDevotional ? 'devotional' : 'journal post';
-            console.log(`⏰ Skipping future ${kind}: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDateStr}, today is ${todayStr})`);
-            futurePosts++;
-            continue;
-          }
+
+        // Skip future journal + devotional by calendar day (single TZ: publicationTimeZone())
+        if (
+          shouldSkipFutureScheduledMarkdown(frontmatter, {
+            isJournalOrDevotional: true,
+          })
+        ) {
+          const pub = publishDateCalendarOnly(frontmatter.publish_date ?? frontmatter.date);
+          const today = calendarTodayPublicationTz();
+          console.log(
+            `⏰ Skipping future ${isDevotional ? 'devotional' : 'journal post'}: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${pub}, today is ${today})`
+          );
+          futurePosts++;
+          continue;
         }
-        
+
         // Check status - only skip if explicitly set to 'draft'
         const status = frontmatter.status === 'draft' ? 'draft' : 'published';
         if (status === 'draft') {
@@ -448,11 +433,20 @@ async function buildKnowledgeCorpus() {
   
   // Sort by updated_at (newest first)
   docs.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-  
+
+  const beforeGuard = docs.length;
+  const scheduleSafeDocs = filterPublishedScheduledDocs(docs);
+  const droppedGuard = beforeGuard - scheduleSafeDocs.length;
+  if (droppedGuard > 0) {
+    console.warn(
+      `⚠️  Schedule guardrail (output): removed ${droppedGuard} future journal/devotional entr(y/ies) still present before write — check sources or merges`
+    );
+  }
+
   const knowledgeCorpus = {
     generated_at: new Date().toISOString(),
-    count: docs.length,
-    docs: docs
+    count: scheduleSafeDocs.length,
+    docs: scheduleSafeDocs,
   };
   
   // Write to output file

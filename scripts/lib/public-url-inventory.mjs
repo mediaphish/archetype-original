@@ -7,6 +7,7 @@ import { readFileSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { PUBLIC_STATIC_SITEMAP_ROUTES } from './public-static-routes.mjs';
+import { filterPublishedScheduledDocs } from '../../lib/publish-eligibility.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -24,10 +25,11 @@ export function loadKnowledgeInventory() {
   };
 }
 
-/** Published journal posts + devotionals — same eligibility as corpus (already filtered at build-knowledge). */
+/** Published journal posts + devotionals — schedule-safe even if knowledge.json was stale. */
 export function getJournalDevotionalSlugDocs() {
   const { docs } = loadKnowledgeInventory();
-  return docs.filter((d) => d.type === 'journal-post' || d.type === 'devotional');
+  const jd = docs.filter((d) => d.type === 'journal-post' || d.type === 'devotional');
+  return filterPublishedScheduledDocs(jd);
 }
 
 /** Marketing paths from route list (no trailing slash). */

@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { PUBLIC_STATIC_SITEMAP_ROUTES } from './lib/public-static-routes.mjs';
+import { filterPublishedScheduledDocs } from '../lib/publish-eligibility.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,7 +31,9 @@ function journalRoutesFromKnowledge() {
     return [];
   }
   const raw = JSON.parse(readFileSync(knowledgePath, 'utf8'));
-  const docs = (raw.docs || []).filter((d) => d.type === 'journal-post' || d.type === 'devotional');
+  const docs = filterPublishedScheduledDocs(
+    (raw.docs || []).filter((d) => d.type === 'journal-post' || d.type === 'devotional')
+  );
 
   const routes = [];
   for (const doc of docs) {

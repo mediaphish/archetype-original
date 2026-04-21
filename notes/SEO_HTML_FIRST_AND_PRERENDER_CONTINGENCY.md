@@ -14,6 +14,10 @@
 - **Summary counts** (after `npm run build-knowledge`): `node scripts/print-public-inventory-summary.mjs`
 - **Checks:** `scripts/verify-dist-html.mjs` (journal/devotional files on disk), `scripts/verify-dist-marketing-html.mjs` (after pre-render). On Vercel, `scripts/verify-deployment-html.mjs` GETs every inventory path on the preview host (`VERCEL_URL`) so hollow responses fail the build.
 
+## Publication dates (critical with Auto / scheduled writing)
+
+See **`notes/PUBLICATION_SCHEDULE_GUARDRAILS.md`**. Future-dated journal posts and devotionals are enforced in the knowledge build, API, browser loader, sitemap, static HTML, and verification scripts—one calendar timezone (`America/Chicago` by default).
+
 ## If static journal generation fails
 
 Re-run locally: `npm run build:no-prerender` (runs knowledge build, static HTML, verification). Fix markdown or `knowledge.json` issues reported in the console.

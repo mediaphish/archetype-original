@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { search } from '../lib/knowledge';
 
 export default function JournalHighlights() {
   const [posts, setPosts] = useState([]);
@@ -8,17 +9,15 @@ export default function JournalHighlights() {
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const response = await fetch('/knowledge.json');
-        const data = await response.json();
-        
-        if (data.docs && Array.isArray(data.docs)) {
-          const journalPosts = data.docs
-            .filter(doc => doc.type === 'journal-post')
-            .sort((a, b) => new Date(b.publish_date || b.updated_at) - new Date(a.publish_date || a.updated_at))
-            .slice(0, 3);
-          
-          setPosts(journalPosts);
-        }
+        const journalPosts = await search({ type: 'journal-post' });
+        const sorted = journalPosts
+          .sort(
+            (a, b) =>
+              new Date(b.publish_date || b.updated_at) -
+              new Date(a.publish_date || a.updated_at)
+          )
+          .slice(0, 3);
+        setPosts(sorted);
       } catch (error) {
         console.error('Error loading journal posts:', error);
       } finally {
