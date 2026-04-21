@@ -361,13 +361,8 @@ export default function Advisory() {
                 </p>
                 <p className="font-medium text-stone-900">For the leaders who want to go further, the room is available.</p>
               </div>
-              <div className="mt-10 max-w-xl rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-                <p className="text-sm font-medium text-stone-900">Get in touch</p>
-                <p className="mt-2 text-sm leading-relaxed text-stone-600">
-                  There is no public email here on purpose. You can send a message through the site&apos;s contact form,
-                  or open Archy—the owl in the lower-right—and ask about the book, advisory, or what might fit.
-                </p>
-                <p className="mt-4 text-sm text-stone-600">
+              <div className="mt-10">
+                <p className="text-sm text-stone-600">
                   <button
                     type="button"
                     onClick={(e) => goToPath(e, '/')}
@@ -376,11 +371,11 @@ export default function Advisory() {
                     archetypeoriginal.com
                   </button>
                 </p>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <button type="button" onClick={(e) => goToPath(e, '/contact')} className={`${btnContactPair} bg-amber-700 text-white hover:bg-amber-800`}>
                     Open contact form
                   </button>
-                  <button type="button" onClick={openArchyChat} className={`${btnContactPair} border border-stone-300 bg-stone-50 text-stone-900 hover:bg-stone-100`}>
+                  <button type="button" onClick={openArchyChat} className={`${btnContactPair} border border-stone-300 bg-white text-stone-900 hover:bg-stone-50`}>
                     Chat with Archy
                   </button>
                 </div>
