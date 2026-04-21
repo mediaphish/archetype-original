@@ -12,7 +12,6 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
-import { readdirSync } from 'fs';
 import { getPublicStaticPaths } from './lib/public-static-routes.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,37 +20,11 @@ const rootDir = join(__dirname, '..');
 const distDir = join(rootDir, 'dist');
 
 const staticPaths = getPublicStaticPaths();
+/** Individual /journal/[slug] pages are static HTML from generate-static-journal-html.mjs — do not puppeteer them. */
 const routes = [...staticPaths];
 
-function getJournalSlugs() {
-  const journalDir = join(rootDir, 'ao-knowledge-hq-kit', 'journal');
-  const slugs = [];
-
-  try {
-    const files = readdirSync(journalDir);
-    for (const file of files) {
-      if (file.endsWith('.md') && !file.endsWith('.md.md')) {
-        const content = readFileSync(join(journalDir, file), 'utf-8');
-        const slugMatch = content.match(/slug:\s*["']([^"']+)["']/);
-        if (slugMatch) {
-          slugs.push(`/journal/${slugMatch[1]}`);
-        } else {
-          const slug = file.replace(/\.md$/, '');
-          slugs.push(`/journal/${slug}`);
-        }
-      }
-    }
-  } catch (err) {
-    console.error('Error reading journal directory:', err);
-  }
-
-  return slugs;
-}
-
-routes.push(...getJournalSlugs());
-
-console.log(`📋 Static marketing routes: ${staticPaths.length}`);
-console.log(`📋 Journal routes: ${routes.length - staticPaths.length}`);
+console.log(`📋 Static marketing routes (pre-render): ${staticPaths.length}`);
+console.log(`📋 Journal posts are emitted as static HTML separately (not counted here)`);
 console.log(`📋 Total routes to pre-render: ${routes.length}`);
 
 function filterKnowledgeDocs(corpus, searchParams) {
@@ -240,11 +213,13 @@ async function prerenderRoute(browser, route, port) {
 
       writeFileSync(filePath, indexHtml);
       console.log(`  ✅ Saved: ${filePath}`);
-    } else {
-      console.warn(`  ⚠️  Could not extract body/head from ${route}`);
+      return true;
     }
+    console.error(`  ❌ Could not extract body/head from ${route}`);
+    return false;
   } catch (err) {
     console.error(`  ❌ Error pre-rendering ${route}:`, err.message);
+    return false;
   } finally {
     await page.close();
   }
@@ -276,8 +251,14 @@ async function prerender() {
   const browser = await launchBrowser();
 
   try {
+    let failed = 0;
     for (const route of routes) {
-      await prerenderRoute(browser, route, port);
+      const ok = await prerenderRoute(browser, route, port);
+      if (!ok) failed++;
+    }
+    if (failed > 0) {
+      console.error(`\n❌ Pre-render failed for ${failed} route(s). Build aborted.`);
+      process.exit(1);
     }
     console.log(`\n✅ Pre-rendering complete! ${routes.length} routes processed.`);
   } catch (err) {

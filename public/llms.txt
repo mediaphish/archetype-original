@@ -1,0 +1,14 @@
+# Archetype Original
+
+Archetype Original helps leaders install servant-led systems that create clarity, protect culture, and compound performance.
+
+## Learn more
+
+- https://www.archetypeoriginal.com/
+- https://www.archetypeoriginal.com/meet-bart
+- https://www.archetypeoriginal.com/journal
+- https://www.archetypeoriginal.com/culture-science
+- https://www.archetypeoriginal.com/philosophy
+- https://www.archetypeoriginal.com/sitemap.xml
+
+Journal entries and devotionals use paths under /journal/{slug}.

@@ -1,6 +1,14 @@
 {
   "installCommand": "npm ci",
   "buildCommand": "npm run build:prerender",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "destination": "https://www.archetypeoriginal.com/:path*",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "archetypeoriginal.com" }]
+    }
+  ],
   "builds": [
     { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
     { "src": "api/**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["lib/**", "public/knowledge.json"] } }

@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-sitemap.mjs && vite build && npm run build-knowledge",
-    "build:prerender": "node scripts/generate-sitemap.mjs && vite build && npm run build-knowledge && PRERENDER_SKIP_INNER_BUILD=1 node scripts/prerender.mjs",
-    "build:no-prerender": "node scripts/generate-sitemap.mjs && vite build && npm run build-knowledge",
+    "build": "vite build && npm run build-knowledge && node scripts/generate-sitemap.mjs && node scripts/generate-static-journal-html.mjs && node scripts/copy-public-to-dist.mjs",
+    "build:prerender": "vite build && npm run build-knowledge && node scripts/generate-sitemap.mjs && node scripts/generate-static-journal-html.mjs && node scripts/copy-public-to-dist.mjs && PRERENDER_SKIP_INNER_BUILD=1 node scripts/prerender.mjs && node scripts/verify-dist-html.mjs && node scripts/verify-dist-marketing-html.mjs && node scripts/verify-deployment-html.mjs",
+    "build:no-prerender": "vite build && npm run build-knowledge && node scripts/generate-sitemap.mjs && node scripts/generate-static-journal-html.mjs && node scripts/copy-public-to-dist.mjs && node scripts/verify-dist-html.mjs",
     "prerender:local": "npm run build:no-prerender && PRERENDER_SKIP_INNER_BUILD=1 node scripts/prerender.mjs",
     "prerender:auto": "node scripts/auto-prerender.mjs",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -37,6 +37,7 @@
     "fast-xml-parser": "^5.5.3",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.452.0",
+    "marked": "^18.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.4",
@@ -45,6 +46,7 @@
     "sharp": "^0.34.5"
   },
   "devDependencies": {
+    "@sparticuz/chromium": "^131.0.0",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
@@ -58,10 +60,9 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.9",
-    "vite": "^5.0.8",
-    "@sparticuz/chromium": "^131.0.0",
     "puppeteer": "^24.0.0",
-    "puppeteer-core": "^24.0.0"
+    "puppeteer-core": "^24.0.0",
+    "tailwindcss": "^3.4.9",
+    "vite": "^5.0.8"
   }
 }
