@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 /**
- * After deploy artifact exists: GET every public inventory path on the deployment host
- * and fail if HTML is hollow. Uses VERCEL_URL (set on Vercel) or HTML_CHECK_BASE_URL.
- * Skips (exit 0) locally when no base URL is available.
+ * After deploy: GET public URLs on the deployment host and fail if HTML is hollow.
+ * Uses VERCEL_URL or HTML_CHECK_BASE_URL. Skips locally when no base URL is set.
+ * If the host returns 401/403 (e.g. Vercel Deployment Protection on previews), skips —
+ * dist/ is already validated by verify-dist-html and verify-dist-marketing-html.
+ * Optional: VERCEL_AUTOMATION_BYPASS_SECRET + header x-vercel-protection-bypass for protected URLs.
  */
 
 import { approxVisibleBodyText, isJournalPostPath } from './lib/html-substance.mjs';
@@ -30,6 +32,44 @@ if (!base) {
   process.exit(0);
 }
 
+function fetchHeaders() {
+  const h = {
+    'user-agent':
+      'Mozilla/5.0 (compatible; ArchetypeOriginal-deploy-check/1.0; +https://www.archetypeoriginal.com)',
+    accept: 'text/html,application/xhtml+xml',
+  };
+  const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  if (bypass) {
+    h['x-vercel-protection-bypass'] = bypass;
+  }
+  return h;
+}
+
+/** Preview deployments often use Vercel Deployment Protection (401/403 without auth). Dist/ is already checked. */
+async function probeSkippableProtection() {
+  const res = await fetch(`${base}/`, {
+    redirect: 'follow',
+    headers: fetchHeaders(),
+  });
+  if (res.status !== 401 && res.status !== 403) {
+    return false;
+  }
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    console.error(
+      `❌ verify-deployment-html: deployment still returned HTTP ${res.status} with VERCEL_AUTOMATION_BYPASS_SECRET set — check the secret in Vercel → Deployment Protection.`
+    );
+    process.exit(1);
+  }
+  console.log(
+    `⏭️  verify-deployment-html: skipped (HTTP ${res.status} — this deployment URL requires a login screen; ` +
+      `marketing and journal HTML were already verified in dist/ by verify-dist-html and verify-dist-marketing-html). ` +
+      `Optional: add VERCEL_AUTOMATION_BYPASS_SECRET in the project so automated checks can reach protected previews.`
+  );
+  process.exit(0);
+}
+
+await probeSkippableProtection();
+
 const paths = getExpectedCrawlPaths();
 console.log(`🌐 verify-deployment-html: checking ${paths.length} URLs at ${base} ...`);
 
@@ -45,11 +85,7 @@ async function fetchPath(pathname) {
   const url = `${base}${pathname === '/' ? '/' : pathname}`;
   const res = await fetch(url, {
     redirect: 'follow',
-    headers: {
-      'user-agent':
-        'Mozilla/5.0 (compatible; ArchetypeOriginal-deploy-check/1.0; +https://www.archetypeoriginal.com)',
-      accept: 'text/html,application/xhtml+xml',
-    },
+    headers: fetchHeaders(),
   });
   if (!res.ok) {
     fail(`${pathname} → HTTP ${res.status}`);
