@@ -11,7 +11,7 @@
  */
 
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
@@ -168,6 +168,28 @@ async function launchBrowser() {
   const useSparticuz = !isDesktopDevOs && !forceBundled;
 
   if (useSparticuz) {
+    // @sparticuz/chromium only extracts NSS/OpenSSL-compatible libs from al2023.tar.br (and sets
+    // LD_LIBRARY_PATH for /tmp/al2023/lib) when it thinks it is AWS Lambda Node 20+. Vercel is not
+    // Lambda, so without this hint Chromium starts but dies loading libnss3.so from the host.
+    // Must be set before `import('@sparticuz/chromium')` so module init runs setupLambdaEnvironment.
+    const hint = 'AWS_Lambda_nodejs20.x';
+    if (
+      !process.env.AWS_EXECUTION_ENV ||
+      !String(process.env.AWS_EXECUTION_ENV).includes('20.x')
+    ) {
+      process.env.AWS_EXECUTION_ENV = hint;
+    }
+
+    // A leftover /tmp/chromium from stock Puppeteer makes executablePath() return early and skip
+    // inflating al2023.tar.br (bundled NSS). Remove so Sparticuz always runs a full extract.
+    try {
+      if (existsSync('/tmp/chromium')) {
+        unlinkSync('/tmp/chromium');
+      }
+    } catch {
+      /* ignore */
+    }
+
     const puppeteer = await import('puppeteer-core');
     const chromium = (await import('@sparticuz/chromium')).default;
     return puppeteer.default.launch({
