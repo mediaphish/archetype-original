@@ -136,8 +136,8 @@ export default function RemainingHuman() {
                 </p>
 
                 <div className="mt-8">
-                  <CheckoutButton className={heroCtaClasses}>Get the eBook — $9.99</CheckoutButton>
-                  <p className="mt-3 text-sm text-[#C3DFD8]">Launch price. Increasing to $19.99.</p>
+                  <CheckoutButton className={heroCtaClasses}>Get the eBook — $27</CheckoutButton>
+                  <p className="mt-3 text-sm text-[#C3DFD8]">Digital download · One-time purchase.</p>
                 </div>
 
                 {!isCheckoutReady && (
@@ -250,8 +250,8 @@ export default function RemainingHuman() {
                 tactics. A way to think clearly when everything else speeds up.
               </p>
               <div className="mt-8">
-                <CheckoutButton className={midCtaClasses}>Get the eBook — $9.99</CheckoutButton>
-                <p className="mt-3 text-sm text-[#B8DDD4]">Launch price. Increasing to $19.99.</p>
+                <CheckoutButton className={midCtaClasses}>Get the eBook — $27</CheckoutButton>
+                <p className="mt-3 text-sm text-[#B8DDD4]">Digital download · One-time purchase.</p>
               </div>
             </div>
           </div>
@@ -368,8 +368,8 @@ export default function RemainingHuman() {
                 organization—this book will help you see it and respond with intention.
               </p>
               <div className="mt-10">
-                <CheckoutButton className={finalCtaClasses}>Get the eBook — $9.99</CheckoutButton>
-                <p className="mt-3 text-sm text-[#3D625C]">Launch price. Increasing to $19.99.</p>
+                <CheckoutButton className={finalCtaClasses}>Get the eBook — $27</CheckoutButton>
+                <p className="mt-3 text-sm text-[#3D625C]">Digital download · One-time purchase.</p>
               </div>
               {!isCheckoutReady && (
                 <p className="mt-4 text-sm text-[#4D716B]">
