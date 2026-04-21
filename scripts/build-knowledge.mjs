@@ -245,12 +245,11 @@ async function buildKnowledgeCorpus() {
           }
           
           // Compare date strings directly (YYYY-MM-DD format)
-          // Use > (not >=) to ensure posts go live ON their publish date
-          // If publishDateStr === todayStr, the post should be published
-          // Future-dated **devotionals** stay out of the corpus until their day.
-          // Future-dated **journal** posts are still indexed (series/editorial can ship with a planned date).
-          if (publishDateStr && publishDateStr > todayStr && isDevotional) {
-            console.log(`⏰ Skipping future devotional: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDateStr}, today is ${todayStr})`);
+          // Use > (not >=) so posts go live ON their publish date (same calendar day).
+          // Future-dated posts stay out of the corpus until that day — journals and devotionals.
+          if (publishDateStr && publishDateStr > todayStr) {
+            const kind = isDevotional ? 'devotional' : 'journal post';
+            console.log(`⏰ Skipping future ${kind}: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${publishDateStr}, today is ${todayStr})`);
             futurePosts++;
             continue;
           }
