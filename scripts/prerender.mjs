@@ -2,7 +2,10 @@
 
 /**
  * Pre-rendering: visit each public route with headless Chrome, save fully rendered HTML to dist.
- * Runs on Vercel builds (puppeteer-core + @sparticuz/chromium) and locally (puppeteer).
+ * On Linux (including Vercel's build machines), uses puppeteer-core + @sparticuz/chromium — the
+ * stock Chromium bundled with `puppeteer` expects host libraries (e.g. NSS) that minimal Linux
+ * images often lack. On macOS/Windows, uses full `puppeteer`. Set PRERENDER_USE_PUPPETEER=1 on
+ * Linux to force the bundled browser (e.g. desktop Linux with deps installed).
  *
  * When PRERENDER_SKIP_INNER_BUILD=1, skips npm run build:no-prerender (used after build:prerender / prerender:local).
  */
@@ -149,7 +152,11 @@ function startServer(port) {
 }
 
 async function launchBrowser() {
-  if (process.env.VERCEL) {
+  const forceBundledPuppeteer = process.env.PRERENDER_USE_PUPPETEER === '1';
+  const useSparticuz =
+    process.platform === 'linux' && !forceBundledPuppeteer;
+
+  if (useSparticuz) {
     const puppeteer = await import('puppeteer-core');
     const chromium = (await import('@sparticuz/chromium')).default;
     return puppeteer.default.launch({
@@ -160,7 +167,7 @@ async function launchBrowser() {
     });
   }
 
-  // Local dev: full puppeteer bundles Chromium (works on macOS/Windows).
+  // macOS / Windows / Linux with PRERENDER_USE_PUPPETEER=1: full puppeteer bundles Chromium.
 
   try {
     const puppeteer = await import('puppeteer');
@@ -170,7 +177,7 @@ async function launchBrowser() {
     });
   } catch (e) {
     console.error(
-      '❌ Install devDependencies: puppeteer (local) or use Vercel for @sparticuz/chromium build.'
+      '❌ Install devDependencies: puppeteer (macOS/Windows) or puppeteer-core + @sparticuz/chromium (Linux).'
     );
     throw e;
   }
