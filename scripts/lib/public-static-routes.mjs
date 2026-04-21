@@ -32,6 +32,7 @@ export const PUBLIC_STATIC_SITEMAP_ROUTES = [
   { path: '/faqs', priority: '0.8', changefreq: 'weekly' },
   { path: '/contact', priority: '0.7', changefreq: 'monthly' },
   { path: '/engagement-inquiry', priority: '0.8', changefreq: 'monthly' },
+  { path: '/advisory', priority: '0.85', changefreq: 'monthly' },
   { path: '/what-i-do', priority: '0.8', changefreq: 'monthly' },
   { path: '/accidental-ceo', priority: '0.9', changefreq: 'monthly' },
   { path: '/remaining-human', priority: '0.8', changefreq: 'monthly' },

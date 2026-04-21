@@ -52,6 +52,8 @@ export default function FloatingArchyButton() {
         setContext('culture-science');
       } else if (path === '/archy' || path.startsWith('/archy/')) {
         setContext('archy');
+      } else if (path === '/advisory') {
+        setContext('advisory');
       } else if (path === '/philosophy') {
         setContext('philosophy');
       } else if (path === '/meet-bart') {

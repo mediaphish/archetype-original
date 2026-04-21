@@ -163,6 +163,17 @@ export default function Header() {
                   >
                     Meet Archy
                   </a>
+
+                  <a
+                    href="/advisory"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigation('/advisory');
+                    }}
+                    className={`${navLinkClass('/advisory')} whitespace-nowrap text-sm lg:text-base`}
+                  >
+                    Advisory
+                  </a>
                   
                   <a 
                     href="/philosophy" 
@@ -423,6 +434,21 @@ export default function Header() {
                   }`}
                 >
                   Meet Archy
+                </a>
+
+                <a
+                  href="/advisory"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/advisory');
+                  }}
+                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
+                    isActive('/advisory')
+                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
+                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
+                  }`}
+                >
+                  Advisory
                 </a>
                 
                 <a 

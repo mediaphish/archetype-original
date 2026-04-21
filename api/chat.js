@@ -139,6 +139,18 @@ function ensureRemainingHumanInKnowledge(relevantKnowledge, corpus, pageContext)
   return [rh, ...relevantKnowledge].slice(0, 5);
 }
 
+/** On /advisory, pin The Room manuscript so Archy can answer from the book. */
+function ensureTheRoomInKnowledge(relevantKnowledge, corpus, pageContext) {
+  if (pageContext !== 'advisory' || !corpus?.docs?.length) {
+    return relevantKnowledge;
+  }
+  const book = corpus.docs.find((d) => d.slug === 'the-room');
+  if (!book) return relevantKnowledge;
+  const has = relevantKnowledge.some((d) => d.slug === 'the-room');
+  if (has) return relevantKnowledge;
+  return [book, ...relevantKnowledge].slice(0, 5);
+}
+
 // Get client IP from Vercel headers
 function getClientIP(req) {
   const forwarded = req.headers['x-forwarded-for'];
@@ -244,6 +256,7 @@ export default async function handler(req, res) {
     knowledgeCorpus,
     context
   );
+  relevantKnowledge = ensureTheRoomInKnowledge(relevantKnowledge, knowledgeCorpus, context);
   console.log('Searching for:', message);
   console.log('Relevant knowledge found:', relevantKnowledge.length, 'documents');
   if (relevantKnowledge.length > 0) {
@@ -273,7 +286,12 @@ export default async function handler(req, res) {
                           doc.tags?.includes('doctrine') ||
                           doc.summary?.toLowerCase().includes('canonical');
       const cap = archyDepth.maxBodyChars;
-      const contentLength = isCanonical ? Math.min(Math.floor(cap * 1.15), 2000) : cap;
+      const isTheRoomBook = doc.slug === 'the-room';
+      const contentLength = isTheRoomBook
+        ? Math.min(12000, Math.max(cap * 5, 4000))
+        : isCanonical
+          ? Math.min(Math.floor(cap * 1.15), 2000)
+          : cap;
       knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}...\n\n`;
     });
   }
@@ -360,14 +378,24 @@ CONVERSATION STYLE:
 - Keep the conversation going - invite follow-up questions
 - ${nameReferenceInstruction}
 
-NEVER SUGGEST CONTACTING BART:
+${context === 'advisory'
+    ? `ADVISORY PAGE — CONTACT AND NEXT STEPS (THIS PAGE ONLY):
+- The visitor is reading about Bart's book "The Room" ($27) and optional private advisory — not generic consulting.
+- Use the corpus (especially The Room manuscript) as the authority for the book's thesis.
+- Explain advisory as a single relationship outside their organizational system when asked; do not invent deliverables or a curriculum.
+- When it genuinely helps, you MAY mention:
+  - Purchasing the book at https://aobooks.samcart.com/products/the-room (same checkout the site uses)
+  - Starting a conversation via the site's Engagement Inquiry at https://www.archetypeoriginal.com/engagement-inquiry
+- Stay grounded and respectful. Do not pressure. Do not invent guarantees, pricing beyond the book, or slots.
+- You still answer fully as Archy — do not defer with "talk to Bart" unless the visitor clearly wants handoff; on this page, pointing to Engagement Inquiry is appropriate when they want next steps.`
+    : `NEVER SUGGEST CONTACTING BART:
 - Do NOT offer to schedule time with Bart
 - Do NOT suggest talking to Bart directly  
 - Do NOT ask if they want to connect with Bart
 - Do NOT offer to "arrange a conversation" or similar
 - Your job is to have the conversation yourself, fully and completely
 - Only if the user EXPLICITLY asks to contact/schedule/meet with Bart should you help with that
-- Let people explore, learn, and ask as many questions as they want
+- Let people explore, learn, and ask as many questions as they want`}
 
 CONVERSATION STYLE:
 - Direct and honest. If you don't understand, say so.

@@ -45,6 +45,12 @@
       "description": "A dystopian leadership eBook by Bart Paden on servant leadership, clarity, and staying human while AI reshapes work.",
       "keywords": "Remaining Human, Bart Paden, servant leadership, AI leadership, leadership eBook, Archetype Original",
       "image": "/og-default.jpg"
+    },
+    "advisory": {
+      "title": "The Room & Advisory | Archetype Original",
+      "description": "The Room — a short book on the structural limits of honest feedback inside authority. Private advisory outside your system when you are ready for the conversation that cannot happen inside the room.",
+      "keywords": "The Room, Bart Paden, leadership advisory, honest feedback, organizational behavior, Archetype Original",
+      "image": "/images/advisory/the-room-cover.png"
     }
   }
 }
