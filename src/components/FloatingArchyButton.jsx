@@ -67,10 +67,16 @@ export default function FloatingArchyButton() {
 
     updateContext();
     window.addEventListener('popstate', updateContext);
-    
+
     return () => {
       window.removeEventListener('popstate', updateContext);
     };
+  }, []);
+
+  useEffect(() => {
+    const onOpenChat = () => setIsOpen(true);
+    window.addEventListener('ao-open-chat', onOpenChat);
+    return () => window.removeEventListener('ao-open-chat', onOpenChat);
   }, []);
 
   return (

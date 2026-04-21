@@ -17,11 +17,18 @@ function goToPath(event, path) {
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
+function openArchyChat() {
+  window.dispatchEvent(new CustomEvent('ao-open-chat'));
+}
+
 const btnPrimary =
   'inline-flex min-h-[52px] items-center justify-center rounded-lg bg-amber-700 px-7 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2';
 
 const btnEqual =
   'inline-flex min-h-[52px] w-full sm:w-auto min-w-[240px] items-center justify-center rounded-lg bg-stone-800 px-8 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2';
+
+const btnContactPair =
+  'inline-flex min-h-[48px] flex-1 items-center justify-center rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 sm:min-w-[200px]';
 
 export default function Advisory() {
   const [isReturnVisitor, setIsReturnVisitor] = useState(() => {
@@ -354,13 +361,30 @@ export default function Advisory() {
                 </p>
                 <p className="font-medium text-stone-900">For the leaders who want to go further, the room is available.</p>
               </div>
-              <p className="mt-10 text-sm text-stone-600">
-                archetypeoriginal.com
-                <br />
-                <a href="mailto:bart@archetypeoriginal.com" className="font-medium text-amber-800 underline-offset-4 hover:underline">
-                  bart@archetypeoriginal.com
-                </a>
-              </p>
+              <div className="mt-10 max-w-xl rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+                <p className="text-sm font-medium text-stone-900">Get in touch</p>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                  There is no public email here on purpose. You can send a message through the site&apos;s contact form,
+                  or open Archy—the owl in the lower-right—and ask about the book, advisory, or what might fit.
+                </p>
+                <p className="mt-4 text-sm text-stone-600">
+                  <button
+                    type="button"
+                    onClick={(e) => goToPath(e, '/')}
+                    className="font-medium text-amber-800 underline-offset-4 hover:underline"
+                  >
+                    archetypeoriginal.com
+                  </button>
+                </p>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <button type="button" onClick={(e) => goToPath(e, '/contact')} className={`${btnContactPair} bg-amber-700 text-white hover:bg-amber-800`}>
+                    Open contact form
+                  </button>
+                  <button type="button" onClick={openArchyChat} className={`${btnContactPair} border border-stone-300 bg-stone-50 text-stone-900 hover:bg-stone-100`}>
+                    Chat with Archy
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
