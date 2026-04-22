@@ -18,10 +18,19 @@ export default function Faith() {
   const [loading, setLoading] = useState(true);
   const [currentDevotional, setCurrentDevotional] = useState(null);
   const [previousDevotionals, setPreviousDevotionals] = useState([]);
+  const [selectedSlug, setSelectedSlug] = useState(null);
 
   useEffect(() => {
     // Always scroll to top when page loads
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // If a devotional slug is provided in the URL, prefer showing that devotional
+    // Example: /faith?slug=integrity-under-pressure
+    const initialSlug =
+      typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('slug')
+        : null;
+    if (initialSlug) setSelectedSlug(initialSlug);
 
     // Load devotionals from the knowledge corpus
     fetch('/api/knowledge?type=devotional')
@@ -73,13 +82,20 @@ export default function Faith() {
           return publishDateStr === todayStr;
         });
         
-        // Only show today's devotional - don't fall back to most recent
-        const current = todaysDevotional || null;
+        // If a slug is selected, show that devotional (even if it's not today's)
+        const selectedDevotional = selectedSlug
+          ? sortedDevotionals.find(d => d.slug === selectedSlug)
+          : null;
+
+        // Only show today's devotional unless a specific devotional is selected
+        const current = selectedDevotional || todaysDevotional || null;
         
         // Previous devotionals are only those with publish_date < today (excluding today's)
         const previous = sortedDevotionals.filter(d => {
           if (!d.publish_date) return false;
           const publishDateStr = String(d.publish_date).split('T')[0].split(' ')[0];
+          // If a specific devotional is selected, keep the list focused and exclude the selected one
+          if (selectedDevotional && d.slug === selectedDevotional.slug) return false;
           return publishDateStr < todayStr;
         });
         
@@ -92,7 +108,7 @@ export default function Faith() {
         console.error('Error loading devotionals:', error);
         setLoading(false);
       });
-  }, []);
+  }, [selectedSlug]);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -199,14 +215,14 @@ export default function Faith() {
                 <div className="mb-8 flex items-center justify-between">
                   <div>
                     <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C] mb-2">
-                      Today's Devotional
+                      {selectedSlug ? 'Devotional' : "Today's Devotional"}
                     </p>
                     <p className="text-sm text-[#6B6B6B]">
                       {formatDate(currentDevotional.publish_date || currentDevotional.date)}
                     </p>
                   </div>
                   <ShareLinks 
-                    url={typeof window !== 'undefined' ? `${window.location.origin}/journal/${currentDevotional.slug}` : ''}
+                    url={typeof window !== 'undefined' ? `${window.location.origin}/faith?slug=${encodeURIComponent(currentDevotional.slug)}` : ''}
                     title={currentDevotional.title}
                     description={currentDevotional.summary || ''}
                   />
@@ -241,8 +257,8 @@ export default function Faith() {
                       key={devotional.slug}
                       className="border border-[#1A1A1A]/10 bg-white p-6 sm:p-8 hover:shadow-lg transition-shadow cursor-pointer"
                       onClick={() => {
-                        window.history.pushState({}, '', `/journal/${devotional.slug}`);
-                        window.dispatchEvent(new PopStateEvent('popstate'));
+                        setSelectedSlug(devotional.slug);
+                        window.history.pushState({}, '', `/faith?slug=${encodeURIComponent(devotional.slug)}`);
                         window.scrollTo({ top: 0, behavior: 'instant' });
                       }}
                     >
@@ -269,11 +285,11 @@ export default function Faith() {
                       )}
                       <div className="mt-4">
                         <a 
-                          href={`/journal/${devotional.slug}`}
+                          href={`/faith?slug=${encodeURIComponent(devotional.slug)}`}
                           onClick={(e) => {
                             e.preventDefault();
-                            window.history.pushState({}, '', `/journal/${devotional.slug}`);
-                            window.dispatchEvent(new PopStateEvent('popstate'));
+                            setSelectedSlug(devotional.slug);
+                            window.history.pushState({}, '', `/faith?slug=${encodeURIComponent(devotional.slug)}`);
                             window.scrollTo({ top: 0, behavior: 'instant' });
                           }}
                           className="text-[#C85A3C] hover:text-[#B54A32] underline font-medium text-base"

@@ -100,7 +100,9 @@ export default async function handler(req, res) {
 
     // Prepare email content
     const siteUrl = process.env.PUBLIC_SITE_URL || "https://www.archetypeoriginal.com";
-    const postUrl = `${siteUrl}/journal/${slug}`;
+    const postUrl = isDevotional
+      ? `${siteUrl}/faith?slug=${encodeURIComponent(slug)}`
+      : `${siteUrl}/journal/${slug}`;
     const postSummary = email_summary || summary || "Read the full post to learn more.";
     const publishDate = publish_date 
       ? new Date(publish_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -118,7 +120,7 @@ export default async function handler(req, res) {
       : "New Journal Post";
     
     const emailFooter = isDevotional
-      ? `You're receiving this because you subscribed to devotionals at ${siteUrl}/journal`
+      ? `You're receiving this because you subscribed to devotionals at ${siteUrl}/faith`
       : `You're receiving this because you subscribed to journal updates at ${siteUrl}/journal`;
     
     const viewAllLink = isDevotional

@@ -124,7 +124,7 @@ export default async function handler(req, res) {
 
       console.log(`📧 Processing devotional: ${title} (${slug})`);
 
-      const postUrl = `${siteUrl}/journal/${slug}`;
+      const postUrl = `${siteUrl}/faith?slug=${encodeURIComponent(slug)}`;
       const postSummary = email_summary || summary || "Read the full devotional to learn more.";
       const publishDate = publish_date 
         ? new Date(publish_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -152,7 +152,7 @@ export default async function handler(req, res) {
           </p>
           
           <p style="font-size:12px;color:#6B6B6B; margin:16px 0 0 0;">
-            You're receiving this because you subscribed to devotionals at ${siteUrl}/journal
+            You're receiving this because you subscribed to devotionals at ${siteUrl}/faith
           </p>
         </div>
       `;
