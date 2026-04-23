@@ -76,8 +76,8 @@ export default function DevotionalPost({ post: postProp = null }) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <p className="text-[#C85A3C] text-lg mb-4">{error || 'Post not found'}</p>
-          <a href="/journal" className="text-[#C85A3C] hover:underline">
+          <p className="text-[#DB0812] text-lg mb-4">{error || 'Post not found'}</p>
+          <a href="/journal" className="text-[#DB0812] hover:underline">
             Return to Journal
           </a>
         </div>
@@ -197,7 +197,7 @@ export default function DevotionalPost({ post: postProp = null }) {
         }
         return '';
       }).filter(item => item).join('');
-      return `<ul class="list-disc list-inside space-y-2 ml-4 my-4 marker:text-[#C85A3C]">${items}</ul>`;
+      return `<ul class="list-disc list-inside space-y-2 ml-4 my-4 marker:text-[#DB0812]">${items}</ul>`;
     });
 
     // Convert remaining line breaks to paragraphs
@@ -242,7 +242,7 @@ export default function DevotionalPost({ post: postProp = null }) {
           <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-12 sm:py-16 md:py-20">
             <div className="container mx-auto px-4 sm:px-6 md:px-12">
               <div className="max-w-4xl mx-auto text-center">
-                <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C] mb-4">
+                <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#DB0812] mb-4">
                   SERVANT LEADERSHIP DEVOTIONAL
                 </p>
                 <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
@@ -302,7 +302,7 @@ export default function DevotionalPost({ post: postProp = null }) {
               {/* Reflection */}
               {sections.reflection && (
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#C85A3C] pl-4 sm:pl-6">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#DB0812] pl-4 sm:pl-6">
                     Reflection
                   </h2>
                   <div 
@@ -315,7 +315,7 @@ export default function DevotionalPost({ post: postProp = null }) {
               {/* Practical Application */}
               {sections.practicalApplication && (
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#C85A3C] pl-4 sm:pl-6">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#DB0812] pl-4 sm:pl-6">
                     Practical Application
                   </h2>
                   <div 
@@ -328,7 +328,7 @@ export default function DevotionalPost({ post: postProp = null }) {
               {/* Takeaways */}
               {sections.takeaways && (
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#C85A3C] pl-4 sm:pl-6">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#DB0812] pl-4 sm:pl-6">
                     Takeaways
                   </h2>
                   <div 
@@ -340,7 +340,7 @@ export default function DevotionalPost({ post: postProp = null }) {
 
               {/* Closing Thought */}
               {sections.closingThought && (
-                <div className="bg-[#FAFAF9] border-l-4 border-[#C85A3C] p-6 sm:p-8 md:p-10">
+                <div className="bg-[#FAFAF9] border-l-4 border-[#DB0812] p-6 sm:p-8 md:p-10">
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4">
                     Closing Thought
                   </h2>

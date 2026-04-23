@@ -152,7 +152,7 @@ export default function JournalPost() {
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DB0812] mx-auto"></div>
               <p className="mt-4 text-[#6B6B6B]">Loading post...</p>
             </div>
           </div>
@@ -273,7 +273,7 @@ export default function JournalPost() {
                 summaryText = summaryText.replace(/\s+/g, ' ').trim();
                 
                 return summaryText ? (
-                  <div className="mb-8 sm:mb-10 p-4 sm:p-6 bg-[#FAFAF9] border-l-[6px] border-[#C85A3C]">
+                  <div className="mb-8 sm:mb-10 p-4 sm:p-6 bg-[#FAFAF9] border-l-[6px] border-[#DB0812]">
                     <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] leading-normal">
                       {summaryText}
                     </p>
@@ -681,7 +681,7 @@ export default function JournalPost() {
                       // Add the pattern as a React element
                       if (pattern.type === 'link') {
                         result.push(
-                          <a key={`link-${keyCounter++}`} href={pattern.url} className="text-[#C85A3C] hover:text-[#B54A32] underline" target="_blank" rel="noopener noreferrer">
+                          <a key={`link-${keyCounter++}`} href={pattern.url} className="text-[#DB0812] hover:text-[#b30610] underline" target="_blank" rel="noopener noreferrer">
                             {pattern.text}
                           </a>
                         );
@@ -726,14 +726,14 @@ export default function JournalPost() {
                         }
                         return (
                           <div key={index} className="flex items-center mb-4 sm:mb-6 mt-8">
-                            <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                            <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] font-serif tracking-tight">{h1Content}</h1>
                           </div>
                         );
                       case 'h2':
                         return (
                           <div key={index} className="flex items-center mb-3 sm:mb-4 mt-6">
-                            <div className="w-1 h-8 sm:h-10 md:h-12 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                            <div className="w-1 h-8 sm:h-10 md:h-12 bg-[#DB0812] mr-4 sm:mr-6"></div>
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight">{block.content}</h2>
                           </div>
                         );
@@ -741,7 +741,7 @@ export default function JournalPost() {
                         return <h3 key={index} className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-2 sm:mb-3 mt-4 font-serif tracking-tight">{block.content}</h3>;
                       case 'blockquote':
                         return (
-                          <blockquote key={index} className="border-l-[6px] border-[#C85A3C] pl-6 sm:pl-8 py-4 my-6 sm:my-8 bg-[#FAFAF9]">
+                          <blockquote key={index} className="border-l-[6px] border-[#DB0812] pl-6 sm:pl-8 py-4 my-6 sm:my-8 bg-[#FAFAF9]">
                             <p className="text-xl sm:text-2xl md:text-3xl italic text-[#1A1A1A] leading-tight font-serif">
                               "{block.content}"
                             </p>
@@ -761,11 +761,11 @@ export default function JournalPost() {
                         );
                       case 'ul':
                         return (
-                          <ul key={index} className="list-disc mb-3 sm:mb-4 space-y-3 pl-6 sm:pl-8 marker:text-[#C85A3C]">
+                          <ul key={index} className="list-disc mb-3 sm:mb-4 space-y-3 pl-6 sm:pl-8 marker:text-[#DB0812]">
                             {block.items.map((item, itemIndex) => {
                               const processedItem = processInlineMarkdown(item);
                               return (
-                                <li key={itemIndex} className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+                                <li key={itemIndex} className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                                   {processedItem}
                                 </li>
                               );
@@ -860,7 +860,7 @@ export default function JournalPost() {
                             <a 
                               href="/philosophy" 
                               onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/philosophy'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
-                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                              className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
                               Philosophy — The foundation of servant leadership
                             </a>
@@ -871,7 +871,7 @@ export default function JournalPost() {
                             <a 
                               href="/methods" 
                               onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/methods'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
-                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                              className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
                               Methods — How I work with leaders and teams
                             </a>
@@ -882,7 +882,7 @@ export default function JournalPost() {
                             <a 
                               href="/meet-bart" 
                               onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/meet-bart'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
-                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                              className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
                               Meet Bart — The posture that shapes my leadership
                             </a>
@@ -893,7 +893,7 @@ export default function JournalPost() {
                             <a 
                               href="/culture-science/anti-projects/scoreboard-leadership" 
                               onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/culture-science/anti-projects/scoreboard-leadership'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
-                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                              className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
                               Scoreboard Leadership — The diagnostic lens
                             </a>
@@ -915,7 +915,7 @@ export default function JournalPost() {
                             <a 
                               href={`/journal/${relatedSlug}`}
                               onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', `/journal/${relatedSlug}`); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
-                              className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
+                              className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
                               {relatedSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                             </a>

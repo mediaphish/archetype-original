@@ -187,7 +187,7 @@ export default function Faith() {
                       window.dispatchEvent(new PopStateEvent('popstate'));
                       window.scrollTo({ top: 0, behavior: 'instant' });
                     }}
-                    className="text-[#C85A3C] hover:text-[#B54A32] underline font-medium"
+                    className="text-[#DB0812] hover:text-[#b30610] underline font-medium"
                   >
                     The Golden Rule Has Always Been a Leadership Strategy
                   </a>
@@ -203,7 +203,7 @@ export default function Faith() {
           <section className="py-12 sm:py-16 md:py-20">
             <div className="container mx-auto px-4 sm:px-6 md:px-12">
               <div className="max-w-4xl mx-auto text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DB0812] mx-auto"></div>
                 <p className="mt-4 text-[#6B6B6B]">Loading devotionals...</p>
               </div>
             </div>
@@ -214,7 +214,7 @@ export default function Faith() {
               <div className="max-w-4xl mx-auto">
                 <div className="mb-8 flex items-center justify-between">
                   <div>
-                    <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C] mb-2">
+                    <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#DB0812] mb-2">
                       {selectedSlug ? 'Devotional' : "Today's Devotional"}
                     </p>
                     <p className="text-sm text-[#6B6B6B]">
@@ -266,7 +266,7 @@ export default function Faith() {
                         <time className="text-sm text-[#6B6B6B]">
                           {formatDate(devotional.publish_date || devotional.date)}
                         </time>
-                        <span className="text-xs uppercase tracking-wider font-semibold text-[#C85A3C]">
+                        <span className="text-xs uppercase tracking-wider font-semibold text-[#DB0812]">
                           Devotional
                         </span>
                       </div>
@@ -292,7 +292,7 @@ export default function Faith() {
                             window.history.pushState({}, '', `/faith?slug=${encodeURIComponent(devotional.slug)}`);
                             window.scrollTo({ top: 0, behavior: 'instant' });
                           }}
-                          className="text-[#C85A3C] hover:text-[#B54A32] underline font-medium text-base"
+                          className="text-[#DB0812] hover:text-[#b30610] underline font-medium text-base"
                         >
                           Read Full Devotional →
                         </a>

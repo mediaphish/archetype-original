@@ -133,7 +133,7 @@ export default function CCO() {
               <div className="flex flex-wrap gap-4 sm:gap-6">
                 <a 
                   href="/methods/mentorship" 
-                  className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                  className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
                     window.history.pushState({}, '', '/methods/mentorship');
@@ -145,7 +145,7 @@ export default function CCO() {
                 <span className="text-sm text-[#6B6B6B]">→</span>
                 <a 
                   href="/methods/consulting" 
-                  className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                  className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
                     window.history.pushState({}, '', '/methods/consulting');
@@ -157,7 +157,7 @@ export default function CCO() {
                 <span className="text-sm text-[#6B6B6B]">→</span>
                 <a 
                   href="/methods/training-education" 
-                  className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                  className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
                     window.history.pushState({}, '', '/methods/training-education');
@@ -169,7 +169,7 @@ export default function CCO() {
                 <span className="text-sm text-[#6B6B6B]">→</span>
                 <a 
                   href="/methods/fractional-roles" 
-                  className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                  className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
                     window.history.pushState({}, '', '/methods/fractional-roles');

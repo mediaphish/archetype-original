@@ -30,7 +30,7 @@ export default function AntiProjects() {
           {/* Two Anti-Projects (vertical layout with thick orange left borders) */}
           <div className="space-y-8 sm:space-y-10 md:space-y-12">
             {/* ANTI-PROJECT 1: Scoreboard Leadership */}
-            <div className="border-l-[6px] border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12 py-4">
+            <div className="border-l-[6px] border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-12 py-4">
               <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight break-words">
                 Scoreboard Leadership
               </h3>
@@ -40,14 +40,14 @@ export default function AntiProjects() {
               <a
                 href="/culture-science/anti-projects/scoreboard-leadership"
                 onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/scoreboard-leadership')}
-                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Research →
               </a>
             </div>
 
             {/* ANTI-PROJECT 2: The Bad Leader Project */}
-            <div className="border-l-[6px] border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12 py-4">
+            <div className="border-l-[6px] border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-12 py-4">
               <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight break-words">
                 The Bad Leader Project
               </h3>
@@ -57,7 +57,7 @@ export default function AntiProjects() {
               <a
                 href="/culture-science/anti-projects/bad-leader-project"
                 onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/bad-leader-project')}
-                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Research →
               </a>

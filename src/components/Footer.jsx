@@ -16,13 +16,13 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#FAFAF9] border-t border-[#1A1A1A]/10 py-12 sm:py-16">
+    <footer className="border-t border-white/10 bg-ao-dark py-12 sm:py-16 text-ao-bone">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
             {/* About & Philosophy */}
             <div>
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-[#1A1A1A] mb-4">
+              <h3 className="mb-4 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-ao-brown">
                 About
               </h3>
               <ul className="space-y-2">
@@ -30,7 +30,7 @@ export default function Footer() {
                   <a
                     href="/meet-bart"
                     onClick={(e) => handleLinkClick(e, '/meet-bart')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     About Bart
                   </a>
@@ -39,7 +39,7 @@ export default function Footer() {
                   <a
                     href="/philosophy"
                     onClick={(e) => handleLinkClick(e, '/philosophy')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Philosophy
                   </a>
@@ -48,7 +48,7 @@ export default function Footer() {
                   <a
                     href="/books"
                     onClick={(e) => handleLinkClick(e, '/books')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Books
                   </a>
@@ -58,7 +58,7 @@ export default function Footer() {
 
             {/* Methods */}
             <div>
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-[#1A1A1A] mb-4">
+              <h3 className="mb-4 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-ao-brown">
                 Methods
               </h3>
               <ul className="space-y-2">
@@ -66,7 +66,7 @@ export default function Footer() {
                   <a
                     href="/methods"
                     onClick={(e) => handleLinkClick(e, '/methods')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     How I Work
                   </a>
@@ -75,7 +75,7 @@ export default function Footer() {
                   <a
                     href="/methods/mentorship"
                     onClick={(e) => handleLinkClick(e, '/methods/mentorship')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Mentorship
                   </a>
@@ -84,7 +84,7 @@ export default function Footer() {
                   <a
                     href="/methods/consulting"
                     onClick={(e) => handleLinkClick(e, '/methods/consulting')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Consulting
                   </a>
@@ -93,7 +93,7 @@ export default function Footer() {
                   <a
                     href="/methods/fractional-roles"
                     onClick={(e) => handleLinkClick(e, '/methods/fractional-roles')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Fractional Roles
                   </a>
@@ -102,7 +102,7 @@ export default function Footer() {
                   <a
                     href="/methods/speaking-seminars"
                     onClick={(e) => handleLinkClick(e, '/methods/speaking-seminars')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Speaking & Seminars
                   </a>
@@ -111,7 +111,7 @@ export default function Footer() {
                   <a
                     href="/methods/training-education"
                     onClick={(e) => handleLinkClick(e, '/methods/training-education')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Training & Education
                   </a>
@@ -120,7 +120,7 @@ export default function Footer() {
                   <a
                     href="/advisory"
                     onClick={(e) => handleLinkClick(e, '/advisory')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Leadership Advisory
                   </a>
@@ -129,7 +129,7 @@ export default function Footer() {
                   <a
                     href="/the-room"
                     onClick={(e) => handleLinkClick(e, '/the-room')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     The Room (book)
                   </a>
@@ -139,7 +139,7 @@ export default function Footer() {
 
             {/* Culture Science */}
             <div>
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-[#1A1A1A] mb-4">
+              <h3 className="mb-4 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-ao-brown">
                 Culture Science
               </h3>
               <ul className="space-y-2">
@@ -147,7 +147,7 @@ export default function Footer() {
                   <a
                     href="/culture-science"
                     onClick={(e) => handleLinkClick(e, '/culture-science')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Culture Science
                   </a>
@@ -156,7 +156,7 @@ export default function Footer() {
                   <a
                     href="/culture-science/ali"
                     onClick={(e) => handleLinkClick(e, '/culture-science/ali')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     ALI
                   </a>
@@ -165,7 +165,7 @@ export default function Footer() {
                   <a
                     href="/culture-science/anti-projects/scoreboard-leadership"
                     onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/scoreboard-leadership')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Scoreboard Leadership
                   </a>
@@ -174,7 +174,7 @@ export default function Footer() {
                   <a
                     href="/culture-science/anti-projects/bad-leader-project"
                     onClick={(e) => handleLinkClick(e, '/culture-science/anti-projects/bad-leader-project')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Bad Leader Project
                   </a>
@@ -184,7 +184,7 @@ export default function Footer() {
 
             {/* Connect */}
             <div>
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-[#1A1A1A] mb-4">
+              <h3 className="mb-4 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-ao-brown">
                 Connect
               </h3>
               <ul className="space-y-2">
@@ -192,7 +192,7 @@ export default function Footer() {
                   <a
                     href="/contact"
                     onClick={(e) => handleLinkClick(e, '/contact')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Contact
                   </a>
@@ -201,7 +201,7 @@ export default function Footer() {
                   <a
                     href="/journal"
                     onClick={(e) => handleLinkClick(e, '/journal')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Journal
                   </a>
@@ -210,7 +210,7 @@ export default function Footer() {
                   <a
                     href="/archy"
                     onClick={(e) => handleLinkClick(e, '/archy')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Meet Archy
                   </a>
@@ -219,7 +219,7 @@ export default function Footer() {
                   <a
                     href="/engagement-inquiry"
                     onClick={(e) => handleLinkClick(e, '/engagement-inquiry')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     Work Together
                   </a>
@@ -228,7 +228,7 @@ export default function Footer() {
                   <a
                     href="/operators"
                     onClick={(e) => handleLinkClick(e, '/operators')}
-                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                    className="min-h-[44px] flex items-center py-2 text-sm text-[#a89e97] transition-colors hover:text-ao-bone sm:text-base"
                   >
                     The Operators
                   </a>
@@ -238,13 +238,13 @@ export default function Footer() {
           </div>
 
           {/* Social Links */}
-          <div className="mt-12 pt-8 border-t border-[#1A1A1A]/10">
+          <div className="mt-12 border-t border-white/10 pt-8">
             <div className="flex justify-center items-center gap-4 mb-6">
               <a
                 href="https://www.facebook.com/archetypeoriginal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors rounded"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-ao-brown/80 transition-colors hover:text-ao-bone"
                 aria-label="Follow us on Facebook"
                 title="Follow us on Facebook"
               >
@@ -256,7 +256,7 @@ export default function Footer() {
                 href="https://www.instagram.com/archetypeoriginal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors rounded"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-ao-brown/80 transition-colors hover:text-ao-bone"
                 aria-label="Follow us on Instagram"
                 title="Follow us on Instagram"
               >
@@ -268,7 +268,7 @@ export default function Footer() {
                 href="https://www.linkedin.com/company/archetypeoriginal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#6B6B6B]/60 hover:text-[#1A1A1A] transition-colors rounded"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-ao-brown/80 transition-colors hover:text-ao-bone"
                 aria-label="Follow us on LinkedIn"
                 title="Follow us on LinkedIn"
               >
@@ -280,25 +280,25 @@ export default function Footer() {
           </div>
 
           {/* Legal Links */}
-          <div className="pt-6 border-t border-[#1A1A1A]/10">
+          <div className="border-t border-white/10 pt-6">
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mb-6">
               <a
                 href="/privacy-policy"
                 onClick={(e) => handleLinkClick(e, '/privacy-policy')}
-                className="text-xs sm:text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                className="text-xs text-ao-brown transition-colors hover:text-ao-bone sm:text-sm"
               >
                 Privacy Policy
               </a>
-              <span className="hidden sm:inline text-[#6B6B6B]">•</span>
+              <span className="hidden text-ao-brown sm:inline">•</span>
               <a
                 href="/terms-and-conditions"
                 onClick={(e) => handleLinkClick(e, '/terms-and-conditions')}
-                className="text-xs sm:text-sm text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+                className="text-xs text-ao-brown transition-colors hover:text-ao-bone sm:text-sm"
               >
                 Terms and Conditions
               </a>
             </div>
-            <p className="text-sm text-[#6B6B6B] text-center">
+            <p className="text-center text-sm text-ao-brown">
               © {new Date().getFullYear()} Archetype Original. All rights reserved.
             </p>
           </div>

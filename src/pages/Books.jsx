@@ -44,7 +44,7 @@ export default function Books() {
                   </div>
                 </div>
                 <div className="flex flex-col justify-center">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#C85A3C]">Featured</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[#DB0812]">Featured</p>
                   <h2 className="mt-2 font-serif text-3xl font-bold text-[#1A1A1A] sm:text-4xl md:text-5xl">
                     The Room
                   </h2>

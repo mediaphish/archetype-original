@@ -16,7 +16,7 @@ export default function IndustryReports() {
             <div className="max-w-5xl mx-auto text-center space-y-8">
               <div className="inline-block mb-6">
                 <div className="px-3 py-1 border border-[#1A1A1A]/10">
-                  <span className="text-xs font-medium tracking-wider text-[#C85A3C] uppercase">Coming Soon</span>
+                  <span className="text-xs font-medium tracking-wider text-[#DB0812] uppercase">Coming Soon</span>
                 </div>
               </div>
               

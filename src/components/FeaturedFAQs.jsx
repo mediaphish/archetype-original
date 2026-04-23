@@ -98,7 +98,7 @@ export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true })
               <a
                 href={`/faqs?category=${pageKey}`}
                 onClick={(e) => handleLinkClick(e, `/faqs?category=${pageKey}`)}
-                className="text-[#C85A3C] hover:text-[#C85A3C]/70 font-medium text-sm sm:text-base transition-colors"
+                className="text-[#DB0812] hover:text-[#DB0812]/70 font-medium text-sm sm:text-base transition-colors"
               >
                 View All →
               </a>
@@ -115,7 +115,7 @@ export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true })
                 >
                   <button
                     onClick={() => toggleFaq(faq.slug)}
-                    className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-inset"
+                    className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:ring-inset"
                     aria-expanded={isExpanded}
                   >
                     <div className="flex-1">

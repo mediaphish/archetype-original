@@ -258,7 +258,7 @@ export default function Journal() {
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DB0812] mx-auto"></div>
               <p className="mt-4 text-[#6B6B6B]">Loading journal posts...</p>
             </div>
           </div>
@@ -296,7 +296,7 @@ export default function Journal() {
                   className={`px-6 py-2.5 text-sm font-medium border transition-all duration-200 ${
                     selectedCategory === category
                       ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                      : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C] hover:bg-[#FAFAF9]'
+                      : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812] hover:bg-[#FAFAF9]'
                   }`}
                 >
                   {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
@@ -344,7 +344,7 @@ export default function Journal() {
                     <time className="text-sm text-[#1A1A1A]/60 mb-3 block">
                       {formatDate(featuredPost.publish_date || featuredPost.created_at)}
                     </time>
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance hover:text-[#C85A3C] transition-colors">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance hover:text-[#DB0812] transition-colors">
                       <a 
                         href={`/journal/${featuredPost.slug}`}
                         onClick={(e) => {
@@ -360,7 +360,7 @@ export default function Journal() {
                     </p>
                     <a 
                       href={`/journal/${featuredPost.slug}`}
-                      className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#C85A3C] transition-colors inline-flex items-center"
+                      className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#DB0812] transition-colors inline-flex items-center"
                       onClick={(e) => {
                         e.preventDefault();
                         handlePostClick(featuredPost.slug);
@@ -397,7 +397,7 @@ export default function Journal() {
                         <time className="text-sm text-[#1A1A1A]/60 mb-2 block">
                           {formatDate(post.publish_date || post.created_at)}
                         </time>
-                        <h3 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif tracking-tight text-balance hover:text-[#C85A3C] transition-colors">
+                        <h3 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif tracking-tight text-balance hover:text-[#DB0812] transition-colors">
                           <a 
                             href={`/journal/${post.slug}`}
                             onClick={(e) => {
@@ -413,7 +413,7 @@ export default function Journal() {
                         </p>
                         <a 
                           href={`/journal/${post.slug}`}
-                          className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#C85A3C] transition-colors inline-flex items-center"
+                          className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#DB0812] transition-colors inline-flex items-center"
                           onClick={(e) => {
                             e.preventDefault();
                             handlePostClick(post.slug);
@@ -436,7 +436,7 @@ export default function Journal() {
                     type="button"
                     onClick={() => goToJournalPage(safePage - 1)}
                     disabled={safePage <= 1}
-                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#C85A3C] hover:text-[#C85A3C] disabled:cursor-not-allowed disabled:opacity-40"
+                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#DB0812] hover:text-[#DB0812] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Previous
                   </button>
@@ -447,7 +447,7 @@ export default function Journal() {
                     type="button"
                     onClick={() => goToJournalPage(safePage + 1)}
                     disabled={safePage >= totalPages}
-                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#C85A3C] hover:text-[#C85A3C] disabled:cursor-not-allowed disabled:opacity-40"
+                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#DB0812] hover:text-[#DB0812] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Next
                   </button>

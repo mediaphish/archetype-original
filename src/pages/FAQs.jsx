@@ -152,7 +152,7 @@ export default function FAQs() {
                     placeholder="Search FAQs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                    className="w-full pl-12 pr-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
                   />
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function FAQs() {
                 <select
                   value={selectedCategory}
                   onChange={(e) => handleCategoryChange(e.target.value)}
-                  className="w-full sm:w-auto px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                  className="w-full sm:w-auto px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
                 >
                   <option value="">All Categories</option>
                   {categories.map(category => (
@@ -189,11 +189,11 @@ export default function FAQs() {
               <div className="mt-4 flex flex-wrap gap-2 items-center">
                 <span className="text-sm text-[#6B6B6B]">Active filters:</span>
                 {selectedCategory && (
-                  <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#C85A3C]/10 text-[#C85A3C] rounded-full text-sm font-medium">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#DB0812]/10 text-[#DB0812] rounded-full text-sm font-medium">
                     {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).replace(/-/g, ' ')}
                     <button
                       onClick={() => handleCategoryChange('')}
-                      className="hover:text-[#C85A3C]/70"
+                      className="hover:text-[#DB0812]/70"
                       aria-label="Remove category filter"
                     >
                       ×
@@ -232,7 +232,7 @@ export default function FAQs() {
                 {(searchQuery || selectedCategory) && (
                   <button
                     onClick={clearFilters}
-                    className="text-[#C85A3C] hover:text-[#C85A3C]/70 font-medium"
+                    className="text-[#DB0812] hover:text-[#DB0812]/70 font-medium"
                   >
                     Clear filters to see all FAQs
                   </button>
@@ -254,7 +254,7 @@ export default function FAQs() {
                     >
                       <button
                         onClick={() => toggleFaq(faq.slug)}
-                        className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-inset"
+                        className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:ring-inset"
                         aria-expanded={isExpanded}
                       >
                         <div className="flex-1">
@@ -303,7 +303,7 @@ export default function FAQs() {
                                   window.dispatchEvent(new PopStateEvent('popstate'));
                                   window.scrollTo({ top: 0, behavior: 'instant' });
                                 }}
-                                className="bg-[#C85A3C] text-white px-6 py-3 font-medium hover:bg-[#B54A32] transition-colors rounded-lg"
+                                className="bg-[#DB0812] text-white px-6 py-3 font-medium hover:bg-[#b30610] transition-colors rounded-lg"
                               >
                                 Start an Engagement Inquiry
                               </button>

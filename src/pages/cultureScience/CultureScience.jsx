@@ -231,7 +231,7 @@ export default function CultureScience() {
                   <li>Longitudinal tracking and benchmarking</li>
                 </ul>
                 
-                <blockquote className="my-10 sm:my-12 pl-6 sm:pl-8 border-l-4 border-[#C85A3C]">
+                <blockquote className="my-10 sm:my-12 pl-6 sm:pl-8 border-l-4 border-[#DB0812]">
                   <p className="text-xl sm:text-2xl md:text-3xl italic font-serif text-[#1A1A1A] leading-tight">
                     To help small and mid-sized businesses build cultures where people thrive, leaders grow, and clarity becomes normal again.
                   </p>
@@ -269,7 +269,7 @@ export default function CultureScience() {
                   <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
                     1
                   </span>
-                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
+                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       Leaders and teams experience culture differently
                     </h3>
@@ -284,14 +284,14 @@ export default function CultureScience() {
                   <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
                     2
                   </span>
-                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
+                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       Most companies measure performance but never measure leadership clarity
                     </h3>
                     <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4">
                       They track KPIs, revenue, and output. But not:
                     </p>
-                    <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg text-[#6B6B6B] marker:text-[#C85A3C]">
+                    <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg text-[#6B6B6B] marker:text-[#DB0812]">
                       <li><span className="text-[#1A1A1A]">Consistency</span></li>
                       <li><span className="text-[#1A1A1A]">Trust</span></li>
                       <li><span className="text-[#1A1A1A]">Communication quality</span></li>
@@ -307,7 +307,7 @@ export default function CultureScience() {
                   <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
                     3
                   </span>
-                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
+                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       People rarely tell leadership the truth
                     </h3>
@@ -322,7 +322,7 @@ export default function CultureScience() {
                   <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
                     4
                   </span>
-                  <div className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8">
+                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
                       Leaders don't lack desire. They lack a mirror
                     </h3>
@@ -368,12 +368,12 @@ export default function CultureScience() {
                   </p>
                   <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
                     <li>
-                      <a href="https://www.hbs.edu/faculty/Publication%20Files/98-066_4446b0b4-2615-46df-8a2e-5f1e9bcfbd54.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://www.hbs.edu/faculty/Publication%20Files/98-066_4446b0b4-2615-46df-8a2e-5f1e9bcfbd54.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Edmondson, "Psychological Safety and Learning Behavior in Work Teams"
                       </a>
                     </li>
                     <li>
-                      <a href="https://psycnet.apa.org/record/2017-07055-001" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://psycnet.apa.org/record/2017-07055-001" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Frazier et al., Meta-analysis of psychological safety
                       </a>
                     </li>
@@ -393,12 +393,12 @@ export default function CultureScience() {
                   </p>
                   <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
                     <li>
-                      <a href="https://www.wilmarschaufeli.nl/publications/Schaufeli/350.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://www.wilmarschaufeli.nl/publications/Schaufeli/350.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Bakker & Demerouti, "The Job Demands–Resources model"
                       </a>
                     </li>
                     <li>
-                      <a href="https://journals.aom.org/doi/abs/10.5465/amj.2010.51468988" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://journals.aom.org/doi/abs/10.5465/amj.2010.51468988" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Crawford et al., JD-R meta-analysis
                       </a>
                     </li>
@@ -418,12 +418,12 @@ export default function CultureScience() {
                   </p>
                   <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
                     <li>
-                      <a href="https://journals.sagepub.com/doi/10.1177/0149206314523836" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://journals.sagepub.com/doi/10.1177/0149206314523836" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Hoch et al., Meta-analysis of servant leadership
                       </a>
                     </li>
                     <li>
-                      <a href="https://journals.aom.org/doi/10.5465/amj.2002.5549658" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://journals.aom.org/doi/10.5465/amj.2002.5549658" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Dirks & Ferrin, Trust in leadership meta-analysis
                       </a>
                     </li>
@@ -443,12 +443,12 @@ export default function CultureScience() {
                   </p>
                   <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
                     <li>
-                      <a href="https://journals.aom.org/doi/10.5465/AMJ.2000.3312921" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://journals.aom.org/doi/10.5465/AMJ.2000.3312921" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Tepper, "Consequences of Abusive Supervision"
                       </a>
                     </li>
                     <li>
-                      <a href="https://www.tandfonline.com/doi/abs/10.1080/1359432X.2013.771812" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://www.tandfonline.com/doi/abs/10.1080/1359432X.2013.771812" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Schyns & Schilling, Destructive leadership meta-analysis
                       </a>
                     </li>
@@ -468,12 +468,12 @@ export default function CultureScience() {
                   </p>
                   <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
                     <li>
-                      <a href="https://www.gallup.com/workplace/236927/state-american-workplace-report-2017.aspx" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://www.gallup.com/workplace/236927/state-american-workplace-report-2017.aspx" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Harter et al., Gallup engagement meta-analysis
                       </a>
                     </li>
                     <li>
-                      <a href="https://psycnet.apa.org/record/2006-07939-003" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#C85A3C]">
+                      <a href="https://psycnet.apa.org/record/2006-07939-003" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
                         Saks, "Antecedents and Consequences of Employee Engagement"
                       </a>
                     </li>
@@ -492,7 +492,7 @@ export default function CultureScience() {
                     Archetype Original translates decades of cross-disciplinary evidence into a practical system leaders can actually use:
                   </p>
                   
-                  <ul className="list-disc space-y-3 ml-6 marker:text-[#C85A3C]">
+                  <ul className="list-disc space-y-3 ml-6 marker:text-[#DB0812]">
                     <li>
                       <span className="text-[#1A1A1A]">Culture Science organizes the patterns into early-warning indicators of cultural drift and risk.</span>
                     </li>
@@ -509,7 +509,7 @@ export default function CultureScience() {
                             window.dispatchEvent(new PopStateEvent('popstate'));
                             window.scrollTo({ top: 0, behavior: 'instant' });
                           }}
-                          className="text-[#1A1A1A] underline hover:text-[#C85A3C]"
+                          className="text-[#1A1A1A] underline hover:text-[#DB0812]"
                         >
                           Scoreboard Leadership
                         </a> and our playbooks, that are in development, show leaders how to act on the data—shifting away from brittle, fear-based habits toward durable, servant-minded leadership.
@@ -554,7 +554,7 @@ export default function CultureScience() {
                 </div>
                 
                 {/* Right Column with Orange Border */}
-                <div className="border-l-[6px] border-[#C85A3C] pl-6 sm:pl-8 md:pl-12">
+                <div className="border-l-[6px] border-[#DB0812] pl-6 sm:pl-8 md:pl-12">
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
                     Small companies have... you.
                   </h3>

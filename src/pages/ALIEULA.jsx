@@ -118,7 +118,7 @@ export default function ALIEULA() {
                     For questions about this EULA, contact us at:
                   </p>
                   <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] mt-2">
-                    <a href="mailto:bart@archetypeoriginal.com" className="text-[#C85A3C] hover:text-[#B54A32] underline">
+                    <a href="mailto:bart@archetypeoriginal.com" className="text-[#DB0812] hover:text-[#b30610] underline">
                       bart@archetypeoriginal.com
                     </a>
                   </p>

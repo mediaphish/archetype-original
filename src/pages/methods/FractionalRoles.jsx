@@ -70,7 +70,7 @@ export default function FractionalRoles() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Where Fractional Leadership Fits
                 </h2>
@@ -79,22 +79,22 @@ export default function FractionalRoles() {
                 Organizations bring in fractional support for different reasons:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   When culture feels unsteady and a team needs someone to restore alignment
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   When a growing company needs leadership clarity before adding full-time roles
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   When a department is stretched and needs temporary executive-level support
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   When a founder or executive is overloaded and needs a trusted partner in the work
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   When a team is healthy but preparing for a new season and needs help building toward it
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   When a company wants to strengthen what's already good without disrupting momentum
                 </li>
               </ul>
@@ -110,7 +110,7 @@ export default function FractionalRoles() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   The Roles I Step Into
                 </h2>
@@ -123,7 +123,7 @@ export default function FractionalRoles() {
               </p>
 
               {/* FLAGSHIP ROLE - CCO */}
-              <div className="pl-4 border-l-4 border-[#C85A3C] space-y-3">
+              <div className="pl-4 border-l-4 border-[#DB0812] space-y-3">
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A1A] font-serif">
                   Fractional Chief Culture Officer (CCO) — flagship role
                 </h3>
@@ -133,7 +133,7 @@ export default function FractionalRoles() {
                 <p className="text-base sm:text-lg leading-relaxed">
                   <a 
                     href="/methods/fractional-roles/cco" 
-                    className="text-[#C85A3C] hover:text-[#C85A3C]/80 hover:underline transition-colors font-medium"
+                    className="text-[#DB0812] hover:text-[#DB0812]/80 hover:underline transition-colors font-medium"
                     onClick={(e) => {
                       e.preventDefault();
                       window.history.pushState({}, '', '/methods/fractional-roles/cco');
@@ -196,7 +196,7 @@ export default function FractionalRoles() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Why This Works
                 </h2>
@@ -219,7 +219,7 @@ export default function FractionalRoles() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   How We Begin
                 </h2>
@@ -231,16 +231,16 @@ export default function FractionalRoles() {
                 Then we determine whether the right level of involvement is:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Hourly or short-term
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Day or weekly involvement
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   A defined fractional role up to 40 hours/month
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Or a deeper engagement when alignment, goals, and investment are right
                 </li>
               </ul>

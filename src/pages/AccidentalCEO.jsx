@@ -250,7 +250,7 @@ export default function AccidentalCEO() {
               >
                 What You&apos;ll Take From This
               </h2>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 max-w-4xl list-disc pl-5 marker:text-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]/85">
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 max-w-4xl list-disc pl-5 marker:text-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]/85">
                 {learnItems.map((item) => (
                   <li key={item} className="pl-1">
                     {item}
@@ -309,7 +309,7 @@ export default function AccidentalCEO() {
                   </p>
                   <p>This isn&apos;t about leading perfectly.</p>
                 </div>
-                <p className="mt-12 font-serif text-xl sm:text-2xl md:text-3xl font-medium text-[#1A1A1A] leading-snug border-l-4 border-[#C85A3C] pl-6">
+                <p className="mt-12 font-serif text-xl sm:text-2xl md:text-3xl font-medium text-[#1A1A1A] leading-snug border-l-4 border-[#DB0812] pl-6">
                   It&apos;s about leading in a way that lasts.
                 </p>
               </div>
@@ -348,7 +348,7 @@ export default function AccidentalCEO() {
               <div className="rounded-2xl border border-[#1A1A1A]/10 bg-[#FAFAF9] p-6 md:p-10">
                 <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8">
                   <div
-                    className="shrink-0 w-12 h-12 rounded-full bg-white border border-[#1A1A1A]/10 flex items-center justify-center text-[#C85A3C]"
+                    className="shrink-0 w-12 h-12 rounded-full bg-white border border-[#1A1A1A]/10 flex items-center justify-center text-[#DB0812]"
                     aria-hidden="true"
                   >
                     <svg
@@ -461,7 +461,7 @@ export default function AccidentalCEO() {
                         <button
                           type="button"
                           onClick={() => toggleFaq(faq.slug)}
-                          className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-inset"
+                          className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:ring-inset"
                           aria-expanded={isExpanded}
                         >
                           <h3 className="text-lg sm:text-xl font-semibold text-[#1A1A1A] flex-1 pr-2">
@@ -504,7 +504,7 @@ export default function AccidentalCEO() {
                 <a
                   href="/faqs?category=accidental-ceo"
                   onClick={openFaqsPageFiltered}
-                  className="text-[#C85A3C] font-medium hover:text-[#B54A32] underline"
+                  className="text-[#DB0812] font-medium hover:text-[#b30610] underline"
                 >
                   Open this category on the full FAQs page
                 </a>

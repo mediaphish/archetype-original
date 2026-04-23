@@ -37,7 +37,7 @@ const services = [
           Mentorship isn't a program. It's a relationship built on clarity, trust, development, and the honesty it takes to grow as a leader. Some leaders come to mentorship because they're under pressure. Others come because they're ready to sharpen their skills, expand their capacity, or step into responsibility they've never held before. Both are valid. Both matter. Both are leadership.
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-          I mentor leaders the same way real leadership works—adaptively. Some conversations require steadiness and presence. Others require direct truth. Some are about navigating conflict; others are about uncovering potential. Sometimes a leader needs someone to slow things down; other times they need someone to push them forward. The approach shifts with the moment because leadership does too. I don't push people forward — I <a href="/journal/clearing-the-path" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/clearing-the-path'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>clear what's in their way</a>.
+          I mentor leaders the same way real leadership works—adaptively. Some conversations require steadiness and presence. Others require direct truth. Some are about navigating conflict; others are about uncovering potential. Sometimes a leader needs someone to slow things down; other times they need someone to push them forward. The approach shifts with the moment because leadership does too. I don't push people forward — I <a href="/journal/clearing-the-path" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/clearing-the-path'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>clear what's in their way</a>.
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
           If you're ready to grow, change, or lead with more clarity than you have today, we can begin with a conversation.
@@ -62,7 +62,7 @@ const services = [
     content: (
       <>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-          Consulting, the way I practice it, isn't built on models, slide decks, or theories. It's built on reality—what's actually happening inside a team, a department, or an organization. People don't need a consultant who read three books and built a framework. They need someone who can walk in, see the truth, understand the pressure, and help them move forward with clarity. I help identify and resolve <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership bottlenecks</a> that stifle innovation and growth.
+          Consulting, the way I practice it, isn't built on models, slide decks, or theories. It's built on reality—what's actually happening inside a team, a department, or an organization. People don't need a consultant who read three books and built a framework. They need someone who can walk in, see the truth, understand the pressure, and help them move forward with clarity. I help identify and resolve <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership bottlenecks</a> that stifle innovation and growth.
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
           Consulting can be about solving problems, strengthening what's already working, or helping build what comes next.
@@ -435,7 +435,7 @@ export default function Methods() {
                     className={`inline-block px-3 py-1 text-xs font-medium uppercase tracking-wider border transition-colors ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -467,7 +467,7 @@ export default function Methods() {
                     className={`inline-block px-3 py-1.5 text-xs font-medium uppercase tracking-wider border transition-all ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -487,7 +487,7 @@ export default function Methods() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                Leadership doesn't happen in ideal conditions. It happens in motion—inside pressure, relationships, expectations, and the realities leaders are already navigating. Most programs and models break down at that point because they rely on steps, templates, or theory. This work doesn't. It adjusts to what is actually happening. When <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership bottlenecks</a> form, this approach adapts.
+                Leadership doesn't happen in ideal conditions. It happens in motion—inside pressure, relationships, expectations, and the realities leaders are already navigating. Most programs and models break down at that point because they rely on steps, templates, or theory. This work doesn't. It adjusts to what is actually happening. When <a href="/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-bottlenecks-will-choke-the-life-out-of-a-business'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership bottlenecks</a> form, this approach adapts.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
                 This approach works because it brings clarity to the moment. Leaders can't make aligned decisions when the situation feels foggy or overwhelming. When we slow the moment down and name what's really going on—behaviorally, relationally, culturally—leaders regain their footing. Clarity creates steadiness, and steadiness changes everything.
@@ -503,7 +503,7 @@ export default function Methods() {
               </p>
               
               {/* Pull Quote */}
-              <blockquote className="border-l-4 border-[#C85A3C] pl-6 sm:pl-8 my-10 sm:my-12">
+              <blockquote className="border-l-4 border-[#DB0812] pl-6 sm:pl-8 my-10 sm:my-12">
                 <p className="text-2xl sm:text-3xl md:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed">
                   "When leaders see clearly, they lead clearly. That's why this approach changes things."
                 </p>
@@ -542,7 +542,7 @@ export default function Methods() {
                       tabIndex={0}
                     >
                       <div className="flex items-center gap-4 sm:gap-6">
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#C85A3C] flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#DB0812] flex items-center justify-center flex-shrink-0">
                           <span className="text-base sm:text-lg font-bold font-serif text-white">
                             {service.number}
                           </span>
@@ -592,7 +592,7 @@ export default function Methods() {
                             </p>
                             <ul className="list-disc space-y-2 pl-6 sm:pl-8">
                               {service.benefits.map((benefit, benefitIndex) => (
-                                <li key={benefitIndex} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                                <li key={benefitIndex} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                                   {benefit}
                                 </li>
                               ))}
@@ -642,7 +642,7 @@ export default function Methods() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   How I Work with Leaders, Teams, and Organizations
                 </h2>
@@ -669,7 +669,7 @@ export default function Methods() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   What Informs My Work
                 </h2>
@@ -678,25 +678,25 @@ export default function Methods() {
                 The foundation of this work isn't theoretical. It's lived. It comes from:
               </p>
               <ul className="space-y-4">
-                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <li className="pl-6 border-l-2 border-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   32 years across web, creative, software, client service, and operational leadership
                 </li>
-                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <li className="pl-6 border-l-2 border-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Leading teams, building companies, navigating collapse and recovery
                 </li>
-                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <li className="pl-6 border-l-2 border-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Pattern recognition from working across multiple industries
                 </li>
-                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <li className="pl-6 border-l-2 border-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Watching how culture responds to leadership behavior and vice versa
                 </li>
-                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <li className="pl-6 border-l-2 border-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Writing that forces clarity and accountability
                 </li>
-                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  Research across leadership, psychology, communication, and organizational behavior — including <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>servant leadership research</a> and the <a href="/journal/psychology-of-servant-leadership-part-1-servant-mindset" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/psychology-of-servant-leadership-part-1-servant-mindset'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>psychology of servant leadership</a>
+                <li className="pl-6 border-l-2 border-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                  Research across leadership, psychology, communication, and organizational behavior — including <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>servant leadership research</a> and the <a href="/journal/psychology-of-servant-leadership-part-1-servant-mindset" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/psychology-of-servant-leadership-part-1-servant-mindset'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>psychology of servant leadership</a>
                 </li>
-                <li className="pl-6 border-l-2 border-[#C85A3C] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                <li className="pl-6 border-l-2 border-[#DB0812] text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                   Developing Culture Science and ALI as tools that support clarity—not systems to install
                 </li>
               </ul>
@@ -716,7 +716,7 @@ export default function Methods() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Why This Works
                 </h2>

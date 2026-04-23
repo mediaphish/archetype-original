@@ -48,7 +48,7 @@ export default function JournalHighlights() {
         <div className="container mx-auto px-4 sm:px-6 md:px-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C85A3C] mx-auto"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DB0812] mx-auto"></div>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ export default function JournalHighlights() {
                     {/* Right: Content */}
                     <div>
                       <div className="mb-4">
-                        <span className="inline-block px-3 py-1 bg-[#C85A3C]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
+                        <span className="inline-block px-3 py-1 bg-[#DB0812]/10 text-xs font-medium tracking-wider text-[#DB0812] uppercase">
                           Featured
                         </span>
                       </div>
@@ -130,7 +130,7 @@ export default function JournalHighlights() {
                           e.preventDefault();
                           handlePostClick(featuredPost.slug);
                         }}
-                        className="inline-flex items-center font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                        className="inline-flex items-center font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                       >
                         Read Article →
                       </a>
@@ -193,7 +193,7 @@ export default function JournalHighlights() {
                     window.history.pushState({}, '', '/journal');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
-                  className="inline-block bg-[#1A1A1A] text-white px-10 sm:px-12 py-5 sm:py-6 font-medium text-base hover:bg-[#C85A3C] transition-colors border-2 border-[#1A1A1A] hover:border-[#C85A3C]"
+                  className="inline-block bg-[#1A1A1A] text-white px-10 sm:px-12 py-5 sm:py-6 font-medium text-base hover:bg-[#DB0812] transition-colors border-2 border-[#1A1A1A] hover:border-[#DB0812]"
                 >
                   View all Journal Entries
                 </a>

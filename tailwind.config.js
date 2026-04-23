@@ -7,12 +7,22 @@ export default {
         serif: ['Georgia', 'serif'],
       },
       colors: {
-        // v0 Design System - Archy Orange
-        "archy-orange": "#C85A3C",
+        /* AO 2026 tokens — use for new work; terracotta maps to same red for legacy classnames */
+        ao: {
+          red: "#DB0812",
+          dark: "#2B2929",
+          midGray: "#A8A9AD",
+          cream: "#E1DED8",
+          brown: "#8B7D72",
+          white: "#FFFFFF",
+          bone: "#F0ECE4",
+          sand: "#E8E0D4",
+        },
+        "archy-orange": "#DB0812",
         terracotta: {
-          DEFAULT: "#C85A3C", // Updated to match v0
-          dark: "#B54A32",
-          hover: "#B54A32",
+          DEFAULT: "#DB0812",
+          dark: "#b30610",
+          hover: "#b30610",
           sienna: "#8B4513",
           "burnt-orange": "#CC5500"
         },
@@ -21,18 +31,18 @@ export default {
         "warm-grey": "#6B6B6B",
         "light-grey": "#F5F5F5",
         cream: {
-          DEFAULT: "#F5E6D3",
+          DEFAULT: "#E1DED8",
           100: "#F5E6D3",
           50: "#FAF5F0"
         },
         warm: {
-          offWhite: "#F5F5F5", // Updated to light-grey
-          offWhiteAlt: "#F5E6D3", // Updated to cream
+          offWhite: "#FAFAF9",
+          offWhiteAlt: "#E1DED8",
           charcoal: "#2B2D2F", // Updated to match v0
           gray: "#6B6B6B", // Updated to warm-grey
           border: "#E7E5E4",
           dark: "#2B2D2F",
-          cream: "#F5E6D3"
+          cream: "#E1DED8"
         },
         // Legacy amber - keeping for backward compatibility during transition
         amber: {
@@ -52,7 +62,7 @@ export default {
           100: "#E2E8F0"
         },
         accent: {
-          500: "#C87B5A" // Terracotta
+          500: "#DB0812"
         },
         ali: {
           charcoal: "#1D1F21",

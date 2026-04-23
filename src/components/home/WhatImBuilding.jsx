@@ -30,7 +30,7 @@ export default function WhatImBuilding() {
           {/* Five Pillars (vertical layout with orange left borders) */}
           <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12 md:space-y-14">
             {/* PILLAR 01: Culture Science */}
-            <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
+            <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
               <div className="relative mb-6 sm:mb-8">
                 <div className="absolute -top-6 -left-2 sm:-top-8 sm:-left-4 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   01
@@ -47,14 +47,14 @@ export default function WhatImBuilding() {
               <a
                 href="/culture-science"
                 onClick={(e) => handleLinkClick(e, '/culture-science')}
-                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Culture Science →
               </a>
             </div>
 
             {/* PILLAR 02: Mentorship */}
-            <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
+            <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
               <div className="relative mb-6 sm:mb-8">
                 <div className="absolute -top-6 -left-2 sm:-top-8 sm:-left-4 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   02
@@ -71,14 +71,14 @@ export default function WhatImBuilding() {
               <a
                 href="/methods/mentorship"
                 onClick={(e) => handleLinkClick(e, '/methods/mentorship')}
-                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Mentorship →
               </a>
             </div>
 
             {/* PILLAR 03: Consulting */}
-            <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
+            <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
               <div className="relative mb-6 sm:mb-8">
                 <div className="absolute -top-6 -left-2 sm:-top-8 sm:-left-4 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   03
@@ -95,14 +95,14 @@ export default function WhatImBuilding() {
               <a
                 href="/methods/consulting"
                 onClick={(e) => handleLinkClick(e, '/methods/consulting')}
-                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Consulting →
               </a>
             </div>
 
             {/* PILLAR 04: Training & Education */}
-            <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
+            <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
               <div className="relative mb-6 sm:mb-8">
                 <div className="absolute -top-6 -left-2 sm:-top-8 sm:-left-4 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   04
@@ -119,14 +119,14 @@ export default function WhatImBuilding() {
               <a
                 href="/methods/training-education"
                 onClick={(e) => handleLinkClick(e, '/methods/training-education')}
-                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Training & Education →
               </a>
             </div>
 
             {/* PILLAR 05: Speaking & Seminars */}
-            <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
+            <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-12">
               <div className="relative mb-6 sm:mb-8">
                 <div className="absolute -top-6 -left-2 sm:-top-8 sm:-left-4 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   05
@@ -143,7 +143,7 @@ export default function WhatImBuilding() {
               <a
                 href="/methods/speaking-seminars"
                 onClick={(e) => handleLinkClick(e, '/methods/speaking-seminars')}
-                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#C85A3C] transition-colors break-words"
+                className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Speaking & Seminars →
               </a>

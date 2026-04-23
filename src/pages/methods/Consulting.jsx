@@ -194,7 +194,7 @@ export default function Consulting() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   What Consulting Is
                 </h2>
@@ -206,16 +206,16 @@ export default function Consulting() {
                 It is not:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Theory or academic models applied generically
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Slide decks with buzzwords and no follow-through
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   One-size-fits-all frameworks
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Advice from someone who has never led through pressure
                 </li>
               </ul>
@@ -223,19 +223,19 @@ export default function Consulting() {
                 It is:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Honest assessment of what's actually happening
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Clarity on where misalignment exists and why
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Strategic guidance grounded in lived leadership and research
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Practical systems that support both people and performance
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Support through implementation—not just recommendations
                 </li>
               </ul>
@@ -251,7 +251,7 @@ export default function Consulting() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Who Consulting Serves
                 </h2>
@@ -260,28 +260,28 @@ export default function Consulting() {
                 Consulting supports leadership teams, departments, and entire organizations navigating:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Cultural drift or misalignment between stated values and actual behavior
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Leadership turnover or transition requiring stability and continuity
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Communication breakdowns creating confusion, friction, or distrust
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Accountability gaps that allow problems to persist without resolution
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Rapid growth exposing structural weaknesses or cultural fragility
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Team conflict rooted in unclear expectations or relational tension
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   System failures where processes no longer serve the people using them
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Organizational health assessments before problems become crises
                 </li>
               </ul>
@@ -297,7 +297,7 @@ export default function Consulting() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   How Consulting Works
                 </h2>
@@ -352,7 +352,7 @@ export default function Consulting() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   What Makes This Different
                 </h2>
@@ -364,19 +364,19 @@ export default function Consulting() {
                 The foundation of this work includes:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Leading organizations through growth, crisis, and cultural transformation
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Pattern recognition across industries, team dynamics, and leadership styles
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Deep study of psychology, neuroscience, communication, and organizational behavior
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Development of Culture Science and the Archetype Leadership Index (ALI) as tools for assessing organizational health
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   A posture of service, not superiority—clarity without ego
                 </li>
               </ul>
@@ -392,7 +392,7 @@ export default function Consulting() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Fractional Leadership — When Consulting Isn't Enough
                 </h2>
@@ -406,7 +406,7 @@ export default function Consulting() {
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 <a 
                   href="/methods/fractional-roles" 
-                  className="text-[#1A1A1A] hover:text-[#C85A3C] hover:underline transition-colors"
+                  className="text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
                     window.history.pushState({}, '', '/methods/fractional-roles');

@@ -83,7 +83,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   What This Project Is — and Isn't
                 </h2>
@@ -123,7 +123,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   What Gets Published — and What Stays Internal
                 </h2>
@@ -137,7 +137,7 @@ export default function BadLeaderProject() {
                 <p>
                   Every submission follows a rigorous process:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>Analyzed</li>
                   <li>Sanitized</li>
                   <li>De-identified</li>
@@ -151,7 +151,7 @@ export default function BadLeaderProject() {
                 <p>
                   If a story is:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>extreme</li>
                   <li>sensationalized</li>
                   <li>unverifiable</li>
@@ -167,7 +167,7 @@ export default function BadLeaderProject() {
                 <p>
                   This protects:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>the storyteller</li>
                   <li>the people referenced</li>
                   <li>the integrity of the research</li>
@@ -190,7 +190,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   Why These Stories Are Public
                 </h2>
@@ -204,7 +204,7 @@ export default function BadLeaderProject() {
                 <p>
                   Anonymized stories help people recognize:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>"We're living this exact pattern…"</li>
                   <li>"This explains the tension our team feels…"</li>
                   <li>"This looks like the behavior we've been afraid to name…"</li>
@@ -213,7 +213,7 @@ export default function BadLeaderProject() {
                 <p>
                   Public visibility creates shared understanding:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>Staff finally have language for what they've been feeling.</li>
                   <li>Leaders gain mirrors they never had.</li>
                   <li>Organizations see culture risk before collapse.</li>
@@ -236,7 +236,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   How We Use the Data
                 </h2>
@@ -247,7 +247,7 @@ export default function BadLeaderProject() {
                 <p>
                   Every anonymized story feeds the research engine inside Archetype Original:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>Culture Science analyzes behavioral and cultural patterns</li>
                   <li>ALI (Archetype Leadership Index) draws on the data to shape diagnostics</li>
                   <li>Workshops and seminars integrate the findings</li>
@@ -274,7 +274,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   Where We Are Now — and What's Coming Next
                 </h2>
@@ -288,7 +288,7 @@ export default function BadLeaderProject() {
                 <p>
                   This work takes time because it requires:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>safe and ethical anonymization</li>
                   <li>clear patterns that protect people while revealing truth</li>
                   <li>research frameworks that turn stories into usable insight</li>
@@ -359,7 +359,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   Submit a Story — 100% Anonymous
                 </h2>
@@ -370,7 +370,7 @@ export default function BadLeaderProject() {
                 <p>
                   Your story will be:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li>Sanitized</li>
                   <li>De-identified</li>
                   <li>Pattern-coded</li>
@@ -398,7 +398,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   Where This Fits Inside Archetype Original
                 </h2>
@@ -409,7 +409,7 @@ export default function BadLeaderProject() {
                 <p>
                   The Bad Leader Project is one of AO's two anti-projects:
                 </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#C85A3C]">
+                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
                   <li><strong>Scoreboard Leadership</strong> — diagnosing the behavior patterns that corrode culture</li>
                   <li><strong>The Bad Leader Project</strong> — gathering real-world evidence of those behaviors</li>
                 </ul>
@@ -442,7 +442,7 @@ export default function BadLeaderProject() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Section Header with Orange Border */}
               <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#C85A3C] flex-shrink-0 mt-2"></div>
+                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
                 <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
                   If You're Ready to Build the Opposite
                 </h2>

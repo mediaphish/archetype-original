@@ -214,7 +214,7 @@ const ALISixConditions = () => {
                         {condition.number}
                       </div>
 
-                      <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#C85A3C] text-white text-lg font-bold mb-4">
+                      <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#DB0812] text-white text-lg font-bold mb-4">
                         {condition.number}
                       </div>
 
@@ -225,10 +225,10 @@ const ALISixConditions = () => {
 
                     {/* Four orange stripe borders */}
                     <div className="flex gap-1 px-6">
-                      <div className="h-1 flex-1 bg-[#C85A3C]"></div>
-                      <div className="h-1 flex-1 bg-[#C85A3C]"></div>
-                      <div className="h-1 flex-1 bg-[#C85A3C]"></div>
-                      <div className="h-1 flex-1 bg-[#C85A3C]"></div>
+                      <div className="h-1 flex-1 bg-[#DB0812]"></div>
+                      <div className="h-1 flex-1 bg-[#DB0812]"></div>
+                      <div className="h-1 flex-1 bg-[#DB0812]"></div>
+                      <div className="h-1 flex-1 bg-[#DB0812]"></div>
                     </div>
 
                     {/* Content area */}
@@ -246,7 +246,7 @@ const ALISixConditions = () => {
                           <ul className="list-none space-y-2">
                             {condition.strong.map((item, idx) => (
                               <li key={idx} className="flex items-start gap-3">
-                                <span className="text-[#C85A3C] mt-1 flex-shrink-0">✓</span>
+                                <span className="text-[#DB0812] mt-1 flex-shrink-0">✓</span>
                                 <span className="text-base leading-relaxed text-[#1A1A1A]/70">{item}</span>
                               </li>
                             ))}
@@ -305,7 +305,7 @@ const ALISixConditions = () => {
                 <ul className="list-none space-y-3 pl-6">
                   {conditionInteractions.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                      <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                       <span className="text-base sm:text-lg leading-relaxed text-white/80">{item}</span>
                     </li>
                   ))}

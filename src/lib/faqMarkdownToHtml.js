@@ -33,7 +33,7 @@ export function markdownToHtml(text) {
 
         processedContent = processedContent.replace(
           /\[([^\]]+)\]\(([^)]+)\)/g,
-          '<a href="$2" class="text-[#C85A3C] hover:text-[#B54A32] underline">$1</a>'
+          '<a href="$2" class="text-[#DB0812] hover:text-[#b30610] underline">$1</a>'
         );
 
         html += `<li>${processedContent}</li>`;
@@ -47,7 +47,7 @@ export function markdownToHtml(text) {
 
       processedBlock = processedBlock.replace(
         /\[([^\]]+)\]\(([^)]+)\)/g,
-        '<a href="$2" class="text-[#C85A3C] hover:text-[#B54A32] underline">$1</a>'
+        '<a href="$2" class="text-[#DB0812] hover:text-[#b30610] underline">$1</a>'
       );
 
       html += `<p class="mb-4">${processedBlock}</p>`;

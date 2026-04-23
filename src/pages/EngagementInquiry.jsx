@@ -268,14 +268,14 @@ Generate the full response following the structure above.`;
                 {/* Q1 */}
                 <div>
                   <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What prompted you to reach out at this point? <span className="text-[#C85A3C]">*</span>
+                    What prompted you to reach out at this point? <span className="text-[#DB0812]">*</span>
                   </label>
                   <textarea
                     value={formData.q1}
                     onChange={(e) => handleTextChange('q1', e.target.value)}
                     required
                     rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent resize-y"
+                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
                     placeholder="Share what led you to reach out now..."
                   />
                 </div>
@@ -283,7 +283,7 @@ Generate the full response following the structure above.`;
                 {/* Q2 */}
                 <div>
                   <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    How would you describe your organization right now? <span className="text-[#C85A3C]">*</span>
+                    How would you describe your organization right now? <span className="text-[#DB0812]">*</span>
                     <span className="text-sm font-normal text-[#6B6B6B] ml-2">(Select up to 2)</span>
                   </label>
                   <div className="space-y-2">
@@ -294,7 +294,7 @@ Generate the full response following the structure above.`;
                           checked={formData.q2.includes(option)}
                           onChange={() => handleMultiSelect('q2', option, 2)}
                           disabled={!formData.q2.includes(option) && formData.q2.length >= 2}
-                          className="mt-1 w-5 h-5 text-[#C85A3C] border-[#1A1A1A]/20 rounded focus:ring-[#C85A3C] disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="mt-1 w-5 h-5 text-[#DB0812] border-[#1A1A1A]/20 rounded focus:ring-[#DB0812] disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <span className="text-base text-[#1A1A1A] group-hover:text-[#1A1A1A]/80">
                           {option}
@@ -309,7 +309,7 @@ Generate the full response following the structure above.`;
                         value={formData.q2Other}
                         onChange={(e) => handleTextChange('q2Other', e.target.value)}
                         placeholder="Briefly describe."
-                        className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                        className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
                       />
                     </div>
                   )}
@@ -318,14 +318,14 @@ Generate the full response following the structure above.`;
                 {/* Q3 */}
                 <div>
                   <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What are you hoping an outside perspective would help you see or think through? <span className="text-[#C85A3C]">*</span>
+                    What are you hoping an outside perspective would help you see or think through? <span className="text-[#DB0812]">*</span>
                   </label>
                   <textarea
                     value={formData.q3}
                     onChange={(e) => handleTextChange('q3', e.target.value)}
                     required
                     rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent resize-y"
+                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
                     placeholder="What clarity or perspective are you seeking?"
                   />
                 </div>
@@ -333,7 +333,7 @@ Generate the full response following the structure above.`;
                 {/* Q4 */}
                 <div>
                   <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What type of leadership support are you most interested in exploring? <span className="text-[#C85A3C]">*</span>
+                    What type of leadership support are you most interested in exploring? <span className="text-[#DB0812]">*</span>
                     <span className="text-sm font-normal text-[#6B6B6B] ml-2">(Select up to 2)</span>
                   </label>
                   <div className="space-y-2">
@@ -344,7 +344,7 @@ Generate the full response following the structure above.`;
                           checked={formData.q4.includes(option)}
                           onChange={() => handleMultiSelect('q4', option, 2)}
                           disabled={!formData.q4.includes(option) && formData.q4.length >= 2}
-                          className="mt-1 w-5 h-5 text-[#C85A3C] border-[#1A1A1A]/20 rounded focus:ring-[#C85A3C] disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="mt-1 w-5 h-5 text-[#DB0812] border-[#1A1A1A]/20 rounded focus:ring-[#DB0812] disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <span className="text-base text-[#1A1A1A] group-hover:text-[#1A1A1A]/80">
                           {option}
@@ -357,14 +357,14 @@ Generate the full response following the structure above.`;
                 {/* Q5 */}
                 <div>
                   <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    Looking ahead 6–12 months, what would meaningful progress look like to you? <span className="text-[#C85A3C]">*</span>
+                    Looking ahead 6–12 months, what would meaningful progress look like to you? <span className="text-[#DB0812]">*</span>
                   </label>
                   <textarea
                     value={formData.q5}
                     onChange={(e) => handleTextChange('q5', e.target.value)}
                     required
                     rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent resize-y"
+                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
                     placeholder="Describe what success would look like..."
                   />
                 </div>
@@ -372,14 +372,14 @@ Generate the full response following the structure above.`;
                 {/* Q6 */}
                 <div>
                   <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What's currently working well that you want to protect as things evolve? <span className="text-[#C85A3C]">*</span>
+                    What's currently working well that you want to protect as things evolve? <span className="text-[#DB0812]">*</span>
                   </label>
                   <textarea
                     value={formData.q6}
                     onChange={(e) => handleTextChange('q6', e.target.value)}
                     required
                     rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent resize-y"
+                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
                     placeholder="What strengths or practices do you want to preserve?"
                   />
                 </div>
@@ -387,7 +387,7 @@ Generate the full response following the structure above.`;
                 {/* Q7 */}
                 <div>
                   <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What level of partnership are you considering? <span className="text-[#C85A3C]">*</span>
+                    What level of partnership are you considering? <span className="text-[#DB0812]">*</span>
                   </label>
                   <div className="space-y-2">
                     {partnershipOptions.map(option => (
@@ -398,7 +398,7 @@ Generate the full response following the structure above.`;
                           value={option}
                           checked={formData.q7 === option}
                           onChange={(e) => handleSingleSelect('q7', e.target.value)}
-                          className="mt-1 w-5 h-5 text-[#C85A3C] border-[#1A1A1A]/20 focus:ring-[#C85A3C]"
+                          className="mt-1 w-5 h-5 text-[#DB0812] border-[#1A1A1A]/20 focus:ring-[#DB0812]"
                         />
                         <span className="text-base text-[#1A1A1A] group-hover:text-[#1A1A1A]/80">
                           {option}
@@ -422,7 +422,7 @@ Generate the full response following the structure above.`;
                     <select
                       value={formData.role}
                       onChange={(e) => handleSingleSelect('role', e.target.value)}
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
                     >
                       <option value="">Select your role</option>
                       {roleOptions.map(option => (
@@ -436,7 +436,7 @@ Generate the full response following the structure above.`;
                           value={formData.roleOther}
                           onChange={(e) => handleTextChange('roleOther', e.target.value)}
                           placeholder="Your role"
-                          className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
                         />
                       </div>
                     )}
@@ -450,7 +450,7 @@ Generate the full response following the structure above.`;
                     <select
                       value={formData.orgSize}
                       onChange={(e) => handleSingleSelect('orgSize', e.target.value)}
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent"
+                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
                     >
                       <option value="">Select organization size</option>
                       {orgSizeOptions.map(option => (
@@ -469,7 +469,7 @@ Generate the full response following the structure above.`;
                     value={formData.q8}
                     onChange={(e) => handleTextChange('q8', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent resize-y"
+                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
                     placeholder="Anything you think adds context, nuance, or helps us better understand you."
                   />
                   <p className="mt-2 text-sm text-[#6B6B6B]">

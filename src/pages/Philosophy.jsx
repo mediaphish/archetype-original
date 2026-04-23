@@ -33,7 +33,7 @@ const renderParagraph = (text, key) => {
   if (text.trim().startsWith('>')) {
     const quoteText = text.trim().substring(1).trim();
     return (
-      <blockquote key={key} className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8 lg:pl-10 my-8 sm:my-10 md:my-12 lg:my-16">
+      <blockquote key={key} className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8 lg:pl-10 my-8 sm:my-10 md:my-12 lg:my-16">
         <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl italic font-serif text-[#1A1A1A] leading-relaxed break-words">
           "{quoteText}"
         </p>
@@ -308,7 +308,7 @@ export default function Philosophy() {
                     className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-colors min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -340,7 +340,7 @@ export default function Philosophy() {
                     className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-all min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -384,13 +384,13 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   The Foundation — Servant Leadership
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>Servant leadership</a> has been mischaracterized for years. It isn't weakness, softness, or endless sacrifice. It is strength under control — strength for the good of others, not at the expense of them.
+                <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>Servant leadership</a> has been mischaracterized for years. It isn't weakness, softness, or endless sacrifice. It is strength under control — strength for the good of others, not at the expense of them.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 At its core, servant leadership is stewardship of people and purpose.
@@ -417,13 +417,13 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   The Human Lens
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Faith quietly shapes everything I do. <a href="/journal/golden-rule-leadership-strategy" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>The Golden Rule</a> — treat people the way you want to be treated — isn't just morality; it's mechanism. It is one of the most reliable drivers of trust and performance I've seen in 32 years.
+                Faith quietly shapes everything I do. <a href="/journal/golden-rule-leadership-strategy" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>The Golden Rule</a> — treat people the way you want to be treated — isn't just morality; it's mechanism. It is one of the most reliable drivers of trust and performance I've seen in 32 years.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Alongside that sits a second principle that has shaped every season of my leadership:
@@ -456,7 +456,7 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Beyond Leadership — The Business Lens
                 </h2>
@@ -480,13 +480,13 @@ export default function Philosophy() {
                 A healthy company:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Aligns purpose with structure.
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Measures success with both numbers and morale.
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Protects culture as deliberately as it protects profit.
                 </li>
               </ul>
@@ -506,7 +506,7 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Clarity Over Chaos
                 </h2>
@@ -521,16 +521,16 @@ export default function Philosophy() {
                 When I work with teams, we start by naming where chaos is hiding:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Conflicting messages
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Undefined authority
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Overlapping roles
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Emotional noise
                 </li>
               </ul>
@@ -550,7 +550,7 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Trust Is the Currency
                 </h2>
@@ -583,7 +583,7 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Accountability Without Ego
                 </h2>
@@ -613,7 +613,7 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Simplicity Wins
                 </h2>
@@ -646,7 +646,7 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Leadership Is Personal
                 </h2>
@@ -679,40 +679,40 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Why It Works
                 </h2>
               </div>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Modern research across psychology, neuroscience, communication, behavioral economics, anthropology, and organizational behavior keeps confirming what decades of lived leadership have already shown: Leaders who create clarity, trust, and consistency unlock the best in their teams. The <a href="/journal/psychology-of-servant-leadership-part-1-servant-mindset" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/psychology-of-servant-leadership-part-1-servant-mindset'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>psychology of servant leadership</a> explains why this approach works.
+                Modern research across psychology, neuroscience, communication, behavioral economics, anthropology, and organizational behavior keeps confirming what decades of lived leadership have already shown: Leaders who create clarity, trust, and consistency unlock the best in their teams. The <a href="/journal/psychology-of-servant-leadership-part-1-servant-mindset" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/psychology-of-servant-leadership-part-1-servant-mindset'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>psychology of servant leadership</a> explains why this approach works.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Healthy cultures aren't an accident. They are the predictable result of:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   psychological safety
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   clear expectations
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   stable leadership behavior
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   aligned systems
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   shared accountability
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   human-centered communication
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   emotional regulation
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   meaningful work
                 </li>
               </ul>
@@ -741,7 +741,7 @@ export default function Philosophy() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   The Standard
                 </h2>

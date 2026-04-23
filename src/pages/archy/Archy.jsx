@@ -135,7 +135,7 @@ export default function Archy() {
               
               {/* Left: Text Content */}
               <div className="space-y-4 sm:space-y-6 md:space-y-8 order-2 lg:order-1">
-                <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#C85A3C]">
+                <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#DB0812]">
                   MEET ARCHY
                 </p>
                 
@@ -181,7 +181,7 @@ export default function Archy() {
                     className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-colors min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -213,7 +213,7 @@ export default function Archy() {
                     className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-all min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -234,7 +234,7 @@ export default function Archy() {
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
               {/* Section Header with Left Bar */}
-              <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8">
+              <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8">
                 <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] break-words">
                   What Archy Does
                 </h2>
@@ -253,19 +253,19 @@ export default function Archy() {
                 {/* Simple bullet list - NO BOXES */}
                 <div className="space-y-3 sm:space-y-4 pl-4 sm:pl-6">
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p><strong>Interprets ALI results</strong> — Explains what your condition scores mean</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p><strong>Spots patterns</strong> — Identifies connections between conditions</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p><strong>Suggests next steps</strong> — Offers practical guidance based on your data</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p><strong>Answers questions</strong> — Available 24/7 for leadership guidance</p>
                   </div>
                 </div>
@@ -285,7 +285,7 @@ export default function Archy() {
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
               {/* Section Header */}
-              <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8">
+              <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8">
                 <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] break-words">
                   How Archy Works
                 </h2>
@@ -304,15 +304,15 @@ export default function Archy() {
                 {/* Simple numbered list - NO BOXES */}
                 <div className="space-y-3 sm:space-y-4 pl-4 sm:pl-6">
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">1.</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">1.</span>
                     <p>Pulls relevant context from your ALI results</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">2.</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">2.</span>
                     <p>Compares patterns to leadership frameworks</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">3.</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">3.</span>
                     <p>Offers guidance grounded in your actual data</p>
                   </div>
                 </div>
@@ -336,7 +336,7 @@ export default function Archy() {
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
               {/* Section Header */}
-              <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8">
+              <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8">
                 <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] break-words">
                   What Archy Doesn't Do
                 </h2>
@@ -351,19 +351,19 @@ export default function Archy() {
                 {/* Simple bullet list */}
                 <div className="space-y-3 sm:space-y-4 pl-4 sm:pl-6">
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p>He doesn't make decisions for you</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p>He doesn't know your team personally</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p>He doesn't replace human coaching or mentorship</p>
                   </div>
                   <div className="flex gap-3 sm:gap-4">
-                    <span className="text-[#C85A3C] font-bold flex-shrink-0">•</span>
+                    <span className="text-[#DB0812] font-bold flex-shrink-0">•</span>
                     <p>He doesn't understand context outside of what you tell him</p>
                   </div>
                 </div>
@@ -387,7 +387,7 @@ export default function Archy() {
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
               {/* Section Header */}
-              <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8">
+              <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8">
                 <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] break-words">
                   When Archy Hands Off
                 </h2>
@@ -404,7 +404,7 @@ export default function Archy() {
                 </p>
                 
                 {/* Simple inline italic - NO GIANT QUOTE BOX */}
-                <p className="italic border-l-2 border-[#C85A3C] pl-4 sm:pl-6 text-[#1A1A1A]">
+                <p className="italic border-l-2 border-[#DB0812] pl-4 sm:pl-6 text-[#1A1A1A]">
                   "That's a great question, but I'm having trouble answering it. Would you like me to send this to Bart?"
                 </p>
                 
@@ -431,7 +431,7 @@ export default function Archy() {
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
               
               {/* Section Header */}
-              <div className="border-l-4 border-[#C85A3C] pl-4 sm:pl-6 md:pl-8">
+              <div className="border-l-4 border-[#DB0812] pl-4 sm:pl-6 md:pl-8">
                 <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] break-words">
                   Why Archy Exists
                 </h2>

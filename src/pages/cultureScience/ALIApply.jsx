@@ -149,7 +149,7 @@ export default function ALIApply() {
                 {/* Full Name */}
                 <div>
                   <label htmlFor="fullName" className="block text-base font-medium text-[#1A1A1A] mb-2">
-                    Full Name <span className="text-[#C85A3C]">*</span>
+                    Full Name <span className="text-[#DB0812]">*</span>
                   </label>
                   <input
                     type="text"
@@ -157,7 +157,7 @@ export default function ALIApply() {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#DB0812] transition-colors ${
                       errors.fullName ? "border-red-500" : "border-[#1A1A1A]/10"
                     }`}
                   />
@@ -169,7 +169,7 @@ export default function ALIApply() {
                 {/* Email Address */}
                 <div>
                   <label htmlFor="email" className="block text-base font-medium text-[#1A1A1A] mb-2">
-                    Email Address <span className="text-[#C85A3C]">*</span>
+                    Email Address <span className="text-[#DB0812]">*</span>
                   </label>
                   <input
                     type="email"
@@ -177,7 +177,7 @@ export default function ALIApply() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#DB0812] transition-colors ${
                       errors.email ? "border-red-500" : "border-[#1A1A1A]/10"
                     }`}
                   />
@@ -189,7 +189,7 @@ export default function ALIApply() {
                 {/* Company Name */}
                 <div>
                   <label htmlFor="companyName" className="block text-base font-medium text-[#1A1A1A] mb-2">
-                    Company Name <span className="text-[#C85A3C]">*</span>
+                    Company Name <span className="text-[#DB0812]">*</span>
                   </label>
                   <input
                     type="text"
@@ -197,7 +197,7 @@ export default function ALIApply() {
                     name="companyName"
                     value={formData.companyName}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#DB0812] transition-colors ${
                       errors.companyName ? "border-red-500" : "border-[#1A1A1A]/10"
                     }`}
                   />
@@ -209,14 +209,14 @@ export default function ALIApply() {
                 {/* Company Size */}
                 <div>
                   <label htmlFor="companySize" className="block text-base font-medium text-[#1A1A1A] mb-2">
-                    Company Size <span className="text-[#C85A3C]">*</span>
+                    Company Size <span className="text-[#DB0812]">*</span>
                   </label>
                   <select
                     id="companySize"
                     name="companySize"
                     value={formData.companySize}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#DB0812] transition-colors ${
                       errors.companySize ? "border-red-500" : "border-[#1A1A1A]/10"
                     }`}
                   >
@@ -234,7 +234,7 @@ export default function ALIApply() {
                 {/* Your Role */}
                 <div>
                   <label htmlFor="role" className="block text-base font-medium text-[#1A1A1A] mb-2">
-                    Your Role <span className="text-[#C85A3C]">*</span>
+                    Your Role <span className="text-[#DB0812]">*</span>
                   </label>
                   <input
                     type="text"
@@ -243,7 +243,7 @@ export default function ALIApply() {
                     value={formData.role}
                     onChange={handleChange}
                     placeholder="e.g., Owner, CEO, Operations, HR"
-                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#DB0812] transition-colors ${
                       errors.role ? "border-red-500" : "border-[#1A1A1A]/10"
                     }`}
                   />
@@ -255,7 +255,7 @@ export default function ALIApply() {
                 {/* Industry */}
                 <div>
                   <label htmlFor="industry" className="block text-base font-medium text-[#1A1A1A] mb-2">
-                    Industry <span className="text-[#C85A3C]">*</span>
+                    Industry <span className="text-[#DB0812]">*</span>
                   </label>
                   <input
                     type="text"
@@ -263,7 +263,7 @@ export default function ALIApply() {
                     name="industry"
                     value={formData.industry}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white focus:outline-none focus:border-[#DB0812] transition-colors ${
                       errors.industry ? "border-red-500" : "border-[#1A1A1A]/10"
                     }`}
                   />
@@ -275,7 +275,7 @@ export default function ALIApply() {
                 {/* Location */}
                 <div>
                   <label htmlFor="location" className="block text-base font-medium text-[#1A1A1A] mb-2">
-                    Location <span className="text-[#C85A3C]">*</span>
+                    Location <span className="text-[#DB0812]">*</span>
                   </label>
                   <input
                     type="text"
@@ -284,7 +284,7 @@ export default function ALIApply() {
                     value={formData.location}
                     onChange={handleChange}
                     placeholder="City, State/Region, Country"
-                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors ${
+                    className={`w-full px-4 py-3 border-2 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#DB0812] transition-colors ${
                       errors.location ? "border-red-500" : "border-[#1A1A1A]/10"
                     }`}
                   />
@@ -305,7 +305,7 @@ export default function ALIApply() {
                     onChange={handleChange}
                     rows={4}
                     placeholder="What's the biggest leadership or culture challenge you're facing right now? (Optional)"
-                    className="w-full px-4 py-3 border-2 border-[#1A1A1A]/10 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors resize-none"
+                    className="w-full px-4 py-3 border-2 border-[#1A1A1A]/10 text-base text-[#1A1A1A] bg-white placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#DB0812] transition-colors resize-none"
                   />
                 </div>
 
@@ -319,11 +319,11 @@ export default function ALIApply() {
                       onChange={handleChange}
                       className={`mt-1 w-5 h-5 border-2 ${
                         errors.consent ? "border-red-500" : "border-[#1A1A1A]/10"
-                      } focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:ring-offset-2`}
-                      style={{ accentColor: "#C85A3C" }}
+                      } focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:ring-offset-2`}
+                      style={{ accentColor: "#DB0812" }}
                     />
                     <span className="text-base text-[#1A1A1A]">
-                      I'm interested in being part of the ALI pilot and understand this is an early-stage research project. <span className="text-[#C85A3C]">*</span>
+                      I'm interested in being part of the ALI pilot and understand this is an early-stage research project. <span className="text-[#DB0812]">*</span>
                     </span>
                   </label>
                   {errors.consent && (

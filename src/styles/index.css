@@ -4,22 +4,27 @@
 
 :root {
   color-scheme: light;
-  /* Editorial Minimal Design System Colors */
+  /* AO design system (2026) — homepage + sitewide alignment */
+  --color-red: #DB0812;
+  --color-dark: #2B2929;
+  --color-mid-gray: #A8A9AD;
+  --color-cream: #E1DED8;
+  --color-brown: #8B7D72;
+  --color-white: #FFFFFF;
+  /* Legacy accent — maps to new red for existing utilities */
   --color-charcoal: #1A1A1A;
   --color-warm-grey: #6B6B6B;
   --color-off-white: #FAFAF9;
-  --color-white: #FFFFFF;
-  --color-orange: #C85A3C;
-  --color-orange-dark: #B54A32;
-  /* Legacy mappings for backward compatibility */
-  --color-archy-orange: #C85A3C;
-  --terracotta: #C85A3C;
-  --terracotta-dark: #B54A32;
-  --terracotta-hover: #B54A32;
+  --color-orange: var(--color-red);
+  --color-orange-dark: #b30610;
+  --color-archy-orange: var(--color-red);
+  --terracotta: var(--color-red);
+  --terracotta-dark: #b30610;
+  --terracotta-hover: #b30610;
   --sienna: #8B4513;
   --burnt-orange: #CC5500;
-  --warm-cream: #F5E6D3;
-  --color-cream: #F5E6D3;
+  --warm-cream: #E1DED8;
+  --legacy-warm-cream: #F5E6D3;
   --color-light-grey: #F5F5F5;
 }
 
@@ -92,11 +97,21 @@ html {
 }
 
 .btn-primary {
-  @apply bg-[#C85A3C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#B54A32] transition-colors duration-200;
+  @apply bg-[var(--color-red)] text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-colors duration-200;
 }
 
 .btn-secondary {
-  @apply bg-transparent text-[#C85A3C] px-6 py-3 rounded-lg font-semibold border-2 border-[#C85A3C] hover:bg-[#C85A3C] hover:text-white transition-all duration-200;
+  @apply bg-transparent text-[var(--color-red)] px-6 py-3 rounded-lg font-semibold border-2 border-[var(--color-red)] hover:bg-[var(--color-red)] hover:text-white transition-all duration-200;
+}
+
+/* Homepage hero background position (preview + rebuild prompt) */
+.home-hero-bg {
+  background-position: 70% center;
+}
+@media (max-width: 767px) {
+  .home-hero-bg {
+    background-position: 80% center;
+  }
 }
 
 /* ALI System Font Stack */

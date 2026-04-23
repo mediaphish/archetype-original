@@ -13,11 +13,11 @@ export default function AdvisoryPathStrip({ className = '' }) {
 
   return (
     <aside
-      className={`border-y border-[#C85A3C]/35 bg-[#FFF8F3] ${className}`}
+      className={`border-y border-ao-red/35 bg-ao-cream ${className}`}
       aria-labelledby="advisory-path-strip-heading"
     >
       <div className="container mx-auto max-w-4xl px-4 py-10 sm:px-6 md:px-12 md:py-12">
-        <p className="text-xs font-semibold uppercase tracking-wider text-[#C85A3C]">Advisory path</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ao-red">Advisory path</p>
         <h2
           id="advisory-path-strip-heading"
           className="mt-2 font-serif text-2xl font-bold text-[#1A1A1A] sm:text-3xl"
@@ -31,7 +31,7 @@ export default function AdvisoryPathStrip({ className = '' }) {
           <a
             href="/advisory"
             onClick={(e) => go(e, '/advisory')}
-            className="inline-flex min-h-[44px] items-center justify-center bg-[#1A1A1A] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-6 py-3 text-sm font-bold text-white transition-colors hover:opacity-90"
           >
             How advisory works
           </a>

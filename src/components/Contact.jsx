@@ -30,7 +30,7 @@ export default function Contact() {
     <section className="py-16 sm:py-20 md:py-32 lg:py-40 bg-[#FAFAF9]">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="max-w-2xl mx-auto">
-          <div className="border-[6px] border-[#C85A3C] p-8 sm:p-10 md:p-12">
+          <div className="border-[6px] border-[#DB0812] p-8 sm:p-10 md:p-12">
             <h2 className="text-[48px] sm:text-[64px] md:text-[72px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 font-serif tracking-tight text-balance text-center">
               Contact
             </h2>

@@ -49,7 +49,7 @@ export default function HomeHero() {
               <a
                 href="/advisory"
                 onClick={(e) => goInternal(e, '/advisory')}
-                className="inline-flex min-h-[48px] items-center justify-center bg-[#C85A3C] px-8 py-4 text-base font-medium text-white transition-colors hover:bg-[#b54a32]"
+                className="inline-flex min-h-[48px] items-center justify-center bg-[#DB0812] px-8 py-4 text-base font-medium text-white transition-colors hover:bg-[#b30610]"
               >
                 Explore leadership advisory
               </a>

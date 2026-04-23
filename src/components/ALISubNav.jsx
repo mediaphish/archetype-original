@@ -80,7 +80,7 @@ export default function ALISubNav() {
                 onClick={(e) => handleLinkClick(e, item.href)}
                 className={`whitespace-nowrap px-3 sm:px-4 py-2 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'text-[#C85A3C] border-b-2 border-[#C85A3C]'
+                    ? 'text-[#DB0812] border-b-2 border-[#DB0812]'
                     : 'text-[#1A1A1A]/70 hover:text-[#1A1A1A]'
                 }`}
               >

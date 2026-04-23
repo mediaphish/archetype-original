@@ -6,25 +6,25 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 
 // Simple icon components (inline SVGs to avoid lucide-react dependency)
 const LightbulbIcon = () => (
-  <svg className="w-8 h-8 text-[#C85A3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
   </svg>
 );
 
 const ShieldIcon = () => (
-  <svg className="w-8 h-8 text-[#C85A3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
   </svg>
 );
 
 const MessageCircleIcon = () => (
-  <svg className="w-8 h-8 text-[#C85A3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
   </svg>
 );
 
 const TargetIcon = () => (
-  <svg className="w-8 h-8 text-[#C85A3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
     <circle cx="12" cy="12" r="10" />
     <circle cx="12" cy="12" r="6" />
     <circle cx="12" cy="12" r="2" />
@@ -32,13 +32,13 @@ const TargetIcon = () => (
 );
 
 const ShieldCheckIcon = () => (
-  <svg className="w-8 h-8 text-[#C85A3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
   </svg>
 );
 
 const HeartIcon = () => (
-  <svg className="w-8 h-8 text-[#C85A3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
   </svg>
 );
@@ -127,7 +127,7 @@ export default function ALI() {
                 </p>
                 
                 {/* Pull quote */}
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] my-8">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] my-8">
                   <p className="text-xl sm:text-2xl font-semibold italic text-[#1A1A1A] leading-relaxed">
                     ALI measures the environment leadership creates.
                   </p>
@@ -199,7 +199,7 @@ export default function ALI() {
                 <a
                   href="/culture-science/ali/six-leadership-conditions"
                   onClick={(e) => handleLinkClick(e, '/culture-science/ali/six-leadership-conditions')}
-                  className="inline-flex items-center gap-2 font-semibold text-[#1A1A1A] hover:text-[#C85A3C] transition-colors"
+                  className="inline-flex items-center gap-2 font-semibold text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                 >
                   Explore each condition in detail →
                 </a>
@@ -233,7 +233,7 @@ export default function ALI() {
                 </p>
                 
                 {/* Pull quote */}
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] my-8">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] my-8">
                   <p className="text-xl sm:text-2xl font-semibold italic text-[#1A1A1A] leading-relaxed">
                     A reliable way to measure the leadership conditions that create culture.
                   </p>
@@ -272,31 +272,31 @@ export default function ALI() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">identify drift before it becomes conflict</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">stabilize communication</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">reinforce clarity</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">understand emotional tone impact</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">strengthen trust</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">maintain consistency under pressure</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">lead with intention instead of reaction</span>
                   </li>
                 </ul>
@@ -336,7 +336,7 @@ export default function ALI() {
                 </p>
 
                 {/* Pilot details card */}
-                <div className="bg-white/10 p-6 sm:p-8 border-l-4 border-[#C85A3C] my-8">
+                <div className="bg-white/10 p-6 sm:p-8 border-l-4 border-[#DB0812] my-8">
                   <p className="font-bold text-xl text-white mb-4">Pilot details:</p>
                   <ul className="space-y-3 text-white/80">
                     <li><strong className="text-white">Free for 1 year</strong> — includes 4 quarterly surveys</li>
@@ -353,7 +353,7 @@ export default function ALI() {
                   <a
                     href="/culture-science/ali/apply"
                     onClick={(e) => handleLinkClick(e, '/culture-science/ali/apply')}
-                    className="inline-block px-8 sm:px-10 py-4 sm:py-5 bg-white text-[#1A1A1A] font-medium text-sm sm:text-base hover:bg-[#C85A3C] hover:text-white transition-colors"
+                    className="inline-block px-8 sm:px-10 py-4 sm:py-5 bg-white text-[#1A1A1A] font-medium text-sm sm:text-base hover:bg-[#DB0812] hover:text-white transition-colors"
                   >
                     Apply for the Pilot
                   </a>

@@ -76,7 +76,7 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   What These Talks Are Like
                 </h2>
@@ -91,19 +91,19 @@ export default function SpeakingSeminars() {
                 What I deliver is not a pre-written script. It's leadership in real time, shaped by:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   32 years building people, teams, companies, and culture
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Servant leadership lived, not theorized
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Insight from watching how people respond to leadership under pressure
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   The research behind Culture Science
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   The posture of "I am second" — the foundation of my leadership life
                 </li>
               </ul>
@@ -125,7 +125,7 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Why Organizations Bring Me In
                 </h2>
@@ -187,7 +187,7 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   What Audiences Take Away
                 </h2>
@@ -196,28 +196,28 @@ export default function SpeakingSeminars() {
                 People leave with:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   A clearer understanding of what servant leadership actually looks like
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Language for dynamics they've sensed but never named
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   A realistic framework for leading under pressure
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   A deeper understanding of culture as lived behavior, not posters
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   A reframed sense of responsibility — not as weight, but as strength
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Practical steps they can take the next morning
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Permission to slow down and lead with intention
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   A rediscovery of what healthy leadership feels like
                 </li>
               </ul>
@@ -233,7 +233,7 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Topics I'm Asked to Speak On
                 </h2>
@@ -242,37 +242,37 @@ export default function SpeakingSeminars() {
                 I don't do canned speeches, but most talks fall into themes like:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Servant leadership in real environments
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Scoreboard Leadership vs. Servant Leadership — the contrast every leader lives
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Clarity as the most underestimated leadership skill
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Cultural drift: how it starts and how leaders correct it
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   The Golden Rule as a leadership engine
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   "I Am Second" — the strongest posture in leadership
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Creating environments people actually want to belong to
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   How pressure shapes behavior — and how leaders reshape pressure
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Leadership sustainability: how to lead without losing yourself
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   What teams wish leaders understood but rarely voice
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   The human physics of trust, alignment, communication, and expectation
                 </li>
               </ul>
@@ -288,7 +288,7 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Seminars & Workshops
                 </h2>
@@ -297,19 +297,19 @@ export default function SpeakingSeminars() {
                 Seminars take us deeper than a talk. They allow for:
               </p>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Dialogue
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Application
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Interpretation
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Real-time clarity
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Real-time alignment
                 </li>
               </ul>
@@ -331,7 +331,7 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Where Speaking Fits Inside Archetype Original
                 </h2>
@@ -384,34 +384,34 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Formats Available
                 </h2>
               </div>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   30–45 minute keynote
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   60–90 minute leadership session
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Half-day seminar
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Full-day seminar
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Team workshop
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Leadership off-site
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Executive roundtable
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Multi-day leadership intensive
                 </li>
               </ul>
@@ -427,37 +427,37 @@ export default function SpeakingSeminars() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
                   Who This Is For
                 </h2>
               </div>
               <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Executives
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Leadership teams
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Founders
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Department heads
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Emerging leaders
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Fast-growth companies
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Organizations rebuilding trust or alignment
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Companies preparing for transition
                 </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#C85A3C]">
+                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
                   Off-sites, retreats, conferences, seminars, staff days
                 </li>
               </ul>

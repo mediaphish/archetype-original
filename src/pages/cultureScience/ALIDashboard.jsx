@@ -58,37 +58,37 @@ const ALIDashboard = () => {
 
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Current condition strength for all six leadership conditions
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Directional movement (strengthening, stable, weakening)
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Rate of change over time
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Early warning indicators surfacing beneath the data
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Pattern relationships between conditions
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Environmental interpretation explaining what the data means
                     </span>
@@ -139,7 +139,7 @@ const ALIDashboard = () => {
                     </div>
 
                     {/* Small numbered badge */}
-                    <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#C85A3C] text-white text-sm font-bold mb-4">
+                    <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#DB0812] text-white text-sm font-bold mb-4">
                       {condition.number}
                     </div>
 
@@ -161,7 +161,7 @@ const ALIDashboard = () => {
         <section className="bg-white py-8 sm:py-12">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto my-16 sm:my-20">
-              <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C]">
+              <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812]">
                 <p className="text-xl sm:text-2xl font-semibold italic text-[#1A1A1A] leading-relaxed">
                   "These conditions exist whether they are measured or not. ALI simply makes them visible."
                 </p>
@@ -193,37 +193,37 @@ const ALIDashboard = () => {
 
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Is clarity strengthening or softening?
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Is trust stable or beginning to thin?
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Is communication improving or compressing under pressure?
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Is consistency holding or starting to erode?
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Is safety expanding or contracting?
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Is emotional tone stabilizing or shifting?
                     </span>
@@ -253,37 +253,37 @@ const ALIDashboard = () => {
 
                 <ul className="list-none space-y-3 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-white/80">
                       where to pay attention
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-white/80">
                       what is strengthening
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-white/80">
                       what is weakening
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-white/80">
                       which early warning indicators are surfacing
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-white/80">
                       where drift is forming
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-white/80">
                       what patterns are emerging across conditions
                     </span>

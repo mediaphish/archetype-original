@@ -23,7 +23,7 @@ export default function MeetBart() {
             <div>
               {/* Badge */}
               <div className="inline-block mb-4 sm:mb-5">
-                <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
+                <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#DB0812] uppercase">
                   Meet the Founder
                 </span>
               </div>

@@ -51,7 +51,7 @@ export default function ScriptureBlock({ reference }) {
 
   return (
     <div className="my-8 sm:my-10">
-      <div className="bg-[#FAFAF9] border-l-4 border-[#C85A3C] p-6 sm:p-8 md:p-10">
+      <div className="bg-[#FAFAF9] border-l-4 border-[#DB0812] p-6 sm:p-8 md:p-10">
         <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-4">
           {reference}
         </h3>
@@ -64,7 +64,7 @@ export default function ScriptureBlock({ reference }) {
         
         {error && (
           <div className="mb-4">
-            <p className="text-[#C85A3C] text-sm sm:text-base mb-2">
+            <p className="text-[#DB0812] text-sm sm:text-base mb-2">
               Unable to load scripture text: {error}
             </p>
             {esvUrl && (
@@ -72,7 +72,7 @@ export default function ScriptureBlock({ reference }) {
                 href={esvUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[#C85A3C] hover:text-[#A0452E] font-medium text-base sm:text-lg transition-colors underline"
+                className="inline-flex items-center gap-2 text-[#DB0812] hover:text-[#A0452E] font-medium text-base sm:text-lg transition-colors underline"
               >
                 Read {reference} on ESV.org
                 <svg 
@@ -113,7 +113,7 @@ export default function ScriptureBlock({ reference }) {
                 href={esvUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[#C85A3C] hover:text-[#A0452E] font-medium text-base sm:text-lg transition-colors underline"
+                className="inline-flex items-center gap-2 text-[#DB0812] hover:text-[#A0452E] font-medium text-base sm:text-lg transition-colors underline"
               >
                 Read on ESV.org
                 <svg 

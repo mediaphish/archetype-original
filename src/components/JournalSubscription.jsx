@@ -105,7 +105,7 @@ export default function JournalSubscription() {
                 checked={subscribeJournalEntries}
                 onChange={(e) => setSubscribeJournalEntries(e.target.checked)}
                 disabled={status === 'loading'}
-                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#C85A3C] focus:ring-[#C85A3C] focus:ring-2"
+                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#DB0812] focus:ring-[#DB0812] focus:ring-2"
               />
               <span className="text-base sm:text-lg text-[#1A1A1A]">
                 Servant Leadership Entries
@@ -117,7 +117,7 @@ export default function JournalSubscription() {
                 checked={subscribeDevotionals}
                 onChange={(e) => setSubscribeDevotionals(e.target.checked)}
                 disabled={status === 'loading'}
-                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#C85A3C] focus:ring-[#C85A3C] focus:ring-2"
+                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#DB0812] focus:ring-[#DB0812] focus:ring-2"
               />
               <span className="text-base sm:text-lg text-[#1A1A1A]">
                 Servant Leadership Devotional
@@ -132,7 +132,7 @@ export default function JournalSubscription() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your.email@example.com"
-              className="flex-1 px-4 py-3 border border-[#1A1A1A]/20 text-[#1A1A1A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#C85A3C] transition-colors"
+              className="flex-1 px-4 py-3 border border-[#1A1A1A]/20 text-[#1A1A1A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#DB0812] transition-colors"
               disabled={status === 'loading'}
               required
             />
@@ -148,7 +148,7 @@ export default function JournalSubscription() {
 
         {message && (
           <div className={`mt-4 text-sm sm:text-base ${
-            status === 'success' ? 'text-[#1A1A1A]' : 'text-[#C85A3C]'
+            status === 'success' ? 'text-[#1A1A1A]' : 'text-[#DB0812]'
           }`}>
             {message}
           </div>

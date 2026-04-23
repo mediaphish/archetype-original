@@ -53,7 +53,7 @@ export default function WhyALIExists() {
                 <p>
                   Over decades of leadership, one pattern kept repeating:
                 </p>
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] space-y-1 italic text-[#1A1A1A]/70">
                   <p>Leadership creates conditions.</p>
                   <p>Conditions shape culture.</p>
                   <p>Culture determines outcomes.</p>
@@ -103,27 +103,27 @@ export default function WhyALIExists() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">clarity softens</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">communication compresses</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">tone shifts under pressure</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">consistency erodes</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">trust thins</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">expectations blur</span>
                   </li>
                 </ul>
@@ -167,7 +167,7 @@ export default function WhyALIExists() {
                 <p>
                   Those tools answer questions like:
                 </p>
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] space-y-1 italic text-[#1A1A1A]/70">
                   <p>Are people happy?</p>
                   <p>Are they motivated?</p>
                   <p>Do they feel engaged?</p>

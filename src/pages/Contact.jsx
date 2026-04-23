@@ -93,7 +93,7 @@ export default function ContactPage() {
                       Bart has loaded decades of leadership experience into Archy's knowledge base. Ask questions about culture, leadership, servant leadership, methods, or what might work for your specific situation. If Archy can't help, we'll get you to the right person.
                     </p>
                   </div>
-                  <span className="text-xs bg-[#C85A3C]/10 text-[#C85A3C] px-3 py-1 rounded-full whitespace-nowrap ml-4">
+                  <span className="text-xs bg-[#DB0812]/10 text-[#DB0812] px-3 py-1 rounded-full whitespace-nowrap ml-4">
                     Instant Answers
                   </span>
                 </div>
@@ -157,7 +157,7 @@ export default function ContactPage() {
                   {/* Name */}
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-[#1A1A1A] mb-2">
-                      Name <span className="text-[#C85A3C]">*</span>
+                      Name <span className="text-[#DB0812]">*</span>
                     </label>
                     <input
                       type="text"
@@ -167,14 +167,14 @@ export default function ContactPage() {
                       value={formState.name}
                       onChange={(e) => setFormState(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Your name"
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent transition-colors"
                     />
                   </div>
 
                   {/* Email */}
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-[#1A1A1A] mb-2">
-                      Email <span className="text-[#C85A3C]">*</span>
+                      Email <span className="text-[#DB0812]">*</span>
                     </label>
                     <input
                       type="email"
@@ -184,7 +184,7 @@ export default function ContactPage() {
                       value={formState.email}
                       onChange={(e) => setFormState(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="your@email.com"
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent transition-colors"
                     />
                   </div>
 
@@ -200,7 +200,7 @@ export default function ContactPage() {
                       value={formState.company}
                       onChange={(e) => setFormState(prev => ({ ...prev, company: e.target.value }))}
                       placeholder="Your organization (optional)"
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent transition-colors"
                     />
                   </div>
 
@@ -216,14 +216,14 @@ export default function ContactPage() {
                       value={formState.phone}
                       onChange={(e) => setFormState(prev => ({ ...prev, phone: e.target.value }))}
                       placeholder="Your phone number (optional)"
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent transition-colors"
                     />
                   </div>
 
                   {/* Message */}
                   <div className="flex-1 flex flex-col">
                     <label htmlFor="message" className="block text-sm font-medium text-[#1A1A1A] mb-2">
-                      Message <span className="text-[#C85A3C]">*</span>
+                      Message <span className="text-[#DB0812]">*</span>
                     </label>
                     <textarea
                       id="message"
@@ -233,7 +233,7 @@ export default function ContactPage() {
                       value={formState.message}
                       onChange={(e) => setFormState(prev => ({ ...prev, message: e.target.value }))}
                       placeholder="Tell me what you're facing or what kind of support you need..."
-                      className="flex-1 w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#C85A3C] focus:border-transparent transition-colors resize-none"
+                      className="flex-1 w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-md bg-white text-[#1A1A1A] placeholder:text-[#6B6B6B]/50 focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent transition-colors resize-none"
                     />
                   </div>
 
@@ -305,31 +305,31 @@ export default function ContactPage() {
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="/methods/mentorship"
-                className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] hover:underline transition-colors"
+                className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Mentorship
               </a>
               <a
                 href="/methods/consulting"
-                className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] hover:underline transition-colors"
+                className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Consulting
               </a>
               <a
                 href="/methods/fractional-roles"
-                className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] hover:underline transition-colors"
+                className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Fractional Roles
               </a>
               <a
                 href="/methods/training-education"
-                className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] hover:underline transition-colors"
+                className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Training & Education
               </a>
               <a
                 href="/methods/speaking-seminars"
-                className="text-sm text-[#1A1A1A] hover:text-[#C85A3C] hover:underline transition-colors"
+                className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Speaking & Seminars
               </a>

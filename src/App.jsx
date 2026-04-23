@@ -6,14 +6,7 @@ import ChatApp from "./app/ChatApp";
 import Contact from "./components/Contact";
 import FloatingArchyButton from "./components/FloatingArchyButton";
 import Footer from "./components/Footer";
-import HomeHero from "./components/home/HomeHero";
-import MeetBart from "./components/home/MeetBart";
-import MeetArchy from "./components/home/MeetArchy";
-import WhatImBuilding from "./components/home/WhatImBuilding";
-import AntiProjects from "./components/home/AntiProjects";
-import WhyArchetypeOriginal from "./components/home/WhyArchetypeOriginal";
-import JournalHighlights from "./components/home/JournalHighlights";
-import FinalCTA from "./components/home/FinalCTA";
+import HomePage from "./components/home/HomePage";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
 import DevotionalPost from "./pages/DevotionalPost";
@@ -1394,16 +1387,9 @@ export default function App() {
   return (
     <>
       <SEO pageKey="home" />
-      <main>
+      <main className="bg-white text-[#1a1a1a]">
         <Header />
-        <HomeHero />
-        <MeetBart />
-        <MeetArchy />
-        <WhatImBuilding />
-        <AntiProjects />
-        <WhyArchetypeOriginal />
-        <JournalHighlights />
-        <FinalCTA />
+        <HomePage />
         <Footer />
         <FloatingArchyButton />
       </main>

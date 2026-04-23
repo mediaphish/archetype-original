@@ -183,7 +183,7 @@ export default function About() {
                     className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-colors min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -215,7 +215,7 @@ export default function About() {
                     className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-all min-h-[44px] flex items-center justify-center ${
                       activeSection === section.id
                         ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#C85A3C] hover:text-[#C85A3C]'
+                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
                     }`}
                   >
                     {section.label}
@@ -248,7 +248,7 @@ export default function About() {
               </div>
               <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center mb-8 sm:mb-10">
-                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+                  <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                   <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                     The Work Found Me Before I Knew Its Name
                   </h2>
@@ -306,7 +306,7 @@ export default function About() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
-              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                 Leadership in the Real World
               </h2>
@@ -340,7 +340,7 @@ export default function About() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
-              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                 The Years That Tested Everything
               </h2>
@@ -358,22 +358,22 @@ export default function About() {
               Some days felt like momentum. Some days felt like pushing a stalled engine uphill. I watched people grow into leaders they never expected to become. And I watched how misalignment and pressure, when left unnamed, can slowly tear everything apart.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Those years taught me things I couldn't have learned any other way. I saw firsthand how <a href="/journal/when-leadership-sank-kodak" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/when-leadership-sank-kodak'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership failures</a> can destroy even the strongest organizations:
+              Those years taught me things I couldn't have learned any other way. I saw firsthand how <a href="/journal/when-leadership-sank-kodak" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/when-leadership-sank-kodak'); window.dispatchEvent(new PopStateEvent('popstate')); }}>leadership failures</a> can destroy even the strongest organizations:
             </p>
             <ul className="list-disc space-y-3 sm:space-y-4 mb-3 sm:mb-4 pl-6 sm:pl-8">
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 What people consistently do matters far more than what they say.
               </li>
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 Clarity settles a room faster than authority ever will.
               </li>
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 Confusion spreads fast if the leader doesn't tell the truth.
               </li>
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 Pressure exposes whether culture is solid or fragile.
               </li>
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 And a single act of integrity can rebuild trust faster than a thousand speeches.
               </li>
             </ul>
@@ -394,7 +394,7 @@ export default function About() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
-              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                 The Questions That Followed
               </h2>
@@ -403,16 +403,16 @@ export default function About() {
               Stepping away from the company I helped build forced a reckoning. There were mornings when the silence felt heavy. Afternoons spent replaying decisions. Nights asking questions I had avoided for years:
             </p>
             <ul className="list-disc space-y-3 sm:space-y-4 mb-3 sm:mb-4 pl-6 sm:pl-8">
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 Did my leadership matter?
               </li>
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 Did I leave people better than I found them?
               </li>
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 Did the sacrifices mean anything?
               </li>
-              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#C85A3C]">
+              <li className="text-base sm:text-lg leading-normal text-[#1A1A1A] marker:text-[#DB0812]">
                 Was the way I led actually good?
               </li>
             </ul>
@@ -433,13 +433,13 @@ export default function About() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
-              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                 The Posture That Shapes My Leadership
               </h2>
             </div>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Two sentences have guided my leadership for decades: <a href="/journal/golden-rule-leadership-strategy" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy'); window.dispatchEvent(new PopStateEvent('popstate')); }}>The Golden Rule</a> — "treat others the way you would want to be treated." And: "I am second."
+              Two sentences have guided my leadership for decades: <a href="/journal/golden-rule-leadership-strategy" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy'); window.dispatchEvent(new PopStateEvent('popstate')); }}>The Golden Rule</a> — "treat others the way you would want to be treated." And: "I am second."
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               The Golden Rule is ancient — rooted in Scripture, echoed in philosophy, and found across cultures. It has endured because it names something universal: leadership begins with valuing the person in front of you as much as you value yourself.
@@ -464,7 +464,7 @@ export default function About() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
-              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                 The Research That Made It Clear
               </h2>
@@ -473,7 +473,7 @@ export default function About() {
               When the company was no longer mine to build, and the people I had developed were no longer mine to develop, the questions became unavoidable. Did any of it matter? Did people grow under my care? Was the way I led actually good?
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
-              Those questions sent me into years of research across psychology, communication, neuroscience, anthropology, organizational behavior, and cultural theory. What I found didn't just validate the work — it explained it. The <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#C85A3C] hover:text-[#B54A32] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); }}>servant leadership research</a> confirmed what I had lived.
+              Those questions sent me into years of research across psychology, communication, neuroscience, anthropology, organizational behavior, and cultural theory. What I found didn't just validate the work — it explained it. The <a href="/journal/the-case-for-servant-leadership-part-1" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-case-for-servant-leadership-part-1'); window.dispatchEvent(new PopStateEvent('popstate')); }}>servant leadership research</a> confirmed what I had lived.
             </p>
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               There were names for the instincts I followed. There was data behind the decisions I made. There were patterns behind the results I saw. That research became the book. The book became Archetype Original. Archetype Original became my next act.
@@ -489,7 +489,7 @@ export default function About() {
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
-              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#C85A3C] mr-4 sm:mr-6"></div>
+              <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] tracking-tight">
                 How I Show Up Today
               </h2>
@@ -502,8 +502,8 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
               
               {/* Card 1: Mentorship */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Mentorship
                 </h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
@@ -512,8 +512,8 @@ export default function About() {
               </div>
               
               {/* Card 2: Consulting */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Consulting
                 </h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
@@ -522,8 +522,8 @@ export default function About() {
               </div>
               
               {/* Card 3: Fractional Leadership */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Fractional Leadership
                 </h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
@@ -532,8 +532,8 @@ export default function About() {
               </div>
               
               {/* Card 4: Speaking & Seminars */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Speaking & Seminars
                 </h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
@@ -542,8 +542,8 @@ export default function About() {
               </div>
               
               {/* Card 5: Training & Education - Full Width */}
-              <div className="md:col-span-2 bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#C85A3C] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#C85A3C]">
+              <div className="md:col-span-2 bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Training & Education
                 </h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
@@ -572,7 +572,7 @@ export default function About() {
         >
           <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
             <div className="flex items-center mb-8 sm:mb-10">
-              <div className="mr-4 h-10 w-1 bg-[#C85A3C] sm:h-12 md:h-14"></div>
+              <div className="mr-4 h-10 w-1 bg-[#DB0812] sm:h-12 md:h-14"></div>
               <h2 className="font-serif text-3xl font-bold tracking-tight text-[#1A1A1A] sm:text-4xl md:text-5xl">
                 Philosophy
               </h2>
@@ -593,7 +593,7 @@ export default function About() {
               <a
                 href="/philosophy"
                 onClick={(e) => goToPath(e, '/philosophy')}
-                className="mt-4 inline-block text-[#C85A3C] underline decoration-[#C85A3C]/40 hover:text-[#B54A32]"
+                className="mt-4 inline-block text-[#DB0812] underline decoration-[#DB0812]/40 hover:text-[#b30610]"
               >
                 Read the full philosophy page →
               </a>
@@ -610,7 +610,7 @@ export default function About() {
           <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
             <div className="grid gap-10 md:grid-cols-[1fr_200px] md:items-center md:gap-12">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#C85A3C]">Meet Archy</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#DB0812]">Meet Archy</p>
                 <h2 className="mt-2 font-serif text-3xl font-bold tracking-tight text-[#1A1A1A] sm:text-4xl md:text-5xl">
                   Your AI leadership coach
                 </h2>
@@ -647,7 +647,7 @@ export default function About() {
             <div className="grid gap-10 lg:grid-cols-[1fr_220px] lg:items-start lg:gap-12">
               <div>
                 <div className="flex items-center mb-6 sm:mb-8">
-                  <div className="mr-4 h-10 w-1 bg-[#C85A3C] sm:h-12 md:h-14"></div>
+                  <div className="mr-4 h-10 w-1 bg-[#DB0812] sm:h-12 md:h-14"></div>
                   <h2 className="font-serif text-3xl font-bold tracking-tight text-[#1A1A1A] sm:text-4xl md:text-5xl">
                     Private advisory
                   </h2>

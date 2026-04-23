@@ -37,7 +37,7 @@ export default function ALIMethod() {
               <p>
                 The ALI Method is built on three pillars:
               </p>
-              <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 font-semibold text-[#1A1A1A]">
+              <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] space-y-1 font-semibold text-[#1A1A1A]">
                 <p>Environmental Measurement</p>
                 <p>Pattern Detection</p>
                 <p>Directional Insight</p>
@@ -77,27 +77,27 @@ export default function ALIMethod() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Clarity</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Trust</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Communication</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Consistency</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Safety</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Emotional Tone</span>
                   </li>
                 </ul>
@@ -109,15 +109,15 @@ export default function ALIMethod() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">People can be frustrated yet still operating in a strong environment.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">People can feel "good" while important conditions are declining.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">Leaders cannot rely on emotional feedback to diagnose environmental truth.</span>
                   </li>
                 </ul>
@@ -129,19 +129,19 @@ export default function ALIMethod() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">how people are experiencing leadership behavior</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">whether conditions are strengthening or weakening</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">where friction is emerging</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">what signals are forming under the surface</span>
                   </li>
                 </ul>
@@ -184,27 +184,27 @@ export default function ALIMethod() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">small inconsistencies in how leaders communicate</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">subtle changes in clarity</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">slight shifts in emotional tone</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">early signs of avoidance</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">mild softening of standards</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">tiny distortions in information flow</span>
                   </li>
                 </ul>
@@ -219,27 +219,27 @@ export default function ALIMethod() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">quarterly comparison</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">pattern mapping</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">drift thresholds</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">condition-to-condition relationships</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">underlying signal correlation</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">historical trend data</span>
                   </li>
                 </ul>
@@ -249,7 +249,7 @@ export default function ALIMethod() {
                 <p>
                   It treats it as directional:
                 </p>
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] space-y-1 italic text-[#1A1A1A]/70">
                   <p>Are conditions strengthening?</p>
                   <p>Are they weakening?</p>
                   <p>How quickly?</p>
@@ -301,23 +301,23 @@ export default function ALIMethod() {
 
                 {/* Insight cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
-                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#DB0812]">
                     <p className="font-bold text-[#1A1A1A] mb-2">Strengthening Conditions</p>
                     <p className="text-[#1A1A1A]/70">Where leadership behavior is stabilizing the environment.</p>
                   </div>
-                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#DB0812]">
                     <p className="font-bold text-[#1A1A1A] mb-2">Weakening Conditions</p>
                     <p className="text-[#1A1A1A]/70">Where drift is forming and why.</p>
                   </div>
-                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#DB0812]">
                     <p className="font-bold text-[#1A1A1A] mb-2">Emerging Signals</p>
                     <p className="text-[#1A1A1A]/70">Which early warning indicators are beginning to surface.</p>
                   </div>
-                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C]">
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#DB0812]">
                     <p className="font-bold text-[#1A1A1A] mb-2">Stability vs. Volatility</p>
                     <p className="text-[#1A1A1A]/70">Which areas remain reliable and which fluctuate under pressure.</p>
                   </div>
-                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#C85A3C] sm:col-span-2">
+                  <div className="bg-[#FAFAF9] p-6 border-l-4 border-[#DB0812] sm:col-span-2">
                     <p className="font-bold text-[#1A1A1A] mb-2">Environmental Direction</p>
                     <p className="text-[#1A1A1A]/70">The forward trajectory of leadership influence.</p>
                   </div>
@@ -332,7 +332,7 @@ export default function ALIMethod() {
                 <p>
                   To:
                 </p>
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-1 italic text-[#1A1A1A]/70">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] space-y-1 italic text-[#1A1A1A]/70">
                   <p>"What conditions are forming?"</p>
                   <p>"What will this become?"</p>
                   <p>"Where do we need to pay attention?"</p>

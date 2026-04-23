@@ -15,7 +15,7 @@ export default function FinalCTA() {
     <section className="border-t border-[#1A1A1A]/10 bg-[#FAFAF9] py-12 sm:py-14 md:py-16 lg:py-20">
       <div className="container mx-auto px-4 sm:px-6 md:px-12">
         <div className="mx-auto max-w-5xl text-center">
-          <p className="mb-3 inline-block border border-[#1A1A1A]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[#C85A3C]">
+          <p className="mb-3 inline-block border border-[#1A1A1A]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[#DB0812]">
             Two ways to start
           </p>
           <h2 className="font-serif text-4xl font-bold leading-[0.95] text-[#1A1A1A] sm:text-5xl md:text-6xl">

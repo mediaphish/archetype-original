@@ -19,7 +19,7 @@ export default function WhyArchetypeOriginal() {
         <div className="max-w-4xl mx-auto">
           {/* Badge */}
           <div className="inline-block mb-4 sm:mb-5">
-            <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
+            <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#DB0812] uppercase">
               The Name Matters
             </span>
           </div>
@@ -41,7 +41,7 @@ export default function WhyArchetypeOriginal() {
           </div>
           
           {/* Blockquote */}
-          <blockquote className="my-5 sm:my-6 md:my-8 pl-4 sm:pl-6 md:pl-8 border-l-4 border-[#C85A3C]">
+          <blockquote className="my-5 sm:my-6 md:my-8 pl-4 sm:pl-6 md:pl-8 border-l-4 border-[#DB0812]">
             <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl italic font-serif text-[#1A1A1A] leading-tight break-words">
               Be the kind of leader others want to follow. Lead in a way that becomes the pattern for something healthier, stronger, and more human.
             </p>

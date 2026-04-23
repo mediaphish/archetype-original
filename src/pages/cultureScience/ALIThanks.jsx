@@ -11,7 +11,7 @@ export default function ALIThanks() {
             <div className="bg-white border border-[#1A1A1A]/10 p-8 sm:p-10 md:p-12 text-center">
               {/* Success Icon */}
               <div className="flex justify-center mb-8">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#C85A3C] flex items-center justify-center">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#DB0812] flex items-center justify-center">
                   <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>

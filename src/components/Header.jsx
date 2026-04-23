@@ -420,7 +420,7 @@ export default function Header() {
                   <a
                     href="/engagement-inquiry"
                     onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
-                    className="ml-2 lg:ml-4 px-4 lg:px-6 py-2 bg-[#C85A3C] text-white font-medium rounded-lg hover:bg-[#B54A32] transition-all duration-200 whitespace-nowrap"
+                    className="ml-2 lg:ml-4 px-4 lg:px-6 py-2 rounded-lg bg-ao-red font-medium text-white transition-all duration-200 hover:opacity-90 whitespace-nowrap"
                   >
                     Work Together
                   </a>
@@ -502,7 +502,7 @@ export default function Header() {
                     onClick={() => setMobileExpanded(mobileExpanded === 'advisory' ? null : 'advisory')}
                     className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
                       isActive('/advisory')
-                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
+                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                     }`}
                   >
@@ -526,7 +526,7 @@ export default function Header() {
                     onClick={() => setMobileExpanded(mobileExpanded === 'consulting' ? null : 'consulting')}
                     className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
                       isActive('/methods/consulting')
-                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
+                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                     }`}
                   >
@@ -552,7 +552,7 @@ export default function Header() {
                     onClick={() => setMobileExpanded(mobileExpanded === 'meet-bart' ? null : 'meet-bart')}
                     className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
                       isActive('/meet-bart')
-                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
+                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                     }`}
                   >
@@ -570,9 +570,9 @@ export default function Header() {
                   )}
                 </div>
 
-                <a href="/books" onClick={(e) => { e.preventDefault(); handleNavigation('/books'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/books') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Books</a>
+                <a href="/books" onClick={(e) => { e.preventDefault(); handleNavigation('/books'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/books') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Books</a>
                 {/* Methods overview (still reachable) */}
-                <a href="/methods" onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/methods') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Methods overview</a>
+                <a href="/methods" onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/methods') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Methods overview</a>
 
                 {/* Culture Science Mobile Accordion */}
                 <div>
@@ -581,7 +581,7 @@ export default function Header() {
                     onClick={() => setMobileExpanded(mobileExpanded === 'culture' ? null : 'culture')}
                     className={`min-h-[44px] w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
                       isActive('/culture-science') 
-                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
+                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red' 
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                     }`}
                   >
@@ -659,8 +659,8 @@ export default function Header() {
                   onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
                   className={`min-h-[44px] flex items-center justify-center px-6 py-3 text-base font-medium transition-all duration-200 ${
                     isActive('/engagement-inquiry') 
-                      ? 'text-white bg-[#C85A3C]' 
-                      : 'bg-[#C85A3C] text-white hover:bg-[#B54A32]'
+                      ? 'text-white bg-ao-red' 
+                      : 'bg-ao-red text-white hover:opacity-90'
                   } rounded-lg mx-6 my-4 text-center`}
                 >
                   Work Together

@@ -61,31 +61,31 @@ export default function ALIEarlyWarning() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">rising silence where clarity once existed</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">small but repeated communication breakdowns</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">increasing hesitation around decisions</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">emotional compression or guardedness</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">inconsistency in expectations or follow-through</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">subtle avoidance of tension or accountability</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">distortion in how information moves through the team</span>
                   </li>
                 </ul>
@@ -124,7 +124,7 @@ export default function ALIEarlyWarning() {
                   From inside the environment:
                 </p>
                 {/* Poetic/philosophical content - border-left quote style */}
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#C85A3C] space-y-2 text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70 italic">
+                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] space-y-2 text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70 italic">
                   <p>Everything feels normal.</p>
                   <p>Teams keep functioning.</p>
                   <p>People adapt.</p>
@@ -173,27 +173,27 @@ export default function ALIEarlyWarning() {
                 </p>
                 <ul className="list-none space-y-2 pl-6">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">questions engineered to expose behavioral reality, not preference</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">quarterly measurement that reveals directional movement over time</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">pattern detection across multiple leadership conditions simultaneously</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">drift thresholds that identify when small changes are forming into larger trends</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">condition-to-condition relationship mapping that shows how one area affects another</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#C85A3C] mt-1 flex-shrink-0">→</span>
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">underlying signal correlation that connects surface behaviors to structural causes</span>
                   </li>
                 </ul>
@@ -232,27 +232,27 @@ export default function ALIEarlyWarning() {
                 {/* Two column comparison */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 my-8">
                   {/* Early intervention */}
-                  <div className="bg-[#FAFAF9] p-6 sm:p-8 border-l-4 border-[#C85A3C]">
+                  <div className="bg-[#FAFAF9] p-6 sm:p-8 border-l-4 border-[#DB0812]">
                     <h3 className="font-bold text-lg text-[#1A1A1A] mb-4">Early Intervention Means:</h3>
                     <ul className="list-none space-y-2">
                       <li className="flex items-start gap-3">
-                        <span className="text-[#C85A3C] mt-1 flex-shrink-0">✓</span>
+                        <span className="text-[#DB0812] mt-1 flex-shrink-0">✓</span>
                         <span className="text-base leading-relaxed text-[#1A1A1A]/70">adjusting behavior before trust is damaged</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="text-[#C85A3C] mt-1 flex-shrink-0">✓</span>
+                        <span className="text-[#DB0812] mt-1 flex-shrink-0">✓</span>
                         <span className="text-base leading-relaxed text-[#1A1A1A]/70">clarifying expectations before confusion becomes conflict</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="text-[#C85A3C] mt-1 flex-shrink-0">✓</span>
+                        <span className="text-[#DB0812] mt-1 flex-shrink-0">✓</span>
                         <span className="text-base leading-relaxed text-[#1A1A1A]/70">stabilizing communication before silence becomes permanent</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="text-[#C85A3C] mt-1 flex-shrink-0">✓</span>
+                        <span className="text-[#DB0812] mt-1 flex-shrink-0">✓</span>
                         <span className="text-base leading-relaxed text-[#1A1A1A]/70">reinforcing consistency before standards erode</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <span className="text-[#C85A3C] mt-1 flex-shrink-0">✓</span>
+                        <span className="text-[#DB0812] mt-1 flex-shrink-0">✓</span>
                         <span className="text-base leading-relaxed text-[#1A1A1A]/70">addressing emotional tone before guardedness becomes culture</span>
                       </li>
                     </ul>

@@ -191,7 +191,7 @@ export default function WhatIDo() {
                 {/* Mobile menu button */}
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="lg:hidden w-full flex items-center justify-between p-4 bg-white border border-[#1A1A1A]/10 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-[#C85A3C]"
+                  className="lg:hidden w-full flex items-center justify-between p-4 bg-white border border-[#1A1A1A]/10 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-[#DB0812]"
                   aria-label="Toggle navigation menu"
                 >
                   <span className="font-medium text-[#1A1A1A]">Navigation</span>
@@ -218,10 +218,10 @@ export default function WhatIDo() {
                             e.preventDefault();
                             scrollToSection(section.id, e);
                           }}
-                          className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#C85A3C] active:scale-95 ${
+                          className={`block px-3 py-2 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#DB0812] active:scale-95 ${
                             activeSection === section.id
-                              ? 'bg-[#C85A3C] text-white font-semibold shadow-md'
-                              : 'text-[#1A1A1A] hover:bg-[#FAFAF9] hover:text-[#C85A3C]'
+                              ? 'bg-[#DB0812] text-white font-semibold shadow-md'
+                              : 'text-[#1A1A1A] hover:bg-[#FAFAF9] hover:text-[#DB0812]'
                           }`}
                         >
                           {section.label}

@@ -12,7 +12,7 @@ export default function ArchetypeFitness() {
           {/* Left Content */}
           <div>
             <div className="inline-block bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md mb-6">
-              <span className="text-sm font-semibold text-[#C85A3C] uppercase tracking-wide">Physical Culture</span>
+              <span className="text-sm font-semibold text-[#DB0812] uppercase tracking-wide">Physical Culture</span>
             </div>
             
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2B2D2F] mb-6 font-serif">
@@ -23,7 +23,7 @@ export default function ArchetypeFitness() {
               The gym story that changed everything. How physical culture and leadership culture are built the same way—one intentional choice at a time.
             </p>
             
-            <button className="min-h-[44px] inline-flex items-center justify-center bg-[#C85A3C] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#B54A32] transform hover:scale-105 transition-all duration-200 shadow-lg">
+            <button className="min-h-[44px] inline-flex items-center justify-center bg-[#DB0812] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#b30610] transform hover:scale-105 transition-all duration-200 shadow-lg">
               Read the Story
             </button>
           </div>
