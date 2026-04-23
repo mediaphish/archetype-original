@@ -17,6 +17,16 @@
       "source": "/culture-science/anti-projects/bad-leader-project",
       "destination": "/culture-science/bad-leader-project",
       "permanent": true
+    },
+    {
+      "source": "/methods/speaking-seminars",
+      "destination": "/methods/consulting",
+      "permanent": true
+    },
+    {
+      "source": "/methods/training-education",
+      "destination": "/methods/consulting",
+      "permanent": true
     }
   ],
   "builds": [

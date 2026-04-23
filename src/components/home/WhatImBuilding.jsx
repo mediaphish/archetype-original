@@ -10,7 +10,9 @@ export default function WhatImBuilding() {
     window.history.pushState({}, '', href);
     window.dispatchEvent(new PopStateEvent('popstate'));
     // Scroll to top when navigating to a new page
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (!href.includes('#')) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
   };
 
   return (
@@ -117,11 +119,11 @@ export default function WhatImBuilding() {
                 Workshops, playbooks, and leadership curriculum rooted in experience and backed by research. For leaders, teams, and emerging talent who need clarity they can actually apply the next day.
               </p>
               <a
-                href="/methods/training-education"
-                onClick={(e) => handleLinkClick(e, '/methods/training-education')}
+                href="/methods/consulting#how-work-shows-up"
+                onClick={(e) => handleLinkClick(e, '/methods/consulting#how-work-shows-up')}
                 className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
-                Explore Training & Education →
+                How formats show up (consulting) →
               </a>
             </div>
 
@@ -141,11 +143,11 @@ export default function WhatImBuilding() {
                 Leadership in the room — not a performance on a stage. Talks, seminars, workshops, and intensives built around clarity, steadiness, and lived truth instead of hype or theatrics.
               </p>
               <a
-                href="/methods/speaking-seminars"
-                onClick={(e) => handleLinkClick(e, '/methods/speaking-seminars')}
+                href="/methods/consulting#how-work-shows-up"
+                onClick={(e) => handleLinkClick(e, '/methods/consulting#how-work-shows-up')}
                 className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
-                Explore Speaking & Seminars →
+                Speaking & seminars (consulting) →
               </a>
             </div>
           </div>

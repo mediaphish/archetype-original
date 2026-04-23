@@ -321,18 +321,6 @@ export default function ContactPage() {
               >
                 Fractional Roles
               </a>
-              <a
-                href="/methods/training-education"
-                className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
-              >
-                Training & Education
-              </a>
-              <a
-                href="/methods/speaking-seminars"
-                className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
-              >
-                Speaking & Seminars
-              </a>
             </div>
           </div>
         </section>

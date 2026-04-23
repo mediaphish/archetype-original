@@ -15,5 +15,5 @@ If you're looking for a high-energy keynote meant to entertain or temporarily in
 
 Many organizations use these sessions as a reset—not an ending.
 
-Learn more about [speaking and seminars](/methods/speaking-seminars).
+Learn more about [how speaking and seminars fit consulting](/methods/consulting#how-work-shows-up).
 

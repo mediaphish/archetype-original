@@ -156,18 +156,6 @@ export default function CCO() {
                 </a>
                 <span className="text-sm text-[#6B6B6B]">→</span>
                 <a 
-                  href="/methods/training-education" 
-                  className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.history.pushState({}, '', '/methods/training-education');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
-                >
-                  Training & Education
-                </a>
-                <span className="text-sm text-[#6B6B6B]">→</span>
-                <a 
                   href="/methods/fractional-roles" 
                   className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {

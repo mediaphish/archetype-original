@@ -9,7 +9,6 @@ import React, { useState, useEffect } from 'react';
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [advisoryDropdownOpen, setAdvisoryDropdownOpen] = useState(false);
-  const [consultingDropdownOpen, setConsultingDropdownOpen] = useState(false);
   const [meetBartDropdownOpen, setMeetBartDropdownOpen] = useState(false);
   const [cultureScienceDropdownOpen, setCultureScienceDropdownOpen] = useState(false);
   /** Mobile accordion: which section is expanded */
@@ -26,7 +25,6 @@ export default function Header() {
       setCurrentPath(window.location.pathname);
       setMobileMenuOpen(false);
       setAdvisoryDropdownOpen(false);
-      setConsultingDropdownOpen(false);
       setMeetBartDropdownOpen(false);
       setCultureScienceDropdownOpen(false);
     };
@@ -207,76 +205,17 @@ export default function Header() {
                     )}
                   </div>
 
-                  {/* Consulting */}
-                  <div
-                    className="relative"
-                    onMouseEnter={() => setConsultingDropdownOpen(true)}
-                    onMouseLeave={() => setConsultingDropdownOpen(false)}
+                  {/* Consulting — single destination (formats covered on page) */}
+                  <a
+                    href="/methods/consulting"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigation('/methods/consulting');
+                    }}
+                    className={navLinkClass('/methods/consulting')}
                   >
-                    <button
-                      type="button"
-                      className={`${navLinkClass('/methods/consulting')} flex items-center gap-0.5`}
-                    >
-                      Consulting
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${consultingDropdownOpen ? 'rotate-180' : ''}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {consultingDropdownOpen && (
-                      <div className="absolute left-0 top-full z-50 w-56 pt-1">
-                        <div className="rounded-sm border border-[#1A1A1A]/10 bg-white py-2 shadow-lg">
-                          <a
-                            href="/methods/consulting"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNavigation('/methods/consulting');
-                            }}
-                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
-                          >
-                            Consulting overview
-                          </a>
-                          <a
-                            href="/methods/speaking-seminars"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNavigation('/methods/speaking-seminars');
-                            }}
-                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
-                          >
-                            Speaking
-                          </a>
-                          <a
-                            href="/methods/speaking-seminars#seminars"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNavigation('/methods/speaking-seminars');
-                              window.setTimeout(() => {
-                                document.getElementById('seminars')?.scrollIntoView({ behavior: 'smooth' });
-                              }, 100);
-                            }}
-                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
-                          >
-                            Seminars
-                          </a>
-                          <a
-                            href="/methods/training-education"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNavigation('/methods/training-education');
-                            }}
-                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
-                          >
-                            Leadership Training
-                          </a>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                    Consulting
+                  </a>
 
                   {/* Meet Bart */}
                   <div
@@ -526,31 +465,20 @@ export default function Header() {
                   )}
                 </div>
 
-                {/* Consulting */}
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setMobileExpanded(mobileExpanded === 'consulting' ? null : 'consulting')}
-                    className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
-                      isActive('/methods/consulting')
-                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
-                        : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
-                    }`}
-                  >
-                    Consulting
-                    <svg className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded === 'consulting' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {mobileExpanded === 'consulting' && (
-                    <div className="bg-[#FAFAF9] py-1">
-                      <a href="/methods/consulting" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/consulting'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Consulting overview</a>
-                      <a href="/methods/speaking-seminars" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Speaking</a>
-                      <a href="/methods/speaking-seminars#seminars" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); setMobileMenuOpen(false); window.setTimeout(() => document.getElementById('seminars')?.scrollIntoView({ behavior: 'smooth' }), 150); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Seminars</a>
-                      <a href="/methods/training-education" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/training-education'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Leadership Training</a>
-                    </div>
-                  )}
-                </div>
+                <a
+                  href="/methods/consulting"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/methods/consulting');
+                  }}
+                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
+                    isActive('/methods/consulting')
+                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
+                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
+                  }`}
+                >
+                  Consulting
+                </a>
 
                 {/* Meet Bart */}
                 <div>

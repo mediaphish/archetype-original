@@ -13,8 +13,6 @@ export const PUBLIC_STATIC_SITEMAP_ROUTES = [
   { path: '/methods/consulting', priority: '0.8', changefreq: 'monthly' },
   { path: '/methods/fractional-roles', priority: '0.8', changefreq: 'monthly' },
   { path: '/methods/fractional-roles/cco', priority: '0.7', changefreq: 'monthly' },
-  { path: '/methods/speaking-seminars', priority: '0.8', changefreq: 'monthly' },
-  { path: '/methods/training-education', priority: '0.8', changefreq: 'monthly' },
   { path: '/culture-science', priority: '0.9', changefreq: 'monthly' },
   { path: '/culture-science/ali', priority: '0.9', changefreq: 'monthly' },
   { path: '/culture-science/ali/why-ali-exists', priority: '0.8', changefreq: 'monthly' },

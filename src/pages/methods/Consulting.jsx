@@ -95,6 +95,14 @@ export default function Consulting() {
     'A posture of service, not superiority — clarity without ego'
   ];
 
+  const howWorkShowsUpItems = [
+    'One-on-one sessions with leadership',
+    'Group seminars that put the whole room in the same conversation',
+    'Keynote presentations that name what the organization has been feeling',
+    'Team training that translates strategy into daily behavior',
+    'Ongoing advisory presence until the alignment holds independently'
+  ];
+
   const phases = [
     {
       title: 'Assessment',
@@ -312,6 +320,50 @@ export default function Consulting() {
                   className="h-full w-full object-cover object-center"
                 />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How the work shows up — before Advisory bridge (cursor-consulting-addition.md) */}
+        <section id="how-work-shows-up" className="w-full bg-ao-cream scroll-mt-24">
+          <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-start gap-10 px-6 py-12 md:grid-cols-2 md:gap-[72px] md:px-12 md:py-20">
+            <div>
+              <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">
+                How the work shows up
+              </p>
+              <h2 className="mb-5 font-serif text-[32px] font-normal leading-[1.15] text-[#1a1a1a]">
+                The format follows what the organization needs.
+              </h2>
+              <p className="mb-3.5 font-sans text-[15px] leading-[1.78] text-[#444]">
+                How the work shows up looks different for every organization. Sometimes it&apos;s a series of one-on-one
+                sessions with the leadership team. Sometimes it&apos;s a seminar that puts the whole room in the same
+                conversation at the same time. Sometimes it&apos;s a keynote that names what everyone in the building has
+                been feeling but nobody has said out loud. Sometimes it&apos;s ongoing presence — showing up week after week
+                until the alignment holds on its own.
+              </p>
+              <p className="mb-0 font-sans text-[15px] leading-[1.78] text-[#444]">
+                The format is never the point. The format follows what the organization actually needs to move.
+              </p>
+            </div>
+            <div className="max-w-[760px] md:justify-self-end md:max-w-none">
+              <ul className="list-none">
+                {howWorkShowsUpItems.map((t, idx) => (
+                  <li
+                    key={t}
+                    className={`relative border-[#D4D0CA] py-3 pl-6 font-sans text-[14px] leading-[1.65] text-[#333] ${
+                      idx < howWorkShowsUpItems.length - 1 ? 'border-b' : ''
+                    }`}
+                  >
+                    <span className="absolute left-0 font-bold text-ao-red">—</span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-0 border-t border-[#D4D0CA] pt-4 font-sans text-[13px] italic leading-[1.65] text-ao-brown">
+                Whatever shape the engagement takes, the contract is the same. Consulting. Not a speaking contract. Not a
+                seminar fee. Not a training package. One engagement, built around what your organization needs, delivered
+                however that work needs to arrive.
+              </p>
             </div>
           </div>
         </section>

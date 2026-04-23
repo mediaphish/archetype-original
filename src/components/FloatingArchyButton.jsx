@@ -37,12 +37,8 @@ export default function FloatingArchyButton() {
         setContext('methods-mentorship');
       } else if (path === '/methods/consulting') {
         setContext('methods-consulting');
-      } else if (path === '/methods/training-education') {
-        setContext('methods-training-education');
       } else if (path === '/methods/fractional-roles') {
         setContext('methods-fractional-roles');
-      } else if (path === '/methods/speaking-seminars') {
-        setContext('methods-speaking-seminars');
       } else if (path === '/methods/fractional-roles/cco') {
         setContext('methods-fractional-cco');
       } else if (path === '/methods' || path.startsWith('/methods/')) {

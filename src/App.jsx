@@ -16,8 +16,6 @@ import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
 import MentorshipPage from "./pages/methods/Mentorship";
 import ConsultingPage from "./pages/methods/Consulting";
-import SpeakingSeminarsPage from "./pages/methods/SpeakingSeminars";
-import TrainingEducationPage from "./pages/methods/TrainingEducation";
 import FractionalRolesPage from "./pages/methods/FractionalRoles";
 import CCOPage from "./pages/methods/fractionalRoles/CCO";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
@@ -543,7 +541,10 @@ export default function App() {
       } else if (path === '/philosophy') {
         setCurrentPage('philosophy');
       } else if (path === '/methods' || path.startsWith('/methods/')) {
-        if (path === '/methods/mentorship') {
+        if (path === '/methods/speaking-seminars' || path === '/methods/training-education') {
+          window.history.replaceState({}, '', '/methods/consulting');
+          setCurrentPage('methods-consulting');
+        } else if (path === '/methods/mentorship') {
           setCurrentPage('methods-mentorship');
         } else if (path === '/methods/consulting') {
           setCurrentPage('methods-consulting');
@@ -551,10 +552,6 @@ export default function App() {
           setCurrentPage('methods-fractional-cco');
         } else if (path === '/methods/fractional-roles') {
           setCurrentPage('methods-fractional-roles');
-        } else if (path === '/methods/speaking-seminars') {
-          setCurrentPage('methods-speaking-seminars');
-        } else if (path === '/methods/training-education') {
-          setCurrentPage('methods-training-education');
         } else {
           setCurrentPage('methods');
         }
@@ -691,30 +688,6 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <ConsultingPage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-
-  // Render Methods Speaking & Seminars page
-  if (currentPage === 'methods-speaking-seminars') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <SpeakingSeminarsPage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-
-  // Render Methods Training & Education page
-  if (currentPage === 'methods-training-education') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <TrainingEducationPage />
         <Footer />
         <FloatingArchyButton />
       </main>

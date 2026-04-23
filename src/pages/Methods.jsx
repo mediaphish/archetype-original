@@ -86,7 +86,7 @@ const services = [
     title: 'Fractional Roles',
     subtitle: 'Stepping in when teams need stability and direction during transitional seasons',
     link: '/methods/fractional-roles',
-    nextService: 'Speaking & Seminars',
+    nextService: null,
     content: (
       <>
         <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
@@ -103,51 +103,6 @@ const services = [
       'Strategic decision-making and priority-setting',
       'Leadership coaching for emerging leaders',
       'Operational guidance without long-term overhead'
-    ]
-  },
-  {
-    id: 'speaking-seminars',
-    number: '04',
-    title: 'Speaking & Seminars',
-    subtitle: 'Sharing lived leadership and research-backed insight',
-    link: '/methods/speaking-seminars',
-    nextService: 'Training & Education',
-    content: (
-      <>
-        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
-          Speaking, the way I practice it, isn't performance — it's leadership in a room. These sessions bring clarity, language, and steadiness into environments where people are already carrying responsibility, pressure, or expectation. I speak from lived experience, research, and the posture of service that defines all of my work. Talks and seminars adapt to the room: sometimes calm strength, sometimes direct truth, sometimes a recalibration of what leadership actually is. The goal is always the same: clarity people can act on the next day.
-        </p>
-      </>
-    ),
-    benefits: [
-      'Servant leadership in practice',
-      'Building trust and psychological safety',
-      'The cost of scoreboard leadership',
-      'Culture as competitive advantage',
-      'Communication that creates clarity, not confusion',
-      'Leadership in seasons of pressure and transition'
-    ]
-  },
-  {
-    id: 'training-education',
-    number: '05',
-    title: 'Training & Education',
-    subtitle: 'Tools, Playbooks, and Curriculum designed to support and affect positive change in leadership',
-    link: '/methods/training-education',
-    nextService: null, // Last item, no next button
-    content: (
-      <>
-        <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] font-semibold">
-          Training and education offerings deliver clarity, alignment, and leadership development in formats teams can absorb together. This section will expand into its own page.
-        </p>
-      </>
-    ),
-    benefits: [
-      'Custom leadership development programs',
-      'Team workshops on communication, trust, and accountability',
-      'Leadership playbooks tailored to your organization',
-      'Onboarding and culture integration for new leaders',
-      'Train-the-trainer programs to scale leadership development internally'
     ]
   }
 ];
