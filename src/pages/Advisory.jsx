@@ -145,29 +145,28 @@ export default function Advisory() {
               <figure className="overflow-hidden border border-white/10 bg-stone-950/80">
                 <div className="relative max-h-[340px] overflow-hidden">
                   <img
-                    src="/images/ali-dash-04.png"
-                    alt="ALI Leadership System Map showing seven leadership conditions measured across overall, leader, and team"
+                    src="/images/ali-dash-01.png"
+                    alt="ALI Dashboard showing overall score and seven leadership condition scores"
                     className="w-full object-cover object-top"
                     loading="lazy"
                   />
                 </div>
                 <figcaption className="border-t border-white/10 px-4 py-3 text-sm text-stone-400">
-                  The ALI Leadership System Map — seven leadership conditions measured across overall, leader, and team
-                  perspectives.
+                  ALI Dashboard — your rolling score plus clarity, consistency, trust, communication, alignment, stability, and
+                  drift at a glance.
                 </figcaption>
               </figure>
               <figure className="overflow-hidden border border-white/10 bg-stone-950/80">
                 <div className="relative max-h-[340px] overflow-hidden">
                   <img
-                    src="/images/ali-dash-03.png"
-                    alt="ALI Leadership Mirror showing perception gap between leader and team scores"
+                    src="/images/ali-dash-02.png"
+                    alt="ALI Current Zone and Leadership Mirror comparing leader and team perception"
                     className="w-full object-cover object-top"
                     loading="lazy"
                   />
                 </div>
                 <figcaption className="border-t border-white/10 px-4 py-3 text-sm text-stone-400">
-                  The Leadership Mirror reveals the gap between how a leader sees their environment and how their team experiences
-                  it.
+                  Current Zone plus Leadership Mirror — where you stand and how leader perception compares to team experience.
                 </figcaption>
               </figure>
               <p className="text-xs text-stone-500">Dashboard shown is illustrative.</p>
