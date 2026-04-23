@@ -56,7 +56,7 @@ export default function HomePage() {
               href="https://aobooks.samcart.com/products/the-room"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-[#3A3028] bg-transparent px-7 py-3.5 text-center font-sans text-[13px] text-[#C8B8A8]"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-white/55 bg-white/[0.12] px-7 py-3.5 text-center font-sans text-[13px] font-semibold text-[#F0ECE4] shadow-sm backdrop-blur-[2px] transition-colors hover:bg-white/[0.18]"
             >
               Read The Room — $27
             </a>
@@ -212,14 +212,14 @@ export default function HomePage() {
                 href="https://aobooks.samcart.com/products/the-room"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mb-2 block rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white"
+                className="mb-2 block rounded-[3px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white"
               >
                 Get The Room — $27
               </a>
               <a
                 href="/the-room"
                 onClick={nav('/the-room')}
-                className="block rounded-[2px] border border-[#ccc] py-[11px] text-center font-sans text-[12px] text-[#555]"
+                className="block rounded-[3px] border border-[#ccc] py-[11px] text-center font-sans text-[12px] text-[#555]"
               >
                 See full book page
               </a>
@@ -237,14 +237,14 @@ export default function HomePage() {
               <a
                 href="/engagement-inquiry"
                 onClick={nav('/engagement-inquiry')}
-                className="mb-2 block rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white"
+                className="mb-2 block rounded-[3px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white"
               >
                 Contact Bart directly
               </a>
               <a
                 href="/advisory"
                 onClick={nav('/advisory')}
-                className="block rounded-[2px] border border-[#ccc] py-[11px] text-center font-sans text-[12px] text-[#555]"
+                className="block rounded-[3px] border border-[#ccc] py-[11px] text-center font-sans text-[12px] text-[#555]"
               >
                 How the advisory works
               </a>

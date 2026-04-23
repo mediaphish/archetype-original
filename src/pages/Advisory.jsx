@@ -335,7 +335,7 @@ export default function Advisory() {
                   href={SAMCART_THE_ROOM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-8 block rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
+                  className="mt-8 block rounded-[3px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
                 >
                   Get The Room — $27
                 </a>
@@ -349,7 +349,7 @@ export default function Advisory() {
                 <button
                   type="button"
                   onClick={(e) => goToPath(e, '/engagement-inquiry')}
-                  className="mt-8 w-full rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
+                  className="mt-8 w-full rounded-[3px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
                 >
                   Contact Bart
                 </button>

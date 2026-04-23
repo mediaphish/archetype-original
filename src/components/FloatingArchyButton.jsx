@@ -3,7 +3,7 @@ import ChatApp from '../app/ChatApp';
 import { OptimizedImage } from './OptimizedImage';
 
 const DEFAULT_FLOATING_BTN_CLASSES =
-  'fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#FF6B35] shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden';
+  'fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-ao-red shadow-lg hover:shadow-xl hover:opacity-95 transition-all hover:scale-105 flex items-center justify-center overflow-hidden ring-2 ring-white/25';
 const REMAINING_HUMAN_FLOATING_BTN_CLASSES =
   'fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-[#061312] ring-2 ring-[#8EE4D8]/55 shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center overflow-hidden';
 
