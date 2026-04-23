@@ -15,7 +15,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero — mobile: photo band + solid panel (readable). md+: full-bleed image + gradient (desktop/tablet). */}
-      <section className="relative flex min-h-0 flex-col md:home-hero-bg md:min-h-[90vh] md:items-center md:bg-cover md:bg-[url('/images/Bart-4.jpg')] md:bg-no-repeat">
+      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[90vh] md:items-center md:bg-cover md:bg-[url('/images/Bart-4.jpg')] md:bg-no-repeat">
         {/* Mobile only: dedicated image strip — keeps copy off busy photo */}
         <div className="relative h-[min(42vh,320px)] min-h-[220px] w-full shrink-0 overflow-hidden md:hidden">
           <img
