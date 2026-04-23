@@ -14,26 +14,40 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero — full-bleed bg, no column image */}
-      <section
-        className="home-hero-bg relative flex min-h-[90vh] items-center bg-cover bg-no-repeat"
-        style={{ backgroundImage: "url('/images/Bart-4.jpg')" }}
-      >
+      {/* Hero — mobile: photo band + solid panel (readable). lg+: full-bleed image + gradient (desktop). */}
+      <section className="relative flex min-h-0 flex-col lg:home-hero-bg lg:min-h-[90vh] lg:items-center lg:bg-cover lg:bg-[url('/images/Bart-4.jpg')] lg:bg-no-repeat">
+        {/* Mobile / tablet only: dedicated image strip — keeps copy off busy photo */}
+        <div className="relative h-[min(42vh,320px)] min-h-[220px] w-full shrink-0 overflow-hidden lg:hidden">
+          <img
+            src="/images/Bart-4.jpg"
+            alt=""
+            className="h-full w-full object-cover object-[center_22%]"
+            loading="eager"
+            decoding="async"
+          />
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-stone-950"
+            aria-hidden
+          />
+        </div>
+
+        {/* Desktop only: scrim + texture over full-bleed background */}
         <div
-          className="pointer-events-none absolute inset-0 z-[1]"
+          className="pointer-events-none absolute inset-0 z-[1] hidden lg:block"
           style={{
             background:
               'linear-gradient(to right, rgba(43, 41, 41, 0.97) 0%, rgba(43, 41, 41, 0.94) 38%, rgba(43, 41, 41, 0.55) 62%, rgba(43, 41, 41, 0.12) 100%)',
           }}
         />
         <div
-          className="pointer-events-none absolute inset-0 z-[2]"
+          className="pointer-events-none absolute inset-0 z-[2] hidden lg:block"
           style={{
             backgroundImage:
               'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 4px)',
           }}
         />
-        <div className="relative z-[3] w-full max-w-[580px] px-6 py-12 md:px-16 md:py-20">
+
+        <div className="relative z-[3] w-full max-w-[580px] bg-stone-950 px-6 py-10 pb-12 lg:bg-transparent lg:px-16 lg:py-20 lg:pb-20">
           <p className="mb-6 font-sans text-[11px] uppercase tracking-[0.2em] text-ao-brown">
             Leadership Advisory · Archetype Original
           </p>
@@ -48,7 +62,7 @@ export default function HomePage() {
             <a
               href="/engagement-inquiry"
               onClick={nav('/engagement-inquiry')}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-7 py-3.5 text-center font-sans text-[13px] font-bold tracking-[0.04em] text-white"
+              className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-[3px] bg-ao-red px-7 py-3.5 text-center font-sans text-[13px] font-bold tracking-[0.04em] text-white"
             >
               Start the conversation
             </a>
@@ -56,7 +70,7 @@ export default function HomePage() {
               href="https://aobooks.samcart.com/products/the-room"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-white/55 bg-white/[0.12] px-7 py-3.5 text-center font-sans text-[13px] font-semibold text-[#F0ECE4] shadow-sm backdrop-blur-[2px] transition-colors hover:bg-white/[0.18]"
+              className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-[3px] border border-white/70 bg-black/30 px-7 py-3.5 text-center font-sans text-[13px] font-semibold text-[#F4F1EC] shadow-md backdrop-blur-[2px] transition-colors hover:border-white/85 hover:bg-black/40 lg:border-white/55 lg:bg-white/[0.12] lg:text-[#F0ECE4] lg:shadow-sm lg:hover:bg-white/[0.18]"
             >
               Read The Room — $27
             </a>
