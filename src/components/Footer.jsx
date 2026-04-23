@@ -44,6 +44,15 @@ export default function Footer() {
                     Philosophy
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="/books"
+                    onClick={(e) => handleLinkClick(e, '/books')}
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                  >
+                    Books
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -105,6 +114,24 @@ export default function Footer() {
                     className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Training & Education
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/advisory"
+                    onClick={(e) => handleLinkClick(e, '/advisory')}
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                  >
+                    Leadership Advisory
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/the-room"
+                    onClick={(e) => handleLinkClick(e, '/the-room')}
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                  >
+                    The Room (book)
                   </a>
                 </li>
               </ul>
@@ -186,6 +213,24 @@ export default function Footer() {
                     className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
                   >
                     Meet Archy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/engagement-inquiry"
+                    onClick={(e) => handleLinkClick(e, '/engagement-inquiry')}
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                  >
+                    Work Together
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/operators"
+                    onClick={(e) => handleLinkClick(e, '/operators')}
+                    className="min-h-[44px] flex items-center text-sm sm:text-base text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors py-2"
+                  >
+                    The Operators
                   </a>
                 </li>
               </ul>

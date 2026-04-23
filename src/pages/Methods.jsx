@@ -12,6 +12,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import { OptimizedImage } from '../components/OptimizedImage';
+import AdvisoryPathStrip from '../components/AdvisoryPathStrip';
 
 const sections = [
   { id: 'opening-frame', label: 'Opening Frame' },
@@ -738,6 +739,8 @@ export default function Methods() {
             </div>
           </div>
         </section>
+
+        <AdvisoryPathStrip />
 
         {/* Closing CTA */}
         <section 

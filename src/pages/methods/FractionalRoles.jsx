@@ -11,6 +11,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
+import AdvisoryPathStrip from '../../components/AdvisoryPathStrip';
 
 export default function FractionalRoles() {
   const jsonLd = {
@@ -249,6 +250,8 @@ export default function FractionalRoles() {
             </div>
           </div>
         </section>
+
+        <AdvisoryPathStrip />
 
         {/* Section 6: Closing CTA */}
         <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">

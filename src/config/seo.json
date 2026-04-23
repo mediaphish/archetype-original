@@ -11,10 +11,10 @@
   },
   "pages": {
     "about": {
-      "title": "About Bart | Archetype Original",
-      "description": "Bart Paden mentors executives, founders, emerging leaders, and students—helping them rebuild clarity and culture without dependency.",
-      "keywords": "Bart Paden, servant leadership, executive mentor, leadership consulting, business culture, Archetype Original",
-      "image": "/og-about.jpg"
+      "title": "Meet Bart Paden | Archetype Original",
+      "description": "Meet Bart Paden — philosophy, advisory, Archy, and three decades inside real leadership pressure. Servant leadership, Culture Science, and private advisory outside your system.",
+      "keywords": "Bart Paden, Meet Bart, leadership advisory, servant leadership, Archetype Original, The Room",
+      "image": "/images/Bart-97.jpg"
     },
     "philosophy": {
       "title": "Philosophy | Archetype Original",
@@ -46,11 +46,29 @@
       "keywords": "Remaining Human, Bart Paden, servant leadership, AI leadership, leadership eBook, Archetype Original",
       "image": "/og-default.jpg"
     },
-    "advisory": {
+    "the-room": {
       "title": "The Room & Advisory | Archetype Original",
       "description": "The Room — a short book on the structural limits of honest feedback inside authority. Private advisory outside your system when you are ready for the conversation that cannot happen inside the room.",
       "keywords": "The Room, Bart Paden, leadership advisory, honest feedback, organizational behavior, Archetype Original",
       "image": "/images/advisory/the-room-cover.png"
+    },
+    "advisory": {
+      "title": "Leadership Advisory | Archetype Original",
+      "description": "One room. Outside the system. No consequence. Advisory for leaders, executives, and founders who already know their room is not fully honest.",
+      "keywords": "leadership advisory, Bart Paden, executive advisor, The Room, Archetype Original, private advisory",
+      "image": "/images/Bart-32.jpg"
+    },
+    "books": {
+      "title": "Books by Bart Paden | Archetype Original",
+      "description": "Three books on leadership, organizational behavior, and the human cost of every decision leaders make. The Room, Accidental CEO, Remaining Human.",
+      "keywords": "Bart Paden, The Room, Accidental CEO, Remaining Human, leadership books, Archetype Original",
+      "image": "/images/advisory/the-room-cover.png"
+    },
+    "home": {
+      "title": "Archetype Original | Leadership Advisory & The Room by Bart Paden",
+      "description": "The room you think you have is not the room that is actually operating around you. Advisory for leaders, executives, and founders. The Room by Bart Paden — $27.",
+      "keywords": "leadership advisory, Bart Paden, The Room, executive advisor, Archetype Original",
+      "image": "/images/Bart-8.jpg"
     }
   }
 }

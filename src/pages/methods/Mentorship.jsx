@@ -12,6 +12,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import AdvisoryPathStrip from '../../components/AdvisoryPathStrip';
 
 const sections = [
   { id: 'opening', label: 'Opening' },
@@ -485,6 +486,8 @@ export default function Mentorship() {
             </div>
           </div>
         </section>
+
+        <AdvisoryPathStrip />
 
         {/* Section 7: Closing CTA */}
         <section 

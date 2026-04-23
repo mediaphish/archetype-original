@@ -11,6 +11,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../../components/SEO';
+import AdvisoryPathStrip from '../../../components/AdvisoryPathStrip';
 
 export default function CCO() {
   const jsonLd = {
@@ -181,6 +182,8 @@ export default function CCO() {
             </div>
           </div>
         </section>
+
+        <AdvisoryPathStrip />
       </div>
     </>
   );

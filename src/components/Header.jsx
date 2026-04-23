@@ -8,8 +8,12 @@ import React, { useState, useEffect } from 'react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [methodsDropdownOpen, setMethodsDropdownOpen] = useState(false);
+  const [advisoryDropdownOpen, setAdvisoryDropdownOpen] = useState(false);
+  const [consultingDropdownOpen, setConsultingDropdownOpen] = useState(false);
+  const [meetBartDropdownOpen, setMeetBartDropdownOpen] = useState(false);
   const [cultureScienceDropdownOpen, setCultureScienceDropdownOpen] = useState(false);
+  /** Mobile accordion: which section is expanded */
+  const [mobileExpanded, setMobileExpanded] = useState(null);
   const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
@@ -21,7 +25,9 @@ export default function Header() {
     const handleRouteChange = () => {
       setCurrentPath(window.location.pathname);
       setMobileMenuOpen(false);
-      setMethodsDropdownOpen(false);
+      setAdvisoryDropdownOpen(false);
+      setConsultingDropdownOpen(false);
+      setMeetBartDropdownOpen(false);
       setCultureScienceDropdownOpen(false);
     };
 
@@ -44,8 +50,11 @@ export default function Header() {
     window.dispatchEvent(new PopStateEvent('popstate'));
     // Note: Scroll handling is now done in App.jsx based on navigation direction
     setMobileMenuOpen(false);
-    setMethodsDropdownOpen(false);
+    setAdvisoryDropdownOpen(false);
+    setConsultingDropdownOpen(false);
+    setMeetBartDropdownOpen(false);
     setCultureScienceDropdownOpen(false);
+    setMobileExpanded(null);
   };
 
   const isActive = (path) => {
@@ -88,6 +97,13 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
                 <span className="text-xs">Journal</span>
+              </a>
+              <a 
+                href="/books" 
+                onClick={(e) => { e.preventDefault(); handleNavigation('/books'); }}
+                className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/books') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
+              >
+                <span className="text-xs">Books</span>
               </a>
               <a 
                 href="/contact" 
@@ -146,107 +162,179 @@ export default function Header() {
 
               {/* Desktop Navigation - Right Side */}
               <div className="hidden md:flex items-center gap-6 lg:gap-8">
-                {/* Primary Navigation Links */}
-                <div className="flex items-center gap-3 lg:gap-5 xl:gap-6">
-                  <a 
-                    href="/meet-bart" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
-                    className={`${navLinkClass('/meet-bart')} whitespace-nowrap text-sm lg:text-base`}
-                  >
-                    Meet Bart
-                  </a>
-                  
-                  <a 
-                    href="/archy" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
-                    className={`${navLinkClass('/archy')} whitespace-nowrap text-sm lg:text-base`}
-                  >
-                    Meet Archy
-                  </a>
-
-                  <a
-                    href="/advisory"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigation('/advisory');
-                    }}
-                    className={`${navLinkClass('/advisory')} whitespace-nowrap text-sm lg:text-base`}
-                  >
-                    Advisory
-                  </a>
-                  
-                  <a 
-                    href="/philosophy" 
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
-                    className={`${navLinkClass('/philosophy')} whitespace-nowrap text-sm lg:text-base`}
-                  >
-                    Philosophy
-                  </a>
-
-                  {/* Methods Dropdown */}
-                  <div 
+                <div className="flex items-center gap-2 lg:gap-4 xl:gap-5 flex-wrap justify-end">
+                  {/* Advisory Roles */}
+                  <div
                     className="relative"
-                    onMouseEnter={() => setMethodsDropdownOpen(true)}
-                    onMouseLeave={() => setMethodsDropdownOpen(false)}
+                    onMouseEnter={() => setAdvisoryDropdownOpen(true)}
+                    onMouseLeave={() => setAdvisoryDropdownOpen(false)}
                   >
                     <button
-                      className={`${navLinkClass('/methods')} flex items-center gap-1 whitespace-nowrap text-sm md:text-sm lg:text-base`}
+                      type="button"
+                      className={`${navLinkClass('/advisory')} flex items-center gap-1 whitespace-nowrap text-sm lg:text-base`}
                     >
-                      Methods
-                      <svg 
-                        className={`w-4 h-4 transition-transform duration-200 ${methodsDropdownOpen ? 'rotate-180' : ''}`}
-                        fill="none" 
-                        stroke="currentColor" 
+                      Advisory Roles
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${advisoryDropdownOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
-                    {methodsDropdownOpen && (
-                      <div className="absolute top-full right-0 pt-1 w-56">
-                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <a
-                          href="/methods"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Overview
-                        </a>
-                        <a
-                          href="/methods/mentorship"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/methods/mentorship'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Mentorship
-                        </a>
-                        <a
-                          href="/methods/consulting"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/methods/consulting'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Consulting
-                        </a>
-                        <a
-                          href="/methods/fractional-roles"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/methods/fractional-roles'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Fractional Roles
-                        </a>
-                        <a
-                          href="/methods/speaking-seminars"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Speaking & Seminars
-                        </a>
-                        <a
-                          href="/methods/training-education"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/methods/training-education'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Training & Education
-                        </a>
+                    {advisoryDropdownOpen && (
+                      <div className="absolute top-full right-0 pt-1 w-56 z-50">
+                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                          <a
+                            href="/advisory"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/advisory');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Leadership Advisory
+                          </a>
+                          <a
+                            href="/methods/fractional-roles"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/methods/fractional-roles');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Fractional Roles
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Consulting */}
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setConsultingDropdownOpen(true)}
+                    onMouseLeave={() => setConsultingDropdownOpen(false)}
+                  >
+                    <button
+                      type="button"
+                      className={`${navLinkClass('/methods/consulting')} flex items-center gap-1 whitespace-nowrap text-sm lg:text-base`}
+                    >
+                      Consulting
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${consultingDropdownOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {consultingDropdownOpen && (
+                      <div className="absolute top-full right-0 pt-1 w-56 z-50">
+                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                          <a
+                            href="/methods/consulting"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/methods/consulting');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Consulting overview
+                          </a>
+                          <a
+                            href="/methods/speaking-seminars"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/methods/speaking-seminars');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Speaking
+                          </a>
+                          <a
+                            href="/methods/speaking-seminars#seminars"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/methods/speaking-seminars');
+                              window.setTimeout(() => {
+                                document.getElementById('seminars')?.scrollIntoView({ behavior: 'smooth' });
+                              }, 100);
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Seminars
+                          </a>
+                          <a
+                            href="/methods/training-education"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/methods/training-education');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Leadership Training
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Meet Bart */}
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setMeetBartDropdownOpen(true)}
+                    onMouseLeave={() => setMeetBartDropdownOpen(false)}
+                  >
+                    <button
+                      type="button"
+                      className={`${navLinkClass('/meet-bart')} flex items-center gap-1 whitespace-nowrap text-sm lg:text-base`}
+                    >
+                      Meet Bart
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${meetBartDropdownOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {meetBartDropdownOpen && (
+                      <div className="absolute top-full right-0 pt-1 w-52 z-50">
+                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                          <a
+                            href="/meet-bart"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/meet-bart');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Meet Bart
+                          </a>
+                          <a
+                            href="/philosophy"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/philosophy');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Philosophy
+                          </a>
+                          <a
+                            href="/archy"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/archy');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Meet Archy
+                          </a>
                         </div>
                       </div>
                     )}
@@ -412,129 +500,90 @@ export default function Header() {
             {/* Drawer Content - Scrollable */}
             <div className="flex-1 overflow-y-auto py-4">
               <div className="flex flex-col space-y-1">
-                <a 
-                  href="/meet-bart" 
-                  onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }}
-                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/meet-bart') 
-                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
-                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
-                  }`}
-                >
-                  Meet Bart
-                </a>
-                
-                <a 
-                  href="/archy" 
-                  onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }}
-                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/archy') 
-                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
-                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
-                  }`}
-                >
-                  Meet Archy
-                </a>
-
-                <a
-                  href="/advisory"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigation('/advisory');
-                  }}
-                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/advisory')
-                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
-                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
-                  }`}
-                >
-                  Advisory
-                </a>
-                
-                <a 
-                  href="/philosophy" 
-                  onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }}
-                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/philosophy') 
-                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
-                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
-                  }`}
-                >
-                  Philosophy
-                </a>
-
-                {/* Methods Mobile Accordion */}
+                {/* Advisory Roles */}
                 <div>
                   <button
-                    onClick={() => setMethodsDropdownOpen(!methodsDropdownOpen)}
+                    type="button"
+                    onClick={() => setMobileExpanded(mobileExpanded === 'advisory' ? null : 'advisory')}
                     className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
-                      isActive('/methods') 
-                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
+                      isActive('/advisory')
+                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                     }`}
                   >
-                    Methods
-                    <svg 
-                      className={`w-5 h-5 transition-transform duration-200 ${methodsDropdownOpen ? 'rotate-180' : ''}`}
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
+                    Advisory Roles
+                    <svg className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded === 'advisory' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  {methodsDropdownOpen && (
-                    <div className="bg-[#FAFAF9] space-y-1 animate-in slide-in-from-top-2 duration-200">
-                      <a
-                        href="/methods"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Overview
-                      </a>
-                      <a
-                        href="/methods/mentorship"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/methods/mentorship'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Mentorship
-                      </a>
-                      <a
-                        href="/methods/consulting"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/methods/consulting'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Consulting
-                      </a>
-                      <a
-                        href="/methods/fractional-roles"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/methods/fractional-roles'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Fractional Roles
-                      </a>
-                      <a
-                        href="/methods/speaking-seminars"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Speaking & Seminars
-                      </a>
-                      <a
-                        href="/methods/training-education"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/methods/training-education'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Training & Education
-                      </a>
+                  {mobileExpanded === 'advisory' && (
+                    <div className="bg-[#FAFAF9] py-1">
+                      <a href="/advisory" onClick={(e) => { e.preventDefault(); handleNavigation('/advisory'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Leadership Advisory</a>
+                      <a href="/methods/fractional-roles" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/fractional-roles'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Fractional Roles</a>
                     </div>
                   )}
                 </div>
 
+                {/* Consulting */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded(mobileExpanded === 'consulting' ? null : 'consulting')}
+                    className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
+                      isActive('/methods/consulting')
+                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
+                        : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
+                    }`}
+                  >
+                    Consulting
+                    <svg className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded === 'consulting' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {mobileExpanded === 'consulting' && (
+                    <div className="bg-[#FAFAF9] py-1">
+                      <a href="/methods/consulting" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/consulting'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Consulting overview</a>
+                      <a href="/methods/speaking-seminars" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Speaking</a>
+                      <a href="/methods/speaking-seminars#seminars" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/speaking-seminars'); setMobileMenuOpen(false); window.setTimeout(() => document.getElementById('seminars')?.scrollIntoView({ behavior: 'smooth' }), 150); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Seminars</a>
+                      <a href="/methods/training-education" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/training-education'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Leadership Training</a>
+                    </div>
+                  )}
+                </div>
+
+                {/* Meet Bart */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded(mobileExpanded === 'meet-bart' ? null : 'meet-bart')}
+                    className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
+                      isActive('/meet-bart')
+                        ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]'
+                        : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
+                    }`}
+                  >
+                    Meet Bart
+                    <svg className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded === 'meet-bart' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {mobileExpanded === 'meet-bart' && (
+                    <div className="bg-[#FAFAF9] py-1">
+                      <a href="/meet-bart" onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Meet Bart</a>
+                      <a href="/philosophy" onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Philosophy</a>
+                      <a href="/archy" onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Meet Archy</a>
+                    </div>
+                  )}
+                </div>
+
+                <a href="/books" onClick={(e) => { e.preventDefault(); handleNavigation('/books'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/books') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Books</a>
+                {/* Methods overview (still reachable) */}
+                <a href="/methods" onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/methods') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Methods overview</a>
+
                 {/* Culture Science Mobile Accordion */}
                 <div>
                   <button
-                    onClick={() => setCultureScienceDropdownOpen(!cultureScienceDropdownOpen)}
+                    type="button"
+                    onClick={() => setMobileExpanded(mobileExpanded === 'culture' ? null : 'culture')}
                     className={`min-h-[44px] w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
                       isActive('/culture-science') 
                         ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-[#C85A3C]' 
@@ -543,7 +592,7 @@ export default function Header() {
                   >
                     Culture Science
                     <svg 
-                      className={`w-5 h-5 transition-transform duration-200 ${cultureScienceDropdownOpen ? 'rotate-180' : ''}`}
+                      className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded === 'culture' ? 'rotate-180' : ''}`}
                       fill="none" 
                       stroke="currentColor" 
                       viewBox="0 0 24 24"
@@ -551,7 +600,7 @@ export default function Header() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  {cultureScienceDropdownOpen && (
+                  {mobileExpanded === 'culture' && (
                     <div className="bg-[#FAFAF9] space-y-1 animate-in slide-in-from-top-2 duration-200">
                       <a
                         href="/culture-science"

@@ -6,6 +6,7 @@ import { OptimizedImage } from '../components/OptimizedImage';
 import DevotionalPost from './DevotionalPost';
 import JournalSubscription from '../components/JournalSubscription';
 import ShareLinks from '../components/ShareLinks';
+import JournalAdvisoryCTA from '../components/JournalAdvisoryCTA';
 
 export default function JournalPost() {
   const [post, setPost] = useState(null);
@@ -879,11 +880,11 @@ export default function JournalPost() {
                         {post.categories.some(cat => ['servant-leadership', 'leadership', 'golden-rule', 'posture'].includes(cat.toLowerCase())) && (
                           <li>
                             <a 
-                              href="/about" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/about'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
+                              href="/meet-bart" 
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/meet-bart'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#C85A3C] hover:text-[#B54A32] underline text-base sm:text-lg"
                             >
-                              About — The posture that shapes my leadership
+                              Meet Bart — The posture that shapes my leadership
                             </a>
                           </li>
                         )}
@@ -924,6 +925,10 @@ export default function JournalPost() {
                     </div>
                   )}
                 </div>
+              </div>
+
+              <div className="mt-12 sm:mt-16">
+                <JournalAdvisoryCTA />
               </div>
 
               {/* Subscription Form */}

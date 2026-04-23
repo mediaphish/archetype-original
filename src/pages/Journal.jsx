@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import JournalSubscription from '../components/JournalSubscription';
 import { OptimizedImage } from '../components/OptimizedImage';
 
+const PAGE_SIZE = 12;
+
 export default function Journal() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [listPage, setListPage] = useState(1);
 
   // Map actual categories to display categories (comprehensive mapping)
   const categoryMapping = {
@@ -145,6 +148,17 @@ export default function Journal() {
     };
   }, []);
 
+  useEffect(() => {
+    const syncFromUrl = () => {
+      const q = new URLSearchParams(window.location.search);
+      const p = parseInt(q.get('page') || '1', 10);
+      setListPage(Number.isFinite(p) && p > 0 ? p : 1);
+    };
+    syncFromUrl();
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, []);
+
   const filteredPosts = selectedCategory === 'all' 
     ? posts.filter(post => post.type !== 'devotional') // Exclude devotionals from "all" view
     : selectedCategory === 'devotional'
@@ -157,8 +171,35 @@ export default function Journal() {
         return postCategories.some(cat => mappedCategories.includes(cat));
       });
 
-  const featuredPost = filteredPosts[0];
-  const remainingPosts = filteredPosts.slice(1);
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
+  const safePage = Math.min(listPage, totalPages);
+  const start = (safePage - 1) * PAGE_SIZE;
+  const pageSlice = filteredPosts.slice(start, start + PAGE_SIZE);
+
+  const featuredPost = safePage === 1 && pageSlice.length > 0 ? pageSlice[0] : null;
+  const gridPosts =
+    safePage === 1 && pageSlice.length > 1
+      ? pageSlice.slice(1)
+      : safePage === 1
+        ? []
+        : pageSlice;
+
+  useEffect(() => {
+    if (listPage > totalPages) {
+      const tp = totalPages;
+      setListPage(tp);
+      window.history.replaceState({}, '', tp <= 1 ? '/journal' : `/journal?page=${tp}`);
+    }
+  }, [filteredPosts.length, listPage, totalPages]);
+
+  const goToJournalPage = (n) => {
+    const tp = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
+    const next = Math.max(1, Math.min(n, tp));
+    setListPage(next);
+    const path = next <= 1 ? '/journal' : `/journal?page=${next}`;
+    window.history.pushState({}, '', path);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -246,7 +287,12 @@ export default function Journal() {
               {['all', 'leadership', 'culture', 'growth', 'philosophy', 'devotional'].map(category => (
                 <button
                   key={category}
-                  onClick={() => setSelectedCategory(category)}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    setListPage(1);
+                    window.history.replaceState({}, '', '/journal');
+                  }}
                   className={`px-6 py-2.5 text-sm font-medium border transition-all duration-200 ${
                     selectedCategory === category
                       ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
@@ -327,9 +373,9 @@ export default function Journal() {
               )}
 
               {/* Remaining Articles Grid */}
-              {remainingPosts.length > 0 && (
+              {gridPosts.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-                  {remainingPosts.map((post) => (
+                  {gridPosts.map((post) => (
                     <article 
                       key={post.slug} 
                       className="cursor-pointer"
@@ -379,6 +425,33 @@ export default function Journal() {
                     </article>
                   ))}
                 </div>
+              )}
+
+              {totalPages > 1 && (
+                <nav
+                  className="mt-14 flex flex-col items-center justify-center gap-4 sm:mt-20 sm:flex-row"
+                  aria-label="Journal pages"
+                >
+                  <button
+                    type="button"
+                    onClick={() => goToJournalPage(safePage - 1)}
+                    disabled={safePage <= 1}
+                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#C85A3C] hover:text-[#C85A3C] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-[#6B6B6B]">
+                    Page {safePage} of {totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => goToJournalPage(safePage + 1)}
+                    disabled={safePage >= totalPages}
+                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#C85A3C] hover:text-[#C85A3C] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Next
+                  </button>
+                </nav>
               )}
             </>
           )}

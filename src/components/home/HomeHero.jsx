@@ -1,12 +1,8 @@
 /**
- * Homepage Hero — Accidental CEO book promotion
- * Editorial minimal layout consistent with the rest of the public site.
+ * Homepage hero — advisory-first + The Room (Prompt 1).
  */
 import React from 'react';
 import { OptimizedImage } from '../OptimizedImage';
-
-const LULU_ORDER_URL =
-  'https://www.lulu.com/shop/bart-paden/accidental-ceo/paperback/product-zmzpjrv.html';
 
 export default function HomeHero() {
   const goInternal = (e, href) => {
@@ -17,68 +13,60 @@ export default function HomeHero() {
   };
 
   return (
-    <section className="bg-white py-6 sm:py-10 md:py-14 lg:py-16">
-      <div className="container mx-auto px-4 sm:px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-10 lg:gap-12 items-center">
-            {/* Front + back mockup (accidental-ceo-front-back-01.png, RGBA); first on mobile */}
-            <div className="flex justify-center md:justify-start w-full">
-              <div className="w-full max-w-lg sm:max-w-xl md:max-w-xl lg:max-w-2xl rounded-lg overflow-hidden">
-                <OptimizedImage
-                  src="/images/accidental-ceo/accidental-ceo-front-back-01.png"
-                  alt="Accidental CEO — front and back cover"
-                  className="w-full h-auto object-contain drop-shadow-md"
-                  loading="eager"
-                />
-              </div>
-            </div>
+    <section className="relative min-h-[min(92vh,920px)] flex items-end overflow-hidden bg-[#1A1A1A]">
+      <div className="absolute inset-0">
+        <OptimizedImage
+          src="/images/Bart-8.jpg"
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-cover object-[center_22%] opacity-95"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/75 to-[#0a0a0a]/35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/88 via-transparent to-transparent" />
+      </div>
 
-            {/* Text column — second on desktop (right); second on mobile (below image) */}
-            <div>
-              <div className="inline-block mb-4 sm:mb-5">
-                <span className="inline-block px-3 py-1 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#C85A3C] uppercase">
-                  Book
-                </span>
-              </div>
-
-              <h1
-                className="font-serif font-bold mb-4 sm:mb-5 text-balance text-[#1A1A1A]"
-                style={{
-                  fontSize: 'clamp(2.5rem, 5vw + 1rem, 5rem)',
-                  lineHeight: '1.1',
-                  letterSpacing: '-0.02em',
-                }}
+      <div className="relative z-10 w-full">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 pb-12 sm:pb-16 md:pb-20 pt-28 sm:pt-32">
+          <div className="max-w-3xl">
+            <p className="mb-3 sm:mb-4 text-xs font-medium uppercase tracking-[0.2em] text-white/80">
+              Leadership advisory · The Room
+            </p>
+            <h1
+              className="font-serif font-bold text-balance text-white mb-4 sm:mb-6"
+              style={{
+                fontSize: 'clamp(2.25rem, 4vw + 1rem, 4rem)',
+                lineHeight: '1.08',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              The room you think you have is not the room that is actually operating around you.
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-white/85 font-light mb-8 sm:mb-10 max-w-2xl">
+              Private advisory for leaders who already sense the gap — plus a short book that names why honest feedback rarely survives authority.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 flex-wrap">
+              <a
+                href="/advisory"
+                onClick={(e) => goInternal(e, '/advisory')}
+                className="inline-flex min-h-[48px] items-center justify-center bg-[#C85A3C] px-8 py-4 text-base font-medium text-white transition-colors hover:bg-[#b54a32]"
               >
-                Accidental CEO
-              </h1>
-
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-xl font-light mb-4 sm:mb-5">
-                A leadership story about building something real, carrying more than expected, and
-                choosing to lead anyway.
-              </p>
-
-              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/65 max-w-xl mb-6 sm:mb-7">
-                For founders, operators, and leaders learning that real leadership is formed under
-                pressure, not just taught in theory.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-1">
-                <a
-                  href={LULU_ORDER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1A1A1A] text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center min-h-[44px] flex items-center justify-center"
-                >
-                  👉 Order the Book
-                </a>
-                <a
-                  href="/accidental-ceo"
-                  onClick={(e) => goInternal(e, '/accidental-ceo')}
-                  className="bg-transparent text-[#1A1A1A] px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center min-h-[44px] flex items-center justify-center"
-                >
-                  👉 Learn More
-                </a>
-              </div>
+                Explore leadership advisory
+              </a>
+              <a
+                href="/the-room"
+                onClick={(e) => goInternal(e, '/the-room')}
+                className="inline-flex min-h-[48px] items-center justify-center border border-white/85 bg-transparent px-8 py-4 text-base font-medium text-white transition-colors hover:bg-white hover:text-[#1A1A1A]"
+              >
+                Read The Room ($27)
+              </a>
+              <a
+                href="/engagement-inquiry"
+                onClick={(e) => goInternal(e, '/engagement-inquiry')}
+                className="inline-flex min-h-[48px] items-center justify-center border border-white/35 bg-white/10 px-8 py-4 text-base font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+              >
+                Start a conversation
+              </a>
             </div>
           </div>
         </div>

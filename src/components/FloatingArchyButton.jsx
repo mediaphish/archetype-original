@@ -52,7 +52,7 @@ export default function FloatingArchyButton() {
         setContext('culture-science');
       } else if (path === '/archy' || path.startsWith('/archy/')) {
         setContext('archy');
-      } else if (path === '/advisory') {
+      } else if (path === '/advisory' || path === '/the-room') {
         setContext('advisory');
       } else if (path === '/philosophy') {
         setContext('philosophy');

@@ -12,6 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import AdvisoryPathStrip from '../../components/AdvisoryPathStrip';
 
 export default function Consulting() {
   const [scrollY, setScrollY] = useState(0);
@@ -418,6 +419,8 @@ export default function Consulting() {
             </div>
           </div>
         </section>
+
+        <AdvisoryPathStrip />
 
         {/* Section 7: Closing CTA */}
         <section className="w-full bg-white py-16 sm:py-24 md:py-32">

@@ -36,11 +36,11 @@ export default function MeetBart() {
               {/* Body paragraphs */}
               <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6 md:mb-7">
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
-                  For more than 32 years I've worked inside the realities of leadership — building teams, leading companies, repairing culture, and studying why people follow some leaders and flee from others. Archetype Original is the work that grew out of those decades: lived leadership, practical clarity, and research that explains what people feel every day inside organizations.
+                  Thirty-two years inside real leadership pressure — teams, ownership, repair, and the question of why people trust some rooms and quietly leave others.
                 </p>
-                
+
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
-                  If you want to understand the story behind this work — how it formed, what shaped it, and why it matters — you can read it here.
+                  The longer story — including philosophy, advisory, and Archy — lives on Meet Bart.
                 </p>
               </div>
               

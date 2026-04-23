@@ -401,6 +401,34 @@ export default function AccidentalCEO() {
           </div>
         </section>
 
+        <section className="border-t border-[#1A1A1A]/10 bg-[#FFF8F3] py-16 md:py-24">
+          <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
+            <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] sm:text-3xl md:text-4xl">
+              When the strain is bigger than one leader&apos;s story
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-[#6B6B6B]">
+              <em>Accidental CEO</em> names the human weight of leadership. If what you are carrying is also structural — the room itself cannot stay honest — read{' '}
+              <em>The Room</em> or explore private advisory as the next step.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a
+                href="/the-room"
+                onClick={(e) => goToPath(e, '/the-room')}
+                className="inline-flex min-h-[44px] items-center justify-center border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
+              >
+                The Room — book
+              </a>
+              <a
+                href="/advisory"
+                onClick={(e) => goToPath(e, '/advisory')}
+                className="inline-flex min-h-[44px] items-center justify-center bg-[#1A1A1A] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90"
+              >
+                Leadership advisory
+              </a>
+            </div>
+          </div>
+        </section>
+
         {/* Book FAQs (same corpus as main FAQ page) */}
         <section
           className="py-16 md:py-24 border-t border-[#1A1A1A]/10 bg-white"

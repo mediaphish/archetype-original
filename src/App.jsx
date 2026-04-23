@@ -105,6 +105,8 @@ import EngagementInquiryPage from "./pages/EngagementInquiry";
 import AccidentalCEOPage from "./pages/AccidentalCEO";
 import RemainingHumanPage from "./pages/RemainingHuman";
 import AdvisoryPage from "./pages/Advisory";
+import TheRoomPage from "./pages/TheRoom";
+import BooksPage from "./pages/Books";
 import { trackMetaPixelPageView } from "./lib/metaPixel";
 
 export default function App() {
@@ -159,6 +161,8 @@ export default function App() {
     if (path === '/methods' || path.startsWith('/methods/')) return 'methods';
     if (path === '/what-i-do') return 'what-i-do';
     if (path === '/accidental-ceo') return 'accidental-ceo';
+    if (path === '/the-room') return 'the-room';
+    if (path === '/books') return 'books';
     if (path === '/advisory') return 'advisory';
     if (path === '/remaining-human') return 'remaining-human';
     // Operators Platform routes
@@ -590,6 +594,10 @@ export default function App() {
         setCurrentPage('what-i-do');
       } else if (path === '/accidental-ceo') {
         setCurrentPage('accidental-ceo');
+      } else if (path === '/the-room') {
+        setCurrentPage('the-room');
+      } else if (path === '/books') {
+        setCurrentPage('books');
       } else if (path === '/advisory') {
         setCurrentPage('advisory');
       } else if (path === '/remaining-human') {
@@ -730,7 +738,6 @@ export default function App() {
         <Header />
         <AboutPage />
         <Footer />
-        <Footer />
         <FloatingArchyButton />
       </main>
     );
@@ -850,6 +857,28 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <AccidentalCEOPage />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  if (currentPage === 'the-room') {
+    return (
+      <main className="bg-stone-50 text-stone-900">
+        <Header />
+        <TheRoomPage />
+        <Footer />
+        <FloatingArchyButton />
+      </main>
+    );
+  }
+
+  if (currentPage === 'books') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <BooksPage />
         <Footer />
         <FloatingArchyButton />
       </main>
@@ -1451,7 +1480,7 @@ export default function App() {
   // Render Home page
   return (
     <>
-      <SEO pageKey="default" />
+      <SEO pageKey="home" />
       <main>
         <Header />
         <HomeHero />

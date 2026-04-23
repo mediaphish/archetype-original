@@ -38,7 +38,7 @@ function resolveCanonical(pageKey) {
     if (p === '/') return siteBase;
     return `${siteBase}${p}`;
   }
-  if (pageKey === 'default') return siteBase;
+  if (pageKey === 'default' || pageKey === 'home') return siteBase;
   return `${siteBase}/${pageKey}`;
 }
 

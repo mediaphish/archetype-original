@@ -12,10 +12,20 @@ const sections = [
   { id: 'posture', label: 'The Posture That Shapes My Leadership' },
   { id: 'research', label: 'The Research That Made It Clear' },
   { id: 'show-up', label: 'How I Show Up Today' },
+  { id: 'philosophy-excerpt', label: 'Philosophy' },
+  { id: 'archy-teaser', label: 'Meet Archy' },
+  { id: 'advisory-bridge', label: 'Advisory' },
   { id: 'ready', label: 'If You\'re Ready' }
 ];
 
 export default function About() {
+  const goToPath = (e, path) => {
+    e.preventDefault();
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   const [activeSection, setActiveSection] = useState('work-found-me');
   const [showStickyNav, setShowStickyNav] = useState(false);
   const [stickyNavVisible, setStickyNavVisible] = useState(true);
@@ -141,15 +151,17 @@ export default function About() {
               
               {/* Right: Bart Character Image - 30% smaller desktop, 50% smaller mobile */}
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
-                <OptimizedImage
-                  src="/images/bart-character-001b.png"
-                  alt="Bart Paden"
-                  className="w-full max-w-[14rem] sm:max-w-[16rem] lg:max-w-[22rem] h-auto object-contain"
-                  loading="eager"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
+                <div className="aspect-[3/4] w-full max-w-[14rem] sm:max-w-[16rem] lg:max-w-[20rem] overflow-hidden rounded-sm shadow-md">
+                  <OptimizedImage
+                    src="/images/Bart-97.jpg"
+                    alt="Bart Paden"
+                    className="h-full w-full object-cover object-[center_18%]"
+                    loading="eager"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -549,6 +561,129 @@ export default function About() {
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A]">
               What I bring is presence, clarity, responsibility, and decades of lived leadership shaped by real environments, real pressure, and real people.
             </p>
+          </div>
+        </section>
+
+        {/* Philosophy (excerpt — matches /philosophy intro) */}
+        <section
+          id="philosophy-excerpt"
+          ref={(el) => (sectionRefs.current['philosophy-excerpt'] = el)}
+          className="w-full scroll-mt-32 border-t border-[#1A1A1A]/10 bg-white py-16 sm:py-24 md:py-32"
+        >
+          <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
+            <div className="flex items-center mb-8 sm:mb-10">
+              <div className="mr-4 h-10 w-1 bg-[#C85A3C] sm:h-12 md:h-14"></div>
+              <h2 className="font-serif text-3xl font-bold tracking-tight text-[#1A1A1A] sm:text-4xl md:text-5xl">
+                Philosophy
+              </h2>
+            </div>
+            <div className="space-y-4 sm:space-y-5">
+              <p className="font-serif text-2xl font-bold leading-tight text-[#1A1A1A] sm:text-3xl md:text-4xl">
+                Leadership is stewardship.
+              </p>
+              <p className="text-base leading-normal text-[#1A1A1A] sm:text-lg">
+                It's not about holding power—it's about holding responsibility.
+              </p>
+              <p className="text-base leading-normal text-[#1A1A1A] sm:text-lg">
+                I've spent over three decades watching companies rise and fall, teams thrive and fracture, and leaders find or lose their way. What separates the healthy from the broken isn't intelligence, charisma, or vision—it's alignment. When what you believe, say, and do line up, trust takes root. When they don't, people start protecting themselves instead of the mission.
+              </p>
+              <p className="text-base leading-normal text-[#1A1A1A] sm:text-lg">
+                Archetype Original exists to help leaders rebuild that alignment—to make clarity, character, and culture tangible again.
+              </p>
+              <a
+                href="/philosophy"
+                onClick={(e) => goToPath(e, '/philosophy')}
+                className="mt-4 inline-block text-[#C85A3C] underline decoration-[#C85A3C]/40 hover:text-[#B54A32]"
+              >
+                Read the full philosophy page →
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Meet Archy teaser */}
+        <section
+          id="archy-teaser"
+          ref={(el) => (sectionRefs.current['archy-teaser'] = el)}
+          className="w-full scroll-mt-32 bg-[#FAFAF9] py-16 sm:py-24 md:py-32"
+        >
+          <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
+            <div className="grid gap-10 md:grid-cols-[1fr_200px] md:items-center md:gap-12">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#C85A3C]">Meet Archy</p>
+                <h2 className="mt-2 font-serif text-3xl font-bold tracking-tight text-[#1A1A1A] sm:text-4xl md:text-5xl">
+                  Your AI leadership coach
+                </h2>
+                <p className="mt-4 text-base leading-relaxed text-[#1A1A1A] sm:text-lg">
+                  Archy is the digital extension of how I think about leadership. He's trained on my experience, my frameworks, and the patterns that actually work with real teams.
+                </p>
+                <a
+                  href="/archy"
+                  onClick={(e) => goToPath(e, '/archy')}
+                  className="mt-6 inline-block min-h-[44px] border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
+                >
+                  Meet Archy →
+                </a>
+              </div>
+              <div className="flex justify-center md:justify-end">
+                <OptimizedImage
+                  src="/images/archy-character-008.png"
+                  alt=""
+                  className="h-auto w-full max-w-[12rem] object-contain md:max-w-[14rem]"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Advisory bridge */}
+        <section
+          id="advisory-bridge"
+          ref={(el) => (sectionRefs.current['advisory-bridge'] = el)}
+          className="w-full scroll-mt-32 bg-white py-16 sm:py-24 md:py-32"
+        >
+          <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
+            <div className="grid gap-10 lg:grid-cols-[1fr_220px] lg:items-start lg:gap-12">
+              <div>
+                <div className="flex items-center mb-6 sm:mb-8">
+                  <div className="mr-4 h-10 w-1 bg-[#C85A3C] sm:h-12 md:h-14"></div>
+                  <h2 className="font-serif text-3xl font-bold tracking-tight text-[#1A1A1A] sm:text-4xl md:text-5xl">
+                    Private advisory
+                  </h2>
+                </div>
+                <p className="text-base leading-relaxed text-[#1A1A1A] sm:text-lg">
+                  Some conversations cannot happen inside your building — not because people are dishonest, but because consequence is real. Leadership advisory is one room, outside your system, where the truth can be spoken without pricing it in political terms.
+                </p>
+                <p className="mt-4 text-base leading-relaxed text-[#1A1A1A] sm:text-lg">
+                  If you already feel that gap, start with how advisory works — or read <em>The Room</em> if you want the argument on paper first.
+                </p>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <a
+                    href="/advisory"
+                    onClick={(e) => goToPath(e, '/advisory')}
+                    className="inline-flex min-h-[44px] items-center justify-center bg-[#1A1A1A] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90"
+                  >
+                    Leadership advisory
+                  </a>
+                  <a
+                    href="/the-room"
+                    onClick={(e) => goToPath(e, '/the-room')}
+                    className="inline-flex min-h-[44px] items-center justify-center border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
+                  >
+                    The Room (book)
+                  </a>
+                </div>
+              </div>
+              <div className="flex justify-center lg:justify-end">
+                <OptimizedImage
+                  src="/images/Bart-44.jpg"
+                  alt=""
+                  className="aspect-[4/5] w-full max-w-[220px] rounded-sm object-cover object-top shadow-md"
+                  loading="lazy"
+                />
+              </div>
+            </div>
           </div>
         </section>
 

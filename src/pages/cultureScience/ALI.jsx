@@ -2,6 +2,7 @@ import React from "react";
 import SEO from "../../components/SEO";
 import ALISubNav from "../../components/ALISubNav";
 import FeaturedFAQs from "../../components/FeaturedFAQs";
+import { OptimizedImage } from "../../components/OptimizedImage";
 
 // Simple icon components (inline SVGs to avoid lucide-react dependency)
 const LightbulbIcon = () => (
@@ -70,6 +71,29 @@ export default function ALI() {
                 <p>
                   ALI is a leadership diagnostic built to help leaders see the conditions they are creating — long before drift becomes damage.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-[#1A1A1A]/10 bg-[#FAFAF9] py-10 sm:py-12">
+          <div className="container mx-auto px-4 sm:px-6 md:px-12">
+            <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 md:gap-8">
+              <div className="overflow-hidden rounded-sm border border-[#1A1A1A]/10 bg-white">
+                <OptimizedImage
+                  src="/images/ali-dash-02.png"
+                  alt="ALI dashboard — leadership condition signals"
+                  className="h-auto w-full object-cover object-top"
+                  loading="lazy"
+                />
+              </div>
+              <div className="overflow-hidden rounded-sm border border-[#1A1A1A]/10 bg-white">
+                <OptimizedImage
+                  src="/images/ali-dash-03.png"
+                  alt="ALI scorecard preview"
+                  className="h-auto w-full object-cover object-top"
+                  loading="lazy"
+                />
               </div>
             </div>
           </div>

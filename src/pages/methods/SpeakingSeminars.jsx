@@ -11,6 +11,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
+import AdvisoryPathStrip from '../../components/AdvisoryPathStrip';
 
 export default function SpeakingSeminars() {
   const jsonLd = {
@@ -283,7 +284,7 @@ export default function SpeakingSeminars() {
         </section>
 
         {/* Section 6: Seminars & Workshops */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
+        <section id="seminars" className="w-full scroll-mt-24 bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
@@ -466,6 +467,8 @@ export default function SpeakingSeminars() {
             </div>
           </div>
         </section>
+
+        <AdvisoryPathStrip />
 
         {/* Section 10: Closing CTA */}
         <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">

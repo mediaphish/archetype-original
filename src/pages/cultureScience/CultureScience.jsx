@@ -591,6 +591,15 @@ export default function CultureScience() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
                 Introducing ALI (Archetype Leadership Index)
               </h2>
+
+              <div className="mb-10 overflow-hidden rounded-sm border border-[#1A1A1A]/10 bg-white shadow-sm">
+                <OptimizedImage
+                  src="/images/ali-dash-01.png"
+                  alt="ALI leadership diagnostic overview in the dashboard"
+                  className="h-auto w-full object-cover object-top"
+                  loading="lazy"
+                />
+              </div>
               
               <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16">
                 <p className="text-pretty">
