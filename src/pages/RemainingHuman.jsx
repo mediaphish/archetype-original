@@ -346,6 +346,36 @@ export default function RemainingHuman() {
           </div>
         </section>
 
+        {/* Advisory bridge — same intent as Prompt 4 §2–3 (one supporting section per book page) */}
+        <section className="border-y border-[#8EE4D8]/20 bg-[#0A1F1C] py-14 md:py-20">
+          <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
+            <h2 className="font-serif text-2xl leading-tight text-[#F1FBF9] sm:text-3xl md:text-4xl">
+              When the problem is not speed — it is honesty inside the room
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-[#C8E8E2] sm:text-lg">
+              <em>Remaining Human</em> is about staying human while systems accelerate. If you also need a space where
+              the conversation can be fully true — outside your hierarchy — that is what private advisory is for. Or read{' '}
+              <em>The Room</em> first if you want the argument about why feedback collapses under authority.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a
+                href="/the-room"
+                onClick={(e) => goToPath(e, '/the-room')}
+                className="inline-flex min-h-[48px] items-center justify-center rounded-md border border-[#8EE4D8]/50 bg-transparent px-6 py-3 text-sm font-semibold text-[#B8F0E8] transition hover:border-[#8EE4D8] hover:bg-[#8EE4D8]/10"
+              >
+                The Room — book
+              </a>
+              <a
+                href="/advisory"
+                onClick={(e) => goToPath(e, '/advisory')}
+                className="inline-flex min-h-[48px] items-center justify-center rounded-md bg-[#8EE4D8] px-6 py-3 text-sm font-semibold text-[#03211F] transition hover:bg-[#A4ECE2]"
+              >
+                Leadership advisory
+              </a>
+            </div>
+          </div>
+        </section>
+
         {/* 8 — Final close */}
         <section className="relative overflow-hidden bg-[#EDF5F2] py-16 sm:py-20 md:py-24 text-[#102E2A]">
           <div className="absolute inset-0">
