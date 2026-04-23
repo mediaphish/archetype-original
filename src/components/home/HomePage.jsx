@@ -15,7 +15,8 @@ export default function HomePage() {
   return (
     <>
       {/* Hero — mobile: photo band + solid panel (readable). md+: full-bleed image + gradient (desktop/tablet). */}
-      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[90vh] md:items-center md:bg-cover md:bg-[url('/images/Bart-4.jpg')] md:bg-no-repeat">
+      {/* flex-col + items-center was centering the copy horizontally on md+. Use items-start + justify-center instead. */}
+      <section className="home-hero-bg relative flex min-h-0 flex-col md:min-h-[90vh] md:justify-center md:items-start md:bg-cover md:bg-[url('/images/Bart-4.jpg')] md:bg-no-repeat">
         {/* Mobile only: dedicated image strip — keeps copy off busy photo */}
         <div className="relative h-[min(42vh,320px)] min-h-[220px] w-full shrink-0 overflow-hidden md:hidden">
           <img
@@ -47,7 +48,7 @@ export default function HomePage() {
           }}
         />
 
-        <div className="relative z-[3] w-full max-w-[580px] bg-stone-950 px-6 py-10 pb-12 md:bg-transparent md:px-16 md:py-20 md:pb-20">
+        <div className="relative z-[3] w-full max-w-[580px] bg-stone-950 px-6 py-10 pb-12 text-left md:bg-transparent md:px-16 md:py-20 md:pb-20">
           <p className="mb-6 font-sans text-[11px] uppercase tracking-[0.2em] text-ao-brown">
             Leadership Advisory · Archetype Original
           </p>
