@@ -59,20 +59,21 @@ export default function Header() {
   };
 
   const navLinkClass = (path) => {
-    const base = "text-base font-medium transition-all duration-200";
-    const active = isActive(path) 
-      ? "text-[#1A1A1A] border-b-2 border-[#1A1A1A]" 
-      : "text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] px-2 py-1 rounded-sm";
+    const base =
+      "text-sm font-medium tracking-wide transition-all duration-200 whitespace-nowrap";
+    const active = isActive(path)
+      ? "text-[#1A1A1A] border-b-2 border-[#1A1A1A]"
+      : "text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] px-1.5 py-0.5 rounded-sm";
     return `${base} ${active}`;
   };
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-white border-b border-[#1A1A1A]/10 backdrop-blur-sm bg-white/95">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col py-1.5 sm:py-2">
+      <nav className="sticky top-0 z-50 border-b border-[#1A1A1A]/10 bg-white/95 backdrop-blur-sm">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10 xl:px-14">
+          <div className="flex flex-col py-1 sm:py-1">
             {/* Secondary Navigation - Top Row */}
-            <div className="hidden md:flex items-center justify-end gap-4 text-sm mb-2">
+            <div className="hidden md:flex items-center justify-end gap-6 text-[11px] font-normal text-[#6B6B6B] mb-1 border-b border-transparent">
               <a 
                 href="/faqs" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
@@ -81,7 +82,7 @@ export default function Header() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-xs">FAQs</span>
+                <span className="uppercase tracking-wide">FAQs</span>
               </a>
               <a 
                 href="/journal" 
@@ -91,14 +92,14 @@ export default function Header() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
-                <span className="text-xs">Journal</span>
+                <span className="uppercase tracking-wide">Journal</span>
               </a>
               <a 
                 href="/books" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/books'); }}
                 className={`flex items-center gap-1.5 transition-all duration-200 ${isActive('/books') ? 'text-[#1A1A1A]' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'}`}
               >
-                <span className="text-xs">Books</span>
+                <span className="uppercase tracking-wide">Books</span>
               </a>
               <a 
                 href="/contact" 
@@ -108,24 +109,24 @@ export default function Header() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span className="text-xs">Contact</span>
+                <span className="uppercase tracking-wide">Contact</span>
               </a>
             </div>
 
-            {/* Primary row: logo (left) + desktop nav or mobile menu (right) */}
-            <div className="flex items-center justify-between gap-3 h-14 sm:h-16 min-h-[56px]">
+            {/* Primary row: logo | centered nav | CTA (desktop); matches reference proportion */}
+            <div className="relative flex min-h-[44px] items-center justify-between gap-3 md:min-h-[48px] md:gap-6">
               {/* Logo - Left Side */}
               <a 
                 href="/" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
-                className="flex items-center shrink-0 min-w-0"
+                className="relative z-10 flex shrink-0 items-center min-w-0"
               >
                 <svg 
                   id="Layer_1" 
                   data-name="Layer 1" 
                   xmlns="http://www.w3.org/2000/svg" 
                   viewBox="0 0 792 148.96"
-                  className="h-10 w-auto"
+                  className="h-8 w-auto sm:h-9 md:h-9"
                 >
                   <defs>
                     <style>{`.cls-1 { fill: #231f20; }`}</style>
@@ -155,9 +156,9 @@ export default function Header() {
                 </svg>
               </a>
 
-              {/* Desktop Navigation - Right Side */}
-              <div className="hidden md:flex items-center gap-6 lg:gap-8">
-                <div className="flex items-center gap-2 lg:gap-4 xl:gap-5 flex-wrap justify-end">
+              {/* Desktop Navigation — centered in bar (reference layout) */}
+              <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 md:flex md:justify-center">
+                <div className="pointer-events-auto flex max-w-[calc(100%-18rem)] items-center justify-center gap-2 lg:gap-4 xl:gap-5">
                   {/* Advisory Roles */}
                   <div
                     className="relative"
@@ -166,7 +167,7 @@ export default function Header() {
                   >
                     <button
                       type="button"
-                      className={`${navLinkClass('/advisory')} flex items-center gap-1 whitespace-nowrap text-sm lg:text-base`}
+                      className={`${navLinkClass('/advisory')} flex items-center gap-0.5`}
                     >
                       Advisory Roles
                       <svg
@@ -179,8 +180,8 @@ export default function Header() {
                       </svg>
                     </button>
                     {advisoryDropdownOpen && (
-                      <div className="absolute top-full right-0 pt-1 w-56 z-50">
-                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                      <div className="absolute left-0 top-full z-50 w-56 pt-1">
+                        <div className="rounded-sm border border-[#1A1A1A]/10 bg-white py-2 shadow-lg">
                           <a
                             href="/advisory"
                             onClick={(e) => {
@@ -214,7 +215,7 @@ export default function Header() {
                   >
                     <button
                       type="button"
-                      className={`${navLinkClass('/methods/consulting')} flex items-center gap-1 whitespace-nowrap text-sm lg:text-base`}
+                      className={`${navLinkClass('/methods/consulting')} flex items-center gap-0.5`}
                     >
                       Consulting
                       <svg
@@ -227,8 +228,8 @@ export default function Header() {
                       </svg>
                     </button>
                     {consultingDropdownOpen && (
-                      <div className="absolute top-full right-0 pt-1 w-56 z-50">
-                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                      <div className="absolute left-0 top-full z-50 w-56 pt-1">
+                        <div className="rounded-sm border border-[#1A1A1A]/10 bg-white py-2 shadow-lg">
                           <a
                             href="/methods/consulting"
                             onClick={(e) => {
@@ -285,7 +286,7 @@ export default function Header() {
                   >
                     <button
                       type="button"
-                      className={`${navLinkClass('/meet-bart')} flex items-center gap-1 whitespace-nowrap text-sm lg:text-base`}
+                      className={`${navLinkClass('/meet-bart')} flex items-center gap-0.5`}
                     >
                       Meet Bart
                       <svg
@@ -298,8 +299,8 @@ export default function Header() {
                       </svg>
                     </button>
                     {meetBartDropdownOpen && (
-                      <div className="absolute top-full right-0 pt-1 w-52 z-50">
-                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2">
+                      <div className="absolute left-0 top-full z-50 w-52 pt-1">
+                        <div className="rounded-sm border border-[#1A1A1A]/10 bg-white py-2 shadow-lg">
                           <a
                             href="/meet-bart"
                             onClick={(e) => {
@@ -342,7 +343,7 @@ export default function Header() {
                     onMouseLeave={() => setCultureScienceDropdownOpen(false)}
                   >
                     <button
-                      className={`${navLinkClass('/culture-science')} flex items-center gap-1 whitespace-nowrap text-sm md:text-sm lg:text-base`}
+                      className={`${navLinkClass('/culture-science')} flex items-center gap-0.5`}
                     >
                       Culture Science
                       <svg 
@@ -355,8 +356,8 @@ export default function Header() {
                       </svg>
                     </button>
                     {cultureScienceDropdownOpen && (
-                      <div className="absolute top-full right-0 pt-1 w-64">
-                        <div className="bg-white border border-[#1A1A1A]/10 shadow-lg rounded-sm py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="absolute left-0 top-full z-50 w-64 pt-1 lg:left-1/2 lg:-translate-x-1/2">
+                        <div className="animate-in fade-in slide-in-from-top-2 rounded-sm border border-[#1A1A1A]/10 bg-white py-2 shadow-lg duration-200">
                         <a
                           href="/culture-science"
                           onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science'); }}
@@ -416,15 +417,21 @@ export default function Header() {
                     )}
                   </div>
 
-                  {/* Work Together CTA Button */}
-                  <a
-                    href="/engagement-inquiry"
-                    onClick={(e) => { e.preventDefault(); handleNavigation('/engagement-inquiry'); }}
-                    className="ml-2 lg:ml-4 px-4 lg:px-6 py-2 rounded-lg bg-ao-red font-medium text-white transition-all duration-200 hover:opacity-90 whitespace-nowrap"
-                  >
-                    Work Together
-                  </a>
                 </div>
+              </div>
+
+              {/* Primary CTA — anchored right */}
+              <div className="relative z-10 ml-auto hidden shrink-0 md:block">
+                <a
+                  href="/engagement-inquiry"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/engagement-inquiry');
+                  }}
+                  className="inline-flex items-center rounded-md bg-ao-red px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:opacity-90 lg:px-5 lg:text-[13px]"
+                >
+                  Work Together
+                </a>
               </div>
 
               {/* Mobile menu — same row as logo, top right (not full-width centered row) */}
