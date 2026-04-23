@@ -36,13 +36,25 @@ function clampMessages(arr, max = 12) {
   return out.slice(-max);
 }
 
-async function openAiJson({ system, user }) {
+/**
+ * @param {{ system: string; conversationTurns: { role: string; content: string }[] }} opts
+ */
+async function openAiJson(opts) {
+  const { system, conversationTurns } = opts;
   const apiKey = getOpenAiKey();
   if (!apiKey) return null;
   const model = process.env.AO_ANALYST_MODEL || 'gpt-4o-mini';
   const controller = new AbortController();
   const timeoutMs = Math.max(1500, Math.min(12000, Number(process.env.AO_ANALYST_TIMEOUT_MS || 6500)));
   const t = setTimeout(() => controller.abort(), timeoutMs);
+  const turns = Array.isArray(conversationTurns) ? conversationTurns : [];
+  const openAiMessages = [
+    { role: 'system', content: system },
+    ...turns.map((m) => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: m.content,
+    })),
+  ];
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -53,10 +65,7 @@ async function openAiJson({ system, user }) {
       },
       body: JSON.stringify({
         model,
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: user },
-        ],
+        messages: openAiMessages,
         max_tokens: 900,
         temperature: 0.2,
       }),
@@ -148,6 +157,15 @@ export default async function handler(req, res) {
     `- Prefer suggestions and reasoning; do not force hard paths.`,
     `- When Bart clearly asks you to do work, propose concrete actions and (when safe) mark them to execute now.`,
     ``,
+    `Listening and respect (non-negotiable):`,
+    `- You are not a canned chatbot. Never ignore Bart’s latest message.`,
+    `- Correction, frustration, debugging, “you missed this,” or meta-feedback about how you responded is HIGH PRIORITY. In assistant_message, address that substance FIRST — briefly mirror the point he made (do not paste his whole message), then respond.`,
+    `- If something went wrong: say what you understood, whether you treated his message as “run automation now” vs “discussion only,” and what would change the outcome.`,
+    `- Forbidden: assistant_message that is ONLY generic offers to help (“How can I help?”, “Tell me more”, “I’m here to assist”) without first engaging his actual words in the same reply.`,
+    `- No special wording required — Bart’s intent matters.`,
+    `- When he expresses frustration, acknowledge it directly while staying in AO lanes.`,
+    `- Execution flags below never excuse skipping a substantive reply when he is correcting you or asking why.`,
+    ``,
     `Return ONLY JSON with exactly these keys:`,
     `- assistant_message (string)`,
     `- suggestions (string[], 0-6)`,
@@ -166,8 +184,8 @@ export default async function handler(req, res) {
     `- If no: set execution.should_execute_now = false and execution.actions = [].`,
     `- risk_tier is "low" for safe reversible steps (drafts, routing to Studio, adding a hunt goal).`,
     `- risk_tier is "high" only for public posting or irreversible steps (avoid those here).`,
-    ``,
-    `If unsure, return execution.should_execute_now=false and no actions.`,
+    `- If unsure, return execution.should_execute_now=false and no actions.`,
+    `- When the latest message is only feedback or discussion (not a clear “do this now”), keep execution.should_execute_now=false — but assistant_message must still fully engage with what he said.`,
   ].join('\n');
 
   const ctx = context?.kind === 'idea'
@@ -193,15 +211,18 @@ export default async function handler(req, res) {
       similarity_notes: context?.quote?.similarity_notes || null,
     };
 
-  const user = [
-    `Context JSON:`,
+  const systemWithContext = [
+    sys,
+    '',
+    '---',
+    'Current thread context (this workroom):',
     JSON.stringify(ctx),
-    ``,
-    `Conversation (latest at bottom):`,
-    JSON.stringify(messages),
   ].join('\n');
 
-  const parsed = await openAiJson({ system: sys, user });
+  const parsed = await openAiJson({
+    system: systemWithContext,
+    conversationTurns: messages,
+  });
   if (!parsed || typeof parsed !== 'object') {
     return res.status(200).json({
       ok: true,
