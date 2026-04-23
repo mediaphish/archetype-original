@@ -16,13 +16,10 @@ function goToPath(event, path) {
 }
 
 const btnPrimary =
-  'inline-flex min-h-[52px] items-center justify-center rounded-lg bg-amber-700 px-7 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2';
+  'inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-7 py-3 text-base font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ao-red focus-visible:ring-offset-2';
 
 const btnGhost =
-  'inline-flex min-h-[52px] items-center justify-center rounded-lg border border-white/40 bg-white/10 px-6 py-3 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60';
-
-const btnEqual =
-  'inline-flex min-h-[52px] w-full sm:w-auto min-w-[240px] items-center justify-center rounded-lg bg-stone-800 px-8 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2';
+  'inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-white/40 bg-white/10 px-6 py-3 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60';
 
 export default function Advisory() {
   useEffect(() => {
@@ -39,7 +36,7 @@ export default function Advisory() {
         <section className="relative overflow-hidden border-b border-stone-200 bg-stone-950">
           <div className="mx-auto grid max-w-7xl lg:grid-cols-2 lg:items-stretch lg:gap-0">
             <div className="relative z-10 flex flex-col justify-center px-4 py-14 sm:px-6 sm:py-20 md:px-10 lg:py-24 lg:pr-8">
-              <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-amber-200/90">The Advisory</p>
+              <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-[#C8B8A8]">The Advisory</p>
               <h1 className="font-serif text-4xl leading-[1.08] text-white sm:text-5xl md:text-6xl">
                 You already know your room isn&apos;t fully honest.
               </h1>
@@ -145,7 +142,7 @@ export default function Advisory() {
               </div>
             </div>
             <div className="flex flex-col gap-8">
-              <figure className="overflow-hidden rounded-xl border border-white/10 bg-stone-950/80">
+              <figure className="overflow-hidden border border-white/10 bg-stone-950/80">
                 <div className="relative max-h-[340px] overflow-hidden">
                   <img
                     src="/images/ali-dash-04.png"
@@ -159,7 +156,7 @@ export default function Advisory() {
                   perspectives.
                 </figcaption>
               </figure>
-              <figure className="overflow-hidden rounded-xl border border-white/10 bg-stone-950/80">
+              <figure className="overflow-hidden border border-white/10 bg-stone-950/80">
                 <div className="relative max-h-[340px] overflow-hidden">
                   <img
                     src="/images/ali-dash-03.png"
@@ -200,7 +197,7 @@ export default function Advisory() {
                 </p>
                 <p className="font-medium text-stone-900">If that is where you are, this is the right conversation.</p>
               </div>
-              <div className="mt-10 rounded-xl border border-amber-700/25 bg-amber-50/80 px-6 py-5 text-stone-800">
+              <div className="mt-10 border border-ao-red/25 bg-ao-cream px-6 py-5 text-stone-800">
                 <p className="font-medium text-stone-900">Who specifically</p>
                 <p className="mt-2 text-base leading-relaxed">
                   Leaders, executives, and founders of organizations with 5 to 250 employees who carry real responsibility for real
@@ -208,7 +205,7 @@ export default function Advisory() {
                 </p>
               </div>
             </div>
-            <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-lg">
+            <div className="overflow-hidden border border-stone-200 shadow-lg">
               <img
                 src="/images/Bart-44.jpg"
                 alt="Bart Paden seated, present and ready to listen"
@@ -263,18 +260,18 @@ export default function Advisory() {
                 <button
                   type="button"
                   onClick={(e) => goToPath(e, '/the-room')}
-                  className="inline-flex min-h-[52px] items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3 text-base font-semibold text-stone-900 shadow-sm transition hover:bg-stone-50"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-stone-300 bg-white px-6 py-3 text-base font-semibold text-stone-900 shadow-sm transition hover:bg-stone-50"
                 >
                   The Room — full book page
                 </button>
               </div>
             </div>
             <div className="mx-auto w-full max-w-sm">
-              <div className="rounded-xl border border-stone-200 bg-stone-100 p-4 shadow-inner">
+              <div className="border border-stone-200 bg-stone-100 p-4 shadow-inner">
                 <img
                   src="/images/advisory/the-room-cover.png"
                   alt="The Room by Bart Paden — book cover"
-                  className="w-full rounded-lg object-cover shadow-md"
+                  className="w-full object-cover shadow-md"
                   loading="lazy"
                 />
               </div>
@@ -285,7 +282,7 @@ export default function Advisory() {
         {/* Section 7 — Bart Paden */}
         <section className="border-b border-stone-200 bg-stone-100 py-14 sm:py-20 md:py-24">
           <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 md:grid-cols-[minmax(0,340px)_1fr] md:items-center md:gap-14 md:px-10">
-            <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-md">
+            <div className="overflow-hidden border border-stone-200 shadow-md">
               <img
                 src="/images/Bart-52.jpg"
                 alt="Bart Paden, founder of Archetype Original and author of The Room"
@@ -315,7 +312,7 @@ export default function Advisory() {
                 </p>
               </div>
               <div className="mt-10 text-sm text-stone-600">
-                <a href="mailto:bart@archetypeoriginal.com" className="font-medium text-amber-800 underline-offset-4 hover:underline">
+                <a href="mailto:bart@archetypeoriginal.com" className="font-medium text-ao-red underline-offset-4 hover:underline">
                   bart@archetypeoriginal.com
                 </a>
               </div>
@@ -323,33 +320,37 @@ export default function Advisory() {
           </div>
         </section>
 
-        {/* Section 8 — Footer CTA */}
+        {/* Section 8 — Footer CTA (aligned with homepage “two doors” cards) */}
         <section className="bg-stone-900 py-16 sm:py-20">
-          <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 md:px-10">
+          <div className="mx-auto max-w-[880px] px-4 text-center sm:px-6 md:px-10">
             <h2 className="font-serif text-3xl text-white sm:text-4xl">The conversation starts here.</h2>
-            <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:gap-8 sm:text-left">
-              <div className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-xs font-semibold uppercase tracking-wider text-amber-200/90">Option 1</p>
-                <p className="mt-3 font-semibold text-white">Read the book first.</p>
-                <p className="mt-4 text-sm leading-relaxed text-stone-300">
+            <div className="mt-12 grid gap-5 text-left sm:grid-cols-2">
+              <div className="border border-[#D8D4CE] bg-white p-8">
+                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 01 — The book</p>
+                <p className="font-serif text-xl text-[#1a1a1a]">Read the book first.</p>
+                <p className="mt-4 text-sm leading-relaxed text-[#555]">
                   Seventy pages. $27. The argument that changes how you see every room you will ever sit in.
                 </p>
                 <a
                   href={SAMCART_THE_ROOM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${btnEqual} mt-8 justify-center sm:justify-center`}
+                  className="mt-8 block rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
                 >
                   Get The Room — $27
                 </a>
               </div>
-              <div className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-xs font-semibold uppercase tracking-wider text-amber-200/90">Option 2</p>
-                <p className="mt-3 font-semibold text-white">Start the conversation directly.</p>
-                <p className="mt-4 text-sm leading-relaxed text-stone-300">
+              <div className="border-2 border-[#1a1a1a] bg-white p-8">
+                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 02 — The advisory</p>
+                <p className="font-serif text-xl text-[#1a1a1a]">Start the conversation directly.</p>
+                <p className="mt-4 text-sm leading-relaxed text-[#555]">
                   If you already know you need this room, skip the book and reach out.
                 </p>
-                <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry')} className={`${btnEqual} mt-8 justify-center`}>
+                <button
+                  type="button"
+                  onClick={(e) => goToPath(e, '/engagement-inquiry')}
+                  className="mt-8 w-full rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
+                >
                   Contact Bart
                 </button>
               </div>

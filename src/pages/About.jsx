@@ -1,22 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import { OptimizedImage } from '../components/OptimizedImage';
-
-const sections = [
-  { id: 'work-found-me', label: 'The Work Found Me' },
-  { id: 'insurance-moment', label: 'The Insurance Moment' },
-  { id: 'real-world', label: 'Leadership in the Real World' },
-  { id: 'years-tested', label: 'The Years That Tested Everything' },
-  { id: 'questions', label: 'The Questions That Followed' },
-  { id: 'posture', label: 'The Posture That Shapes My Leadership' },
-  { id: 'research', label: 'The Research That Made It Clear' },
-  { id: 'show-up', label: 'How I Show Up Today' },
-  { id: 'philosophy-excerpt', label: 'Philosophy' },
-  { id: 'archy-teaser', label: 'Meet Archy' },
-  { id: 'advisory-bridge', label: 'Advisory' },
-  { id: 'ready', label: 'If You\'re Ready' }
-];
 
 export default function About() {
   const goToPath = (e, path) => {
@@ -24,96 +9,6 @@ export default function About() {
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
-  };
-
-  const [activeSection, setActiveSection] = useState('work-found-me');
-  const [showStickyNav, setShowStickyNav] = useState(false);
-  const [stickyNavVisible, setStickyNavVisible] = useState(true);
-  const sectionRefs = useRef({});
-  const clickedSectionRef = useRef(null);
-  const heroRef = useRef(null);
-  const lastScrollY = useRef(0);
-
-  // Scroll tracking for sticky nav
-  useEffect(() => {
-    const handleScroll = () => {
-      // Show sticky nav after scrolling past hero
-      if (heroRef.current) {
-        const heroBottom = heroRef.current.offsetTop + heroRef.current.offsetHeight;
-        const shouldShow = window.scrollY > heroBottom - 100;
-        setShowStickyNav(shouldShow);
-        
-        // On mobile, hide sticky nav when scrolling down, show when scrolling up
-        if (window.innerWidth < 768 && shouldShow) {
-          const currentScrollY = window.scrollY;
-          // Only hide if scrolling down significantly (more than 10px) to avoid jitter
-          if (currentScrollY > lastScrollY.current + 10 && currentScrollY > heroBottom) {
-            setStickyNavVisible(false);
-          } else if (currentScrollY < lastScrollY.current - 10) {
-            setStickyNavVisible(true);
-          }
-          lastScrollY.current = currentScrollY;
-        } else {
-          setStickyNavVisible(true);
-        }
-      }
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  // Intersection Observer for active section detection
-  useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0
-    };
-
-    const observerCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !clickedSectionRef.current) {
-          const sectionId = entry.target.id;
-          setActiveSection(sectionId);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sections.forEach((section) => {
-      const element = sectionRefs.current[section.id];
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  const scrollToSection = (id, event) => {
-    clickedSectionRef.current = id;
-    
-    const element = sectionRefs.current[id];
-    if (element) {
-      const offset = 100;
-      const elementPosition = element.offsetTop - offset;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-      
-      setTimeout(() => {
-        clickedSectionRef.current = null;
-      }, 1000);
-    }
   };
 
   const jsonLd = {
@@ -135,102 +30,42 @@ export default function About() {
       </Helmet>
       
       <div className="min-h-screen bg-white">
-        {/* Hero Section with 3-Layer Parallax */}
-        <section ref={heroRef} className="w-full bg-white py-8 sm:py-12 md:py-16 lg:py-12 relative overflow-hidden">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center max-w-6xl mx-auto">
-              {/* Left Content */}
-              <div className="order-2 lg:order-1">
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 md:mb-8 leading-[0.9] tracking-tight break-words">
-                  Meet Bart
-                </h1>
-                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-[#1A1A1A]/70 mb-4 sm:mb-6 md:mb-8 leading-relaxed break-words">
-                  Thirty-two years building people, teams, and leaders who do work that matters.
-                </h2>
-              </div>
-              
-              {/* Right: Bart Character Image - 30% smaller desktop, 50% smaller mobile */}
-              <div className="flex justify-center lg:justify-end order-1 lg:order-2">
-                <div className="aspect-[3/4] w-full max-w-[14rem] sm:max-w-[16rem] lg:max-w-[20rem] overflow-hidden rounded-sm shadow-md">
-                  <OptimizedImage
-                    src="/images/Bart-97.jpg"
-                    alt="Bart Paden"
-                    className="h-full w-full object-cover object-[center_18%]"
-                    loading="eager"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Table of Contents - Initial */}
-        <section className="w-full bg-[#FAFAF9] py-8 sm:py-10">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
-            <nav aria-label="Table of contents">
-              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-                {sections.map((section) => (
-                  <a
-                    key={section.id}
-                    href={`#${section.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(section.id, e);
-                    }}
-                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-colors min-h-[44px] flex items-center justify-center ${
-                      activeSection === section.id
-                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
-                    }`}
-                  >
-                    {section.label}
-                  </a>
-                ))}
-              </div>
-            </nav>
-          </div>
-        </section>
-
-        {/* Sticky Navigation - Appears after scrolling past hero */}
-        <nav 
-          aria-label="Sticky table of contents"
-          className={`fixed top-20 left-0 right-0 z-40 bg-white border-b border-[#1A1A1A]/10 transition-transform duration-300 ${
-            showStickyNav && stickyNavVisible ? 'translate-y-0' : '-translate-y-full'
-          }`}
+        {/* Hero — full-bleed editorial (aligned with homepage; no floating portrait tile) */}
+        <section
+          className="home-hero-bg relative flex min-h-[72vh] items-center bg-cover bg-no-repeat"
+          style={{ backgroundImage: "url('/images/Bart-4.jpg')" }}
         >
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-7xl mx-auto py-3 sm:py-4">
-              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center items-center">
-                {sections.map((section) => (
-                  <a
-                    key={section.id}
-                    href={`#${section.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(section.id, e);
-                    }}
-                    className={`inline-block px-3 py-2 text-xs font-medium uppercase tracking-wider border transition-all min-h-[44px] flex items-center justify-center ${
-                      activeSection === section.id
-                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                        : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812]'
-                    }`}
-                  >
-                    {section.label}
-                  </a>
-                ))}
-              </div>
+          <div
+            className="pointer-events-none absolute inset-0 z-[1]"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(43, 41, 41, 0.97) 0%, rgba(43, 41, 41, 0.94) 42%, rgba(43, 41, 41, 0.55) 68%, rgba(43, 41, 41, 0.12) 100%)',
+            }}
+          />
+          <div
+            className="pointer-events-none absolute inset-0 z-[2]"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 4px)',
+            }}
+          />
+          <div className="relative z-[3] w-full">
+            <div className="mx-auto max-w-[1200px] px-6 py-14 md:px-12 md:py-20">
+              <p className="mb-5 font-sans text-[11px] uppercase tracking-[0.2em] text-ao-brown">Meet Bart · Archetype Original</p>
+              <h1 className="mb-5 max-w-[540px] font-serif text-[clamp(36px,6vw,56px)] font-normal leading-[0.98] tracking-tight text-[#F0ECE4]">
+                Meet Bart
+              </h1>
+              <p className="max-w-xl font-sans text-lg leading-relaxed text-ao-midGray md:text-xl">
+                Thirty-two years building people, teams, and leaders who do work that matters.
+              </p>
             </div>
           </div>
-        </nav>
+        </section>
 
         {/* The Work Found Me Before I Knew Its Name */}
         <section 
           id="work-found-me" 
-          ref={(el) => (sectionRefs.current['work-found-me'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+          className="w-full bg-ao-cream py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 lg:gap-12 items-start">
@@ -238,7 +73,7 @@ export default function About() {
                 <OptimizedImage
                   src="/images/bart-headshot-002.jpg"
                   alt="Bart"
-                  className="w-60 h-60 object-contain rounded-sm"
+                  className="h-60 w-60 object-contain"
                   width={240}
                   height={240}
                   onError={(e) => {
@@ -270,7 +105,6 @@ export default function About() {
         {/* The Insurance Moment - DARK SECTION */}
         <section 
           id="insurance-moment" 
-          ref={(el) => (sectionRefs.current['insurance-moment'] = el)} 
           className="w-full bg-[#1A1A1A] py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
@@ -301,7 +135,6 @@ export default function About() {
         {/* Leadership in the Real World */}
         <section 
           id="real-world" 
-          ref={(el) => (sectionRefs.current['real-world'] = el)} 
           className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
@@ -335,8 +168,7 @@ export default function About() {
         {/* The Years That Tested Everything */}
         <section 
           id="years-tested" 
-          ref={(el) => (sectionRefs.current['years-tested'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+          className="w-full bg-ao-cream py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
@@ -389,7 +221,6 @@ export default function About() {
         {/* The Questions That Followed */}
         <section 
           id="questions" 
-          ref={(el) => (sectionRefs.current.questions = el)} 
           className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
@@ -428,8 +259,7 @@ export default function About() {
         {/* The Posture That Shapes My Leadership */}
         <section 
           id="posture" 
-          ref={(el) => (sectionRefs.current.posture = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+          className="w-full bg-ao-cream py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
@@ -459,7 +289,6 @@ export default function About() {
         {/* The Research That Made It Clear */}
         <section 
           id="research" 
-          ref={(el) => (sectionRefs.current.research = el)} 
           className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
@@ -484,8 +313,7 @@ export default function About() {
         {/* How I Show Up Today */}
         <section 
           id="show-up" 
-          ref={(el) => (sectionRefs.current['show-up'] = el)} 
-          className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32 scroll-mt-32"
+          className="w-full bg-ao-cream py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
             <div className="flex items-center mb-8 sm:mb-10">
@@ -502,7 +330,7 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
               
               {/* Card 1: Mentorship */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+              <div className="space-y-3 border border-[#D8D4CE] border-l-4 border-l-ao-red bg-white p-6 sm:p-8 sm:space-y-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Mentorship
                 </h3>
@@ -512,7 +340,7 @@ export default function About() {
               </div>
               
               {/* Card 2: Consulting */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+              <div className="space-y-3 border border-[#D8D4CE] border-l-4 border-l-ao-red bg-white p-6 sm:p-8 sm:space-y-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Consulting
                 </h3>
@@ -522,7 +350,7 @@ export default function About() {
               </div>
               
               {/* Card 3: Fractional Leadership */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+              <div className="space-y-3 border border-[#D8D4CE] border-l-4 border-l-ao-red bg-white p-6 sm:p-8 sm:space-y-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Fractional Leadership
                 </h3>
@@ -532,7 +360,7 @@ export default function About() {
               </div>
               
               {/* Card 4: Speaking & Seminars */}
-              <div className="bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+              <div className="space-y-3 border border-[#D8D4CE] border-l-4 border-l-ao-red bg-white p-6 sm:p-8 sm:space-y-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Speaking & Seminars
                 </h3>
@@ -542,7 +370,7 @@ export default function About() {
               </div>
               
               {/* Card 5: Training & Education - Full Width */}
-              <div className="md:col-span-2 bg-white border border-[#1A1A1A]/10 border-l-4 border-l-[#DB0812] p-6 sm:p-8 rounded-lg hover:shadow-lg transition-shadow duration-300 space-y-3 sm:space-y-4">
+              <div className="md:col-span-2 space-y-3 border border-[#D8D4CE] border-l-4 border-l-ao-red bg-white p-6 sm:p-8 sm:space-y-4">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#DB0812]">
                   Training & Education
                 </h3>
@@ -567,7 +395,6 @@ export default function About() {
         {/* Philosophy (excerpt — matches /philosophy intro) */}
         <section
           id="philosophy-excerpt"
-          ref={(el) => (sectionRefs.current['philosophy-excerpt'] = el)}
           className="w-full scroll-mt-32 border-t border-[#1A1A1A]/10 bg-white py-16 sm:py-24 md:py-32"
         >
           <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
@@ -604,8 +431,7 @@ export default function About() {
         {/* Meet Archy teaser */}
         <section
           id="archy-teaser"
-          ref={(el) => (sectionRefs.current['archy-teaser'] = el)}
-          className="w-full scroll-mt-32 bg-[#FAFAF9] py-16 sm:py-24 md:py-32"
+          className="w-full scroll-mt-32 bg-ao-cream py-16 sm:py-24 md:py-32"
         >
           <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
             <div className="grid gap-10 md:grid-cols-[1fr_200px] md:items-center md:gap-12">
@@ -620,7 +446,7 @@ export default function About() {
                 <a
                   href="/archy"
                   onClick={(e) => goToPath(e, '/archy')}
-                  className="mt-6 inline-block min-h-[44px] border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
+                  className="mt-6 inline-block min-h-[44px] rounded-[3px] border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
                 >
                   Meet Archy →
                 </a>
@@ -640,7 +466,6 @@ export default function About() {
         {/* Advisory bridge */}
         <section
           id="advisory-bridge"
-          ref={(el) => (sectionRefs.current['advisory-bridge'] = el)}
           className="w-full scroll-mt-32 bg-white py-16 sm:py-24 md:py-32"
         >
           <div className="container mx-auto max-w-4xl px-4 sm:px-6 md:px-12">
@@ -662,14 +487,14 @@ export default function About() {
                   <a
                     href="/advisory"
                     onClick={(e) => goToPath(e, '/advisory')}
-                    className="inline-flex min-h-[44px] items-center justify-center bg-[#1A1A1A] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1A1A1A]/90"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                   >
                     Leadership advisory
                   </a>
                   <a
                     href="/the-room"
                     onClick={(e) => goToPath(e, '/the-room')}
-                    className="inline-flex min-h-[44px] items-center justify-center border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-[#1A1A1A] px-6 py-3 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white"
                   >
                     The Room (book)
                   </a>
@@ -679,7 +504,7 @@ export default function About() {
                 <OptimizedImage
                   src="/images/Bart-44.jpg"
                   alt=""
-                  className="aspect-[4/5] w-full max-w-[220px] rounded-sm object-cover object-top shadow-md"
+                  className="aspect-[4/5] w-full max-w-[220px] border border-[#1A1A1A]/10 object-cover object-top shadow-sm"
                   loading="lazy"
                 />
               </div>
@@ -690,7 +515,6 @@ export default function About() {
         {/* If You're Ready - CTA */}
         <section 
           id="ready" 
-          ref={(el) => (sectionRefs.current.ready = el)} 
           className="w-full bg-white py-16 sm:py-24 md:py-32 scroll-mt-32"
         >
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-4xl">
@@ -703,10 +527,10 @@ export default function About() {
             <p className="text-base sm:text-lg leading-normal text-[#1A1A1A] mb-3 sm:mb-4">
               Let's talk.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-wrap justify-center gap-4">
               <a 
                 href="/contact" 
-                className="px-8 sm:px-10 py-4 sm:py-5 bg-[#1A1A1A] text-white font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
+                className="rounded-[3px] bg-ao-red px-8 py-4 text-sm font-semibold text-white transition-opacity hover:opacity-90 sm:px-10 sm:py-5 sm:text-base"
               >
                 Start a Conversation
               </a>
@@ -714,7 +538,7 @@ export default function About() {
                 href={process.env.NEXT_PUBLIC_CALENDLY_SCHEDULING_URL || import.meta.env.VITE_CALENDLY_SCHEDULING_URL || 'https://calendly.com/bartpaden/1-on-1-mentorships'} 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 sm:px-10 py-4 sm:py-5 bg-transparent text-[#1A1A1A] font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors"
+                className="rounded-[3px] border border-[#1A1A1A] bg-transparent px-8 py-4 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#1A1A1A] hover:text-white sm:px-10 sm:py-5 sm:text-base"
               >
                 Book Time
               </a>

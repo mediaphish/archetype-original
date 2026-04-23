@@ -22,13 +22,10 @@ function openArchyChat() {
 }
 
 const btnPrimary =
-  'inline-flex min-h-[52px] items-center justify-center rounded-lg bg-amber-700 px-7 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2';
-
-const btnEqual =
-  'inline-flex min-h-[52px] w-full sm:w-auto min-w-[240px] items-center justify-center rounded-lg bg-stone-800 px-8 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2';
+  'inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-7 py-3 text-base font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ao-red focus-visible:ring-offset-2';
 
 const btnContactPair =
-  'inline-flex min-h-[48px] flex-1 items-center justify-center rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 sm:min-w-[200px]';
+  'inline-flex min-h-[48px] flex-1 items-center justify-center rounded-[3px] px-5 py-2.5 text-sm font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ao-red focus-visible:ring-offset-2 sm:min-w-[200px]';
 
 export default function TheRoom() {
   const [isReturnVisitor, setIsReturnVisitor] = useState(() => {
@@ -148,7 +145,7 @@ export default function TheRoom() {
         </p>
         <p className="text-stone-900 font-medium">Seventy pages. No filler. Every chapter earns the next one.</p>
       </div>
-      <blockquote className="mt-10 border-l-4 border-amber-700 pl-6 text-lg italic leading-relaxed text-stone-800">
+      <blockquote className="mt-10 border-l-4 border-ao-red pl-6 text-lg italic leading-relaxed text-stone-800">
         &ldquo;It is impossible to have a fully honest room. Not because your people are dishonest. Not because your
         culture is broken. Because everyone in that room lives inside the system your decisions shape, and no one inside a
         system is ever fully free of its consequences.&rdquo;
@@ -178,7 +175,7 @@ export default function TheRoom() {
           </div>
 
           <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 md:px-10 lg:py-28">
-            <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-amber-200/90">The Room · Advisory</p>
+            <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-[#C8B8A8]">The Room · Advisory</p>
             <h1 className="max-w-[22ch] font-serif text-4xl leading-[1.08] text-white sm:text-5xl md:text-6xl">
               The room you think you have is not the room that is actually operating around you.
             </h1>
@@ -220,7 +217,7 @@ export default function TheRoom() {
           <div className="absolute inset-0 bg-gradient-to-b from-stone-950 via-stone-950/97 to-stone-950" />
 
           <div className="relative mx-auto max-w-3xl px-4 sm:px-6 md:px-10">
-            <details className="rounded-2xl border border-white/10 bg-stone-950/60 backdrop-blur-sm open:shadow-[0_24px_80px_rgba(0,0,0,0.35)]" open={!isReturnVisitor}>
+            <details className="rounded-[3px] border border-white/10 bg-stone-950/60 backdrop-blur-sm open:shadow-[0_24px_80px_rgba(0,0,0,0.35)]" open={!isReturnVisitor}>
               <summary className="cursor-pointer list-none px-6 py-5 font-serif text-xl text-stone-100 marker:content-none sm:text-2xl [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center justify-between gap-4">
                   <span>The gap most leaders never fully see</span>
@@ -237,7 +234,7 @@ export default function TheRoom() {
         {/* Section 2 — Book */}
         <section id="advisory-book" className="border-b border-stone-200 bg-stone-50 py-14 sm:py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-10">
-            <details className="rounded-2xl border border-stone-200 bg-white shadow-sm open:shadow-md" open={!isReturnVisitor}>
+            <details className="rounded-[3px] border border-stone-200 bg-white shadow-sm open:shadow-md" open={!isReturnVisitor}>
               <summary className="cursor-pointer list-none px-6 py-5 font-serif text-xl text-stone-900 marker:content-none sm:text-2xl [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center justify-between gap-4">
                   <span>About the book</span>
@@ -318,7 +315,7 @@ export default function TheRoom() {
               </div>
             </div>
             <div className="order-1 md:order-2">
-              <div className="sticky top-8 overflow-hidden rounded-2xl border border-stone-200 shadow-lg">
+              <div className="sticky top-8 overflow-hidden border border-stone-200 shadow-lg">
                 <img
                   src="/images/advisory/chapter-6-advisory.png"
                   alt=""
@@ -333,7 +330,7 @@ export default function TheRoom() {
         {/* Section 4 — About Bart */}
         <section id="advisory-bart" className="border-b border-stone-200 bg-stone-100 py-14 sm:py-20 md:py-24">
           <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 md:grid-cols-[minmax(0,340px)_1fr] md:items-center md:gap-14 md:px-10">
-            <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-md">
+            <div className="overflow-hidden border border-stone-200 shadow-md">
               <img
                 src="/images/advisory/bart-52.png"
                 alt="Bart Paden"
@@ -366,13 +363,13 @@ export default function TheRoom() {
                   <button
                     type="button"
                     onClick={(e) => goToPath(e, '/')}
-                    className="font-medium text-amber-800 underline-offset-4 hover:underline"
+                    className="font-medium text-ao-red underline-offset-4 hover:underline"
                   >
                     archetypeoriginal.com
                   </button>
                 </p>
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <button type="button" onClick={(e) => goToPath(e, '/contact')} className={`${btnContactPair} bg-amber-700 text-white hover:bg-amber-800`}>
+                  <button type="button" onClick={(e) => goToPath(e, '/contact')} className={`${btnContactPair} bg-ao-red text-white hover:opacity-90`}>
                     Open contact form
                   </button>
                   <button type="button" onClick={openArchyChat} className={`${btnContactPair} border border-stone-300 bg-white text-stone-900 hover:bg-stone-50`}>
@@ -384,33 +381,37 @@ export default function TheRoom() {
           </div>
         </section>
 
-        {/* Footer CTA — equal weight */}
+        {/* Footer CTA — homepage-aligned cards */}
         <section id="advisory-start" className="bg-stone-900 py-16 sm:py-20">
-          <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 md:px-10">
+          <div className="mx-auto max-w-[880px] px-4 text-center sm:px-6 md:px-10">
             <h2 className="font-serif text-3xl text-white sm:text-4xl">Two ways to start.</h2>
-            <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:gap-8 sm:text-left">
-              <div className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-xs font-semibold uppercase tracking-wider text-amber-200/90">Option 1</p>
-                <p className="mt-3 font-semibold text-white">Read the book first.</p>
-                <p className="mt-4 text-sm leading-relaxed text-stone-300">
+            <div className="mt-12 grid gap-5 text-left sm:grid-cols-2">
+              <div className="border border-[#D8D4CE] bg-white p-8">
+                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 01 — The book</p>
+                <p className="font-serif text-xl text-[#1a1a1a]">Read the book first.</p>
+                <p className="mt-4 text-sm leading-relaxed text-[#555]">
                   Seventy pages. $27. The argument that changes how you see every room you will ever sit in.
                 </p>
                 <a
                   href={SAMCART_THE_ROOM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${btnEqual} mt-8 justify-center sm:justify-center`}
+                  className="mt-8 block rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
                 >
                   Get The Room
                 </a>
               </div>
-              <div className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-xs font-semibold uppercase tracking-wider text-amber-200/90">Option 2</p>
-                <p className="mt-3 font-semibold text-white">Start the conversation directly.</p>
-                <p className="mt-4 text-sm leading-relaxed text-stone-300">
+              <div className="border-2 border-[#1a1a1a] bg-white p-8">
+                <p className="mb-3 font-sans text-[10px] uppercase tracking-[0.12em] text-[#666]">Option 02 — The advisory</p>
+                <p className="font-serif text-xl text-[#1a1a1a]">Start the conversation directly.</p>
+                <p className="mt-4 text-sm leading-relaxed text-[#555]">
                   If you already know you need this room, skip the book and reach out.
                 </p>
-                <button type="button" onClick={(e) => goToPath(e, '/engagement-inquiry')} className={`${btnEqual} mt-8 justify-center`}>
+                <button
+                  type="button"
+                  onClick={(e) => goToPath(e, '/engagement-inquiry')}
+                  className="mt-8 w-full rounded-[2px] bg-ao-red py-3 text-center font-sans text-[12px] font-bold tracking-[0.04em] text-white transition hover:opacity-90"
+                >
                   Contact Bart
                 </button>
               </div>

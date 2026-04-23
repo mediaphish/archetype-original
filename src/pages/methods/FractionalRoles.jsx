@@ -30,25 +30,24 @@ export default function FractionalRoles() {
         </script>
       </Helmet>
       
-      <div className="min-h-screen bg-[#FAFAF9]">
+      <div className="min-h-screen bg-ao-cream">
         {/* Hero Section */}
-        <section className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-5xl mx-auto text-center space-y-8">
-              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] leading-[0.9] tracking-tight">
-                Fractional Roles
-              </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-[#1A1A1A]/70">
-                Leadership presence for the seasons that require more than guidance.
-              </p>
-            </div>
+        <section className="w-full border-b border-[#E0DBD4] bg-white px-6 py-14 md:px-12 md:py-[72px]">
+          <div className="mx-auto max-w-[1200px] text-center">
+            <p className="mb-4 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">Methods</p>
+            <h1 className="font-serif text-[clamp(34px,5vw,52px)] font-normal leading-tight tracking-tight text-[#1A1A1A]">
+              Fractional Roles
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-lg font-light leading-relaxed text-[#1A1A1A]/75 md:text-xl">
+              Leadership presence for the seasons that require more than guidance.
+            </p>
           </div>
         </section>
 
         {/* Section 1: Opening */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
+        <section className="w-full bg-white px-6 py-14 md:px-12 md:py-[72px]">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-4xl space-y-6">
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Sometimes an organization needs a steady hand for a moment. Sometimes it needs clarity during transition. Sometimes it needs someone who can step into the work—not just advise on it.
               </p>
@@ -66,9 +65,9 @@ export default function FractionalRoles() {
         </section>
 
         {/* Section 2: Where Fractional Leadership Fits */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
+        <section className="w-full bg-ao-cream px-6 py-14 md:px-12 md:py-[72px]">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-4xl space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
@@ -106,9 +105,9 @@ export default function FractionalRoles() {
         </section>
 
         {/* Section 3: The Roles I Step Into */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
+        <section className="w-full bg-white px-6 py-14 md:px-12 md:py-[72px]">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-4xl space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
@@ -192,9 +191,9 @@ export default function FractionalRoles() {
         </section>
 
         {/* Section 4: Why This Works */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
+        <section className="w-full bg-ao-cream px-6 py-14 md:px-12 md:py-[72px]">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-4xl space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
@@ -215,9 +214,9 @@ export default function FractionalRoles() {
         </section>
 
         {/* Section 5: How We Begin */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
+        <section className="w-full bg-white px-6 py-14 md:px-12 md:py-[72px]">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-4xl space-y-6">
               <div className="flex items-center mb-8 sm:mb-10">
                 <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
@@ -254,9 +253,9 @@ export default function FractionalRoles() {
         <AdvisoryPathStrip />
 
         {/* Section 6: Closing CTA */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto text-center space-y-6">
+        <section className="w-full bg-ao-cream px-6 py-14 md:px-12 md:py-[72px]">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-3xl space-y-6 text-center">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight">
                 If This Is the Moment You Need Leadership, Not Advice
               </h2>
@@ -266,7 +265,7 @@ export default function FractionalRoles() {
               <div className="mt-12">
                 <a
                   href="/contact"
-                  className="inline-block px-10 py-5 bg-[#1A1A1A] text-white font-medium text-base hover:bg-[#1A1A1A]/90 transition-colors rounded-sm"
+                  className="inline-block rounded-[3px] bg-ao-red px-10 py-4 text-base font-semibold text-white transition-opacity hover:opacity-90"
                 >
                   Start a Conversation
                 </a>

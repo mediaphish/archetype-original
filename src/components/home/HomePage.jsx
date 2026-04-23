@@ -252,12 +252,12 @@ export default function HomePage() {
           </div>
 
           {/* Accidental CEO strip — zero gap: negative margin top or attach inside same bg */}
-          <div className="mt-0 grid grid-cols-1 items-center gap-6 border-t-0 bg-ao-dark px-6 py-7 md:grid-cols-[80px_1fr_auto] md:gap-6 md:px-8">
-            <div className="mx-auto h-[110px] w-20 shrink-0 overflow-hidden md:mx-0">
+          <div className="mt-0 grid grid-cols-1 items-center gap-6 border-t-0 bg-ao-dark px-6 py-7 md:grid-cols-[minmax(0,140px)_1fr_auto] md:gap-8 md:px-8">
+            <div className="mx-auto flex max-h-[160px] w-full max-w-[130px] shrink-0 items-center justify-center md:mx-0 md:max-h-[180px] md:max-w-[140px]">
               <img
-                src="/images/accidental-ceo/accidental-ceo-front-back-01.png"
+                src="/images/accidental-ceo/accidental-ceo-cover.png"
                 alt="Accidental CEO by Bart Paden"
-                className="h-full w-full object-cover object-top"
+                className="h-auto max-h-[160px] w-full object-contain md:max-h-[180px]"
                 loading="lazy"
               />
             </div>
