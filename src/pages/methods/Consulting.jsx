@@ -1,4 +1,7 @@
 /**
+ * Consulting — rebuilt to match consulting-preview.html / cursor-consulting.md.
+ * Advisory bridge uses the same wide content shell as other marketing subpages (no narrow centered stagger).
+ *
  * Voice Guideline:
  * {
  *   "voice_guideline": {
@@ -8,443 +11,357 @@
  *   }
  * }
  */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
-import { OptimizedImage } from '../../components/OptimizedImage';
-import AdvisoryPathStrip from '../../components/AdvisoryPathStrip';
+
+function navigateTo(path) {
+  return (e) => {
+    e.preventDefault();
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+}
+
+function scrollToHowItWorks(e) {
+  e.preventDefault();
+  document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function SectionShell({ bgClassName = '', borderClassName = '', pyClassName, children }) {
+  return (
+    <section className={`w-full ${bgClassName} ${borderClassName}`}>
+      <div className={`mx-auto max-w-[1200px] px-6 md:px-12 ${pyClassName}`}>{children}</div>
+    </section>
+  );
+}
+
+function EmDashRow({ children, borderClassName = 'border-[#F0EDE8]', textClassName = 'text-[#333]' }) {
+  return (
+    <li
+      className={`relative border-b ${borderClassName} py-2 pl-6 font-sans text-[14px] leading-[1.65] ${textClassName} last:border-b-0`}
+    >
+      <span className="absolute left-0 font-bold text-ao-red">—</span>
+      {children}
+    </li>
+  );
+}
+
+const HERO_OVERLAY =
+  'linear-gradient(to right, rgba(43, 41, 41, 0.96) 0%, rgba(43, 41, 41, 0.92) 35%, rgba(43, 41, 41, 0.55) 60%, rgba(43, 41, 41, 0.10) 100%)';
+const HERO_TEXTURE =
+  'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 4px)';
 
 export default function Consulting() {
-  const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024); // lg breakpoint - disable parallax on mobile
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    const handleScroll = () => {
-      if (!isMobile) {
-        setScrollY(window.scrollY);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkMobile);
-    };
-  }, [isMobile]);
-
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Consulting",
-    "description": "Strategic consulting for organizational clarity, alignment, and culture"
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Consulting',
+    description: 'Real solutions for real organizations.'
   };
+
+  const notItems = [
+    'Theory or academic models applied generically',
+    'Slide decks with buzzwords and no follow-through',
+    'One-size-fits-all frameworks',
+    'Advice from someone who has never led through pressure'
+  ];
+
+  const isItems = [
+    "Honest assessment of what's actually happening",
+    'Clarity on where misalignment exists and why',
+    'Strategic guidance grounded in lived leadership and research',
+    'Practical systems that support both people and performance',
+    'Support through implementation — not just recommendations'
+  ];
+
+  const whoItems = [
+    'Cultural drift or misalignment between stated values and actual behavior',
+    'Leadership turnover or transition requiring stability and continuity',
+    'Communication breakdowns creating confusion, friction, or distrust',
+    'Accountability gaps that allow problems to persist without resolution',
+    'Rapid growth exposing structural weaknesses or cultural fragility',
+    'Team conflict rooted in unclear expectations or relational tension',
+    'System failures where processes no longer serve the people using them',
+    'Organizational health assessments before problems become crises'
+  ];
+
+  const differentItems = [
+    'Leading organizations through growth, crisis, and cultural transformation',
+    'Pattern recognition across industries, team dynamics, and leadership styles',
+    'Deep study of psychology, neuroscience, communication, and organizational behavior',
+    'Development of Culture Science and ALI as tools for assessing organizational health',
+    'A posture of service, not superiority — clarity without ego'
+  ];
+
+  const phases = [
+    {
+      title: 'Assessment',
+      sub: "Understanding what's actually happening",
+      body:
+        "I begin by listening, observing, and asking the questions that reveal where drift, friction, or misalignment exists. This isn't theoretical. It's conversational, relational, and grounded in what leaders and teams are experiencing daily."
+    },
+    {
+      title: 'Diagnosis',
+      sub: 'Naming the real problem',
+      body:
+        "Most symptoms point to deeper structural, relational, or cultural issues. The diagnostic phase identifies root causes, not just surface-level friction. Leaders receive honest, direct insight into what's working, what's not, and why."
+    },
+    {
+      title: 'Strategic Clarity',
+      sub: 'Building a path forward',
+      body:
+        'Once the real problem is clear, we map a realistic path toward alignment. This includes communication redesign, accountability structures, leadership posture shifts, or cultural recalibration — whatever the organization actually needs.'
+    },
+    {
+      title: 'Implementation Support',
+      sub: 'Staying present through the work',
+      body:
+        'Recommendations mean nothing without follow-through. I stay engaged during implementation to ensure clarity holds, systems stabilize, and leaders have the support required to sustain momentum.'
+    }
+  ];
 
   return (
     <>
       <SEO pageKey="consulting" />
       <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(jsonLd)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
-      
-      <div className="min-h-screen bg-[#FAFAF9]">
-        {/* Hero Section with Parallax */}
-        <section className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-              {/* Left Content */}
-              <div>
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
-                  Consulting
-                </h1>
-                <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-[#1A1A1A]/70">
-                  Real solutions for real organizations. No frameworks. No fluff. Just clarity, alignment, and the work required to move forward.
-                </p>
-              </div>
-              
-              {/* Right: 3-Layer Parallax (Desktop) / Static (Mobile) */}
-              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px]">
-                {/* Desktop: Parallax layers */}
-                <div className="hidden lg:block absolute inset-0">
-                  {/* Layer 3 (Back): Can move any direction for depth */}
-                  <div 
-                    className="absolute inset-0 z-10"
-                    style={{ 
-                      transform: `translateY(${scrollY * 0.05}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/consulting-layer-3.png"
-                      alt="Consulting Background"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 2 (Middle - Character): Moves HORIZONTALLY ONLY (grounded) */}
-                  <div 
-                    className="absolute inset-0 z-20"
-                    style={{ 
-                      transform: `translateX(${scrollY * 0.08}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/consulting-layer-2.png"
-                      alt="Bart"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1 (Front): Moves HORIZONTALLY ONLY (grounded) */}
-                  <div 
-                    className="absolute inset-0 z-30"
-                    style={{ 
-                      transform: `translateX(${scrollY * -0.15}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/consulting-layer-1.png"
-                      alt="Consulting Foreground"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                </div>
-                
-                {/* Mobile: Static layers (no parallax) */}
-                <div className="lg:hidden absolute inset-0">
-                  {/* Layer 3: Back */}
-                  <div className="absolute inset-0 z-10">
-                    <OptimizedImage
-                      src="/images/consulting-layer-3.png"
-                      alt="Consulting Background"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 2: Middle */}
-                  <div className="absolute inset-0 z-20">
-                    <OptimizedImage
-                      src="/images/consulting-layer-2.png"
-                      alt="Bart"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1: Front */}
-                  <div className="absolute inset-0 z-30">
-                    <OptimizedImage
-                      src="/images/consulting-layer-1.png"
-                      alt="Consulting Foreground"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
+
+      <div className="min-h-screen bg-white">
+        {/* SECTION 1 — Hero */}
+        <section
+          className="relative flex min-h-[88vh] items-center bg-cover bg-[position:70%_center] bg-no-repeat md:bg-center"
+          style={{ backgroundImage: "url('/images/ao-consulting-hero-01.jpg')" }}
+        >
+          <div className="pointer-events-none absolute inset-0 z-[1]" style={{ background: HERO_OVERLAY }} />
+          <div
+            className="pointer-events-none absolute inset-0 z-[2]"
+            style={{ backgroundImage: HERO_TEXTURE }}
+          />
+          <div className="relative z-[3] max-w-[580px] px-6 py-12 md:px-16 md:py-20">
+            <p className="mb-4 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-brown">Methods · Archetype Original</p>
+            <p className="mb-5 font-sans text-[13px] tracking-[0.04em] text-ao-midGray">Consulting</p>
+            <h1 className="mb-5 max-w-[520px] font-serif text-[clamp(28px,7vw,36px)] font-normal italic leading-[1.06] text-[#F0ECE4] md:text-[clamp(32px,3.8vw,48px)]">
+              Real solutions for real organizations.
+            </h1>
+            <p className="mb-9 max-w-[440px] font-sans text-[16px] leading-[1.7] text-ao-midGray">
+              No frameworks. No fluff. Just clarity, alignment, and the work required to move forward.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-3.5">
+              <a
+                href="/engagement-inquiry"
+                onClick={navigateTo('/engagement-inquiry')}
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[3px] bg-ao-red px-7 py-3.5 text-center font-sans text-[13px] font-bold tracking-[0.04em] text-white transition-opacity hover:opacity-90 sm:w-auto"
+              >
+                Start a Conversation
+              </a>
+              <a
+                href="#how-it-works"
+                onClick={scrollToHowItWorks}
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[3px] border border-[#3A3028] bg-transparent px-7 py-3.5 text-center font-sans text-[13px] text-[#C8B8A8] transition-colors hover:border-[#5a4d42] sm:w-auto"
+              >
+                How it works
+              </a>
             </div>
           </div>
         </section>
 
-        {/* Section 1: Opening Narrative */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Most consulting engagements begin with surface-level symptoms—missed deadlines, unclear roles, communication friction, leadership misalignment. The actual problem usually lives deeper: drift between stated values and operational reality, eroded trust, inconsistent accountability, or a culture shaped by reaction instead of intention.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Organizations rarely fail for lack of talent or ambition. They fail because systems, communication, and leadership slowly drift out of alignment—and by the time leaders notice, the symptoms are everywhere. Consulting, done right, doesn't just fix the symptoms. It addresses the source.
-              </p>
-              <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A] italic font-serif">
-                The work isn't about what sounds good in a boardroom. It's about what actually works inside the organization people experience every day.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* SECTION 2 — What consulting is */}
+        <SectionShell bgClassName="border-b border-[#E0DBD4] bg-white" pyClassName="py-16 md:py-20">
+          <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">What consulting is</p>
+          <h2 className="mb-5 max-w-[560px] font-serif text-[32px] font-normal leading-[1.15] text-[#1a1a1a]">
+            Most organizations don&apos;t fail for lack of talent. They fail because things drift.
+          </h2>
+          <p className="mb-4 max-w-[700px] font-sans text-[15px] leading-[1.75] text-[#444]">
+            Most consulting engagements begin with surface-level symptoms — missed deadlines, unclear roles, communication
+            friction, leadership misalignment. The actual problem usually lives deeper: drift between stated values and
+            operational reality, eroded trust, inconsistent accountability, or a culture shaped by reaction instead of
+            intention.
+          </p>
+          <p className="mb-6 max-w-[700px] font-sans text-[15px] leading-[1.75] text-[#444]">
+            Organizations rarely fail for lack of talent or ambition. They fail because systems, communication, and
+            leadership slowly drift out of alignment — and by the time leaders notice, the symptoms are everywhere.
+            Consulting, done right, doesn&apos;t just fix the symptoms. It addresses the source.
+          </p>
+          <p className="mb-9 max-w-[640px] border-l-[3px] border-ao-red pl-5 font-serif text-[18px] italic leading-[1.6] text-[#333]">
+            The work isn&apos;t about what sounds good in a boardroom. It&apos;s about what actually works inside the
+            organization people experience every day.
+          </p>
 
-        {/* Section 2: What Consulting Is */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                  What Consulting Is
-                </h2>
-              </div>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Consulting is strategic, practical, and adaptive work designed to help organizations strengthen culture, clarify communication, rebuild trust, align systems, and sustain the alignment required for long-term health.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                It is not:
-              </p>
-              <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Theory or academic models applied generically
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Slide decks with buzzwords and no follow-through
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  One-size-fits-all frameworks
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Advice from someone who has never led through pressure
-                </li>
+          <div className="mb-7 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12">
+            <div>
+              <p className="mb-4 font-sans text-[10px] uppercase tracking-[0.16em] text-ao-midGray">It is not</p>
+              <ul className="list-none">
+                {notItems.map((t) => (
+                  <EmDashRow key={t}>{t}</EmDashRow>
+                ))}
               </ul>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                It is:
-              </p>
-              <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Honest assessment of what's actually happening
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Clarity on where misalignment exists and why
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Strategic guidance grounded in lived leadership and research
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Practical systems that support both people and performance
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Support through implementation—not just recommendations
-                </li>
+            </div>
+            <div>
+              <p className="mb-4 font-sans text-[10px] uppercase tracking-[0.16em] text-ao-midGray">It is</p>
+              <ul className="list-none">
+                {isItems.map((t) => (
+                  <EmDashRow key={t}>{t}</EmDashRow>
+                ))}
               </ul>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Every engagement is tailored to the real conditions inside your organization. There are no templates. There is only truth, clarity, and the commitment to see the work through.
-              </p>
             </div>
           </div>
-        </section>
+          <p className="max-w-[640px] font-sans text-[14px] font-bold text-[#1a1a1a]">
+            Every engagement is tailored to the real conditions inside your organization. There are no templates. There is
+            only truth, clarity, and the commitment to see the work through.
+          </p>
+        </SectionShell>
 
-        {/* Section 3: Who Consulting Serves */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                  Who Consulting Serves
-                </h2>
-              </div>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Consulting supports leadership teams, departments, and entire organizations navigating:
-              </p>
-              <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Cultural drift or misalignment between stated values and actual behavior
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Leadership turnover or transition requiring stability and continuity
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Communication breakdowns creating confusion, friction, or distrust
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Accountability gaps that allow problems to persist without resolution
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Rapid growth exposing structural weaknesses or cultural fragility
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Team conflict rooted in unclear expectations or relational tension
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  System failures where processes no longer serve the people using them
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Organizational health assessments before problems become crises
-                </li>
-              </ul>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Whether the work is reactive (fixing what's broken) or proactive (strengthening what's working), consulting provides clarity, alignment, and the practical steps required to move forward with confidence.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* SECTION 3 — Who it serves */}
+        <SectionShell bgClassName="bg-ao-cream" pyClassName="py-16 md:py-20">
+          <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">Who it serves</p>
+          <h2 className="mb-5 max-w-[560px] font-serif text-[32px] font-normal leading-[1.15] text-[#1a1a1a]">
+            Organizations navigating the moments that matter most.
+          </h2>
+          <p className="mb-6 font-sans text-[15px] leading-[1.7] text-[#555]">
+            Consulting supports leadership teams, departments, and entire organizations navigating:
+          </p>
+          <ul className="mb-6 max-w-[760px] list-none">
+            {whoItems.map((t) => (
+              <li
+                key={t}
+                className="relative border-b border-[#D4D0CA] py-3 pl-6 font-sans text-[15px] leading-[1.65] text-[#333] last:border-b-0"
+              >
+                <span className="absolute left-0 font-bold text-ao-red">—</span>
+                {t}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 font-sans text-[14px] font-bold text-[#1a1a1a]">
+            Whether the work is reactive or proactive, consulting provides clarity, alignment, and the practical steps
+            required to move forward with confidence.
+          </p>
+        </SectionShell>
 
-        {/* Section 4: How Consulting Works */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                  How Consulting Works
-                </h2>
-              </div>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Every consulting engagement is adaptive, but most follow a similar rhythm:
-              </p>
-              <div className="space-y-4">
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  <strong className="text-[#1A1A1A]">Assessment</strong> — Understanding what's actually happening
-                </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] pl-4">
-                  I begin by listening, observing, and asking the questions that reveal where drift, friction, or misalignment exists. This isn't theoretical. It's conversational, relational, and grounded in what leaders and teams are experiencing daily.
-                </p>
-              </div>
-              <div className="space-y-4">
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  <strong className="text-[#1A1A1A]">Diagnosis</strong> — Naming the real problem
-                </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] pl-4">
-                  Most symptoms point to deeper structural, relational, or cultural issues. The diagnostic phase identifies root causes, not just surface-level friction. Leaders receive honest, direct insight into what's working, what's not, and why.
-                </p>
-              </div>
-              <div className="space-y-4">
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  <strong className="text-[#1A1A1A]">Strategic Clarity</strong> — Building a path forward
-                </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] pl-4">
-                  Once the real problem is clear, we map a realistic path toward alignment. This includes communication redesign, accountability structures, leadership posture shifts, or cultural recalibration—whatever the organization actually needs.
-                </p>
-              </div>
-              <div className="space-y-4">
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  <strong className="text-[#1A1A1A]">Implementation Support</strong> — Staying present through the work
-                </p>
-                <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] pl-4">
-                  Recommendations mean nothing without follow-through. I stay engaged during implementation to ensure clarity holds, systems stabilize, and leaders have the support required to sustain momentum.
-                </p>
-              </div>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                The timeline varies based on organizational size, complexity, and readiness. Some engagements last weeks. Others span months. The work continues until alignment is restored and the organization can sustain it independently.
-              </p>
-              <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A] italic font-serif">
-                Consulting isn't a one-time fix. It's the scaffolding that helps organizations rebuild strength from the inside out.
-              </p>
-            </div>
-          </div>
-        </section>
+        <hr className="border-0 border-t border-[#E0DBD4]" />
 
-        {/* Section 5: What Makes This Different */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                  What Makes This Different
-                </h2>
-              </div>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Most consultants bring frameworks built elsewhere and hope they fit. I bring 32 years of lived leadership—building companies, leading teams through collapse and recovery, navigating pressure, and understanding how culture actually responds to leadership behavior.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                The foundation of this work includes:
-              </p>
-              <ul className="list-disc space-y-3 pl-6 sm:pl-8">
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Leading organizations through growth, crisis, and cultural transformation
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Pattern recognition across industries, team dynamics, and leadership styles
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Deep study of psychology, neuroscience, communication, and organizational behavior
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  Development of Culture Science and the Archetype Leadership Index (ALI) as tools for assessing organizational health
-                </li>
-                <li className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] marker:text-[#DB0812]">
-                  A posture of service, not superiority—clarity without ego
-                </li>
-              </ul>
-              <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A] italic font-serif">
-                I don't arrive with a model. I arrive with experience, honesty, and the ability to see what leaders are too close to notice.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* SECTION 4 — How it works */}
+        <section id="how-it-works" className="w-full bg-white">
+          <div className="mx-auto max-w-[1200px] px-6 py-16 md:px-12 md:py-20">
+            <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">How it works</p>
+            <h2 className="mb-9 font-serif text-[32px] font-normal leading-[1.15] text-[#1a1a1a]">
+              Every engagement is adaptive. Most follow a similar rhythm.
+            </h2>
+            <p className="mb-9 max-w-[640px] font-sans text-[15px] leading-[1.7] text-[#555]">
+              Every consulting engagement is adaptive, but most follow a similar rhythm:
+            </p>
 
-        {/* Section 6: Fractional Leadership Connection */}
-        <section className="w-full bg-[#FAFAF9] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="flex items-center mb-8 sm:mb-10">
-                <div className="w-1 h-10 sm:h-12 md:h-14 bg-[#DB0812] mr-4 sm:mr-6"></div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight leading-tight">
-                  Fractional Leadership — When Consulting Isn't Enough
-                </h2>
-              </div>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Some organizations need more than guidance—they need leadership presence. When cultural pressure, transition, or instability requires a steady hand inside the organization, Fractional Leadership provides exactly that.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Where consulting offers strategic clarity and system design, Fractional Leadership offers active leadership during critical seasons—embedded, accountable, and present.
-              </p>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <a 
-                  href="/methods/fractional-roles" 
-                  className="text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.history.pushState({}, '', '/methods/fractional-roles');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
+            <div className="max-w-[760px] space-y-0">
+              {phases.map((ph, i) => (
+                <div
+                  key={ph.title}
+                  className={`border-[#E0DBD4] py-6 ${i < phases.length - 1 ? 'border-b' : ''}`}
                 >
-                  Learn more about Fractional Leadership here.
-                </a>
-              </p>
+                  <div className="mb-2.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                    <span className="font-serif text-[18px] font-normal text-[#1a1a1a]">{ph.title}</span>
+                    <span className="font-sans text-[13px] text-ao-midGray">— {ph.sub}</span>
+                  </div>
+                  <p className="max-w-[700px] font-sans text-[15px] leading-[1.75] text-[#444]">{ph.body}</p>
+                </div>
+              ))}
             </div>
+
+            <p className="mt-7 max-w-[640px] border-l-[3px] border-ao-red pl-5 font-sans text-[15px] italic leading-relaxed text-[#555]">
+              Consulting isn&apos;t a one-time fix. It&apos;s the scaffolding that helps organizations rebuild strength from the
+              inside out.
+            </p>
           </div>
         </section>
 
-        <AdvisoryPathStrip />
-
-        {/* Section 7: Closing CTA */}
-        <section className="w-full bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto text-center space-y-6">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] font-serif tracking-tight">
-                If Your Organization Needs Clarity
+        {/* SECTION 5 — What makes this different */}
+        <section className="w-full bg-ao-dark py-16 md:py-[88px]">
+          <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-6 md:grid-cols-[1fr_340px] md:gap-[72px] md:px-12">
+            <div className="order-2 md:order-1">
+              <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-brown">
+                What makes this different
+              </p>
+              <h2 className="mb-6 font-serif text-[32px] font-normal leading-[1.15] text-[#F0ECE4]">
+                I don&apos;t arrive with a model. I arrive with experience.
               </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Whether you're addressing cultural drift, navigating a leadership transition, or strengthening what's already working—consulting provides the strategic insight and practical support required to move forward with alignment.
+              <p className="mb-4 font-sans text-[15px] leading-[1.78] text-[#C8C0B4]">
+                Most consultants bring frameworks built elsewhere and hope they fit. Thirty-three years of lived
+                leadership — building companies, leading teams through collapse and recovery, navigating pressure, and
+                understanding how culture actually responds to leadership behavior.
               </p>
-              <div className="mt-12">
-                <a
-                  href="/contact"
-                  className="inline-block px-10 py-5 bg-[#1A1A1A] text-white font-medium text-base hover:bg-[#1A1A1A]/90 transition-colors rounded-sm"
-                >
-                  Start a Conversation
-                </a>
+              <p className="mb-4 font-sans text-[15px] leading-[1.78] text-[#C8C0B4]">The foundation of this work includes:</p>
+              <ul className="mb-6 max-w-[640px] list-none">
+                {differentItems.map((t) => (
+                  <EmDashRow key={t} borderClassName="border-[#3a3636]" textClassName="text-[#C8C0B4]">
+                    {t}
+                  </EmDashRow>
+                ))}
+              </ul>
+              <p className="border-l-[3px] border-ao-red pl-4 font-serif text-[17px] italic leading-[1.6] text-[#E8E0D4]">
+                I don&apos;t arrive with a model. I arrive with experience, honesty, and the ability to see what leaders are
+                too close to notice.
+              </p>
+            </div>
+            <div className="order-1 md:order-2">
+              <div className="aspect-[4/3] w-full overflow-hidden md:aspect-[3/4]">
+                <img
+                  src="/images/ao-bp-standing-table.jpg"
+                  alt="Bart Paden, founder of Archetype Original"
+                  loading="lazy"
+                  className="h-full w-full object-cover object-center"
+                />
               </div>
             </div>
           </div>
+        </section>
+
+        {/* SECTION 6 — Advisory bridge (1200px shell — aligned with page grid) */}
+        <SectionShell bgClassName="bg-white" borderClassName="border-t border-[#E0DBD4]" pyClassName="py-16 md:py-[72px]">
+          <p className="mb-3.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">Advisory path</p>
+          <h2 className="mb-3 font-serif text-[28px] font-normal leading-snug text-[#1a1a1a]">
+            When methods are not the missing piece.
+          </h2>
+          <p className="mb-6 max-w-[600px] font-sans text-[15px] leading-[1.72] text-[#555]">
+            Consulting addresses what happens inside the system. Advisory is for the conversation that cannot happen there —
+            outside your organization, where consequence doesn&apos;t follow what you say.
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a
+              href="/advisory"
+              onClick={navigateTo('/advisory')}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-6 py-3 text-[13px] font-bold text-white transition-opacity hover:opacity-90"
+            >
+              How advisory works
+            </a>
+            <a
+              href="/engagement-inquiry"
+              onClick={navigateTo('/engagement-inquiry')}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] border border-[#ccc] bg-transparent px-6 py-3 text-[13px] font-medium text-ao-dark transition-colors hover:border-ao-dark"
+            >
+              Explore working together
+            </a>
+          </div>
+        </SectionShell>
+
+        {/* SECTION 7 — Footer CTA */}
+        <section className="w-full bg-ao-dark px-6 py-20 text-center md:px-12 md:py-24">
+          <h2 className="mx-auto mb-3 max-w-[640px] font-serif text-[clamp(26px,3vw,36px)] font-normal italic leading-snug text-[#F0ECE4]">
+            If your organization needs clarity, let&apos;s talk.
+          </h2>
+          <p className="mx-auto mb-7 max-w-[480px] font-sans text-[15px] leading-[1.65] text-ao-brown">
+            Whether you&apos;re addressing cultural drift, navigating a leadership transition, or strengthening what&apos;s
+            already working — the conversation starts here.
+          </p>
+          <a
+            href="/engagement-inquiry"
+            onClick={navigateTo('/engagement-inquiry')}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-[3px] bg-ao-red px-8 py-3.5 text-[13px] font-bold tracking-[0.04em] text-white transition-opacity hover:opacity-90"
+          >
+            Start a Conversation
+          </a>
         </section>
       </div>
     </>
   );
 }
-
