@@ -428,7 +428,7 @@ export default function Header() {
                     e.preventDefault();
                     handleNavigation('/engagement-inquiry');
                   }}
-                  className="inline-flex items-center rounded-md bg-ao-red px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:opacity-90 lg:px-5 lg:text-[13px]"
+                  className="inline-flex items-center rounded-[3px] bg-ao-red px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:opacity-90 lg:px-5 lg:text-[13px]"
                 >
                   Work Together
                 </a>
@@ -668,7 +668,7 @@ export default function Header() {
                     isActive('/engagement-inquiry') 
                       ? 'text-white bg-ao-red' 
                       : 'bg-ao-red text-white hover:opacity-90'
-                  } rounded-lg mx-6 my-4 text-center`}
+                  } rounded-[3px] mx-6 my-4 text-center`}
                 >
                   Work Together
                 </a>
