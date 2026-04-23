@@ -41,11 +41,6 @@ export default function Header() {
   }, []);
 
   const handleNavigation = (path) => {
-    // Save current scroll position before navigating
-    const currentPath = window.location.pathname;
-    const scrollY = window.scrollY;
-    sessionStorage.setItem(`scrollPos:${currentPath}`, scrollY.toString());
-    
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     // Note: Scroll handling is now done in App.jsx based on navigation direction
