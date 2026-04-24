@@ -36,11 +36,11 @@ export default function MeetBart() {
               {/* Body paragraphs */}
               <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-6 md:mb-7">
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
-                  Thirty-two years inside real leadership pressure — teams, ownership, repair, and the question of why people trust some rooms and quietly leave others.
+                  Thirty-three years inside organizations where leadership either held or broke: teams, ownership, repair, and why people trust some rooms and quietly leave others.
                 </p>
 
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-[#1A1A1A]/70 break-words">
-                  The longer story — including philosophy, advisory, and Archy — lives on Meet Bart.
+                  The full story, posture, advisory, consulting, and Archy live on Meet Bart.
                 </p>
               </div>
               

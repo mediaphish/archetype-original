@@ -13,4 +13,4 @@ Every result has a hidden cost or benefit attached to it: trust, fatigue, clarit
 
 Short-term wins that damage culture always cost more than they appear.
 
-[Explore our philosophy](/philosophy) and [learn about Culture Science](/culture-science).
+[Explore our philosophy](/meet-bart) and [learn about Culture Science](/culture-science).

@@ -11,10 +11,10 @@ export default function PhilosophyTeaser() {
           </p>
           <div className="mt-6">
             <a 
-              href="/philosophy" 
+              href="/meet-bart" 
               className="inline-flex items-center text-amber hover:text-amber-dark font-medium focus:outline-none focus:ring-2 focus:ring-amber rounded"
             >
-              Explore the philosophy →
+              Meet Bart →
             </a>
           </div>
         </div>

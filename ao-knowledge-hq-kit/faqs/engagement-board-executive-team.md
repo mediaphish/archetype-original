@@ -13,5 +13,5 @@ These conversations are often about surfacing unspoken assumptions, conflicting 
 
 Bart does not facilitate for optics. He works best when the group is willing to engage honestly and accept shared responsibility for the environment they are creating.
 
-Learn more about [how Bart works with teams](/methods/consulting) and [our approach](/philosophy).
+Learn more about [how Bart works with teams](/methods/consulting) and [our approach](/meet-bart).
 

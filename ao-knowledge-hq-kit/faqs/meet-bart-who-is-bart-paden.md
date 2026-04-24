@@ -15,4 +15,4 @@ Archetype Original exists because Bart has lived through both growth and collaps
 
 This work is not about image, influence, or personal brand. It's about helping leaders understand what they are actually creating around them—often without realizing it—and how to take responsibility for that with clarity and restraint.
 
-[Learn more about Bart](/meet-bart) and [explore his philosophy](/philosophy).
+[Learn more about Bart on Meet Bart](/meet-bart), including the story and how the work shows up.

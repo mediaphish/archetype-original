@@ -49,11 +49,11 @@ export default function WhyArchetypeOriginal() {
           
           {/* CTA Button */}
           <a
-            href="/philosophy"
-            onClick={(e) => handleLinkClick(e, '/philosophy')}
+            href="/meet-bart"
+            onClick={(e) => handleLinkClick(e, '/meet-bart')}
             className="min-h-[44px] inline-flex items-center justify-center bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
           >
-            Explore the Philosophy →
+            Meet Bart →
           </a>
         </div>
       </div>

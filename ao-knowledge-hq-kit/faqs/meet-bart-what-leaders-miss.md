@@ -13,4 +13,4 @@ Those things matter—but they're only part of the picture. Long before a decisi
 
 What leaders often miss is that they are always teaching through behavior whether they intend to or not. This work focuses on that invisible layer, because that's where cultures are either stabilized or slowly eroded.
 
-Explore [our philosophy](/philosophy) and [Culture Science](/culture-science) to understand these patterns more deeply.
+Explore [our philosophy](/meet-bart) and [Culture Science](/culture-science) to understand these patterns more deeply.

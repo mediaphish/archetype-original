@@ -13,5 +13,5 @@ Leaders who benefit most from this work aren't looking for answers they can repe
 
 If you want a framework that makes you look good, you won't like this. If you want one that makes you better, you're in the right place.
 
-Learn more about [who this work is for](/meet-bart) and [our philosophy](/philosophy).
+Learn more about [who this work is for](/meet-bart) and [our philosophy](/meet-bart).
 

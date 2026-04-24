@@ -27,6 +27,11 @@
       "source": "/methods/training-education",
       "destination": "/methods/consulting",
       "permanent": true
+    },
+    {
+      "source": "/philosophy",
+      "destination": "/meet-bart",
+      "permanent": true
     }
   ],
   "builds": [

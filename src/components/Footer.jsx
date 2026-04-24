@@ -20,7 +20,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 sm:px-6 md:px-10">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 gap-8 sm:gap-9 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-            {/* About & Philosophy */}
+            {/* About */}
             <div>
               <h3 className="mb-2 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-ao-brown">
                 About
@@ -33,15 +33,6 @@ export default function Footer() {
                     className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
                   >
                     About Bart
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/philosophy"
-                    onClick={(e) => handleLinkClick(e, '/philosophy')}
-                    className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
-                  >
-                    Philosophy
                   </a>
                 </li>
                 <li>

@@ -12,7 +12,6 @@ import JournalPost from "./pages/JournalPost";
 import DevotionalPost from "./pages/DevotionalPost";
 import Faith from "./pages/Faith";
 import AboutPage from "./pages/About";
-import PhilosophyPage from "./pages/Philosophy";
 import MethodsPage from "./pages/Methods";
 import MentorshipPage from "./pages/methods/Mentorship";
 import ConsultingPage from "./pages/methods/Consulting";
@@ -148,7 +147,7 @@ export default function App() {
       return 'culture-science';
     }
     if (path === '/archy' || path.startsWith('/archy/')) return 'archy';
-    if (path === '/philosophy') return 'philosophy';
+    if (path === '/philosophy') return 'about';
     if (path === '/methods' || path.startsWith('/methods/')) return 'methods';
     if (path === '/what-i-do') return 'what-i-do';
     if (path === '/accidental-ceo') return 'accidental-ceo';
@@ -480,6 +479,10 @@ export default function App() {
         setCurrentPage('journal-post');
       } else if (path === '/meet-bart') {
         setCurrentPage('about');
+      } else if (path === '/philosophy') {
+        window.history.replaceState({}, '', '/meet-bart');
+        setCurrentPage('about');
+        return;
       } else if (path === '/about') {
         // Redirect old /about to /meet-bart
         window.history.replaceState({}, '', '/meet-bart');
@@ -538,8 +541,6 @@ export default function App() {
       } else if (path === '/archy' || path.startsWith('/archy/')) {
         // Only allow main Archy page - placeholder subpages removed
         setCurrentPage('archy');
-      } else if (path === '/philosophy') {
-        setCurrentPage('philosophy');
       } else if (path === '/methods' || path.startsWith('/methods/')) {
         if (path === '/methods/speaking-seminars' || path === '/methods/training-education') {
           window.history.replaceState({}, '', '/methods/consulting');
@@ -640,18 +641,6 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <AboutPage />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-
-  // Render Philosophy page
-  if (currentPage === 'philosophy') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <PhilosophyPage />
         <Footer />
         <FloatingArchyButton />
       </main>

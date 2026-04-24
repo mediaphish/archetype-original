@@ -13,4 +13,4 @@ Archy works best when you bring the thing you're actually wrestling with—espec
 
 If something feels off, unclear, or heavier than it should be, ask about that. Archy can help you slow the moment down, put clearer words around what's happening, and think through better next steps.
 
-[Start a conversation with Archy](/archy) or explore [our philosophy](/philosophy) to dive deeper.
+[Start a conversation with Archy](/archy) or explore [our philosophy](/meet-bart) to dive deeper.

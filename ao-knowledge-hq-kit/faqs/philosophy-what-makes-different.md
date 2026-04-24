@@ -13,4 +13,4 @@ Tone, behavior, consistency, and what is tolerated day after day shape culture f
 
 This philosophy pays attention to that invisible layer, because that's where cultures stabilize—or quietly fracture.
 
-[Read more about our philosophy](/philosophy) and [explore Culture Science](/culture-science) to understand these patterns.
+[Read more about our philosophy](/meet-bart) and [explore Culture Science](/culture-science) to understand these patterns.

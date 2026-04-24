@@ -13,4 +13,4 @@ Read what resonates. Sit with what challenges you. Then use Archy to explore wha
 
 The goal isn't speed. It's depth.
 
-Learn more about [Archy](/archy) and explore [our philosophy](/philosophy) and [methods](/methods).
+Learn more about [Archy](/archy) and explore [our philosophy](/meet-bart) and [methods](/methods).

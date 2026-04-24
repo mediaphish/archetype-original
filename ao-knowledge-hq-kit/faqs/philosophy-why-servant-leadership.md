@@ -13,4 +13,4 @@ Servant leadership is the practice of carrying what others cannot carry yet: pre
 
 This approach doesn't reduce standards. It makes them sustainable.
 
-[Learn more about our philosophy](/philosophy) and [how ALI measures servant leadership in practice](/culture-science/ali).
+[Learn more about our philosophy](/meet-bart) and [how ALI measures servant leadership in practice](/culture-science/ali).

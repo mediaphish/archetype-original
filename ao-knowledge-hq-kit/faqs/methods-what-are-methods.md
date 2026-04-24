@@ -13,4 +13,4 @@ This isn't a fixed program or a step-by-step system meant to be applied the same
 
 The goal isn't compliance. It's clarity and consistency.
 
-[Explore our methods](/methods) and [learn about our philosophy](/philosophy).
+[Explore our methods](/methods) and [learn about our philosophy](/meet-bart).

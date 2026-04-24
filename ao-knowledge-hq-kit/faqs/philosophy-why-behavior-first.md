@@ -13,4 +13,4 @@ Intentions matter, but people don't work inside a leader's intent. They work ins
 
 Behavior is the delivery system for values. Without it, values remain theoretical.
 
-[Explore our philosophy](/philosophy) and [learn how Culture Science measures these patterns](/culture-science).
+[Explore our philosophy](/meet-bart) and [learn how Culture Science measures these patterns](/culture-science).

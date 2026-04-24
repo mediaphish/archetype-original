@@ -13,4 +13,4 @@ No method here assumes perfection. Leaders will misjudge situations. What matter
 
 Methods that don't allow for correction aren't realistic.
 
-[Learn more about our methods](/methods) and [our philosophy](/philosophy).
+[Learn more about our methods](/methods) and [our philosophy](/meet-bart).

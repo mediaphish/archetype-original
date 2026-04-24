@@ -13,4 +13,4 @@ Rather than focusing on tactics, trends, or surface-level fixes, it looks at how
 
 At its core, Archetype Original helps leaders understand what they are creating around them every day, often without realizing it, and how to lead with intention instead of default.
 
-[Explore our philosophy](/philosophy) and [learn about Culture Science](/culture-science).
+[Explore our philosophy](/meet-bart) and [learn about Culture Science](/culture-science).

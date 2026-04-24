@@ -13,4 +13,4 @@ Most meaningful change starts with leadership. When leaders adjust how they carr
 
 Buy-in grows when people experience consistency, not when they're asked for agreement.
 
-[Learn more about our methods](/methods) and [our philosophy](/philosophy).
+[Learn more about our methods](/methods) and [our philosophy](/meet-bart).

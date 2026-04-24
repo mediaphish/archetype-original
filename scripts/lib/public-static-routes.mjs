@@ -7,7 +7,6 @@ export const PUBLIC_STATIC_SITEMAP_ROUTES = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
   { path: '/meet-bart', priority: '0.9', changefreq: 'monthly' },
   { path: '/archy', priority: '0.9', changefreq: 'monthly' },
-  { path: '/philosophy', priority: '0.9', changefreq: 'monthly' },
   { path: '/methods', priority: '0.9', changefreq: 'monthly' },
   { path: '/methods/mentorship', priority: '0.8', changefreq: 'monthly' },
   { path: '/methods/consulting', priority: '0.8', changefreq: 'monthly' },

@@ -855,17 +855,6 @@ export default function JournalPost() {
                         Explore More
                       </h4>
                       <ul className="space-y-2">
-                        {post.categories.some(cat => ['servant-leadership', 'leadership', 'philosophy'].includes(cat.toLowerCase())) && (
-                          <li>
-                            <a 
-                              href="/philosophy" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/philosophy'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
-                              className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
-                            >
-                              Philosophy — The foundation of servant leadership
-                            </a>
-                          </li>
-                        )}
                         {post.categories.some(cat => ['servant-leadership', 'leadership', 'mentorship', 'consulting'].includes(cat.toLowerCase())) && (
                           <li>
                             <a 
@@ -877,14 +866,14 @@ export default function JournalPost() {
                             </a>
                           </li>
                         )}
-                        {post.categories.some(cat => ['servant-leadership', 'leadership', 'golden-rule', 'posture'].includes(cat.toLowerCase())) && (
+                        {post.categories.some(cat => ['servant-leadership', 'leadership', 'golden-rule', 'posture', 'philosophy'].includes(cat.toLowerCase())) && (
                           <li>
                             <a 
                               href="/meet-bart" 
                               onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/meet-bart'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
-                              Meet Bart — The posture that shapes my leadership
+                              Meet Bart: the story, posture, and how the work shows up
                             </a>
                           </li>
                         )}

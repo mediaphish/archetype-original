@@ -13,4 +13,4 @@ If the goal is to appear strong without doing the work of self-regulation and re
 
 Archetype Original is designed for leaders willing to slow down enough to lead with intention, not impulse.
 
-[Learn more about our philosophy](/philosophy) and [who this work is for](/meet-bart).
+[Learn more about our philosophy](/meet-bart) and [who this work is for](/meet-bart).

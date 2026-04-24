@@ -11,4 +11,4 @@ Because ambiguity is expensive.
 
 When people aren't sure what matters, they fill in the gaps themselves.
 
-[Learn more about our philosophy](/philosophy) and [how ALI measures clarity](/culture-science/ali).
+[Learn more about our philosophy](/meet-bart) and [how ALI measures clarity](/culture-science/ali).

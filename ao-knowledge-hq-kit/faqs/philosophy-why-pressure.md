@@ -11,4 +11,4 @@ Because pressure reveals truth.
 
 Under pressure, patterns surface and values are tested instead of discussed.
 
-[Explore our philosophy](/philosophy) and [how Culture Science studies pressure flow](/culture-science).
+[Explore our philosophy](/meet-bart) and [how Culture Science studies pressure flow](/culture-science).

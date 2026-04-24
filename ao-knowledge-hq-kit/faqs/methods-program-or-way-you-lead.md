@@ -13,4 +13,4 @@ Programs can help create momentum, but they don't sustain culture on their own. 
 
 When leadership behavior changes consistently, systems tend to follow.
 
-[Explore our methods](/methods) and [learn about our philosophy](/philosophy).
+[Explore our methods](/methods) and [learn about our philosophy](/meet-bart).

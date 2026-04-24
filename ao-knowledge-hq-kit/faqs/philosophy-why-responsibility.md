@@ -11,4 +11,4 @@ Because leadership always has consequences.
 
 Leaders don't just make decisions for themselves. They make decisions that ripple outward into how people experience work.
 
-[Read more about our philosophy](/philosophy) and [how we measure responsibility](/culture-science/ali).
+[Read more about our philosophy](/meet-bart) and [how we measure responsibility](/culture-science/ali).

@@ -251,16 +251,6 @@ export default function Header() {
                             Meet Bart
                           </a>
                           <a
-                            href="/philosophy"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNavigation('/philosophy');
-                            }}
-                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
-                          >
-                            Philosophy
-                          </a>
-                          <a
                             href="/archy"
                             onClick={(e) => {
                               e.preventDefault();
@@ -499,7 +489,6 @@ export default function Header() {
                   {mobileExpanded === 'meet-bart' && (
                     <div className="bg-[#FAFAF9] py-1">
                       <a href="/meet-bart" onClick={(e) => { e.preventDefault(); handleNavigation('/meet-bart'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Meet Bart</a>
-                      <a href="/philosophy" onClick={(e) => { e.preventDefault(); handleNavigation('/philosophy'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Philosophy</a>
                       <a href="/archy" onClick={(e) => { e.preventDefault(); handleNavigation('/archy'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Meet Archy</a>
                     </div>
                   )}

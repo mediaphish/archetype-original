@@ -13,4 +13,4 @@ You'll feel moral gravity in the work—responsibility, dignity, restraint, trut
 
 The philosophy is grounded in lived leadership realities rather than religious instruction.
 
-[Explore our philosophy](/philosophy) to learn more.
+[Explore our philosophy](/meet-bart) to learn more.

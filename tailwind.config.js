@@ -5,6 +5,8 @@ export default {
     extend: {
       fontFamily: {
         serif: ['Georgia', 'serif'],
+        playfair: ['"Playfair Display"', 'Georgia', 'serif'],
+        inter: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         /* AO 2026 tokens — use for new work; terracotta maps to same red for legacy classnames */

@@ -18,5 +18,5 @@ Bart does not:
 
 This work is about clarity, not comfort.
 
-Learn more about [our philosophy](/philosophy) and [what makes us different](/methods).
+Learn more about [our philosophy](/meet-bart) and [what makes us different](/methods).
 

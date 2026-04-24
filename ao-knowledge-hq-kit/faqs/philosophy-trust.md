@@ -9,4 +9,4 @@ status: published
 
 Trust is built through predictability, not promises.
 
-[Explore our philosophy](/philosophy) and [learn how ALI measures trust](/culture-science/ali).
+[Explore our philosophy](/meet-bart) and [learn how ALI measures trust](/culture-science/ali).

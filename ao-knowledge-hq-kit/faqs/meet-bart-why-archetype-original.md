@@ -15,4 +15,4 @@ Archetype Original exists to name what usually goes unnamed: how leadership beha
 
 This is not a motivational project. It's a corrective one.
 
-Learn more about [Bart](/meet-bart), [our philosophy](/philosophy), and [Culture Science](/culture-science).
+Learn more about [Bart](/meet-bart), [our philosophy](/meet-bart), and [Culture Science](/culture-science).

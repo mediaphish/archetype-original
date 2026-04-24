@@ -13,4 +13,4 @@ Soft leadership avoids hard conversations and accountability. Unrestrained leade
 
 It asks leaders to regulate themselves under pressure, to correct problems without exporting stress, and to lead in ways that hold up over time rather than creating short-term compliance.
 
-[Read more about our philosophy](/philosophy) and [our methods](/methods).
+[Read more about our philosophy](/meet-bart) and [our methods](/methods).

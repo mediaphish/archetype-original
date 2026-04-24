@@ -11,4 +11,4 @@ Performance-driven leadership isn't wrong—it's incomplete.
 
 When performance becomes the only lens, leaders often export pressure instead of carrying it.
 
-[Learn more about our philosophy](/philosophy) and [how we approach leadership differently](/methods).
+[Learn more about our philosophy](/meet-bart) and [how we approach leadership differently](/methods).
