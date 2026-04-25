@@ -201,7 +201,7 @@ export default function About() {
         {/* The Posture */}
         <section className="bg-ao-dark">
           <div className="mx-auto max-w-[1400px] px-6 py-20 sm:px-10 sm:py-24 md:py-[100px]">
-            <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_420px] lg:gap-20">
+            <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_420px] lg:gap-20">
               <div>
                 <p className={labelClass}>The Posture</p>
                 <h2 className="mb-9 font-serif text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-white">
@@ -240,11 +240,11 @@ export default function About() {
                   happens when responsibility meets character and clarity meets courage.
                 </p>
               </div>
-              <div>
+              <div className="w-full">
                 <img
                   src="/images/meet-bart-posture.jpg"
                   alt="Bart Paden"
-                  className="block h-[360px] w-full object-cover object-[center_25%] sm:h-[480px] lg:h-[560px]"
+                  className="block h-auto w-full"
                   loading="lazy"
                 />
               </div>
