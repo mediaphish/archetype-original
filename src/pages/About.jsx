@@ -3,8 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 
 /**
- * Meet Bart (/meet-bart) — layout and copy per meet-bart-preview.html / cursor-meet-bart.md
- * Fonts loaded on this page only (Playfair Display + Inter).
+ * Meet Bart (/meet-bart) — layout and copy; typography matches sitewide (font-sans / font-serif).
  */
 export default function About() {
   const goToPath = (e, path) => {
@@ -24,7 +23,7 @@ export default function About() {
   };
 
   const labelClass =
-    'mb-5 font-inter text-[11px] font-semibold uppercase tracking-[0.16em] text-ao-brown sm:mb-6';
+    'mb-5 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-ao-brown sm:mb-6';
 
   return (
     <>
@@ -57,7 +56,7 @@ export default function About() {
           />
           <div className="relative z-[2] mx-auto w-full max-w-[1400px] px-6 pb-16 pt-24 sm:px-10 sm:pb-24 md:px-10">
             <p className={labelClass}>Meet Bart · Archetype Original</p>
-            <h1 className="mb-7 max-w-[680px] font-playfair text-[clamp(36px,5vw,64px)] font-normal leading-[1.1] text-white">
+            <h1 className="mb-7 max-w-[680px] font-serif text-[clamp(36px,5vw,64px)] font-normal leading-[1.1] text-white">
               Thirty-three years inside organizations where leadership either held or broke.
             </h1>
             <p className="mb-11 max-w-[480px] text-base leading-[1.65] text-white/[0.72]">
@@ -89,7 +88,7 @@ export default function About() {
             <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_360px] lg:gap-[100px]">
               <div>
                 <p className={labelClass}>The Story</p>
-                <h2 className="mb-10 font-playfair text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-[#1A1A1A]">
+                <h2 className="mb-10 font-serif text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-[#1A1A1A]">
                   I didn&apos;t plan on becoming a leader. Most people who end up doing it well
                   don&apos;t.
                 </h2>
@@ -146,7 +145,7 @@ export default function About() {
                     drama. When it was time to hand it to the next steward, I did that with dignity too.
                     Sold it in March 2025.
                   </p>
-                  <p className="!mt-1 font-playfair text-xl italic leading-snug text-[#1A1A1A] sm:text-[20px]">
+                  <p className="!mt-1 font-serif text-xl italic leading-snug text-[#1A1A1A] sm:text-[20px]">
                     I didn&apos;t get relief. I got room to breathe.
                   </p>
                   <p>
@@ -205,7 +204,7 @@ export default function About() {
             <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_420px] lg:gap-20">
               <div>
                 <p className={labelClass}>The Posture</p>
-                <h2 className="mb-9 font-playfair text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-white">
+                <h2 className="mb-9 font-serif text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-white">
                   Leadership is stewardship. Not authority. Not performance. Responsibility.
                 </h2>
                 <div className="mb-9 flex flex-col gap-5">
@@ -243,9 +242,9 @@ export default function About() {
               </div>
               <div>
                 <img
-                  src="/images/meet-bart-hero.jpg"
+                  src="/images/meet-bart-posture.jpg"
                   alt="Bart Paden"
-                  className="block h-[360px] w-full object-cover object-[center_top] sm:h-[480px] lg:h-[560px]"
+                  className="block h-[360px] w-full object-cover object-[center_25%] sm:h-[480px] lg:h-[560px]"
                   loading="lazy"
                 />
               </div>
@@ -258,7 +257,7 @@ export default function About() {
           <div className="mx-auto max-w-[1400px] px-6 py-20 sm:px-10 sm:py-24 md:py-[100px]">
             <div className="mb-14 max-w-[480px] sm:mb-16">
               <p className={labelClass}>How This Shows Up</p>
-              <h2 className="font-playfair text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-[#1A1A1A]">
+              <h2 className="font-serif text-[clamp(28px,3vw,40px)] font-normal leading-[1.2] text-[#1A1A1A]">
                 Four ways to work together.
               </h2>
             </div>
@@ -287,8 +286,8 @@ export default function About() {
                 },
               ].map((card) => (
                 <div key={card.n} className="bg-white p-8 sm:p-10">
-                  <span className="mb-4 block font-playfair text-[13px] text-ao-red">{card.n}</span>
-                  <h3 className="mb-3.5 font-playfair text-[22px] font-normal text-[#1A1A1A]">
+                  <span className="mb-4 block font-serif text-[13px] text-ao-red">{card.n}</span>
+                  <h3 className="mb-3.5 font-serif text-[22px] font-normal text-[#1A1A1A]">
                     {card.title}
                   </h3>
                   <p className="mb-6 text-sm leading-[1.7] text-[#6B6B6B]">{card.body}</p>
@@ -315,7 +314,7 @@ export default function About() {
           />
           <div className="relative z-[2] mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 py-20 text-center sm:px-10 sm:py-24">
             <p className={`${labelClass} text-center`}>If You&apos;re Ready</p>
-            <h2 className="mb-6 max-w-[560px] font-playfair text-[clamp(32px,4vw,52px)] font-normal leading-[1.15] text-white">
+            <h2 className="mb-6 max-w-[560px] font-serif text-[clamp(32px,4vw,52px)] font-normal leading-[1.15] text-white">
               The room is available.
             </h2>
             <p className="mb-11 max-w-[520px] text-base leading-[1.75] text-white/[0.7]">
