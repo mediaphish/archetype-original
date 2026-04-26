@@ -530,11 +530,14 @@ export default function App() {
         } else if (path === '/culture-science/bad-leader-project') {
           setCurrentPage('bad-leader-project');
         } else if (path === '/culture-science/research') {
-          setCurrentPage('culture-science-research');
+          window.history.replaceState({}, '', '/culture-science');
+          setCurrentPage('culture-science');
         } else if (path === '/culture-science/industry-reports') {
-          setCurrentPage('industry-reports');
+          window.history.replaceState({}, '', '/culture-science');
+          setCurrentPage('culture-science');
         } else if (path === '/culture-science/ethics') {
-          setCurrentPage('ethics');
+          window.history.replaceState({}, '', '/culture-science/ali');
+          setCurrentPage('ali');
         } else {
           setCurrentPage('culture-science');
         }

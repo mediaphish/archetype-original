@@ -319,28 +319,6 @@ export default function Header() {
                         >
                           The Bad Leader Project
                         </a>
-                        <div className="border-t border-[#1A1A1A]/10 my-1"></div>
-                        <a
-                          href="/culture-science/research"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/research'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Research
-                        </a>
-                        <a
-                          href="/culture-science/industry-reports"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/industry-reports'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Industry Reports
-                        </a>
-                        <a
-                          href="/culture-science/ethics"
-                          onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ethics'); }}
-                          className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] transition-all duration-200"
-                        >
-                          Ethics
-                        </a>
                         </div>
                       </div>
                     )}
@@ -551,27 +529,6 @@ export default function Header() {
                         className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-16"
                       >
                         The Bad Leader Project
-                      </a>
-                      <a
-                        href="/culture-science/research"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/research'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Research
-                      </a>
-                      <a
-                        href="/culture-science/industry-reports"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/industry-reports'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Industry Reports
-                      </a>
-                      <a
-                        href="/culture-science/ethics"
-                        onClick={(e) => { e.preventDefault(); handleNavigation('/culture-science/ethics'); }}
-                        className="min-h-[44px] flex items-center px-6 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white transition-all duration-200 pl-12"
-                      >
-                        Ethics
                       </a>
                     </div>
                   )}

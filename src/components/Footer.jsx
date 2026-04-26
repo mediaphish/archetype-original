@@ -64,15 +64,6 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/methods/mentorship"
-                    onClick={(e) => handleLinkClick(e, '/methods/mentorship')}
-                    className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
-                  >
-                    Mentorship
-                  </a>
-                </li>
-                <li>
-                  <a
                     href="/methods/consulting"
                     onClick={(e) => handleLinkClick(e, '/methods/consulting')}
                     className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"

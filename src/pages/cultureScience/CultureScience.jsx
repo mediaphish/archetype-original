@@ -1,658 +1,422 @@
 /**
- * Culture Science Index Page
- * Editorial Minimal Design - Flat, no gradients/shadows
+ * Culture Science — discipline landing (research, reality, responsibility).
+ * Layout and copy aligned with culture-science preview + cursor-culture-science.md
  */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import SEO from '../../components/SEO';
-import { OptimizedImage } from '../../components/OptimizedImage';
+
+function go(path) {
+  return (e) => {
+    e.preventDefault();
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+}
+
+const sectionLabel = 'text-[11px] font-semibold uppercase tracking-[0.16em] text-ao-brown';
+const body = 'text-[15px] leading-[1.75] text-warm-grey';
+const h2 = 'font-playfair text-[clamp(1.75rem,3.5vw,3rem)] font-normal leading-tight text-[#1A1A1A]';
 
 export default function CultureScience() {
-  const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint - disable parallax on mobile
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    const handleScroll = () => {
-      if (!isMobile) {
-        setScrollY(window.scrollY);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkMobile);
-    };
-  }, [isMobile]);
-
   return (
     <>
       <SEO pageKey="culture-science" />
-      <div className="min-h-screen bg-[#FAFAF9]">
-        {/* Hero Section with 3-Layer Parallax */}
-        <section className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-              {/* Left Content */}
-              <div>
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 leading-[0.9] tracking-tight">
-                  Culture Science
-                </h1>
-                <p className="text-xl sm:text-2xl md:text-3xl font-light leading-relaxed text-[#1A1A1A]/70">
-                  Where leadership, behavioral research, and lived experience converge.
-                </p>
-              </div>
-              
-              {/* Right: 3-Layer Parallax (Desktop) / Static (Mobile) */}
-              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px]">
-                {/* Desktop: Parallax layers */}
-                <div className="hidden lg:block absolute inset-0">
-                  {/* Layer 3: Background - Moves VERTICALLY (slowest) */}
-                  <div 
-                    className="absolute inset-0 z-10"
-                    style={{ 
-                      transform: `translateY(${scrollY * 0.05}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/science-layer-3.png"
-                      alt="Culture Science Background"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 2: Middle - Moves HORIZONTALLY ONLY (grounded) */}
-                  <div 
-                    className="absolute inset-0 z-20"
-                    style={{ 
-                      transform: `translateX(${scrollY * 0.08}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/science-layer-2.png"
-                      alt="Culture Science Middle Layer"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1: Archy - Moves HORIZONTALLY ONLY (grounded) */}
-                  <div 
-                    className="absolute inset-0 z-30"
-                    style={{ 
-                      transform: `translateX(${scrollY * -0.15}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/science-layer-1.png"
-                      alt="Archy"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                </div>
-                
-                {/* Mobile: Static layers (no parallax) */}
-                <div className="lg:hidden absolute inset-0">
-                  {/* Layer 3: Background */}
-                  <div className="absolute inset-0 z-10">
-                    <OptimizedImage
-                      src="/images/science-layer-3.png"
-                      alt="Culture Science Background"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 2: Middle */}
-                  <div className="absolute inset-0 z-20">
-                    <OptimizedImage
-                      src="/images/science-layer-2.png"
-                      alt="Culture Science Middle Layer"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1: Archy */}
-                  <div className="absolute inset-0 z-30">
-                    <OptimizedImage
-                      src="/images/science-layer-1.png"
-                      alt="Archy"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-              
-            </div>
-          </div>
-        </section>
-
-        {/* First Content Section */}
-        <section className="py-16 sm:py-24 md:py-32 bg-white">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
-              <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                <p className="text-pretty">
-                  Most leaders don't see the gap between how they think they lead and how their teams actually experience leadership. They measure performance, track KPIs, and celebrate wins—but they rarely measure the thing that makes everything else possible: leadership clarity.
-                </p>
-                
-                <p className="text-pretty">
-                  Culture Science exists to change that. It's where 32 years of building companies meets behavioral research, trust psychology, and the lived experience of thousands of leaders and teams.
-                </p>
-                
-                <p className="text-pretty">
-                  This isn't another engagement survey. It's not a personality test. It's evidence-based culture measurement designed specifically for small and mid-sized businesses—the companies that don't have HR departments, consultants on retainer, or culture committees.
-                </p>
-                
-                <p className="text-pretty">
-                  Culture Science measures what matters: How clear is leadership? How safe do people feel? How much trust exists? How well do teams communicate? These aren't soft metrics. They're the foundation of everything else.
-                </p>
-                
-                <p className="text-pretty">
-                  The research is clear: Psychological safety drives performance. Trust unlocks innovation. Clarity removes friction. When leaders get these right, teams stop surviving and start creating.
-                </p>
-                
-                <p className="text-pretty">
-                  Culture Science exists to change that.
-                </p>
-                
-                <p className="text-pretty">
-                  Most leaders don't see the gap between how they think they lead and how their teams actually experience leadership.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* What Culture Science Actually Is */}
-        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                What Culture Science Actually Is
-              </h2>
-              
-              <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                <p className="text-pretty">
-                  Culture Science is the intersection of three things: Research, Reality, and Responsibility.
-                </p>
-                
-                <p className="text-pretty">
-                  <strong>Research:</strong> Behavioral science, trust psychology, psychological safety studies, and leadership neuroscience. The work of Amy Edmondson, Paul Zak, Carl Rogers, and decades of Gallup research.
-                </p>
-                
-                <p className="text-pretty">
-                  <strong>Reality:</strong> 32 years of building companies, leading teams, and watching what actually works—and what doesn't. The lived experience of thousands of leaders and team members.
-                </p>
-                
-                <p className="text-pretty">
-                  <strong>Responsibility:</strong> The commitment to measure what matters, share what we learn, and build tools that help leaders lead better—without losing what makes them human.
-                </p>
-                
-                <p className="text-pretty font-semibold text-[#1A1A1A]">
-                  Culture Science = Research + Reality + Responsibility
-                </p>
-                
-                <p className="text-pretty">
-                  Culture Science includes:
-                </p>
-                
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>Behavioral science and trust psychology</li>
-                  <li>Psychological safety research</li>
-                  <li>Leadership neuroscience</li>
-                  <li>Evidence-based culture measurement</li>
-                  <li>Anonymous team assessments</li>
-                  <li>Longitudinal tracking and benchmarking</li>
-                </ul>
-                
-                <blockquote className="my-10 sm:my-12 pl-6 sm:pl-8 border-l-4 border-[#DB0812]">
-                  <p className="text-xl sm:text-2xl md:text-3xl italic font-serif text-[#1A1A1A] leading-tight">
-                    To help small and mid-sized businesses build cultures where people thrive, leaders grow, and clarity becomes normal again.
-                  </p>
-                </blockquote>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* The Problem We're Solving */}
-        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                The Problem We're Solving
-              </h2>
-              
-              <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16">
-                <p className="text-pretty">
-                  Most leaders assume their teams experience leadership the same way they do. They assume clarity exists because they feel clear. They assume trust exists because they trust their team. They assume communication works because they communicate.
-                </p>
-                
-                <p className="text-pretty">
-                  These assumptions are wrong. Research shows this consistently. Leaders score culture higher than the people under them—every time.
-                </p>
-                
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
-                  The four biggest cultural blind spots:
-                </h3>
-              </div>
-              
-              <div className="space-y-12 sm:space-y-16">
-                {/* Card 1 */}
-                <div className="relative pl-16 sm:pl-20 md:pl-24">
-                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
-                    1
-                  </span>
-                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                      Leaders and teams experience culture differently
-                    </h3>
-                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                      Research shows this consistently. Leaders score culture higher than the people under them—every time.
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Card 2 */}
-                <div className="relative pl-16 sm:pl-20 md:pl-24">
-                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
-                    2
-                  </span>
-                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                      Most companies measure performance but never measure leadership clarity
-                    </h3>
-                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4">
-                      They track KPIs, revenue, and output. But not:
-                    </p>
-                    <ul className="list-disc space-y-2 ml-6 text-base sm:text-lg text-[#6B6B6B] marker:text-[#DB0812]">
-                      <li><span className="text-[#1A1A1A]">Consistency</span></li>
-                      <li><span className="text-[#1A1A1A]">Trust</span></li>
-                      <li><span className="text-[#1A1A1A]">Communication quality</span></li>
-                      <li><span className="text-[#1A1A1A]">Team psychological safety</span></li>
-                      <li><span className="text-[#1A1A1A]">Operational clarity</span></li>
-                      <li><span className="text-[#1A1A1A]">Expectations</span></li>
-                    </ul>
-                  </div>
-                </div>
-                
-                {/* Card 3 */}
-                <div className="relative pl-16 sm:pl-20 md:pl-24">
-                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
-                    3
-                  </span>
-                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                      People rarely tell leadership the truth
-                    </h3>
-                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                      Without psychological safety, feedback is filtered, problems are hidden, and leaders make decisions with incomplete information.
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Card 4 */}
-                <div className="relative pl-16 sm:pl-20 md:pl-24">
-                  <span className="absolute left-0 top-0 text-6xl sm:text-7xl md:text-8xl font-bold text-[#6B6B6B]/20 leading-none font-serif tracking-tight">
-                    4
-                  </span>
-                  <div className="border-l-4 border-[#DB0812] pl-6 sm:pl-8">
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                      Leaders don't lack desire. They lack a mirror
-                    </h3>
-                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                      Most leaders want to lead well. They just don't have a clear picture of how their leadership actually feels to the people experiencing it.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#1A1A1A] leading-relaxed mt-12 sm:mt-16 text-pretty">
-                Culture Science builds that mirror.
+      <div className="min-h-screen bg-[#FAFAF9] font-inter text-[#1A1A1A] antialiased">
+        {/* Hero */}
+        <section className="relative flex min-h-[88vh] items-end overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-[center_30%]"
+            style={{ backgroundImage: "url('/images/bart-culture-science-hero.jpg')" }}
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-[rgba(26,26,26,0.92)] via-[rgba(26,26,26,0.55)] to-transparent"
+            aria-hidden
+          />
+          <div className="relative z-10 mx-auto w-full max-w-[1600px] px-6 pb-16 pt-28 sm:px-10 md:px-14 lg:pb-24">
+            <div className="max-w-xl text-white">
+              <p className={`${sectionLabel} mb-4 text-white/70`}>Culture Science · Archetype Original</p>
+              <h1 className="font-playfair text-4xl font-normal leading-[1.1] tracking-tight sm:text-5xl md:text-6xl">
+                Where leadership, behavioral research, and lived experience converge.
+              </h1>
+              <p className="mt-6 text-[15px] leading-[1.75] text-white/80">
+                Most leaders never measure the thing that drives everything else. Not performance. Not output.
+                The conditions that make performance and output possible: clarity, consistency, trust, communication,
+                alignment, stability, and drift. Culture Science exists to make those measurable.
               </p>
-            </div>
-          </div>
-        </section>
-
-        {/* The Research Behind It */}
-        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance uppercase">
-                The Research Behind It
-              </h2>
-              
-              <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16">
-                <p className="text-pretty">
-                  Culture Science is built on decades of research in organizational psychology, neuroscience, and leadership. Across hundreds of studies and many meta-analyses, the same themes show up again and again.
-                </p>
-              </div>
-              
-              <div className="space-y-12 sm:space-y-16">
-                {/* Research 1 */}
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    1. People need real safety to tell the truth.
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
-                    Teams that feel safe to speak up, ask questions, and challenge ideas learn faster and perform better. Psychological safety is one of the strongest predictors of team learning, innovation, and adaptability.
-                  </p>
-                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
-                    Representative research:
-                  </p>
-                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
-                    <li>
-                      <a href="https://www.hbs.edu/faculty/Publication%20Files/98-066_4446b0b4-2615-46df-8a2e-5f1e9bcfbd54.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Edmondson, "Psychological Safety and Learning Behavior in Work Teams"
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://psycnet.apa.org/record/2017-07055-001" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Frazier et al., Meta-analysis of psychological safety
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                
-                {/* Research 2 */}
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    2. Healthy cultures balance demands with support.
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
-                    The Job Demands–Resources (JD-R) model shows that chronic overload without support drains motivation and leads to burnout. But when expectations, resources, autonomy, and feedback are aligned, people stay engaged and energized.
-                  </p>
-                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
-                    Representative research:
-                  </p>
-                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
-                    <li>
-                      <a href="https://www.wilmarschaufeli.nl/publications/Schaufeli/350.pdf" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Bakker & Demerouti, "The Job Demands–Resources model"
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://journals.aom.org/doi/abs/10.5465/amj.2010.51468988" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Crawford et al., JD-R meta-analysis
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                
-                {/* Research 3 */}
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    3. Trust-centered leadership changes outcomes.
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
-                    Across large studies, trust-based and servant-minded leadership models consistently correlate with higher job performance, stronger commitment, and better service quality.
-                  </p>
-                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
-                    Representative research:
-                  </p>
-                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
-                    <li>
-                      <a href="https://journals.sagepub.com/doi/10.1177/0149206314523836" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Hoch et al., Meta-analysis of servant leadership
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://journals.aom.org/doi/10.5465/amj.2002.5549658" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Dirks & Ferrin, Trust in leadership meta-analysis
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                
-                {/* Research 4 */}
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    4. Toxic leadership reliably breaks companies.
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
-                    Decades of research show that abusive, fear-driven, and narcissistic leadership causes burnout, stress, withdrawal behaviors, lower engagement, and higher turnover.
-                  </p>
-                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
-                    Representative research:
-                  </p>
-                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
-                    <li>
-                      <a href="https://journals.aom.org/doi/10.5465/AMJ.2000.3312921" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Tepper, "Consequences of Abusive Supervision"
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://www.tandfonline.com/doi/abs/10.1080/1359432X.2013.771812" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Schyns & Schilling, Destructive leadership meta-analysis
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                
-                {/* Research 5 */}
-                <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                    5. Engagement isn't a perk; it's an engine.
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
-                    Global engagement studies confirm that engaged teams outperform disengaged teams—profitability, productivity, customer satisfaction, retention, safety, and quality all move in measurable ways.
-                  </p>
-                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-2">
-                    Representative research:
-                  </p>
-                  <ul className="space-y-2 text-base sm:text-lg text-[#6B6B6B]">
-                    <li>
-                      <a href="https://www.gallup.com/workplace/236927/state-american-workplace-report-2017.aspx" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Harter et al., Gallup engagement meta-analysis
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://psycnet.apa.org/record/2006-07939-003" target="_blank" rel="noopener noreferrer" className="text-[#1A1A1A] underline hover:text-[#DB0812]">
-                        Saks, "Antecedents and Consequences of Employee Engagement"
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              
-              {/* What Archetype Original Does With All This Research */}
-              <div className="mt-16 sm:mt-20 md:mt-24 space-y-6 sm:space-y-8">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
-                  What Archetype Original Does With All This Research
-                </h3>
-                
-                <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B]">
-                  <p className="text-pretty">
-                    Archetype Original translates decades of cross-disciplinary evidence into a practical system leaders can actually use:
-                  </p>
-                  
-                  <ul className="list-disc space-y-3 ml-6 marker:text-[#DB0812]">
-                    <li>
-                      <span className="text-[#1A1A1A]">Culture Science organizes the patterns into early-warning indicators of cultural drift and risk.</span>
-                    </li>
-                    <li>
-                      <span className="text-[#1A1A1A]">The Archetype Leadership Index (ALI) turns trust, clarity, safety, and load-balance into measurable leadership signals.</span>
-                    </li>
-                    <li>
-                      <span className="text-[#1A1A1A]">
-                        <a 
-                          href="/culture-science/anti-projects/scoreboard-leadership" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.history.pushState({}, '', '/culture-science/anti-projects/scoreboard-leadership');
-                            window.dispatchEvent(new PopStateEvent('popstate'));
-                            window.scrollTo({ top: 0, behavior: 'instant' });
-                          }}
-                          className="text-[#1A1A1A] underline hover:text-[#DB0812]"
-                        >
-                          Scoreboard Leadership
-                        </a> and our playbooks, that are in development, show leaders how to act on the data—shifting away from brittle, fear-based habits toward durable, servant-minded leadership.
-                      </span>
-                    </li>
-                  </ul>
-                  
-                  <p className="text-pretty font-semibold text-[#1A1A1A]">
-                    This isn't inspirational theory.
-                  </p>
-                  
-                  <p className="text-pretty">
-                    It's a framework grounded in a massive body of real research—distilled into tools that make cultures stronger, healthier, and more resilient.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Why Small & Mid-Sized Businesses */}
-        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-white">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-12 sm:mb-16 font-serif tracking-tight text-balance">
-                Why This Matters for Small & Mid-Sized Businesses
-              </h2>
-              
-              <div className="grid md:grid-cols-2 gap-12 mb-12 sm:mb-16">
-                {/* Left Column */}
-                <div>
-                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
-                    Large companies have:
-                  </h3>
-                  <ul className="list-disc list-inside space-y-3 text-base sm:text-lg text-[#6B6B6B]">
-                    <li>HR departments</li>
-                    <li>Culture committees</li>
-                    <li>Consultants on retainer</li>
-                    <li>Engagement surveys</li>
-                    <li>Performance management systems</li>
-                  </ul>
-                </div>
-                
-                {/* Right Column with Orange Border */}
-                <div className="border-l-[6px] border-[#DB0812] pl-6 sm:pl-8 md:pl-12">
-                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight">
-                    Small companies have... you.
-                  </h3>
-                  <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                    You're the leader, the HR person, the culture builder, and the decision maker. You don't have a team of consultants or a culture committee. You have your team, your values, and your commitment to building something real.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="mb-8 sm:mb-10">
-                <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 text-pretty">
-                  This is where culture breaks:
-                </p>
-                <ul className="list-disc list-inside space-y-2 ml-4 text-base sm:text-lg text-[#6B6B6B]">
-                  <li>When leaders assume clarity exists because they feel clear</li>
-                  <li>When teams don't feel safe to speak up</li>
-                  <li>When communication breaks down under pressure</li>
-                  <li>When trust erodes slowly, invisibly</li>
-                  <li>When leaders make decisions without seeing the full picture</li>
-                </ul>
-              </div>
-              
-              <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] text-pretty">
-                Culture Science exists to help you see what you can't see—and build what you can't build without clarity.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Introducing ALI */}
-        <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-[#FAFAF9]">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif tracking-tight text-balance">
-                Introducing ALI (Archetype Leadership Index)
-              </h2>
-
-              <div className="mb-10 overflow-hidden rounded-sm border border-[#1A1A1A]/10 bg-white shadow-sm">
-                <OptimizedImage
-                  src="/images/ali-dash-01.png"
-                  alt="ALI leadership diagnostic overview in the dashboard"
-                  className="h-auto w-full object-cover object-top"
-                  loading="lazy"
-                />
-              </div>
-              
-              <div className="space-y-6 sm:space-y-8 text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-12 sm:mb-16">
-                <p className="text-pretty">
-                  ALI is the first diagnostic in the Culture Science toolkit. It measures six dimensions of servant leadership: Clarity, Empathy, Humility, Strength, Accountability, and Trust.
-                </p>
-                
-                <p className="text-pretty">
-                  It's a 10-question assessment, taken 4 times a year, that your team completes anonymously. With each round, you get a scorecard showing how your leadership scores across all six dimensions—and what it means.
-                </p>
-                
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                  What ALI Measures
-                </h3>
-                
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>Clarity: Do people know what matters, why it matters, and where they fit?</li>
-                  <li>Empathy: Do leaders listen to understand, or to respond?</li>
-                  <li>Humility: Can leaders admit mistakes, ask for help, and share credit?</li>
-                  <li>Strength: Do leaders make hard decisions with confidence and care?</li>
-                  <li>Accountability: Do people own outcomes, or deflect responsibility?</li>
-                  <li>Trust: Do people feel safe to speak up, take risks, and be human?</li>
-                </ul>
-                
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                  How It Works
-                </h3>
-                
-                <ol className="list-decimal list-inside space-y-3 ml-4">
-                  <li>Your team completes a short, anonymous assessment (about 15 minutes)</li>
-                  <li>You get a detailed scorecard showing how your leadership scores across all six dimensions</li>
-                  <li>We meet to review results, identify patterns, and build an action plan</li>
-                </ol>
-                
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight">
-                  What You Get
-                </h3>
-                
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>A clear picture of how your leadership actually feels to your team</li>
-                  <li>Specific insights into where you're strong and where you can grow</li>
-                  <li>An action plan for building what's missing</li>
-                </ul>
-              </div>
-              
-              <div className="text-center">
+              <div className="mt-8 flex flex-wrap gap-4">
                 <a
                   href="/culture-science/ali"
-                  className="inline-block bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors"
+                  onClick={go('/culture-science/ali')}
+                  className="inline-flex items-center rounded-[2px] bg-ao-red px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-90"
                 >
-                  Join the ALI Pilot
+                  Explore ALI
+                </a>
+                <a
+                  href="/engagement-inquiry"
+                  onClick={go('/engagement-inquiry')}
+                  className="inline-flex items-center rounded-[2px] border border-white px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-white/10"
+                >
+                  Start a Conversation
                 </a>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* What Culture Science Is */}
+        <section className="bg-white py-16 md:py-24">
+          <div className="mx-auto grid max-w-[1600px] items-start gap-16 px-6 sm:px-10 md:grid-cols-[minmax(260px,300px)_1fr] md:gap-24 md:px-14 lg:gap-[100px]">
+            <div className="md:sticky md:top-24">
+              <p className={sectionLabel}>What Culture Science Is</p>
+              <h2 className={`${h2} mt-3`}>Research. Reality. Responsibility.</h2>
+              <div className="mt-6 border-t border-black/10 pt-6">
+                <p className="font-playfair text-[15px] italic leading-snug text-[#1A1A1A]">
+                  Culture Science = Research + Reality + Responsibility
+                </p>
+                <p className="mt-3 text-[13px] leading-relaxed text-warm-grey">
+                  That equation is what every word written here, every tool built here, and every conversation that
+                  comes from this work is grounded in.
+                </p>
+              </div>
+            </div>
+            <div className={`space-y-6 ${body}`}>
+              <p>
+                Culture Science is a discipline, not a survey platform, not a consulting methodology, not an
+                engagement tool. It is a systematic way of measuring what most organizations never measure and
+                seeing what most leaders never see.
+              </p>
+              <p>It was built at the intersection of three things that rarely sit in the same room.</p>
+
+              <div className="border-t border-black/[0.08] py-8 first:pt-0">
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">Research</p>
+                <p>
+                  Decades of behavioral science, trust psychology, psychological safety studies, and leadership
+                  neuroscience. The work of Edmondson, Zak, Gallup, and hundreds of studies across organizational
+                  behavior and human performance. The evidence is clear and consistent: leaders who create clarity,
+                  trust, and consistency unlock the best in their teams. Cultures that withhold those things pay for
+                  it slowly, invisibly, expensively.
+                </p>
+              </div>
+              <div className="border-t border-black/[0.08] py-8">
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">Reality</p>
+                <p>
+                  Thirty-three years of building and leading companies across more than twelve industries. Not
+                  studying what culture does. Being responsible for it. Watching it hold under pressure and watching
+                  it fracture when the conditions that sustain it went unattended. That lived experience is not
+                  separate from the research. It is what makes the research useful. Culture Science is the backbone
+                  behind every word written, every framework built, and every room entered.
+                </p>
+              </div>
+              <div className="border-b border-t border-black/[0.08] py-8">
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">Responsibility</p>
+                <p>
+                  The commitment to measure what actually matters, not sentiment, not personality, not engagement as a
+                  proxy for health, and to give leaders the honest picture their internal rooms will never produce on
+                  their own. Every time. Without exception. That responsibility does not change based on what is
+                  convenient or comfortable.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* The Foundation */}
+        <section className="bg-[#FAFAF9] py-16 md:py-24">
+          <div className="mx-auto max-w-[1600px] px-6 sm:px-10 md:px-14">
+            <div className="mb-12 max-w-[680px] md:mb-16">
+              <p className={sectionLabel}>The Foundation</p>
+              <h2 className={`${h2} mt-3`}>
+                This isn&apos;t built on opinion. The research is extensive, consistent, and points in one direction.
+              </h2>
+              <p className={`mt-6 ${body}`}>
+                Culture Science synthesizes decades of research across organizational psychology, neuroscience, trust
+                physiology, and behavioral economics. Five core findings drive everything built here, and they all
+                point toward the same conclusion: what leaders do to the conditions around their people determines
+                almost everything else.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">
+              {[
+                {
+                  n: '01',
+                  t: 'People need real safety to tell the truth.',
+                  p: 'Teams that feel safe to speak up, ask questions, and challenge ideas learn faster and perform better. Psychological safety is one of the strongest predictors of team learning, innovation, and adaptability. Without it, leaders make decisions with filtered information, and pay for it later.',
+                  href: 'https://www.hbs.edu/faculty/Publication%20Files/98-066_4446b0b4-2615-46df-8a2e-5f1e9bcfbd54.pdf',
+                  lab: 'Edmondson, Psychological Safety and Learning Behavior in Work Teams'
+                },
+                {
+                  n: '02',
+                  t: 'Healthy cultures balance demands with support.',
+                  p: 'The Job Demands-Resources model shows that chronic overload without support drains motivation and leads to burnout. When expectations, resources, autonomy, and feedback are aligned, people stay engaged and energized. When they are not, people survive instead of contribute.',
+                  href: 'https://www.wilmarschaufeli.nl/publications/Schaufeli/350.pdf',
+                  lab: 'Bakker and Demerouti, The Job Demands-Resources Model'
+                },
+                {
+                  n: '03',
+                  t: 'Trust-centered leadership changes outcomes.',
+                  p: 'Across large-scale studies, trust-based and servant-minded leadership models consistently correlate with higher job performance, stronger commitment, and better outcomes at every level. Trust is not a soft metric. It is a performance multiplier.',
+                  href: 'https://journals.sagepub.com/doi/10.1177/0149206314523836',
+                  lab: 'Hoch et al., Meta-analysis of Servant Leadership'
+                },
+                {
+                  n: '04',
+                  t: 'Toxic leadership reliably breaks organizations.',
+                  p: 'Abusive, fear-driven, and narcissistic leadership causes burnout, withdrawal, lower engagement, and higher turnover. The research on this is extensive, consistent, and unambiguous. Toxic leadership does not just hurt people. It destroys the conditions that make organizations function.',
+                  href: 'https://journals.aom.org/doi/10.5465/AMJ.2000.3312921',
+                  lab: 'Tepper, Consequences of Abusive Supervision'
+                }
+              ].map((c) => (
+                <div key={c.n} className="bg-white p-8 md:p-10">
+                  <span className="font-playfair text-[13px] text-ao-red">{c.n}</span>
+                  <h3 className="mt-2 font-playfair text-xl font-normal leading-snug text-[#1A1A1A] md:text-[1.25rem]">
+                    {c.t}
+                  </h3>
+                  <p className="mt-4 text-[14px] leading-[1.7] text-warm-grey">{c.p}</p>
+                  <a
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-block text-[12px] font-medium text-ao-red no-underline hover:underline"
+                  >
+                    {c.lab}
+                  </a>
+                </div>
+              ))}
+              <div className="bg-ao-dark p-8 text-white md:col-span-2 md:p-10">
+                <span className="font-playfair text-[13px] text-ao-brown">05</span>
+                <h3 className="mt-2 font-playfair text-xl font-normal leading-snug md:text-[1.25rem]">
+                  Engagement is an engine, not a perk.
+                </h3>
+                <p className="mt-4 text-[14px] leading-[1.7] text-white/65">
+                  Global engagement research confirms that engaged teams outperform disengaged teams across every
+                  meaningful metric: profitability, productivity, customer satisfaction, retention, safety, and quality.
+                  Engagement is not a feeling. It is a measurable output of the leadership conditions that either
+                  sustain or erode it. This is why Culture Science measures conditions, not sentiment. Sentiment is
+                  downstream. Conditions are the cause.
+                </p>
+                <a
+                  href="https://www.gallup.com/workplace/236927/state-american-workplace-report-2017.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-block text-[12px] font-medium text-ao-brown no-underline hover:underline"
+                >
+                  Harter et al., Gallup Engagement Meta-analysis
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* The Problem */}
+        <section className="bg-ao-cream py-16 md:py-24">
+          <div className="mx-auto max-w-[1600px] px-6 sm:px-10 md:px-14">
+            <p className={sectionLabel}>The Problem</p>
+            <h2 className={`${h2} mt-3 max-w-[760px]`}>
+              Leaders score their culture higher than their teams do. Every time.
+            </h2>
+            <div className="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-20 lg:gap-[80px]">
+              <div className={`${body} space-y-6`}>
+                <div className="border-l-2 border-ao-red pl-6">
+                  <p className="font-playfair text-lg italic leading-relaxed text-[#1A1A1A] md:text-[19px]">
+                    The gap between what leaders believe is happening and what teams actually experience, that gap is
+                    where culture breaks down. Quietly. Degree by degree. Until something expensive surfaces.
+                  </p>
+                </div>
+                <p>
+                  This isn&apos;t opinion. It&apos;s one of the most replicated findings in organizational research.
+                  Leaders assume clarity exists because they feel clear. They assume trust exists because they extend
+                  it. They assume communication works because they communicate.
+                </p>
+                <p>
+                  Most organizations never measure this gap. They track revenue, output, and performance. They
+                  don&apos;t measure the leadership conditions that drive all of those things. They don&apos;t know
+                  whether their team experiences clarity. They don&apos;t know whether trust is actually present or
+                  just assumed.
+                </p>
+                <p>
+                  Culture Science builds the mirror. Not to judge, to inform. The data shows leaders what their team is
+                  actually experiencing, so they can lead from what&apos;s real instead of what they assume.
+                </p>
+                <p>
+                  ALI, the Archetype Leadership Index, is the first tool built from this foundation. It exists because
+                  of Culture Science, not above it. Seven conditions: Clarity, Consistency, Trust, Communication,
+                  Alignment, Stability, and Drift. Four times a year. The data your internal rooms will never produce on
+                  their own.
+                </p>
+              </div>
+              <div className="bg-white p-8 md:p-10">
+                <p className={`${sectionLabel}`}>The Four Blind Spots</p>
+                <h3 className="mt-2 font-playfair text-[22px] font-normal text-[#1A1A1A]">What most leaders never see.</h3>
+                <div className="mt-4 space-y-0 border-b border-t border-black/[0.08]">
+                  {[
+                    {
+                      t: 'Leaders and teams experience culture differently.',
+                      b: 'Research shows this consistently. Leaders score culture higher than the people under them, every time.'
+                    },
+                    {
+                      t: 'Performance is measured. Leadership conditions are not.',
+                      b: 'Most organizations track output but never measure the clarity, trust, and consistency that produce it.'
+                    },
+                    {
+                      t: 'People rarely tell leadership the full truth.',
+                      b: 'Without psychological safety, feedback is filtered and problems stay hidden until they become expensive.'
+                    },
+                    {
+                      t: "Leaders don't lack desire. They lack a mirror.",
+                      b: "Most leaders want to lead well. They just don't have an honest picture of how their leadership actually lands."
+                    }
+                  ].map((row, i) => (
+                    <div
+                      key={row.t}
+                      className={`border-t border-black/[0.08] py-4 first:border-t-0 ${i === 3 ? 'border-b border-black/[0.08]' : ''}`}
+                    >
+                      <p className="text-[13px] font-semibold text-[#1A1A1A]">{row.t}</p>
+                      <p className="mt-1 text-[13px] leading-relaxed text-warm-grey">{row.b}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* The Ecosystem */}
+        <section className="bg-ao-dark py-16 text-white md:py-24">
+          <div className="mx-auto max-w-[1600px] px-6 sm:px-10 md:px-14">
+            <div className="mb-12 max-w-[600px] md:mb-16">
+              <p className={`${sectionLabel} text-ao-brown`}>The Ecosystem</p>
+              <h2 className="mt-3 font-playfair text-[clamp(1.75rem,3vw,2.25rem)] font-normal leading-tight text-white">
+                What Culture Science produced.
+              </h2>
+              <p className="mt-4 text-[15px] leading-[1.75] text-white/60">
+                Every tool below exists because of the research, the lived experience, and the responsibility to give
+                leaders something honest. Not tools for their own sake, tools that came from the discipline.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">
+              {[
+                {
+                  lab: 'Diagnostic',
+                  t: 'Archetype Leadership Index',
+                  p: 'Seven leadership conditions measured across your organization four times a year. Anonymous. Honest. Built directly from the Culture Science research foundation. ALI exists because the science showed what needs to be measured, and most organizations never measure it.',
+                  a: 'Explore ALI',
+                  path: '/culture-science/ali'
+                },
+                {
+                  lab: 'Anti-Project',
+                  t: 'Scoreboard Leadership',
+                  p: 'A leadership operating system built on the wrong foundation. The only thing that matters is the win. Profits become the score. People become inputs. If you built a business running 180 degrees opposite to servant leadership, this is what it looks like. Culture Science names it so leaders can recognize it, diagnose it, and dismantle it.',
+                  a: 'Learn More',
+                  path: '/culture-science/anti-projects/scoreboard-leadership'
+                },
+                {
+                  lab: 'Anti-Project',
+                  t: 'The Bad Leader Project',
+                  p: 'An anonymous story archive of dysfunctional leadership across industries and regions. Pattern recognition at scale. Every story submitted is neutralized for identity and added to the research corpus. The patterns that show up across industries, geographies, and organization sizes are the data Culture Science is built to address.',
+                  a: 'Learn More',
+                  path: '/culture-science/anti-projects/bad-leader-project'
+                },
+                {
+                  lab: 'Intelligence',
+                  t: 'Archy',
+                  p: 'The AI trained on the corpus: every book, every framework, every engagement note, every piece of research that Culture Science has produced. When ALI surfaces a gap in your data, Archy tells you what it means and what to do about it. The intelligence layer that makes the data actionable.',
+                  a: 'Meet Archy',
+                  path: '/archy'
+                }
+              ].map((card) => (
+                <a
+                  key={card.t}
+                  href={card.path}
+                  onClick={go(card.path)}
+                  className="group block border border-white/[0.06] bg-white/[0.04] p-8 transition-colors hover:bg-white/[0.07] md:p-10"
+                >
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ao-red">{card.lab}</span>
+                  <h3 className="mt-3 font-playfair text-2xl font-normal text-white">{card.t}</h3>
+                  <p className="mt-4 text-[14px] leading-[1.7] text-white/60">{card.p}</p>
+                  <span className="mt-6 inline-flex items-center gap-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-ao-red transition-all group-hover:gap-2">
+                    {card.a} <span aria-hidden>→</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Who This Is For */}
+        <section className="bg-white py-16 md:py-24">
+          <div className="mx-auto max-w-[1600px] px-6 sm:px-10 md:px-14">
+            <div className="mb-10 max-w-[600px] md:mb-12">
+              <p className={sectionLabel}>Who This Is For</p>
+              <h2 className={`${h2} mt-3`}>Built for the leader who is also the HR department.</h2>
+              <p className={`mt-4 ${body}`}>
+                Large organizations have culture committees, HR teams, and consultants on retainer. Leaders in 5 to
+                250 person organizations have themselves. Culture Science exists for that leader.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">
+              <div className="bg-[#FAFAF9] p-10 md:p-12">
+                <h3 className="font-playfair text-xl font-normal text-[#1A1A1A]">Large companies have</h3>
+                <ul className="mt-6 space-y-2 text-[14px] text-warm-grey">
+                  {[
+                    'HR departments',
+                    'Culture committees',
+                    'Consultants on retainer',
+                    'Engagement surveys',
+                    'Performance management systems',
+                    'Dedicated people operations teams'
+                  ].map((x) => (
+                    <li key={x} className="relative pl-4 before:absolute before:left-0 before:top-2 before:h-1 before:w-1 before:rounded-full before:bg-ao-red before:content-['']">
+                      {x}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-ao-cream p-10 md:p-12">
+                <h3 className="font-playfair text-xl font-normal text-[#1A1A1A]">You have</h3>
+                <ul className="mt-6 space-y-2 text-[14px] text-warm-grey">
+                  {[
+                    'Your team',
+                    'Your values',
+                    'Your commitment to building something real',
+                    'And now a mirror that shows you what they are actually experiencing'
+                  ].map((x) => (
+                    <li key={x} className="relative pl-4 before:absolute before:left-0 before:top-2 before:h-1 before:w-1 before:rounded-full before:bg-ao-red before:content-['']">
+                      {x}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Close */}
+        <section className="bg-ao-dark px-6 py-20 text-center text-white md:px-14 md:py-24">
+          <p className={`${sectionLabel} text-ao-brown`}>The Mirror Is Ready</p>
+          <h2 className="mx-auto mt-3 max-w-2xl font-playfair text-3xl font-normal leading-tight md:text-4xl">
+            Start with what&apos;s actually happening.
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-[1.75] text-white/65">
+            ALI measures the leadership conditions your team is experiencing right now. Start there. Build from
+            what&apos;s real.
+          </p>
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <a
+              href="/culture-science/ali"
+              onClick={go('/culture-science/ali')}
+              className="inline-flex items-center rounded-[2px] bg-ao-red px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-90"
+            >
+              Explore ALI
+            </a>
+            <a
+              href="/engagement-inquiry"
+              onClick={go('/engagement-inquiry')}
+              className="inline-flex items-center rounded-[2px] border border-white px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-white/10"
+            >
+              Start a Conversation
+            </a>
           </div>
         </section>
       </div>

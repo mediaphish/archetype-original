@@ -69,6 +69,12 @@
       "description": "Not a chatbot — Bart's brain, trained on his corpus: books, frameworks, journal, and decades inside real organizations. Site-wide context, ALI intelligence layer, and an honest handoff when a human room is what you need.",
       "keywords": "Archy, Bart Paden, leadership AI, ALI, Archetype Original, servant leadership, corpus",
       "image": "/images/archy-at-the-desk.jpg"
+    },
+    "culture-science": {
+      "title": "Culture Science | Archetype Original",
+      "description": "Where leadership, behavioral research, and lived experience converge. Research, reality, and responsibility behind ALI and the tools that measure what most organizations never measure.",
+      "keywords": "Culture Science, ALI, leadership conditions, organizational research, Bart Paden, Archetype Original",
+      "image": "/images/bart-culture-science-hero.jpg"
     }
   }
 }
