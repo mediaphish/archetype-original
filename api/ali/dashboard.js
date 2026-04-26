@@ -161,7 +161,7 @@ function computeExperiencePointForSingleResponse(transformedResponses, questionB
  * This is used for the Leadership System Map (radar + heatmap).
  *
  * Notes:
- * - We present leadership_drift as "Leadership Alignment" (higher = better) by inverting drift: 100 - drift.
+ * - leadership_drift is raw Drift (0–100): higher = more mismatch. Shorter radar spoke = less drift = better.
  *
  * @returns {Object|null} scores keyed by pattern name (0–100) or null if insufficient data
  */
@@ -173,13 +173,6 @@ function computeSystemVectorForSingleResponse(transformedResponses) {
   patterns.forEach((pattern) => {
     scores[pattern] = calculatePatternScore(transformedResponses, pattern);
   });
-
-  // Invert drift into alignment for display (higher is better)
-  if (typeof scores.leadership_drift === 'number' && Number.isFinite(scores.leadership_drift)) {
-    scores.leadership_drift = 100 - scores.leadership_drift;
-  } else {
-    scores.leadership_drift = null;
-  }
 
   return scores;
 }
@@ -197,23 +190,39 @@ function generatePilotInsights({ overallScores, leadershipMirror, responseCounts
     .filter(([, v]) => typeof v === 'number' && Number.isFinite(v));
 
   if (patternEntries.length > 0) {
-    const sorted = patternEntries.slice().sort((a, b) => a[1] - b[1]);
-    const [lowestKey, lowestVal] = sorted[0];
-    const [highestKey, highestVal] = sorted[sorted.length - 1];
+    const niceName = (k) => (k === 'leadership_drift' ? 'Drift' : k.replace('_', ' '));
+    // “Health” direction: higher is better for six patterns; for Drift lower raw is better → use (100 − raw) only for ranking.
+    const health = (k, v) => (k === 'leadership_drift' ? 100 - v : v);
+    const sortedByHealth = patternEntries
+      .map(([k, v]) => [k, health(k, v)])
+      .filter(([, h]) => typeof h === 'number' && Number.isFinite(h))
+      .sort((a, b) => a[1] - b[1]);
+    const [weakestKey] = sortedByHealth[0];
+    const [strongestKey] = sortedByHealth[sortedByHealth.length - 1];
+    const weakestVal = patterns[weakestKey]?.current;
+    const strongestVal = patterns[strongestKey]?.current;
 
-    const niceName = (k) => (k === 'leadership_drift' ? 'Leadership Alignment' : k.replace('_', ' '));
+    const strongestLine =
+      strongestKey === 'leadership_drift'
+        ? `Drift is comparatively contained (${strongestVal.toFixed(1)}—on this scale lower is better). That usually means less mismatch between what leadership signals and what people experience.`
+        : `Your strongest pattern right now is ${niceName(strongestKey)} (${strongestVal.toFixed(1)}). Protect what’s working here—this is your current strength.`;
+
+    const weakestLine =
+      weakestKey === 'leadership_drift'
+        ? `Drift is the clearest pressure point (${weakestVal.toFixed(1)}—higher means more mismatch). This is the most direct place to focus for near-term improvement.`
+        : `Your most stretched pattern right now is ${niceName(weakestKey)} (${weakestVal.toFixed(1)}). This is the most direct place to focus for near-term improvement.`;
 
     insights.push({
       id: 'pilot-insight-1',
-      title: `Strongest signal: ${niceName(highestKey)}`,
-      text: `Your highest-scoring pattern right now is ${niceName(highestKey)} (${highestVal.toFixed(1)}). Protect what’s working here—this is your current strength.`,
+      title: `Strongest signal: ${niceName(strongestKey)}`,
+      text: strongestLine,
       priority: 'high'
     });
 
     insights.push({
       id: 'pilot-insight-2',
-      title: `Biggest opportunity: ${niceName(lowestKey)}`,
-      text: `Your lowest-scoring pattern right now is ${niceName(lowestKey)} (${lowestVal.toFixed(1)}). This is the most direct place to focus for near-term improvement.`,
+      title: `Biggest opportunity: ${niceName(weakestKey)}`,
+      text: weakestLine,
       priority: 'high'
     });
   }
@@ -575,8 +584,11 @@ export default async function handler(req, res) {
       surveyCount: deployments.length
     });
 
-    // Leadership Mirror - use rolling scores where available, fallback to current
-    const driftToAlignment = (v) => (typeof v === 'number' && Number.isFinite(v) ? 100 - v : null);
+    // Leadership Mirror - use rolling scores where available, fallback to current (Drift is raw: lower is better)
+    const pickDrift = (scores) => {
+      const v = scores.patterns.leadership_drift?.rolling ?? scores.patterns.leadership_drift?.current;
+      return typeof v === 'number' && Number.isFinite(v) ? v : null;
+    };
 
     const leaderMirrorScores = {
       ali: leaderRollingScores.ali?.rolling || leaderRollingScores.ali?.current,
@@ -586,10 +598,7 @@ export default async function handler(req, res) {
       communication: leaderRollingScores.patterns.communication?.rolling || leaderRollingScores.patterns.communication?.current,
       alignment: leaderRollingScores.patterns.alignment?.rolling || leaderRollingScores.patterns.alignment?.current,
       stability: leaderRollingScores.patterns.stability?.rolling || leaderRollingScores.patterns.stability?.current,
-      // leadership_drift is stored as drift (higher=worse); present as alignment (higher=better) for mirror comparisons
-      leadership_drift: driftToAlignment(
-        leaderRollingScores.patterns.leadership_drift?.rolling || leaderRollingScores.patterns.leadership_drift?.current
-      )
+      leadership_drift: pickDrift(leaderRollingScores)
     };
 
     const teamMirrorScores = {
@@ -600,9 +609,7 @@ export default async function handler(req, res) {
       communication: teamRollingScores.patterns.communication?.rolling || teamRollingScores.patterns.communication?.current,
       alignment: teamRollingScores.patterns.alignment?.rolling || teamRollingScores.patterns.alignment?.current,
       stability: teamRollingScores.patterns.stability?.rolling || teamRollingScores.patterns.stability?.current,
-      leadership_drift: driftToAlignment(
-        teamRollingScores.patterns.leadership_drift?.rolling || teamRollingScores.patterns.leadership_drift?.current
-      )
+      leadership_drift: pickDrift(teamRollingScores)
     };
 
     const leadershipMirror = calculateLeadershipMirror(leaderMirrorScores, teamMirrorScores);
@@ -620,7 +627,7 @@ export default async function handler(req, res) {
         communication: pickPattern(overallScores, 'communication'),
         alignment: pickPattern(overallScores, 'alignment'),
         stability: pickPattern(overallScores, 'stability'),
-        leadership_drift: driftToAlignment(pickPattern(overallScores, 'leadership_drift'))
+        leadership_drift: pickPattern(overallScores, 'leadership_drift')
       },
       leader: {
         clarity: pickPattern(leaderRollingScores, 'clarity'),
@@ -629,7 +636,7 @@ export default async function handler(req, res) {
         communication: pickPattern(leaderRollingScores, 'communication'),
         alignment: pickPattern(leaderRollingScores, 'alignment'),
         stability: pickPattern(leaderRollingScores, 'stability'),
-        leadership_drift: driftToAlignment(pickPattern(leaderRollingScores, 'leadership_drift'))
+        leadership_drift: pickPattern(leaderRollingScores, 'leadership_drift')
       },
       team_member: {
         clarity: pickPattern(teamRollingScores, 'clarity'),
@@ -638,7 +645,7 @@ export default async function handler(req, res) {
         communication: pickPattern(teamRollingScores, 'communication'),
         alignment: pickPattern(teamRollingScores, 'alignment'),
         stability: pickPattern(teamRollingScores, 'stability'),
-        leadership_drift: driftToAlignment(pickPattern(teamRollingScores, 'leadership_drift'))
+        leadership_drift: pickPattern(teamRollingScores, 'leadership_drift')
       }
     };
 

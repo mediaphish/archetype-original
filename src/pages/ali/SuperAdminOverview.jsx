@@ -41,6 +41,12 @@ const SuperAdminOverview = () => {
     fetchData();
   }, []);
 
+  const benchmarkKeyLabel = (k) => {
+    if (k === 'leadership_drift') return 'Drift';
+    if (k === 'ali') return 'ALI';
+    return String(k).replace(/_/g, ' ');
+  };
+
   const getZoneColor = (zone) => {
     const colors = {
       green: { text: '#10b981', bg: '#ecfdf5', border: '#10b981' },
@@ -736,7 +742,7 @@ const SuperAdminOverview = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {['ali', 'clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'].filter((k) => data.benchmarks[k]).map((k) => (
                 <div key={k} className="rounded-lg border border-black/[0.12] p-4">
-                  <div className="text-[12px] font-medium text-black/[0.6] uppercase mb-2 capitalize">{k.replace(/_/g, ' ')}</div>
+                  <div className="text-[12px] font-medium text-black/[0.6] mb-2 capitalize">{benchmarkKeyLabel(k)}</div>
                   <div className="text-sm">
                     <div>p25: {fmt1(data.benchmarks[k].p25)}</div>
                     <div>p50: {fmt1(data.benchmarks[k].p50)}</div>

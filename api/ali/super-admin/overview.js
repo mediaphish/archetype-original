@@ -516,7 +516,7 @@ export default async function handler(req, res) {
       const lowPercent = avg < 60 ? 100 : 0;
       
       return {
-        name: name === 'leadership_drift' ? 'Leadership Alignment' : name.charAt(0).toUpperCase() + name.slice(1),
+        name: name === 'leadership_drift' ? 'Drift' : name.charAt(0).toUpperCase() + name.slice(1),
         score: avg,
         change,
         distribution: { 
@@ -545,7 +545,7 @@ export default async function handler(req, res) {
       });
 
     // Platform Leadership Mirror: aggregate leader vs team scores across all responses
-    const driftToAlignment = (v) => (typeof v === 'number' && Number.isFinite(v) ? 100 - v : null);
+    const asFinite = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
 
     let leadershipMirror = { gaps: {}, severity: {}, leaderScores: {}, teamScores: {} };
     let experienceMap = null;
@@ -587,7 +587,7 @@ export default async function handler(req, res) {
         communication: leaderPatterns.communication ?? null,
         alignment: leaderPatterns.alignment ?? null,
         stability: leaderPatterns.stability ?? null,
-        leadership_drift: driftToAlignment(leaderPatterns.leadership_drift)
+        leadership_drift: asFinite(leaderPatterns.leadership_drift)
       };
       const teamMirrorScores = {
         ali: teamALI,
@@ -597,7 +597,7 @@ export default async function handler(req, res) {
         communication: teamPatterns.communication ?? null,
         alignment: teamPatterns.alignment ?? null,
         stability: teamPatterns.stability ?? null,
-        leadership_drift: driftToAlignment(teamPatterns.leadership_drift)
+        leadership_drift: asFinite(teamPatterns.leadership_drift)
       };
       leadershipMirror = calculateLeadershipMirror(leaderMirrorScores, teamMirrorScores);
 
@@ -646,7 +646,8 @@ export default async function handler(req, res) {
     Object.entries(companyPatternMap).forEach(([companyId, pats]) => {
       const entries = Object.entries(pats).filter(([, v]) => v != null && Number.isFinite(v)).map(([k, v]) => [k, v]);
       if (entries.length < 2) return;
-      const sorted = entries.sort((a, b) => a[1] - b[1]);
+      const patternHealth = ([k, v]) => (k === 'leadership_drift' ? 100 - v : v);
+      const sorted = entries.slice().sort((a, b) => patternHealth(a) - patternHealth(b));
       const lowest = sorted[0][0];
       const secondLowest = sorted[1][0];
       hardestPatternCounts[lowest] = (hardestPatternCounts[lowest] || 0) + 1;
@@ -684,8 +685,8 @@ export default async function handler(req, res) {
         lp[p] = calculatePatternScore(lTransformed, p);
         tp[p] = calculatePatternScore(tTransformed, p);
       });
-      const lMirror = { ali: null, clarity: lp.clarity, consistency: lp.consistency, trust: lp.trust, communication: lp.communication, alignment: lp.alignment, stability: lp.stability, leadership_drift: driftToAlignment(lp.leadership_drift) };
-      const tMirror = { ali: null, clarity: tp.clarity, consistency: tp.consistency, trust: tp.trust, communication: tp.communication, alignment: tp.alignment, stability: tp.stability, leadership_drift: driftToAlignment(tp.leadership_drift) };
+      const lMirror = { ali: null, clarity: lp.clarity, consistency: lp.consistency, trust: lp.trust, communication: lp.communication, alignment: lp.alignment, stability: lp.stability, leadership_drift: asFinite(lp.leadership_drift) };
+      const tMirror = { ali: null, clarity: tp.clarity, consistency: tp.consistency, trust: tp.trust, communication: tp.communication, alignment: tp.alignment, stability: tp.stability, leadership_drift: asFinite(tp.leadership_drift) };
       const mir = calculateLeadershipMirror(lMirror, tMirror);
       mirrorGapKeys.forEach((k) => {
         const sev = (mir.severity && mir.severity[k]) ? String(mir.severity[k]).toLowerCase() : 'neutral';

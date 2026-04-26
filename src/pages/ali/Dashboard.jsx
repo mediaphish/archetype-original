@@ -80,7 +80,7 @@ const ALIDashboard = () => {
   // Leadership Mirror helpers (keep consistent with /ali/reports/mirror and Zones naming)
   const mirrorKeyToLabel = (k) => {
     if (!k) return '—';
-    if (k === 'leadership_drift') return 'Leadership Alignment';
+    if (k === 'leadership_drift') return 'Drift';
     if (k === 'ali') return 'ALI Overall';
     const words = String(k)
       .replace(/_/g, ' ')
@@ -184,8 +184,7 @@ const ALIDashboard = () => {
       });
       
       Object.entries(mockData.scores.patterns).forEach(([key, value]) => {
-        // For Leadership Drift, reverse the scale (100 - drift = alignment)
-        const displayValue = key === 'leadership_drift' ? (100 - value.rolling) : value.rolling;
+        const displayValue = value.rolling;
         animateValue(`pattern_${key}`, 0, displayValue, 1200);
       });
 
@@ -306,7 +305,7 @@ const ALIDashboard = () => {
             <li><strong>Heatmap (Diagnostic truth):</strong> Individual responses across all 7 tests so you can see spread, clusters, and mismatches.</li>
           </ul>
           <p className="text-sm text-gray-600">
-            Note: “Leadership Alignment” is shown as <span className="font-semibold">100 − drift</span> so higher always means healthier across all tests.
+            Note: <span className="font-semibold">Drift</span> reads on the same 0–100 scale but in the opposite direction from the other six tests—<span className="font-semibold">lower means less mismatch</span> (better). A shorter spoke on the map is the positive outcome for Drift.
           </p>
         </div>
       )
@@ -325,7 +324,7 @@ const ALIDashboard = () => {
             <li><strong>Communication:</strong> How well information flows in both directions</li>
             <li><strong>Alignment:</strong> How well your team understands and follows direction</li>
             <li><strong>Stability:</strong> How steady and reliable your leadership feels</li>
-            <li><strong>Leadership Alignment:</strong> How well actions match stated values (higher is better, displayed as 100 - drift)</li>
+            <li><strong>Drift:</strong> The gap between what leadership signals and what the team experiences. <span className="font-semibold">Lower scores mean less drift</span> (better); higher scores mean more mismatch to work on.</li>
           </ul>
           <p className="text-sm text-gray-600">
             These patterns are rolling averages from your last 4 surveys, showing trends over time. Each pattern tells part of the story of how your leadership is experienced.
@@ -796,11 +795,7 @@ const ALIDashboard = () => {
     };
   })();
 
-  // Helper function to convert Leadership Drift to Leadership Alignment (reversed scale)
-  // Drift: 0 = perfect, 100 = worst → Alignment: 100 = perfect, 0 = worst
-  const getDriftAsAlignment = (driftScore) => {
-    return 100 - driftScore;
-  };
+  // leadership_drift: raw 0–100 (higher = more mismatch; lower is better)
 
   // Pattern color mapping for charts ONLY
   const getPatternColor = (pattern) => {
@@ -811,7 +806,7 @@ const ALIDashboard = () => {
       communication: '#f59e0b',
       alignment: '#10b981',
       stability: '#6366f1',
-      leadership_drift: '#ec4899' // Pink - unique color for Leadership Alignment
+      leadership_drift: '#ec4899' // Pink - unique color for Drift
     };
     return colors[pattern] || '#2563eb';
   };
@@ -820,7 +815,7 @@ const ALIDashboard = () => {
   const SYSTEM_KEYS = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
   const systemKeyToLabel = (k) => {
     if (!k) return '—';
-    if (k === 'leadership_drift') return 'Leadership Alignment';
+    if (k === 'leadership_drift') return 'Drift';
     const words = String(k).replace(/_/g, ' ').split(' ').filter(Boolean);
     return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
@@ -1065,19 +1060,12 @@ const ALIDashboard = () => {
             return v.reduce((a, b) => a + b, 0) / v.length;
           };
 
-          const driftRaw = patternRaw.leadership_drift;
-          const driftInverted = (typeof driftRaw === 'number' && Number.isFinite(driftRaw)) ? (100 - driftRaw) : null;
           const patternMeanRaw = mean(patternKeysForALI.map((k) => patternRaw[k]));
-          const patternMeanInverted = mean(patternKeysForALI.map((k) => (k === 'leadership_drift' ? driftInverted : patternRaw[k])));
           const aliFromRaw = (typeof anchorCurrentScore === 'number' && typeof patternMeanRaw === 'number') ? (0.30 * anchorCurrentScore) + (0.70 * patternMeanRaw) : null;
-          const aliFromInverted = (typeof anchorCurrentScore === 'number' && typeof patternMeanInverted === 'number') ? (0.30 * anchorCurrentScore) + (0.70 * patternMeanInverted) : null;
-          const prefersInvertedDrift = (typeof aliCurrentScore === 'number' && typeof aliFromInverted === 'number' && typeof aliFromRaw === 'number') ? (Math.abs(aliCurrentScore - aliFromInverted) < Math.abs(aliCurrentScore - aliFromRaw)) : false;
-          const driftDisplayKey = prefersInvertedDrift ? 'leadership_alignment' : 'leadership_drift';
-          const driftDisplayLabel = prefersInvertedDrift ? 'Leadership Alignment' : 'Leadership Drift';
-          const driftDisplayValue = prefersInvertedDrift ? driftInverted : driftRaw;
-          const driftDirectionCopy = prefersInvertedDrift ? 'higher is healthier' : 'lower is healthier';
-          const patternMeanUsed = prefersInvertedDrift ? patternMeanInverted : patternMeanRaw;
-          const aliComputedUsed = prefersInvertedDrift ? aliFromInverted : aliFromRaw;
+          const driftDisplayLabel = 'Drift';
+          const driftDirectionCopy = 'lower is healthier (less mismatch)';
+          const patternMeanUsed = patternMeanRaw;
+          const aliComputedUsed = aliFromRaw;
 
           const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
           const fmt0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? String(Math.round(v)) : '—');
@@ -1089,11 +1077,18 @@ const ALIDashboard = () => {
             { key: 'communication', label: 'Communication', value: patternRaw.communication, color: '#f59e0b' },
             { key: 'alignment', label: 'Alignment', value: patternRaw.alignment, color: '#10b981' },
             { key: 'stability', label: 'Stability', value: patternRaw.stability, color: '#6366f1' },
-            { key: driftDisplayKey, label: driftDisplayLabel, value: driftDisplayValue, color: '#fb923c' }
+            { key: 'leadership_drift', label: driftDisplayLabel, value: patternRaw.leadership_drift, color: '#fb923c' }
           ];
 
-          const lowestTwo = breakdownRows.filter((r) => typeof r.value === 'number' && Number.isFinite(r.value)).slice().sort((a, b) => (a.value ?? 999) - (b.value ?? 999)).slice(0, 2);
-          const highestTwo = breakdownRows.filter((r) => typeof r.value === 'number' && Number.isFinite(r.value)).slice().sort((a, b) => (b.value ?? -999) - (a.value ?? -999)).slice(0, 2);
+          const patternHealth = (row) => {
+            if (typeof row.value !== 'number' || !Number.isFinite(row.value)) return null;
+            return row.key === 'leadership_drift' ? (100 - row.value) : row.value;
+          };
+          const rowsHealth = breakdownRows
+            .map((r) => ({ ...r, _h: patternHealth(r) }))
+            .filter((r) => r._h !== null);
+          const lowestTwo = rowsHealth.slice().sort((a, b) => a._h - b._h).slice(0, 2).map(({ _h, ...r }) => r);
+          const highestTwo = rowsHealth.slice().sort((a, b) => b._h - a._h).slice(0, 2).map(({ _h, ...r }) => r);
 
           // Mirror data for compact hero card
           const mirror = dashboardData?.leadershipMirror || {};
@@ -1245,7 +1240,7 @@ const ALIDashboard = () => {
                         <div>
                           <div className="text-[14px] font-semibold text-black/[0.87] mb-2">7 Tests (70%)</div>
                           <p className="text-[13px] text-black/[0.6] mb-4">
-                            These seven patterns capture current leadership conditions that can change quickly: Clarity, Consistency, Trust, Communication, Alignment, Stability, and Leadership Alignment.
+                            These seven patterns capture current leadership conditions that can change quickly: Clarity, Consistency, Trust, Communication, Alignment, Stability, and Drift.
                           </p>
                           <div className="text-[13px] text-black/[0.6]">
                             <span className="font-semibold text-black/[0.87]">Current mean:</span> {fmt1(patternMeanUsed)}
@@ -1583,7 +1578,7 @@ const ALIDashboard = () => {
                   alignment: dashboardData.scores.patterns.alignment?.current ?? null,
                   stability: dashboardData.scores.patterns.stability?.current ?? null,
                   leadership_drift: (typeof dashboardData.scores.patterns.leadership_drift?.current === 'number')
-                    ? (100 - dashboardData.scores.patterns.leadership_drift.current)
+                    ? dashboardData.scores.patterns.leadership_drift.current
                     : null
                 },
                 leader: null,
@@ -1632,7 +1627,7 @@ const ALIDashboard = () => {
                     <div className="flex items-end justify-between gap-4 mb-6">
                       <div>
                         <div className="text-[16px] font-semibold text-black/[0.87]">7‑Test Snapshot</div>
-                        <div className="text-[13px] text-black/[0.6] mt-1">Overall vs Leader vs Team (0–100; higher is healthier).</div>
+                        <div className="text-[13px] text-black/[0.6] mt-1">Overall vs Leader vs Team (0–100). Six tests: higher is healthier. Drift: lower is less mismatch (better)—shorter spoke is the win.</div>
                       </div>
                       <div className="text-[11px] text-black/[0.38]">Center = 0 • Outer ring = 100</div>
                     </div>
@@ -1663,7 +1658,7 @@ const ALIDashboard = () => {
                           const label = systemKeyToLabel(k);
                           const textAnchor = end.x < cx - 20 ? 'end' : end.x > cx + 20 ? 'start' : 'middle';
                           const dy = end.y < cy - 20 ? -4 : end.y > cy + 20 ? 12 : 4;
-                          // Prevent label clipping (e.g., "Leadership Alignment" on the far-left).
+                          // Prevent label clipping on outer radar axes.
                           const safeX =
                             textAnchor === 'end' ? Math.max(16, end.x) : textAnchor === 'start' ? Math.min(W - 16, end.x) : end.x;
                           const safeY = Math.max(14, Math.min(H - 10, end.y + dy));
@@ -1728,14 +1723,7 @@ const ALIDashboard = () => {
                                 textAnchor={textAnchor}
                                 style={{ pointerEvents: 'none' }}
                               >
-                                {label === 'Leadership Alignment' ? (
-                                  <>
-                                    <tspan x={safeX} dy="0">Leadership</tspan>
-                                    <tspan x={safeX} dy="12">Alignment</tspan>
-                                  </>
-                                ) : (
-                                  label
-                                )}
+                                {label}
                               </text>
                             </g>
                           );

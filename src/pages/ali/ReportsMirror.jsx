@@ -12,7 +12,7 @@ function fmt1(n) {
 
 function keyToLabel(k) {
   if (!k) return '—';
-  if (k === 'leadership_drift') return 'Leadership Alignment';
+  if (k === 'leadership_drift') return 'Drift';
   if (k === 'ali') return 'ALI Overall';
   const words = String(k)
     .replace(/_/g, ' ')

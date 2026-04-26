@@ -96,7 +96,7 @@
 - **Checks:**  
   - “Biggest gap right now: **Clarity**”, Gap **18.8pt** (leader − team), **Critical** severity, Leader 75.0 / Team 56.3.  
   - “Based on 1 leader response(s) and 4 team response(s).”  
-  - **All perception gaps** table: Area, Leader, Team, Gap, Severity, Action (Ask Archy). Rows for Clarity, Consistency, Communication, Alignment, Leadership Alignment, Stability, ALI Overall, Trust.  
+  - **All perception gaps** table: Area, Leader, Team, Gap, Severity, Action (Ask Archy). Rows for Clarity, Consistency, Communication, Alignment, Drift, Stability, ALI Overall, Trust.  
 - **Conclusion:** Mirror report loads and displays gap analysis correctly.
 
 ---
@@ -106,11 +106,11 @@
 - **Result:** ✅ Pass  
 - **Checks:**  
   - **Current Zone:** Orange, ALI **58.5**, “Based on 5 response(s)”, 45–59.9.  
-  - “What orange means” copy; lowest tests **consistency (40.0)** and **Leadership Alignment (40.0)**.  
-  - **Two constraints:** Consistency and Leadership Alignment with “Why this is constraining”, “Try this week”, “Micro-script”, “See full chart →”.  
+  - “What orange means” copy; lowest tests **consistency (40.0)** and **Drift (40.0)**.  
+  - **Two constraints:** Consistency and Drift with “Why this is constraining”, “Try this week”, “Micro-script”, “See full chart →”.  
   - **Suggested first move:** “Establish Daily Check-Ins to Build Consistency” with behavior experiment and team script.  
   - **How zones work** and **All zones** (Green/Yellow/Orange/Red).  
-  - **Primary tests:** Clarity, Consistency, Trust, Communication, Alignment, Stability, Leadership Alignment; each with score, rolling, survey history (e.g. 2026 Q1), “What this is”, “Why it matters”, “Ask Archy about X”.  
+  - **Primary tests:** Clarity, Consistency, Trust, Communication, Alignment, Stability, Drift; each with score, rolling, survey history (e.g. 2026 Q1), “What this is”, “Why it matters”, “Ask Archy about X”.  
 - **API:** `GET /api/ali/dashboard`, `POST /api/ali/zone-recommendations` observed.  
 - **Conclusion:** Zones report and zone-recommendations integration work.
 

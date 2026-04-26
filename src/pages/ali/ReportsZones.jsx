@@ -24,15 +24,13 @@ function fmt1(n) {
 
 function displayTestScore(testKey, rawScore) {
   if (typeof rawScore !== 'number' || !Number.isFinite(rawScore)) return null;
-  // leadership_drift is measured as "drift" in the data model (higher = worse).
-  // We display it to users as "Leadership Alignment" (higher = better).
-  if (testKey === 'leadership_drift') return 100 - rawScore;
+  // leadership_drift: raw mismatch score — higher = more drift (worse); lower is better.
   return rawScore;
 }
 
 function keyToLabel(k) {
   if (!k) return '—';
-  if (k === 'leadership_drift') return 'Leadership Alignment';
+  if (k === 'leadership_drift') return 'Drift';
   if (k === 'ali') return 'ALI Overall';
   return String(k).replace(/_/g, ' ');
 }
@@ -124,7 +122,7 @@ const TEST_META = {
     why: 'Low stability burns energy on firefighting. People default to survival behaviors instead of improvement.'
   },
   leadership_drift: {
-    label: 'Leadership Alignment',
+    label: 'Drift',
     blurb: 'Gap between stated and observed leadership behaviors.',
     what: 'A signal of drift: how often leadership behavior and the team’s lived experience feel out of sync.',
     why: 'Drift is where confusion and resentment grow—leaders think they’re doing one thing, while the team experiences another.'
@@ -192,7 +190,7 @@ const CONSTRAINT_ACTIONS = {
   },
   leadership_drift: {
     why_concerning:
-      'Low leadership alignment means the team’s lived experience doesn’t match what leadership believes is happening. That mismatch breeds resentment.',
+      'When Drift reads high, the team’s lived experience doesn’t match what leadership believes is happening. That mismatch breeds resentment.',
     try_this_week:
       'Pick one value you say you live and name one observable behavior that proves it.',
     micro_script:
@@ -301,12 +299,20 @@ export default function ReportsZones() {
   const surveys = Array.isArray(liveDashboardSummary?.surveys) ? liveDashboardSummary.surveys : [];
 
   const evidence = useMemo(() => {
+    const patternHealth = (k, displayed) => {
+      if (typeof displayed !== 'number' || !Number.isFinite(displayed)) return null;
+      return k === 'leadership_drift' ? 100 - displayed : displayed;
+    };
     const lowest = Object.entries(patterns)
-      .map(([k, v]) => [k, displayTestScore(k, v?.current)])
-      .filter(([, v]) => typeof v === 'number' && Number.isFinite(v))
-      .sort((a, b) => a[1] - b[1])
+      .map(([k, v]) => {
+        const displayed = displayTestScore(k, v?.current);
+        const h = patternHealth(k, displayed);
+        return { key: k, value: displayed, _h: h };
+      })
+      .filter((x) => x._h !== null)
+      .sort((a, b) => a._h - b._h)
       .slice(0, 2)
-      .map(([k, v]) => ({ key: k, value: v }));
+      .map(({ key, value }) => ({ key, value }));
 
     return {
       lowestPatterns: lowest
@@ -426,6 +432,17 @@ export default function ReportsZones() {
     })();
 
     const trendUp = trend ? trend.delta > 0 : null;
+    const trendTone = (() => {
+      if (!trend) return null;
+      if (testKey === 'leadership_drift') {
+        if (trend.delta < 0) return 'good';
+        if (trend.delta > 0) return 'bad';
+        return 'neutral';
+      }
+      if (trend.delta > 0) return 'good';
+      if (trend.delta < 0) return 'bad';
+      return 'neutral';
+    })();
 
     return (
       <div id={`test-${testKey}`} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm scroll-mt-28">
@@ -465,7 +482,7 @@ export default function ReportsZones() {
           </div>
           <div className="text-right">
             {trend ? (
-              <div className={`text-sm font-semibold ${trendUp ? 'text-green-700' : trendUp === false ? 'text-red-700' : 'text-gray-600'}`}>
+              <div className={`text-sm font-semibold ${trendTone === 'good' ? 'text-green-700' : trendTone === 'bad' ? 'text-red-700' : 'text-gray-600'}`}>
                 {trendUp ? '↑' : '↓'} {trend.pct !== null ? `${Math.abs(trend.pct).toFixed(1)}%` : `${trend.delta.toFixed(1)}`}
               </div>
             ) : (

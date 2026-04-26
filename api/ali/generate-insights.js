@@ -108,7 +108,7 @@ Return ONLY a JSON object with metric keys and insight strings:
   "communication": "Brief insight about what this communication score means",
   "alignment": "Brief insight about what this alignment score means",
   "stability": "Brief insight about what this stability score means",
-  "leadership_drift": "Brief insight about what this leadership alignment score means"
+  "leadership_drift": "Brief insight about what this Drift score means (mismatch between stated leadership and team experience; lower is better)"
 }
 
 Metrics data:
