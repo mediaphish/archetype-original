@@ -122,16 +122,16 @@ export default function CultureScience() {
           </div>
         </section>
 
-        {/* The Foundation — single grid: intro spans full width, then 2×2 + full-width 05 (matches preview) */}
-        <section className="bg-[#FAFAF9] py-16 md:py-24">
-          <div className="mx-auto max-w-[1400px] px-6 sm:px-10 md:px-10">
-            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">
-              <div className="max-w-[760px] pb-14 md:col-span-2">
-                <p className={sectionLabel}>The Foundation</p>
-                <h2 className={`${h2} mt-3`}>
+        {/* The Foundation — matches culture-science-preview .science-inner / .science-findings (spacing, type, 2×2 + 05) */}
+        <section className="bg-[#FAFAF9] py-20 md:py-[100px]">
+          <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+            <div className="grid grid-cols-2 gap-0.5">
+              <div className="col-span-2 min-w-0 max-w-[760px] pb-14">
+                <p className={`${sectionLabel} mb-5 block`}>The Foundation</p>
+                <h2 className="mb-4 font-playfair text-[clamp(1.5rem,2.5vw,2.125rem)] font-normal leading-[1.2] text-[#1A1A1A]">
                   This isn&apos;t built on opinion. The research is extensive, consistent, and points in one direction.
                 </h2>
-                <p className={`mt-4 ${body}`}>
+                <p className={body}>
                   Culture Science synthesizes decades of research across organizational psychology, neuroscience, trust
                   physiology, and behavioral economics. Five core findings drive everything built here, and they all
                   point toward the same conclusion: what leaders do to the conditions around their people determines
@@ -168,28 +168,26 @@ export default function CultureScience() {
                   lab: 'Tepper, Consequences of Abusive Supervision'
                 }
               ].map((c) => (
-                <div key={c.n} className="bg-white p-8 md:p-10">
-                  <span className="font-playfair text-[13px] text-ao-red">{c.n}</span>
-                  <h3 className="mt-2 font-playfair text-xl font-normal leading-snug text-[#1A1A1A] md:text-[1.25rem]">
-                    {c.t}
-                  </h3>
-                  <p className="mt-4 text-[14px] leading-[1.7] text-warm-grey">{c.p}</p>
+                <div key={c.n} className="min-w-0 bg-white p-10">
+                  <span className="mb-3.5 block font-playfair text-[13px] text-ao-red">{c.n}</span>
+                  <h3 className="mb-3 font-playfair text-[20px] font-normal leading-[1.3] text-[#1A1A1A]">{c.t}</h3>
+                  <p className="mb-4 text-[14px] leading-[1.7] text-warm-grey">{c.p}</p>
                   <a
                     href={c.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-block text-[12px] font-medium text-ao-red no-underline hover:underline"
+                    className="inline-block text-[12px] font-medium tracking-[0.02em] text-ao-red no-underline hover:underline"
                   >
                     {c.lab}
                   </a>
                 </div>
               ))}
-              <div className="bg-ao-dark p-8 text-white md:col-span-2 md:p-10">
-                <span className="font-playfair text-[13px] text-ao-brown">05</span>
-                <h3 className="mt-2 font-playfair text-xl font-normal leading-snug md:text-[1.25rem]">
+              <div className="col-span-2 min-w-0 bg-ao-dark p-10 text-white">
+                <span className="mb-3.5 block font-playfair text-[13px] text-ao-brown">05</span>
+                <h3 className="mb-3 font-playfair text-[20px] font-normal leading-[1.3] text-white">
                   Engagement is an engine, not a perk.
                 </h3>
-                <p className="mt-4 text-[14px] leading-[1.7] text-white/65">
+                <p className="mb-4 text-[14px] leading-[1.7] text-white/65">
                   Global engagement research confirms that engaged teams outperform disengaged teams across every
                   meaningful metric: profitability, productivity, customer satisfaction, retention, safety, and quality.
                   Engagement is not a feeling. It is a measurable output of the leadership conditions that either
@@ -200,7 +198,7 @@ export default function CultureScience() {
                   href="https://www.gallup.com/workplace/236927/state-american-workplace-report-2017.aspx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-block text-[12px] font-medium text-ao-brown no-underline hover:underline"
+                  className="inline-block text-[12px] font-medium tracking-[0.02em] text-ao-brown no-underline hover:underline"
                 >
                   Harter et al., Gallup Engagement Meta-analysis
                 </a>
