@@ -31,6 +31,12 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'How ALI fits', send: 'How does ALI relate to Culture Science?' },
     { label: 'Why measure conditions?', send: 'Why measure leadership conditions instead of only engagement?' },
   ],
+  'scoreboard-leadership': [
+    { label: 'What is Scoreboard Leadership?', send: 'What is Scoreboard Leadership in plain language?' },
+    { label: 'Symptoms I might see', send: 'What symptoms of scoreboard leadership show up most often in teams?' },
+    { label: 'Servant standards', send: 'How do servant standards replace scoreboard leadership in practice?' },
+    { label: 'Where to start', send: 'If we think we are running this pattern, where should we start?' },
+  ],
   archy: [
     { label: 'How you work', send: 'How do you work as Archy — what can you help with?' },
     { label: 'What you know about Bart', send: 'What sources and perspective do you draw from?' },

@@ -1,137 +1,315 @@
 /**
- * Scoreboard Leadership Anti-Project Page
- * Editorial Minimal Design - Diagnostic Lens for Toxic Leadership Patterns
+ * Scoreboard Leadership — Anti-Project (Culture Science)
+ * Layout + copy: scoreboard-leadership-preview.html & cursor-scoreboard-leadership.md
  */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import SEO from '../../components/SEO';
-import { OptimizedImage } from '../../components/OptimizedImage';
 
-export default function ScoreboardLeadership() {
-  const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Mobile detection and scroll tracking for parallax
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024); // lg breakpoint - disable parallax on mobile
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    const handleScroll = () => {
-      // Check mobile directly in handler to avoid stale closure
-      if (window.innerWidth >= 1024) {
-        setScrollY(window.scrollY);
-      }
-    };
-
-    // Initial scroll position
-    handleScroll();
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkMobile);
-    };
-  }, []);
-
-  const handleLinkClick = (e, href) => {
+function go(path) {
+  return (e) => {
     e.preventDefault();
-    window.history.pushState({}, '', href);
+    window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
-    // Scroll to top when navigating to a new page
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
+}
 
+const sectionLabel = 'block text-[11px] font-semibold uppercase tracking-[0.16em] text-ao-brown';
+const inner = 'mx-auto w-full max-w-[1400px] px-6 py-24 sm:px-10 md:px-10';
+
+/** Red dash row (not a bullet list; matches preview pseudo-element) */
+function DashLine({ children, dark }) {
+  return (
+    <div
+      className={`relative pl-4 text-sm leading-relaxed ${
+        dark ? 'text-white/65' : 'text-warm-grey'
+      }`}
+    >
+      <span className="absolute left-0 top-[10px] h-px w-[5px] bg-ao-red" aria-hidden />
+      {children}
+    </div>
+  );
+}
+
+const servantProduces = [
+  'Clarity over confusion',
+  'Trust over compliance',
+  'Ownership over dependency',
+  'Long-term stability over short-term spikes',
+  'People who stay and grow',
+];
+
+const scoreboardProduces = [
+  'Pressure over purpose',
+  'Fear over candor',
+  'Compliance over commitment',
+  'Velocity spikes followed by collapse',
+  'People who leave and warn others',
+];
+
+const symptoms = [
+  {
+    title: 'KPI Theater',
+    body: (
+      <>
+        The metrics look great. The experience doesn&apos;t match. Teams optimize for the number on the dashboard
+        instead of the outcome it was supposed to represent. The score becomes the product.
+      </>
+    ),
+    solution: 'Score service: NPS by team, on-time handoffs, first-time quality. Measure what improves service, not what flatters leadership.',
+  },
+  {
+    title: 'Top-Down Pressure Cycles',
+    body: (
+      <>
+        Urgency gets manufactured from the top and absorbed by the bottom. Deadlines pile up without context.
+        People are moving fast but nobody is sure in the right direction. Pressure replaces clarity as the operating
+        fuel.
+      </>
+    ),
+    solution: 'Servant standards with owner-operators and weekly inspect-and-improve. Clear roles replace manufactured urgency.',
+  },
+  {
+    title: 'Prestige Over People',
+    body: (
+      <>
+        Individual wins get celebrated. Team health gets ignored. The highest-visibility performers are rewarded
+        regardless of how they got there. Collaboration quietly dies because nobody gets credit for it.
+      </>
+    ),
+    solution: 'Reward maintenance wins, cross-team assists, and clean handoffs. Turn team health into outcomes instead of individual heroics.',
+  },
+  {
+    title: 'Churn Masked by Hype',
+    body: (
+      <>
+        The energy in the room feels high. But good people keep leaving. The exits get explained away one at a time,
+        never connected, never examined as a pattern. By the time the pattern is obvious, the institutional knowledge is
+        already out the door.
+      </>
+    ),
+    solution: 'Track role tenure, cross-training depth, and regretted attrition. Surface what the scoreboard is hiding.',
+  },
+  {
+    title: 'Hero Dependency',
+    body: (
+      <>
+        One or two people hold everything together. When they are out, things fall apart. The organization has confused
+        individual heroics with operational health. The hero is exhausted. The system is fragile.
+      </>
+    ),
+    solution: 'One-page plays with backups and rituals that survive PTO and turnover. Build systems that don&apos;t require superhumans.',
+  },
+  {
+    title: 'Busy Over Outcomes',
+    body: (
+      <>
+        The team is always working. Nobody is sure what they are working toward. Activity replaces accountability.
+        Meetings beget meetings. The calendar is full and the needle isn&apos;t moving.
+      </>
+    ),
+    solution: 'One page, one owner, one outcome per initiative. Inspect weekly. Clarity replaces activity as the standard.',
+  },
+  {
+    title: 'Vanity Pipeline',
+    body: (
+      <>
+        The pipeline looks impressive on a slide. Qualification is loose. Kill criteria don&apos;t exist. Deals that
+        should be cut stay alive because closing them would hurt the number. The pipeline flatters leadership instead of
+        serving the business.
+      </>
+    ),
+    solution: 'Qualify for fit. Publish kill criteria. Celebrate strategic no calls. The pipeline serves the mission, not the scoreboard.',
+  },
+  {
+    title: 'Meeting Fog',
+    body: (
+      <>
+        Every meeting ends with more questions than it started with. No decisions. No owners. No next moves.
+        Information gets shared but nothing gets resolved. The calendar is full of conversations that never convert to
+        action.
+      </>
+    ),
+    solution: 'Agenda to output to owner. Daily 10-minute huddles that ship decisions. Every meeting ends with a clear next move and a name on it.',
+  },
+];
+
+const standards = [
+  {
+    title: 'People Over Optics',
+    body: 'We measure what improves service, not what flatters leadership. The metric serves the mission, not the other way around.',
+  },
+  {
+    title: 'Owner Standard',
+    body: 'Single-point ownership with freedom in method and clarity in outcomes. Every initiative has a name on it.',
+  },
+  {
+    title: 'Honest Rhythms',
+    body: 'Short, frequent inspect-and-improve cycles replace performative meetings. Cadence creates accountability without pressure.',
+  },
+  {
+    title: 'One-Page Plays',
+    body: 'Every effort fits on one page: purpose, owner, steps, risks, next review. If it cannot be explained simply, it cannot be executed consistently.',
+  },
+  {
+    title: 'Service Prestige',
+    body: 'We celebrate assists, clean handoffs, and maintenance wins as headline achievements. The team wins together or not at all.',
+  },
+  {
+    title: 'Compounding Culture',
+    body: 'Decisions favor long-term trust and repeatability over short-term theatrics. What we build today determines what we can sustain tomorrow.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Is Scoreboard Leadership against metrics?',
+    a: 'No. It is against weaponized metrics and optics-driven behavior. Measurement matters. The question is whether you point it at service and outcomes or at compliance and appearance.',
+  },
+  {
+    q: 'What changes first?',
+    a: 'Standards and rhythms. One-page plays, weekly inspect-and-improve, and redefining prestige around service and trust. Most teams feel the shift within weeks.',
+  },
+  {
+    q: 'How fast can we see impact?',
+    a: 'Most teams see it in two to four weeks as meetings shrink and owners gain clarity. Measurable compounding typically follows in one to two quarters.',
+  },
+  {
+    q: 'Does this replace our KPIs?',
+    a: 'It reframes them. Keep your KPIs. Add counter-metrics like first-time quality, handoff reliability, and role tenure. The scoreboard serves the team, not the other way around.',
+  },
+  {
+    q: 'What if leadership is the bottleneck?',
+    a: 'We start there. Servant standards are leader-carried first. Pressure is replaced with clarity and consistency. The work begins with the person at the top of the room.',
+  },
+  {
+    q: 'How do we engage?',
+    a: 'Start a conversation. The advisory room is where the honest diagnosis happens, outside your system, where consequence disappears and the real picture can finally surface.',
+  },
+];
+
+export default function ScoreboardLeadership() {
   return (
     <>
       <SEO pageKey="scoreboard-leadership" />
-      <div className="min-h-screen bg-white">
-        {/* SECTION 1: HERO WITH PARALLAX */}
-        <section className="w-full bg-white py-16 sm:py-20 md:py-24 lg:py-20 relative overflow-hidden">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-              {/* Left Content */}
+      <div className="min-h-screen bg-[#FAFAF9] font-inter text-[15px] leading-[1.75] text-[#1A1A1A] antialiased">
+        {/* Hero */}
+        <section className="border-b border-[#1A1A1A]/[0.08] bg-white px-6 pb-[60px] pt-20 sm:px-10 md:px-10">
+          <div className="mx-auto max-w-[1400px]">
+            <p className={`${sectionLabel} mb-6`}>Anti-Project · Culture Science</p>
+            <h1 className="max-w-[800px] font-playfair text-[clamp(3rem,6vw,5.5rem)] font-normal leading-none text-[#1A1A1A]">
+              Scoreboard Leadership
+            </h1>
+            <p className="mt-8 max-w-[560px] text-lg leading-[1.75] text-warm-grey">
+              When leadership becomes a game to win instead of a mission to serve, everyone eventually loses.
+            </p>
+            <div className="mt-12 flex flex-wrap gap-4">
+              <a
+                href="/engagement-inquiry"
+                onClick={go('/engagement-inquiry')}
+                className="inline-block bg-ao-red px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
+              >
+                Start a Conversation
+              </a>
+              <a
+                href="https://scoreboardleadership.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block border border-[#1A1A1A]/20 px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-[#1A1A1A] transition-colors hover:border-[#1A1A1A]"
+              >
+                ScoreboardLeadership.com
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Definition */}
+        <section className="bg-white">
+          <div className={`${inner} py-24 sm:py-28`}>
+            <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-[100px]">
+              <div className="lg:sticky lg:top-[88px]">
+                <span className={sectionLabel}>Definition</span>
+                <h2 className="mt-5 font-playfair text-[clamp(1.75rem,2.5vw,2.375rem)] font-normal leading-tight text-[#1A1A1A]">
+                  What Scoreboard Leadership actually is.
+                </h2>
+                <p className="mt-6 text-sm leading-[1.75] text-warm-grey">
+                  A diagnostic framework for one of the most common and most damaging leadership patterns in small and
+                  mid-sized organizations.
+                </p>
+              </div>
+              <div className="min-w-0 space-y-6 text-[15px] leading-[1.85] text-[#3A3A3A]">
+                <p>Scoreboard Leadership is what happens when winning becomes the only thing that matters.</p>
+                <p>Not winning for the team. Not winning for the customer. Winning for the score.</p>
+                <p>
+                  Metrics get weaponized. Compliance replaces commitment. People stop being people and start being inputs.
+                  The number on the board becomes the standard and anyone not adding to it becomes a liability. Velocity
+                  spikes. Morale quietly erodes. The best people start doing the math on whether it is worth staying.
+                </p>
+                <p>
+                  It looks like high performance from the outside. From the inside it feels like pressure without purpose,
+                  accountability without dignity, and results without trust.
+                </p>
+                <p>
+                  This is not a leadership style. It is a leadership operating system built on the wrong foundation and it
+                  compounds in the wrong direction. Every quarter that runs this way makes the next one harder. The culture
+                  you are burning through takes years to rebuild. The people you are losing take institutional knowledge with
+                  them that no hire can replace.
+                </p>
+                <p>
+                  The antidote is not anti-measurement. Measurement matters. The antidote is servant-led standards: clear
+                  roles, honest rhythms, and leaders who carry the cost instead of pushing it down to the people doing the
+                  work.
+                </p>
+                <p className="mt-2 border-l-2 border-ao-red pl-5 font-playfair text-lg italic leading-snug text-[#1A1A1A]">
+                  Scoreboard Leadership names the disease. Archetype Original installs the cure.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Golden Rule Contrast */}
+        <section className="bg-ao-cream">
+          <div className={`${inner} py-24 sm:py-28`}>
+            <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2 lg:gap-20">
               <div>
-                {/* Badge */}
-                <div className="mb-6">
-                  <span className="inline-block px-4 py-2 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#6B6B6B] uppercase">
-                    Anti-Project
+                <span className={sectionLabel}>The Golden Rule Contrast</span>
+                <h2 className="mt-5 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-tight text-[#1A1A1A]">
+                  Scoreboard Leadership fails for one reason. It violates the most reliable leadership principle ever
+                  written.
+                </h2>
+                <p className="mt-8 text-[15px] leading-[1.85] text-[#3A3A3A]">
+                  When you treat people the way you want to be treated, you naturally create clarity, trust,
+                  responsibility, alignment, and stability. You lead with the same expectations and honesty you would want
+                  from someone above you.
+                </p>
+                <p className="mt-6 text-[15px] leading-[1.85] text-[#3A3A3A]">
+                  Scoreboard Leadership cannot coexist with that. You cannot use people to chase metrics and simultaneously
+                  treat them the way you would want to be treated. One builds people. The other uses them. The difference
+                  shows up quickly in culture, in morale, and in outcomes.
+                </p>
+              </div>
+              <div className="flex flex-col gap-0.5 pt-2">
+                <div className="bg-white p-8">
+                  <span className="mb-4 block text-[11px] font-bold uppercase tracking-[0.16em] text-ao-brown">
+                    Servant Leadership Produces
                   </span>
-                </div>
-                
-                {/* Title */}
-                <h1 className="font-serif font-bold text-5xl sm:text-6xl md:text-7xl text-[#1A1A1A] leading-[0.9] tracking-tight mb-8">
-                  Scoreboard Leadership
-                </h1>
-              </div>
-              
-              {/* Right: 2-Layer Parallax (Desktop) / Static (Mobile) */}
-              <div className="relative h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px]">
-                {/* Desktop: Parallax layers */}
-                <div className="hidden lg:block absolute inset-0">
-                  {/* Layer 2: Back - Moves VERTICALLY (slow) */}
-                  <div 
-                    className="absolute inset-0 z-10"
-                    style={{ 
-                      transform: `translateY(${scrollY * 0.05}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/scoreboard-layer-2.png"
-                      alt="Scoreboard Leadership Background"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1: Front - Moves HORIZONTALLY (faster) */}
-                  <div 
-                    className="absolute inset-0 z-20"
-                    style={{ 
-                      transform: `translateX(${scrollY * -0.15}px)`,
-                      transition: 'transform 0.1s ease-out'
-                    }}
-                  >
-                    <OptimizedImage
-                      src="/images/scoreboard-layer-1.png"
-                      alt="Scoreboard Leadership Foreground"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
+                  <div className="flex flex-col gap-2.5">
+                    {servantProduces.map((t) => (
+                      <DashLine key={t}>{t}</DashLine>
+                    ))}
                   </div>
                 </div>
-                
-                {/* Mobile: Static layers (no parallax) */}
-                <div className="lg:hidden absolute inset-0">
-                  {/* Layer 2: Back */}
-                  <div className="absolute inset-0 z-10">
-                    <OptimizedImage
-                      src="/images/scoreboard-layer-2.png"
-                      alt="Scoreboard Leadership Background"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Layer 1: Front */}
-                  <div className="absolute inset-0 z-20">
-                    <OptimizedImage
-                      src="/images/scoreboard-layer-1.png"
-                      alt="Scoreboard Leadership Foreground"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
+                <div className="bg-ao-dark p-8">
+                  <span className="mb-4 block text-[11px] font-bold uppercase tracking-[0.16em] text-ao-brown">
+                    Scoreboard Leadership Produces
+                  </span>
+                  <div className="flex flex-col gap-2.5">
+                    {scoreboardProduces.map((t) => (
+                      <DashLine key={t} dark>
+                        {t}
+                      </DashLine>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -139,277 +317,169 @@ export default function ScoreboardLeadership() {
           </div>
         </section>
 
-        {/* SECTION 2: DEFINITION */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Definition
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Scoreboard Leadership is a dominance pattern where <strong>metrics are weaponized to drive compliance</strong>, optics outrank outcomes, and people become a means to public wins. The score replaces the standard; theater replaces trust. As I've written, <a href="/journal/leadership-isnt-a-scoreboard" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/leadership-isnt-a-scoreboard'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>leadership isn't a scoreboard</a> — great leaders don't compete with their team; they build platforms for their people to rise.
-                </p>
-                <p>
-                  You get velocity spikes, shallow accountability, and hidden churn. The antidote isn't anti-measurement — it's <strong>servant-led standards</strong>: clear roles, honest rhythms, and leaders who carry the cost instead of pushing it down.
-                </p>
-                <p>
-                  This diagnostic names the disease so you can install a healthier operating system — one that compounds performance without burning out the people who create it.
-                </p>
-              </div>
+        {/* Symptoms */}
+        <section className="bg-[#FAFAF9]">
+          <div className={`${inner} py-24 sm:py-28`}>
+            <div className="mb-16 max-w-[680px]">
+              <span className={sectionLabel}>Symptoms and Solutions</span>
+              <h2 className="mt-5 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-tight text-[#1A1A1A]">
+                What it looks like inside the organization. And what replaces it.
+              </h2>
+              <p className="mt-4 text-[15px] leading-[1.75] text-warm-grey">
+                These symptoms show up in healthy organizations led by capable people. They are not signs of bad intent.
+                They are signs of a system running on the wrong operating principles.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">
+              {symptoms.map((s) => (
+                <div key={s.title} className="bg-white p-10">
+                  <span className="mb-2.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">
+                    Symptom
+                  </span>
+                  <h3 className="mb-4 font-playfair text-xl font-normal text-[#1A1A1A]">{s.title}</h3>
+                  <p className="mb-4 text-sm leading-[1.7] text-[#3A3A3A]">{s.body}</p>
+                  <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.12em] text-ao-brown">
+                    Solution
+                  </span>
+                  <p className="text-sm leading-[1.7] text-warm-grey">{s.solution}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* SECTION 3: THE GOLDEN RULE CONTRAST */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  The Golden Rule Contrast
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Scoreboard Leadership fails for one core reason: it violates the most reliable leadership principle ever written — <strong>the Golden Rule</strong>.
-                </p>
-                <p>
-                  When you treat people the way you'd want to be treated, you naturally create clarity, trust, responsibility, alignment, and stability. You lead with the same expectations and honesty you'd want from someone above you.
-                </p>
-                <p>
-                  Scoreboard Leadership can't coexist with that. You can't use people to chase metrics and simultaneously treat them the way you'd want to be treated. <strong>One builds people; the other uses them.</strong> The difference shows up quickly — in culture, in morale, and in outcomes.
-                </p>
-              </div>
+        {/* Servant Standards */}
+        <section className="bg-ao-dark">
+          <div className={`${inner} py-24 sm:py-28`}>
+            <div className="mb-16 max-w-[600px]">
+              <span className={`${sectionLabel} text-ao-brown`}>Servant Standards</span>
+              <h2 className="mt-5 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-tight text-white">
+                The principles that replace Scoreboard Leadership.
+              </h2>
+              <p className="mt-4 text-[15px] leading-[1.75] text-white/60">
+                These are not aspirational values. They are operational standards, the actual behaviors and systems that
+                produce a healthier operating environment.
+              </p>
             </div>
-          </div>
-        </section>
-
-        {/* SECTION 4: SYMPTOMS → SOLUTIONS */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Symptoms → Solutions
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <ul className="list-disc pl-6 sm:pl-8 space-y-4 marker:text-[#DB0812]">
-                  <li>
-                    <strong>KPI theater</strong> Solution: Score service — NPS by team, on-time handoffs, first-time quality.
-                  </li>
-                  <li>
-                    <strong>Top-down pressure cycles</strong> — Often driven by <a href="/journal/manufactured-crisis" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/manufactured-crisis'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>manufactured crisis</a> and fear. Solution: Servant standards with owner-operators + weekly inspect-and-improve.
-                  </li>
-                  <li>
-                    <strong>Prestige over people</strong> — When leaders <a href="/journal/stop-turning-your-team-into-opponents" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/stop-turning-your-team-into-opponents'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>turn their team into opponents</a> through competition. Solution: Reward maintenance wins, cross-team assists, and clean handoffs.
-                  </li>
-                  <li>
-                    <strong>Churn masked by hype</strong> — Hidden by <a href="/journal/the-proxy-trap" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-proxy-trap'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>proxy traps</a> and delegation failures. Solution: Track role tenure, cross-training depth, and regretted attrition.
-                  </li>
-                  <li>
-                    <strong>Hero dependency</strong> — Created by <a href="/journal/shadow-of-shame" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/shadow-of-shame'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>shadow of shame</a> and fear-based control. Solution: One-page plays with backups and rituals that survive PTO and turnover.
-                  </li>
-                  <li>
-                    <strong>Busy over outcomes</strong> — Often driven by <a href="/journal/cult-of-confusion" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/cult-of-confusion'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>cult of confusion</a> where clarity is withheld. Solution: One page, one owner, one outcome per initiative — inspect weekly.
-                  </li>
-                  <li>
-                    <strong>Vanity pipeline</strong> — When <a href="/journal/the-pursuit-of-power-corrupts" className="text-[#DB0812] hover:text-[#b30610] underline" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/journal/the-pursuit-of-power-corrupts'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}>the pursuit of power corrupts</a> decision-making. Solution: Qualify for fit; publish kill-criteria; celebrate strategic "no" calls.
-                  </li>
-                  <li>
-                    <strong>Meeting fog</strong> Solution: Agenda → output → owner. Daily 10-minute huddles that ship decisions.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 5: SERVANT STANDARDS — PRINCIPLES */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Servant Standards — Principles
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <ul className="list-disc pl-6 sm:pl-8 space-y-4 marker:text-[#DB0812]">
-                  <li>
-                    <strong>People over optics</strong> We measure what improves service, not what flatters leadership.
-                  </li>
-                  <li>
-                    <strong>Owner standard</strong> Single-point ownership with freedom in method and clarity in outcomes.
-                  </li>
-                  <li>
-                    <strong>Honest rhythms</strong> Short, frequent inspect-and-improve cycles replace performative meetings.
-                  </li>
-                  <li>
-                    <strong>One-page plays</strong> Every effort fits on one page: purpose, owner, steps, risks, next review.
-                  </li>
-                  <li>
-                    <strong>Service prestige</strong> We celebrate assists, clean handoffs, and maintenance wins as headline achievements.
-                  </li>
-                  <li>
-                    <strong>Compounding culture</strong> Decisions favor long-term trust and repeatability over short-term theatrics.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 6: FROM DIAGNOSIS TO DELIVERY */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  From Diagnosis to Delivery
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Scoreboard Leadership names the dysfunction; Archetype Original installs the cure. Start with the ten servant-led plays, then customize workshops for your team's constraints and goals.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 7: FAQ */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  FAQ
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-8">
-                <div>
-                  <h3 className="font-bold mb-2">
-                    Q: Is Scoreboard Leadership against metrics?
-                  </h3>
-                  <p>
-                    A: No. It's against weaponized metrics and optics-driven behavior. We keep measurement, but we point it at service and outcomes.
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-bold mb-2">
-                    Q: What changes first?
-                  </h3>
-                  <p>
-                    A: Standards and rhythms: one-page plays, weekly inspect-and-improve, and redefining prestige around service and trust.
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-bold mb-2">
-                    Q: How fast can we see impact?
-                  </h3>
-                  <p>
-                    A: Most teams feel relief in 2–4 weeks as meetings shrink and owners gain clarity. Measurable compounding typically follows in 1–2 quarters.
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-bold mb-2">
-                    Q: Does this replace our KPIs?
-                  </h3>
-                  <p>
-                    A: It reframes them. Keep your KPIs; add counter-metrics like first-time quality, handoff reliability, and role tenure.
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-bold mb-2">
-                    Q: What if leadership is the bottleneck?
-                  </h3>
-                  <p>
-                    A: We start there. Servant standards are leader-carried first. Pressure is replaced with clarity and consistency.
-                  </p>
-                </div>
-                
-                <div>
-                  <h3 className="font-bold mb-2">
-                    Q: How do we engage?
-                  </h3>
-                  <p>
-                    A: Begin with the 10 Plays and a half-day workshop. When you're ready, contact Archetype Original to plan rollout.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 8: READY TO MOVE FORWARD (CTA) */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Ready to Move Forward?
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Scoreboard Leadership is a diagnostic lens under Archetype Original. For more research and deeper analysis, visit the standalone site. To explore consulting, playbooks, or workshops, let's start a conversation.
-                </p>
-              </div>
-              
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <a
-                  href="https://scoreboardleadership.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
+            <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2 lg:grid-cols-3">
+              {standards.map((st) => (
+                <div
+                  key={st.title}
+                  className="border border-white/[0.06] bg-white/[0.04] p-10"
                 >
-                  Visit ScoreboardLeadership.com
-                </a>
+                  <h3 className="mb-3 font-playfair text-xl font-normal text-white">{st.title}</h3>
+                  <p className="text-sm leading-[1.7] text-white/60">{st.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Diagnosis to Delivery */}
+        <section className="bg-white">
+          <div className={`${inner} py-24 sm:py-28`}>
+            <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-20">
+              <div>
+                <span className={sectionLabel}>From Diagnosis to Delivery</span>
+                <h2 className="mt-5 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-tight text-[#1A1A1A]">
+                  Scoreboard Leadership names the dysfunction. Archetype Original installs the cure.
+                </h2>
+                <p className="mt-6 text-[15px] leading-[1.85] text-[#3A3A3A]">
+                  This is a diagnostic lens under Archetype Original. The conversation that cannot happen here, outside your
+                  organization, where consequence disappears, is where the work actually starts. That conversation happens
+                  in the advisory room.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <a
+                    href="/engagement-inquiry"
+                    onClick={go('/engagement-inquiry')}
+                    className="inline-block bg-ao-red px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
+                  >
+                    Start a Conversation
+                  </a>
+                  <a
+                    href="/advisory"
+                    onClick={go('/advisory')}
+                    className="inline-block border border-[#1A1A1A]/20 px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-[#1A1A1A] transition-colors hover:border-[#1A1A1A]"
+                  >
+                    How Advisory Works
+                  </a>
+                </div>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                {[
+                  { num: '2-4', label: 'Quarters to measurable change' },
+                  { num: '1', label: 'Conversation to start' },
+                  { num: '0', label: 'Frameworks required to begin' },
+                ].map((row) => (
+                  <div key={row.label} className="bg-[#FAFAF9] px-10 py-8">
+                    <div className="font-playfair text-5xl font-normal leading-none text-[#1A1A1A]">{row.num}</div>
+                    <div className="mt-2 text-[13px] font-medium uppercase tracking-[0.06em] text-warm-grey">{row.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="bg-[#FAFAF9]">
+          <div className={`${inner} py-24 sm:py-28`}>
+            <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-[100px]">
+              <div className="lg:sticky lg:top-[88px]">
+                <span className={sectionLabel}>Frequently Asked Questions</span>
+                <h2 className="mt-5 font-playfair text-[clamp(1.5rem,2.5vw,2.25rem)] font-normal leading-tight text-[#1A1A1A]">
+                  Common questions about Scoreboard Leadership.
+                </h2>
                 <a
-                  href="/contact"
-                  onClick={(e) => handleLinkClick(e, '/contact')}
-                  className="border-2 border-[#1A1A1A] text-[#1A1A1A] px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
+                  href="/faqs"
+                  onClick={go('/faqs')}
+                  className="mt-6 inline-block text-[13px] font-semibold uppercase tracking-[0.06em] text-ao-red hover:underline"
                 >
-                  Start a Conversation
+                  View all FAQs
                 </a>
               </div>
+              <div>
+                {faqs.map((f, i) => (
+                  <div
+                    key={f.q}
+                    className={`border-t border-[#1A1A1A]/[0.08] py-6 ${i === faqs.length - 1 ? 'border-b border-[#1A1A1A]/[0.08]' : ''}`}
+                  >
+                    <h3 className="mb-2.5 font-playfair text-lg font-normal text-[#1A1A1A]">{f.q}</h3>
+                    <p className="text-sm leading-[1.7] text-warm-grey">{f.a}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Close */}
+        <section className="bg-ao-dark px-6 py-24 text-center sm:px-10 md:px-10">
+          <div className="mx-auto max-w-[640px]">
+            <span className={`${sectionLabel} mx-auto text-ao-brown`}>If You&apos;re Running This Pattern</span>
+            <h2 className="mx-auto mt-5 max-w-[640px] font-playfair text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.15] text-white">
+              The conversation starts here. Not with a framework. With honesty.
+            </h2>
+            <p className="mx-auto mt-6 max-w-[480px] text-base leading-[1.75] text-white/65">
+              Scoreboard Leadership is diagnosable. It is fixable. The first step is a conversation outside your system,
+              where you can finally say what you are actually seeing.
+            </p>
+            <div className="mt-11 flex flex-wrap justify-center gap-4">
+              <a
+                href="/engagement-inquiry"
+                onClick={go('/engagement-inquiry')}
+                className="inline-block bg-ao-red px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-white transition-opacity hover:opacity-90"
+              >
+                Start a Conversation
+              </a>
+              <a
+                href="/advisory"
+                onClick={go('/advisory')}
+                className="inline-block border border-white/30 px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.06em] text-white/80 transition-colors hover:border-white/70 hover:text-white"
+              >
+                How Advisory Works
+              </a>
             </div>
           </div>
         </section>
