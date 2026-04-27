@@ -1,5 +1,5 @@
 /**
- * Scoreboard Leadership — Anti-Project (Culture Science)
+ * Scoreboard Leadership (Culture Science Anti-Project).
  * Layout + copy: scoreboard-leadership-preview.html & cursor-scoreboard-leadership.md
  */
 import React from 'react';
@@ -286,7 +286,7 @@ export default function ScoreboardLeadership() {
                 <p className="mt-6 text-[15px] leading-[1.85] text-[#3A3A3A]">
                   Scoreboard Leadership cannot coexist with that. You cannot use people to chase metrics and simultaneously
                   treat them the way you would want to be treated. One builds people. The other uses them. The difference
-                  shows up quickly in culture, in morale, and in outcomes.
+                  shows up quickly, in culture, in morale, and in outcomes.
                 </p>
               </div>
               <div className="flex flex-col gap-0.5 pt-2">
@@ -357,7 +357,7 @@ export default function ScoreboardLeadership() {
                 The principles that replace Scoreboard Leadership.
               </h2>
               <p className="mt-4 text-[15px] leading-[1.75] text-white/60">
-                These are not aspirational values. They are operational standards, the actual behaviors and systems that
+                These are not aspirational values. They are operational standards. The actual behaviors and systems that
                 produce a healthier operating environment.
               </p>
             </div>
