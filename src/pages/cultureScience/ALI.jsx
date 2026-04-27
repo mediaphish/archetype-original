@@ -1,469 +1,100 @@
 import React from "react";
 import SEO from "../../components/SEO";
-import ALISubNav from "../../components/ALISubNav";
-import FeaturedFAQs from "../../components/FeaturedFAQs";
-import { OptimizedImage } from "../../components/OptimizedImage";
 
-// Simple icon components (inline SVGs to avoid lucide-react dependency)
-const LightbulbIcon = () => (
-  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-  </svg>
-);
+function go(path) {
+  return (e) => {
+    e.preventDefault();
+    window.history.pushState({}, "", path);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+}
 
-const ShieldIcon = () => (
-  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-  </svg>
-);
+function goHash(id) {
+  return (e) => {
+    e.preventDefault();
+    const next = `/culture-science/ali#${id}`;
+    window.history.pushState({}, "", next);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+}
 
-const MessageCircleIcon = () => (
-  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-  </svg>
-);
+const sectionLabel = "mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ao-brown";
 
-const TargetIcon = () => (
-  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="6" />
-    <circle cx="12" cy="12" r="2" />
-  </svg>
-);
+const conditions = [
+  ["01", "Clarity", "How well people know what matters.", "Clarity is how well people know what matters: priorities, expectations, and what good looks like in the day to day. It is not whether the leader feels clear. It is whether direction, tradeoffs, and decisions land for the team and stay intelligible when pressure hits."],
+  ["02", "Consistency", "How reliably leadership shows up the same way over time.", "Consistency is how reliably leadership shows up the same way over time: standards, follow through, emotional steadiness, and the match between what leaders say and what they do. Inconsistency reads as caprice, erodes trust, and teaches people to second guess or protect themselves."],
+  ["03", "Trust", "Whether this is a place where people can be honest.", "Trust is whether this is a place where people can be honest: psychological safety, fairness, room to disagree, and reactions to bad news that do not train silence. High trust shows up as candor and early problem raising. Low trust shows up as filtering, fear, and late exits."],
+  ["04", "Communication", "Whether information moves in both directions.", "Communication is whether information moves in both directions, not merely whether leaders talk. It covers whether messages land, where bottlenecks and distortion appear, and whether the team is stuck in loops, assumptions, or leadership by rumor."],
+  ["05", "Alignment", "How well shared intent and lived behavior line up.", "Alignment is how well shared intent and lived behavior line up: common read on values, standards, and direction, and whether the group is rowing the same way. Weak alignment is the felt gap between what leadership signals and what the organization actually does."],
+  ["06", "Stability", "How steady and predictable the environment feels.", "Stability is how steady and predictable the environment feels: structure under stress, how conflict is held, and whether roles and expectations hold instead of lurching. It is the difference between a team that can perform under load and one that is constantly bracing for the next shift in tone or rules."],
+];
 
-const ShieldCheckIcon = () => (
-  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-  </svg>
-);
+const steps = [
+  ["01", "Go to ALI and choose Sign Up.", "Start from the ALI home page and open account creation."],
+  ["02", "Enter company details.", "Fill in company name, company size, and main contact info - name and email."],
+  ["03", "Accept all three agreements.", "Privacy Policy, Terms and Conditions, and the ALI EULA must all be accepted before account creation completes."],
+  ["04", "Create the account.", "After submitting, ALI moves to email verification."],
+  ["05", "Verify the email address.", "Confirm through the verification flow so the account is active."],
+  ["06", "Sign in using the email link.", "ALI sign in is email link based. No password. Enter your email, open the sign in link in your inbox, and continue into ALI."],
+  ["07", "Open Deploy.", "From the ALI navigation, go to the Deploy page."],
+  ["08", "Open Deploy and launch when you are ready.", "ALI shows the next survey number, when it is available, and whether deployment is allowed. If this is your first survey, deployment is always allowed immediately with no waiting. Launch as soon as you are ready. Quarterly cadence timing applies starting with the second survey."],
+  ["09", "Generate the deployment link.", "Click Generate Deployment Link. ALI creates the live survey link and adds it to Active Deployments."],
+  ["10", "Copy and send the survey link to your team.", "Share through your normal communication channel. Team members open the link, select their role, complete all 10 questions, and submit."],
+  ["11", "Track responses in Active Deployments.", "Watch response count progress. The minimum threshold is shown in the deployment row. Once responses come in, results feed your ALI view and your data begins building."],
+];
 
-const HeartIcon = () => (
-  <svg className="w-8 h-8 text-[#DB0812]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-  </svg>
-);
+const faq = [
+  ["What exactly is ALI measuring?", "ALI measures the seven leadership conditions that shape how teams operate: Clarity, Consistency, Trust, Communication, Alignment, Stability, and Drift. These are environmental conditions, not personality traits, not feelings, not engagement sentiment. They exist whether or not they are measured. ALI makes them visible."],
+  ["Why does ALI measure conditions instead of sentiment?", "Sentiment fluctuates. Conditions persist. People can feel good in declining environments and frustrated in strong ones. Measuring feelings tells you how people feel today. Measuring conditions tells you what kind of environment is being created and where it is heading."],
+  ["Why is ALI quarterly instead of annual?", "Leadership conditions do not drift annually. They drift incrementally. Quarterly measurement reveals directional movement over time: whether conditions are strengthening or weakening, and how fast. Annual measurement shows you a snapshot. Quarterly measurement shows you a pattern."],
+  ["Does ALI align with servant leadership?", "Entirely. Servant leadership is built on clarity, trust, consistency, and genuine concern for the people you lead. ALI measures exactly those conditions. It gives servant leaders the data they need to confirm that what they intend to create is actually what their team experiences."],
+  ["How does ALI reveal leadership drift before leaders see it?", "Drift shows up in small signals before it shows up as visible problems. ALI is engineered to surface those signals: slight shifts in clarity, small drops in consistency, emerging patterns in communication breakdown, while they are still adjustable. By the time most leaders notice drift, the damage has already compounded."],
+];
 
 export default function ALI() {
-  const handleLinkClick = (e, href) => {
-    e.preventDefault();
-    window.history.pushState({}, '', href);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  };
-
   return (
     <>
       <SEO pageKey="ali" />
-      <ALISubNav />
-      <main className="min-h-screen">
-        
-        {/* SECTION 1: HERO */}
-        <section className="bg-white py-16 sm:py-20 md:py-24 lg:py-20">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-5xl mx-auto text-center space-y-8">
-              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A]">
-                The Archetype Leadership Index
-              </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light">
-                Leadership becomes measurable, visible, and directional.
-              </p>
-              <div className="text-base sm:text-lg md:text-xl leading-relaxed text-[#1A1A1A]/70 max-w-3xl mx-auto space-y-4 pt-4">
-                <p>
-                  ALI is a leadership diagnostic built to help leaders see the conditions they are creating — long before drift becomes damage.
-                </p>
-              </div>
+      <main className="min-h-screen bg-[#FAFAF9] font-inter text-[#1A1A1A] antialiased">
+        <section className="relative flex min-h-[88vh] items-end overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-[center_30%]" style={{ backgroundImage: "url('/images/ali-hero.jpg')" }} aria-hidden />
+          <div className="absolute inset-0 bg-gradient-to-r from-[rgba(26,26,26,0.94)] via-[rgba(26,26,26,0.8)] to-transparent" aria-hidden />
+          <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-16 pt-28 md:px-10 md:pb-24">
+            <p className="mb-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-ao-brown">The Archetype Leadership Index · Culture Science</p>
+            <h1 className="max-w-[640px] font-playfair text-[clamp(2rem,4.5vw,3.75rem)] font-normal leading-[1.1] text-white">Leadership becomes measurable, visible, and directional.</h1>
+            <p className="mt-6 max-w-[500px] text-[16px] leading-[1.75] text-white/70">ALI is a leadership condition diagnostic built to help leaders see the conditions they are creating, long before drift becomes damage.</p>
+            <div className="mt-10 flex flex-wrap gap-4">
+              <a href="/culture-science/ali/apply" onClick={go("/culture-science/ali/apply")} className="inline-flex rounded-[2px] bg-ao-red px-8 py-3 text-[13px] font-semibold uppercase tracking-[0.06em] text-white hover:opacity-90">Apply for the Pilot</a>
+              <a href="#conditions" onClick={goHash("conditions")} className="inline-flex rounded-[2px] border border-white/40 px-8 py-3 text-[13px] font-semibold uppercase tracking-[0.06em] text-white/90 hover:border-white">Explore the Conditions</a>
             </div>
           </div>
         </section>
 
-        <section className="border-y border-[#1A1A1A]/10 bg-[#FAFAF9] py-10 sm:py-12">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 md:gap-8">
-              <div className="overflow-hidden rounded-sm border border-[#1A1A1A]/10 bg-white">
-                <OptimizedImage
-                  src="/images/ali-dash-02.png"
-                  alt="ALI dashboard — leadership condition signals"
-                  className="h-auto w-full object-cover object-top"
-                  loading="lazy"
-                />
-              </div>
-              <div className="overflow-hidden rounded-sm border border-[#1A1A1A]/10 bg-white">
-                <OptimizedImage
-                  src="/images/ali-dash-03.png"
-                  alt="ALI scorecard preview"
-                  className="h-auto w-full object-cover object-top"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
+        <section className="bg-white"><div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 px-6 py-[100px] md:grid-cols-2 md:gap-[100px] md:px-10"><div><p className={sectionLabel}>What ALI Is</p><h2 className="mb-8 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2]">A mirror. Not a personality test. Not an engagement survey. Not a morale score.</h2><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">Most leadership tools focus on personality, sentiment, or engagement. Those tools tell leaders how people feel, but feelings are unreliable indicators of leadership health. People can feel good in declining environments. People can feel frustrated in strong ones.</p><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">ALI measures what feelings cannot tell you. It measures the environment leadership creates, the conditions that shape how teams operate day to day. These conditions exist whether they are measured or not. ALI simply makes them visible.</p><p className="border-l-2 border-ao-red pl-5 font-playfair text-[18px] italic leading-[1.5]">ALI is a mirror. It shows leaders how their leadership is being experienced based on impact, not intent.</p></div><div className="pt-2"><div className="mb-10 space-y-0.5">{["A personality test","An engagement survey","A morale score","A sentiment tracker"].map((x)=><div key={x} className="flex items-center gap-4 bg-[#FAFAF9] px-6 py-5"><span className="text-[11px] font-bold uppercase tracking-[0.08em] text-ao-midGray">Not</span><span className="text-[14px] text-warm-grey line-through decoration-ao-midGray">{x}</span></div>)}</div><div className="bg-ao-dark p-6"><p className="mb-2 text-[11px] font-bold uppercase tracking-[0.08em] text-ao-brown">ALI Is</p><p className="text-[15px] leading-[1.6] text-white">A leadership condition diagnostic engineered specifically for small and mid-sized organizations, environments where behavior, decisions, tone, and clarity move fast and affect people immediately.</p></div></div></div></section>
 
-        {/* SECTION 2: WHAT ALI IS */}
-        <section className="bg-gradient-to-b from-white via-[#FFF8F0] to-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto space-y-8">
-              {/* Numbered section header */}
-              <div className="relative">
-                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
-                  01
-                </div>
-                <div className="relative z-10">
-                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
-                    What ALI Is
-                  </h2>
-                </div>
-              </div>
+        <section className="bg-ao-cream"><div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 px-6 py-[100px] md:grid-cols-2 md:gap-20 md:px-10"><div><p className={sectionLabel}>Why ALI Exists</p><h2 className="mb-8 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2]">Leadership has real consequences. It shapes people&apos;s confidence, health, families, and futures.</h2><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">Over decades of leadership, one pattern kept repeating. Leadership creates conditions. Conditions shape culture. Culture determines outcomes.</p><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">Most leaders never see these conditions clearly. They feel the symptoms - tension, disengagement, misalignment - without understanding the structure beneath them or how early those signals appear.</p><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">Traditional tools ask whether people are happy, motivated, or engaged. Those questions matter, but they are downstream. They do not tell leaders what kind of environment they are creating or where that environment is heading.</p><p className="text-[15px] leading-[1.85] text-[#3A3A3A]">ALI was not conceived as a survey. It was designed as a system. The goal was never to score leaders. The goal was to give leaders visibility into the wake they are creating, so they can lead with intention instead of assumption.</p></div><div className="space-y-0.5 pt-2">{[["The Pattern","Leadership creates conditions. Conditions shape culture. Culture determines outcomes."],["The Problem","Most leaders never see these conditions clearly. By the time the symptoms become obvious, damage has already occurred."],["The Solution","ALI exists to surface those patterns early, when leaders can still act without causing harm."]].map(([h,b])=><div key={h} className="bg-white px-8 py-7"><p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">{h}</p><p className="text-[14px] leading-[1.65] text-warm-grey">{b}</p></div>)}</div></div></section>
 
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  The Archetype Leadership Index (ALI) is a leadership condition diagnostic designed for small and mid-sized organizations.
-                </p>
-                <p>
-                  Most leadership tools focus on personality, engagement, or sentiment. Those tools tell leaders how people feel — but feelings are unreliable indicators of leadership health.
-                </p>
-                <p>
-                  People can feel good in declining environments. People can feel frustrated in strong ones.
-                </p>
-                
-                {/* Pull quote */}
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] my-8">
-                  <p className="text-xl sm:text-2xl font-semibold italic text-[#1A1A1A] leading-relaxed">
-                    ALI measures the environment leadership creates.
-                  </p>
-                </div>
+        <section id="conditions" className="bg-ao-dark"><div className="mx-auto max-w-[1400px] px-6 py-[100px] md:px-10"><div className="mb-[60px]"><p className={sectionLabel}>The Seven Conditions</p><h2 className="mb-4 max-w-[600px] font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2] text-white">The conditions leadership creates. Measured four times a year.</h2><p className="max-w-[600px] text-[15px] leading-[1.75] text-white/60">These seven conditions are universal. They exist in every organization regardless of industry, structure, product, or market. ALI measures all seven simultaneously because no condition exists in isolation.</p></div><div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">{conditions.map(([n,t,o,d])=><div key={n} className="border border-white/10 bg-white/[0.04] p-10"><span className="mb-3 block font-playfair text-[13px] text-ao-brown">{n}</span><p className="font-playfair text-2xl text-white">{t}</p><p className="mb-4 mt-2 text-[13px] italic text-ao-brown">{o}</p><p className="text-[14px] leading-[1.75] text-white/60">{d}</p></div>)}<div className="col-span-full border border-[rgba(219,8,18,0.2)] bg-[rgba(219,8,18,0.08)] p-10"><span className="mb-3 block font-playfair text-[13px] text-ao-brown">07</span><p className="font-playfair text-2xl text-white">Drift</p><p className="mb-4 mt-2 text-[13px] italic text-ao-brown">Whether the conditions are holding or silently sliding.</p><p className="text-[14px] leading-[1.75] text-white/70">Drift is the pattern where small, tolerated slips in clarity, standards, and accountability compound: avoiding hard conversations, tolerating ambiguity, slowly shifting how things really work. On the dashboard, Drift is the condition that flags growing mismatch and erosion before it becomes visible damage.</p></div></div><div className="mt-0.5 border border-white/10 bg-white/[0.04] px-10 py-8"><p className="max-w-[800px] font-playfair text-[18px] italic leading-[1.5] text-white/70">The first six name the conditions of leadership people live in. Drift names whether those conditions are holding or silently sliding, the early warning channel, not a separate virtue like trust or clarity.</p></div></div></section>
 
-                <p>
-                  It focuses on clarity, trust, communication, consistency, safety, and emotional tone — the conditions that shape how teams operate day to day. These conditions exist whether they are measured or not. ALI simply makes them visible.
-                </p>
-                <p>
-                  ALI is not a personality test. ALI is not an engagement survey. ALI is not a morale score.
-                </p>
-                <p className="font-semibold">
-                  ALI is a mirror. It shows leaders how their leadership is being experienced — based on impact, not intent.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        <section className="bg-white"><div className="mx-auto max-w-[1400px] px-6 py-[100px] md:px-10"><div className="mb-[60px] max-w-[680px]"><p className={sectionLabel}>The Method</p><h2 className="font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2]">Environmental Measurement. Pattern Detection. Directional Insight.</h2></div><div className="grid grid-cols-1 gap-0.5 md:grid-cols-3">{[["01","Environmental Measurement","A quarterly pulse that measures conditions, not emotions. Ten questions per survey. Each question engineered to expose behavioral reality, not preference or sentiment. Leadership becomes visible when conditions are measured over time, not when emotions are sampled in isolation."],["02","Pattern Detection","Isolated data points do not mean anything. Patterns do. Leadership conditions do not change all at once. They drift. ALI is built to detect movement through quarterly comparison, drift thresholds, condition to condition relationships, and underlying signal correlation. ALI treats it as directional: Are conditions strengthening? Are they weakening? How consistently? What underlying signals?"],["03","Directional Insight","Where culture is actually going, not where it feels like it is today. ALI combines environmental measurement and pattern detection to produce something most leaders never get: visibility into where the culture is heading if nothing changes."]].map(([n,t,b])=><div key={n} className="bg-[#FAFAF9] p-10"><span className="mb-4 block font-playfair text-[13px] text-ao-red">{n}</span><h3 className="mb-4 font-playfair text-[22px] font-normal">{t}</h3><p className="text-[14px] leading-[1.75] text-warm-grey">{b}</p></div>)}</div></div></section>
 
-        {/* SECTION 3: THE SIX CONDITIONS */}
-        <section className="bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-6xl mx-auto space-y-12">
-              {/* Numbered section header */}
-              <div className="relative max-w-3xl">
-                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
-                  02
-                </div>
-                <div className="relative z-10">
-                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
-                    The Six Leadership Conditions
-                  </h2>
-                </div>
-              </div>
+        <section className="bg-[#FAFAF9]"><div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 px-6 py-[100px] md:grid-cols-2 md:gap-20 md:px-10"><div><p className={sectionLabel}>Early Warning</p><h2 className="mb-7 font-playfair text-[clamp(1.5rem,2.5vw,2.25rem)] font-normal leading-[1.2]">Most leadership damage is preventable. It does not happen because leaders intend harm. It happens because they do not see the signals early enough to respond.</h2><p className="mb-5 text-[15px] leading-[1.85] text-[#3A3A3A]">Early warning indicators are small, subtle behavioral shifts that signal larger structural problems forming beneath the surface. They are not crises. They are not failures. They are the earliest detectable signs that leadership conditions are beginning to drift.</p><div className="mb-5 space-y-2">{["Rising silence where clarity once existed","Small but repeated communication breakdowns","Increasing hesitation around decisions","Emotional compression or guardedness","Inconsistency in expectations or follow through","Subtle avoidance of tension or accountability","Distortion in how information moves through the team"].map((x)=><p key={x} className="relative pl-4 text-[14px] leading-[1.6] text-warm-grey before:absolute before:left-0 before:top-[10px] before:h-px before:w-[5px] before:bg-ao-red">{x}</p>)}</div><p className="text-[15px] leading-[1.85] text-[#3A3A3A]">Individually none of these feel urgent. Collectively they tell a clear story.</p></div><div className="pt-2"><div className="grid grid-cols-1 gap-0.5 md:grid-cols-2"><div className="bg-white p-8"><p className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-brown">Early Intervention</p><ul className="space-y-2.5">{["Adjusting behavior before trust is damaged","Clarifying expectations before confusion becomes conflict","Stabilizing communication before silence becomes permanent","Reinforcing consistency before standards erode","Addressing emotional tone before guardedness becomes culture"].map((x)=><li key={x} className="relative pl-3 text-[13px] leading-[1.6] text-warm-grey before:absolute before:left-0 before:top-[9px] before:h-px before:w-1 before:bg-ao-red">{x}</li>)}</ul></div><div className="bg-ao-cream p-8"><p className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-brown">Late Correction</p><ul className="space-y-2.5">{["Rebuilding trust after it has been broken","Repairing relationships after damage has occurred","Recovering clarity after confusion has compounded","Re establishing stability after it has collapsed","Recovering credibility after leadership has been questioned"].map((x)=><li key={x} className="relative pl-3 text-[13px] leading-[1.6] text-warm-grey before:absolute before:left-0 before:top-[9px] before:h-px before:w-1 before:bg-ao-red">{x}</li>)}</ul></div></div><div className="mt-0.5 bg-ao-dark px-8 py-6"><p className="text-[14px] leading-[1.65] text-white/70"><strong className="font-semibold text-white">One requires small adjustments. The other requires repair.</strong> ALI gives leaders the ability to act early.</p></div></div></div></section>
 
-              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] max-w-3xl">
-                These conditions are universal. They exist in every organization, regardless of industry, structure, product, or market.
-              </p>
+        <section className="bg-white"><div className="mx-auto max-w-[1400px] px-6 py-[100px] md:px-10"><div className="mb-[60px] max-w-[680px]"><p className={sectionLabel}>How Leaders Use It</p><h2 className="mb-4 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2]">Finally a way to see leadership with accuracy and act with confidence.</h2><p className="text-[15px] leading-[1.75] text-warm-grey">Leaders use ALI to identify drift before it becomes conflict, stabilize communication, reinforce clarity, and lead with intention instead of reaction.</p></div><div className="grid grid-cols-1 gap-0.5 md:grid-cols-3">{[["Identify drift early","See the pattern before it becomes a problem. Act while the adjustments are still small."],["Stabilize communication","Find where information is breaking down and address the source, not the symptoms."],["Reinforce clarity","Know whether direction, priorities, and expectations are landing the way you intend."],["Understand emotional tone","See how the environment feels to the people operating inside it every day."],["Strengthen trust","Measure whether your team experiences this as a place where they can be honest."],["Lead with intention","Replace assumption with data. Replace reaction with direction. Replace hope with visibility."]].map(([t,b])=><div key={t} className="bg-[#FAFAF9] px-10 py-9"><h3 className="mb-3 font-playfair text-[20px] font-normal">{t}</h3><p className="text-[14px] leading-[1.75] text-warm-grey">{b}</p></div>)}</div></div></section>
 
-              {/* Six condition cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
-                <div className="bg-white p-6 sm:p-8 border border-[#1A1A1A]/20 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 text-center">
-                  <LightbulbIcon />
-                  <span className="font-bold text-lg">Clarity</span>
-                </div>
-                <div className="bg-white p-6 sm:p-8 border border-[#1A1A1A]/20 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 text-center">
-                  <ShieldIcon />
-                  <span className="font-bold text-lg">Trust</span>
-                </div>
-                <div className="bg-white p-6 sm:p-8 border border-[#1A1A1A]/20 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 text-center">
-                  <MessageCircleIcon />
-                  <span className="font-bold text-lg">Communication</span>
-                </div>
-                <div className="bg-white p-6 sm:p-8 border border-[#1A1A1A]/20 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 text-center">
-                  <TargetIcon />
-                  <span className="font-bold text-lg">Consistency</span>
-                </div>
-                <div className="bg-white p-6 sm:p-8 border border-[#1A1A1A]/20 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 text-center">
-                  <ShieldCheckIcon />
-                  <span className="font-bold text-lg">Safety</span>
-                </div>
-                <div className="bg-white p-6 sm:p-8 border border-[#1A1A1A]/20 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 text-center">
-                  <HeartIcon />
-                  <span className="font-bold text-lg">Emotional Tone</span>
-                </div>
-              </div>
+        <section className="bg-[#FAFAF9]"><div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 px-6 py-[100px] md:grid-cols-[1fr_420px] md:gap-20 md:px-10"><div><p className={sectionLabel}>The Intelligence Layer</p><h2 className="mb-8 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2]">The data tells you what. Archy tells you why and what to do about it.</h2><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">Most dashboards stop at the numbers. ALI does not. Every condition score, every perception gap, every drift signal connects directly to Archy, the AI trained on thirty three years of lived leadership experience and the full Culture Science research foundation.</p><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">When ALI surfaces a gap in your Clarity score, Archy can tell you what that pattern typically means, what is likely driving it, and where to focus first. When your Leadership Mirror shows a significant perception gap between how you score yourself and how your team experiences you, Archy helps you understand what that gap signals and what leaders in similar positions have done to close it.</p><p className="mb-6 text-[15px] leading-[1.85] text-[#3A3A3A]">This is not generic AI advice pulled from the internet. It is pattern recognition from a specific corpus, built on the same research and lived experience that built ALI itself.</p><p className="text-[15px] leading-[1.85] text-[#3A3A3A]">The data and the intelligence are designed to work together. ALI measures the conditions. Archy makes them actionable.</p></div><div className="space-y-0.5 pt-2"><div className="bg-white p-8"><p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">What ALI Surfaces</p><h3 className="mb-3 font-playfair text-[18px]">Your score. Your gaps. Your direction.</h3><p className="text-[14px] leading-[1.7] text-warm-grey">Seven conditions measured. Quarterly comparison. Leadership Mirror showing where your self perception and your team&apos;s experience diverge. Zone classification showing where your organization sits right now.</p></div><div className="bg-white p-8"><p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-red">What Archy Adds</p><h3 className="mb-3 font-playfair text-[18px]">Context. Cause. Next move.</h3><p className="text-[14px] leading-[1.7] text-warm-grey">Ask Archy about any condition directly from your dashboard. Get pattern based interpretation of your data, likely causes behind the gaps, and specific actions calibrated to what your organization is actually experiencing.</p></div><div className="bg-ao-dark p-8"><p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-brown">The Result</p><h3 className="mb-3 font-playfair text-[18px] text-white">A leader who knows what is happening and what to do next.</h3><p className="text-[14px] leading-[1.7] text-white/65">Not a report to file. Not a score to share. A living system that compounds with every survey cycle, giving you more directional intelligence the longer you are in it.</p></div></div></div></section>
 
-              <div className="max-w-3xl">
-                <a
-                  href="/culture-science/ali/six-leadership-conditions"
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/six-leadership-conditions')}
-                  className="inline-flex items-center gap-2 font-semibold text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
-                >
-                  Explore each condition in detail →
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+        <section className="bg-ao-dark"><div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 px-6 py-[100px] md:grid-cols-[1fr_400px] md:gap-20 md:px-10"><div><p className={sectionLabel}>The ALI Pilot</p><h2 className="mb-6 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2] text-white">ALI is currently in pilot. This is the right time to be in the room.</h2><p className="mb-5 text-[15px] leading-[1.85] text-white/65">Participation begins with a short survey designed to seed the system with real data. This early phase is about proving direction, validating signal strength, and refining interpretation.</p><p className="mb-9 text-[15px] leading-[1.85] text-white/65">The database matters. The insight grows with every record. This system is being built to last.</p><a href="/culture-science/ali/apply" onClick={go("/culture-science/ali/apply")} className="inline-flex rounded-[2px] bg-ao-red px-8 py-3 text-[13px] font-semibold uppercase tracking-[0.06em] text-white hover:opacity-90">Apply for the Pilot</a></div><div className="border border-white/10 bg-white/[0.04] p-10"><p className="mb-6 text-[11px] font-bold uppercase tracking-[0.16em] text-ao-brown">Pilot Details</p><div className="mb-8 space-y-4">{["Free for one year - includes four quarterly surveys","Full dashboard access and all insights from day one","First 20 primary users receive an \"I Am Second.\" AO tee"].map((x)=><div key={x} className="border-l-2 border-ao-red bg-white/[0.04] px-5 py-4"><p className="text-[14px] leading-[1.6] text-white/75">{x}</p></div>)}</div><p className="text-[13px] italic leading-[1.65] text-white/45">The insight grows with every record. The earlier you are in, the more directional your data becomes over time.</p></div></div></section>
 
-        {/* SECTION 4: WHY MEASURING FEELINGS ISN'T ENOUGH */}
-        <section className="bg-[#FFF8F0] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto space-y-8">
-              {/* Numbered section header */}
-              <div className="relative">
-                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
-                  03
-                </div>
-                <div className="relative z-10">
-                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
-                    Why Measuring Feelings Isn't Enough
-                  </h2>
-                </div>
-              </div>
+        <section className="bg-ao-cream"><div className="mx-auto max-w-[1400px] px-6 py-[100px] md:px-10"><div className="mb-[60px] max-w-[680px]"><p className={sectionLabel}>How It Works</p><h2 className="mb-4 font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2]">From sign up to first survey. No surprises.</h2><p className="text-[15px] leading-[1.75] text-warm-grey">Here is exactly what happens when you apply for the pilot: every step from account creation to your first live survey.</p></div><div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">{steps.map(([n,t,b])=><div key={n} className={`grid grid-cols-[48px_1fr] gap-5 bg-white px-10 py-8 ${n==="11"?"md:col-span-2":""}`}><span className="pt-0.5 font-playfair text-[28px] leading-none text-ao-red">{n}</span><div><h3 className="mb-2 font-playfair text-[18px] font-normal">{t}</h3><p className="text-[14px] leading-[1.7] text-warm-grey">{b}</p></div></div>)}</div></div></section>
 
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Most leadership assessments focus on personality, sentiment, or engagement.
-                </p>
-                <p>
-                  None of those give leaders what they actually need:
-                </p>
-                
-                {/* Pull quote */}
-                <div className="pl-6 sm:pl-8 border-l-4 border-[#DB0812] my-8">
-                  <p className="text-xl sm:text-2xl font-semibold italic text-[#1A1A1A] leading-relaxed">
-                    A reliable way to measure the leadership conditions that create culture.
-                  </p>
-                </div>
+        <section className="bg-ao-cream"><div className="mx-auto max-w-[1400px] px-6 py-[100px] md:px-10"><div className="mb-12"><p className={sectionLabel}>Ethics and Confidentiality</p><h2 className="mb-4 max-w-[600px] font-playfair text-[clamp(1.75rem,3vw,2.625rem)] font-normal leading-[1.2]">The trust that makes this possible is non negotiable.</h2><p className="max-w-[600px] text-[15px] leading-[1.75] text-warm-grey">Culture Science exists because leaders and teams trust us with their honest feedback. That trust is protected absolutely.</p></div><div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">{[["Complete Anonymity","Every assessment is completely anonymous. No names, no email addresses, no identifying information from team members completing surveys. Leaders see aggregate data only, never individual responses."],["Aggregated Data Only","All data is aggregated and anonymized. Individual responses are never shared. Company specific data is only shared with permission and only in aggregate form."],["No Selling. No Sharing.","The data is never sold. It is never shared with third parties. It is never used for marketing or solicitation. The team&apos;s honest feedback is the cornerstone of meaningful leadership growth and it is protected accordingly."],["Secure Storage","All data is stored securely using industry standard encryption. Access is limited to authorized personnel only and all access is logged and monitored."]].map(([t,b])=><div key={t} className="bg-white p-10"><h3 className="mb-3 font-playfair text-[22px] font-normal">{t}</h3><p className="text-[14px] leading-[1.7] text-warm-grey">{b}</p></div>)}</div></div></section>
 
-                <p>
-                  The ALI Method is not a survey. It is not a personality index. It is not a morale tool.
-                </p>
-                <p>
-                  It is a leadership condition diagnostic engineered specifically for small and mid-sized teams — environments where behavior, decisions, tone, and clarity move fast and affect people immediately.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        <section className="bg-white"><div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-16 px-6 py-[100px] md:grid-cols-[320px_1fr] md:gap-[100px] md:px-10"><div className="md:sticky md:top-24 md:self-start"><p className={sectionLabel}>Frequently Asked Questions</p><h2 className="mb-6 font-playfair text-[clamp(1.5rem,2.5vw,2.25rem)] font-normal leading-[1.2]">Common questions about ALI.</h2><a href="/faqs?category=ali" onClick={go("/faqs?category=ali")} className="text-[13px] font-semibold uppercase tracking-[0.06em] text-ao-red hover:underline">View all ALI FAQs</a></div><div>{faq.map(([q,a],i)=><div key={q} className={`border-t border-black/10 py-6 ${i===faq.length-1?"border-b":""}`}><h3 className="mb-2 font-playfair text-[18px] font-normal">{q}</h3><p className="text-[14px] leading-[1.7] text-warm-grey">{a}</p></div>)}</div></div></section>
 
-        {/* SECTION 5: HOW LEADERS USE ALI */}
-        <section className="bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto space-y-8">
-              {/* Numbered section header */}
-              <div className="relative">
-                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
-                  04
-                </div>
-                <div className="relative z-10">
-                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
-                    How Leaders Use ALI
-                  </h2>
-                </div>
-              </div>
-
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Leaders use ALI to:
-                </p>
-                <ul className="list-none space-y-2 pl-6">
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">identify drift before it becomes conflict</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">stabilize communication</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">reinforce clarity</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">understand emotional tone impact</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">strengthen trust</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">maintain consistency under pressure</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">lead with intention instead of reaction</span>
-                  </li>
-                </ul>
-                <p className="font-semibold pt-4">
-                  They finally have a way to see leadership with accuracy and take action with confidence.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 6: THE ALI PILOT - DARK SECTION */}
-        <section className="bg-[#1A1A1A] py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-3xl mx-auto space-y-8">
-              {/* Numbered section header */}
-              <div className="relative">
-                <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-white/5 pointer-events-none">
-                  05
-                </div>
-                <div className="relative z-10">
-                  <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-6">
-                    The ALI Pilot
-                  </h2>
-                </div>
-              </div>
-
-              <div className="text-base sm:text-lg leading-relaxed text-white/80 space-y-6">
-                <p className="font-semibold text-white">
-                  ALI is currently in pilot.
-                </p>
-                <p>
-                  Participation begins with a short, 10-question survey designed to seed the system with real data.
-                </p>
-                <p>
-                  This early phase is about proving direction, validating signal strength, and refining interpretation.
-                </p>
-
-                {/* Pilot details card */}
-                <div className="bg-white/10 p-6 sm:p-8 border-l-4 border-[#DB0812] my-8">
-                  <p className="font-bold text-xl text-white mb-4">Pilot details:</p>
-                  <ul className="space-y-3 text-white/80">
-                    <li><strong className="text-white">Free for 1 year</strong> — includes 4 quarterly surveys</li>
-                    <li>Full dashboard access and all insights</li>
-                    <li>First 20 primary users receive an <strong className="text-white">"I Am Second."</strong> AO tee</li>
-                  </ul>
-                </div>
-
-                <p>
-                  The database matters. The insight grows with every record. This system is being built to last.
-                </p>
-
-                <div className="pt-4">
-                  <a
-                    href="/culture-science/ali/apply"
-                    onClick={(e) => handleLinkClick(e, '/culture-science/ali/apply')}
-                    className="inline-block px-8 sm:px-10 py-4 sm:py-5 bg-white text-[#1A1A1A] font-medium text-sm sm:text-base hover:bg-[#DB0812] hover:text-white transition-colors"
-                  >
-                    Apply for the Pilot
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 7: CTA - EXPLORE ALI */}
-        <section className="bg-white py-16 sm:py-24 md:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-12">
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] text-center mb-12">
-                Explore ALI
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Card 1 */}
-                <a
-                  href="/culture-science/ali/why-ali-exists"
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/why-ali-exists')}
-                  className="bg-white p-6 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
-                >
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-white text-[#1A1A1A]">
-                    Why ALI Exists
-                  </h3>
-                  <p className="text-sm text-[#1A1A1A]/70 group-hover:text-white/80 mb-3">
-                    The personal motivation behind building ALI.
-                  </p>
-                  <span className="inline-flex items-center gap-2 font-semibold text-sm group-hover:text-white text-[#1A1A1A]">
-                    Explore →
-                  </span>
-                </a>
-
-                {/* Card 2 */}
-                <a
-                  href="/culture-science/ali/method"
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/method')}
-                  className="bg-white p-6 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
-                >
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-white text-[#1A1A1A]">
-                    The Method
-                  </h3>
-                  <p className="text-sm text-[#1A1A1A]/70 group-hover:text-white/80 mb-3">
-                    How leadership conditions become measurable.
-                  </p>
-                  <span className="inline-flex items-center gap-2 font-semibold text-sm group-hover:text-white text-[#1A1A1A]">
-                    Explore →
-                  </span>
-                </a>
-
-                {/* Card 3 */}
-                <a
-                  href="/culture-science/ali/dashboard"
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/dashboard')}
-                  className="bg-white p-6 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
-                >
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-white text-[#1A1A1A]">
-                    The Dashboard
-                  </h3>
-                  <p className="text-sm text-[#1A1A1A]/70 group-hover:text-white/80 mb-3">
-                    Your leadership navigation instrument.
-                  </p>
-                  <span className="inline-flex items-center gap-2 font-semibold text-sm group-hover:text-white text-[#1A1A1A]">
-                    Explore →
-                  </span>
-                </a>
-
-                {/* Card 4 */}
-                <a
-                  href="/culture-science/ali/early-warning"
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/early-warning')}
-                  className="bg-white p-6 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
-                >
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-white text-[#1A1A1A]">
-                    Early Warning
-                  </h3>
-                  <p className="text-sm text-[#1A1A1A]/70 group-hover:text-white/80 mb-3">
-                    How ALI detects drift before damage.
-                  </p>
-                  <span className="inline-flex items-center gap-2 font-semibold text-sm group-hover:text-white text-[#1A1A1A]">
-                    Explore →
-                  </span>
-                </a>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-                <a
-                  href="/culture-science/ali/apply"
-                  onClick={(e) => handleLinkClick(e, '/culture-science/ali/apply')}
-                  className="px-8 sm:px-10 py-4 sm:py-5 bg-[#1A1A1A] text-white font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
-                >
-                  Apply for the Pilot
-                </a>
-                <a
-                  href="/contact"
-                  onClick={(e) => handleLinkClick(e, '/contact')}
-                  className="px-8 sm:px-10 py-4 sm:py-5 bg-transparent text-[#1A1A1A] font-medium text-sm sm:text-base border border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center"
-                >
-                  Start a Conversation
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Featured FAQs Section */}
-        <FeaturedFAQs pageKey="ali" limit={5} showViewAll={true} />
-
+        <section className="bg-ao-dark px-6 py-[100px] text-center md:px-10"><p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ao-brown">The Mirror Is Ready</p><h2 className="mx-auto mb-6 max-w-4xl font-playfair text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.15] text-white">Apply for the pilot. See what your team is actually experiencing.</h2><p className="mx-auto mb-11 max-w-[480px] text-[16px] leading-[1.75] text-white/65">Four surveys. One year. The data your internal rooms will never produce on their own.</p><div className="flex flex-wrap justify-center gap-4"><a href="/culture-science/ali/apply" onClick={go("/culture-science/ali/apply")} className="inline-flex rounded-[2px] bg-ao-red px-8 py-3 text-[13px] font-semibold uppercase tracking-[0.06em] text-white hover:opacity-90">Apply for the Pilot</a><a href="/engagement-inquiry" onClick={go("/engagement-inquiry")} className="inline-flex rounded-[2px] border border-white/30 px-8 py-3 text-[13px] font-semibold uppercase tracking-[0.06em] text-white/85 hover:border-white">Start a Conversation</a></div></section>
       </main>
     </>
   );

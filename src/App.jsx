@@ -22,11 +22,6 @@ import WhatIDoPage from "./pages/WhatIDo.jsx";
 import ALI from "./pages/cultureScience/ALI";
 import ALIApply from "./pages/cultureScience/ALIApply";
 import ALIThanks from "./pages/cultureScience/ALIThanks";
-import WhyALIExists from "./pages/cultureScience/WhyALIExists";
-import ALIMethod from "./pages/cultureScience/ALIMethod";
-import ALIEarlyWarning from "./pages/cultureScience/ALIEarlyWarning";
-import ALIDashboard from "./pages/cultureScience/ALIDashboard";
-import ALISixConditions from "./pages/cultureScience/ALISixConditions";
 
 // Standalone ALI SaaS pages (under /ali/*)
 import ALILanding from "./pages/ali/Landing";
@@ -445,20 +440,20 @@ export default function App() {
           setCurrentPage('ali-thanks');
         } else {
           // All other culture-science/ali/* remain as marketing pages
-          if (path === '/culture-science/ali/why-ali-exists') {
-            setCurrentPage('why-ali-exists');
-          } else if (path === '/culture-science/ali/method') {
-            setCurrentPage('ali-method');
-          } else if (path === '/culture-science/ali/early-warning' || path === '/culture-science/ali/early-warning-indicators') {
-            setCurrentPage('ali-early-warning');
-          } else if (path === '/culture-science/ali/dashboard' || path === '/culture-science/ali/dashboard/') {
+          if (path === '/culture-science/ali/dashboard' || path === '/culture-science/ali/dashboard/') {
             window.history.replaceState({}, '', '/ali/dashboard');
             setCurrentPage('ali-dashboard');
-          } else if (path === '/culture-science/ali/six-leadership-conditions' || path === '/culture-science/ali/six-leadership-conditions/') {
-            setCurrentPage('ali-six-conditions');
-          } else if (path === '/culture-science/ali/faqs') {
-            window.history.replaceState({}, '', '/faqs?category=ali');
-            setCurrentPage('faqs');
+          } else if (
+            path === '/culture-science/ali/why-ali-exists' ||
+            path === '/culture-science/ali/method' ||
+            path === '/culture-science/ali/early-warning' ||
+            path === '/culture-science/ali/early-warning-indicators' ||
+            path === '/culture-science/ali/six-leadership-conditions' ||
+            path === '/culture-science/ali/six-leadership-conditions/' ||
+            path === '/culture-science/ali/faqs'
+          ) {
+            window.history.replaceState({}, '', '/culture-science/ali');
+            setCurrentPage('ali');
           } else {
             setCurrentPage('ali');
           }
@@ -504,20 +499,20 @@ export default function App() {
             setCurrentPage('ali-apply');
           } else if (path === '/culture-science/ali/thanks') {
             setCurrentPage('ali-thanks');
-          } else if (path === '/culture-science/ali/why-ali-exists') {
-            setCurrentPage('why-ali-exists');
-          } else if (path === '/culture-science/ali/method') {
-            setCurrentPage('ali-method');
-          } else if (path === '/culture-science/ali/early-warning' || path === '/culture-science/ali/early-warning-indicators') {
-            setCurrentPage('ali-early-warning');
           } else if (path === '/culture-science/ali/dashboard' || path === '/culture-science/ali/dashboard/') {
+            window.history.replaceState({}, '', '/ali/dashboard');
             setCurrentPage('ali-dashboard');
-          } else if (path === '/culture-science/ali/six-leadership-conditions' || path === '/culture-science/ali/six-leadership-conditions/') {
-            setCurrentPage('ali-six-conditions');
-          } else if (path === '/culture-science/ali/faqs') {
-            // Redirect old ALI FAQs route to universal FAQs with category filter
-            window.history.replaceState({}, '', '/faqs?category=ali');
-            setCurrentPage('faqs');
+          } else if (
+            path === '/culture-science/ali/why-ali-exists' ||
+            path === '/culture-science/ali/method' ||
+            path === '/culture-science/ali/early-warning' ||
+            path === '/culture-science/ali/early-warning-indicators' ||
+            path === '/culture-science/ali/six-leadership-conditions' ||
+            path === '/culture-science/ali/six-leadership-conditions/' ||
+            path === '/culture-science/ali/faqs'
+          ) {
+            window.history.replaceState({}, '', '/culture-science/ali');
+            setCurrentPage('ali');
           } else {
             setCurrentPage('ali');
           }
@@ -848,42 +843,6 @@ export default function App() {
     );
   }
 
-  // Render Why ALI Exists page
-  if (currentPage === 'why-ali-exists') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <WhyALIExists />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-
-  // Render ALI Method page
-  if (currentPage === 'ali-method') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <ALIMethod />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-
-  // Render ALI Early Warning page
-  if (currentPage === 'ali-early-warning') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <ALIEarlyWarning />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-
   // Render standalone ALI SaaS pages (no Header/Footer/Archy)
   if (currentPage === 'ali-landing') {
     return <ALILanding />;
@@ -1173,30 +1132,6 @@ export default function App() {
           </CriticalErrorProvider>
         </UserProvider>
       </ErrorBoundary>
-    );
-  }
-
-  // Render ALI Dashboard page (elevated design) - OLD route under culture-science
-  if (currentPage === 'ali-dashboard-old') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <ALIDashboard />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
-    );
-  }
-
-  // Render ALI Six Conditions page
-  if (currentPage === 'ali-six-conditions') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <ALISixConditions />
-        <Footer />
-        <FloatingArchyButton />
-      </main>
     );
   }
 
