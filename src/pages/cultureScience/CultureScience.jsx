@@ -122,22 +122,22 @@ export default function CultureScience() {
           </div>
         </section>
 
-        {/* The Foundation */}
+        {/* The Foundation — single grid: intro spans full width, then 2×2 + full-width 05 (matches preview) */}
         <section className="bg-[#FAFAF9] py-16 md:py-24">
-          <div className="mx-auto max-w-[1600px] px-6 sm:px-10 md:px-14">
-            <div className="mb-12 max-w-[680px] md:mb-16">
-              <p className={sectionLabel}>The Foundation</p>
-              <h2 className={`${h2} mt-3`}>
-                This isn&apos;t built on opinion. The research is extensive, consistent, and points in one direction.
-              </h2>
-              <p className={`mt-6 ${body}`}>
-                Culture Science synthesizes decades of research across organizational psychology, neuroscience, trust
-                physiology, and behavioral economics. Five core findings drive everything built here, and they all
-                point toward the same conclusion: what leaders do to the conditions around their people determines
-                almost everything else.
-              </p>
-            </div>
+          <div className="mx-auto max-w-[1400px] px-6 sm:px-10 md:px-10">
             <div className="grid grid-cols-1 gap-0.5 md:grid-cols-2">
+              <div className="max-w-[760px] pb-14 md:col-span-2">
+                <p className={sectionLabel}>The Foundation</p>
+                <h2 className={`${h2} mt-3`}>
+                  This isn&apos;t built on opinion. The research is extensive, consistent, and points in one direction.
+                </h2>
+                <p className={`mt-4 ${body}`}>
+                  Culture Science synthesizes decades of research across organizational psychology, neuroscience, trust
+                  physiology, and behavioral economics. Five core findings drive everything built here, and they all
+                  point toward the same conclusion: what leaders do to the conditions around their people determines
+                  almost everything else.
+                </p>
+              </div>
               {[
                 {
                   n: '01',
