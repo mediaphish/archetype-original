@@ -69,7 +69,13 @@ export default async function handler(req, res) {
     let canDeploy = false;
     let reason = null;
 
-    if (company.baseline_date) {
+    if (nextSurveyIndex === 'S1') {
+      // Business rule: first survey is always deployable immediately.
+      // Cadence anchor is set at deployment time.
+      canDeploy = true;
+      availableOn = new Date().toISOString().split('T')[0];
+      reason = null;
+    } else if (company.baseline_date) {
       const availableAt = calculateAvailableAt(company.baseline_date, nextSurveyIndex);
       availableOn = availableAt.toISOString().split('T')[0]; // YYYY-MM-DD format
       

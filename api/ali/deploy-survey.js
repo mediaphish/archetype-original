@@ -229,9 +229,9 @@ export default async function handler(req, res) {
       }
     }
 
-    // For S1, ensure baseline_date is set
-    if (finalSurveyIndex === 'S1' && !company.baseline_date) {
-      // Set baseline_date to today if not set
+    // For S1, always anchor cadence to actual first deployment day.
+    // This guarantees new customers can launch immediately.
+    if (finalSurveyIndex === 'S1') {
       const today = new Date().toISOString().split('T')[0];
       const { error: updateError } = await supabaseAdmin
         .from('ali_companies')
@@ -304,7 +304,10 @@ export default async function handler(req, res) {
     // Calculate available_at from baseline_date and survey_index
     let availableAt = opensAt ? new Date(opensAt) : null;
     if (!availableAt) {
-      if (company.baseline_date) {
+      if (finalSurveyIndex === 'S1') {
+        // First survey should always be immediately available.
+        availableAt = new Date();
+      } else if (company.baseline_date) {
         availableAt = calculateAvailableAt(company.baseline_date, finalSurveyIndex);
       } else {
         // Fallback: use current date for S1 if baseline_date is still not set
