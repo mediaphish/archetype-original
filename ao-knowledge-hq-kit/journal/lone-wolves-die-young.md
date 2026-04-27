@@ -4,7 +4,7 @@ slug: "lone-wolves-die-young"
 publish_date: "2025-07-25"
 created_at: "2025-07-25"
 updated_at: "2025-10-28"
-summary: "A challenge to the myth of the 'lone wolf' leader—reminding that isolation weakens leadership while community, collaboration, and shared purpose sustain success."
+summary: "A challenge to the myth of the 'lone wolf' leader, reminding that isolation weakens leadership while community, collaboration, and shared purpose sustain success."
 categories: ["team-building", "collaboration"]
 featured_image: "../images/lone-wolves-die-young.jpg"
 takeaways: []
@@ -39,7 +39,7 @@ I’ve lived both sides of this.
 I was never happier in business than when I was surrounded by a team of amazing people that I had played a role in assembling.  
 It was never lonely in that spot.  
 It was community with purpose.  
-It was beautiful—and the business was thriving. So was I.  
+It was beautiful, and the business was thriving. So was I.  
 
 Leadership isn’t about standing above your people.  
 It’s about building around you.  

@@ -28,7 +28,7 @@ Servant leadership operates from ordered priorities, not scattered attention.
 
 When leaders lose clarity on what matters most, everything begins to compete for equal importance. Urgency replaces importance. Activity replaces alignment.
 
-Jesus anchors leadership in two relationships—upward and outward.
+Jesus anchors leadership in two relationships, upward and outward.
 
 This ordering matters.
 

@@ -21,7 +21,7 @@ Leadership carried over time can harden the heart. Repeated disappointments, unm
 
 Cynicism often feels protective. It shields leaders from hope, vulnerability, and future disappointment. But it also quietly erodes love. When cynicism settles in, leaders begin expecting the worst rather than cultivating the best.
 
-Galatians calls leaders back to endurance—not naive optimism, but steady goodness. Love refuses to withdraw simply because the work is difficult. It continues to sow what is right, trusting that fruit may come later.
+Galatians calls leaders back to endurance, not naive optimism, but steady goodness. Love refuses to withdraw simply because the work is difficult. It continues to sow what is right, trusting that fruit may come later.
 
 Relational faithfulness deepens here. Love perseveres without becoming bitter.
 

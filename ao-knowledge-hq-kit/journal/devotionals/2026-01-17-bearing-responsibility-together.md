@@ -19,7 +19,7 @@ https://www.esv.org/Galatians+6:2/
 
 Leadership can quietly become isolating. Responsibility accumulates, decisions compound, and leaders may begin to believe they must carry everything alone. Scripture offers a corrective: burden-bearing is not a sign of weakness, but a shared calling within community.
 
-Servant leadership recognizes that responsibility is meant to be distributed, not hoarded. Leaders who refuse help often do so out of fear—fear of appearing inadequate or losing control. Over time, this posture exhausts both the leader and the people they lead.
+Servant leadership recognizes that responsibility is meant to be distributed, not hoarded. Leaders who refuse help often do so out of fear, fear of appearing inadequate or losing control. Over time, this posture exhausts both the leader and the people they lead.
 
 Bearing one another’s burdens does not remove accountability. It humanizes it. When leaders model shared responsibility, they create cultures where honesty is possible and resilience is collective rather than individual.
 

@@ -4,7 +4,7 @@ slug: "illusion-of-control"
 publish_date: "2025-11-27"
 created_at: "2025-11-27"
 updated_at: "2025-11-27"
-summary: "Narcissistic leaders maintain control through hierarchy, ambiguity, and blame—creating the illusion of strength while hiding incompetence. Servant leaders lead by clarity, empowerment, and shared responsibility."
+summary: "Narcissistic leaders maintain control through hierarchy, ambiguity, and blame, creating the illusion of strength while hiding incompetence. Servant leaders lead by clarity, empowerment, and shared responsibility."
 categories: ["leadership", "psychology", "narcissism", "servant-leadership", "power-control", "organizational-dynamics"]
 featured_image: "../images/illusion-of-control.jpg"
 takeaways:
@@ -13,7 +13,7 @@ takeaways:
   - Healthy leadership empowers, equips, and accepts responsibility.
   - Control is a symptom of insecurity; clarity is a mark of leadership.
 applications:
-  - Delegate with clarity and context—not as a means of protection.
+  - Delegate with clarity and context, not as a means of protection.
   - Build direct pathways of communication with your team.
   - Audit whether people rely on your guidance or fear your reactions.
 related: ["architecture-of-distance", "cult-of-confusion", "servant-power"]
@@ -24,7 +24,7 @@ original_url: "https://www.archetypeoriginal.com/journal/illusion-of-control"
 # The Illusion of Control
 
 > “Narcissistic leaders don’t lead from strength. They lead from fear disguised as control.”  
-> — Archetype Original
+>, Archetype Original
 
 ### The Mirage of Command
 
@@ -36,7 +36,7 @@ But look closer and you’ll see the truth:
 Their “control” isn’t strength.
 It’s a shield.
 
-A carefully engineered system designed to keep blame, exposure, and responsibility away from them—while giving the appearance that they run everything.
+A carefully engineered system designed to keep blame, exposure, and responsibility away from them, while giving the appearance that they run everything.
 
 This isn’t leadership.
 It’s choreography.
@@ -46,7 +46,7 @@ A performance staged to hide insecurity behind layers of authority.
 ### How Narcissistic Leaders Manufacture Control
 
 #### 1. Architected Hierarchy
-They create more structure than the work requires—extra managers, narrow funnels of communication, and approval steps that slow everything down.
+They create more structure than the work requires, extra managers, narrow funnels of communication, and approval steps that slow everything down.
 
 The design appears strategic.
 In reality, it’s insulation.
@@ -116,7 +116,7 @@ The organization becomes efficient at one thing:
 
 ### The Servant-Leader Antidote: Empowerment Through Clarity
 
-Servant leaders don’t cling to control—they build capacity in others.
+Servant leaders don’t cling to control, they build capacity in others.
 
 They delegate with clarity.
 They stay close enough to support.
@@ -139,4 +139,4 @@ The other drives them away.
 **Control is a symptom of insecurity. Clarity is a mark of leadership.**
 
 ### Next in the Series →  
-Post 3 — The Performance of Perfection
+Post 3: The Performance of Perfection

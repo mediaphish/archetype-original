@@ -1,5 +1,5 @@
 ---
-title: "April 5 — Protecting the Mission"
+title: "April 5: Protecting the Mission"
 slug: protecting-the-mission
 date: "2026-04-05"
 type: devotional

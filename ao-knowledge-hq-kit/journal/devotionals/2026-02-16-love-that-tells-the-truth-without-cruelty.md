@@ -19,7 +19,7 @@ https://www.esv.org/Ephesians+4:15/
 
 Love in leadership does not avoid truth. Scripture calls leaders to speak truth, but never detached from love. Truth delivered without care wounds. Love delivered without truth misleads. Faithful leadership holds both together.
 
-Leaders who love well do not weaponize honesty. They understand that truth is meant to build, not humiliate. Speaking truth requires discernment—knowing not only what to say, but how and when to say it.
+Leaders who love well do not weaponize honesty. They understand that truth is meant to build, not humiliate. Speaking truth requires discernment, knowing not only what to say, but how and when to say it.
 
 Cruelty often disguises itself as boldness. Scripture exposes that false strength. Love speaks plainly, but with restraint. It corrects without shaming and confronts without tearing down.
 

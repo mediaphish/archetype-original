@@ -4,7 +4,7 @@ slug: "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3"
 publish_date: "2025-09-15"
 created_at: "2025-09-15"
 updated_at: "2025-10-28"
-summary: "Part three reveals the real cost and long-term return of leading with a guiding hand—time, patience, and sacrifice traded for trust, growth, and legacy that lasts."
+summary: "Part three reveals the real cost and long-term return of leading with a guiding hand, time, patience, and sacrifice traded for trust, growth, and legacy that lasts."
 categories: ["power-control", "servant-leadership", "legacy"]
 featured_image: "../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3.jpg"
 takeaways: []
@@ -18,7 +18,7 @@ original_url: ""
 
 ![Leadership Is Not a Clenched Fist, but a Guiding Hand](../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3.jpg)
 
-Leading with a guiding hand sounds noble, but let’s be honest—it costs more.  
+Leading with a guiding hand sounds noble, but let’s be honest, it costs more.  
 A clenched fist is quicker. It’s easier. It demands instead of develops.  
 It controls instead of cultivates. In the short term, it may even look more efficient.  
 
@@ -30,7 +30,7 @@ And the truth is, the guiding hand comes with a price tag few are willing to pay
 
 It’s faster to give an order than to coach.  
 It’s easier to dictate than to dialogue.  
-A clenched fist moves quickly—but it moves alone.  
+A clenched fist moves quickly, but it moves alone.  
 A guiding hand takes more time because it invests in others.  
 
 Leaders who choose the guiding hand must accept that progress may be slower at first.  
@@ -42,7 +42,7 @@ People make mistakes. They forget. They stumble.
 A clenched fist punishes quickly, tightening harder with each failure.  
 A guiding hand steadies, teaches, and gives another chance.  
 
-That takes patience—sometimes more than you think you have.  
+That takes patience, sometimes more than you think you have.  
 But patience is the soil where trust grows. Without it, no team thrives.  
 
 ## The Cost of Sacrifice
@@ -57,7 +57,7 @@ But the impact shows up in the loyalty of your people and the culture you leave 
 
 ## The Return on the Investment
 
-Yes, a guiding hand costs more—time, patience, sacrifice.  
+Yes, a guiding hand costs more, time, patience, sacrifice.  
 But the return is immeasurable.  
 
 You build trust that outlasts projects.  

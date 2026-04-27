@@ -20,20 +20,20 @@ original_url: "https://www.archetypeoriginal.com/journal/why-leaders-hire-me"
 
 # Why Leaders Hire Me
 
-Leaders hire me because I’ve done the work they’re doing now — with real stakes, real people, and real consequences.
+Leaders hire me because I’ve done the work they’re doing now, with real stakes, real people, and real consequences.
 
 I’m not advising from theory.  
 I’m not coaching from frameworks built in clean rooms.  
 I’m not translating someone else’s playbook.
 
-I’ve built multiple businesses from the ground up. I’ve led through growth, complexity, pressure, and seasons where there were no clean answers — only tradeoffs. I’ve made decisions where outcomes weren’t guaranteed and responsibility couldn’t be delegated away.
+I’ve built multiple businesses from the ground up. I’ve led through growth, complexity, pressure, and seasons where there were no clean answers, only tradeoffs. I’ve made decisions where outcomes weren’t guaranteed and responsibility couldn’t be delegated away.
 
 That matters, because leaders don’t need ideas.  
 They need judgment.
 
 The value I bring is perspective shaped by experience:
 - knowing which decisions actually move the business forward  
-- understanding where speed helps — and where it quietly destroys trust  
+- understanding where speed helps, and where it quietly destroys trust  
 - recognizing people risks before they become business problems  
 - seeing second-order consequences early, not after the damage is done  
 
@@ -42,7 +42,7 @@ Even in businesses that faced real operational or financial strain, one thing re
 That’s not accidental.  
 That’s leadership under real conditions.
 
-Leaders benefit from working with me because I help them make cleaner decisions sooner — the kind that prevent unforced errors, reduce unnecessary friction, and protect what actually compounds over time: trust, credibility, and momentum.
+Leaders benefit from working with me because I help them make cleaner decisions sooner, the kind that prevent unforced errors, reduce unnecessary friction, and protect what actually compounds over time: trust, credibility, and momentum.
 
 I don’t take over.  
 I don’t posture.  
@@ -58,7 +58,7 @@ The return shows up where it always does:
 
 That’s why leaders hire me.
 
-Because leadership is consequential — and they care deeply about how they lead.
+Because leadership is consequential, and they care deeply about how they lead.
 
 **If you're a leader carrying real responsibility and want sharper judgment, cleaner decisions, and growth that doesn't cost your people, this is where that conversation starts.**
 

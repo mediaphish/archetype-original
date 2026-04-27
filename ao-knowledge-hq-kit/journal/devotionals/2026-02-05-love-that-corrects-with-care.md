@@ -23,7 +23,7 @@ Correction shaped by love is neither harsh nor hesitant. It is thoughtful, measu
 
 When correction is driven by frustration, it wounds. When correction is driven by love, it forms. People trust leaders who are willing to speak truth carefully and consistently, even when it is uncomfortable.
 
-Relational faithfulness requires courage. Love does not abandon people to avoid tension—it walks with them through it.
+Relational faithfulness requires courage. Love does not abandon people to avoid tension, it walks with them through it.
 
 ## Practical Application
 

@@ -16,7 +16,7 @@ summary: "Lasting growth requires patience and trust in the process."
 
 ## Reflection
 
-Growth rarely follows the timelines leaders prefer. Scripture uses the image of a farmer—patient, attentive, and dependent on processes that cannot be rushed. Leadership growth works the same way.
+Growth rarely follows the timelines leaders prefer. Scripture uses the image of a farmer, patient, attentive, and dependent on processes that cannot be rushed. Leadership growth works the same way.
 
 Servant leadership requires patience with people, systems, and oneself. Pressuring growth often produces surface-level compliance rather than deep development. Patience communicates belief in the long-term value of people and the process required for maturity.
 

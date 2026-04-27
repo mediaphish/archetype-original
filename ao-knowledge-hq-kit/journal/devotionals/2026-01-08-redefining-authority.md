@@ -18,7 +18,7 @@ summary: "Authority exists for service, not status."
 
 ## Reflection
 
-Authority is often misunderstood as the right to command. Scripture presents authority as responsibility directed toward service. Jesus does not remove authority from leaders—he redefines its purpose. Power is not meant to elevate the leader above others but to lift others up.
+Authority is often misunderstood as the right to command. Scripture presents authority as responsibility directed toward service. Jesus does not remove authority from leaders, he redefines its purpose. Power is not meant to elevate the leader above others but to lift others up.
 
 Servant leadership changes how authority is experienced. Instead of being feared, authority becomes protective. Instead of controlling, it becomes clarifying. Leaders who understand this stop asking how to maintain power and start asking how power can serve the good of those entrusted to them.
 

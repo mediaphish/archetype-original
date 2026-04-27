@@ -17,7 +17,7 @@ https://www.esv.org/Psalm+46:10/
 
 ## Reflection
 
-Leadership noise is constant. Decisions, opinions, urgency, and expectations compete for attention. Scripture invites leaders into a different posture—not withdrawal from responsibility, but stillness that restores clarity.
+Leadership noise is constant. Decisions, opinions, urgency, and expectations compete for attention. Scripture invites leaders into a different posture, not withdrawal from responsibility, but stillness that restores clarity.
 
 Stillness is not inactivity. It is intentional pause that allows perspective to recalibrate. Leaders who never slow down often confuse motion with progress and reaction with discernment. Over time, this erodes judgment and increases anxiety.
 

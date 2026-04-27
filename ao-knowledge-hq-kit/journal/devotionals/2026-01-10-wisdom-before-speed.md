@@ -20,7 +20,7 @@ Speed often masquerades as decisiveness in leadership. Scripture warns that acti
 
 Servant leadership values wisdom over urgency. Slowing down is not avoidance; it is stewardship. Leaders who pause long enough to seek understanding make fewer corrective decisions later and build greater trust with those they lead.
 
-Renewal includes learning when speed helps—and when it harms.
+Renewal includes learning when speed helps, and when it harms.
 
 ## Practical Application
 

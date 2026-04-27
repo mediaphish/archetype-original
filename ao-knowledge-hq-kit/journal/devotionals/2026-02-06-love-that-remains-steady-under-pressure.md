@@ -17,7 +17,7 @@ https://www.esv.org/1+Corinthians+13:4-7/
 
 ## Reflection
 
-Pressure exposes what leads us. Under stress, urgency, fatigue, or conflict, leaders reveal whether love is truly shaping their leadership or merely supporting it when conditions are favorable. Scripture describes love as steady—patient, enduring, and resilient—even when circumstances press hard.
+Pressure exposes what leads us. Under stress, urgency, fatigue, or conflict, leaders reveal whether love is truly shaping their leadership or merely supporting it when conditions are favorable. Scripture describes love as steady, patient, enduring, and resilient, even when circumstances press hard.
 
 Steady leadership love does not react impulsively or withdraw under strain. It remains present. It holds boundaries without aggression and maintains commitment without becoming brittle. This steadiness becomes an anchor for others when uncertainty rises.
 

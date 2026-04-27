@@ -17,7 +17,7 @@ https://www.esv.org/Philippians+1:6/
 
 ## Reflection
 
-Endings invite reflection. Scripture reminds leaders that growth is ongoing, not confined to a single season or moment. What has been shaped, clarified, or corrected does not end here—it carries forward.
+Endings invite reflection. Scripture reminds leaders that growth is ongoing, not confined to a single season or moment. What has been shaped, clarified, or corrected does not end here, it carries forward.
 
 Servant leaders resist the urge to compartmentalize reflection. Instead, they allow insight to shape how they move into what comes next. Leadership maturity is marked not by constant reinvention, but by faithful continuation of what matters most.
 

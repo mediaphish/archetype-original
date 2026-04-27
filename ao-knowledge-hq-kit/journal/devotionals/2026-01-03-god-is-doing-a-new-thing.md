@@ -18,11 +18,11 @@ summary: "New beginnings require perception and trust."
 
 ## Reflection
 
-God’s promise of something new comes alongside an invitation to let go of what no longer defines the present. This is not dismissal of past faithfulness, but release from being bound to past limitations. Renewal requires attentiveness—the ability to perceive what God is already bringing into being.
+God’s promise of something new comes alongside an invitation to let go of what no longer defines the present. This is not dismissal of past faithfulness, but release from being bound to past limitations. Renewal requires attentiveness, the ability to perceive what God is already bringing into being.
 
 For leaders, this is a call to openness. New growth often arrives quietly, not dramatically. It may challenge familiar patterns or invite unfamiliar paths. Leaders anchored in God’s work learn to move forward without clinging to what once worked.
 
-The beginning of something new often requires courage to notice it—and humility to follow it.
+The beginning of something new often requires courage to notice it, and humility to follow it.
 
 ---
 

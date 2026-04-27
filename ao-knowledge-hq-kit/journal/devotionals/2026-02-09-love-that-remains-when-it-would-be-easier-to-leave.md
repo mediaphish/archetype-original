@@ -17,7 +17,7 @@ https://www.esv.org/Ruth+1:16-17/
 
 ## Reflection
 
-Leadership love is most clearly revealed when commitment becomes inconvenient. Scripture honors love that remains—love that stays present even when circumstances invite withdrawal. This kind of faithfulness is not driven by obligation alone, but by covenantal commitment.
+Leadership love is most clearly revealed when commitment becomes inconvenient. Scripture honors love that remains, love that stays present even when circumstances invite withdrawal. This kind of faithfulness is not driven by obligation alone, but by covenantal commitment.
 
 Remaining present when it would be easier to leave requires courage and resolve. Leaders who love faithfully do not disengage at the first sign of difficulty. They stay, listen, support, and carry responsibility even when outcomes are uncertain.
 

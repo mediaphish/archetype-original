@@ -22,7 +22,7 @@ summary: "Faithful leadership perseveres in doing good, trusting unseen work to 
 
 Leadership often requires perseverance without immediate evidence of impact. Paul acknowledges the weariness that comes from sustained effort, reminding leaders not to give up simply because results are delayed. Faithful work does not always yield visible fruit on our preferred timeline.
 
-Verse 10 widens the lens. Perseverance is not only personal endurance—it is outward responsibility. Leaders are called to continue doing good, especially toward those entrusted to their care. The work may feel unseen, but it is not insignificant. Faithfulness expressed through consistent care shapes people long before outcomes can be measured.
+Verse 10 widens the lens. Perseverance is not only personal endurance, it is outward responsibility. Leaders are called to continue doing good, especially toward those entrusted to their care. The work may feel unseen, but it is not insignificant. Faithfulness expressed through consistent care shapes people long before outcomes can be measured.
 
 Servant leadership trusts that disciplined, other-focused effort produces a harvest in time. Leaders renew their strength by remembering who they are serving and why the work matters.
 

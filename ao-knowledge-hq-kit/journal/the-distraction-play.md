@@ -43,7 +43,7 @@ In small businesses, it sounds like this:
 
 Sometimes those shifts are legitimate. Markets change. Strategy evolves. But under narcissistic leadership, these moves often happen at the exact same moments: right after hard feedback, right before accountability, or whenever something real is about to land on the leader’s lap.
 
-In larger organizations, the distraction play shows up as never-ending initiatives. Task forces. Special projects. Re-orgs. Pilots. Reviews. Each one launched with energy and language about “alignment” or “transformation”—then quietly abandoned when it’s time to measure results or face uncomfortable truths.
+In larger organizations, the distraction play shows up as never-ending initiatives. Task forces. Special projects. Re-orgs. Pilots. Reviews. Each one launched with energy and language about “alignment” or “transformation”, then quietly abandoned when it’s time to measure results or face uncomfortable truths.
 
 The mechanism is simple:
 
@@ -51,7 +51,7 @@ If people are constantly reacting, they don’t have time to reflect.
 If they’re spread thin, they don’t have space to ask the right questions.  
 If the conversation always shifts, the real issue never has a chance to stick.
 
-The distraction play keeps everyone moving—but never toward the thing that actually needs to be dealt with.
+The distraction play keeps everyone moving, but never toward the thing that actually needs to be dealt with.
 
 You can see it in the timing.
 
@@ -62,13 +62,13 @@ Growing tension in the team?
 Now the priority is “tightening processes.”
 
 Questions about the leader’s decisions?  
-A brand-new idea gets dropped in the middle of the table—big enough to hijack attention, vague enough that no one can challenge it yet.
+A brand-new idea gets dropped in the middle of the table, big enough to hijack attention, vague enough that no one can challenge it yet.
 
 People walk away from these conversations exhausted but unresolved. They stay busy. They stay loyal. They stay slightly off-balance.
 
 And that’s the point.
 
-Psychologically, distraction is a way to avoid pain. For insecure leaders, it’s easier to stir up activity than to sit in a hard conversation, own a mistake, or confront a pattern in themselves. So they create noise. They inflate side issues. They elevate secondary problems. They make anything and everything a priority—except the one thing that would require them to change.
+Psychologically, distraction is a way to avoid pain. For insecure leaders, it’s easier to stir up activity than to sit in a hard conversation, own a mistake, or confront a pattern in themselves. So they create noise. They inflate side issues. They elevate secondary problems. They make anything and everything a priority, except the one thing that would require them to change.
 
 Over time, the cost to the team is heavy.
 
@@ -96,7 +96,7 @@ They choose a few things that truly matter and keep returning to them, even when
 
 They understand that clarity over time is what builds trust.
 
-In a healthy environment, new initiatives still happen—but they’re anchored. They fit inside a clear story. People understand how today’s efforts connect to last year’s commitments and next year’s direction. The work may be complex, but the purpose doesn’t bounce around.
+In a healthy environment, new initiatives still happen, but they’re anchored. They fit inside a clear story. People understand how today’s efforts connect to last year’s commitments and next year’s direction. The work may be complex, but the purpose doesn’t bounce around.
 
 You can feel the difference in the room.
 

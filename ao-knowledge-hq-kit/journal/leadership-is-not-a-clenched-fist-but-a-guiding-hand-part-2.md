@@ -4,7 +4,7 @@ slug: "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2"
 publish_date: "2025-09-02"
 created_at: "2025-09-02"
 updated_at: "2025-10-28"
-summary: "Part two explores what real leadership looks like in action—listening before directing, protecting your people, teaching instead of telling, and leading with consistency through storms."
+summary: "Part two explores what real leadership looks like in action, listening before directing, protecting your people, teaching instead of telling, and leading with consistency through storms."
 categories: ["power-control", "servant-leadership", "communication"]
 featured_image: "../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2.jpg"
 takeaways: []
@@ -20,7 +20,7 @@ original_url: ""
 
 It’s easy to say the right things about leadership. Plenty of leaders talk about culture, people, and values. They write vision statements and hang them on the wall. They tell their teams, “I’ve got your back.”
 
-But talk is cheap. When the pressure mounts, true leadership isn’t revealed in slogans or speeches. It shows up in action. A guiding hand can’t just be promised—it has to be lived.
+But talk is cheap. When the pressure mounts, true leadership isn’t revealed in slogans or speeches. It shows up in action. A guiding hand can’t just be promised, it has to be lived.
 
 ## Listening Before Directing
 
@@ -30,11 +30,11 @@ I’ve watched teams transform simply because the leader finally stopped talking
 
 ## Protecting Your People
 
-Another way leaders live this out is by protecting their people. When someone crosses the line—whether it’s a client, a partner, or another leader—the guiding hand doesn’t shrink back. It steps forward.
+Another way leaders live this out is by protecting their people. When someone crosses the line, whether it’s a client, a partner, or another leader, the guiding hand doesn’t shrink back. It steps forward.
 
-I’ll never forget a time when one of my team members was being treated unfairly. I stood up, made it clear that behavior wouldn’t be tolerated, and drew a line in the sand. That moment earned me the nickname “Pappa Bart.” It wasn’t about being tough for the sake of toughness—it was about letting my team know that if someone came after them, they’d have to go through me first.
+I’ll never forget a time when one of my team members was being treated unfairly. I stood up, made it clear that behavior wouldn’t be tolerated, and drew a line in the sand. That moment earned me the nickname “Pappa Bart.” It wasn’t about being tough for the sake of toughness, it was about letting my team know that if someone came after them, they’d have to go through me first.
 
-That act didn’t cost us money, but honestly, I would’ve been fine if it had. Because what it gained was something money can’t buy: loyalty. When your team knows you’ll fight for them, they’ll fight with you. That’s not weakness—that’s strength channeled into protection.
+That act didn’t cost us money, but honestly, I would’ve been fine if it had. Because what it gained was something money can’t buy: loyalty. When your team knows you’ll fight for them, they’ll fight with you. That’s not weakness, that’s strength channeled into protection.
 
 ## Teaching Instead of Telling
 
@@ -64,11 +64,11 @@ When leaders serve this way, they don’t have to demand loyalty. They earn it.
 
 ## Living the Talk
 
-Talk without action is manipulation. It’s the clenched fist wearing soft gloves. But action—consistent, sacrificial, people-first action—that’s the guiding hand in motion.
+Talk without action is manipulation. It’s the clenched fist wearing soft gloves. But action, consistent, sacrificial, people-first action, that’s the guiding hand in motion.
 
 I’ve led long enough to know this: your people will eventually stop listening to what you say and start measuring what you do. And when your actions prove your words true, you won’t have to force anyone to stay. They’ll stay because they want to.
 
-Leadership isn’t about promises. It’s about presence. Not about clenching tighter, but about opening your hand and walking with people. When you live the talk, you never have to force loyalty—it becomes the natural fruit of trust.
+Leadership isn’t about promises. It’s about presence. Not about clenching tighter, but about opening your hand and walking with people. When you live the talk, you never have to force loyalty, it becomes the natural fruit of trust.
 
 #LeadershipPost  
 

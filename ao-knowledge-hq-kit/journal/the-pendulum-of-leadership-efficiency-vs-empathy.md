@@ -33,7 +33,7 @@ You’ll hear things like:
 
 The outcome?
 
-Yes, things get done—fast.
+Yes, things get done, fast.
 
 But people burn out.
 
@@ -44,7 +44,7 @@ Turnover rises.
 And over time, the culture becomes cold and transactional.
 You hit the numbers… but you lose the team.
 
-Now swing the pendulum the other way—toward 100% empathy.
+Now swing the pendulum the other way, toward 100% empathy.
 
 Here, compassion guides every decision.
 
@@ -53,15 +53,15 @@ You hear:
  • “Let’s give them a little more grace.”
  • “They’ll improve… eventually.”
 
-This feels kind and caring—and it is, to a point.
+This feels kind and caring, and it is, to a point.
 
 But unchecked, empathy without accountability creates a different kind of damage.
  • Standards slip.
  • Top performers carry the weight.
  • Deadlines get missed.
- • And culture erodes—not from pressure, but from passivity.
+ • And culture erodes, not from pressure, but from passivity.
 
-In time, your best people leave—not because you cared too much, but because you wouldn’t lead with enough clarity.
+In time, your best people leave, not because you cared too much, but because you wouldn’t lead with enough clarity.
 ⸻
 Here’s the part no one tells you:
 
@@ -73,11 +73,11 @@ That means:
  • Catching the pendulum before it reaches the extremes.
  • Knowing when the pressure is breaking people instead of building them.
  • Recognizing when grace has become permission for mediocrity.
- • Holding both truth and care in the same hand—and refusing to let go of either.
+ • Holding both truth and care in the same hand, and refusing to let go of either.
 
 Leadership is managing the tension on purpose.
 
-It’s asking: “What does the team need right now—clarity, or compassion?”
+It’s asking: “What does the team need right now, clarity, or compassion?”
 
 Most people don’t quit because it’s hard.
 
@@ -99,7 +99,7 @@ It’s not either/or.
 
 It’s not soft or strong.
 
-It’s the discipline of both—and the wisdom to know when to lean in either direction.
+It’s the discipline of both, and the wisdom to know when to lean in either direction.
 
 If you’re leading a team, managing a business, raising kids, or building culture anywhere at all…
 

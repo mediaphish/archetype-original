@@ -20,7 +20,7 @@ summary: "Faithfulness in ordinary responsibilities prepares leaders for greater
 
 ## Reflection
 
-Jesus connects faithfulness in small things to trustworthiness with greater responsibility. What appears ordinary is not insignificant—it is formative. Daily choices, unseen work, and routine responsibilities reveal whether a leader can be trusted with more.
+Jesus connects faithfulness in small things to trustworthiness with greater responsibility. What appears ordinary is not insignificant, it is formative. Daily choices, unseen work, and routine responsibilities reveal whether a leader can be trusted with more.
 
 Verse 11 sharpens the point. If leaders cannot be trusted with what is temporary or practical, they are not prepared to steward what is lasting and meaningful. Faithfulness is not proven in moments of visibility but in how leaders handle what has already been placed in their care.
 

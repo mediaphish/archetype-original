@@ -13,7 +13,7 @@ categories:
   - accountability
 featured_image: "../images/toxic-empathy-3-the-cost-of-avoidance.jpg"
 takeaways:
-  - What leaders fail to address does not stay contained—it spreads through the system.
+  - What leaders fail to address does not stay contained, it spreads through the system.
   - People learn what matters by what is enforced, not what is said.
   - High performers recalibrate when effort and outcome disconnect.
   - Inconsistency creates instability, even when it feels situational to the leader.

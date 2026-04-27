@@ -1,5 +1,5 @@
 ---
-title: "April 1 — Steady Direction"
+title: "April 1: Steady Direction"
 slug: steady-direction
 date: "2026-04-01"
 type: devotional

@@ -1,5 +1,5 @@
 ---
-title: "April 4 — Compassionate Clarity"
+title: "April 4: Compassionate Clarity"
 slug: compassionate-clarity
 date: "2026-04-04"
 type: devotional

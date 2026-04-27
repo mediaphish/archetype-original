@@ -4,7 +4,7 @@ slug: "accountability-comes-first"
 publish_date: "2026-01-20"
 created_at: "2026-01-20"
 updated_at: "2026-01-20"
-summary: "An editorial examination of why accountability must precede reconciliation—and how leadership systems often delay responsibility in the name of stability."
+summary: "An editorial examination of why accountability must precede reconciliation, and how leadership systems often delay responsibility in the name of stability."
 categories: ["editorial", "servant-leadership", "accountability", "power", "culture"]
 featured_image: "../images/accountability-comes-first.jpg"
 takeaways:
@@ -29,7 +29,7 @@ Those phrases sound wise. They feel mature. They are often anything but.
 Because reconciliation without accountability isn’t reconciliation at all.  
 It’s avoidance with better branding.
 
-Across organizations, churches, businesses, and institutions, the pattern is consistent: when accountability threatens stability, accountability is delayed. Not denied outright—just postponed long enough for urgency to fade and discomfort to pass.
+Across organizations, churches, businesses, and institutions, the pattern is consistent: when accountability threatens stability, accountability is delayed. Not denied outright, just postponed long enough for urgency to fade and discomfort to pass.
 
 Time becomes a solvent.
 
@@ -60,13 +60,13 @@ It challenges the value hierarchy of the system itself.
 
 When stability outranks integrity, accountability becomes optional.  
 When accountability is optional, learning stops.  
-And when learning stops, failure doesn’t disappear—it just goes underground.
+And when learning stops, failure doesn’t disappear, it just goes underground.
 
 This is why organizations that claim to value reconciliation often resist accountability first. Accountability introduces facts, witnesses, and discomfort. It forces decisions instead of delays. Reconciliation, by contrast, can be abstracted, postponed, or redefined until it costs almost nothing.
 
 But without accountability, reconciliation becomes theater.
 
-In science, failure is not something to hide—it is the mechanism of learning. Hypotheses are tested, disproven, and refined. Progress depends on honest exposure to what didn’t work.
+In science, failure is not something to hide, it is the mechanism of learning. Hypotheses are tested, disproven, and refined. Progress depends on honest exposure to what didn’t work.
 
 Leadership is no different.
 
@@ -76,7 +76,7 @@ And you cannot correct what you refuse to examine.
 
 Servant leadership understands this.
 
-It treats accountability not as a threat, but as fuel. Not as punishment, but as refinement. It assumes leaders are fallible by design—and that honesty under pressure is the price of trust.
+It treats accountability not as a threat, but as fuel. Not as punishment, but as refinement. It assumes leaders are fallible by design, and that honesty under pressure is the price of trust.
 
 Systems built to protect leaders from accountability will always reject servant leadership eventually.
 

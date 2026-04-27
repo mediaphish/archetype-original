@@ -16,9 +16,9 @@ summary: "Faithfulness in ordinary work shapes culture more than visible moments
 
 ## Reflection
 
-Leadership is often measured in moments of visibility—decisions made in meetings, outcomes announced publicly, results that can be pointed to. Scripture redirects attention to something far less dramatic: faithfulness in ordinary work.
+Leadership is often measured in moments of visibility, decisions made in meetings, outcomes announced publicly, results that can be pointed to. Scripture redirects attention to something far less dramatic: faithfulness in ordinary work.
 
-What leaders do consistently, quietly, and without recognition shapes culture more than isolated moments of excellence. When ordinary responsibilities are treated as meaningful, people feel respected rather than used. Faithfulness communicates that the work—and the people doing it—matter, even when no one is watching.
+What leaders do consistently, quietly, and without recognition shapes culture more than isolated moments of excellence. When ordinary responsibilities are treated as meaningful, people feel respected rather than used. Faithfulness communicates that the work, and the people doing it, matter, even when no one is watching.
 
 Servant leadership is practiced long before it is noticed. It shows up in preparation, follow-through, and care taken in details that seem small but accumulate over time.
 

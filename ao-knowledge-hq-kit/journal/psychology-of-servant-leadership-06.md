@@ -27,7 +27,7 @@ original_source: ""
 original_url: ""
 ---
 
-# Psychology of Servant Leadership, Part 6: The System of Service — Scaling Humility
+# Psychology of Servant Leadership, Part 6: The System of Service: Scaling Humility
 
 ![Psychology of Servant Leadership, Part 6](../images/psychology-of-servant-leadership-06.jpg)
 
@@ -35,19 +35,19 @@ Most companies try to scale processes, technologies, or performance.
 Very few try to scale humility.  
 And that’s why most cultures eventually break.
 
-Servant leadership works when the leader embodies it — but it becomes unstoppable when the system reflects it too.
+Servant leadership works when the leader embodies it, but it becomes unstoppable when the system reflects it too.
 
 Because humility isn’t a personality trait.  
 It’s a structure.
 
-And if you want a culture that serves people well — protects them, grows them, aligns them — you have to build the systems that do that when the leader isn’t in the room.
+And if you want a culture that serves people well, protects them, grows them, aligns them, you have to build the systems that do that when the leader isn’t in the room.
 
 This is where most organizations fail:  
 They depend on the character of one leader instead of the consistency of many.
 
 ---
 
-### Culture Isn’t What You Say — It’s What You Systemize
+### Culture Isn’t What You Say, It’s What You Systemize
 
 Leaders talk about culture like it’s a vibe or a feeling in the air.  
 It’s not.  
@@ -60,13 +60,13 @@ If your systems reward compliance over curiosity, you get silence.
 If your systems reward results over people, you get burnout and bodies.
 
 The opposite is also true:  
-When your systems reward clarity, accountability, trust, and service — that’s the culture you get.
+When your systems reward clarity, accountability, trust, and service, that’s the culture you get.
 
 Servant leadership becomes real when it stops depending on memory and starts depending on structure.
 
 ---
 
-### The Mirror Principle — People Echo What They Experience
+### The Mirror Principle, People Echo What They Experience
 
 Humans imitate what they see.  
 Neurologically, we are wired to mirror leadership.
@@ -79,7 +79,7 @@ This isn’t soft science.
 It’s how mirror neurons work.  
 Your team’s behavior follows the emotional and ethical energy you model.
 
-But again — modeling isn’t enough.  
+But again, modeling isn’t enough.  
 People need reminders. Rituals. Feedback loops. Clear expectations.  
 They need the system to echo what the leader values.
 
@@ -112,7 +112,7 @@ In servant-led cultures:
 - Credit goes down.  
 - Responsibility goes up.
 
-Servant leadership gets baked into the daily operating rhythm — not reserved for speeches or special moments.
+Servant leadership gets baked into the daily operating rhythm, not reserved for speeches or special moments.
 
 Because culture is a calendar, not a quote.
 
@@ -132,7 +132,7 @@ You need systems that guard what matters:
 - Rituals that celebrate growth, not just output.  
 - Guardrails that stop fear-based leadership in its tracks.
 
-This is the part most leaders skip — and it’s why servant leadership so often fails after the founder leaves.
+This is the part most leaders skip, and it’s why servant leadership so often fails after the founder leaves.
 
 Servant leadership isn’t a personality.  
 It’s a process.  
@@ -158,7 +158,7 @@ Bad systems feel fake. Good systems amplify what’s real.
 
 ### What Servant Leaders Build
 
-Servant leaders don’t just build people — they build the machines that build the people.
+Servant leaders don’t just build people, they build the machines that build the people.
 
 They create cultures where:
 

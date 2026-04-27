@@ -18,9 +18,9 @@ summary: "Leadership flows from identity, not performance."
 
 ## Reflection
 
-A renewed season doesn’t begin with striving—it begins with remembering purpose. Scripture frames good work as something prepared in advance, not something leaders must invent or prove. That matters because leadership pressure often turns calling into performance. When that happens, leaders begin chasing validation instead of serving people.
+A renewed season doesn’t begin with striving, it begins with remembering purpose. Scripture frames good work as something prepared in advance, not something leaders must invent or prove. That matters because leadership pressure often turns calling into performance. When that happens, leaders begin chasing validation instead of serving people.
 
-Servant leadership flows from identity, not insecurity. Leaders who understand they were created for meaningful work can release the need to control outcomes or impress others. They stop asking, How do I look? and start asking, Who does this serve? Renewal, in this sense, is not about doing more—it’s about returning to why you lead at all.
+Servant leadership flows from identity, not insecurity. Leaders who understand they were created for meaningful work can release the need to control outcomes or impress others. They stop asking, How do I look? and start asking, Who does this serve? Renewal, in this sense, is not about doing more, it’s about returning to why you lead at all.
 
 ---
 

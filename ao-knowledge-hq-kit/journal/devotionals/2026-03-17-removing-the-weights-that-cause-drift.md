@@ -19,7 +19,7 @@ https://www.esv.org/Hebrews+12:1-2/
 
 Hebrews calls leaders to lay aside every weight and run with endurance, fixing their eyes on Jesus. Drift rarely begins with rebellion. It begins with distraction.
 
-Some weights are not sinful. They are simply unnecessary. Comparison, constant urgency, noise, approval-seeking — these slow endurance and blur focus. Over time, they create subtle instability.
+Some weights are not sinful. They are simply unnecessary. Comparison, constant urgency, noise, approval-seeking, these slow endurance and blur focus. Over time, they create subtle instability.
 
 Endurance requires intentional release. It requires deciding what will not shape your pace or your identity. When focus is misplaced, leadership wavers. When focus is fixed, steadiness strengthens.
 

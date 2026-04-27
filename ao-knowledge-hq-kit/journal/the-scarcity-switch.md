@@ -31,7 +31,7 @@ Scarcity of approval.
 Scarcity of resources.  
 Scarcity of belonging.
 
-It’s a lever narcissistic leaders pull the moment they feel their influence slipping. You can watch it happen in real time. A team starts gaining momentum, confidence grows, collaboration deepens—then suddenly the atmosphere tightens. Information dries up. Access gets restricted. Praise becomes selective. Resources get “reconsidered.”
+It’s a lever narcissistic leaders pull the moment they feel their influence slipping. You can watch it happen in real time. A team starts gaining momentum, confidence grows, collaboration deepens, then suddenly the atmosphere tightens. Information dries up. Access gets restricted. Praise becomes selective. Resources get “reconsidered.”
 
 The room goes from open to closed without warning.
 
@@ -45,12 +45,12 @@ Psychologists call this resource-based control. When leaders tie stability, oppo
 You’ll see the signs:
 
 Sudden concern about “limited roles” or “finite advancement.”  
-Praise that is directed to a select few—usually the most agreeable.  
+Praise that is directed to a select few, usually the most agreeable.  
 Information that used to flow freely now bottlenecked at the top.  
 Teams told to “prove” themselves without ever being given clear criteria.  
 People working harder but feeling less secure.
 
-It creates a low-grade anxiety that never fully leaves the environment. Scarcity narrows people’s thinking. Research in behavioral economics shows that when the brain perceives scarcity—whether financial, relational, or emotional—it becomes more reactive and less strategic. Focus collapses into the immediate. Long-term thinking disappears.
+It creates a low-grade anxiety that never fully leaves the environment. Scarcity narrows people’s thinking. Research in behavioral economics shows that when the brain perceives scarcity, whether financial, relational, or emotional, it becomes more reactive and less strategic. Focus collapses into the immediate. Long-term thinking disappears.
 
 And when leaders create that environment deliberately, they make themselves the only stable point in the room.
 
@@ -61,7 +61,7 @@ Dependent on the leader’s approval.
 Dependent on the leader’s access.  
 Dependent on the leader’s emotional state.
 
-Instead of a unified team, the culture shifts into a quiet competition for proximity. People begin calculating whether being seen, praised, or chosen is even possible—and they adjust their behavior accordingly.
+Instead of a unified team, the culture shifts into a quiet competition for proximity. People begin calculating whether being seen, praised, or chosen is even possible, and they adjust their behavior accordingly.
 
 Some shrink.  
 Some overextend.  
@@ -72,9 +72,9 @@ The tragedy is that the scarcity switch kills exactly what healthy leadership bu
 
 Servant leaders move the opposite direction.
 
-They create abundance—not financially, but emotionally and structurally. They give opportunity away instead of hoarding it. They make sure information flows horizontally, not just vertically. They share credit. They democratize access. They make it clear that growth is not a contest but an expectation.
+They create abundance, not financially, but emotionally and structurally. They give opportunity away instead of hoarding it. They make sure information flows horizontally, not just vertically. They share credit. They democratize access. They make it clear that growth is not a contest but an expectation.
 
-When resources are genuinely limited, they say so plainly—and they explain the plan, not the fear. They don’t weaponize scarcity; they navigate it with transparency. And in doing so, they remove the fear that keeps people small.
+When resources are genuinely limited, they say so plainly, and they explain the plan, not the fear. They don’t weaponize scarcity; they navigate it with transparency. And in doing so, they remove the fear that keeps people small.
 
 In a healthy environment, people don’t fight for space.  
 They build more of it.

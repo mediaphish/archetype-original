@@ -1,5 +1,5 @@
 ---
-title: "April 3 — Grounded Recognition"
+title: "April 3: Grounded Recognition"
 slug: grounded-recognition
 date: "2026-04-03"
 type: devotional

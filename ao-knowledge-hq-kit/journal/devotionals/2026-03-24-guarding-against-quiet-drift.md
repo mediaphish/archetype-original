@@ -1,5 +1,5 @@
 ---
-title: "March 24 — Guarding Against Quiet Drift"
+title: "March 24: Guarding Against Quiet Drift"
 slug: guarding-against-quiet-drift
 date: "2026-03-24"
 type: devotional
@@ -17,11 +17,11 @@ https://www.esv.org/Hebrews+2:1/
 
 ## Reflection
 
-Hebrews warns that we must pay closer attention lest we drift away. Drift is rarely dramatic. It is subtle — a gradual loosening of vigilance.
+Hebrews warns that we must pay closer attention lest we drift away. Drift is rarely dramatic. It is subtle, a gradual loosening of vigilance.
 
 Leaders drift when standards relax quietly. When small compromises accumulate. When focus softens. Drift feels harmless until it compounds.
 
-Steadiness requires attention. Not anxiety — attention. A deliberate awareness of direction and alignment.
+Steadiness requires attention. Not anxiety, attention. A deliberate awareness of direction and alignment.
 
 Paying closer attention keeps leadership from eroding slowly over time.
 

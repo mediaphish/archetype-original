@@ -26,7 +26,7 @@ This shift is subtle, but it is where leadership begins to lose alignment.
 
 Servant leaders understand that influence, authority, and responsibility are entrusted, not possessed. When that distinction is lost, leadership becomes protective of position rather than faithful to purpose.
 
-The tenants did not fail all at once. They hardened gradually—first resisting, then rejecting, then taking what was not theirs.
+The tenants did not fail all at once. They hardened gradually, first resisting, then rejecting, then taking what was not theirs.
 
 Jesus reveals how easily responsibility can turn into control when accountability is ignored.
 

@@ -17,13 +17,13 @@ https://www.esv.org/Ephesians+4:1-3/
 
 ## Reflection
 
-Leadership love is tested most when relationships strain. Scripture does not call leaders to win arguments or maintain control, but to walk in a manner worthy of their calling—with humility, gentleness, patience, and a willingness to bear with others in love. These are not optional traits. They are evidence of mature leadership.
+Leadership love is tested most when relationships strain. Scripture does not call leaders to win arguments or maintain control, but to walk in a manner worthy of their calling, with humility, gentleness, patience, and a willingness to bear with others in love. These are not optional traits. They are evidence of mature leadership.
 
 To bear with others does not mean ignoring problems or avoiding truth. It means choosing unity over irritation and patience over pressure. Love recognizes that people grow at different speeds, carry unseen burdens, and often need space to mature rather than force to comply. Leaders who bear with others resist the urge to rush growth or demand immediate alignment.
 
 This kind of love requires strength. It takes restraint to remain gentle when authority could be asserted. It takes discipline to pursue peace when tension invites division. But Scripture is clear: unity is preserved not through dominance, but through humility and shared commitment to peace.
 
-Relational faithfulness shows up when leaders stay present, steady, and patient—even when relationships require effort.
+Relational faithfulness shows up when leaders stay present, steady, and patient, even when relationships require effort.
 
 ## Practical Application
 

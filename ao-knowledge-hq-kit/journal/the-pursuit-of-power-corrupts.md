@@ -22,7 +22,7 @@ But the pursuit of power can corrupt just as much.
 
 I once heard someone say, “With enough power, you can make people do anything.”
 
-They didn’t have power yet — but their hunger for it was obvious.
+They didn’t have power yet, but their hunger for it was obvious.
 
 They saw people as pawns, not teammates.
 
@@ -38,7 +38,7 @@ What Does It Mean to Carry Weight?
 * It’s making the tough decisions that put the team first.
 * It’s owning your mistakes to set the example.
 * It’s giving your team the tools and the space to grow.
-* As a leader, you absorb the pressure — so your team can thrive.
+* As a leader, you absorb the pressure, so your team can thrive.
 
 The Power-Hungry Leader: Control Over Contribution
 
@@ -54,7 +54,7 @@ Toxic environments.
 
 High turnover.
 
-A team that doesn’t trust them — and eventually doesn’t follow them.
+A team that doesn’t trust them, and eventually doesn’t follow them.
 
 The Servant-Hearted Leader: Prioritizing the Human
 
@@ -62,11 +62,11 @@ After more than 30 years in business, I’ve learned:
 
 True leadership prioritizes the human.
 
-* It’s about seeing people as individuals — not just employees.
+* It’s about seeing people as individuals, not just employees.
 * It’s about helping them grow personally and professionally.
 * When I led teams, my door was always open.
-* Whether someone faced personal struggles or work challenges, they knew they could count on me to listen first — and guide second.
-* By creating an environment where people felt seen and heard, I watched them grow into their best selves — at work and beyond.
+* Whether someone faced personal struggles or work challenges, they knew they could count on me to listen first, and guide second.
+* By creating an environment where people felt seen and heard, I watched them grow into their best selves, at work and beyond.
 * Servant-hearted leaders build trust through empathy.
 * They foster holistic growth.
 * They lift people higher than they could ever climb alone.
@@ -77,7 +77,7 @@ Some argue that power is essential to lead.
 
 But power without purpose breeds control, not progress.
 
-In my experience, when you prioritize the human — listening, supporting, uplifting — you create teams that are loyal, resilient, and driven.
+In my experience, when you prioritize the human, listening, supporting, uplifting, you create teams that are loyal, resilient, and driven.
 
 Servant-hearted leaders don’t just carry weight.
 
@@ -91,7 +91,7 @@ Let’s remember:
 
 Leadership isn’t about control.
 
-It’s about carrying the weight — with purpose, with people in mind, and with a servant’s heart.
+It’s about carrying the weight, with purpose, with people in mind, and with a servant’s heart.
 
 How are you prioritizing the humans in your leadership today?
 

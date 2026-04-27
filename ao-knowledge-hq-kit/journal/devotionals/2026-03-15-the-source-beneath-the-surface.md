@@ -17,7 +17,7 @@ https://www.esv.org/Proverbs+4:20-23/
 
 ## Reflection
 
-Proverbs warns that the heart must be guarded because everything flows from it. Leadership behavior is downstream from internal condition. Tone, posture, urgency, control — all of it begins beneath the surface.
+Proverbs warns that the heart must be guarded because everything flows from it. Leadership behavior is downstream from internal condition. Tone, posture, urgency, control, all of it begins beneath the surface.
 
 When leaders neglect the inner life, instability follows. Frustration becomes sharpness. Fear becomes micromanagement. Fatigue becomes detachment. The external symptom is rarely the real issue.
 

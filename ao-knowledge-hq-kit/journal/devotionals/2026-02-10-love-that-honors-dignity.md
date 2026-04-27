@@ -18,7 +18,7 @@ summary: "Leadership love honors the dignity of others regardless of role, outpu
 
 ## Reflection
 
-Love in leadership begins with how leaders see people. Scripture calls leaders to honor others—not selectively, not strategically, but genuinely. Honor is not flattery. It is the disciplined choice to recognize dignity regardless of role, output, or agreement.
+Love in leadership begins with how leaders see people. Scripture calls leaders to honor others, not selectively, not strategically, but genuinely. Honor is not flattery. It is the disciplined choice to recognize dignity regardless of role, output, or agreement.
 
 When leaders fail to honor dignity, relationships quietly erode. People feel reduced to function rather than valued as individuals. But when leaders lead with love that honors dignity, trust deepens. People are more willing to engage, contribute, and grow because they know they are seen as more than a means to an end.
 

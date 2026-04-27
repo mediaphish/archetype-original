@@ -21,7 +21,7 @@ original_url: ""
 There’s a hidden tension in most organizations that few leaders are willing to name.  
 I call it **The Producer-Leader Paradox.**
 
-It happens when someone who’s been promoted to lead is still expected to produce at a high level — often the same level they did before their promotion.  
+It happens when someone who’s been promoted to lead is still expected to produce at a high level, often the same level they did before their promotion.  
 At first, it looks noble. They’re “still in the trenches,” setting an example, proving they can pull their weight.  
 But over time, that dual expectation becomes toxic.
 
@@ -30,7 +30,7 @@ You can’t coach, mentor, or empower others if your head is down chasing your o
 You can’t build leaders if every hour is spent hitting deadlines and managing output.
 
 The paradox is this:  
-When a leader’s worth is still measured by personal productivity, their leadership capacity shrinks — and so does the team’s potential.  
+When a leader’s worth is still measured by personal productivity, their leadership capacity shrinks, and so does the team’s potential.  
 The company may be busy, but it’s not growing. It’s surviving on borrowed time and borrowed energy.
 
 ---
@@ -48,7 +48,7 @@ They talk about “efficiency” and “ownership,” but what they’re really 
 It’s a short-term gain with a long-term cost.  
 
 When subordinate leaders are trapped in endless production cycles, they can’t invest in their people.  
-Their teams plateau. Frustration grows. Morale slips. Eventually, the best people leave — and the ones who stay burn out.  
+Their teams plateau. Frustration grows. Morale slips. Eventually, the best people leave, and the ones who stay burn out.  
 The organization responds by pushing even harder on those who remain, deepening the spiral.
 
 That’s how good cultures die.  
@@ -59,18 +59,18 @@ Not from bad intentions, but from unrelenting pressure to perform instead of per
 ## The Insecurity Behind the Curtain
 
 There’s another layer most people never see.  
-Some leaders don’t just allow the paradox — **they create it.**
+Some leaders don’t just allow the paradox, **they create it.**
 
 They intentionally force production over leadership because it keeps them in the spotlight.  
 As long as they are the only consistently “high-performing” leader, they remain indispensable.  
-It’s not strategy — it’s insecurity.
+It’s not strategy, it’s insecurity.
 
 When leaders suppress growth in others, it’s usually because they’re afraid of being overshadowed.  
 They equate authority with visibility, not stewardship.  
 But leadership hoarded out of fear isn’t leadership at all.  
 It’s self-protection dressed up as performance.
 
-This behavior builds fragile empires — systems that depend entirely on the ego and output of one person.  
+This behavior builds fragile empires, systems that depend entirely on the ego and output of one person.  
 When that person falters or falls, the entire organization collapses because no one else was ever allowed to rise.
 
 ---
@@ -85,7 +85,7 @@ Empower your leaders to lead.
 Pull some of the production off their plate.  
 Measure them not by how much they personally do, but by how much their teams grow, learn, and replicate success.
 
-A true leader’s job isn’t to out-produce the team —  
+A true leader’s job isn’t to out-produce the team,  
 it’s to build the kind of team that doesn’t need them to.
 
 That’s how you break the **Producer-Leader Paradox.**  

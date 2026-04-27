@@ -19,7 +19,7 @@ https://www.esv.org/Matthew+23:11-12/
 
 Renewal strips away the need for performance. Leadership pressure often pushes people to project certainty, confidence, or authority beyond what is real. Scripture confronts this directly, redefining greatness as service rather than status.
 
-Servant leadership flows from renewed identity, not image management. When leaders stop performing and start serving, trust replaces intimidation. Renewal here is internal—releasing the need to appear elevated and embracing the call to be present and faithful.
+Servant leadership flows from renewed identity, not image management. When leaders stop performing and start serving, trust replaces intimidation. Renewal here is internal, releasing the need to appear elevated and embracing the call to be present and faithful.
 
 Leaders renewed in identity no longer lead to protect image. They lead to protect people.
 

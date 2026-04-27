@@ -4,7 +4,7 @@ slug: "leadership-bottlenecks-will-choke-the-life-out-of-a-business"
 publish_date: "2025-06-04"
 created_at: "2025-06-04"
 updated_at: "2025-10-28"
-summary: "An exploration of how leadership bottlenecks form when fear, insecurity, and control stifle innovation—and how trust, curiosity, and flexibility restore growth."
+summary: "An exploration of how leadership bottlenecks form when fear, insecurity, and control stifle innovation, and how trust, curiosity, and flexibility restore growth."
 categories: ["trust", "culture", "innovation"]
 featured_image: "../images/leadership-bottlenecks-will-choke-the-life-out-of-a-business.jpg"
 takeaways: []
@@ -18,7 +18,7 @@ original_url: "https://www.facebook.com/share/p/17DvV65Y2j/"
 
 ![Leadership bottlenecks will choke the life out of a business.](../images/leadership-bottlenecks-will-choke-the-life-out-of-a-business.jpg)
 
-Here’s how they happen — and how to avoid them.
+Here’s how they happen, and how to avoid them.
 
 In the beginning, it doesn’t look like a problem. In fact, it often looks like strength.  
 “Wow, they know exactly where this thing is going.”
@@ -41,7 +41,7 @@ Leaders afraid of blame will often try to control every variable.
 But locked hands on the wheel eventually freeze out adaptability.  
 
 2. **Insecurity**  
-Some leaders don’t fully trust their teams — or themselves — to lead through change.  
+Some leaders don’t fully trust their teams, or themselves, to lead through change.  
 So they clamp down on decisions instead of empowering others to think critically.  
 
 3. **Lack of trust in the team**  
@@ -54,14 +54,14 @@ But the longer that view persists, the blinder the leader becomes.
 
 5. **A culture that rewards agreement over truth**  
 If everyone in the room feels they have to nod along... nobody will raise a red flag when things need to change.  
-That’s how you drive off a cliff in broad daylight — with a smiling team in the passenger seats.  
+That’s how you drive off a cliff in broad daylight, with a smiling team in the passenger seats.  
 
 How do you fix it?  
 
 ### Build real trust  
 If you've hired good people, trust them to see things you might miss. Listen to their ideas.  
 
-### Stay curious — even about ideas that aren't yours  
+### Stay curious, even about ideas that aren't yours  
 You're not there to protect your ego. You're there to move the mission forward.  
 
 ### Set the vision, but give freedom on the path  
@@ -81,7 +81,7 @@ But a wise leader listens to the navigator when they say the road is out ahead.
 Vision should stay strong.  
 The path must stay flexible.  
 
-Leaders — have you seen this happen? What helped you break through it?  
+Leaders, have you seen this happen? What helped you break through it?  
 
 #LeadershipPost  
 

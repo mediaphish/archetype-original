@@ -4,13 +4,13 @@ slug: "mean-people-suck"
 publish_date: "2026-01-06"
 created_at: "2026-01-06"
 updated_at: "2026-01-06"
-summary: "A first-person editorial reflection on how meanness is tolerated—and even rewarded—in leadership, and why authoritarian and narcissistic behavior corrodes organizations from the inside out."
+summary: "A first-person editorial reflection on how meanness is tolerated, and even rewarded, in leadership, and why authoritarian and narcissistic behavior corrodes organizations from the inside out."
 categories: ["editorial", "leadership", "power", "culture", "authoritarianism"]
 featured_image: "../images/mean-people-suck.jpg"
 takeaways:
   - Meanness is often rebranded as strength once power enters the room.
   - Authoritarian and narcissistic traits can look effective early but scale damage over time.
-  - Fear is not a leadership tool—it is a warning sign.
+  - Fear is not a leadership tool, it is a warning sign.
   - Leadership requires restraint, self-awareness, and responsibility, not intimidation.
 applications: []
 related: []
@@ -25,7 +25,7 @@ You’ve probably seen it: **“Mean people suck.”**
 
 It’s not clever. It’s not deep. It’s just… true.
 
-And what’s strange is how universally we agree with it — until we start talking about leadership.
+And what’s strange is how universally we agree with it, until we start talking about leadership.
 
 Somewhere along the way, we decided that meanness changes its name when power enters the room. We stop calling it what it is. We dress it up. We excuse it. We explain it away.
 
@@ -45,7 +45,7 @@ It leaks into meetings where no one pushes back.
 It leaks into cultures where people choose silence over honesty.  
 It leaks into teams where everyone is managing the leader instead of doing the work.
 
-I’ve seen incredibly capable people get smaller over time, not because they lacked talent, but because being around someone unpredictable and cutting is exhausting. You start conserving energy. You stop offering ideas. You stop taking risks — not because the work is risky, but because the leader is.
+I’ve seen incredibly capable people get smaller over time, not because they lacked talent, but because being around someone unpredictable and cutting is exhausting. You start conserving energy. You stop offering ideas. You stop taking risks, not because the work is risky, but because the leader is.
 
 That’s not high standards. That’s fear.
 
@@ -65,7 +65,7 @@ I don’t think leadership requires being soft. I don’t even think it requires
 The bumper sticker got it right. It just didn’t finish the sentence.
 
 Mean people suck.  
-And when we hand them power, they don’t just suck — they corrode everything around them.
+And when we hand them power, they don’t just suck, they corrode everything around them.
 
 That’s not a leadership philosophy.  
 It’s just something I’ve watched play out, over and over again.

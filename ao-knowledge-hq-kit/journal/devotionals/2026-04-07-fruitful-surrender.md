@@ -1,5 +1,5 @@
 ---
-title: "April 7 — Fruitful Surrender"
+title: "April 7: Fruitful Surrender"
 slug: fruitful-surrender
 date: "2026-04-07"
 type: devotional

@@ -17,11 +17,11 @@ https://www.esv.org/Colossians+3:12-13/
 
 ## Reflection
 
-Leadership love is not permissive. Scripture calls leaders to compassion, kindness, humility, and patience—while still holding boundaries. Love does not avoid the line; it holds it without losing the heart.
+Leadership love is not permissive. Scripture calls leaders to compassion, kindness, humility, and patience, while still holding boundaries. Love does not avoid the line; it holds it without losing the heart.
 
 When leaders harden their hearts, boundaries become weapons. When leaders abandon boundaries, love becomes vague and unsafe. Faithful leadership holds both firmness and compassion together.
 
-This posture requires maturity. Leaders must resist the pull toward rigidity on one side or avoidance on the other. Love stays present, clear, and human—even when firmness is required.
+This posture requires maturity. Leaders must resist the pull toward rigidity on one side or avoidance on the other. Love stays present, clear, and human, even when firmness is required.
 
 Relational faithfulness is refined here. Love remains soft without becoming weak.
 

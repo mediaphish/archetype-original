@@ -4,7 +4,7 @@ slug: "teams-are-not-wells"
 publish_date: "2025-08-11"
 created_at: "2025-08-11"
 updated_at: "2025-10-28"
-summary: "A leadership reflection contrasting extractive management with investment-driven leadership—reminding that teams thrive when they’re nurtured, not drained."
+summary: "A leadership reflection contrasting extractive management with investment-driven leadership, reminding that teams thrive when they’re nurtured, not drained."
 categories: ["team-building", "leadership-development"]
 featured_image: "../images/teams-are-not-wells.jpg"
 takeaways: []
@@ -22,24 +22,24 @@ Some leaders see their teams as wells to be drawn from.
 Every meeting, every task, every quarter is about getting more.  
 Push a little harder.  
 Squeeze a little tighter.  
-Expect a little extra—again and again.  
+Expect a little extra, again and again.  
 
 The problem? Wells run dry.  
 Fatigue creeps in.  
 Apathy replaces passion.  
 People who feel unseen stop contributing more than the bare minimum.  
 The work slows. Quality drops. Efficiency collapses.  
-And the leader, confused, thinks the answer is to push even harder—never realizing they’re the cause of the decline.  
+And the leader, confused, thinks the answer is to push even harder, never realizing they’re the cause of the decline.  
 
 A different kind of leader sees their people as seeds to be invested in.  
 They give time, attention, and resources.  
-They transfer knowledge, because they know their real job is building capacity in others—not hoarding it.  
+They transfer knowledge, because they know their real job is building capacity in others, not hoarding it.  
 They ask questions and actually listen to the answers.  
 They remove obstacles instead of piling on more work.  
 And because the investment is real, trust grows. Energy grows. Ownership grows. Capability multiplies.  
 
 If you want to lead this way:  
-* Start small. Ask each person what’s slowing them down—and help remove it.  
+* Start small. Ask each person what’s slowing them down, and help remove it.  
 * Make knowledge transfer part of your week. Teach one thing you know that could help them perform better.  
 * Measure growth, not just output. Praise progress, not just finished work.  
 * Show up consistently. People won’t trust investment that comes in short bursts.  

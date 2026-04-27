@@ -1,5 +1,5 @@
 ---
-title: "March 20 — Peace That Governs Decisions"
+title: "March 20: Peace That Governs Decisions"
 slug: peace-that-governs-decisions
 date: "2026-03-20"
 type: devotional
@@ -17,7 +17,7 @@ https://www.esv.org/Colossians+3:15-17/
 
 ## Reflection
 
-Paul instructs believers to let the peace of Christ rule in their hearts. The word "rule" implies authority — like an umpire determining what is in or out. Peace is not decorative in leadership. It is directive.
+Paul instructs believers to let the peace of Christ rule in their hearts. The word "rule" implies authority, like an umpire determining what is in or out. Peace is not decorative in leadership. It is directive.
 
 When pressure mounts, leaders often default to urgency, anxiety, or control. But Scripture presents peace as a governing force. Decisions made without peace often carry agitation into the culture. Decisions made from peace carry steadiness.
 

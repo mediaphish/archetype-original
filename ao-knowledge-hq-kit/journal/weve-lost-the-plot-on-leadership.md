@@ -4,7 +4,7 @@ slug: "weve-lost-the-plot-on-leadership"
 publish_date: "2025-06-20"
 created_at: "2025-06-20"
 updated_at: "2025-10-28"
-summary: "A call to return to servant leadership—rejecting the pursuit of power and ego in favor of service, sacrifice, and the courage to lead through humility."
+summary: "A call to return to servant leadership, rejecting the pursuit of power and ego in favor of service, sacrifice, and the courage to lead through humility."
 categories: ["servant-leadership", "power-control"]
 featured_image: "../images/weve-lost-the-plot-on-leadership.jpg"
 takeaways: []
@@ -20,7 +20,7 @@ original_url: "https://www.facebook.com/share/p/19i8cqqv4H/"
 
 Somewhere along the way, we started confusing leadership with power.
 
-You can see it everywhere—  
+You can see it everywhere,
 In politics, where elected officials bark orders and build empires instead of serving their people.  
 In business, where executives treat their teams like tools to be optimized instead of humans to be equipped.  
 And yes, even in churches, where spiritual authority gets twisted into control.  
@@ -31,7 +31,7 @@ Real leadership isn’t loud.
 It doesn’t demand the spotlight.  
 It doesn’t hide behind titles or pull rank.  
 It shows up, sleeves rolled up, ready to serve.  
-That’s servant leadership—and it’s not soft. It’s not passive.  
+That’s servant leadership, and it’s not soft. It’s not passive.  
 It’s the most courageous, committed, and conviction-driven form of leadership there is.  
 
 Some will say…  
@@ -45,7 +45,7 @@ You want sustainable impact?
 You want real influence?  
 Then build trust. Build people. Build culture.  
 
-Because fear might produce short-term results—  
+Because fear might produce short-term results,
 But service produces loyalty, transformation, and legacy.  
 
 If we want a better future, we need better leaders.  
@@ -58,7 +58,7 @@ We need servant leaders.
 People who remember that influence is borrowed, not owed.  
 
 That authority is a responsibility, not a right.  
-And that leadership is not a platform for ego—  
+And that leadership is not a platform for ego,
 It’s a place of sacrifice.  
 
 Let’s raise the bar.  

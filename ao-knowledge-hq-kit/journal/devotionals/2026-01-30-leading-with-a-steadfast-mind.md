@@ -18,11 +18,11 @@ summary: "Peace is kept by God when leaders fix their minds on Him rather than o
 
 ## Reflection
 
-Isaiah does not describe peace as something leaders manufacture through discipline or control. Peace is something God keeps when a person's mind is steadfast—fixed, anchored, and oriented toward Him.
+Isaiah does not describe peace as something leaders manufacture through discipline or control. Peace is something God keeps when a person's mind is steadfast, fixed, anchored, and oriented toward Him.
 
 For leaders, this reframes the source of stability. Leadership pressure often tempts us to scan endlessly for outcomes, approval, or threats. Scripture points instead to a different posture: a mind set intentionally on God rather than consumed by circumstance.
 
-Servant leadership flows more faithfully when leaders are not centered on themselves, but anchored in trust. Stability is not found in managing everything well—it is found in trusting the One who holds everything together.
+Servant leadership flows more faithfully when leaders are not centered on themselves, but anchored in trust. Stability is not found in managing everything well, it is found in trusting the One who holds everything together.
 
 ---
 

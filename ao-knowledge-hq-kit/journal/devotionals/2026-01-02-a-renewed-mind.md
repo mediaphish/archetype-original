@@ -18,7 +18,7 @@ summary: "Renewal begins upstream, not at the surface."
 
 ## Reflection
 
-Paul ties transformation directly to how a person thinks. The same processes, behaviors, and mindsets usually lead to the same outcomes. Leaders often desire different results—healthier culture, stronger trust, more sustainable growth—while continuing to operate the same way they always have. When nothing changes upstream, nothing changes downstream.
+Paul ties transformation directly to how a person thinks. The same processes, behaviors, and mindsets usually lead to the same outcomes. Leaders often desire different results, healthier culture, stronger trust, more sustainable growth, while continuing to operate the same way they always have. When nothing changes upstream, nothing changes downstream.
 
 Renewal of the mind means examining the assumptions that quietly shape leadership decisions. What gets rewarded? What gets ignored? What is rushed, and what is protected? Scripture does not suggest that leaders simply try harder inside existing patterns. It calls them to allow those patterns themselves to be reshaped so their decisions begin to flow from a different way of thinking.
 

@@ -18,7 +18,7 @@ summary: "Humility redirects strength toward service."
 
 ## Reflection
 
-Strength without humility eventually becomes harmful. Scripture does not reject strength—it redirects it. Humility is not weakness; it is strength exercised with awareness and restraint. Leaders who resist humility often confuse authority with infallibility, creating distance between themselves and those they lead.
+Strength without humility eventually becomes harmful. Scripture does not reject strength, it redirects it. Humility is not weakness; it is strength exercised with awareness and restraint. Leaders who resist humility often confuse authority with infallibility, creating distance between themselves and those they lead.
 
 Servant leadership requires strength that serves rather than dominates. When leaders embrace humility, they gain credibility, invite feedback, and create space for growth. Strength under control protects people instead of intimidating them.
 

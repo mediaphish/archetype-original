@@ -24,7 +24,7 @@ Leadership breaks when it treats people, roles, and outcomes like personal prope
 
 Peter frames everything we carry as something entrusted. Not earned. Not possessed. Given. That one shift changes how leaders lead. When you see your influence as a trust, you stop using it to protect yourself and start using it to serve others.
 
-Verse 11 completes the picture. Stewardship is not just what we do—it's how we do it. Leaders do not lead from self-sufficiency. They lead from dependence. Strength comes from God, not image. And the goal is not personal credit, but God's glory. That's the difference between leadership that consumes people and leadership that lifts them.
+Verse 11 completes the picture. Stewardship is not just what we do, it's how we do it. Leaders do not lead from self-sufficiency. They lead from dependence. Strength comes from God, not image. And the goal is not personal credit, but God's glory. That's the difference between leadership that consumes people and leadership that lifts them.
 
 ---
 
@@ -32,7 +32,7 @@ Verse 11 completes the picture. Stewardship is not just what we do—it's how we
 
 - Identify one area where you’ve started acting like you “own” the outcome.
 - Reframe it as something entrusted to you for others’ good.
-- Lead today with service, not entitlement—and with dependence, not performance.
+- Lead today with service, not entitlement, and with dependence, not performance.
 
 ---
 
@@ -45,4 +45,4 @@ Verse 11 completes the picture. Stewardship is not just what we do—it's how we
 
 ## Closing Thought
 
-Today I will lead as a steward—serving with what I’ve been given, in the strength God supplies.
+Today I will lead as a steward, serving with what I’ve been given, in the strength God supplies.

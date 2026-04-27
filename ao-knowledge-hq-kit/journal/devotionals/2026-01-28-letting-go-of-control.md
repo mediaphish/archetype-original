@@ -17,7 +17,7 @@ https://www.esv.org/Proverbs+16:9/
 
 ## Reflection
 
-Leadership often carries an unspoken assumption: that control produces security. Plans are made, contingencies built, and outcomes projected in an effort to manage uncertainty. Scripture offers a different orientation—one that acknowledges planning while releasing control over direction.
+Leadership often carries an unspoken assumption: that control produces security. Plans are made, contingencies built, and outcomes projected in an effort to manage uncertainty. Scripture offers a different orientation, one that acknowledges planning while releasing control over direction.
 
 Letting go of control does not mean abandoning responsibility. It means recognizing the limits of human foresight. Servant leaders plan carefully, but they remain flexible, attentive, and responsive rather than rigid. When leaders cling too tightly to control, they often miss what is unfolding in front of them.
 

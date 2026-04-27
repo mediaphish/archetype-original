@@ -1,5 +1,5 @@
 ---
-title: "March 30 — Deliberate Leadership in a Rushed World"
+title: "March 30: Deliberate Leadership in a Rushed World"
 slug: deliberate-leadership-in-a-rushed-world
 date: "2026-03-30"
 type: devotional

@@ -1,5 +1,5 @@
 ---
-title: "March 21 — Strength That Comes From Within"
+title: "March 21: Strength That Comes From Within"
 slug: strength-that-comes-from-within
 date: "2026-03-21"
 type: devotional
@@ -21,7 +21,7 @@ Paul prays that believers would be strengthened with power through the Spirit in
 
 Leadership pressure exposes the difference between external competence and internal reinforcement. Skills, experience, and discipline carry a leader only so far. Eventually the weight becomes too great for personal strength alone.
 
-Paul describes something deeper — a strengthening that comes from God Himself. When the Spirit reinforces the inner being, leaders gain durability that circumstances cannot easily shake.
+Paul describes something deeper, a strengthening that comes from God Himself. When the Spirit reinforces the inner being, leaders gain durability that circumstances cannot easily shake.
 
 This is why rootedness in Christ matters. When leaders know they are grounded in something eternal, they do not need to manufacture stability. They are sustained by it.
 

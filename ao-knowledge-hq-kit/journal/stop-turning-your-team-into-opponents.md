@@ -29,20 +29,20 @@ They’re left to battle it out.
 To claw for recognition.  
 To compete with the person next to them just to stay afloat.  
 
-It becomes a workplace where success feels like a limited resource—and the only way to get ahead is to climb on the backs of others.  
+It becomes a workplace where success feels like a limited resource, and the only way to get ahead is to climb on the backs of others.  
 
 People withhold knowledge.  
 They hoard credit.  
 They celebrate silently when someone else fails.  
 
 And all the while, the leader thinks they’re “driving performance.”  
-But what they’re really doing is destroying trust—and turning teammates into opponents.  
+But what they’re really doing is destroying trust, and turning teammates into opponents.  
 
 Now contrast that with a different kind of leadership:  
 A culture where wins are shared.  
 Where people fight for each other, not against each other.  
-Where promotions feel earned—not stolen.  
-Where strength isn’t measured by who you beat—but by who you lifted along the way.  
+Where promotions feel earned, not stolen.  
+Where strength isn’t measured by who you beat, but by who you lifted along the way.  
 
 Great leaders don’t need to create scarcity to drive results.  
 They create clarity, consistency, and trust.  

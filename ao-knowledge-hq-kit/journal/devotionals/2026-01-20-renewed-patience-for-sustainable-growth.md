@@ -20,7 +20,7 @@ summary: "Renewal reshapes how leaders relate to time, growth, and process."
 
 ## Reflection
 
-Renewal reshapes how leaders relate to time. Impatience often masquerades as urgency, pushing leaders to accelerate processes that require care. Scripture reminds leaders that the end is not the only measure of faithfulness—the process matters deeply.
+Renewal reshapes how leaders relate to time. Impatience often masquerades as urgency, pushing leaders to accelerate processes that require care. Scripture reminds leaders that the end is not the only measure of faithfulness, the process matters deeply.
 
 Servant leadership requires renewed patience because growth rarely follows clean timelines. Leaders who rush development often undermine the very outcomes they seek. Renewal slows the leader’s internal clock, allowing people, culture, and decisions to mature rather than fracture under pressure.
 

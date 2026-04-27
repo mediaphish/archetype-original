@@ -35,15 +35,15 @@ Loyalty means praise.
 Loyalty means silence.  
 Loyalty means absorbing impact instead of naming it.
 
-And slowly, the organization stops functioning like a team and starts functioning like an economy—where the primary currency is devotion to the person in charge.
+And slowly, the organization stops functioning like a team and starts functioning like an economy, where the primary currency is devotion to the person in charge.
 
-In small businesses, this shows up when people start saying things like, “You know how they are—just keep them happy,” as if regulating the leader’s emotions is part of their job description. In larger organizations, it hides inside politics, alliances, and protective circles around power.
+In small businesses, this shows up when people start saying things like, “You know how they are, just keep them happy,” as if regulating the leader’s emotions is part of their job description. In larger organizations, it hides inside politics, alliances, and protective circles around power.
 
 The outcome is the same: truth gets taxed, and loyalty gets rewarded.
 
-Psychology has language for this. Social identity theory and research on abusive supervision show that insecure leaders often build in-groups and out-groups to maintain control. The in-group gets access, protection, and influence—as long as they don’t threaten the leader’s image. The out-group gets distance, blame, and eventual removal.
+Psychology has language for this. Social identity theory and research on abusive supervision show that insecure leaders often build in-groups and out-groups to maintain control. The in-group gets access, protection, and influence, as long as they don’t threaten the leader’s image. The out-group gets distance, blame, and eventual removal.
 
-Sometimes it shows up in a single sentence—a sentence that tells you everything you need to know about the health of the environment:
+Sometimes it shows up in a single sentence, a sentence that tells you everything you need to know about the health of the environment:
 
 “If you’re not for me, you’re against me.”
 
@@ -85,9 +85,9 @@ They’re the ones who help the leader see clearly.
 
 That shift changes everything.
 
-Instead of asking, “Who’s on my side?” servant leaders ask, “Who’s helping us do what’s right?” They honor the people who protect the mission—even when it means pushing back. They don’t divide the team to protect themselves; they unify the team to protect the work.
+Instead of asking, “Who’s on my side?” servant leaders ask, “Who’s helping us do what’s right?” They honor the people who protect the mission, even when it means pushing back. They don’t divide the team to protect themselves; they unify the team to protect the work.
 
-And when challenge comes—which it always does—the difference becomes unmistakable.
+And when challenge comes, which it always does, the difference becomes unmistakable.
 
 In an ego-driven loyalty economy, people scatter.  
 In a mission-driven culture, people strengthen each other.
@@ -96,7 +96,7 @@ One collapses under pressure.
 The other grows through it.
 
 Leaders who demand personal loyalty are telling you about their fear.  
-Leaders who cultivate principled loyalty—loyalty to what’s right—are telling you about their strength.
+Leaders who cultivate principled loyalty, loyalty to what’s right, are telling you about their strength.
 
 Over time, people learn what really matters by watching what gets rewarded.  
 If flattery gets access, they’ll bring flattery.  

@@ -1,5 +1,5 @@
 ---
-title: "April 2 — Faithful Preparation"
+title: "April 2: Faithful Preparation"
 slug: faithful-preparation
 date: "2026-04-02"
 type: devotional

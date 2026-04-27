@@ -4,7 +4,7 @@ slug: "accountability-is-a-design-problem"
 publish_date: "2026-02-26"
 created_at: "2026-02-26"
 updated_at: "2026-02-26"
-summary: "Post 8 of the Unaccountable series examines why goodwill and culture alone cannot sustain accountability—and why healthy leadership systems must design structural correction into authority itself."
+summary: "Post 8 of the Unaccountable series examines why goodwill and culture alone cannot sustain accountability, and why healthy leadership systems must design structural correction into authority itself."
 categories:
   - editorial
   - leadership
@@ -26,7 +26,7 @@ related:
   - how-unaccountable-leadership-becomes-structural
   - how-pressure-triggers-threat-in-unaccountable-leaders
   - why-servant-leadership-disrupts-unaccountable-power
-original_source: "Archetype Original Editorial Series — Unaccountable"
+original_source: "Archetype Original Editorial Series: Unaccountable"
 original_url: ""
 ---
 
@@ -101,7 +101,7 @@ Upward dissent must be protected, not merely tolerated. If disagreement automati
 
 Transparency must be structural, not optional. Information cannot depend on mood, timing, or relational leverage to move upward. If access is discretionary, so is accountability.
 
-And accountability must survive leader personality shifts. It cannot disappear when a charismatic founder leaves or when a stronger personality takes over. If the system changes because the person changed, then the person—not the structure—was holding accountability together.
+And accountability must survive leader personality shifts. It cannot disappear when a charismatic founder leaves or when a stronger personality takes over. If the system changes because the person changed, then the person, not the structure, was holding accountability together.
 
 Those are not tactical steps. They are architectural commitments.
 

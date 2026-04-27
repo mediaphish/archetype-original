@@ -1,5 +1,5 @@
 ---
-title: "March 29 — Integrity That Remains Consistent"
+title: "March 29: Integrity That Remains Consistent"
 slug: integrity-that-remains-consistent
 date: "2026-03-29"
 type: devotional
@@ -17,7 +17,7 @@ https://www.esv.org/Psalm+15:1-2/
 
 ## Reflection
 
-Psalm 15 asks a powerful question: who may dwell in the presence of the Lord? The answer begins with a description of character — one who walks blamelessly and speaks truth in the heart.
+Psalm 15 asks a powerful question: who may dwell in the presence of the Lord? The answer begins with a description of character, one who walks blamelessly and speaks truth in the heart.
 
 Integrity is not situational. It is consistent alignment between belief, speech, and action. When leaders maintain that alignment, trust grows naturally.
 

@@ -1,5 +1,5 @@
 ---
-title: "March 22 — Disciplined Self-Control Under Pressure"
+title: "March 22: Disciplined Self-Control Under Pressure"
 slug: disciplined-self-control-under-pressure
 date: "2026-03-22"
 type: devotional
@@ -23,7 +23,7 @@ Self-control stabilizes leadership. It prevents emotional spikes from becoming c
 
 This is not suppression. It is training. Grace forms restraint. When leaders submit their impulses to discipline, trust deepens around them.
 
-Steady leadership is often quiet leadership — measured, intentional, and governed.
+Steady leadership is often quiet leadership, measured, intentional, and governed.
 
 ## Practical Application
 

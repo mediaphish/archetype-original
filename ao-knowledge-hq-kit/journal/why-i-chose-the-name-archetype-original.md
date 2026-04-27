@@ -4,7 +4,7 @@ slug: "why-i-chose-the-name-archetype-original"
 publish_date: "2025-12-23"
 created_at: "2025-12-23"
 updated_at: "2025-12-23"
-summary: "A foundational explanation of the name Archetype Original—what it means, why it was chosen, and the conviction about leadership, alignment, and responsibility that sits beneath the work."
+summary: "A foundational explanation of the name Archetype Original, what it means, why it was chosen, and the conviction about leadership, alignment, and responsibility that sits beneath the work."
 categories: ["leadership", "servant-leadership", "culture", "identity", "formation"]
 featured_image: "../images/why-i-chose-the-name-archetype-original.jpg"
 takeaways:
@@ -24,7 +24,7 @@ original_url: "https://www.archetypeoriginal.com/journal/why-i-chose-the-name-ar
 
 Names matter because they carry intention.
 
-I didn’t choose the name *Archetype Original* to sound distinctive or clever. I chose it because I needed a name that could hold the full weight of what this work is about—and constrain it when pressure inevitably shows up.
+I didn’t choose the name *Archetype Original* to sound distinctive or clever. I chose it because I needed a name that could hold the full weight of what this work is about, and constrain it when pressure inevitably shows up.
 
 This post exists to explain that name.
 
@@ -75,7 +75,7 @@ But not every source is life-giving.
 
 Some leaders are shaped by fear before they ever carry authority.  
 Some are formed in environments where survival mattered more than care.  
-Some inherit systems that reward extraction, speed, and dominance—and call the damage efficiency.
+Some inherit systems that reward extraction, speed, and dominance, and call the damage efficiency.
 
 When leadership is aligned to those sources, it can be highly effective.  
 It can scale.  
@@ -94,7 +94,7 @@ The original inspiration.
 The archetype design.  
 The shape when it was in its purest state.
 
-Not a return to the past for its own sake—  
+Not a return to the past for its own sake,
 but a return to what existed before distortion,  
 before compromise,  
 before pressure reshaped purpose.
@@ -109,14 +109,14 @@ It happens gradually.
 Quietly.  
 Often with good intentions.
 
-**Eventually, leadership still functions—but only by applying pressure where alignment once carried the weight.**
+**Eventually, leadership still functions, but only by applying pressure where alignment once carried the weight.**
 
 Leadership that returns to the form does the harder work.
 
 It removes before it adds.  
 It questions before it optimizes.  
 It corrects instead of compensates.  
-It returns—again and again—to what leadership was meant to be.
+It returns, again and again, to what leadership was meant to be.
 
 Original is not nostalgia.  
 It is restoration.
@@ -129,7 +129,7 @@ To lead originally is to resist becoming something you were never meant to be.
 
 This work is done deliberately.
 
-It requires attention, restraint, and the willingness to correct course when alignment starts to slip. It is slower than chasing outcomes and harder than stacking solutions—but it is the only way leadership holds together over time.
+It requires attention, restraint, and the willingness to correct course when alignment starts to slip. It is slower than chasing outcomes and harder than stacking solutions, but it is the only way leadership holds together over time.
 
 Organizations can succeed while people thin out.  
 Leaders can carry responsibility while losing clarity.  
@@ -167,7 +167,7 @@ It limits how we measure success.
 It limits what we will justify, even when it works.
 
 If something does not align with the archetype, it does not belong here.  
-If it pulls leadership away from its source, it is corrected—not optimized.
+If it pulls leadership away from its source, it is corrected, not optimized.
 
 That discipline is intentional.
 
@@ -181,7 +181,7 @@ This is not a brand.
 It is an orientation.
 
 A refusal to become distorted by pressure.  
-A commitment to return—again and again—to who we were created to be.
+A commitment to return, again and again, to who we were created to be.
 
 This is **Archetype Original**.
 
@@ -189,9 +189,9 @@ This is **Archetype Original**.
 
 That is why I chose the name.
 
-*Archetype* because leadership has a form it was meant to take—one that can be recognized, tested, and trusted under weight.
+*Archetype* because leadership has a form it was meant to take, one that can be recognized, tested, and trusted under weight.
 
-*Original* because leadership doesn’t improve by constant invention, but by returning—again and again—to that form and correcting what has pulled it out of alignment.
+*Original* because leadership doesn’t improve by constant invention, but by returning, again and again, to that form and correcting what has pulled it out of alignment.
 
 This name isn’t aspirational.  
 It’s directional.

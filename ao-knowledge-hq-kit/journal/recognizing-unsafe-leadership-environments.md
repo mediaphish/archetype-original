@@ -27,7 +27,7 @@ related:
   - how-pressure-triggers-threat-in-unaccountable-leaders
   - why-servant-leadership-disrupts-unaccountable-power
   - accountability-is-a-design-problem
-original_source: "Archetype Original Editorial Series — Unaccountable"
+original_source: "Archetype Original Editorial Series: Unaccountable"
 original_url: ""
 ---
 

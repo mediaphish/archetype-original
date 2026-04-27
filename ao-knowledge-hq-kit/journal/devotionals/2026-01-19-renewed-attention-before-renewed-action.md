@@ -20,7 +20,7 @@ summary: "Leadership renewal begins with disciplined listening and restraint bef
 
 ## Reflection
 
-Renewal often begins not with new action, but with renewed attention. Scripture places listening before speaking and restraint before reaction. Leaders are reminded that attentiveness is not passive—it is a disciplined posture that shapes how power and influence are exercised.
+Renewal often begins not with new action, but with renewed attention. Scripture places listening before speaking and restraint before reaction. Leaders are reminded that attentiveness is not passive, it is a disciplined posture that shapes how power and influence are exercised.
 
 Verse 20 provides essential context. Unchecked anger does not produce the righteousness God desires. When leaders act from impatience, defensiveness, or emotional reactivity, they often undermine trust and clarity. Renewal requires leaders to address internal responses before external decisions.
 

@@ -19,7 +19,7 @@ https://www.esv.org/Proverbs+12:1/
 
 Leadership roles can quietly harden people against correction. Authority and experience may create the illusion that growth is no longer necessary. Scripture challenges this assumption, framing instruction as a pathway to wisdom rather than a threat to competence.
 
-Leaders who resist correction often stagnate. Those who receive it well remain grounded, adaptable, and credible. Servant leadership depends on humility—not as self-deprecation, but as openness to refinement.
+Leaders who resist correction often stagnate. Those who receive it well remain grounded, adaptable, and credible. Servant leadership depends on humility, not as self-deprecation, but as openness to refinement.
 
 How leaders respond to correction often determines whether growth continues or stalls.
 

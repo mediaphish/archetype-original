@@ -20,7 +20,7 @@ summary: "Trust often precedes clarity."
 
 Leaders often want certainty before commitment. Scripture presents the opposite pattern: trust first, direction later. This does not excuse irresponsibility, but it does challenge the belief that leaders must see everything before they move. Dependence, not certainty, becomes the foundation for faithful leadership.
 
-Servant leadership accepts that clarity often unfolds after obedience. Leaders who insist on total understanding before acting frequently stall progress or default to control. Trust reframes leadership from managing outcomes to stewarding decisions—doing the next right thing without demanding the full picture.
+Servant leadership accepts that clarity often unfolds after obedience. Leaders who insist on total understanding before acting frequently stall progress or default to control. Trust reframes leadership from managing outcomes to stewarding decisions, doing the next right thing without demanding the full picture.
 
 ---
 

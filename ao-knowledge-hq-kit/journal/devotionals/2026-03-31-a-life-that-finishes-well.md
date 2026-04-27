@@ -1,5 +1,5 @@
 ---
-title: "March 31 — A Life That Finishes Well"
+title: "March 31: A Life That Finishes Well"
 slug: a-life-that-finishes-well
 date: "2026-03-31"
 type: devotional
@@ -49,7 +49,7 @@ https://www.esv.org/2+Timothy+4:7-8/
 
 ## Reflection
 
-Near the end of his life, Paul reflects with remarkable clarity: he fought the good fight, finished the race, and kept the faith. Leadership ultimately moves toward this same question — not how loudly we began, but how faithfully we finish.
+Near the end of his life, Paul reflects with remarkable clarity: he fought the good fight, finished the race, and kept the faith. Leadership ultimately moves toward this same question, not how loudly we began, but how faithfully we finish.
 
 Many leaders begin with passion and vision. Fewer sustain that integrity across decades of pressure, temptation, and fatigue.
 

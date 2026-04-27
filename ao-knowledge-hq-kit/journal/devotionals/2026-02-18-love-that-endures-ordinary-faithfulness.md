@@ -21,9 +21,9 @@ Leadership love is often measured by visible sacrifice, but Scripture also honor
 
 Endurance is not dramatic. It shows up in consistency, patience, and showing up again when recognition is absent. Leaders shaped by love do not require constant affirmation to remain faithful.
 
-Scripture calls leaders to let everything be done in love—not just the moments that feel meaningful. Ordinary faithfulness, practiced daily, forms cultures that are steady rather than reactive.
+Scripture calls leaders to let everything be done in love, not just the moments that feel meaningful. Ordinary faithfulness, practiced daily, forms cultures that are steady rather than reactive.
 
-Relational faithfulness deepens here. Love does not burn hot and disappear—it remains.
+Relational faithfulness deepens here. Love does not burn hot and disappear, it remains.
 
 ## Practical Application
 

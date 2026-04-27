@@ -1,5 +1,5 @@
 ---
-title: "April 30 — Leadership That Continues"
+title: "April 30: Leadership That Continues"
 slug: leadership-that-continues
 date: "2026-04-30"
 type: devotional

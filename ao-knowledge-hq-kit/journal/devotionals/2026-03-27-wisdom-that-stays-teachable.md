@@ -1,5 +1,5 @@
 ---
-title: "March 27 — Wisdom That Stays Teachable"
+title: "March 27: Wisdom That Stays Teachable"
 slug: wisdom-that-stays-teachable
 date: "2026-03-27"
 type: devotional

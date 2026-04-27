@@ -4,7 +4,7 @@ slug: "leadership-isnt-a-scoreboard"
 publish_date: "2025-05-29"
 created_at: "2025-05-29"
 updated_at: "2025-10-28"
-summary: "This post reminds leaders that their team's success is not competition but confirmation of great leadership—celebrating growth, shared wins, and lasting culture."
+summary: "This post reminds leaders that their team's success is not competition but confirmation of great leadership, celebrating growth, shared wins, and lasting culture."
 categories: ["team-building", "trust"]
 featured_image: "../images/leadership-isnt-a-scoreboard.jpg"
 takeaways: []
@@ -34,11 +34,11 @@ They build kingdoms where only one person gets to rise.
 
 But great leaders?  
 They build platforms, not pedestals.  
-They create environments where people get better—  
+They create environments where people get better,
 and then cheer when it happens.  
 
 Leadership isn’t about being the best in the room.  
-It’s about making sure your people know they belong in that room—  
+It’s about making sure your people know they belong in that room,
 and giving them everything they need to thrive.  
 
 Support your team.  

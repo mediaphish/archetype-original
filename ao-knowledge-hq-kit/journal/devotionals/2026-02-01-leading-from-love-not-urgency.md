@@ -17,13 +17,13 @@ https://www.esv.org/Colossians+3:12-14/
 
 ## Reflection
 
-Renewal reshapes a leader's interior life, but it cannot remain internal. What God restores within a leader must eventually be expressed in how that leader relates to others. Scripture does not describe love as an emotion to be felt, but as a posture to be worn—something leaders deliberately put on each day.
+Renewal reshapes a leader's interior life, but it cannot remain internal. What God restores within a leader must eventually be expressed in how that leader relates to others. Scripture does not describe love as an emotion to be felt, but as a posture to be worn, something leaders deliberately put on each day.
 
 Biblical love in leadership is neither romantic nor passive. It is disciplined, patient, and intentional. It chooses compassion when urgency would rush. It practices humility when authority could dominate. It bears with others not because they are easy, but because love commits to faithfulness over convenience.
 
 When leaders operate from urgency, relationships become transactional. People are measured by output, responsiveness, or alignment. But when leaders operate from love, relationships become formative. Love slows leaders down just enough to see people clearly, listen fully, and lead responsibly without performing strength.
 
-February begins here. Renewal prepared the ground in January. Now love becomes visible—not in words or sentiment, but in how leaders consistently show up for others.
+February begins here. Renewal prepared the ground in January. Now love becomes visible, not in words or sentiment, but in how leaders consistently show up for others.
 
 ## Practical Application
 

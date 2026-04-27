@@ -1,5 +1,5 @@
 ---
-title: "April 6 — Discerning the Trap"
+title: "April 6: Discerning the Trap"
 slug: discerning-the-trap
 date: "2026-04-06"
 type: devotional

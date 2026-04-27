@@ -28,7 +28,7 @@ Not uncomfortable.
 Not inconvenient.  
 But dangerous.
 
-Because once a leader reaches that point, the damage that follows is rarely accidental. It is patterned. Predictable. And preventable—if it is understood early enough.
+Because once a leader reaches that point, the damage that follows is rarely accidental. It is patterned. Predictable. And preventable, if it is understood early enough.
 
 This doesn’t happen all at once.
 
@@ -45,13 +45,13 @@ Friction begins to feel disruptive.
 
 This isn’t about intelligence or education. It’s about adaptation.
 
-When leaders operate without meaningful accountability, their nervous system learns what keeps things calm, predictable, and ordered—and what introduces uncertainty. Over time, the brain stops sorting feedback by truth and starts sorting it by threat.
+When leaders operate without meaningful accountability, their nervous system learns what keeps things calm, predictable, and ordered, and what introduces uncertainty. Over time, the brain stops sorting feedback by truth and starts sorting it by threat.
 
 That’s where the descent begins.
 
 ---
 
-### Stage 1 — Blind Conditioning (Unaware Harm)
+### Stage 1, Blind Conditioning (Unaware Harm)
 
 At this stage, leaders are not trying to harm anyone.
 
@@ -70,7 +70,7 @@ Accountability is minimal.
 Feedback is filtered.  
 Self-monitoring is reduced.
 
-Harm occurs—but awareness is limited.
+Harm occurs, but awareness is limited.
 
 This is negligence, not malice.
 
@@ -79,11 +79,11 @@ They are not yet predatory.
 
 ---
 
-### Stage 2 — Partial Awareness (Justified Harm)
+### Stage 2, Partial Awareness (Justified Harm)
 
 This is where the shift happens.
 
-These leaders begin to realize their actions are hurting people—but instead of stopping, they reinterpret the harm to preserve control.
+These leaders begin to realize their actions are hurting people, but instead of stopping, they reinterpret the harm to preserve control.
 
 You start hearing:
 “I’m sorry you were hurt.”  
@@ -103,7 +103,7 @@ Ownership does not.
 
 ---
 
-### Stage 3 — Instrumental Control (Conscious Malice)
+### Stage 3, Instrumental Control (Conscious Malice)
 
 This is the stage most people don’t want to believe exists.
 
@@ -134,7 +134,7 @@ They believe the outcome justifies it.
 
 ---
 
-### Stage 4 — Systemic Entrenchment (Detached Malice)
+### Stage 4, Systemic Entrenchment (Detached Malice)
 
 At the far end of the descent, the leader is no longer acting alone.
 
@@ -148,7 +148,7 @@ They may even believe their own narrative.
 
 But that calm is manufactured.
 
-This is the most dangerous stage—not because the leader is volatile, but because they are untouchable.
+This is the most dangerous stage, not because the leader is volatile, but because they are untouchable.
 
 Awareness is selective.  
 Responsibility is gone.  
@@ -187,7 +187,7 @@ This pattern becomes unavoidable:
 
 **Accountability that is avoided eventually becomes accountability that is imposed.**
 
-Not as punishment—but as consequence.
+Not as punishment, but as consequence.
 
 Because systems that protect authority from correction eventually collapse under the weight of harm they refuse to confront.
 
@@ -195,7 +195,7 @@ Because systems that protect authority from correction eventually collapse under
 
 Unchecked authority does not merely fail people.
 
-It conditions leaders—neurologically, psychologically, and morally—to believe accountability no longer applies to them.
+It conditions leaders, neurologically, psychologically, and morally, to believe accountability no longer applies to them.
 
 And that belief is how power turns inward.
 

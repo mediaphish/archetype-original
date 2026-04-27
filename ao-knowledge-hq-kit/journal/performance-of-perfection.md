@@ -22,7 +22,7 @@ original_url: "https://www.archetypeoriginal.com/journal/performance-of-perfecti
 
 ![The Performance of Perfection](../images/performance-of-perfection.jpg)
 
-Some leaders don’t try to be competent — they try to look competent. Everything is polished. Everything is curated. Everything is crafted to signal strength without ever proving it.
+Some leaders don’t try to be competent, they try to look competent. Everything is polished. Everything is curated. Everything is crafted to signal strength without ever proving it.
 
 At first it’s impressive.  
 Their confidence looks clean, their decisions appear sharp, and their presence suggests excellence. But over time, the cracks show.
@@ -33,11 +33,11 @@ Narcissistic leaders use the performance of perfection to control perception. Mi
 
 Research shows that perfectionistic environments create chronic stress. When failure isn’t allowed, honesty disappears. When image outranks reality, learning stops. And when the leader can't fail, no one else is allowed to either.
 
-Servant leaders break this cycle. They don’t perform perfection — they pursue growth. They name their limitations, admit mistakes quickly, and create room for others to do the same. This doesn’t diminish their authority. It deepens it. Teams trust leaders who tell the truth about their humanity.
+Servant leaders break this cycle. They don’t perform perfection, they pursue growth. They name their limitations, admit mistakes quickly, and create room for others to do the same. This doesn’t diminish their authority. It deepens it. Teams trust leaders who tell the truth about their humanity.
 
 Perfectionism isolates.  
 Humility invites.  
 One builds walls.  
 The other builds teams.
 
-The leaders who create the strongest cultures aren’t the ones who never fall — they’re the ones who aren’t afraid to be seen standing back up.
+The leaders who create the strongest cultures aren’t the ones who never fall, they’re the ones who aren’t afraid to be seen standing back up.

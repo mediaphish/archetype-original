@@ -1,5 +1,5 @@
 ---
-title: "March 23 — Standing Firm Without Aggression"
+title: "March 23: Standing Firm Without Aggression"
 slug: standing-firm-without-aggression
 date: "2026-03-23"
 type: devotional
@@ -17,7 +17,7 @@ https://www.esv.org/1+Corinthians+16:13-14/
 
 ## Reflection
 
-Scripture calls leaders to be watchful, stand firm in the faith, act like men, and be strong — and then immediately commands that everything be done in love. Strength without love becomes harsh. Love without strength becomes weak.
+Scripture calls leaders to be watchful, stand firm in the faith, act like men, and be strong, and then immediately commands that everything be done in love. Strength without love becomes harsh. Love without strength becomes weak.
 
 Standing firm does not require aggression. It requires conviction. Conviction allows leaders to hold direction without escalating tone.
 

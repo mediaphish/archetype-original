@@ -1,5 +1,5 @@
 ---
-title: "March 26 — Faithfulness in the Long Middle"
+title: "March 26: Faithfulness in the Long Middle"
 slug: faithfulness-in-the-long-middle
 date: "2026-03-26"
 type: devotional

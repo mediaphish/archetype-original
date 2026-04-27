@@ -15,7 +15,7 @@ featured_image: "../images/toxic-empathy-2-holding-the-line.jpg"
 takeaways:
   - Most leadership failures at this stage are not about clarity, but about avoiding the cost of action.
   - The moment of hesitation is where standards begin to shift, even if nothing is formally changed.
-  - High performers do not disengage emotionally first—they realign their effort to match what is enforced.
+  - High performers do not disengage emotionally first, they realign their effort to match what is enforced.
   - Leaders often soften conversations in real time to reduce tension, which removes the very pressure required for change.
 applications: []
 related:
@@ -28,7 +28,7 @@ original_url: ""
 
 **Hook (for social/video):**  
 Leadership doesn’t break down when you don’t know what to do.  
-It breaks down in the moment you do—and choose not to do it.
+It breaks down in the moment you do, and choose not to do it.
 
 The issue is not complicated, and it does not require interpretation.
 
@@ -174,6 +174,5 @@ And the original issue remains.
 
 It was never fully addressed. It was softened, delayed, or reshaped into something easier to carry instead of something that required correction.
 
-It stays in place, not because it could not be fixed—
-
+It stays in place, not because it could not be fixed,
 but because the decision to fix it was never fully made.

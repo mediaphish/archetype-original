@@ -1,5 +1,5 @@
 ---
-title: "March 25 — Endurance That Refuses Bitterness"
+title: "March 25: Endurance That Refuses Bitterness"
 slug: endurance-that-refuses-bitterness
 date: "2026-03-25"
 type: devotional

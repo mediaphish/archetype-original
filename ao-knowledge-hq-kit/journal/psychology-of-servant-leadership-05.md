@@ -4,7 +4,7 @@ slug: "psychology-of-servant-leadership-part-5"
 publish_date: "2026-01-05"
 created_at: "2026-01-05"
 updated_at: "2026-01-05"
-summary: "Servant leadership collapses when the leader abandons themselves. Boundaries aren’t the opposite of service — they’re what make it sustainable."
+summary: "Servant leadership collapses when the leader abandons themselves. Boundaries aren’t the opposite of service, they’re what make it sustainable."
 categories: ["servant-leadership", "leadership", "burnout", "psychology"]
 featured_image: "../images/psychology-of-servant-leadership-05.jpg"
 takeaways:
@@ -27,13 +27,13 @@ original_source: ""
 original_url: ""
 ---
 
-# Psychology of Servant Leadership, Part 5: The Paradox of the Servant — Boundaries, Burnout, and Self-Stewardship
+# Psychology of Servant Leadership, Part 5: The Paradox of the Servant: Boundaries, Burnout, and Self-Stewardship
 
 ![Psychology of Servant Leadership, Part 5](../images/psychology-of-servant-leadership-05.jpg)
 
 Servant leadership sounds noble until it starts costing you something.  
 Your time. Your energy. Your sleep. Your health.  
-And if you aren’t careful, the very thing that makes you a servant leader — the desire to help — becomes the thing that breaks you.
+And if you aren’t careful, the very thing that makes you a servant leader, the desire to help, becomes the thing that breaks you.
 
 Every servant leader eventually hits this wall:  
 How do you serve others without losing yourself?
@@ -55,11 +55,11 @@ You’re the stabilizer. The protector. The one who can take a hit and keep walk
 But over time, something subtle happens:  
 You stop noticing your own needs.
 
-Not because you’re selfless — but because you’re numb.
+Not because you’re selfless, but because you’re numb.
 
 You’ve carried so much, for so long, that you forget you were never designed to carry it all.
 
-I’ve seen leaders who were brilliant servants — patient, giving, steady — crumble because they built no boundaries around their own humanity.  
+I’ve seen leaders who were brilliant servants, patient, giving, steady, crumble because they built no boundaries around their own humanity.  
 Their compassion became a liability.  
 Their strength became an invitation for everyone else to offload onto them.
 
@@ -67,7 +67,7 @@ That’s not leadership. That’s collapse waiting for a date.
 
 ---
 
-### Burnout Isn’t Just Exhaustion — It’s Erosion
+### Burnout Isn’t Just Exhaustion: It’s Erosion
 
 Psychologists often describe burnout as emotional exhaustion or chronic stress.  
 That’s true, but it’s incomplete.
@@ -76,9 +76,9 @@ Burnout is identity erosion.
 
 It’s the slow, quiet loss of the parts of you that made you a good leader in the first place: clarity, patience, self-belief, compassion, creativity.
 
-When leaders give nonstop without regulating input, they don’t become martyrs — they become hollow.
+When leaders give nonstop without regulating input, they don’t become martyrs, they become hollow.
 
-The research backs this up. Studies on helping professions show that empathy without boundaries leads to compassion fatigue — a state where you care so much, for so long, that you stop being able to care at all.
+The research backs this up. Studies on helping professions show that empathy without boundaries leads to compassion fatigue, a state where you care so much, for so long, that you stop being able to care at all.
 
 For servant leaders, this is the danger no one warns you about:  
 Your gift becomes your wound.
@@ -106,7 +106,7 @@ And that means saying “no” more often than you say “yes.”
 
 ---
 
-### Boundaries Are Not Barriers — They’re Structure
+### Boundaries Are Not Barriers: They’re Structure
 
 Boundaries don’t keep people out.  
 They keep your purpose intact.
@@ -145,7 +145,7 @@ Great leaders sacrifice strategically. Only insecure ones sacrifice blindly.
 
 ### What Servant Leaders Do Differently
 
-They recognize that service without stewardship isn’t noble — it’s negligent.  
+They recognize that service without stewardship isn’t noble, it’s negligent.  
 They manage their energy like it’s mission-critical, because it is.  
 They protect their identity before they protect their image.  
 They rest with the same intentionality they work.  

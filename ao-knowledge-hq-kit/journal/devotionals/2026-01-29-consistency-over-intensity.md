@@ -20,7 +20,7 @@ summary: "Renewal is sustained through steady faithfulness, not bursts of intens
 
 ## Reflection
 
-Leadership culture often celebrates intensity—big pushes, dramatic effort, and visible momentum. Scripture points leaders in a quieter direction. Renewal is sustained not by bursts of strength, but by steady faithfulness that shows up day after day.
+Leadership culture often celebrates intensity, big pushes, dramatic effort, and visible momentum. Scripture points leaders in a quieter direction. Renewal is sustained not by bursts of strength, but by steady faithfulness that shows up day after day.
 
 Lamentations reminds leaders that God’s mercies are not occasional. They are renewed every morning. This rhythm matters. Consistency creates stability, trust, and endurance. Intensity may impress in the moment, but it rarely lasts.
 

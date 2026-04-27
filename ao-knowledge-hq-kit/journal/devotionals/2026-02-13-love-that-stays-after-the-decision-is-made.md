@@ -17,11 +17,11 @@ https://www.esv.org/Proverbs+16:3/
 
 ## Reflection
 
-Leadership often emphasizes decision-making—clarity, courage, and resolve. Scripture calls leaders to commit their work to the Lord, reminding us that leadership does not end when a decision is made. Love in leadership is revealed just as much in what happens after authority is exercised.
+Leadership often emphasizes decision-making, clarity, courage, and resolve. Scripture calls leaders to commit their work to the Lord, reminding us that leadership does not end when a decision is made. Love in leadership is revealed just as much in what happens after authority is exercised.
 
 Love that stays after the decision is made does not disappear once clarity is reached. It remains present for the consequences, the questions, and the emotional weight that follows. Leaders shaped by love do not move on quickly while others are still processing.
 
-Scripture points leaders toward trust, not detachment. Decisions ripple outward, and people carry those ripples differently. Love stays long enough to listen, to steady, and to support those affected—even when the work feels finished.
+Scripture points leaders toward trust, not detachment. Decisions ripple outward, and people carry those ripples differently. Love stays long enough to listen, to steady, and to support those affected, even when the work feels finished.
 
 Relational faithfulness shows up here. Love does not abandon people once the hard part is "done."
 

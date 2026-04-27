@@ -17,7 +17,7 @@ https://www.esv.org/Proverbs+14:29/
 
 ## Reflection
 
-Scripture connects slow anger with great understanding. Quick temper with folly. Leadership often tempts toward speed—quick judgment, quick correction, quick reaction.
+Scripture connects slow anger with great understanding. Quick temper with folly. Leadership often tempts toward speed, quick judgment, quick correction, quick reaction.
 
 Slow anger does not mean weak conviction. It means measured response. Leaders who are slow to anger think clearly and act intentionally.
 

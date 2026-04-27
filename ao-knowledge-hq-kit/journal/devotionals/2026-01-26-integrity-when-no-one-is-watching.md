@@ -17,7 +17,7 @@ https://www.esv.org/Proverbs+10:9/
 
 ## Reflection
 
-Leadership integrity is tested most often in unseen moments. When no one is watching, when shortcuts are convenient, and when accountability feels distant, character quietly forms—or erodes.
+Leadership integrity is tested most often in unseen moments. When no one is watching, when shortcuts are convenient, and when accountability feels distant, character quietly forms, or erodes.
 
 Scripture links integrity with security. Leaders who walk uprightly do not need to manage appearances or fear exposure. Their consistency creates internal steadiness and external trust over time.
 

@@ -1,5 +1,5 @@
 ---
-title: "March 28 — Discernment About the Voices You Follow"
+title: "March 28: Discernment About the Voices You Follow"
 slug: discernment-about-the-voices-you-follow
 date: "2026-03-28"
 type: devotional

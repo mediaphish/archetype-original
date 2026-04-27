@@ -20,7 +20,7 @@ summary: "Leadership love shares responsibility to strengthen community and trus
 
 Leadership love does not hoard responsibility. Scripture calls leaders to bear burdens together, not alone. Love recognizes when weight needs to be shared and refuses the illusion that strength is proven through isolation.
 
-When leaders carry everything themselves, they may feel indispensable—but relationships weaken. Others are denied growth, trust is centralized, and fatigue quietly sets in. Love that shares the load invites others into responsibility with care and clarity.
+When leaders carry everything themselves, they may feel indispensable, but relationships weaken. Others are denied growth, trust is centralized, and fatigue quietly sets in. Love that shares the load invites others into responsibility with care and clarity.
 
 Sharing the load does not mean abandoning leadership. It means trusting others enough to let them contribute meaningfully. Leaders who love well create environments where burdens are acknowledged and carried together.
 

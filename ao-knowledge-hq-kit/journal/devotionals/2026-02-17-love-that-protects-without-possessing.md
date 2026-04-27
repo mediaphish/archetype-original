@@ -17,7 +17,7 @@ https://www.esv.org/1+Corinthians+13:4-5/
 
 ## Reflection
 
-Leadership love includes protection—but Scripture draws a clear line between protecting and possessing. Love does not control, manipulate, or cling. It creates safety without ownership.
+Leadership love includes protection, but Scripture draws a clear line between protecting and possessing. Love does not control, manipulate, or cling. It creates safety without ownership.
 
 Leaders who cross this line often believe they are caring well, when in reality they are holding too tightly. Possessive leadership restricts growth. Protective leadership creates space for maturity.
 
