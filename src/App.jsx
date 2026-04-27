@@ -4,7 +4,6 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ChatApp from "./app/ChatApp";
 import Contact from "./components/Contact";
-import FloatingArchyButton from "./components/FloatingArchyButton";
 import Footer from "./components/Footer";
 import HomePage from "./components/home/HomePage";
 import Journal from "./pages/Journal";
@@ -640,7 +639,6 @@ export default function App() {
         <Header />
         <AboutPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -652,7 +650,6 @@ export default function App() {
         <Header />
         <MethodsPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -664,7 +661,6 @@ export default function App() {
         <Header />
         <MentorshipPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -676,7 +672,6 @@ export default function App() {
         <Header />
         <ConsultingPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -688,7 +683,6 @@ export default function App() {
         <Header />
         <FractionalRolesPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -700,7 +694,6 @@ export default function App() {
         <Header />
         <CCOPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -712,7 +705,6 @@ export default function App() {
         <Header />
         <WhatIDoPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -724,7 +716,6 @@ export default function App() {
         <Header />
         <AccidentalCEOPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -735,7 +726,6 @@ export default function App() {
         <Header />
         <TheRoomPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -746,7 +736,6 @@ export default function App() {
         <Header />
         <BooksPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -757,7 +746,6 @@ export default function App() {
         <Header />
         <AdvisoryPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -767,7 +755,6 @@ export default function App() {
     return (
       <>
         <RemainingHumanPage />
-        <FloatingArchyButton />
       </>
     );
   }
@@ -778,7 +765,6 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Faith />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -790,7 +776,6 @@ export default function App() {
         <Header />
         <JournalPost />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -802,7 +787,6 @@ export default function App() {
         <Header />
         <Journal />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -814,7 +798,6 @@ export default function App() {
         <Header />
         <ALI />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -826,7 +809,6 @@ export default function App() {
         <Header />
         <ALIApply />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -838,7 +820,6 @@ export default function App() {
         <Header />
         <ALIThanks />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1142,7 +1123,6 @@ export default function App() {
         <Header />
         <FAQsPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1154,7 +1134,6 @@ export default function App() {
         <Header />
         <PrivacyPolicyPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1166,7 +1145,6 @@ export default function App() {
         <Header />
         <TermsAndConditionsPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1178,7 +1156,6 @@ export default function App() {
         <Header />
         <ALIEULAPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1190,7 +1167,6 @@ export default function App() {
         <Header />
         <EngagementInquiryPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1202,7 +1178,6 @@ export default function App() {
         <Header />
         <ContactPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1216,7 +1191,6 @@ export default function App() {
         <Header />
         <CultureSciencePage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1226,7 +1200,6 @@ export default function App() {
         <Header />
         <ScoreboardLeadership />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1236,7 +1209,6 @@ export default function App() {
         <Header />
         <BadLeaderProject />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1246,7 +1218,6 @@ export default function App() {
         <Header />
         <IndustryReports />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1256,7 +1227,6 @@ export default function App() {
         <Header />
         <Ethics />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1266,7 +1236,6 @@ export default function App() {
         <Header />
         <Research />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1278,7 +1247,6 @@ export default function App() {
         <Header />
         <ArchyPage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     );
   }
@@ -1291,7 +1259,6 @@ export default function App() {
         <Header />
         <HomePage />
         <Footer />
-        <FloatingArchyButton />
       </main>
     </>
   );

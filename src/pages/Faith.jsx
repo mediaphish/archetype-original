@@ -8,8 +8,6 @@ import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import Header from '../components/Header';
 import JournalSubscription from '../components/JournalSubscription';
-import FloatingArchyButton from '../components/FloatingArchyButton';
-import Footer from '../components/Footer';
 import DevotionalPost from './DevotionalPost';
 import ShareLinks from '../components/ShareLinks';
 
@@ -314,8 +312,6 @@ export default function Faith() {
           </div>
         </section>
       </div>
-      <Footer />
-      <FloatingArchyButton />
     </>
   );
 }

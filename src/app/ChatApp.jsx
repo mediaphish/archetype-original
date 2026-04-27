@@ -4,7 +4,7 @@ import EscalationButton from './components/EscalationButton.jsx';
 import InlineContactForm from './components/InlineContactForm.jsx';
 import CannotAnswerContactForm from './components/CannotAnswerContactForm.jsx';
 
-export default function ChatApp({ context = 'default', initialMessage = '' }) {
+export default function ChatApp({ context = 'default', initialMessage = '', quickPrompts = [] }) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [showEscalation, setShowEscalation] = useState(false);
@@ -67,6 +67,12 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
       greetingText = "Hi, I'm Archy. You're reading about Bart. I can help answer questions about his background, experience, and approach. What would you like to know?";
     } else if (context === 'contact') {
       greetingText = "Hi, I'm Archy. I see you're on the contact page. I'm here to help answer questions about leadership, culture, methods, or how Bart can help your situation. What would you like to know?";
+    } else if (context === 'faith') {
+      greetingText =
+        "Hi, I'm Archy. You're on Faith — devotionals and reflection. I can help you go deeper on what you're reading, suggest how to apply it, or pray through the ideas with you. What would you like to explore?";
+    } else if (context === 'engagement-inquiry') {
+      greetingText =
+        "Hi, I'm Archy. You're looking at an engagement inquiry. I can help you think through fit, timing, or what a next step might look like — or answer questions about how Bart works with leaders. What’s on your mind?";
     } else if (context === 'remaining-human') {
       greetingText =
         "Hi, I'm Archy. You're looking at Remaining Human—Bart's field guide for leading when speed, pressure, and AI-shaped systems stack together. Ask about the ideas in the book, whether it's a fit for you, or how to think clearly when everything accelerates. What would you like to explore?";
@@ -591,6 +597,29 @@ export default function ChatApp({ context = 'default', initialMessage = '' }) {
   return (
     <div className="h-full min-h-0 flex flex-col bg-white relative chat-container">
       <div className="flex-1 flex flex-col w-full mx-auto px-3 sm:px-4 md:px-6 min-h-0 h-full">
+        {quickPrompts.length > 0 && (
+          <div className="flex-shrink-0 border-b border-gray-100 bg-white pb-3 pt-3">
+            <p className="mb-2 px-1 text-[11px] font-medium uppercase tracking-wide text-gray-400">
+              Suggestions
+            </p>
+            <div className="flex gap-2 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {quickPrompts.map((p, idx) => (
+                <button
+                  key={`${p.label}-${idx}`}
+                  type="button"
+                  onClick={() => {
+                    const text = p.send ?? p.label;
+                    if (!isLoading && !isBlocked && text.trim()) handleSendMessage(text.trim());
+                  }}
+                  disabled={isLoading || isBlocked}
+                  className="flex-shrink-0 rounded-full border border-gray-200 bg-white px-3 py-2 text-left text-sm text-gray-800 shadow-sm transition hover:border-[#DB0812]/40 hover:bg-[#fafaf9] disabled:opacity-50"
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {/* Messages — flex-1 scrolls; no fixed pixel max height (breaks on short mobile viewports) */}
         <div ref={messagesContainerRef} className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
           {messages.length > 0 && (

@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --archy-drawer-width: min(420px, 38vw);
   color-scheme: light;
   /* AO design system (2026) — homepage + sitewide alignment */
   --color-red: #DB0812;
@@ -117,4 +118,26 @@ html {
 /* ALI System Font Stack */
 .ali-system {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+}
+
+/* PUBLIC marketing Archy — companion drawer reflow (desktop only) */
+@media (min-width: 768px) {
+  body.archy-drawer-open {
+    padding-right: var(--archy-drawer-width);
+    transition: padding-right 0.3s ease-out;
+  }
+}
+
+body.archy-motion-reduce .archy-slide-track {
+  transition: none !important;
+}
+
+.archy-fab-shift {
+  transition: right 0.3s ease-out, bottom 0.3s ease-out;
+}
+
+@media (min-width: 768px) {
+  body.archy-drawer-open .archy-fab-shift {
+    right: calc(var(--archy-drawer-width) + 1rem);
+  }
 }
