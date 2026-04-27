@@ -72,7 +72,7 @@ export function ArchySlideContainer({ children }) {
         <div className="w-screen shrink-0 md:w-full md:min-h-0">{children}</div>
         <div
           id="archy-mobile-drawer-slot"
-          className="w-screen shrink-0 md:hidden min-h-dvh bg-[#fafaf9] border-l border-black/10"
+          className="w-screen shrink-0 md:hidden min-h-dvh border-l border-warm-border bg-warm-offWhite shadow-soft"
           aria-hidden={!isOpen}
         />
       </div>

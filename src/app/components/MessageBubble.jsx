@@ -132,8 +132,8 @@ export default function MessageBubble({ message, isUser = false, showButtons = f
           )}
           <div
             className={`min-w-0 px-4 py-3 rounded-2xl break-words ${isUser ? 'max-w-[min(92vw,36rem)]' : 'flex-1'} ${isUser
-              ? 'bg-amber text-white rounded-br-md'
-              : 'bg-warm-offWhiteAlt text-warm-charcoal rounded-bl-md border border-warm-border'
+              ? 'rounded-br-md bg-ao-red text-white'
+              : 'rounded-bl-md border border-warm-border bg-white text-warm-charcoal'
             }`}
           >
             {isUser ? (
@@ -162,7 +162,7 @@ export default function MessageBubble({ message, isUser = false, showButtons = f
               <button
                 key={index}
                 onClick={() => onButtonClick(option.value)}
-                className={`block w-full px-4 py-2 text-base border border-warm-border bg-warm-offWhite text-warm-charcoal hover:bg-warm-offWhiteAlt hover:border-amber transition-all duration-300 rounded-lg min-h-[44px] focus:outline-none focus:ring-2 focus:ring-amber focus:ring-offset-2 ${
+                className={`block min-h-[44px] w-full rounded-lg border border-warm-border bg-warm-offWhite px-4 py-2 text-base text-warm-charcoal transition-all duration-300 hover:border-ao-red/40 hover:bg-ao-cream/40 focus:outline-none focus:ring-2 focus:ring-ao-red focus:ring-offset-2 ${
                   isUser ? 'text-right' : 'text-left'
                 }`}
                 aria-label={option.text}

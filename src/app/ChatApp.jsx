@@ -4,7 +4,13 @@ import EscalationButton from './components/EscalationButton.jsx';
 import InlineContactForm from './components/InlineContactForm.jsx';
 import CannotAnswerContactForm from './components/CannotAnswerContactForm.jsx';
 
-export default function ChatApp({ context = 'default', initialMessage = '', quickPrompts = [] }) {
+export default function ChatApp({
+  context = 'default',
+  initialMessage = '',
+  quickPrompts = [],
+  variant = 'default',
+}) {
+  const marketing = variant === 'marketing';
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [showEscalation, setShowEscalation] = useState(false);
@@ -595,11 +601,25 @@ export default function ChatApp({ context = 'default', initialMessage = '', quic
   };
 
   return (
-    <div className="h-full min-h-0 flex flex-col bg-white relative chat-container">
-      <div className="flex-1 flex flex-col w-full mx-auto px-3 sm:px-4 md:px-6 min-h-0 h-full">
+    <div
+      className={`relative flex h-full min-h-0 flex-col chat-container ${
+        marketing ? 'bg-warm-offWhite' : 'bg-white'
+      }`}
+    >
+      <div className="mx-auto flex h-full min-h-0 w-full flex-1 flex-col px-3 sm:px-4 md:px-6">
         {quickPrompts.length > 0 && (
-          <div className="flex-shrink-0 border-b border-gray-100 bg-white pb-3 pt-3">
-            <p className="mb-2 px-1 text-[11px] font-medium uppercase tracking-wide text-gray-400">
+          <div
+            className={`flex-shrink-0 pb-3 pt-3 ${
+              marketing
+                ? 'border-b border-warm-border bg-white'
+                : 'border-b border-gray-100 bg-white'
+            }`}
+          >
+            <p
+              className={`mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.12em] ${
+                marketing ? 'text-ao-brown' : 'text-gray-400 tracking-wide'
+              }`}
+            >
               Suggestions
             </p>
             <div className="flex gap-2 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -612,7 +632,11 @@ export default function ChatApp({ context = 'default', initialMessage = '', quic
                     if (!isLoading && !isBlocked && text.trim()) handleSendMessage(text.trim());
                   }}
                   disabled={isLoading || isBlocked}
-                  className="flex-shrink-0 rounded-full border border-gray-200 bg-white px-3 py-2 text-left text-sm text-gray-800 shadow-sm transition hover:border-[#DB0812]/40 hover:bg-[#fafaf9] disabled:opacity-50"
+                  className={`flex-shrink-0 rounded-full border px-3 py-2 text-left text-sm transition disabled:opacity-50 ${
+                    marketing
+                      ? 'border-warm-border bg-warm-offWhite text-warm-charcoal hover:border-ao-red/45 hover:bg-ao-cream/35'
+                      : 'border-gray-200 bg-white text-gray-800 shadow-sm hover:border-[#DB0812]/40 hover:bg-[#fafaf9]'
+                  }`}
                 >
                   {p.label}
                 </button>
@@ -621,7 +645,10 @@ export default function ChatApp({ context = 'default', initialMessage = '', quic
           </div>
         )}
         {/* Messages — flex-1 scrolls; no fixed pixel max height (breaks on short mobile viewports) */}
-        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
+        <div
+          ref={messagesContainerRef}
+          className={`min-h-0 flex-1 overscroll-contain overflow-y-auto ${marketing ? 'bg-warm-offWhite' : ''}`}
+        >
           {messages.length > 0 && (
             <div className="py-4 md:py-8">
               {messages.map((message, index) => (
@@ -637,14 +664,20 @@ export default function ChatApp({ context = 'default', initialMessage = '', quic
               {/* Loading indicator */}
               {isLoading && (
                 <div className="flex justify-start mb-4">
-                  <div className="bg-warm-offWhiteAlt rounded-lg px-4 py-3 max-w-xs border border-warm-border">
+                  <div className="max-w-xs rounded-lg border border-warm-border bg-white px-4 py-3 shadow-sm">
                     <div className="flex items-center space-x-2">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-2 h-2 bg-amber rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <div className="h-2 w-2 animate-bounce rounded-full bg-ao-red"></div>
+                        <div
+                          className="h-2 w-2 animate-bounce rounded-full bg-ao-red"
+                          style={{ animationDelay: '0.1s' }}
+                        ></div>
+                        <div
+                          className="h-2 w-2 animate-bounce rounded-full bg-ao-red"
+                          style={{ animationDelay: '0.2s' }}
+                        ></div>
                       </div>
-                      <span className="text-sm text-warm-gray">Archy is thinking...</span>
+                      <span className="text-sm text-warm-grey">Archy is thinking...</span>
                     </div>
                   </div>
                 </div>
@@ -674,7 +707,11 @@ export default function ChatApp({ context = 'default', initialMessage = '', quic
         </div>
 
         {/* Input Area - Fixed at bottom; safe area for home indicator on iOS */}
-        <div className="flex-shrink-0 w-full px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white border-t border-gray-200">
+        <div
+          className={`w-full flex-shrink-0 border-t px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 ${
+            marketing ? 'border-warm-border bg-white' : 'border-gray-200 bg-white'
+          }`}
+        >
           {showEscalation && (
             <EscalationButton 
               onEscalate={handleEscalate} 
@@ -704,7 +741,11 @@ export default function ChatApp({ context = 'default', initialMessage = '', quic
               onKeyPress={handleKeyPress}
               placeholder={isBlocked ? "Chat is closed" : (isLoading ? "Archy is thinking..." : "Tell me what's going on.")}
               disabled={isLoading || isBlocked}
-              className="flex-1 px-4 py-3 text-base border border-gray-300 bg-[#E8D5C4]/30 text-[#2B2D2F] placeholder-[#6B6B6B] focus:outline-none focus:border-[#DB0812] focus:ring-2 focus:ring-[#DB0812]/20 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className={`flex-1 rounded-xl border px-4 py-3 text-base transition-all duration-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+                marketing
+                  ? 'border-warm-border bg-ao-cream/50 text-warm-charcoal placeholder-warm-grey focus:border-ao-red focus:ring-2 focus:ring-ao-red/20'
+                  : 'border-gray-300 bg-[#E8D5C4]/30 text-[#2B2D2F] placeholder-[#6B6B6B] focus:border-[#DB0812] focus:ring-2 focus:ring-[#DB0812]/20'
+              }`}
             />
             <button
               type="button"
@@ -716,7 +757,7 @@ export default function ChatApp({ context = 'default', initialMessage = '', quic
                 }
               }}
               disabled={!inputValue.trim() || isLoading || isBlocked}
-              className="bg-[#DB0812] text-white px-6 py-3 text-base hover:bg-[#b30610] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 rounded-xl whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:ring-offset-2 min-h-[44px]"
+              className="min-h-[44px] whitespace-nowrap rounded-xl bg-ao-red px-6 py-3 text-base text-white transition-all duration-300 hover:bg-[#b30610] focus:outline-none focus:ring-2 focus:ring-ao-red focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Send message"
             >
               {isLoading ? "..." : "Send"}

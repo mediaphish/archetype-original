@@ -140,10 +140,10 @@ export default function FloatingArchyButton() {
   const quickPrompts = getQuickPromptsForContext(context);
 
   const drawerInner = (
-    <div className="flex h-full min-h-0 flex-col bg-white shadow-[-4px_0_24px_rgba(0,0,0,0.08)]">
-      <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+    <div className="flex h-full min-h-0 flex-col bg-warm-offWhite shadow-soft">
+      <div className="flex flex-shrink-0 items-center justify-between border-b border-warm-border bg-white px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
         <div className="flex items-center gap-3">
-          <div className="relative h-10 w-10">
+          <div className="relative h-10 w-10 ring-2 ring-ao-cream/80">
             <OptimizedImage
               src={avatarSrc}
               alt="Archy"
@@ -153,14 +153,14 @@ export default function FloatingArchyButton() {
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Archy</h3>
-            <p className="text-xs text-gray-500">AI Leadership Assistant</p>
+            <h3 className="font-playfair text-[1.25rem] font-normal leading-tight text-[#1A1A1A]">Archy</h3>
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ao-brown">AI Leadership Assistant</p>
           </div>
         </div>
         <button
           type="button"
           onClick={() => setIsOpen(false)}
-          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded text-gray-400 transition-colors hover:text-gray-600"
+          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-warm-grey transition-colors hover:bg-warm-offWhite hover:text-ao-red"
           aria-label="Close chat"
         >
           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,15 +168,15 @@ export default function FloatingArchyButton() {
           </svg>
         </button>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#fafaf9]">
-        <ChatApp context={context} quickPrompts={quickPrompts} />
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-warm-offWhite">
+        <ChatApp context={context} quickPrompts={quickPrompts} variant="marketing" />
       </div>
     </div>
   );
 
   const desktopDrawer = isMd && (
     <div
-      className={`fixed top-0 right-0 z-[60] flex h-dvh w-[min(420px,calc(100vw-1rem))] max-w-[100vw] flex-col border-l border-black/10 bg-white ${
+      className={`fixed top-0 right-0 z-[60] flex h-dvh w-[min(420px,calc(100vw-1rem))] max-w-[100vw] flex-col border-l border-warm-border bg-warm-offWhite shadow-soft ${
         isOpen ? 'translate-x-0' : 'pointer-events-none translate-x-full'
       } transition-transform duration-300 ease-out motion-reduce:transition-none`}
       aria-hidden={!isOpen}
