@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --archy-drawer-width: min(420px, 38vw);
+  --archy-drawer-width: 360px;
   color-scheme: light;
   /* AO design system (2026) — homepage + sitewide alignment */
   --color-red: #DB0812;
@@ -140,4 +140,30 @@ body.archy-motion-reduce .archy-slide-track {
   body.archy-drawer-open .archy-fab-shift {
     right: calc(var(--archy-drawer-width) + 1rem);
   }
+}
+
+@keyframes archy-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.archy-msg-in {
+  animation: archy-msg-in 0.2s ease forwards;
+}
+
+/* Marketing Archy drawer: slim scrollbar */
+.archy-drawer-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.archy-drawer-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.archy-drawer-scroll::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.12);
 }

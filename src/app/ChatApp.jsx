@@ -11,6 +11,7 @@ export default function ChatApp({
   variant = 'default',
 }) {
   const marketing = variant === 'marketing';
+  const rh = marketing && context === 'remaining-human';
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [showEscalation, setShowEscalation] = useState(false);
@@ -600,29 +601,47 @@ export default function ChatApp({
     return false;
   };
 
+  const drawerVariant = marketing ? (rh ? 'remaining-human' : 'marketing') : 'default';
+  const assistantAvatarSrc =
+    marketing && context === 'remaining-human'
+      ? '/images/remaining-human/archy-floating-neo.png'
+      : undefined;
+
   return (
     <div
       className={`relative flex h-full min-h-0 flex-col chat-container ${
-        marketing ? 'bg-warm-offWhite' : 'bg-white'
+        marketing ? (rh ? 'bg-[#061312]' : 'bg-[#FAFAF9]') : 'bg-white'
       }`}
     >
-      <div className="mx-auto flex h-full min-h-0 w-full flex-1 flex-col px-3 sm:px-4 md:px-6">
+      <div
+        className={`mx-auto flex h-full min-h-0 w-full flex-1 flex-col ${marketing ? 'px-0' : 'px-3 sm:px-4 md:px-6'}`}
+      >
         {quickPrompts.length > 0 && (
           <div
-            className={`flex-shrink-0 pb-3 pt-3 ${
-              marketing
-                ? 'border-b border-warm-border bg-white'
-                : 'border-b border-gray-100 bg-white'
-            }`}
+            className={
+              rh
+                ? 'flex-shrink-0 border-b border-[rgba(149,218,206,0.12)] bg-[#081917] px-5 py-3.5'
+                : marketing
+                  ? 'flex-shrink-0 border-b border-[rgba(26,26,26,0.06)] bg-[#FAFAF9] px-5 py-3.5'
+                  : 'flex-shrink-0 border-b border-gray-100 bg-white pb-3 pt-3'
+            }
           >
             <p
-              className={`mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.12em] ${
-                marketing ? 'text-ao-brown' : 'text-gray-400 tracking-wide'
-              }`}
+              className={
+                rh
+                  ? 'mb-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A9D8D0]/90'
+                  : marketing
+                    ? 'mb-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ao-midGray'
+                    : 'mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.12em] text-gray-400'
+              }
             >
               Suggestions
             </p>
-            <div className="flex gap-2 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div
+              className={
+                marketing ? 'flex flex-wrap gap-1.5' : 'flex gap-2 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+              }
+            >
               {quickPrompts.map((p, idx) => (
                 <button
                   key={`${p.label}-${idx}`}
@@ -632,10 +651,12 @@ export default function ChatApp({
                     if (!isLoading && !isBlocked && text.trim()) handleSendMessage(text.trim());
                   }}
                   disabled={isLoading || isBlocked}
-                  className={`flex-shrink-0 rounded-full border px-3 py-2 text-left text-sm transition disabled:opacity-50 ${
-                    marketing
-                      ? 'border-warm-border bg-warm-offWhite text-warm-charcoal hover:border-ao-red/45 hover:bg-ao-cream/35'
-                      : 'border-gray-200 bg-white text-gray-800 shadow-sm hover:border-[#DB0812]/40 hover:bg-[#fafaf9]'
+                  className={`flex-shrink-0 border px-3 py-1.5 text-left text-xs font-medium transition disabled:opacity-50 ${
+                    rh
+                      ? 'rounded-[2px] border-[#9ADBD2]/35 bg-[#061312] text-[#E7F1EE] hover:border-[#9ADBD2]/55 hover:bg-[#0A2422]'
+                      : marketing
+                        ? 'rounded-[2px] border-[rgba(26,26,26,0.14)] bg-white text-[#1A1A1A] hover:border-[rgba(26,26,26,0.22)] hover:bg-ao-cream'
+                        : 'rounded-full border-gray-200 bg-white py-2 text-sm text-gray-800 shadow-sm hover:border-[#DB0812]/40 hover:bg-[#fafaf9]'
                   }`}
                 >
                   {p.label}
@@ -647,10 +668,10 @@ export default function ChatApp({
         {/* Messages — flex-1 scrolls; no fixed pixel max height (breaks on short mobile viewports) */}
         <div
           ref={messagesContainerRef}
-          className={`min-h-0 flex-1 overscroll-contain overflow-y-auto ${marketing ? 'bg-warm-offWhite' : ''}`}
+          className={`min-h-0 flex-1 overscroll-contain overflow-y-auto ${marketing ? `px-5 py-5 archy-drawer-scroll ${rh ? 'bg-[#061312]' : 'bg-white'}` : ''}`}
         >
           {messages.length > 0 && (
-            <div className="py-4 md:py-8">
+            <div className={marketing ? '' : 'py-4 md:py-8'}>
               {messages.map((message, index) => (
                 <MessageBubble
                   key={index}
@@ -659,25 +680,39 @@ export default function ChatApp({
                   showButtons={message.showButtons}
                   buttonOptions={message.buttonOptions}
                   onButtonClick={handleButtonClick}
+                  drawerVariant={drawerVariant}
+                  assistantAvatarSrc={assistantAvatarSrc}
                 />
               ))}
               {/* Loading indicator */}
               {isLoading && (
-                <div className="flex justify-start mb-4">
-                  <div className="max-w-xs rounded-lg border border-warm-border bg-white px-4 py-3 shadow-sm">
+                <div className={`flex justify-start ${marketing ? 'mb-4' : 'mb-4'}`}>
+                  <div
+                    className={`max-w-xs rounded-[2px] border px-4 py-3 ${
+                      rh
+                        ? 'border-[#95DACE]/20 bg-[#0F2E2C]'
+                        : marketing
+                          ? 'border-[rgba(26,26,26,0.08)] bg-white'
+                          : 'border-warm-border bg-white shadow-sm rounded-lg'
+                    }`}
+                  >
                     <div className="flex items-center space-x-2">
                       <div className="flex space-x-1">
-                        <div className="h-2 w-2 animate-bounce rounded-full bg-ao-red"></div>
                         <div
-                          className="h-2 w-2 animate-bounce rounded-full bg-ao-red"
+                          className={`h-2 w-2 animate-bounce rounded-full ${rh ? 'bg-[#8EE4D8]' : 'bg-ao-red'}`}
+                        ></div>
+                        <div
+                          className={`h-2 w-2 animate-bounce rounded-full ${rh ? 'bg-[#8EE4D8]' : 'bg-ao-red'}`}
                           style={{ animationDelay: '0.1s' }}
                         ></div>
                         <div
-                          className="h-2 w-2 animate-bounce rounded-full bg-ao-red"
+                          className={`h-2 w-2 animate-bounce rounded-full ${rh ? 'bg-[#8EE4D8]' : 'bg-ao-red'}`}
                           style={{ animationDelay: '0.2s' }}
                         ></div>
                       </div>
-                      <span className="text-sm text-warm-grey">Archy is thinking...</span>
+                      <span className={`text-sm ${rh ? 'text-[#C8E8E2]' : marketing ? 'text-[#6B6B6B]' : 'text-warm-grey'}`}>
+                        Archy is thinking...
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -708,8 +743,8 @@ export default function ChatApp({
 
         {/* Input Area - Fixed at bottom; safe area for home indicator on iOS */}
         <div
-          className={`w-full flex-shrink-0 border-t px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 ${
-            marketing ? 'border-warm-border bg-white' : 'border-gray-200 bg-white'
+          className={`w-full flex-shrink-0 border-t pb-[max(1rem,env(safe-area-inset-bottom))] pt-3.5 ${
+            marketing ? `px-5 ${rh ? 'border-[rgba(149,218,206,0.15)] bg-[#0A2422]' : 'border-[rgba(26,26,26,0.08)] bg-white'}` : 'border-gray-200 bg-white px-4'
           }`}
         >
           {showEscalation && (
@@ -731,7 +766,7 @@ export default function ChatApp({
               }
               return false;
             }} 
-            className="flex space-x-2 sm:space-x-3" 
+            className={`flex items-center gap-2 ${marketing ? '' : 'space-x-2 sm:space-x-3'}`}
             noValidate
           >
             <input
@@ -741,10 +776,12 @@ export default function ChatApp({
               onKeyPress={handleKeyPress}
               placeholder={isBlocked ? "Chat is closed" : (isLoading ? "Archy is thinking..." : "Tell me what's going on.")}
               disabled={isLoading || isBlocked}
-              className={`flex-1 rounded-xl border px-4 py-3 text-base transition-all duration-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+              className={`flex-1 transition-all duration-300 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
                 marketing
-                  ? 'border-warm-border bg-ao-cream/50 text-warm-charcoal placeholder-warm-grey focus:border-ao-red focus:ring-2 focus:ring-ao-red/20'
-                  : 'border-gray-300 bg-[#E8D5C4]/30 text-[#2B2D2F] placeholder-[#6B6B6B] focus:border-[#DB0812] focus:ring-2 focus:ring-[#DB0812]/20'
+                  ? rh
+                    ? 'h-10 rounded-[2px] border border-[#9ADBD2]/30 bg-[#061312] px-[14px] text-[13px] font-inter text-[#E7F1EE] placeholder:text-[#A9D8D0]/75 focus:border-[#9ADBD2]/55'
+                    : 'h-10 rounded-[2px] border border-[rgba(26,26,26,0.12)] bg-[#FAFAF9] px-[14px] text-[13px] font-inter text-[#1A1A1A] placeholder:text-ao-midGray focus:border-[rgba(26,26,26,0.28)]'
+                  : 'rounded-xl border px-4 py-3 text-base border-gray-300 bg-[#E8D5C4]/30 text-[#2B2D2F] placeholder-[#6B6B6B] focus:border-[#DB0812] focus:ring-2 focus:ring-[#DB0812]/20'
               }`}
             />
             <button
@@ -757,10 +794,16 @@ export default function ChatApp({
                 }
               }}
               disabled={!inputValue.trim() || isLoading || isBlocked}
-              className="min-h-[44px] whitespace-nowrap rounded-xl bg-ao-red px-6 py-3 text-base text-white transition-all duration-300 hover:bg-[#b30610] focus:outline-none focus:ring-2 focus:ring-ao-red focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className={`h-10 shrink-0 whitespace-nowrap px-5 text-xs font-semibold uppercase tracking-[0.06em] transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                marketing
+                  ? rh
+                    ? 'rounded-[2px] bg-[#8EE4D8] text-[#03211F] hover:bg-[#A4ECE2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8EE4D8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A2422]'
+                    : 'rounded-[2px] bg-ao-red px-5 text-white hover:opacity-[0.88] focus:outline-none focus-visible:ring-2 focus-visible:ring-ao-red focus-visible:ring-offset-2'
+                  : 'min-h-[44px] rounded-xl bg-ao-red px-6 py-3 text-base text-white hover:bg-[#b30610] focus:outline-none focus:ring-2 focus:ring-ao-red focus:ring-offset-2'
+              }`}
               aria-label="Send message"
             >
-              {isLoading ? "..." : "Send"}
+              {isLoading ? '...' : 'Send'}
             </button>
           </form>
         </div>

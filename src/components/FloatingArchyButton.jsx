@@ -140,37 +140,72 @@ export default function FloatingArchyButton() {
   }, [isOpen, setIsOpen, showChrome]);
 
   const quickPrompts = getQuickPromptsForContext(context);
+  const isRemainingHumanDrawer = context === 'remaining-human';
 
   const drawerInner = (
-    <div className="flex h-full min-h-0 flex-col bg-warm-offWhite shadow-soft">
-      <div className="flex flex-shrink-0 items-center justify-between border-b border-warm-border bg-white px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+    <div
+      className={`flex h-full min-h-0 flex-col ${
+        isRemainingHumanDrawer ? 'bg-[#061312]' : 'bg-white shadow-soft'
+      }`}
+    >
+      <div
+        className={`flex flex-shrink-0 items-center justify-between border-b px-5 py-4 pt-[max(0.75rem,env(safe-area-inset-top))] ${
+          isRemainingHumanDrawer
+            ? 'border-[#95DACE]/20 bg-[#0A2422]'
+            : 'border-[rgba(26,26,26,0.08)] bg-white'
+        }`}
+      >
         <div className="flex items-center gap-3">
-          <div className="relative h-10 w-10 ring-2 ring-ao-cream/80">
+          <div
+            className={`relative h-[38px] w-[38px] shrink-0 overflow-hidden rounded-[2px] ${
+              isRemainingHumanDrawer
+                ? 'border border-[#95DACE]/25 bg-[#061312]'
+                : 'border border-[rgba(26,26,26,0.1)] bg-[#FAFAF9]'
+            }`}
+          >
             <OptimizedImage
               src={avatarSrc}
               alt="Archy"
-              className="h-10 w-10 rounded-full border-0"
-              width={40}
-              height={40}
+              className="h-full w-full object-cover"
+              width={38}
+              height={38}
             />
           </div>
           <div>
-            <h3 className="font-playfair text-[1.25rem] font-normal leading-tight text-[#1A1A1A]">Archy</h3>
-            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-ao-brown">AI Leadership Assistant</p>
+            <h3
+              className={`font-inter text-sm font-semibold leading-tight tracking-[0.02em] ${
+                isRemainingHumanDrawer ? 'text-[#E7F1EE]' : 'text-[#1A1A1A]'
+              }`}
+            >
+              Archy
+            </h3>
+            <p
+              className={`mt-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${
+                isRemainingHumanDrawer ? 'text-[#A9D8D0]' : 'text-ao-brown'
+              }`}
+            >
+              AI Leadership Assistant
+            </p>
           </div>
         </div>
         <button
           type="button"
           onClick={() => setIsOpen(false)}
-          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-warm-grey transition-colors hover:bg-warm-offWhite hover:text-ao-red"
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[2px] border text-base leading-none transition-colors ${
+            isRemainingHumanDrawer
+              ? 'border-[#9ADBD2]/35 text-[#C8E8E2] hover:border-[#9ADBD2]/55 hover:bg-[#061312] hover:text-[#E7F1EE]'
+              : 'border-[rgba(26,26,26,0.12)] text-[#6B6B6B] hover:border-[rgba(26,26,26,0.2)] hover:bg-[#FAFAF9] hover:text-[#1A1A1A]'
+          }`}
           aria-label="Close chat"
         >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          ×
         </button>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-warm-offWhite">
+      <div
+        className={`flex min-h-0 flex-1 flex-col overflow-hidden ${
+          isRemainingHumanDrawer ? 'bg-[#061312]' : 'bg-[#FAFAF9]'
+        }`}
+      >
         <ChatApp context={context} quickPrompts={quickPrompts} variant="marketing" />
       </div>
     </div>
@@ -178,9 +213,13 @@ export default function FloatingArchyButton() {
 
   const desktopDrawer = isMd && (
     <div
-      className={`fixed top-0 right-0 z-[60] flex h-dvh w-[min(420px,calc(100vw-1rem))] max-w-[100vw] flex-col border-l border-warm-border bg-warm-offWhite shadow-soft ${
+      className={`fixed top-0 right-0 z-[60] flex h-dvh w-[min(360px,calc(100vw-1rem))] max-w-[100vw] flex-col border-l shadow-soft ${
+        isRemainingHumanDrawer
+          ? 'border-[#95DACE]/25 bg-[#061312]'
+          : 'border-[rgba(26,26,26,0.1)] bg-white'
+      } ${
         isOpen ? 'translate-x-0' : 'pointer-events-none translate-x-full'
-      } transition-transform duration-300 ease-out motion-reduce:transition-none`}
+      } transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none`}
       aria-hidden={!isOpen}
       id="archy-desktop-drawer"
     >

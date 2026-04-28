@@ -103,67 +103,110 @@ function parseMarkdown(text) {
   return html;
 }
 
-export default function MessageBubble({ message, isUser = false, showButtons = false, buttonOptions = [], onButtonClick, showContactForm = false, onContactSuccess }) {
+export default function MessageBubble({
+  message,
+  isUser = false,
+  showButtons = false,
+  buttonOptions = [],
+  onButtonClick,
+  showContactForm = false,
+  onContactSuccess,
+  drawerVariant = 'default',
+  assistantAvatarSrc,
+}) {
   const renderedMessage = isUser ? message : parseMarkdown(message);
-  
+  const isDrawer = drawerVariant === 'marketing' || drawerVariant === 'remaining-human';
+  const isRh = drawerVariant === 'remaining-human';
+  const avatar = assistantAvatarSrc || '/images/archy-avatar.png';
+
+  const bubbleUser = isDrawer
+    ? isRh
+      ? 'max-w-[240px] rounded-[2px] bg-[#8EE4D8] text-[#03211F] border-transparent'
+      : 'max-w-[240px] rounded-[2px] bg-ao-dark text-white border-transparent'
+    : 'max-w-[min(92vw,36rem)] rounded-2xl rounded-br-md bg-ao-red text-white';
+
+  const bubbleAssistant = isDrawer
+    ? isRh
+      ? 'max-w-[260px] rounded-[2px] border border-[#95DACE]/15 bg-[#0F2E2C] text-[#E7F1EE]'
+      : 'max-w-[260px] rounded-[2px] border border-[rgba(26,26,26,0.06)] bg-[#FAFAF9] text-[#1A1A1A]'
+    : 'flex-1 rounded-2xl rounded-bl-md border border-warm-border bg-white text-warm-charcoal';
+
+  const avatarClass = isDrawer
+    ? isRh
+      ? 'h-7 w-7 shrink-0 rounded-[2px] border border-[#95DACE]/20 object-cover mt-0.5'
+      : 'h-7 w-7 shrink-0 rounded-[2px] border border-[rgba(26,26,26,0.1)] object-cover mt-0.5'
+    : 'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 object-cover border-0 mt-0.5';
+
+  const bodyText = isDrawer
+    ? 'text-sm leading-[1.7] break-words [&_a]:break-all'
+    : 'text-base sm:text-lg leading-relaxed break-words [&_a]:break-all';
+
+  const rowGap = isDrawer ? 'gap-2.5' : 'gap-2 sm:gap-3';
+  const rowAnim = isDrawer ? 'archy-msg-in' : '';
+
   return (
-    <div className={`flex w-full min-w-0 ${isUser ? 'justify-end' : 'justify-start'} mb-6 px-1 sm:px-2`}>
+    <div
+      className={`flex w-full min-w-0 ${isUser ? 'justify-end' : 'justify-start'} ${isDrawer ? 'mb-4 px-0' : 'mb-6 px-1 sm:px-2'}`}
+    >
       <div
         className={
           isUser
-            ? 'w-fit max-w-[min(92%,36rem)] text-right'
+            ? isDrawer
+              ? 'w-fit max-w-[min(92%,17rem)] text-right'
+              : 'w-fit max-w-[min(92%,36rem)] text-right'
             : 'w-full max-w-[min(100%,36rem)] sm:max-w-[min(92%,36rem)] text-left'
         }
       >
         <div
-          className={`flex items-start gap-2 sm:gap-3 ${isUser ? 'flex-row-reverse w-fit max-w-full' : 'flex-row w-full'}`}
+          className={`flex items-start ${rowGap} ${rowAnim} ${isUser ? 'flex-row-reverse w-fit max-w-full' : 'flex-row w-full'}`}
         >
           {!isUser && (
             <OptimizedImage
-              src="/images/archy-avatar.png"
+              src={avatar}
               alt="Archy"
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 object-cover border-0 mt-0.5"
-              width={40}
-              height={40}
+              className={avatarClass}
+              width={isDrawer ? 28 : 40}
+              height={isDrawer ? 28 : 40}
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
             />
           )}
           <div
-            className={`min-w-0 px-4 py-3 rounded-2xl break-words ${isUser ? 'max-w-[min(92vw,36rem)]' : 'flex-1'} ${isUser
-              ? 'rounded-br-md bg-ao-red text-white'
-              : 'rounded-bl-md border border-warm-border bg-white text-warm-charcoal'
-            }`}
+            className={`min-w-0 break-words px-4 py-3 ${isDrawer ? '' : 'rounded-2xl'} ${isUser ? bubbleUser : `${bubbleAssistant} ${!isDrawer ? 'flex-1' : ''}`}`}
           >
             {isUser ? (
-              <p className="text-base sm:text-lg whitespace-pre-wrap leading-relaxed break-words" style={{ lineHeight: '1.6' }}>
+              <p className={`${bodyText} whitespace-pre-wrap`} style={isDrawer ? { lineHeight: 1.7 } : { lineHeight: '1.6' }}>
                 {message}
               </p>
             ) : (
               <div
-                className="text-base sm:text-lg leading-relaxed break-words [&_a]:break-all"
-                style={{ lineHeight: '1.6' }}
+                className={bodyText}
+                style={isDrawer ? { lineHeight: 1.7 } : { lineHeight: '1.6' }}
                 dangerouslySetInnerHTML={{ __html: renderedMessage }}
               />
             )}
           </div>
         </div>
-        
+
         {showContactForm && !isUser && (
           <div className="mt-3">
             <InlineContactForm onSuccess={onContactSuccess} />
           </div>
         )}
-        
+
         {showButtons && buttonOptions && buttonOptions.length > 0 && (
           <div className={`mt-3 space-y-2 ${isUser ? 'text-right' : 'text-left'}`}>
             {buttonOptions.map((option, index) => (
               <button
                 key={index}
                 onClick={() => onButtonClick(option.value)}
-                className={`block min-h-[44px] w-full rounded-lg border border-warm-border bg-warm-offWhite px-4 py-2 text-base text-warm-charcoal transition-all duration-300 hover:border-ao-red/40 hover:bg-ao-cream/40 focus:outline-none focus:ring-2 focus:ring-ao-red focus:ring-offset-2 ${
-                  isUser ? 'text-right' : 'text-left'
+                className={`block min-h-[44px] w-full border px-4 py-2 text-base transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ao-red focus:ring-offset-2 ${
+                  isDrawer
+                    ? isRh
+                      ? 'rounded-[2px] border-[#9ADBD2]/35 bg-[#061312] text-left text-[#E7F1EE] hover:border-[#9ADBD2]/55 hover:bg-[#0A2422]'
+                      : 'rounded-[2px] border-[rgba(26,26,26,0.14)] bg-white text-left text-[#1A1A1A] hover:bg-ao-cream hover:border-[rgba(26,26,26,0.22)]'
+                    : `rounded-lg border-warm-border bg-warm-offWhite text-warm-charcoal hover:border-ao-red/40 hover:bg-ao-cream/40 ${isUser ? 'text-right' : 'text-left'}`
                 }`}
                 aria-label={option.text}
               >
