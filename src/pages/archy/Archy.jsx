@@ -29,10 +29,23 @@ export default function Archy() {
     <>
       <SEO pageKey="archy" />
       <div className="min-h-screen bg-warm-offWhite font-sans text-[15px] leading-[1.75] text-[#1A1A1A] antialiased">
-        {/* 1. Hero */}
-        <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-ao-dark">
-          <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-12 px-6 py-20 sm:px-10 lg:grid-cols-[1fr_480px] lg:gap-[60px] lg:py-24">
-            <div>
+        {/* 1. Hero — full-bleed image + gradients (same pattern as ALI marketing hero) */}
+        <section className="relative flex min-h-[80vh] items-center overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-[center_35%]"
+            style={{ backgroundImage: "url('/images/archy-at-the-desk.jpg')" }}
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-[rgba(26,26,26,0.5)] via-transparent to-transparent"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-[rgba(26,26,26,0.94)] via-[rgba(26,26,26,0.82)] to-[rgba(26,26,26,0.2)]"
+            aria-hidden
+          />
+          <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 py-24 sm:px-10 md:py-28">
+            <div className="max-w-[640px]">
               <p className={labelClass}>Meet Archy · Archetype Original</p>
               <h1 className="mb-7 font-serif text-[clamp(36px,4.5vw,60px)] font-normal leading-[1.1] text-white">
                 <span className="block">Not a chatbot.</span>
@@ -60,14 +73,6 @@ export default function Archy() {
                   Explore ALI
                 </a>
               </div>
-            </div>
-            <div className="flex justify-center lg:justify-end">
-              <img
-                src="/images/archy-at-the-desk.jpg"
-                alt="Archy at Bart&apos;s desk"
-                className="h-auto w-full max-w-[420px] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
-                loading="eager"
-              />
             </div>
           </div>
         </section>
