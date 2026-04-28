@@ -77,6 +77,8 @@ import ContactPage from "./pages/Contact";
 import CultureSciencePage from "./pages/cultureScience/CultureScience";
 import ScoreboardLeadership from "./pages/cultureScience/ScoreboardLeadership";
 import BadLeaderProject from "./pages/cultureScience/BadLeaderProject";
+import BadLeaderAdminLogin from "./pages/cultureScience/BadLeaderAdminLogin";
+import BadLeaderAdmin from "./pages/cultureScience/BadLeaderAdmin";
 import IndustryReports from "./pages/cultureScience/IndustryReports";
 import Ethics from "./pages/cultureScience/Ethics";
 import Research from "./pages/cultureScience/Research";
@@ -102,6 +104,9 @@ export default function App() {
     if (path.startsWith('/journal/')) return 'journal-post';
     if (path === '/meet-bart' || path === '/about') return 'about';
     if (path === '/contact') return 'contact';
+    if (path === '/culture-science/anti-projects/bad-leader-project/admin/login') return 'bad-leader-admin-login';
+    if (path === '/culture-science/anti-projects/bad-leader-project/admin') return 'bad-leader-admin';
+    if (path.startsWith('/culture-science/anti-projects/bad-leader-project/cluster/')) return 'bad-leader-project';
     if (path === '/faqs' || path.startsWith('/faqs')) return 'faqs';
     if (path === '/engagement-inquiry') return 'engagement-inquiry';
     if (path === '/privacy-policy' || path === '/privacy') return 'privacy-policy';
@@ -521,6 +526,12 @@ export default function App() {
           setCurrentPage('scoreboard-leadership');
         } else if (path === '/culture-science/anti-projects/bad-leader-project') {
           setCurrentPage('bad-leader-project');
+        } else if (path.startsWith('/culture-science/anti-projects/bad-leader-project/cluster/')) {
+          setCurrentPage('bad-leader-project');
+        } else if (path === '/culture-science/anti-projects/bad-leader-project/admin/login') {
+          setCurrentPage('bad-leader-admin-login');
+        } else if (path === '/culture-science/anti-projects/bad-leader-project/admin') {
+          setCurrentPage('bad-leader-admin');
         } else if (path === '/culture-science/bad-leader-project') {
           setCurrentPage('bad-leader-project');
         } else if (path === '/culture-science/research') {
@@ -1209,6 +1220,20 @@ export default function App() {
         <Header />
         <BadLeaderProject />
         <Footer />
+      </main>
+    );
+  }
+  if (currentPage === 'bad-leader-admin-login') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <BadLeaderAdminLogin />
+      </main>
+    );
+  }
+  if (currentPage === 'bad-leader-admin') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <BadLeaderAdmin />
       </main>
     );
   }

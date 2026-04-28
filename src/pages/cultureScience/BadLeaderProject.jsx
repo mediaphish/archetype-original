@@ -1,470 +1,559 @@
-/**
- * Bad Leader Project Anti-Project Page
- * Editorial Minimal Design - Ethical Research Platform
- */
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SEO from '../../components/SEO';
+import './badLeaderProject.css';
+
+const REGIONS = ['Northeast', 'Mid-Atlantic', 'Southeast', 'Midwest', 'South Central', 'Mountain West', 'Pacific West', 'Canada', 'International'];
+const INDUSTRIES = ['Technology', 'Healthcare', 'Manufacturing', 'Retail', 'Professional Services', 'Education', 'Government', 'Nonprofit', 'Finance', 'Other'];
+const CONDITIONS = ['Clarity', 'Consistency', 'Trust', 'Communication', 'Alignment', 'Stability', 'Drift'];
+
+function spaNavigate(path, e) {
+  if (e) e.preventDefault();
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function getClusterIdFromPath() {
+  const match = window.location.pathname.match(/\/culture-science\/anti-projects\/bad-leader-project\/cluster\/([^/]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function buildStoryQuery(filters) {
+  const p = new URLSearchParams();
+  p.set('page', String(filters.page));
+  p.set('limit', '12');
+  if (filters.search) p.set('search', filters.search);
+  if (filters.region) p.set('region', filters.region);
+  if (filters.industry) p.set('industry', filters.industry);
+  if (filters.condition) p.set('condition', filters.condition.toLowerCase());
+  if (filters.tone) p.set('tone', filters.tone);
+  if (filters.clusterId) p.set('clusterId', filters.clusterId);
+  return p.toString();
+}
 
 export default function BadLeaderProject() {
-  const handleLinkClick = (e, href) => {
+  const [clusterId, setClusterId] = useState(getClusterIdFromPath());
+  const [publicStats, setPublicStats] = useState({
+    totalSubmitted: 0,
+    totalPublished: 0,
+    patternClusters: 0,
+    industriesRepresented: 0,
+  });
+  const [stories, setStories] = useState([]);
+  const [totalStories, setTotalStories] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [expandedIds, setExpandedIds] = useState({});
+  const [loadingStories, setLoadingStories] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    region: '',
+    industry: '',
+    story: '',
+  });
+  const [filters, setFilters] = useState({
+    search: '',
+    region: '',
+    industry: '',
+    condition: '',
+    tone: '',
+    page: 1,
+    clusterId: clusterId || '',
+  });
+
+  useEffect(() => {
+    const onPop = () => {
+      const id = getClusterIdFromPath();
+      setClusterId(id);
+      setFilters((prev) => ({ ...prev, page: 1, clusterId: id || '' }));
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  useEffect(() => {
+    async function loadPublicStats() {
+      try {
+        const response = await fetch('/api/bad-leader-public-stats');
+        if (!response.ok) return;
+        const data = await response.json();
+        setPublicStats({
+          totalSubmitted: data.totalSubmitted || 0,
+          totalPublished: data.totalPublished || 0,
+          patternClusters: data.patternClusters || 0,
+          industriesRepresented: data.industriesRepresented || 0,
+        });
+      } catch (err) {
+        console.error('Failed to load BLP stats', err);
+      }
+    }
+    loadPublicStats();
+  }, []);
+
+  useEffect(() => {
+    async function loadStories() {
+      setLoadingStories(true);
+      try {
+        const query = buildStoryQuery(filters);
+        const response = await fetch(`/api/bad-leader-stories?${query}`);
+        if (!response.ok) throw new Error('Failed to load stories');
+        const data = await response.json();
+        setStories(data.stories || []);
+        setTotalStories(data.total || 0);
+        setTotalPages(data.totalPages || 1);
+      } catch (err) {
+        console.error('Failed to load BLP stories', err);
+        setStories([]);
+      } finally {
+        setLoadingStories(false);
+      }
+    }
+    loadStories();
+  }, [filters]);
+
+  const toneFromCluster = useMemo(() => {
+    if (!clusterId || stories.length === 0) return 'dysfunctional';
+    return stories[0].tone === 'exemplary' ? 'exemplary' : 'dysfunctional';
+  }, [clusterId, stories]);
+
+  const storyLength = form.story.length;
+  const charClass = storyLength >= 1250 ? 'blp-char-ok' : 'blp-char-warn';
+
+  function validateForm(nextForm) {
+    const nextErrors = {};
+    if (!nextForm.name.trim()) nextErrors.name = 'Name is required.';
+    if (!nextForm.email.trim() || !nextForm.email.includes('@')) nextErrors.email = 'Valid email is required.';
+    if (!nextForm.region) nextErrors.region = 'Region is required.';
+    if (!nextForm.industry) nextErrors.industry = 'Industry is required.';
+    if (!nextForm.story.trim()) nextErrors.story = 'Story is required.';
+    if (nextForm.story.length < 1250) nextErrors.story = 'Minimum length is 250 words.';
+    if (nextForm.story.length > 25000) nextErrors.story = 'Maximum length is 5000 words.';
+    return nextErrors;
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    window.history.pushState({}, '', href);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    // Scroll to top when navigating to a new page
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  };
+    const nextErrors = validateForm(form);
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setSubmitLoading(true);
+    try {
+      const response = await fetch('/api/bad-leader-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (data.errors) setErrors(data.errors);
+        else setErrors({ form: data.error || 'Failed to submit your story.' });
+        return;
+      }
+      setSubmitSuccess(true);
+      setForm({ name: '', email: '', region: '', industry: '', story: '' });
+      setErrors({});
+    } catch (err) {
+      console.error(err);
+      setErrors({ form: 'Failed to submit your story.' });
+    } finally {
+      setSubmitLoading(false);
+    }
+  }
+
+  function handleThumbsUp(storyId) {
+    const key = `blp_vote_${storyId}`;
+    if (localStorage.getItem(key)) return;
+    fetch('/api/bad-leader-thumbsup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ neutralizedStoryId: storyId }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data) return;
+        localStorage.setItem(key, '1');
+        setStories((prev) =>
+          prev.map((story) =>
+            story.id === storyId ? { ...story, thumbs_up_count: data.count } : story
+          )
+        );
+      })
+      .catch((err) => console.error(err));
+  }
+
+  function renderPagination() {
+    if (totalPages <= 1) return null;
+    const pages = [];
+    const current = filters.page;
+    const addPage = (num) => pages.push(num);
+    addPage(1);
+    if (current > 3) pages.push('...');
+    for (let i = Math.max(2, current - 1); i <= Math.min(totalPages - 1, current + 1); i += 1) addPage(i);
+    if (current < totalPages - 2) pages.push('...');
+    if (totalPages > 1) addPage(totalPages);
+
+    return (
+      <div className="blp-pagination">
+        <button
+          className="blp-page-btn"
+          onClick={() => setFilters((p) => ({ ...p, page: Math.max(1, p.page - 1) }))}
+          disabled={filters.page === 1}
+        >
+          Prev
+        </button>
+        {pages.map((item, idx) =>
+          item === '...' ? (
+            <span key={`ellipsis-${idx}`}>...</span>
+          ) : (
+            <button
+              key={item}
+              className={`blp-page-btn ${item === filters.page ? 'active' : ''}`}
+              onClick={() => setFilters((p) => ({ ...p, page: Number(item) }))}
+            >
+              {item}
+            </button>
+          )
+        )}
+        <button
+          className="blp-page-btn"
+          onClick={() => setFilters((p) => ({ ...p, page: Math.min(totalPages, p.page + 1) }))}
+          disabled={filters.page >= totalPages}
+        >
+          Next
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
       <SEO pageKey="bad-leader-project" />
-      <div className="min-h-screen bg-white">
-        {/* SECTION 1: HERO */}
-        <section className="bg-white py-16 sm:py-20 md:py-24 lg:py-20">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-5xl mx-auto text-center space-y-8">
-              {/* Badge */}
-              <div className="mb-6">
-                <span className="inline-block px-4 py-2 border border-[#1A1A1A]/10 text-xs font-medium tracking-wider text-[#6B6B6B] uppercase">
-                  Anti-Project
-                </span>
-              </div>
-              
-              {/* Title */}
-              <h1 className="font-serif font-bold text-5xl sm:text-6xl md:text-7xl text-[#1A1A1A] leading-[0.9] tracking-tight">
-                The Bad Leader Project
-              </h1>
-              
-              {/* Subtitle */}
-              <p className="text-xl sm:text-2xl md:text-3xl text-[#1A1A1A]/70 font-light leading-relaxed">
-                A heat-map of dysfunctional leadership across industries and regions.
+      <div className="blp-page">
+        <section className="blp-hero">
+          <div className="blp-inner blp-hero-grid">
+            <div>
+              <p className="blp-section-label">Anti-Project · Culture Science</p>
+              <h1>The Bad Leader Project</h1>
+              <p className="blp-hero-sub">
+                A growing archive of dysfunctional leadership across industries and regions. Your story belongs here.
               </p>
+              <a href="#submit-form" className="blp-btn blp-btn-primary">
+                Submit Your Story
+              </a>
             </div>
-          </div>
-        </section>
-
-        {/* SECTION 2: INTRODUCTION */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Most people know what healthy leadership feels like. They also know when something is wrong — even if they can't say it out loud.
-                </p>
-                <p>
-                  <strong>The Bad Leader Project exists to make those unspoken realities visible.</strong>
-                </p>
-                <p>
-                  It's an anonymous submission platform where employees, team members, and people under leadership can safely describe the behaviors they're experiencing: manipulation, inconsistency, ego-protection, pressure without clarity, silence when courage is required, or any of the quiet patterns that erode trust.
-                </p>
-                <p>
-                  We're not collecting stories for entertainment. We're collecting stories for awareness — and for change.
-                </p>
-                <p>
-                  Every submission is sanitized using AI: names stripped, industries generalized, identifiers removed, and narrative details adjusted just enough to protect the storyteller while preserving the truth of the experience.
-                </p>
-                <p>
-                  These anonymized stories are then published in an open, searchable library — a public window into the real behaviors people are actually living under.
-                </p>
-                <p>
-                  <strong>No one will ever know who any story is about. But everyone will recognize the patterns.</strong>
-                </p>
-                <p>
-                  Because these patterns exist everywhere.
-                </p>
+            <div className="blp-hero-right">
+              <p>
+                Most people know what bad leadership feels like. They have lived it. They rarely talk about it publicly because the professional cost feels too high.
+              </p>
+              <p>
+                This project exists to change that. Not to call anyone out by name. Not to create a list. To surface the patterns that show up across industries, geographies, and organization sizes so leaders can recognize them, name them, and stop them.
+              </p>
+              <p>
+                Every story submitted is completely anonymized before it appears here. No names. No companies. No identifying details. Just the pattern. Just the truth.
+              </p>
+              <div className="blp-promise-list">
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Your name and email are never published</p></div>
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Company names and identifying details are removed before publishing</p></div>
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Every story is reviewed before it appears in the archive</p></div>
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Your original story is never shared outside this system</p></div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 3: WHAT THIS PROJECT IS — AND ISN'T */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  What This Project Is — and Isn't
-                </h2>
+        <section className="blp-section">
+          <div className="blp-inner blp-two-col">
+            <div className="blp-copy">
+              <p className="blp-section-label">What This Project Is</p>
+              <h2 className="blp-h2">A research archive. Not a lawsuit. Not a callout. Not a place to name names.</h2>
+              <p>The Bad Leader Project collects anonymous stories of dysfunctional leadership from real organizations. The goal is pattern recognition at scale.</p>
+              <p>Every story that comes in gets neutralized by AI before it enters the archive. Names, companies, industries where they would identify someone: all of it gets stripped. What remains is the behavior. The pattern. The thing that actually matters for research and for helping other leaders recognize what they may be living in.</p>
+              <p>The original, unmodified story goes into the research corpus. It feeds the pattern recognition that Culture Science is built on. It trains Archy. It makes the whole system smarter. Your story matters beyond the archive.</p>
+            </div>
+            <div className="blp-card-stack">
+              <div className="blp-card">
+                <div className="blp-card-label">This Project Is</div>
+                <ul>
+                  <li>An anonymous story archive</li>
+                  <li>A pattern recognition research tool</li>
+                  <li>A corpus for Culture Science and Archy</li>
+                  <li>A mirror for leaders who want to see what dysfunction looks like from the inside</li>
+                  <li>A place where your experience finally counts for something</li>
+                </ul>
               </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  This isn't a call-out board. It's not scandal. It's not revenge.
-                </p>
-                <p>
-                  <strong>It's clarity.</strong>
-                </p>
-                <p>
-                  This project gives people a safe way to name what unhealthy leaders are doing without risking their job, their reputation, or their relationships.
-                </p>
-                <p>
-                  Bad leadership thrives in silence. Silence protects dysfunction. Patterns stay hidden until they've already done damage.
-                </p>
-                <p>
-                  <strong>The Bad Leader Project breaks that silence — responsibly, ethically, and with protection built in.</strong>
-                </p>
-                <p>
-                  We're not here to expose people. We're here to expose behaviors.
-                </p>
-                <p>
-                  Once you can see a behavior, you can diagnose the pattern. Once you can diagnose the pattern, you can correct it.
-                </p>
+              <div className="blp-card blp-card-cream">
+                <div className="blp-card-label">This Project Is Not</div>
+                <ul>
+                  <li>A place to name individuals or companies</li>
+                  <li>A legal resource or complaint mechanism</li>
+                  <li>A social media callout platform</li>
+                  <li>A place to settle scores</li>
+                  <li>A substitute for HR, legal, or professional support</li>
+                </ul>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 4: WHAT GETS PUBLISHED — AND WHAT STAYS INTERNAL */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  What Gets Published — and What Stays Internal
-                </h2>
+        <section className="blp-section blp-why">
+          <div className="blp-inner blp-why-grid">
+            <div>
+              <p className="blp-section-label">Why Stories Matter</p>
+              <h2 className="blp-h2">The pattern only becomes visible at scale.</h2>
+              <p>Your story is one data point. The archive is the research.</p>
+            </div>
+            <div className="blp-copy">
+              <p>Bad leadership is not an isolated incident. The same patterns show up in manufacturing companies in the Midwest, technology firms on the coasts, nonprofit organizations, law firms, medical practices, and retail operations. The industry changes. The behavior does not.</p>
+              <div className="blp-why-pull">
+                <p>Most leaders who create damaging environments do not know they are doing it. The pattern only becomes visible when you can see it across enough stories to recognize the shape of it.</p>
               </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  The public can read the stories — but only the ones that meet strict safety and clarity standards.
-                </p>
-                <p>
-                  Every submission follows a rigorous process:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>Analyzed</li>
-                  <li>Sanitized</li>
-                  <li>De-identified</li>
-                  <li>Evaluated</li>
-                  <li>Pattern-coded</li>
-                  <li>Published only if safe, useful, and ethically appropriate</li>
-                </ul>
-                <p>
-                  <strong>Some stories will never appear in the public archive.</strong>
-                </p>
-                <p>
-                  If a story is:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>extreme</li>
-                  <li>sensationalized</li>
-                  <li>unverifiable</li>
-                  <li>rooted in retaliation</li>
-                  <li>or carries details that cannot be safely abstracted</li>
-                </ul>
-                <p>
-                  …it is still analyzed for research, but not shown publicly.
-                </p>
-                <p>
-                  The public library exists to reveal patterns, not to escalate harm.
-                </p>
-                <p>
-                  This protects:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>the storyteller</li>
-                  <li>the people referenced</li>
-                  <li>the integrity of the research</li>
-                  <li>and the long-term purpose of the project</li>
-                </ul>
-                <p>
-                  The internal research engine can use all stories. The public library only contains stories that bring clarity without collateral damage.
-                </p>
-                <p>
-                  <strong>This balance protects people without weakening the truth they're trying to name.</strong>
-                </p>
-              </div>
+              <p>That is what this archive is building. Not a list of bad actors. A map of behaviors: the early signals, the compounding patterns, the moments where intervention could have changed the outcome. Data that Culture Science, ALI, and Archy can use to help leaders see what is happening before it becomes irreversible.</p>
+              <p>Your story is not just cathartic. It is useful. It is research. It is the kind of lived experience that no academic study can replicate because the people who lived it rarely put it on record.</p>
+              <p><em>This is the record.</em></p>
             </div>
           </div>
         </section>
 
-        {/* SECTION 5: WHY THESE STORIES ARE PUBLIC */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Why These Stories Are Public
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Because leaders need to see themselves clearly — in the wins and in the failures.
-                </p>
-                <p>
-                  Anonymized stories help people recognize:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>"We're living this exact pattern…"</li>
-                  <li>"This explains the tension our team feels…"</li>
-                  <li>"This looks like the behavior we've been afraid to name…"</li>
-                  <li>"This helps us understand the drift we couldn't articulate…"</li>
-                </ul>
-                <p>
-                  Public visibility creates shared understanding:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>Staff finally have language for what they've been feeling.</li>
-                  <li>Leaders gain mirrors they never had.</li>
-                  <li>Organizations see culture risk before collapse.</li>
-                  <li>Teams realize they're not alone — the pattern is bigger than them.</li>
-                </ul>
-                <p>
-                  <strong>These stories are a global map of leadership drift — not personal attacks.</strong>
-                </p>
-                <p>
-                  They reveal what must change if healthy culture is going to survive.
-                </p>
-              </div>
+        <section className="blp-section blp-published">
+          <div className="blp-inner">
+            <div style={{ maxWidth: 680, marginBottom: 50 }}>
+              <p className="blp-section-label">What Gets Published and What Stays Internal</p>
+              <h2 className="blp-h2">Total transparency about what happens to your submission.</h2>
+              <p>Before you submit, you should know exactly where your story goes and what form it takes when it gets there.</p>
+            </div>
+            <div className="blp-published-grid">
+              <div className="blp-published-card"><h3>What Goes Public</h3><p>A neutralized version of your story appears in the public archive. All names, company names, and identifying details are removed by AI before anything is reviewed or published. The behavior remains. The pattern remains. The identity does not.</p></div>
+              <div className="blp-published-card"><h3>What Stays Internal</h3><p>Your original submission is stored securely and used only for research. It feeds the Culture Science corpus and trains Archy. It is never shared outside this system, never sold, never used for marketing or solicitation.</p></div>
+              <div className="blp-published-card"><h3>What Never Happens</h3><p>Your name and email are never published anywhere. No story goes live without review. No identifying information survives the neutralization process. No submission is used in any way that could connect it back to you or anyone in your story.</p></div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 6: HOW WE USE THE DATA */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  How We Use the Data
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Every anonymized story feeds the research engine inside Archetype Original:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>Culture Science analyzes behavioral and cultural patterns</li>
-                  <li>ALI (Archetype Leadership Index) draws on the data to shape diagnostics</li>
-                  <li>Workshops and seminars integrate the findings</li>
-                  <li>Consulting engagements use patterns to fast-track clarity</li>
-                  <li>Servant leadership frameworks are refined with real-world evidence</li>
-                </ul>
-                <p>
-                  <strong>This is where lived experience and research meet — not in theory, but in truth.</strong>
-                </p>
-                <p>
-                  The Bad Leader Project gives us the raw material. Culture Science turns it into understanding. ALI will eventually turn understanding into measurement.
-                </p>
-                <p>
-                  All of it is designed to help leaders see the cost of unhealthy leadership in real time — and choose a better path.
-                </p>
-              </div>
+        <section id="submit-form" className="blp-section blp-submit">
+          <div className="blp-inner blp-submit-grid">
+            <div>
+              <p className="blp-section-label">Submit Your Story</p>
+              <h2 className="blp-h2">100% anonymous. Reviewed before publishing. Yours to tell.</h2>
+              <p>This is the room where your story finally has somewhere to go. Tell it plainly. Tell it honestly. The pattern is what matters.</p>
+              <p>Your submission goes through AI neutralization before any human reviews it. Names, companies, and identifying details are removed in that process. What reaches the archive is the behavior, not the people.</p>
+              <p>Minimum 250 words. Maximum 5,000. Write what actually happened.</p>
             </div>
-          </div>
-        </section>
-
-        {/* SECTION 7: WHERE WE ARE NOW — AND WHAT'S COMING NEXT */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Where We Are Now — and What's Coming Next
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  The Bad Leader Project is currently in development. The submission engine, anonymization model, and public story library are being built throughout Q1 2026.
-                </p>
-                <p>
-                  This work takes time because it requires:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>safe and ethical anonymization</li>
-                  <li>clear patterns that protect people while revealing truth</li>
-                  <li>research frameworks that turn stories into usable insight</li>
-                  <li>an interface that honors the weight of what people share</li>
-                </ul>
-                <p>
-                  We're not launching a content dump. We're building a responsible system.
-                </p>
-                <p>
-                  <strong>Development will roll out in phases:</strong>
-                </p>
-                <div className="pl-4 space-y-4">
-                  <div>
-                    <p>
-                      <strong>Phase 1 — Submission Engine (Q1 2026)</strong>
-                    </p>
-                    <p>
-                      Anonymous stories submitted with automatic redaction and pre-processing.
-                    </p>
+            <div className="blp-form">
+              {!submitSuccess ? (
+                <form onSubmit={handleSubmit}>
+                  <div className="blp-form-row">
+                    <div className="blp-form-group">
+                      <label className="blp-form-label" htmlFor="blp-name">Name *</label>
+                      <input id="blp-name" className="blp-form-input" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+                      {errors.name && <div className="blp-field-error">{errors.name}</div>}
+                    </div>
+                    <div className="blp-form-group">
+                      <label className="blp-form-label" htmlFor="blp-email">Email *</label>
+                      <input id="blp-email" type="email" className="blp-form-input" value={form.email} onBlur={() => setErrors((prev) => ({ ...prev, ...validateForm(form) }))} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} />
+                      {errors.email && <div className="blp-field-error">{errors.email}</div>}
+                    </div>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Phase 2 — Anonymization + Pattern Coding (Q1–Q2 2026)</strong>
-                    </p>
-                    <p>
-                      Names removed, details abstracted, industries generalized, behavioral patterns identified.
-                    </p>
+                  <div className="blp-form-row">
+                    <div className="blp-form-group">
+                      <label className="blp-form-label" htmlFor="blp-region">Region *</label>
+                      <select id="blp-region" className="blp-form-input" value={form.region} onChange={(e) => setForm((p) => ({ ...p, region: e.target.value }))}>
+                        <option value="">Select your region</option>
+                        {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+                      </select>
+                      {errors.region && <div className="blp-field-error">{errors.region}</div>}
+                    </div>
+                    <div className="blp-form-group">
+                      <label className="blp-form-label" htmlFor="blp-industry">Industry *</label>
+                      <select id="blp-industry" className="blp-form-input" value={form.industry} onChange={(e) => setForm((p) => ({ ...p, industry: e.target.value }))}>
+                        <option value="">Select your industry</option>
+                        {INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
+                      </select>
+                      {errors.industry && <div className="blp-field-error">{errors.industry}</div>}
+                    </div>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Phase 3 — Public Story Library (Q2 2026)</strong>
-                    </p>
-                    <p>
-                      A searchable archive of safe, anonymized stories — designed to help people recognize real patterns without exposing real people.
-                    </p>
+                  <div className="blp-form-group">
+                    <label className="blp-form-label" htmlFor="blp-story">Story *</label>
+                    <textarea id="blp-story" className="blp-form-textarea" value={form.story} onChange={(e) => setForm((p) => ({ ...p, story: e.target.value }))} />
+                    <div className={`blp-char-count ${charClass}`}>{storyLength} / 25000 (1250 minimum)</div>
+                    {errors.story && <div className="blp-field-error">{errors.story}</div>}
                   </div>
-                  <div>
-                    <p>
-                      <strong>Phase 4 — Culture Science Integration (Q2–Q3 2026)</strong>
-                    </p>
-                    <p>
-                      Stories begin informing the broader Archetype research engine and ALI.
-                    </p>
+                  <div className="blp-form-divider" />
+                  <p className="blp-form-note">Your name and email are collected only to confirm your submission and follow up if needed. They are never published, never shared, and never connected to your story in the public archive. Your original submission is stored securely for research purposes only.</p>
+                  {errors.form && <div className="blp-field-error">{errors.form}</div>}
+                  <div className="blp-form-submit-row">
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', margin: 0 }}>Reviewed before publishing.<br />Neutralized before review.</p>
+                    <button type="submit" className="blp-btn blp-btn-primary" disabled={submitLoading}>
+                      {submitLoading ? 'Submitting...' : 'Submit Your Story'}
+                    </button>
                   </div>
-                  <div>
-                    <p>
-                      <strong>Phase 5 — Workshops + Reports (Q4 2026)</strong>
-                    </p>
-                    <p>
-                      Insights translated into practical guidance for leaders, teams, and organizations.
-                    </p>
-                  </div>
+                </form>
+              ) : (
+                <div className="blp-form-success">
+                  <h3>Your story is in.</h3>
+                  <p>It goes through AI neutralization before any human reviews it. If it is approved for the archive, the behavior will be there. Your name will not. Thank you for contributing to the research.</p>
                 </div>
-                <p>
-                  If you want to be notified as each phase goes live, you can join the update list below.
-                </p>
-                <p>
-                  Your information will never be shared, sold, or used for anything else.
-                </p>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {clusterId && (
+          <section className="blp-cluster-header">
+            <div className="blp-inner">
+              <p className="blp-section-label">Pattern cluster · {toneFromCluster === 'exemplary' ? 'Exemplary' : 'Dysfunctional'}</p>
+              <h2>
+                {toneFromCluster === 'exemplary'
+                  ? 'These stories describe the same thing working well. This is what it looks like when leadership gets it right.'
+                  : 'These stories follow the same pattern. If one of them is yours, you are not alone.'}
+              </h2>
+              <a href="/culture-science/anti-projects/bad-leader-project" className="blp-link" onClick={(e) => spaNavigate('/culture-science/anti-projects/bad-leader-project', e)}>
+                View all stories
+              </a>
+            </div>
+          </section>
+        )}
+
+        <section className="blp-section blp-archive">
+          <div className="blp-inner">
+            <div className="blp-archive-header">
+              <div>
+                <p className="blp-section-label">The Archive</p>
+                <h2 className="blp-h2" style={{ marginBottom: 6 }}>You are not the only one who has lived this.</h2>
+                <p>Every story here has been anonymized. The names are gone. The behavior remains. Read what you recognize.</p>
+              </div>
+              <span>{totalStories} stories published</span>
+            </div>
+
+            <div className="blp-stats-row">
+              <div className="blp-stat-card"><div className="blp-stat-number">{publicStats.totalSubmitted}</div><div className="blp-stat-label">Total stories submitted</div></div>
+              <div className="blp-stat-card"><div className="blp-stat-number">{publicStats.totalPublished}</div><div className="blp-stat-label">Total published to archive</div></div>
+              <div className="blp-stat-card"><div className="blp-stat-number">{publicStats.patternClusters}</div><div className="blp-stat-label">Pattern clusters identified</div></div>
+              <div className="blp-stat-card"><div className="blp-stat-number">{publicStats.industriesRepresented}</div><div className="blp-stat-label">Industries represented</div></div>
+            </div>
+
+            <div className="blp-filter-bar">
+              <input className="blp-filter-input" placeholder="Search stories..." value={filters.search} onChange={(e) => setFilters((p) => ({ ...p, search: e.target.value, page: 1 }))} />
+              <select className="blp-filter-select" value={filters.region} onChange={(e) => setFilters((p) => ({ ...p, region: e.target.value, page: 1 }))}>
+                <option value="">All regions</option>
+                {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+              </select>
+              <select className="blp-filter-select" value={filters.industry} onChange={(e) => setFilters((p) => ({ ...p, industry: e.target.value, page: 1 }))}>
+                <option value="">All industries</option>
+                {INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
+              </select>
+              <select className="blp-filter-select" value={filters.condition} onChange={(e) => setFilters((p) => ({ ...p, condition: e.target.value, page: 1 }))}>
+                <option value="">All conditions</option>
+                {CONDITIONS.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+              <select className="blp-filter-select" value={filters.tone} onChange={(e) => setFilters((p) => ({ ...p, tone: e.target.value, page: 1 }))}>
+                <option value="">All stories</option>
+                <option value="dysfunctional">Dysfunctional leadership</option>
+                <option value="exemplary">Exemplary leadership</option>
+              </select>
+              <span className="blp-filter-meta">Showing {stories.length} of {totalStories} stories</span>
+              <button
+                className="blp-clear-btn"
+                onClick={() => setFilters({ search: '', region: '', industry: '', condition: '', tone: '', page: 1, clusterId: clusterId || '' })}
+              >
+                Clear
+              </button>
+            </div>
+
+            {loadingStories ? (
+              <div>Loading stories...</div>
+            ) : stories.length === 0 ? (
+              <div className="blp-card" style={{ textAlign: 'center', padding: 60 }}>
+                <h3 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 24, fontWeight: 400, marginBottom: 8 }}>No stories found</h3>
+                <p>Try clearing filters or checking back soon.</p>
+              </div>
+            ) : (
+              <div className="blp-grid">
+                {stories.map((story) => {
+                  const isExemplary = story.tone === 'exemplary';
+                  const isOpen = Boolean(expandedIds[story.id]);
+                  const liked = Boolean(localStorage.getItem(`blp_vote_${story.id}`));
+                  return (
+                    <article key={story.id} className={`blp-story-card ${isExemplary ? 'is-exemplary' : ''}`}>
+                      <div className="blp-story-meta">
+                        {isExemplary && <span className="blp-tag blp-tag-exemplary">Exemplary leadership</span>}
+                        <span className="blp-tag blp-tag-region">{story.region}</span>
+                        <span className="blp-tag blp-tag-industry">{story.industry}</span>
+                        {(story.ali_conditions || []).map((condition) => (
+                          <span
+                            key={`${story.id}-${condition}`}
+                            className={`blp-tag ${isExemplary ? 'blp-tag-condition-good' : 'blp-tag-condition'}`}
+                          >
+                            {condition}
+                          </span>
+                        ))}
+                        {!isExemplary && story.scoreboard_leadership && (
+                          <span className="blp-tag blp-tag-scoreboard">Scoreboard pattern</span>
+                        )}
+                      </div>
+                      <div className="blp-story-text">
+                        {isOpen ? (
+                          <p>{story.neutralized_text}</p>
+                        ) : (
+                          <p className="blp-story-excerpt">{story.neutralized_text}</p>
+                        )}
+                      </div>
+                      <button className="blp-expand-btn" onClick={() => setExpandedIds((p) => ({ ...p, [story.id]: !p[story.id] }))}>
+                        {isOpen ? 'Collapse' : 'Read full story'}
+                      </button>
+                      <div className="blp-story-footer">
+                        <button className={`blp-thumbs ${liked ? 'liked' : ''}`} onClick={() => handleThumbsUp(story.id)}>
+                          <span>👍</span>
+                          <span>{story.thumbs_up_count || 0}</span>
+                        </button>
+                        {story.cluster_id ? (
+                          <a
+                            href={`/culture-science/anti-projects/bad-leader-project/cluster/${story.cluster_id}`}
+                            className="blp-link"
+                            style={{ color: isExemplary ? '#2d7a3a' : undefined }}
+                            onClick={(e) => spaNavigate(`/culture-science/anti-projects/bad-leader-project/cluster/${story.cluster_id}`, e)}
+                          >
+                            {isExemplary ? 'Leaders have seen this work' : 'Leaders share this pattern'}
+                          </a>
+                        ) : (
+                          <span style={{ fontSize: 12, color: 'rgba(26,26,26,0.25)' }}>No related stories yet</span>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+            {renderPagination()}
+          </div>
+        </section>
+
+        <section className="blp-section blp-fits">
+          <div className="blp-inner">
+            <div className="blp-fits-inner">
+              <p>The Bad Leader Project is one lens inside Archetype Original. Scoreboard Leadership names one specific pattern. The Bad Leader Project surfaces all of them. Together they give leaders a vocabulary for what they are seeing, and a path toward building the opposite.</p>
+              <p>The research that comes from this archive feeds Culture Science, informs ALI, and trains Archy. Every story submitted makes the whole system more accurate. That is how lived experience becomes useful at scale.</p>
+              <div className="blp-fits-links">
+                <a href="/culture-science/anti-projects/scoreboard-leadership" className="blp-link" onClick={(e) => spaNavigate('/culture-science/anti-projects/scoreboard-leadership', e)}>Scoreboard Leadership</a>
+                <a href="/culture-science" className="blp-link" onClick={(e) => spaNavigate('/culture-science', e)}>Culture Science</a>
+                <a href="/culture-science/ali" className="blp-link" onClick={(e) => spaNavigate('/culture-science/ali', e)}>ALI</a>
+                <a href="/archy" className="blp-link" onClick={(e) => spaNavigate('/archy', e)}>Meet Archy</a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 8: SUBMIT A STORY — 100% ANONYMOUS */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Submit a Story — 100% Anonymous
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  Your story will be:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li>Sanitized</li>
-                  <li>De-identified</li>
-                  <li>Pattern-coded</li>
-                  <li>Abstracted into safe language</li>
-                  <li>Added to the public library if appropriate</li>
-                  <li>Always included in research</li>
-                </ul>
-                <p>
-                  <strong>No names. No companies. No identifying details. Ever.</strong>
-                </p>
-                <p>
-                  We protect the storyteller. We expose the pattern.
-                </p>
-                <p className="pt-4 text-[#6B6B6B] italic">
-                  Submission form coming Q1 2026
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 9: WHERE THIS FITS INSIDE ARCHETYPE ORIGINAL */}
-        <section className="bg-white py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  Where This Fits Inside Archetype Original
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  The Bad Leader Project is one of AO's two anti-projects:
-                </p>
-                <ul className="list-disc pl-6 sm:pl-8 space-y-2 marker:text-[#DB0812]">
-                  <li><strong>Scoreboard Leadership</strong> — diagnosing the behavior patterns that corrode culture</li>
-                  <li><strong>The Bad Leader Project</strong> — gathering real-world evidence of those behaviors</li>
-                </ul>
-                <p>
-                  <strong>Together, they make a truth unmistakable:</strong>
-                </p>
-                <p>
-                  You cannot be a Scoreboard Leader and follow the Golden Rule at the same time.
-                </p>
-                <p>
-                  Scoreboard Leadership uses people. Servant leadership serves people.
-                </p>
-                <p>
-                  One extracts. The other builds.
-                </p>
-                <p>
-                  One fractures trust. The other restores it.
-                </p>
-                <p>
-                  These stories make that contrast visible — not conceptually, but experientially.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 10: IF YOU'RE READY TO BUILD THE OPPOSITE (CTA) */}
-        <section className="bg-[#FAFAF9] py-16 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Section Header with Orange Border */}
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-1 h-12 sm:h-16 bg-[#DB0812] flex-shrink-0 mt-2"></div>
-                <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] tracking-tight">
-                  If You're Ready to Build the Opposite
-                </h2>
-              </div>
-              
-              {/* Content */}
-              <div className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] space-y-6">
-                <p>
-                  If your team is feeling the impact of unhealthy leadership — or you want help building a culture people actually want to belong to — Archetype Original exists for that work.
-                </p>
-              </div>
-              
-              {/* CTA Button */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <a
-                  href="/contact"
-                  onClick={(e) => handleLinkClick(e, '/contact')}
-                  className="bg-[#1A1A1A] text-white px-8 sm:px-10 py-4 sm:py-5 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors text-center"
-                >
-                  Start a Conversation
-                </a>
-              </div>
+        <section className="blp-section blp-close">
+          <div className="blp-inner">
+            <p className="blp-section-label">If You're Ready to Build the Opposite</p>
+            <h2>The conversation starts here.</h2>
+            <p>Bad leadership is diagnosable. It is fixable. The first step is a conversation outside your system where the real picture can finally surface.</p>
+            <div className="blp-close-actions">
+              <a href="/contact" className="blp-btn blp-btn-primary" onClick={(e) => spaNavigate('/contact', e)}>Start a Conversation</a>
+              <a href="/advisory" className="blp-btn blp-btn-ghost-dark" onClick={(e) => spaNavigate('/advisory', e)}>How Advisory Works</a>
             </div>
           </div>
         </section>
