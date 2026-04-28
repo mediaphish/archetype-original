@@ -19,6 +19,7 @@ dist/.DS_Store
 .vscode/*
 !.vscode/extensions.json
 .idea
+.cursor/
 .DS_Store
 *.suo
 *.ntvs*
