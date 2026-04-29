@@ -14,7 +14,10 @@ function spaNavigate(path, e) {
 }
 
 function getClusterIdFromPath() {
-  const match = window.location.pathname.match(/\/culture-science\/anti-projects\/bad-leader-project\/cluster\/([^/]+)/);
+  const path = window.location.pathname;
+  const match =
+    path.match(/\/culture-science\/anti-projects\/bad-leader-project\/cluster\/([^/]+)/) ||
+    path.match(/\/culture-science\/bad-leader-project\/cluster\/([^/]+)/);
   return match ? decodeURIComponent(match[1]) : null;
 }
 
@@ -78,8 +81,9 @@ export default function BadLeaderProject() {
     async function loadPublicStats() {
       try {
         const response = await fetch('/api/bad-leader-public-stats');
-        if (!response.ok) return;
-        const data = await response.json();
+        const raw = await response.text();
+        if (!response.ok || !raw.trim().startsWith('{')) return;
+        const data = JSON.parse(raw);
         setPublicStats({
           totalSubmitted: data.totalSubmitted || 0,
           totalPublished: data.totalPublished || 0,
@@ -99,8 +103,9 @@ export default function BadLeaderProject() {
       try {
         const query = buildStoryQuery(filters);
         const response = await fetch(`/api/bad-leader-stories?${query}`);
-        if (!response.ok) throw new Error('Failed to load stories');
-        const data = await response.json();
+        const raw = await response.text();
+        if (!response.ok || !raw.trim().startsWith('{')) throw new Error('Failed to load stories');
+        const data = JSON.parse(raw);
         setStories(data.stories || []);
         setTotalStories(data.total || 0);
         setTotalPages(data.totalPages || 1);
@@ -147,7 +152,17 @@ export default function BadLeaderProject() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      const data = await response.json();
+      const raw = await response.text();
+      let data = {};
+      try {
+        data = raw && raw.trim() ? JSON.parse(raw) : {};
+      } catch {
+        setErrors({
+          form:
+            'The submission service returned an unexpected response. Please try again, or use the live site if you are running a local preview.',
+        });
+        return;
+      }
       if (!response.ok) {
         if (data.errors) setErrors(data.errors);
         else setErrors({ form: data.error || 'Failed to submit your story.' });
@@ -253,13 +268,13 @@ export default function BadLeaderProject() {
                 This project exists to change that. Not to call anyone out by name. Not to create a list. To surface the patterns that show up across industries, geographies, and organization sizes so leaders can recognize them, name them, and stop them.
               </p>
               <p>
-                Every story submitted is completely anonymized before it appears here. No names. No companies. No identifying details. Just the pattern. Just the truth.
+                The public only ever sees a neutralized version of your story: no names, no companies, no identifying details. Just the pattern. Just the truth.
               </p>
               <div className="blp-promise-list">
-                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Your name and email are never published</p></div>
-                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Company names and identifying details are removed before publishing</p></div>
-                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Every story is reviewed before it appears in the archive</p></div>
-                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Your original story is never shared outside this system</p></div>
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Your name and email are never shown on the public site</p></div>
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Only the neutralized text can appear in the public archive</p></div>
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>After neutralization, every story gets a safety and quality review before it can go live</p></div>
+                <div className="blp-promise-item"><span className="blp-check">✓</span><p>Your original submission is kept inside this system for research and is not published as-is</p></div>
               </div>
             </div>
           </div>
@@ -271,8 +286,8 @@ export default function BadLeaderProject() {
               <p className="blp-section-label">What This Project Is</p>
               <h2 className="blp-h2">A research archive. Not a lawsuit. Not a callout. Not a place to name names.</h2>
               <p>The Bad Leader Project collects anonymous stories of dysfunctional leadership from real organizations. The goal is pattern recognition at scale.</p>
-              <p>Every story that comes in gets neutralized by AI before it enters the archive. Names, companies, industries where they would identify someone: all of it gets stripped. What remains is the behavior. The pattern. The thing that actually matters for research and for helping other leaders recognize what they may be living in.</p>
-              <p>The original, unmodified story goes into the research corpus. It feeds the pattern recognition that Culture Science is built on. It trains Archy. It makes the whole system smarter. Your story matters beyond the archive.</p>
+              <p>Every story that comes in is neutralized by AI first: names, companies, and anything that would identify someone are stripped into a separate, publishable version. What the public can read is only that neutralized text, after review.</p>
+              <p>The original submission stays in the research corpus to feed Culture Science and Archy. It is not published as your raw words on the open site.</p>
             </div>
             <div className="blp-card-stack">
               <div className="blp-card">
@@ -326,9 +341,9 @@ export default function BadLeaderProject() {
               <p>Before you submit, you should know exactly where your story goes and what form it takes when it gets there.</p>
             </div>
             <div className="blp-published-grid">
-              <div className="blp-published-card"><h3>What Goes Public</h3><p>A neutralized version of your story appears in the public archive. All names, company names, and identifying details are removed by AI before anything is reviewed or published. The behavior remains. The pattern remains. The identity does not.</p></div>
-              <div className="blp-published-card"><h3>What Stays Internal</h3><p>Your original submission is stored securely and used only for research. It feeds the Culture Science corpus and trains Archy. It is never shared outside this system, never sold, never used for marketing or solicitation.</p></div>
-              <div className="blp-published-card"><h3>What Never Happens</h3><p>Your name and email are never published anywhere. No story goes live without review. No identifying information survives the neutralization process. No submission is used in any way that could connect it back to you or anyone in your story.</p></div>
+              <div className="blp-published-card"><h3>What Goes Public</h3><p>Only the neutralized text can appear in the public archive. Names, companies, and identifying details do not go live. The behavior and pattern can be visible; identities are not.</p></div>
+              <div className="blp-published-card"><h3>What Stays Internal</h3><p>Your original submission is stored securely for research. It feeds the Culture Science corpus and trains Archy. It is not published as-is on the open site and is not sold or used for marketing.</p></div>
+              <div className="blp-published-card"><h3>Before Anything Goes Live</h3><p>After neutralization, every candidate story goes through a safety and quality review. Nothing is posted until that review approves the neutralized version for the archive.</p></div>
             </div>
           </div>
         </section>
@@ -339,7 +354,7 @@ export default function BadLeaderProject() {
               <p className="blp-section-label">Submit Your Story</p>
               <h2 className="blp-h2">100% anonymous. Reviewed before publishing. Yours to tell.</h2>
               <p>This is the room where your story finally has somewhere to go. Tell it plainly. Tell it honestly. The pattern is what matters.</p>
-              <p>Your submission goes through AI neutralization before any human reviews it. Names, companies, and identifying details are removed in that process. What reaches the archive is the behavior, not the people.</p>
+              <p>Your submission is neutralized first so a safe, de-identified version exists for review. Then it goes through safety and quality review. Only the neutralized text can be approved for the public archive; nothing goes live automatically.</p>
               <p>Minimum 250 words. Maximum 5,000. Write what actually happened.</p>
             </div>
             <div className="blp-form">
@@ -382,10 +397,10 @@ export default function BadLeaderProject() {
                     {errors.story && <div className="blp-field-error">{errors.story}</div>}
                   </div>
                   <div className="blp-form-divider" />
-                  <p className="blp-form-note">Your name and email are collected only to confirm your submission and follow up if needed. They are never published, never shared, and never connected to your story in the public archive. Your original submission is stored securely for research purposes only.</p>
+                  <p className="blp-form-note">Your name and email are used only to confirm your submission and follow up if needed. They are never shown on the public site and are not attached to the neutralized story readers see. Your original words are kept inside this system for research and are not published as-is.</p>
                   {errors.form && <div className="blp-field-error">{errors.form}</div>}
                   <div className="blp-form-submit-row">
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', margin: 0 }}>Reviewed before publishing.<br />Neutralized before review.</p>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', margin: 0 }}>Neutralized first.<br />Safety and quality review second.<br />Published only if approved.</p>
                     <button type="submit" className="blp-btn blp-btn-primary" disabled={submitLoading}>
                       {submitLoading ? 'Submitting...' : 'Submit Your Story'}
                     </button>
@@ -394,7 +409,7 @@ export default function BadLeaderProject() {
               ) : (
                 <div className="blp-form-success">
                   <h3>Your story is in.</h3>
-                  <p>It goes through AI neutralization before any human reviews it. If it is approved for the archive, the behavior will be there. Your name will not. Thank you for contributing to the research.</p>
+                  <p>Your story is neutralized into a de-identified version, then reviewed for safety and quality. If it is approved for the archive, readers will only ever see that neutralized text. Thank you for contributing to the research.</p>
                 </div>
               )}
             </div>
@@ -410,7 +425,7 @@ export default function BadLeaderProject() {
                   ? 'These stories describe the same thing working well. This is what it looks like when leadership gets it right.'
                   : 'These stories follow the same pattern. If one of them is yours, you are not alone.'}
               </h2>
-              <a href="/culture-science/anti-projects/bad-leader-project" className="blp-link" onClick={(e) => spaNavigate('/culture-science/anti-projects/bad-leader-project', e)}>
+              <a href="/culture-science/bad-leader-project" className="blp-link" onClick={(e) => spaNavigate('/culture-science/bad-leader-project', e)}>
                 View all stories
               </a>
             </div>
@@ -511,10 +526,10 @@ export default function BadLeaderProject() {
                         </button>
                         {story.cluster_id ? (
                           <a
-                            href={`/culture-science/anti-projects/bad-leader-project/cluster/${story.cluster_id}`}
+                            href={`/culture-science/bad-leader-project/cluster/${story.cluster_id}`}
                             className="blp-link"
                             style={{ color: isExemplary ? '#2d7a3a' : undefined }}
-                            onClick={(e) => spaNavigate(`/culture-science/anti-projects/bad-leader-project/cluster/${story.cluster_id}`, e)}
+                            onClick={(e) => spaNavigate(`/culture-science/bad-leader-project/cluster/${story.cluster_id}`, e)}
                           >
                             {isExemplary ? 'Leaders have seen this work' : 'Leaders share this pattern'}
                           </a>

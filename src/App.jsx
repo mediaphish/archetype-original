@@ -107,6 +107,7 @@ export default function App() {
     if (path === '/culture-science/anti-projects/bad-leader-project/admin/login') return 'bad-leader-admin-login';
     if (path === '/culture-science/anti-projects/bad-leader-project/admin') return 'bad-leader-admin';
     if (path.startsWith('/culture-science/anti-projects/bad-leader-project/cluster/')) return 'bad-leader-project';
+    if (path.startsWith('/culture-science/bad-leader-project/cluster/')) return 'bad-leader-project';
     if (path === '/faqs' || path.startsWith('/faqs')) return 'faqs';
     if (path === '/engagement-inquiry') return 'engagement-inquiry';
     if (path === '/privacy-policy' || path === '/privacy') return 'privacy-policy';
@@ -533,6 +534,8 @@ export default function App() {
         } else if (path === '/culture-science/anti-projects/bad-leader-project/admin') {
           setCurrentPage('bad-leader-admin');
         } else if (path === '/culture-science/bad-leader-project') {
+          setCurrentPage('bad-leader-project');
+        } else if (path.startsWith('/culture-science/bad-leader-project/cluster/')) {
           setCurrentPage('bad-leader-project');
         } else if (path === '/culture-science/research') {
           window.history.replaceState({}, '', '/culture-science');
