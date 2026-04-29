@@ -25,8 +25,13 @@ export default function ChatApp({
   const [showCannotAnswerForm, setShowCannotAnswerForm] = useState(false);
   const [cannotAnswerQuestion, setCannotAnswerQuestion] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
+  /** When set, replaces static quickPrompts after an assistant reply (server-generated follow-ups). */
+  const [dynamicQuickPrompts, setDynamicQuickPrompts] = useState(null);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
+
+  const suggestionPrompts =
+    dynamicQuickPrompts && dynamicQuickPrompts.length > 0 ? dynamicQuickPrompts : quickPrompts;
 
   // Auto-scroll to bottom when new messages are added or loading state changes
   useEffect(() => {
@@ -318,6 +323,14 @@ export default function ChatApp({
       }
 
       const data = await response.json();
+      if (Array.isArray(data.followUpPrompts) && data.followUpPrompts.length > 0) {
+        setDynamicQuickPrompts(
+          data.followUpPrompts.map((t) => ({
+            label: String(t).slice(0, 120),
+            send: String(t).slice(0, 120),
+          }))
+        );
+      }
       const assistantMessage = { 
         text: data.response, 
         isUser: false,
@@ -616,7 +629,7 @@ export default function ChatApp({
       <div
         className={`mx-auto flex h-full min-h-0 w-full flex-1 flex-col ${marketing ? 'px-0' : 'px-3 sm:px-4 md:px-6'}`}
       >
-        {quickPrompts.length > 0 && (
+        {suggestionPrompts.length > 0 && (
           <div
             className={
               rh
@@ -642,7 +655,7 @@ export default function ChatApp({
                 marketing ? 'flex flex-wrap gap-1.5' : 'flex gap-2 overflow-x-auto px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
               }
             >
-              {quickPrompts.map((p, idx) => (
+              {suggestionPrompts.map((p, idx) => (
                 <button
                   key={`${p.label}-${idx}`}
                   type="button"

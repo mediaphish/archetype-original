@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { supabaseAdmin } from "../../lib/supabase-admin.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -27,7 +28,7 @@ export default async function handler(req, res) {
     
     // Store the question in Supabase for tracking
     try {
-      await supabase
+      const { error: insErr } = await supabaseAdmin
         .from('unanswered_questions')
         .insert([
           {
@@ -41,6 +42,7 @@ export default async function handler(req, res) {
             is_valuable: null
           }
         ]);
+      if (insErr) console.error('Error storing question:', insErr);
     } catch (dbError) {
       console.error('Error storing question:', dbError);
       // Continue even if DB insert fails

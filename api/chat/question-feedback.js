@@ -1,9 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+import { supabaseAdmin } from '../../lib/supabase-admin.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -22,7 +17,7 @@ export default async function handler(req, res) {
     }
 
     // Update the question record with feedback
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('unanswered_questions')
       .update({
         feedback: feedback,

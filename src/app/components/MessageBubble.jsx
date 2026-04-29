@@ -99,7 +99,9 @@ function parseMarkdown(text) {
   
   // Convert remaining line breaks to <br>
   html = html.replace(/\n/g, '<br>');
-  
+  // Collapse stacked breaks from multi-blank-line model output so paragraphs aren't huge gaps
+  html = html.replace(/(?:<br\s*\/?>\s*){2,}/gi, '<br>');
+
   return html;
 }
 

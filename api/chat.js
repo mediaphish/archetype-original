@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { supabaseAdmin } from '../lib/supabase-admin.js';
 import fs from 'fs';
 import path from 'path';
 import { getArchyRetrievalDepthFromPaid } from '../lib/ao/archyAccess.js';
@@ -109,6 +110,34 @@ function searchKnowledge(query, corpus, opts = {}) {
  * Short follow-ups that refer to the prior turn or page ("it", "the book") are on-topic.
  * The AI nonsensical classifier often flags them as "off-topic" because they lack keywords.
  */
+/** Strip Archy's structured follow-up chips from model output; parse JSON array. */
+function extractFollowUpPrompts(raw) {
+  if (!raw || typeof raw !== 'string') return { text: raw || '', prompts: null };
+  const marker = '|||FOLLOWUPS|||';
+  const idx = raw.indexOf(marker);
+  if (idx === -1) return { text: raw.trim(), prompts: null };
+  const main = raw.slice(0, idx).trim();
+  let rest = raw.slice(idx + marker.length).trim();
+  if (rest.startsWith('```')) {
+    rest = rest.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+  }
+  let prompts = null;
+  try {
+    const parsed = JSON.parse(rest);
+    if (Array.isArray(parsed)) {
+      prompts = parsed
+        .map((s) => (typeof s === 'string' ? s.trim() : String(s)))
+        .filter(Boolean)
+        .slice(0, 4)
+        .map((s) => s.slice(0, 120));
+      if (prompts.length === 0) prompts = null;
+    }
+  } catch (e) {
+    console.error('extractFollowUpPrompts parse error:', e);
+  }
+  return { text: main, prompts };
+}
+
 function isLegitimateFollowUpMessage(message) {
   if (!message || typeof message !== 'string') return false;
   const t = message.trim().toLowerCase();
@@ -370,12 +399,16 @@ CRITICAL INSTRUCTIONS - CORPUS AUTHORITY WITH RESEARCH:
 CONVERSATION STYLE:
 - You are NOT a chatbot with canned responses. You are having a genuine conversation.
 - Listen to what the person actually said. Respond to their specific words and meaning.
+- Lead with their situation or question; keep Bart and the corpus as support, not an opening brochure.
+- Prefer a concise first answer when it fits—then invite depth ("Want more on X or Y?") rather than dumping long capability lists unless they asked how services work.
+- Avoid stacked section headers that read like a services page (e.g. multiple bold labels for BUSINESS / OPERATIONS) unless the user asked for an overview of offerings.
 - If they say something isn't helpful, acknowledge that directly and ask what would be helpful.
 - If they express frustration, acknowledge it and respond to the underlying need.
 - Never give generic responses that ignore what they just said.
-- Be conversational, not scripted. Respond like a real person would.
-- Use the knowledge corpus above to inform your responses, but don't just quote it - synthesize it naturally while maintaining theological accuracy.
-- Keep the conversation going - invite follow-up questions
+- Be conversational, not scripted. Position Bart as someone who understands business and cares about the people in it—not only as "the guy who built companies."
+- Use the knowledge corpus above to inform your responses, but don't just quote it—synthesize it naturally while maintaining theological accuracy.
+- Two good outcomes: their question is fully answered, or—when it genuinely fits—they're helped toward a next step with Bart. Don't push contact when informational answers are enough.
+- Keep the conversation going when appropriate—invite follow-up questions.
 - ${nameReferenceInstruction}
 
 ${context === 'advisory'
@@ -397,19 +430,25 @@ ${context === 'advisory'
 - Only if the user EXPLICITLY asks to contact/schedule/meet with Bart should you help with that
 - Let people explore, learn, and ask as many questions as they want`}
 
-CONVERSATION STYLE:
+CONVERSATION STYLE (continued):
 - Direct and honest. If you don't understand, say so.
 - Ask follow-up questions that show you're listening.
-- Share relevant insights from Bart's experience when appropriate.
+- Share relevant insights from Bart's experience when appropriate—not a résumé unless they asked who Bart is or what he offers.
 - Be helpful without being pushy or salesy.
-- Keep the conversation going - invite follow-up questions
+
+SUGGESTION CHIPS (required on every reply):
+- After your main answer, on its own line, output exactly: |||FOLLOWUPS|||
+- Then output ONLY a JSON array of 3–4 short strings: natural next questions for THIS exchange (not generic site FAQ). Each string under 90 characters. Do not repeat the user's last message verbatim.
+- Example line after your answer:
+|||FOLLOWUPS|||
+["What would help most next?","How does that show up on your team?"]
+- The visitor never sees the marker—only the questions appear as chips. Your spoken answer must not mention FOLLOWUPS or JSON.
 
 BUTTON SUGGESTIONS:
-- If someone asks about training, services, working together, consulting, mentorship, or how to get help → proactively add [SUGGEST_SCHEDULE] and [SUGGEST_CONTACT] to your response
+- Add [SUGGEST_SCHEDULE] and/or [SUGGEST_CONTACT] only when the user clearly wants next steps to work with Bart (asks how to engage, schedule, hire, get help, or explicitly asks for contact)—not for casual informational questions.
 - If someone explicitly asks to schedule time with Bart → add [SUGGEST_SCHEDULE] to your response  
 - If someone explicitly asks for Bart's email or to contact Bart → add [SUGGEST_CONTACT] to your response
 - If someone explicitly says they want to explore the site without AI → add [SUGGEST_ANALOG] to your response
-- When someone asks about services, training, or working with Bart, be proactive - offer both scheduling and contact options
 - The markers will be removed from your response and converted to buttons automatically
 
 EXAMPLES OF GOOD RESPONSES:
@@ -441,7 +480,7 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         body: JSON.stringify({
           model: 'gpt-4',
           messages: messages,
-          max_tokens: 400,
+          max_tokens: 520,
           temperature: 0.7
         })
       });
@@ -457,7 +496,11 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
       
       if (data.choices && data.choices[0]) {
         let response = data.choices[0].message.content;
-        
+        let followUpPrompts = null;
+        const extracted = extractFollowUpPrompts(response);
+        response = extracted.text;
+        followUpPrompts = extracted.prompts;
+
         // Detect if Archy cannot answer the question
         // Check for indicators that Archy is uncertain or doesn't have the answer
         const cannotAnswerIndicators = [
@@ -615,7 +658,8 @@ Respond with ONLY a JSON object:
             shouldEscalate: false,
             isDarkHours,
             cannotAnswer: false,
-            suggestedButtons: undefined
+            suggestedButtons: undefined,
+            followUpPrompts: undefined
           });
         }
         
@@ -740,6 +784,7 @@ Respond with ONLY a JSON object:
         let cannotAnswer = false;
         if (indicatesCannotAnswer && isValuableQuestion) {
           cannotAnswer = true;
+          followUpPrompts = null;
           // Update response to ask for contact info
           response = "Hey, that's a great question, but I'm having trouble answering it. Can I get your contact information, so I can go talk to Bart and see what his thoughts are?";
           
@@ -750,7 +795,7 @@ Respond with ONLY a JSON object:
           
           // Store the question in Supabase for tracking
           try {
-            await supabase
+            const { error: uqError } = await supabaseAdmin
               .from('unanswered_questions')
               .insert([
                 {
@@ -762,6 +807,7 @@ Respond with ONLY a JSON object:
                   is_valuable: null
                 }
               ]);
+            if (uqError) console.error('Error storing question:', uqError);
           } catch (dbError) {
             console.error('Error storing question:', dbError);
             // Continue even if DB insert fails
@@ -933,7 +979,8 @@ Should we offer direct contact with Bart?`;
           shouldEscalate: shouldOfferEscalation,
           isDarkHours,
           cannotAnswer: cannotAnswer,
-          suggestedButtons: suggestedButtons.length > 0 ? suggestedButtons : undefined
+          suggestedButtons: suggestedButtons.length > 0 ? suggestedButtons : undefined,
+          followUpPrompts: followUpPrompts && followUpPrompts.length ? followUpPrompts : undefined
         });
       }
     } catch (error) {
@@ -953,6 +1000,7 @@ Should we offer direct contact with Bart?`;
     isDarkHours,
     suggestedButtons: [
       { text: "Go Analog", value: "go_analog" }
-    ]
+    ],
+    followUpPrompts: undefined
   });
 }
