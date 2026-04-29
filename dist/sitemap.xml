@@ -151,18 +151,6 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/obedience-through-doubt</loc>
-    <lastmod>2026-04-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/the-final-act-of-service</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://www.archetypeoriginal.com/journal/faithfulness-in-the-silence</loc>
     <lastmod>2026-04-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -175,12 +163,6 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/integrity-under-pressure</loc>
-    <lastmod>2026-04-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://www.archetypeoriginal.com/journal/endurance-without-retaliation</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
@@ -189,6 +171,18 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/focus-in-suffering</loc>
     <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/obedience-through-doubt</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/the-final-act-of-service</loc>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -213,6 +207,12 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/faithful-witness</loc>
     <lastmod>2026-04-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/integrity-under-pressure</loc>
+    <lastmod>2026-04-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -289,18 +289,6 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/steady-direction</loc>
-    <lastmod>2026-04-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/faithful-preparation</loc>
-    <lastmod>2026-04-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://www.archetypeoriginal.com/journal/grounded-recognition</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
@@ -315,6 +303,30 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/protecting-the-mission</loc>
     <lastmod>2026-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/a-life-that-finishes-well</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/steady-direction</loc>
+    <lastmod>2026-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/faithful-preparation</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/wisdom-that-stays-teachable</loc>
+    <lastmod>2026-03-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -337,12 +349,6 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/a-life-that-finishes-well</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://www.archetypeoriginal.com/journal/guarding-against-quiet-drift</loc>
     <lastmod>2026-03-24</lastmod>
     <changefreq>monthly</changefreq>
@@ -357,18 +363,6 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/faithfulness-in-the-long-middle</loc>
     <lastmod>2026-03-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/wisdom-that-stays-teachable</loc>
-    <lastmod>2026-03-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/peace-that-governs-decisions</loc>
-    <lastmod>2026-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -391,12 +385,6 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/removing-the-weights-that-cause-drift</loc>
-    <lastmod>2026-03-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://www.archetypeoriginal.com/journal/discernment-in-how-we-care</loc>
     <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -409,14 +397,8 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/holding-fast-without-wavering</loc>
-    <lastmod>2026-03-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/completion-through-testing</loc>
-    <lastmod>2026-03-13</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/peace-that-governs-decisions</loc>
+    <lastmod>2026-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -439,8 +421,26 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/steps-that-are-established</loc>
-    <lastmod>2026-03-08</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/removing-the-weights-that-cause-drift</loc>
+    <lastmod>2026-03-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/patience-that-builds-over-time</loc>
+    <lastmod>2026-03-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/holding-fast-without-wavering</loc>
+    <lastmod>2026-03-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/completion-through-testing</loc>
+    <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -457,8 +457,26 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/patience-that-builds-over-time</loc>
-    <lastmod>2026-03-11</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/strengthened-for-patient-endurance</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/strength-that-waits-without-collapsing</loc>
+    <lastmod>2026-03-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/steps-that-are-established</loc>
+    <lastmod>2026-03-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/slow-anger-strong-leadership</loc>
+    <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -471,18 +489,6 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/governed-strength</loc>
     <lastmod>2026-03-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/strengthened-for-patient-endurance</loc>
-    <lastmod>2026-03-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/strength-that-waits-without-collapsing</loc>
-    <lastmod>2026-03-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -505,8 +511,14 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/slow-anger-strong-leadership</loc>
-    <lastmod>2026-03-03</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-chooses-faithfulness-over-applause</loc>
+    <lastmod>2026-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-rejoices-in-faithful-labor</loc>
+    <lastmod>2026-02-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -523,8 +535,8 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-chooses-faithfulness-over-applause</loc>
-    <lastmod>2026-02-27</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-refuses-to-exploit-power</loc>
+    <lastmod>2026-02-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -547,36 +559,6 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-rejoices-in-faithful-labor</loc>
-    <lastmod>2026-02-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-endures-ordinary-faithfulness</loc>
-    <lastmod>2026-02-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-creates-safety-not-fear</loc>
-    <lastmod>2026-02-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-refuses-to-exploit-power</loc>
-    <lastmod>2026-02-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-carries-the-leader</loc>
-    <lastmod>2026-02-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://www.archetypeoriginal.com/journal/love-that-returns-leaders-to-themselves</loc>
     <lastmod>2026-02-15</lastmod>
     <changefreq>monthly</changefreq>
@@ -595,8 +577,14 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-honors-dignity</loc>
-    <lastmod>2026-02-10</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-endures-ordinary-faithfulness</loc>
+    <lastmod>2026-02-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-creates-safety-not-fear</loc>
+    <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -619,14 +607,8 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-remains-steady-under-pressure</loc>
-    <lastmod>2026-02-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-protects-others-from-harm</loc>
-    <lastmod>2026-02-07</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-carries-the-leader</loc>
+    <lastmod>2026-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -643,8 +625,20 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/love-that-listens-before-it-leads</loc>
-    <lastmod>2026-02-02</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-honors-dignity</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-remains-steady-under-pressure</loc>
+    <lastmod>2026-02-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-protects-others-from-harm</loc>
+    <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -667,6 +661,24 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://www.archetypeoriginal.com/journal/carrying-forward-what-matters</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/leading-from-love-not-urgency</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/love-that-listens-before-it-leads</loc>
+    <lastmod>2026-02-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
     <loc>https://www.archetypeoriginal.com/journal/letting-go-of-control</loc>
     <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -681,24 +693,6 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/leading-with-a-steadfast-mind</loc>
     <lastmod>2026-01-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/carrying-forward-what-matters</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/leading-from-love-not-urgency</loc>
-    <lastmod>2026-02-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/faithfulness-in-the-ordinary</loc>
-    <lastmod>2026-01-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -721,18 +715,6 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/renewed-patience-for-sustainable-growth</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/renewed-identity-without-performance</loc>
-    <lastmod>2026-01-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
     <loc>https://www.archetypeoriginal.com/journal/examining-motives</loc>
     <lastmod>2026-01-22</lastmod>
     <changefreq>monthly</changefreq>
@@ -745,8 +727,8 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/stewardship-over-ownership</loc>
-    <lastmod>2026-01-18</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/faithfulness-in-the-ordinary</loc>
+    <lastmod>2026-01-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -757,14 +739,14 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/humility-before-recognition</loc>
-    <lastmod>2026-01-14</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/renewed-patience-for-sustainable-growth</loc>
+    <lastmod>2026-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/patience-in-growth</loc>
-    <lastmod>2026-01-15</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/renewed-identity-without-performance</loc>
+    <lastmod>2026-01-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -777,6 +759,30 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/bearing-responsibility-together</loc>
     <lastmod>2026-01-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/stewardship-over-ownership</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/courage-to-move-forward</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/humility-before-recognition</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/patience-in-growth</loc>
+    <lastmod>2026-01-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -799,14 +805,8 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/courage-to-move-forward</loc>
-    <lastmod>2026-01-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/strength-under-control</loc>
-    <lastmod>2026-01-06</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/redefining-authority</loc>
+    <lastmod>2026-01-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -817,14 +817,8 @@
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.archetypeoriginal.com/journal/redefining-authority</loc>
-    <lastmod>2026-01-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.archetypeoriginal.com/journal/god-is-doing-a-new-thing</loc>
-    <lastmod>2026-01-03</lastmod>
+    <loc>https://www.archetypeoriginal.com/journal/strength-under-control</loc>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -849,6 +843,12 @@
   <url>
     <loc>https://www.archetypeoriginal.com/journal/a-renewed-mind</loc>
     <lastmod>2026-01-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.archetypeoriginal.com/journal/god-is-doing-a-new-thing</loc>
+    <lastmod>2026-01-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
