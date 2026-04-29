@@ -9,6 +9,10 @@ export default function ChatApp({
   initialMessage = '',
   quickPrompts = [],
   variant = 'default',
+  /** Static snapshot (optional). Prefer getContextPayload when data changes during the session. */
+  contextPayload = null,
+  /** () => object | null — fresh snapshot on each message (e.g. live dashboard). */
+  getContextPayload = null,
 }) {
   const marketing = variant === 'marketing';
   const rh = marketing && context === 'remaining-human';
@@ -33,12 +37,12 @@ export default function ChatApp({
   const suggestionPrompts =
     dynamicQuickPrompts && dynamicQuickPrompts.length > 0 ? dynamicQuickPrompts : quickPrompts;
 
-  // Auto-scroll to bottom when new messages are added or loading state changes
+  // Scroll only the messages panel — avoid scrollIntoView scrolling the whole page (ALI overlays).
   useEffect(() => {
-    // Use requestAnimationFrame to ensure DOM has updated
     requestAnimationFrame(() => {
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      const el = messagesContainerRef.current;
+      if (el) {
+        el.scrollTop = el.scrollHeight;
       }
     });
   }, [messages, isLoading]);
@@ -91,6 +95,9 @@ export default function ChatApp({
     } else if (context === 'advisory') {
       greetingText =
         "Hi, I'm Archy. You're on the Advisory page — Bart's book The Room and the option for private advisory outside your organization. Ask about the book's argument, whether advisory might fit your situation, or what \"outside the room\" means in practice. What would you like to explore?";
+    } else if (typeof context === 'string' && context.startsWith('ali-')) {
+      greetingText =
+        "Hi, I'm Archy. I'm here to help you interpret your ALI data and think through practical next steps. What would you like to explore?";
     } else {
       greetingText = "Hi, I'm Archy.\n\nI'm an AI that represents the work, philosophy, and experience of Bart Paden - a builder who's spent more than 32 years creating companies, growing people, and learning what makes both endure. You can ask me just about any question and I'll do my best to speak on his behalf. Go ahead and give it a try.";
     }
@@ -278,6 +285,13 @@ export default function ChatApp({
         }
       }
 
+      const snap =
+        typeof getContextPayload === 'function' ? getContextPayload() : contextPayload;
+      const payload =
+        snap && typeof snap === 'object' && !Array.isArray(snap) && Object.keys(snap).length > 0
+          ? { contextPayload: snap }
+          : {};
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -287,7 +301,8 @@ export default function ChatApp({
           message: messageText,
           conversationHistory,
           sessionId,
-          context: context || 'default'
+          context: context || 'default',
+          ...payload,
         }),
       });
 

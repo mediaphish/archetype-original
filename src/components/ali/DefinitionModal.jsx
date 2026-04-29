@@ -1,10 +1,18 @@
 import React from 'react';
 import { X, MessageSquare } from 'lucide-react';
-import ChatApp from '../../app/ChatApp';
-import { OptimizedImage } from '../OptimizedImage';
+import AliArchyDrawer from './AliArchyDrawer';
 
 const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenArchy }) => {
   const [showArchy, setShowArchy] = React.useState(false);
+
+  const getArchyContextPayload = React.useCallback(
+    () => ({
+      type: 'ali-dashboard-definition',
+      sectionKey: sectionKey || null,
+      definitionTitle: title || null,
+    }),
+    [sectionKey, title]
+  );
 
   if (!isOpen) return null;
 
@@ -63,51 +71,13 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
         </div>
       </div>
 
-      {/* Archy Chat Overlay - Opens when button is clicked */}
-      {showArchy && (
-        <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
-          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
-            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-center gap-3 min-h-[44px]">
-                  <div className="relative w-10 h-10">
-                    <OptimizedImage
-                      src="/images/archy-avatar.png"
-                      alt="Archy"
-                      className="w-10 h-10 rounded-full border-0"
-                      width={40}
-                      height={40}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
-                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowArchy(false)}
-                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors rounded"
-                  aria-label="Close chat"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              {/* Chat Content */}
-              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-                <ChatApp 
-                  context="ali-dashboard" 
-                  initialMessage={`I'm looking at the ${title} section on my ALI dashboard. Can you help me understand what I'm seeing?`}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <AliArchyDrawer
+        open={showArchy}
+        onClose={() => setShowArchy(false)}
+        context="ali-dashboard"
+        initialMessage={`I'm looking at the ${title} section on my ALI dashboard. Can you help me understand what I'm seeing?`}
+        getContextPayload={getArchyContextPayload}
+      />
     </>
   );
 };

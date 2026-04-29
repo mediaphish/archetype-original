@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import ChatApp from '../../app/ChatApp';
+import React, { useEffect, useState, useCallback } from 'react';
+import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import AliHeader from '../../components/ali/AliHeader';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
@@ -36,6 +36,8 @@ const ReportsHub = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailParam]);
+
+  const getArchyContextPayload = useCallback(() => ({ type: 'ali-reports-hub' }), []);
 
   const Card = ({ title, description, onClick, disabled }) => (
     <button
@@ -128,53 +130,16 @@ const ReportsHub = () => {
         />
       </button>
 
-      {/* Archy Chat Overlay */}
-      {showArchyChat && (
-        <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
-          <div className="w-full max-w-xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
-            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-10 h-10">
-                    <OptimizedImage
-                      src="/images/archy-avatar.png"
-                      alt="Archy"
-                      className="w-10 h-10 rounded-full border-0"
-                      width={40}
-                      height={40}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
-                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowArchyChat(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
-                  aria-label="Close chat"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-                <ChatApp
-                  context="ali-reports-hub"
-                  initialMessage={
-                    archyInitialMessage ||
-                    "I'm on the ALI Reports hub. Help me choose which report to open, and explain what each report is best for."
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <AliArchyDrawer
+        open={showArchyChat}
+        onClose={() => setShowArchyChat(false)}
+        context="ali-reports-hub"
+        initialMessage={
+          archyInitialMessage ||
+          "I'm on the ALI Reports hub. Help me choose which report to open, and explain what each report is best for."
+        }
+        getContextPayload={getArchyContextPayload}
+      />
     </div>
   );
 };

@@ -68,7 +68,12 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
               </button>
               
               {reportsDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50" role="menu" aria-label="Reports menu">
+                <div className="absolute left-0 top-full z-50 w-56 pt-1" role="presentation">
+                  <div
+                    className="rounded-lg border border-gray-200 bg-white py-2 shadow-lg"
+                    role="menu"
+                    aria-label="Reports menu"
+                  >
                   <button
                     type="button"
                     role="menuitem"
@@ -101,6 +106,7 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
                   >
                     Leadership Profile
                   </button>
+                  </div>
                 </div>
               )}
             </div>

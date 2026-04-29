@@ -138,6 +138,28 @@ function extractFollowUpPrompts(raw) {
   return { text: main, prompts };
 }
 
+/** Serialize optional live UI snapshot for system prompt (size-capped). */
+function serializeContextPayloadForPrompt(payload, maxLen = 12000) {
+  if (payload == null || typeof payload !== 'object') return '';
+  try {
+    const s = JSON.stringify(payload);
+    if (s.length <= maxLen) return s;
+    return `${s.slice(0, maxLen)}\n…(truncated)`;
+  } catch {
+    return '';
+  }
+}
+
+/** Skip public-site "cannot answer → email Bart" when ALI tools supply screen data or context is ali-*. */
+function skipAliCannotAnswerHandoff(context, contextPayload) {
+  const ctx = typeof context === 'string' ? context : '';
+  if (ctx.startsWith('ali-')) return true;
+  if (contextPayload != null && typeof contextPayload === 'object' && !Array.isArray(contextPayload)) {
+    return Object.keys(contextPayload).length > 0;
+  }
+  return false;
+}
+
 function isLegitimateFollowUpMessage(message) {
   if (!message || typeof message !== 'string') return false;
   const t = message.trim().toLowerCase();
@@ -254,7 +276,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { message, conversationHistory = [], sessionId, context } = req.body;
+  const { message, conversationHistory = [], sessionId, context, contextPayload } = req.body;
   const clientIP = getClientIP(req);
 
   if (!message) {
@@ -339,6 +361,16 @@ export default async function handler(req, res) {
     return false;
   });
 
+  const liveDataJson = serializeContextPayloadForPrompt(contextPayload);
+  const liveDataSection =
+    liveDataJson.length > 0
+      ? `\n\nAUTHORITATIVE LIVE DATA FOR THIS SCREEN (do not contradict; use these numbers and labels when answering):\n${liveDataJson}\n`
+      : '';
+  const aliInternalSection =
+    typeof context === 'string' && context.startsWith('ali-')
+      ? `\nALI LOGGED-IN TOOLS: The user is inside ALI (dashboard, reports, or Super Admin). Ground answers in AUTHORITATIVE LIVE DATA when it is present. For Super Admin overview, help interpret platform metrics and suggest journal or content angles. Quote specific figures from the snapshot when relevant. Do not claim you cannot see data that appears in AUTHORITATIVE LIVE DATA.\n`
+      : '';
+
   // Build conversation context
   const nameReferenceInstruction = bartPadenMentioned 
     ? 'CRITICAL: "Bart Paden" has already been mentioned in this conversation. You MUST use "Bart" or "he" instead of "Bart Paden" throughout your response. Only use "Bart Paden" if it\'s the very first mention in your current response, otherwise always use "Bart" or "he".'
@@ -349,6 +381,7 @@ export default async function handler(req, res) {
 You are the visitor-facing assistant named Archy. Do not mention internal automation tools or names that only Bart's team uses; visitors only need to know you as Archy.
 ${archyPaid ? '\nThis session has deeper access to Bart’s published library—use the retrieved passages below as your primary ground.\n' : ''}
 ${archyMemory?.summary ? `\nContinuity from earlier in this conversation (paraphrase, do not quote verbatim):\n${archyMemory.summary.slice(0, 3000)}\n` : ''}
+${liveDataSection}${aliInternalSection}
 
 ABOUT BART PADEN:
 Bart Paden is a lifelong builder — designer turned entrepreneur, founder turned mentor. He's spent more than 32 years creating companies, growing people, and learning what makes both endure. He's led creative and technical teams, built companies from nothing, and helped hundreds of people grow along the way. His journey spans startups, software, fitness, and leadership teams that learned to thrive under pressure. 
@@ -781,8 +814,10 @@ Respond with ONLY a JSON object:
         }
         
         // If Archy cannot answer AND the question is valuable, modify response and flag it
+        // (Skip for ALI internal surfaces — hedging would otherwise trigger false public-site handoffs.)
         let cannotAnswer = false;
-        if (indicatesCannotAnswer && isValuableQuestion) {
+        const skipCannotHandoff = skipAliCannotAnswerHandoff(context, contextPayload);
+        if (indicatesCannotAnswer && isValuableQuestion && !skipCannotHandoff) {
           cannotAnswer = true;
           followUpPrompts = null;
           // Update response to ask for contact info

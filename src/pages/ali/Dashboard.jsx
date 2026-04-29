@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Lightbulb, Scale, Handshake, MessageSquare, Compass, Shield, BarChart3, Info, HelpCircle, CheckCircle2, ArrowDown, AlertTriangle, Sparkles, MessageSquare as MessageSquareIcon, Bell, TrendingUp, ChevronDown } from 'lucide-react';
 import DefinitionModal from '../../components/ali/DefinitionModal';
-import ChatApp from '../../app/ChatApp';
+import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import AliHeader from '../../components/ali/AliHeader';
+import { buildAliDashboardSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
 
@@ -794,6 +795,11 @@ const ALIDashboard = () => {
       }
     };
   })();
+
+  const getArchyContextPayload = useCallback(
+    () => buildAliDashboardSnapshot(dashboardData, liveDashboard, { metricInsights }),
+    [dashboardData, liveDashboard, metricInsights]
+  );
 
   // leadership_drift: raw 0–100 (higher = more mismatch; lower is better)
 
@@ -2776,53 +2782,16 @@ const ALIDashboard = () => {
         />
       </button>
 
-      {/* Archy Chat Overlay */}
-      {showArchyChat && (
-        <div className="fixed inset-0 z-[9999] flex items-end justify-end p-4 md:p-8 pointer-events-none">
-          <div className="w-full md:w-[60%] lg:w-[55%] h-[90vh] md:h-[85vh] max-h-[700px] pointer-events-auto flex flex-col">
-            <div className="bg-white rounded-2xl shadow-2xl h-full flex flex-col overflow-hidden">
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-10 h-10">
-                    <OptimizedImage
-                      src="/images/archy-avatar.png"
-                      alt="Archy"
-                      className="w-10 h-10 rounded-full border-0"
-                      width={40}
-                      height={40}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg text-gray-900">Archy</h3>
-                    <p className="text-xs text-gray-500">AI Leadership Assistant</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowArchyChat(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2"
-                  aria-label="Close chat"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Chat Content */}
-              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-                <ChatApp 
-                  context="ali-dashboard" 
-                  initialMessage={archyInitialMessage || "I'm looking at my ALI dashboard. Can you help me interpret what I'm seeing and answer questions about my leadership data?"}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <AliArchyDrawer
+        open={showArchyChat}
+        onClose={() => setShowArchyChat(false)}
+        context="ali-dashboard"
+        initialMessage={
+          archyInitialMessage ||
+          "I'm looking at my ALI dashboard. Can you help me interpret what I'm seeing and answer questions about my leadership data?"
+        }
+        getContextPayload={getArchyContextPayload}
+      />
 
       {/* Zone modal removed — the Zones page is the single source of truth */}
     </div>
