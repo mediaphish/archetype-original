@@ -1,6 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import SEO from '../../components/SEO';
+import { splitNeutralizedParagraphs } from '../../lib/blpStoryParagraphs.js';
 import './badLeaderProject.css';
+
+function BlpStoryParagraphs({ text, excerpt }) {
+  const paras = splitNeutralizedParagraphs(text);
+  return (
+    <div className={excerpt ? 'blp-story-body blp-story-body--excerpt' : 'blp-story-body'}>
+      {paras.map((para, i) => (
+        <p key={i} className="blp-story-para">
+          {para}
+        </p>
+      ))}
+    </div>
+  );
+}
 
 const REGIONS = ['Northeast', 'Mid-Atlantic', 'Southeast', 'Midwest', 'South Central', 'Mountain West', 'Pacific West', 'Canada', 'International'];
 const INDUSTRIES = ['Technology', 'Healthcare', 'Manufacturing', 'Retail', 'Professional Services', 'Education', 'Government', 'Nonprofit', 'Finance', 'Other'];
@@ -46,6 +60,7 @@ export default function BadLeaderProject() {
   const [totalStories, setTotalStories] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [expandedIds, setExpandedIds] = useState({});
+  const storyArticleRefs = useRef({});
   const [loadingStories, setLoadingStories] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -492,7 +507,14 @@ export default function BadLeaderProject() {
                   const isOpen = Boolean(expandedIds[story.id]);
                   const liked = Boolean(localStorage.getItem(`blp_vote_${story.id}`));
                   return (
-                    <article key={story.id} className={`blp-story-card ${isExemplary ? 'is-exemplary' : ''}`}>
+                    <article
+                      key={story.id}
+                      ref={(el) => {
+                        if (el) storyArticleRefs.current[story.id] = el;
+                        else delete storyArticleRefs.current[story.id];
+                      }}
+                      className={`blp-story-card ${isExemplary ? 'is-exemplary' : ''}`}
+                    >
                       <div className="blp-story-meta">
                         {isExemplary && <span className="blp-tag blp-tag-exemplary">Exemplary leadership</span>}
                         <span className="blp-tag blp-tag-region">{story.region}</span>
@@ -510,13 +532,22 @@ export default function BadLeaderProject() {
                         )}
                       </div>
                       <div className="blp-story-text">
-                        {isOpen ? (
-                          <p>{story.neutralized_text}</p>
-                        ) : (
-                          <p className="blp-story-excerpt">{story.neutralized_text}</p>
-                        )}
+                        <BlpStoryParagraphs text={story.neutralized_text} excerpt={!isOpen} />
                       </div>
-                      <button className="blp-expand-btn" onClick={() => setExpandedIds((p) => ({ ...p, [story.id]: !p[story.id] }))}>
+                      <button
+                        type="button"
+                        className="blp-expand-btn"
+                        onClick={() => {
+                          const wasOpen = Boolean(expandedIds[story.id]);
+                          setExpandedIds((p) => ({ ...p, [story.id]: !p[story.id] }));
+                          if (wasOpen) {
+                            requestAnimationFrame(() => {
+                              const el = storyArticleRefs.current[story.id];
+                              el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            });
+                          }
+                        }}
+                      >
                         {isOpen ? 'Collapse' : 'Read full story'}
                       </button>
                       <div className="blp-story-footer">

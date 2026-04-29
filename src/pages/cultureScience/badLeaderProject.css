@@ -545,10 +545,17 @@
   color: #3a3a3a;
 }
 
-.blp-story-excerpt {
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
+.blp-story-body .blp-story-para {
+  margin: 0 0 1em;
+}
+
+.blp-story-body .blp-story-para:last-child {
+  margin-bottom: 0;
+}
+
+/* Collapsed archive cards: cap visible height (multi-paragraph safe). */
+.blp-story-body--excerpt {
+  max-height: 9rem;
   overflow: hidden;
 }
 

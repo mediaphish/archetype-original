@@ -141,6 +141,7 @@
     { "src": "/api/bad-leader-admin-intelligence", "dest": "/api/bad-leader-admin-intelligence.js" },
     { "src": "/api/bad-leader-admin-moderate", "dest": "/api/bad-leader-admin-moderate.js" },
     { "src": "/api/bad-leader-admin-queue", "dest": "/api/bad-leader-admin-queue.js" },
+    { "src": "/api/bad-leader-admin-published", "dest": "/api/bad-leader-admin-published.js" },
     { "src": "/api/bad-leader-admin-session", "dest": "/api/bad-leader-admin-session.js" },
     { "src": "/api/bad-leader-admin-stats", "dest": "/api/bad-leader-admin-stats.js" },
     { "src": "/api/bad-leader-magic-link", "dest": "/api/bad-leader-magic-link.js" },

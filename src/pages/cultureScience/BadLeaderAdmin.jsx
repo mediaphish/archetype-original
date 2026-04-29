@@ -20,6 +20,7 @@ function getTokenFromUrlOrStorage() {
 const tabs = [
   { id: 'moderation', label: 'Moderation Queue' },
   { id: 'flagged', label: 'Flagged Stories' },
+  { id: 'published', label: 'Published archive' },
   { id: 'intelligence', label: 'Intelligence Inbox' },
   { id: 'stats', label: 'Pattern Stats' },
 ];
@@ -33,6 +34,8 @@ export default function BadLeaderAdmin() {
   const [stats, setStats] = useState(null);
   const [intel, setIntel] = useState({ dysfunctionalPrompts: '', exemplaryPrompts: '' });
   const [loadingIntel, setLoadingIntel] = useState(false);
+  const [published, setPublished] = useState([]);
+  const [loadingPublished, setLoadingPublished] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -121,6 +124,32 @@ export default function BadLeaderAdmin() {
       body: JSON.stringify({ token, clusterId, label }),
     });
   }
+
+  async function fetchPublished() {
+    setLoadingPublished(true);
+    try {
+      const response = await fetch(`/api/bad-leader-admin-published?token=${encodeURIComponent(token)}`);
+      if (!response.ok) return;
+      const data = await response.json();
+      setPublished(Array.isArray(data.stories) ? data.stories : []);
+    } finally {
+      setLoadingPublished(false);
+    }
+  }
+
+  async function deletePublishedStory(storyId) {
+    if (!window.confirm('Remove this story from the public archive permanently? This cannot be undone.')) return;
+    const q = new URLSearchParams({ token, storyId });
+    const response = await fetch(`/api/bad-leader-admin-published?${q}`, { method: 'DELETE' });
+    if (!response.ok) return;
+    await fetchPublished();
+    await fetchStats();
+  }
+
+  useEffect(() => {
+    if (!ready || !token || activeTab !== 'published') return;
+    fetchPublished();
+  }, [ready, token, activeTab]);
 
   const title = useMemo(() => tabs.find((tab) => tab.id === activeTab)?.label || 'Admin', [activeTab]);
 
@@ -255,6 +284,54 @@ export default function BadLeaderAdmin() {
                     </div>
                   </article>
                 ))}
+              </section>
+            )}
+
+            {activeTab === 'published' && (
+              <section>
+                <div style={{ marginBottom: 20 }}>
+                  <p style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#8B7D72', marginBottom: 6 }}>Published archive</p>
+                  <h2 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 34, fontWeight: 400, margin: '0 0 8px' }}>Live on the public site</h2>
+                  <p style={{ color: '#6B6B6B' }}>Delete removes the story from the archive permanently (no return to moderation).</p>
+                </div>
+                {loadingPublished ? (
+                  <p style={{ color: '#6B6B6B' }}>Loading...</p>
+                ) : published.length === 0 ? (
+                  <p style={{ color: '#6B6B6B' }}>No published stories.</p>
+                ) : (
+                  published.map((row) => (
+                    <article key={row.id} style={{ background: '#fff', border: '1px solid rgba(26,26,26,0.08)', marginBottom: 14 }}>
+                      <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(26,26,26,0.07)', display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span style={{ fontSize: 12, color: '#6B6B6B' }}>
+                          {row.published_at ? new Date(row.published_at).toLocaleString() : new Date(row.created_at).toLocaleString()}
+                        </span>
+                        <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: 'rgba(139,125,114,0.12)', color: '#5C5048', textTransform: 'uppercase' }}>{row.region}</span>
+                        <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 20, background: 'rgba(168,169,173,0.18)', color: '#4A4A4E', textTransform: 'uppercase' }}>{row.industry}</span>
+                        <span style={{ fontSize: 11, color: '#8B7D72', fontFamily: 'ui-monospace, monospace' }}>{row.id.slice(0, 8)}…</span>
+                      </div>
+                      <div style={{ padding: '14px 16px', fontSize: 13, lineHeight: 1.7, color: '#3a3a3a' }}>{row.preview}{row.preview.length >= 220 ? '…' : ''}</div>
+                      <div style={{ padding: '14px 16px', borderTop: '1px solid rgba(26,26,26,0.07)' }}>
+                        <button
+                          type="button"
+                          onClick={() => deletePublishedStory(row.id)}
+                          style={{
+                            background: 'transparent',
+                            border: '1px solid rgba(219,8,18,0.35)',
+                            color: '#DB0812',
+                            borderRadius: 2,
+                            padding: '9px 20px',
+                            fontSize: 12,
+                            letterSpacing: '0.06em',
+                            textTransform: 'uppercase',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Delete from archive
+                        </button>
+                      </div>
+                    </article>
+                  ))
+                )}
               </section>
             )}
 
