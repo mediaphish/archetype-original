@@ -22,7 +22,7 @@ export default async function handler(req, res) {
           renderMessagePage(
             'Invalid link',
             'This sign-in link is invalid.',
-            '/culture-science/anti-projects/bad-leader-project/admin/login',
+            '/culture-science/bad-leader-project/admin/login',
             'Back to admin login'
           )
         );
@@ -37,14 +37,14 @@ export default async function handler(req, res) {
           renderMessagePage(
             'Sign-in failed',
             reasonText,
-            '/culture-science/anti-projects/bad-leader-project/admin/login',
+            '/culture-science/bad-leader-project/admin/login',
             'Request a new link'
           )
         );
     }
 
     const session = await createAdminSession(email);
-    const destination = `${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/culture-science/anti-projects/bad-leader-project/admin?token=${encodeURIComponent(session.token)}`;
+    const destination = `${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/culture-science/bad-leader-project/admin?token=${encodeURIComponent(session.token)}`;
     return res.status(302).setHeader('Location', destination).send(`Redirecting to admin...`);
   } catch (error) {
     console.error('[BLP MAGIC LINK VERIFY] Error:', error);
@@ -54,8 +54,8 @@ export default async function handler(req, res) {
         renderMessagePage(
           'Error',
           'An error occurred while verifying your link.',
-          '/culture-science/anti-projects/bad-leader-project/admin/login',
-          'Back to admin login'
+            '/culture-science/bad-leader-project/admin/login',
+            'Back to admin login'
         )
       );
   }

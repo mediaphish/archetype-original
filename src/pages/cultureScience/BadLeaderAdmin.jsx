@@ -38,14 +38,14 @@ export default function BadLeaderAdmin() {
     async function init() {
       const nextToken = getTokenFromUrlOrStorage();
       if (!nextToken) {
-        navigate('/culture-science/anti-projects/bad-leader-project/admin/login');
+        navigate('/culture-science/bad-leader-project/admin/login');
         return;
       }
       setToken(nextToken);
       const response = await fetch(`/api/bad-leader-admin-session?token=${encodeURIComponent(nextToken)}`);
       if (!response.ok) {
         localStorage.removeItem('blp_admin_token');
-        navigate('/culture-science/anti-projects/bad-leader-project/admin/login');
+        navigate('/culture-science/bad-leader-project/admin/login');
         return;
       }
       const data = await response.json();
@@ -159,14 +159,14 @@ export default function BadLeaderAdmin() {
             ))}
           </nav>
           <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-            <button type="button" onClick={() => navigate('/culture-science/anti-projects/bad-leader-project')} style={{ display: 'block', marginBottom: 8, border: 'none', background: 'none', color: 'rgba(255,255,255,0.45)', cursor: 'pointer', padding: 0 }}>
+            <button type="button" onClick={() => navigate('/culture-science/bad-leader-project')} style={{ display: 'block', marginBottom: 8, border: 'none', background: 'none', color: 'rgba(255,255,255,0.45)', cursor: 'pointer', padding: 0 }}>
               View public page
             </button>
             <button
               type="button"
               onClick={() => {
                 localStorage.removeItem('blp_admin_token');
-                navigate('/culture-science/anti-projects/bad-leader-project/admin/login');
+                navigate('/culture-science/bad-leader-project/admin/login');
               }}
               style={{ border: 'none', background: 'none', color: 'rgba(255,255,255,0.45)', cursor: 'pointer', padding: 0 }}
             >

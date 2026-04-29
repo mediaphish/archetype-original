@@ -92,7 +92,7 @@ export default function BadLeaderAdminLogin() {
           {error && <p style={{ marginTop: 12, fontSize: 13, color: '#DB0812' }}>{error}</p>}
           <button
             type="button"
-            onClick={() => navigate('/culture-science/anti-projects/bad-leader-project')}
+            onClick={() => navigate('/culture-science/bad-leader-project')}
             style={{ marginTop: 16, border: 'none', background: 'none', color: '#6B6B6B', cursor: 'pointer', padding: 0 }}
           >
             Back to public page
