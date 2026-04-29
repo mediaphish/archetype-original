@@ -33,6 +33,7 @@ export default async function handler(req, res) {
     }
 
     if (!data || data.length === 0) {
+      console.warn('[question-feedback] no row updated for question_id (invalid id or RLS):', id);
       return res.status(404).json({ error: 'Question not found' });
     }
 

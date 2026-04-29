@@ -26,9 +26,10 @@ export default async function handler(req, res) {
     const siteUrl = process.env.PUBLIC_SITE_URL || process.env.VERCEL_URL || 'https://www.archetypeoriginal.com';
     const feedbackUrl = `${siteUrl}/api/chat/question-feedback`;
     
-    // Store the question in Supabase for tracking
+    // Store the question in Supabase (service role — required for RLS on this table)
+    let rowSaved = false;
     try {
-      const { error: insErr } = await supabaseAdmin
+      const { data: inserted, error: insErr } = await supabaseAdmin
         .from('unanswered_questions')
         .insert([
           {
@@ -41,12 +42,32 @@ export default async function handler(req, res) {
             feedback: null,
             is_valuable: null
           }
-        ]);
-      if (insErr) console.error('Error storing question:', insErr);
+        ])
+        .select('question_id')
+        .maybeSingle();
+      if (insErr) {
+        console.error('[unanswered_questions] insert failed (cannot-answer):', insErr.message, insErr);
+      } else if (inserted?.question_id) {
+        rowSaved = true;
+      } else {
+        console.error('[unanswered_questions] insert returned no row (cannot-answer), questionId:', questionId);
+      }
     } catch (dbError) {
-      console.error('Error storing question:', dbError);
-      // Continue even if DB insert fails
+      console.error('[unanswered_questions] insert threw (cannot-answer):', dbError);
     }
+
+    const feedbackLinksHtml = rowSaved
+      ? `
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+        <p style="font-size: 12px; color: #666;">
+          <strong>Help improve Archy:</strong> Was this question actually valuable?
+          <br>
+          <a href="${feedbackUrl}?id=${encodeURIComponent(questionId)}&feedback=valuable" style="color: #C85A3C; margin-right: 10px;">✓ Yes, valuable</a>
+          <a href="${feedbackUrl}?id=${encodeURIComponent(questionId)}&feedback=not_valuable" style="color: #C85A3C;">✗ No, not valuable</a>
+        </p>`
+      : `
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+        <p style="font-size: 12px; color: #996;"><em>Feedback links were omitted because the question could not be saved. Check server logs for [unanswered_questions].</em></p>`;
     
     if (hasContactInfo) {
       emailSubject = `Archy Can't Answer: Question from ${name}`;
@@ -64,15 +85,7 @@ export default async function handler(req, res) {
         </ul>
         
         <p>You can reply directly to this email to respond to ${name}.</p>
-        
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-        
-        <p style="font-size: 12px; color: #666;">
-          <strong>Help improve Archy:</strong> Was this question actually valuable?
-          <br>
-          <a href="${feedbackUrl}?id=${questionId}&feedback=valuable" style="color: #C85A3C; margin-right: 10px;">✓ Yes, valuable</a>
-          <a href="${feedbackUrl}?id=${questionId}&feedback=not_valuable" style="color: #C85A3C;">✗ No, not valuable</a>
-        </p>
+        ${feedbackLinksHtml}
       `;
     } else {
       emailSubject = `Archy Can't Answer: Question (No Contact Info)`;
@@ -83,15 +96,7 @@ export default async function handler(req, res) {
         <p>${question.replace(/\n/g, '<br>')}</p>
         
         <p><em>Consider adding this to the knowledge corpus if it's relevant.</em></p>
-        
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-        
-        <p style="font-size: 12px; color: #666;">
-          <strong>Help improve Archy:</strong> Was this question actually valuable?
-          <br>
-          <a href="${feedbackUrl}?id=${questionId}&feedback=valuable" style="color: #C85A3C; margin-right: 10px;">✓ Yes, valuable</a>
-          <a href="${feedbackUrl}?id=${questionId}&feedback=not_valuable" style="color: #C85A3C;">✗ No, not valuable</a>
-        </p>
+        ${feedbackLinksHtml}
       `;
     }
 
