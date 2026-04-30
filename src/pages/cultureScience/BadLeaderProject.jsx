@@ -302,7 +302,6 @@ export default function BadLeaderProject() {
               <h2 className="blp-h2">A research archive. Not a lawsuit. Not a callout. Not a place to name names.</h2>
               <p>The Bad Leader Project collects anonymous stories of dysfunctional leadership from real organizations. The goal is pattern recognition at scale.</p>
               <p>Every story that comes in is neutralized by AI first: names, companies, and anything that would identify someone are stripped into a separate, publishable version. What the public can read is only that neutralized text, after review.</p>
-              <p>The original submission stays in the research corpus to feed Culture Science and Archy. It is not published as your raw words on the open site.</p>
             </div>
             <div className="blp-card-stack">
               <div className="blp-card">
