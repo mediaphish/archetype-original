@@ -246,6 +246,7 @@ function wantsCorpusPullQuotes(text) {
 function wantsCorpusThemeSearch(text) {
   if (wantsCorpusPullQuotes(text)) return false;
   if (wantsScoutFindings(text)) return false;
+  if (shouldPrioritizePlanningOverCorpusThemeSearch(text)) return false;
   const s = String(text || '').trim().toLowerCase();
   if (!s) return false;
 
@@ -273,6 +274,218 @@ function wantsCorpusThemeSearch(text) {
     /\b(search|look)\s+(?:in|through)\s+(?:my|our)\b/.test(s);
 
   return !!(corpusHint && researchHint);
+}
+
+function shouldPrioritizePlanningOverCorpusThemeSearch(text) {
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+  const hasPlanSignal =
+    /\blet'?s\s+(plan|build|write|work)\b/.test(s) ||
+    /\bseries\b/.test(s) ||
+    /\bjournal\s+(entries|series|posts?)\b/.test(s) ||
+    /\beach one\b.*\b(post|entry)\b/.test(s);
+  const hasScoutBuildSignal =
+    /\bscout\b/.test(s) &&
+    (/\bcrawl\b/.test(s) || /\binternet\b|\bweb\b|\bresearch\b/.test(s)) &&
+    (/\bcorpus\b/.test(s) || /\bjournal\b|\bpost\b/.test(s));
+  const hasLongBuildSignal =
+    /\b10,?000\b|\b\d{4,}\s+words?\b/.test(s) &&
+    /\bbuild\b.*\bcorpus\b|\bcorpus\b.*\bbuild\b/.test(s);
+  return !!(hasPlanSignal || hasScoutBuildSignal || hasLongBuildSignal);
+}
+
+function isAffirmativeExecution(text) {
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+  return (
+    /^(yes|yep|yeah|do it|go ahead|proceed|run it|ship it|sounds good|correct)\b/.test(s) ||
+    /\b(do it|go ahead|run with it|keep going|continue|let'?s do all of it)\b/.test(s)
+  );
+}
+
+function isExplicitPathPivot(text) {
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return false;
+  return /\b(instead|switch|change|different path|pivot|not this|stop this)\b/.test(s);
+}
+
+function mergeMemoryProfiles(base, current) {
+  const a = base && typeof base === 'object' ? base : {};
+  const b = current && typeof current === 'object' ? current : {};
+  return {
+    ...a,
+    ...b,
+    preferences: {
+      ...(a.preferences && typeof a.preferences === 'object' ? a.preferences : {}),
+      ...(b.preferences && typeof b.preferences === 'object' ? b.preferences : {}),
+    },
+    clarified_answers: {
+      ...(a.clarified_answers && typeof a.clarified_answers === 'object' ? a.clarified_answers : {}),
+      ...(b.clarified_answers && typeof b.clarified_answers === 'object' ? b.clarified_answers : {}),
+    },
+    path_history: Array.isArray(b.path_history) ? b.path_history : Array.isArray(a.path_history) ? a.path_history : [],
+  };
+}
+
+async function loadPersistentAutoMemoryProfile(email, currentThreadId) {
+  try {
+    const out = await supabaseAdmin
+      .from('ao_auto_threads')
+      .select('id,state,updated_at')
+      .eq('created_by_email', email)
+      .neq('id', currentThreadId)
+      .order('updated_at', { ascending: false })
+      .limit(25);
+    const rows = Array.isArray(out.data) ? out.data : [];
+    for (const row of rows) {
+      const st = row?.state && typeof row.state === 'object' ? row.state : null;
+      if (!st) continue;
+      if (st.memory_profile && typeof st.memory_profile === 'object') {
+        return st.memory_profile;
+      }
+    }
+  } catch (_) {
+    /* optional memory bootstrap */
+  }
+  return {};
+}
+
+function updateMemoryProfileFromTurn(profile, userMessage, activePath) {
+  const next = profile && typeof profile === 'object' ? { ...profile } : {};
+  const prefs = next.preferences && typeof next.preferences === 'object' ? { ...next.preferences } : {};
+  const clarified = next.clarified_answers && typeof next.clarified_answers === 'object' ? { ...next.clarified_answers } : {};
+  const s = String(userMessage || '').trim().toLowerCase();
+  if (!prefs.default_response_depth) prefs.default_response_depth = 'balanced';
+  if (/\bconfirm-first\b|\bwait\b.*\byes\b/.test(s)) prefs.execution_style = 'confirm_then_run';
+  if (/\bself-correct\b/.test(s)) prefs.failure_recovery = 'self_correct_then_ask_if_needed';
+  if (/\bmy tone\b|\bmy voice\b|\bcorpus\b.*\bvoice\b/.test(s)) {
+    prefs.voice_from_corpus = true;
+    clarified.voice_requirement = 'Use Bart corpus voice with subject-aware variation.';
+  }
+  if (/\b99%\s*automation\b|\b1%\s*oversight\b/.test(s)) clarified.automation_target = '99_1';
+  next.preferences = prefs;
+  next.clarified_answers = clarified;
+  next.last_active_path = activePath || next.last_active_path || 'general';
+  const history = Array.isArray(next.path_history) ? [...next.path_history] : [];
+  if (activePath) history.push({ path: activePath, at: new Date().toISOString() });
+  next.path_history = history.slice(-20);
+  next.updated_at = new Date().toISOString();
+  return next;
+}
+
+function buildPathConfirmationMessage(path, decision) {
+  const pathText = path === 'quote_campaign'
+    ? 'quote-card campaign'
+    : path === 'series_build'
+      ? 'series planning and writing'
+      : path === 'one_off_post'
+        ? 'one-off post build'
+        : path === 'corpus_lookup'
+          ? 'corpus lookup'
+          : path === 'corpus_build_day'
+            ? 'long-form corpus build session'
+            : path === 'package_publish'
+              ? 'package/publish prep'
+              : path === 'scout_findings'
+                ? 'Scout findings review'
+                : 'planning';
+  const firstStep = path === 'quote_campaign'
+    ? 'pull or prepare the first batch with overlap protection'
+    : path === 'series_build'
+      ? 'build the series map and launch Scout research lanes'
+      : path === 'one_off_post'
+        ? 'set the post angle and draft structure'
+        : path === 'corpus_lookup'
+          ? 'retrieve the strongest matching corpus passages'
+          : path === 'corpus_build_day'
+            ? 'set staged output blocks toward your word target'
+            : path === 'package_publish'
+              ? 'prepare package-ready outputs'
+              : 'start with the next concrete step';
+  return [
+    `I understand this as a **${pathText}** request.`,
+    `First step: ${firstStep}.`,
+    decision?.secondary?.length ? `I also picked up: ${decision.secondary.join(', ')}.` : '',
+    'Reply **yes** to run this path, or tell me what to change.',
+  ].filter(Boolean).join('\n');
+}
+
+function detectConversationPath({ userMessage, msgForQuoteRouting, hasAttachments, currentState }) {
+  const s = String(userMessage || '').trim().toLowerCase();
+  const secondary = [];
+  if (!s) return { primary: 'general', confidence: 0, secondary, needsClarification: true, clarifyingQuestion: 'What do you want me to do first?' };
+
+  if (wantsScoutFindings(userMessage)) return { primary: 'scout_findings', confidence: 0.95, secondary, needsClarification: false };
+  if (wantsCorpusThemeSearch(userMessage)) return { primary: 'corpus_lookup', confidence: 0.95, secondary, needsClarification: false };
+  if (wantsCorpusTldrWork(userMessage)) return { primary: 'corpus_build_day', confidence: 0.9, secondary, needsClarification: false };
+  if (wantsUserSuppliedQuoteCards(msgForQuoteRouting) || wantsQuoteCardInventory(msgForQuoteRouting)) {
+    return { primary: 'quote_campaign', confidence: 0.95, secondary, needsClarification: false };
+  }
+
+  const quoteCampaignSignal =
+    /\bquote\s+cards?\b/.test(s) ||
+    /\bpull[- ]?quotes?\b/.test(s) ||
+    (/\b\d+\s+more\b/.test(s) && /\bquote/.test(s));
+  if (quoteCampaignSignal) {
+    if (/\boverlap|repeat|already done|no overlap\b/.test(s)) secondary.push('overlap_guard');
+    return { primary: 'quote_campaign', confidence: 0.88, secondary, needsClarification: false };
+  }
+
+  const seriesSignal =
+    /\bseries\b/.test(s) &&
+    /\b(journal|posts?|entries?)\b/.test(s);
+  const scoutSignal = /\bscout\b/.test(s) && (/\bcrawl\b|\bresearch\b|\binternet\b|\bweb\b/.test(s));
+  const aliConditionsSignal = /\bclarity\b.*\bconsistency\b.*\btrust\b/i.test(String(userMessage || '')) && /\balignment\b.*\bstability\b.*\bdrift\b/i.test(String(userMessage || ''));
+  if (seriesSignal || (scoutSignal && /\bcorpus\b/.test(s)) || aliConditionsSignal) {
+    if (scoutSignal) secondary.push('scout_research');
+    if (/\bwrite\b|\bdraft\b/.test(s)) secondary.push('drafting');
+    return { primary: 'series_build', confidence: 0.9, secondary, needsClarification: false };
+  }
+
+  const oneOffSignal =
+    /\bone[- ]off\b/.test(s) ||
+    /\bsingle\s+post\b/.test(s) ||
+    /\bwrite\s+a\s+post\b/.test(s);
+  if (oneOffSignal) return { primary: 'one_off_post', confidence: 0.88, secondary, needsClarification: false };
+
+  const corpusBuildSignal =
+    (/\b10,?000\b|\b\d{4,}\s+words?\b/.test(s) && /\bcorpus\b/.test(s)) ||
+    (/\bbuild(?:ing)?\s+the\s+corpus\b/.test(s) && /\bday\b/.test(s));
+  if (corpusBuildSignal) return { primary: 'corpus_build_day', confidence: 0.92, secondary, needsClarification: false };
+
+  if (shouldAssumePackageMode(userMessage, hasAttachments)) return { primary: 'package_publish', confidence: 0.75, secondary, needsClarification: false };
+
+  const lastPath = currentState?.path_state?.confirmed_path;
+  if (lastPath && (isAffirmativeExecution(userMessage) || /\bkeep going|continue\b/.test(s))) {
+    return { primary: lastPath, confidence: 0.9, secondary: ['continuation'], needsClarification: false };
+  }
+
+  if (looksLikePlanningOrDiscussionRequest(userMessage)) {
+    return {
+      primary: 'planning',
+      confidence: 0.45,
+      secondary,
+      needsClarification: true,
+      clarifyingQuestion:
+        'I can run this a few ways. Which do you want first: research pass, outline/plan, or direct drafting?',
+    };
+  }
+
+  return { primary: 'general', confidence: 0.4, secondary, needsClarification: false };
+}
+
+function applyVoiceFidelityGate(message, activePath, memoryProfile) {
+  const msg = String(message || '').trim();
+  if (!msg) return { message: msg, changed: false };
+  const writingPath = new Set(['series_build', 'one_off_post', 'corpus_build_day']);
+  if (!writingPath.has(activePath)) return { message: msg, changed: false };
+  const prefs = memoryProfile?.preferences && typeof memoryProfile.preferences === 'object' ? memoryProfile.preferences : {};
+  if (!prefs.voice_from_corpus) return { message: msg, changed: false };
+  let revised = msg;
+  revised = revised.replace(/(^|\n)As an AI[^\n]*/gi, '$1').trim();
+  revised = revised.replace(/(^|\n)Let me know if you'd like[^\n]*/gi, '$1').trim();
+  revised = revised.replace(/(^|\n)I can also help with[^\n]*/gi, '$1').trim();
+  return { message: revised || msg, changed: revised !== msg };
 }
 
 /** Merge durable quote-card lines/themes into Planning (and related) when the user is continuing work or overlap-checking. */
@@ -905,6 +1118,9 @@ ${snap.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_se
 
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
+- If intent is ambiguous, ask direct clarifying questions before doing heavy work. Do not guess.
+- If thread snapshot includes confirmed_path, stay on that path unless Bart clearly pivots.
+- Confirm-first behavior: before major execution steps, restate path and wait for explicit yes/proceed.
 - Do **not** invent numbered **software / implementation / compliance** task lists, fake **todo boards**, or pretend you are **executing** a development plan, Cursor todos, or edits to an attached plan file. You are Auto inside this product only.
 - If his message sounds like meta-instructions for an external task system ("implement the plan," "mark todos in progress"), answer in one short paragraph: you do not run those systems here; give **one** concrete next step for quote cards in AO (e.g. pick numbers, **Show card N**, or ask for a full list of lines in this thread).
 - If current mode is "plan" or "write" or he is asking to plan, design, brainstorm, or figure out pull quotes / a series / campaigns: stay in conversation. Offer steps, tradeoffs, and questions. Do NOT say you already packaged a post, do NOT list fake receipts, and do NOT tell him to tap Proceed — there is no bundle until he pastes a finished post or explicitly asks to package.
@@ -912,7 +1128,8 @@ Non-negotiables (hard rules):
 - Modes you respect from context: plan, write, package, publish, recall, training, general.
 - Quality: only challenge wording for major public risks if relevant; do not nitpick style.
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
-${isPlanOrWrite ? '\n- Corpus pull-quote search runs only when his message includes the word **corpus** (any casing). If he pasted his own quote lines and asked for cards without saying corpus, the system uses his pasted text verbatim on the images—not a library search.\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask using "in my corpus" / "in my published writing" or similar so retrieval can run.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
+- Use memory_profile from thread snapshot as durable preference memory (voice, execution style, recovery style). Apply it across turns.
+${isPlanOrWrite ? '\n- For quote-card requests, infer intent from natural language first; do not require exact trigger wording. If he pasted his own quote lines, use that text verbatim on images rather than corpus retrieval.\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask for corpus retrieval.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
@@ -996,8 +1213,10 @@ export default async function handler(req, res) {
     if (!userMessage) return res.status(400).json({ ok: false, error: 'message required' });
 
     const currentState = fullState.thread.state && typeof fullState.thread.state === 'object' ? fullState.thread.state : {};
+    const persistedMemoryProfile = await loadPersistentAutoMemoryProfile(auth.email, thread.id);
+    const initialMemoryProfile = mergeMemoryProfiles(persistedMemoryProfile, currentState.memory_profile);
     let nextMode = detectAutoMode(userMessage, fullState.thread.current_mode || 'general');
-    let statePatch = { ...currentState };
+    let statePatch = { ...currentState, memory_profile: initialMemoryProfile };
 
     let msgForQuoteRouting = userMessage;
     let intentRoute = null;
@@ -1024,7 +1243,7 @@ export default async function handler(req, res) {
       nextMode = 'plan';
     } else if (wantsCorpusTldrWork(userMessage)) {
       nextMode = 'plan';
-    } else if (wantsQueueCorpusDraft(userMessage)) {
+    } else if (wantsQueueCorpusDraft(userMessage) && (!activePath || activePath === 'corpus_lookup' || activePath === 'corpus_build_day' || activePath === 'planning')) {
       nextMode = 'plan';
     } else if (wantsCorpusPullQuotes(msgForQuoteRouting)) {
       nextMode = 'plan';
@@ -1048,6 +1267,59 @@ export default async function handler(req, res) {
     if (wantsExitTrainingMode(userMessage)) {
       nextMode = 'plan';
     }
+
+    const pathDecision = detectConversationPath({
+      userMessage,
+      msgForQuoteRouting,
+      hasAttachments: activeAttachments.length > 0,
+      currentState,
+    });
+    const majorConfirmPaths = new Set(['quote_campaign', 'series_build', 'one_off_post', 'corpus_build_day', 'package_publish']);
+    const prevPathState = currentState.path_state && typeof currentState.path_state === 'object' ? currentState.path_state : {};
+    const pathState = { ...prevPathState };
+    let activePath = safeText(pathState.confirmed_path, 60) || '';
+    let forcedAssistantMessage = '';
+    let pathReceipts = [];
+    const affirmative = isAffirmativeExecution(userMessage);
+    const pivot = isExplicitPathPivot(userMessage);
+
+    if (safeText(pathState.pending_path, 60)) {
+      if (affirmative) {
+        activePath = safeText(pathState.pending_path, 60);
+        pathState.confirmed_path = activePath;
+        pathState.pending_path = '';
+        pathReceipts.push(`Path confirmed: ${activePath}`);
+      } else if (!pivot) {
+        forcedAssistantMessage = buildPathConfirmationMessage(safeText(pathState.pending_path, 60), pathDecision);
+      }
+    }
+
+    if (!forcedAssistantMessage) {
+      const candidatePath = safeText(pathDecision.primary, 60);
+      const shouldSwitch = !activePath || (pivot && candidatePath && candidatePath !== activePath);
+      if (shouldSwitch) {
+        if (pathDecision.needsClarification) {
+          forcedAssistantMessage = safeText(pathDecision.clarifyingQuestion, 300) || 'Quick check: what should I run first?';
+          pathState.pending_path = '';
+        } else if (candidatePath && majorConfirmPaths.has(candidatePath) && !affirmative) {
+          pathState.pending_path = candidatePath;
+          pathState.last_preview = buildPathConfirmationMessage(candidatePath, pathDecision);
+          forcedAssistantMessage = pathState.last_preview;
+        } else if (candidatePath) {
+          activePath = candidatePath;
+          pathState.confirmed_path = candidatePath;
+          pathState.pending_path = '';
+          pathReceipts.push(`Path set: ${candidatePath}`);
+        }
+      }
+    }
+
+    if (!activePath && safeText(pathState.confirmed_path, 60)) {
+      activePath = safeText(pathState.confirmed_path, 60);
+    }
+    pathState.updated_at = new Date().toISOString();
+    statePatch.path_state = pathState;
+    statePatch.memory_profile = updateMemoryProfileFromTurn(statePatch.memory_profile, userMessage, activePath || 'general');
 
     let accountQuoteCardContextItems = null;
     const mergeQuoteCardCtx =
@@ -1088,6 +1360,7 @@ export default async function handler(req, res) {
     }
 
     const receipts = [];
+    if (pathReceipts.length) receipts.push(...pathReceipts);
     if (accountQuoteCardContextItems?.length) {
       receipts.push('Loaded quote-card memory from your account for continuity');
     }
@@ -1122,6 +1395,13 @@ export default async function handler(req, res) {
     let savedBundle = null;
     let savedIdea = null;
     let rapidWriteHandled = false;
+
+    if (forcedAssistantMessage) {
+      rapidWriteHandled = true;
+      nextMode = 'plan';
+      assistantMessage = forcedAssistantMessage;
+      receipts.push('Path check: awaiting confirmation before major execution');
+    }
 
     const rwExisting = currentState.rapid_write && typeof currentState.rapid_write === 'object' ? currentState.rapid_write : null;
 
@@ -1976,7 +2256,7 @@ export default async function handler(req, res) {
             'Saved the last assistant reply to your corpus drafts queue for review. Nothing goes public until you use the secured publish step (overlap-checked).';
         }
       }
-    } else if (wantsCorpusTldrWork(userMessage)) {
+    } else if (wantsCorpusTldrWork(userMessage) && (!activePath || activePath === 'corpus_build_day' || activePath === 'planning')) {
       nextMode = 'plan';
       const topic = extractCorpusTldrTopic(userMessage);
       const outlineOnly = isCorpusOutlineOnly(userMessage);
@@ -1995,7 +2275,7 @@ export default async function handler(req, res) {
       } else {
         assistantMessage = out.error || 'Could not generate CORPUS briefing.';
       }
-    } else if (wantsScoutFindings(userMessage)) {
+    } else if (wantsScoutFindings(userMessage) && (!activePath || activePath === 'scout_findings' || activePath === 'planning' || activePath === 'series_build')) {
       nextMode = 'plan';
       const findings = await recentFindings(auth.email);
       const proof = await getAutomationProof(auth.email);
@@ -2245,8 +2525,13 @@ export default async function handler(req, res) {
         }
       }
     } else if (
-      wantsCorpusPullQuotes(msgForQuoteRouting) ||
-      (intentRoute?.intent === 'corpus_pull' && intentRoute.confidence >= 0.6)
+      (
+        wantsCorpusPullQuotes(msgForQuoteRouting) ||
+        (intentRoute?.intent === 'corpus_pull' && intentRoute.confidence >= 0.6) ||
+        activePath === 'quote_campaign'
+      ) &&
+      activePath !== 'series_build' &&
+      activePath !== 'corpus_build_day'
     ) {
       nextMode = 'plan';
       const corpus = await getCorpusPullQuotes({ queryText: userMessage, limit: 5 });
@@ -2308,7 +2593,7 @@ export default async function handler(req, res) {
         assistantMessage =
           'I couldn’t find strong pull-quote lines from the corpus for that ask. Try naming a theme (for example accountability, pressure, or culture) and ask again, or say which topics to prioritize.';
       }
-    } else if (wantsPublishRouteGuidance(userMessage)) {
+    } else if (wantsPublishRouteGuidance(userMessage) && (!activePath || activePath === 'package_publish' || activePath === 'planning')) {
       nextMode = 'plan';
       assistantMessage = messageForDevotionalOrSeriesPublish();
     } else if (
@@ -2588,7 +2873,10 @@ export default async function handler(req, res) {
           logoUrl,
         });
       }
-    } else if (wantsCorpusThemeSearch(userMessage)) {
+    } else if (
+      wantsCorpusThemeSearch(userMessage) &&
+      (!activePath || activePath === 'corpus_lookup' || activePath === 'planning')
+    ) {
       nextMode = 'plan';
       const topic = await getCorpusTopicSnippets({
         queryText: userMessage,
@@ -2622,7 +2910,7 @@ export default async function handler(req, res) {
         assistantMessage =
           'I didn’t find strong paragraph matches in the corpus for that wording. Try rephrasing with keywords that appear in your posts, or name the topic more directly (e.g. “servant leadership risks in my corpus”).';
       }
-    } else if (nextMode === 'package' || nextMode === 'publish') {
+    } else if (nextMode === 'package' || nextMode === 'publish' || activePath === 'package_publish') {
       const pendingQuality = statePatch.pending_quality && typeof statePatch.pending_quality === 'object' ? statePatch.pending_quality : null;
       const lower = userMessage.toLowerCase();
       if (
@@ -2786,6 +3074,35 @@ export default async function handler(req, res) {
       assistantMessage = safeText(model?.assistant_message, 4000) || `Mode: ${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}. Tell me what you want to do next.`;
       if (Array.isArray(model?.receipts)) receipts.push(...model.receipts.map((x) => safeText(x, 160)).filter(Boolean));
     }
+    }
+
+    const voiceGate = applyVoiceFidelityGate(assistantMessage, activePath, statePatch.memory_profile);
+    if (voiceGate.changed) {
+      assistantMessage = voiceGate.message;
+      receipts.push('Voice check: aligned response with your saved style profile');
+    }
+
+    const pathStateAfter = statePatch.path_state && typeof statePatch.path_state === 'object' ? statePatch.path_state : {};
+    const shouldAnnouncePath =
+      !!activePath &&
+      !forcedAssistantMessage &&
+      safeText(pathStateAfter.last_announced_path, 60) !== activePath &&
+      majorConfirmPaths.has(activePath);
+    if (shouldAnnouncePath && assistantMessage) {
+      const pathLabel =
+        activePath === 'quote_campaign'
+          ? 'quote-card campaign'
+          : activePath === 'series_build'
+            ? 'series build'
+            : activePath === 'one_off_post'
+              ? 'one-off post'
+              : activePath === 'corpus_build_day'
+                ? 'corpus build session'
+                : activePath === 'package_publish'
+                  ? 'package/publish prep'
+                  : activePath;
+      assistantMessage = [`Path locked: ${pathLabel}.`, '', assistantMessage].join('\n');
+      statePatch.path_state = { ...pathStateAfter, last_announced_path: activePath };
     }
 
     statePatch.session_summary = appendSessionSummary(currentState.session_summary, {
