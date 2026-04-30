@@ -4,6 +4,17 @@ import { FAQ_CATEGORY_CONFIG, normalizeFaqCategory } from '../lib/faqCategories'
 
 const DESKTOP_PER_PAGE = 18;
 const MOBILE_BATCH_SIZE = 12;
+/** Match Tailwind md (768px): at this width and up we paginate; below we use Show More. */
+const DESKTOP_MEDIA = '(min-width: 768px)';
+
+function readDesktopPaginationMatch() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.matchMedia(DESKTOP_MEDIA).matches;
+  } catch {
+    return window.innerWidth >= 768;
+  }
+}
 
 function getPrimaryCategory(faq) {
   if (!Array.isArray(faq.categories) || !faq.categories.length) return '';
@@ -34,14 +45,21 @@ export default function FAQs() {
   const [expandedSlug, setExpandedSlug] = useState('');
   const [page, setPage] = useState(1);
   const [mobileVisibleCount, setMobileVisibleCount] = useState(MOBILE_BATCH_SIZE);
-  const [isMobile, setIsMobile] = useState(false);
+  /** Set immediately on the client so pagination is not delayed behind other content. */
+  const [useDesktopPagination, setUseDesktopPagination] = useState(readDesktopPaginationMatch);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    const handleMedia = () => setIsMobile(mediaQuery.matches);
-    handleMedia();
-    mediaQuery.addEventListener('change', handleMedia);
-    return () => mediaQuery.removeEventListener('change', handleMedia);
+    const mediaQuery = window.matchMedia(DESKTOP_MEDIA);
+    const syncLayout = () => {
+      setUseDesktopPagination(mediaQuery.matches || window.innerWidth >= 768);
+    };
+    syncLayout();
+    mediaQuery.addEventListener('change', syncLayout);
+    window.addEventListener('resize', syncLayout);
+    return () => {
+      mediaQuery.removeEventListener('change', syncLayout);
+      window.removeEventListener('resize', syncLayout);
+    };
   }, []);
 
   useEffect(() => {
@@ -81,11 +99,11 @@ export default function FAQs() {
     const params = new URLSearchParams();
     if (selectedCategory !== 'all') params.set('category', selectedCategory);
     if (searchQuery.trim()) params.set('q', searchQuery.trim());
-    if (!isMobile && page > 1) params.set('page', String(page));
+    if (useDesktopPagination && page > 1) params.set('page', String(page));
     const query = params.toString();
     const url = query ? `/faqs?${query}` : '/faqs';
     window.history.replaceState({}, '', url);
-  }, [selectedCategory, searchQuery, page, isMobile]);
+  }, [selectedCategory, searchQuery, page, useDesktopPagination]);
 
   useEffect(() => {
     setPage(1);
@@ -129,7 +147,7 @@ export default function FAQs() {
     [categoryFilteredFaqs, mobileVisibleCount]
   );
 
-  const visibleFaqs = isMobile ? mobileFaqs : desktopFaqs;
+  const visibleFaqs = useDesktopPagination ? desktopFaqs : mobileFaqs;
 
   const groupedFaqs = useMemo(() => {
     if (selectedCategory !== 'all') return [];
@@ -139,7 +157,63 @@ export default function FAQs() {
     })).filter((group) => group.items.length > 0);
   }, [selectedCategory, visibleFaqs]);
 
-  const hasMoreMobile = isMobile && mobileVisibleCount < categoryFilteredFaqs.length;
+  const hasMoreMobile = !useDesktopPagination && mobileVisibleCount < categoryFilteredFaqs.length;
+
+  const rangeStart =
+    categoryFilteredFaqs.length === 0 ? 0 : useDesktopPagination ? (safePage - 1) * DESKTOP_PER_PAGE + 1 : 1;
+  const rangeEnd = useDesktopPagination
+    ? Math.min(safePage * DESKTOP_PER_PAGE, categoryFilteredFaqs.length)
+    : Math.min(mobileVisibleCount, categoryFilteredFaqs.length);
+
+  const renderPaginationBar = () => {
+    if (!useDesktopPagination || totalPages <= 1) return null;
+    const pageNumbers = Array.from({ length: totalPages }, (_, idx) => idx + 1);
+    return (
+      <div className="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+        <p className="text-[13px] text-[#6B6B6B] order-2 sm:order-1 sm:mr-4">
+          Page {safePage} of {totalPages}
+          <span className="text-[#A8A9AD]">
+            {' '}
+            ({rangeStart}-{rangeEnd} of {categoryFilteredFaqs.length})
+          </span>
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-2 order-1 sm:order-2">
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={safePage <= 1}
+            className="min-h-[40px] px-3 border border-[rgba(26,26,26,0.16)] bg-white text-sm text-[#1A1A1A] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Prev
+          </button>
+          <div className="flex flex-wrap items-center justify-center gap-1.5 max-w-full">
+            {pageNumbers.map((pageNumber) => (
+              <button
+                key={pageNumber}
+                type="button"
+                onClick={() => setPage(pageNumber)}
+                className={`min-w-[40px] h-10 px-2 border text-sm ${
+                  safePage === pageNumber
+                    ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white'
+                    : 'bg-white border-[rgba(26,26,26,0.16)] text-[#1A1A1A]'
+                }`}
+              >
+                {pageNumber}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage >= totalPages}
+            className="min-h-[40px] px-3 border border-[rgba(26,26,26,0.16)] bg-white text-sm text-[#1A1A1A] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   const resultMessage = searchQuery.trim()
     ? `${categoryFilteredFaqs.length} results for "${searchQuery.trim()}"`
@@ -201,6 +275,9 @@ export default function FAQs() {
       </div>
     );
   }
+
+  const paginationTop = renderPaginationBar();
+  const paginationBottom = renderPaginationBar();
 
   return (
     <div className="bg-[#FAFAF9] text-[#1A1A1A]">
@@ -286,6 +363,7 @@ export default function FAQs() {
             </div>
           ) : (
             <>
+              {paginationTop && <div className="mb-8">{paginationTop}</div>}
               {selectedCategory === 'all' ? (
                 <div className="space-y-10">
                   {groupedFaqs.map((group) => (
@@ -304,24 +382,7 @@ export default function FAQs() {
                 <div>{visibleFaqs.map((faq) => renderFaqItem(faq))}</div>
               )}
 
-              {!isMobile && totalPages > 1 && (
-                <div className="mt-10 flex items-center justify-center gap-2">
-                  {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNumber) => (
-                    <button
-                      key={pageNumber}
-                      type="button"
-                      onClick={() => setPage(pageNumber)}
-                      className={`min-w-[40px] h-10 px-3 border text-sm ${
-                        safePage === pageNumber
-                          ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white'
-                          : 'bg-white border-[rgba(26,26,26,0.16)] text-[#1A1A1A]'
-                      }`}
-                    >
-                      {pageNumber}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {paginationBottom && <div className="mt-10">{paginationBottom}</div>}
 
               {hasMoreMobile && (
                 <div className="mt-8 flex justify-center md:hidden">
