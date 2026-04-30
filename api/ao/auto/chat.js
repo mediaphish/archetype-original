@@ -298,9 +298,78 @@ function isAffirmativeExecution(text) {
   const s = String(text || '').trim().toLowerCase();
   if (!s) return false;
   return (
-    /^(yes|yep|yeah|do it|go ahead|proceed|run it|ship it|sounds good|correct)\b/.test(s) ||
-    /\b(do it|go ahead|run with it|keep going|continue|let'?s do all of it)\b/.test(s)
+    /^(yes|yep|yeah|ok|okay|do it|go ahead|proceed|please proceed|run it|ship it|sounds good|correct)\b/.test(s) ||
+    /\b(do it|go ahead|please proceed|run with it|keep going|continue|let'?s do all of it)\b/.test(s)
   );
+}
+
+/** Bounded corpus retrieval for series_build confirmations (same HTTP request—no background job). */
+async function buildSeriesCorpusResearchPack(userMessage) {
+  const base = safeText(userMessage, 500);
+  const queries = [
+    `${base} ALI leadership conditions clarity consistency trust communication alignment stability drift`,
+    'ALI Leadership Mirror conditions clarity consistency trust communication alignment stability drift servant leadership',
+    'Culture Science ALI team experience leader intention stability trust alignment',
+  ];
+  const merged = [];
+  const seen = new Set();
+  const maxQueries = 3;
+  const perCall = 5;
+  for (let qi = 0; qi < Math.min(maxQueries, queries.length); qi += 1) {
+    const topic = await getCorpusTopicSnippets({
+      queryText: queries[qi],
+      limitSnippets: perCall,
+      topDocs: 24,
+      maxCharsPerSnippet: 620,
+      maxSnippetsPerDoc: 1,
+    });
+    if (!topic.ok || !Array.isArray(topic.snippets)) continue;
+    for (const sn of topic.snippets) {
+      const excerpt = String(sn.excerpt || '').trim();
+      if (!excerpt) continue;
+      const key = `${String(sn.slug || sn.source_title || '')}:${excerpt.slice(0, 96)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      merged.push(sn);
+      if (merged.length >= 14) break;
+    }
+    if (merged.length >= 14) break;
+  }
+  return merged;
+}
+
+function formatSeriesCorpusResearchBlock(snippets) {
+  if (!Array.isArray(snippets) || !snippets.length) {
+    return [
+      '### Corpus research (this turn)',
+      '',
+      'No strong paragraph matches turned up for this pass. Say a tighter angle (for example one condition name) and I will run another corpus pass.',
+    ].join('\n');
+  }
+  const lines = [
+    '### Corpus research (this turn)',
+    '',
+    'Passages from your published corpus that overlap this series topic (retrieval matches—not a full read of every post):',
+    '',
+  ];
+  snippets.forEach((sn, idx) => {
+    const excerpt = String(sn.excerpt || '').trim();
+    const title = String(sn.source_title || 'Source').trim();
+    const url = sn.url ? String(sn.url).trim() : '';
+    lines.push(`${idx + 1}. ${excerpt}`);
+    lines.push(`   Source: ${title}${url ? ` · ${url}` : ''}`);
+    lines.push('');
+  });
+  lines.push(
+    'Open the links to verify context. If this misses the idea, tell me which condition to zoom in on next.'
+  );
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+  lines.push(
+    '**Open web / Scout:** This chat turn did not run an external crawl. To pull allowlisted outside sources into Analyst, use **Scout** on your AO dashboard and run an **External scan**, then ask me what came in.'
+  );
+  return lines.join('\n');
 }
 
 function isExplicitPathPivot(text) {
@@ -1101,6 +1170,10 @@ async function askModel({
     Number(snap.corpus_pull_quotes_count) > 0 ||
     Number(snap.publish_candidates_count) > 0 ||
     (Array.isArray(snap.quote_previews) && snap.quote_previews.length > 0);
+  const hasSeriesResearchPack =
+    snap.series_research_pack_this_turn &&
+    typeof snap.series_research_pack_this_turn === 'object' &&
+    snap.series_research_pack_this_turn.completed === true;
 
   const prompt = `You are Auto inside AO Automation. Bart is the only user.
 
@@ -1120,6 +1193,7 @@ Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
 - If intent is ambiguous, ask direct clarifying questions before doing heavy work. Do not guess.
 - If thread snapshot includes confirmed_path, stay on that path unless Bart clearly pivots.
+- **Honesty about research:** Do NOT say Scout, internet crawls, external scans, or "background research" **started**, **is running**, **was initiated**, or **will continue in the background** unless the thread snapshot explicitly documents a **completed** matching action for this same turn (for example \`series_research_pack_this_turn.completed === true\` means **in-corpus** snippet retrieval only—not an open-web crawl). If nothing in the snapshot proves a crawl or background job, say plainly what did and did not run.
 - Confirm-first behavior: before major execution steps, restate path and wait for explicit yes/proceed.
 - Do **not** invent numbered **software / implementation / compliance** task lists, fake **todo boards**, or pretend you are **executing** a development plan, Cursor todos, or edits to an attached plan file. You are Auto inside this product only.
 - If his message sounds like meta-instructions for an external task system ("implement the plan," "mark todos in progress"), answer in one short paragraph: you do not run those systems here; give **one** concrete next step for quote cards in AO (e.g. pick numbers, **Show card N**, or ask for a full list of lines in this thread).
@@ -1130,6 +1204,7 @@ Non-negotiables (hard rules):
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
 - Use memory_profile from thread snapshot as durable preference memory (voice, execution style, recovery style). Apply it across turns.
 ${isPlanOrWrite ? '\n- For quote-card requests, infer intent from natural language first; do not require exact trigger wording. If he pasted his own quote lines, use that text verbatim on images rather than corpus retrieval.\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask for corpus retrieval.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
+${hasSeriesResearchPack ? '\n- **Series corpus pack this turn:** \`series_research_pack_this_turn\` is true. The UI will prepend a "### Corpus research (this turn)" block for Bart—**do not paste that full numbered excerpt list again** inside \`assistant_message\`; acknowledge themes briefly and continue the series plan.\n' : ''}
 
 Guardrails:
 ${guardrails.map((g) => `- ${g.rule_text}`).join('\n') || '- none'}
@@ -1236,45 +1311,13 @@ export default async function handler(req, res) {
       }
     }
 
-    if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
-    if (intentRoute?.intent === 'corpus_pull' && intentRoute.confidence >= 0.6) {
-      nextMode = 'plan';
-    } else if (looksLikePlanningOrDiscussionRequest(userMessage) && nextMode !== 'recall') {
-      nextMode = 'plan';
-    } else if (wantsCorpusTldrWork(userMessage)) {
-      nextMode = 'plan';
-    } else if (wantsQueueCorpusDraft(userMessage) && (!activePath || activePath === 'corpus_lookup' || activePath === 'corpus_build_day' || activePath === 'planning')) {
-      nextMode = 'plan';
-    } else if (wantsCorpusPullQuotes(msgForQuoteRouting)) {
-      nextMode = 'plan';
-    } else if (wantsCorpusThemeSearch(userMessage)) {
-      nextMode = 'plan';
-    } else if (
-      shouldAssumePackageMode(userMessage, activeAttachments.length > 0) &&
-      !wantsScoutFindings(userMessage) &&
-      !wantsCorpusPullQuotes(msgForQuoteRouting) &&
-      !wantsCorpusThemeSearch(userMessage) &&
-      !wantsCorpusTldrWork(userMessage) &&
-      !wantsQueueCorpusDraft(userMessage) &&
-      nextMode !== 'training' &&
-      nextMode !== 'recall'
-    ) {
-      nextMode = 'package';
-    }
-
-    nextMode = finalizeAutoModeForQuoteWork(userMessage, nextMode);
-
-    if (wantsExitTrainingMode(userMessage)) {
-      nextMode = 'plan';
-    }
-
+    const majorConfirmPaths = new Set(['quote_campaign', 'series_build', 'one_off_post', 'corpus_build_day', 'package_publish']);
     const pathDecision = detectConversationPath({
       userMessage,
       msgForQuoteRouting,
       hasAttachments: activeAttachments.length > 0,
       currentState,
     });
-    const majorConfirmPaths = new Set(['quote_campaign', 'series_build', 'one_off_post', 'corpus_build_day', 'package_publish']);
     const prevPathState = currentState.path_state && typeof currentState.path_state === 'object' ? currentState.path_state : {};
     const pathState = { ...prevPathState };
     let activePath = safeText(pathState.confirmed_path, 60) || '';
@@ -1320,6 +1363,38 @@ export default async function handler(req, res) {
     pathState.updated_at = new Date().toISOString();
     statePatch.path_state = pathState;
     statePatch.memory_profile = updateMemoryProfileFromTurn(statePatch.memory_profile, userMessage, activePath || 'general');
+
+    if (impliesNoRefine(userMessage)) statePatch.dont_refine = true;
+    if (intentRoute?.intent === 'corpus_pull' && intentRoute.confidence >= 0.6) {
+      nextMode = 'plan';
+    } else if (looksLikePlanningOrDiscussionRequest(userMessage) && nextMode !== 'recall') {
+      nextMode = 'plan';
+    } else if (wantsCorpusTldrWork(userMessage)) {
+      nextMode = 'plan';
+    } else if (wantsQueueCorpusDraft(userMessage) && (!activePath || activePath === 'corpus_lookup' || activePath === 'corpus_build_day' || activePath === 'planning')) {
+      nextMode = 'plan';
+    } else if (wantsCorpusPullQuotes(msgForQuoteRouting)) {
+      nextMode = 'plan';
+    } else if (wantsCorpusThemeSearch(userMessage)) {
+      nextMode = 'plan';
+    } else if (
+      shouldAssumePackageMode(userMessage, activeAttachments.length > 0) &&
+      !wantsScoutFindings(userMessage) &&
+      !wantsCorpusPullQuotes(msgForQuoteRouting) &&
+      !wantsCorpusThemeSearch(userMessage) &&
+      !wantsCorpusTldrWork(userMessage) &&
+      !wantsQueueCorpusDraft(userMessage) &&
+      nextMode !== 'training' &&
+      nextMode !== 'recall'
+    ) {
+      nextMode = 'package';
+    }
+
+    nextMode = finalizeAutoModeForQuoteWork(userMessage, nextMode);
+
+    if (wantsExitTrainingMode(userMessage)) {
+      nextMode = 'plan';
+    }
 
     let accountQuoteCardContextItems = null;
     const mergeQuoteCardCtx =
@@ -3043,18 +3118,55 @@ export default async function handler(req, res) {
     } else {
       const findings = await recentFindings(auth.email);
       const proofLines = await getAutomationProof(auth.email);
+
+      const seriesProceedThisTurn =
+        affirmative &&
+        activePath === 'series_build' &&
+        (safeText(prevPathState.pending_path, 60) === 'series_build' ||
+          pathReceipts.some((r) => /Path (confirmed|set): series_build/.test(String(r || ''))));
+
+      let seriesResearchSnippets = null;
+      if (seriesProceedThisTurn) {
+        seriesResearchSnippets = await buildSeriesCorpusResearchPack(userMessage);
+        receipts.push(
+          `Corpus research (series_build): ran topic retrieval in this same request; ${seriesResearchSnippets.length} snippet(s).`
+        );
+        pushTransparencyReceipt(
+          receipts,
+          `Series build: corpus topic retrieval finished in this request (${seriesResearchSnippets.length} excerpt(s)). Not a background job; open-web Scout was not run here.`
+        );
+      }
+
       const snapshotBase = buildThreadStateSnapshot(statePatch);
-      const threadSnapshotForModel =
+      let threadSnapshotForModel =
         accountQuoteCardContextItems?.length > 0
           ? {
               ...snapshotBase,
               recent_quote_card_context_from_account: accountQuoteCardContextItems,
             }
-          : snapshotBase;
+          : { ...snapshotBase };
+
+      if (seriesResearchSnippets !== null) {
+        threadSnapshotForModel = {
+          ...threadSnapshotForModel,
+          series_research_pack_this_turn: {
+            completed: true,
+            snippet_count: seriesResearchSnippets.length,
+            note: 'in-corpus retrieval only; not an open-web Scout crawl',
+          },
+        };
+      }
+
+      const seriesResearchBlock =
+        seriesResearchSnippets !== null ? formatSeriesCorpusResearchBlock(seriesResearchSnippets) : '';
+
       const workflowCombined = [
         workflowHintFromState(statePatch),
         accountQuoteCardContextItems?.length
           ? 'Account quote-card memory is in the snapshot (recent_quote_card_context_from_account). Use it when Bart continues prior work, checks overlap, or recalls cards—do not claim recall is impossible.'
+          : '',
+        seriesResearchSnippets !== null
+          ? 'thread_snapshot.series_research_pack_this_turn marks completed in-corpus retrieval for this series_build confirmation. Do not claim Scout/open-web crawls or background jobs. The "### Corpus research (this turn)" block is prepended to the user message after your JSON—keep assistant_message concise; do not duplicate the full excerpt list.'
           : '',
       ]
         .filter(Boolean)
@@ -3073,6 +3185,9 @@ export default async function handler(req, res) {
       });
       assistantMessage = safeText(model?.assistant_message, 4000) || `Mode: ${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}. Tell me what you want to do next.`;
       if (Array.isArray(model?.receipts)) receipts.push(...model.receipts.map((x) => safeText(x, 160)).filter(Boolean));
+      if (seriesResearchBlock) {
+        assistantMessage = [seriesResearchBlock, '', assistantMessage].filter(Boolean).join('\n');
+      }
     }
     }
 

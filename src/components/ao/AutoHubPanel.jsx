@@ -67,6 +67,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [phraseLegendOpen, setPhraseLegendOpen] = useState(false);
   const [activityLogOpen, setActivityLogOpen] = useState(false);
+  const [activityResearchHint, setActivityResearchHint] = useState('');
   const [pendingFiles, setPendingFiles] = useState([]);
   const [startingNew, setStartingNew] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
@@ -180,6 +181,12 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
     return () => window.removeEventListener('keydown', onKey);
   }, [mobileMoreOpen]);
 
+  useEffect(() => {
+    if (!activityResearchHint) return undefined;
+    const t = window.setTimeout(() => setActivityResearchHint(''), 9000);
+    return () => window.clearTimeout(t);
+  }, [activityResearchHint]);
+
   const attachmentsByMessage = useMemo(() => {
     const map = new Map();
     for (const item of attachments) {
@@ -238,6 +245,14 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not send message');
+      const recs = Array.isArray(json.receipts) ? json.receipts : [];
+      const researchLogged = recs.some((r) =>
+        /corpus topic retrieval|Series build: corpus topic retrieval/i.test(String(r || ''))
+      );
+      if (researchLogged) {
+        setActivityLogOpen(true);
+        setActivityResearchHint('New lines were added to the Activity log for this reply (corpus research).');
+      }
       setThread(json.thread || null);
       setMessages(Array.isArray(json.messages) ? json.messages : []);
       setAttachments(Array.isArray(json.attachments) ? json.attachments : []);
@@ -853,6 +868,20 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             {sending ? 'Sending…' : 'Send'}
           </button>
         </div>
+        {sending ? (
+          <div className="mt-2 text-sm text-gray-700" role="status" aria-live="polite">
+            Auto is working on your last message…
+          </div>
+        ) : null}
+        {activityResearchHint ? (
+          <div
+            className="mt-2 text-sm text-amber-950 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2"
+            role="status"
+            aria-live="polite"
+          >
+            {activityResearchHint}
+          </div>
+        ) : null}
         <div className="mt-2 pb-1 text-xs text-gray-500 leading-snug">
           Drag and drop works here too. Images and text files will show in the thread.
         </div>
