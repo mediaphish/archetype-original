@@ -9,4 +9,6 @@ status: published
 
 Trust is built through predictability, not promises.
 
-[Explore our philosophy](/meet-bart) and [learn how ALI measures trust](/culture-science/ali).
+Most leaders try to establish trust by saying the right things. But people don't trust words. They trust patterns. They watch how you behave when it's inconvenient to do the right thing. They watch how you respond when something goes wrong.
+
+Trust is an output of consistent behavior over time. It can't be shortcut.

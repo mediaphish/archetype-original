@@ -9,4 +9,6 @@ status: published
 
 Because decisions are made inside conditions.
 
-Leaders shape outcomes indirectly by shaping the environment decisions are made in.
+The quality of a decision isn't just a function of the decision-maker's intelligence or experience. It's also a function of the environment they're operating in: whether they feel safe to be honest, whether they have the information they need, whether the pressure they're under is distorting their judgment.
+
+Leaders shape outcomes indirectly by shaping the environment decisions are made in. That's the leverage point most leadership approaches miss.

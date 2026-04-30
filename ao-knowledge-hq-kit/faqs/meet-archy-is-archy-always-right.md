@@ -7,8 +7,8 @@ featured: false
 status: published
 ---
 
-No—and he shouldn’t be.
+No, and he shouldn't be.
 
-Archy reflects the canon faithfully, but leadership always requires discernment. Context matters. People matter. Consequences matter. Archy supports thinking; he does not replace judgment.
+Archy reflects the canon faithfully. But leadership always requires discernment. Context matters. People matter. Consequences matter. Archy supports your thinking. He doesn't replace your judgment.
 
-If you’re expecting certainty, you’ll be disappointed. If you’re looking for clarity that helps you make better decisions, he’ll be useful.
+If you're expecting certainty, you'll be disappointed. If you're looking for clarity that helps you make better decisions, he'll be useful. That's the right way to use him.

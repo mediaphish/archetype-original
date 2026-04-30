@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-When results are demanded without environmental stability, leaders increase pressure.
+The performance-pressure trap is what happens when results are demanded without giving the environment the stability it needs to produce them.
 
-This accelerates burnout and erodes trust.
+Leaders increase pressure. Teams under sustained pressure burn out and erode trust. Performance deteriorates. Leaders increase pressure further. The cycle accelerates.
+
+The trap is that the thing being used to try to fix the problem is what's causing it.

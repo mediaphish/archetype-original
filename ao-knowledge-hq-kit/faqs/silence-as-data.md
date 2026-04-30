@@ -7,8 +7,8 @@ featured: false
 status: published
 ---
 
-Silence is rarely neutrality.
+Because silence is rarely neutrality.
 
-When teams stop speaking, it often signals learned futility, fear of consequences, or exhaustion from being unheard.
+When teams stop speaking up, it usually signals one of three things: learned futility, fear of consequences, or exhaustion from being unheard. None of those are fine.
 
-Culture Science trains leaders to investigate silence before interpreting it as alignment.
+Leaders who interpret silence as agreement are making a costly assumption. Culture Science trains leaders to investigate silence before drawing conclusions from it.

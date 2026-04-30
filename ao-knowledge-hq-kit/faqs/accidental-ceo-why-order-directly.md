@@ -9,6 +9,6 @@ status: published
 
 Ordering directly helps support the broader work behind the book.
 
-Accidental CEO is part of a larger leadership platform. Buying here keeps everything connected—from the book to future content, tools, and conversations like Archy.
+Accidental CEO is part of a larger leadership platform. Buying here keeps everything connected, from the book to future content, tools, and conversations like Archy.
 
-It also allows us to expand what comes with the book over time.
+It also gives us the ability to expand what comes with the book over time. That's harder to do when orders run through a third party.

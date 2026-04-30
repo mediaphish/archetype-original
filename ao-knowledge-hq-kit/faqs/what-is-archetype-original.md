@@ -7,8 +7,10 @@ featured: false
 status: published
 ---
 
-Archetype Original is a leadership consultancy and knowledge system.
+Archetype Original is the work I built after 33 years of leading real organizations and watching the same problems repeat everywhere I looked.
 
-It exists to help leaders build cultures that are stable, accountable, and human.
+It's a leadership consultancy and knowledge system built around responsibility, clarity, and long-term cultural health. It exists to help leaders build cultures that are stable, accountable, and human.
 
-The work focuses on behavior, tone, trust, and responsibility—not trends, hacks, or performative leadership.
+Rather than focusing on tactics, trends, or surface-level fixes, the work looks at how leadership behavior creates conditions and how those conditions shape performance, trust, and sustainability over time.
+
+Not trends. Not hacks. Not the kind of leadership advice that sounds good in a conference room but collapses under real pressure.

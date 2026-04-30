@@ -8,13 +8,8 @@ featured: false
 status: published
 ---
 
-ALI reveals:
+Strategy requires conditions. ALI shows whether those conditions exist.
 
-whether the team is ready for change
-whether clarity supports new responsibility
-whether trust allows transparency
-whether tone can handle pressure
-whether consistency enables execution
+Before you push into a major initiative, it's worth knowing whether the team is ready for change, whether clarity supports new responsibility, whether trust allows the transparency that change requires, whether tone can handle the pressure that comes with it, and whether consistency enables execution at the pace you're planning.
 
-Strategy requires conditions.
-ALI shows whether those conditions exist.
+Most leaders find out the hard way that conditions weren't ready. ALI lets you know before you commit.

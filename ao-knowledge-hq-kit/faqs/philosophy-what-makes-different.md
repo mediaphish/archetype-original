@@ -7,10 +7,8 @@ featured: false
 status: published
 ---
 
-Most leadership philosophies focus on what leaders should say or decide. Archetype Original focuses on what leaders consistently transmit.
+Most leadership philosophies focus on what leaders should say or decide. This one focuses on what leaders consistently transmit.
 
-Tone, behavior, consistency, and what is tolerated day after day shape culture far more than stated values or vision statements.
+Tone, behavior, consistency, and what is tolerated day after day shape culture far more than stated values or vision statements. Most leaders know what they intend to communicate. Fewer understand what they're actually transmitting.
 
-This philosophy pays attention to that invisible layer, because that's where cultures stabilize—or quietly fracture.
-
-[Read more about our philosophy](/meet-bart) and [explore Culture Science](/culture-science) to understand these patterns.
+This philosophy pays attention to that gap, because that's where cultures either stabilize or quietly fracture.

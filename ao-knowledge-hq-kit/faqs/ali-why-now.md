@@ -8,15 +8,8 @@ featured: false
 status: published
 ---
 
-Because:
+Because the conditions that accelerate drift are more present now than they've ever been.
 
-teams tolerate instability less
-communication channels are noisy
-hybrid work weakens clarity
-burnout increases tone volatility
-leaders are stretched thin
-drift accelerates under pressure
-turnover is expensive
-accountability expectations are rising
+Teams tolerate instability less. Communication channels are noisy. Hybrid work weakens clarity. Burnout increases tone volatility. Leaders are stretched thin. Drift accelerates under pressure. Turnover is expensive. And accountability expectations are rising.
 
-ALI gives leaders visibility when stakes are highest.
+The margin for undetected drift has shrunk. Leaders who can see their conditions clearly have a real advantage over those who are still guessing.

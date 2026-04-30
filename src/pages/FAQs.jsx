@@ -1,39 +1,75 @@
-/**
- * Universal FAQs Page
- * Searchable, filterable, categorized FAQ system
- */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { markdownToHtml } from '../lib/faqMarkdownToHtml';
+import { FAQ_CATEGORY_CONFIG, normalizeFaqCategory } from '../lib/faqCategories';
+
+const DESKTOP_PER_PAGE = 18;
+const MOBILE_BATCH_SIZE = 12;
+
+function getPrimaryCategory(faq) {
+  if (!Array.isArray(faq.categories) || !faq.categories.length) return '';
+  return normalizeFaqCategory(faq.categories[0]);
+}
+
+function includesCategory(faq, category) {
+  if (!Array.isArray(faq.categories)) return false;
+  return faq.categories.some((item) => normalizeFaqCategory(item) === category);
+}
+
+function matchesQuery(faq, query) {
+  if (!query) return true;
+  const normalized = query.toLowerCase();
+  const titleMatch = String(faq.title || '').toLowerCase().includes(normalized);
+  const bodyMatch = String(faq.body || '').toLowerCase().includes(normalized);
+  const categoryMatch = Array.isArray(faq.categories)
+    ? faq.categories.some((item) => String(item).toLowerCase().includes(normalized))
+    : false;
+  return titleMatch || bodyMatch || categoryMatch;
+}
 
 export default function FAQs() {
   const [faqs, setFaqs] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [expandedFaqs, setExpandedFaqs] = useState(new Set());
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedSlug, setExpandedSlug] = useState('');
+  const [page, setPage] = useState(1);
+  const [mobileVisibleCount, setMobileVisibleCount] = useState(MOBILE_BATCH_SIZE);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Get category from URL query parameter
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const categoryParam = urlParams.get('category');
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-    }
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const handleMedia = () => setIsMobile(mediaQuery.matches);
+    handleMedia();
+    mediaQuery.addEventListener('change', handleMedia);
+    return () => mediaQuery.removeEventListener('change', handleMedia);
   }, []);
 
-  // Load FAQs from knowledge corpus
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const categoryParam = normalizeFaqCategory(params.get('category') || '');
+    const queryParam = (params.get('q') || '').trim();
+    const pageParam = parseInt(params.get('page') || '1', 10);
+
+    if (categoryParam && FAQ_CATEGORY_CONFIG.some((item) => item.key === categoryParam)) {
+      setSelectedCategory(categoryParam);
+    }
+    if (queryParam) setSearchQuery(queryParam);
+    if (!Number.isNaN(pageParam) && pageParam > 0) setPage(pageParam);
+  }, []);
+
   useEffect(() => {
     const loadFAQs = async () => {
       try {
         const response = await fetch('/knowledge.json');
         const data = await response.json();
-        
-        // Filter for FAQs only - knowledge corpus uses 'docs' not 'documents'
-        const allFaqs = (data.docs || data.documents || []).filter(doc => doc.type === 'faq');
-        setFaqs(allFaqs);
-        setLoading(false);
+        const docs = data.docs || data.documents || [];
+        const faqDocs = docs
+          .filter((doc) => doc.type === 'faq')
+          .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), undefined, { sensitivity: 'base' }));
+        setFaqs(faqDocs);
       } catch (error) {
         console.error('Error loading FAQs:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -41,317 +77,289 @@ export default function FAQs() {
     loadFAQs();
   }, []);
 
-  // Get all unique categories from FAQs
-  const categories = useMemo(() => {
-    const categorySet = new Set();
-    faqs.forEach(faq => {
-      if (faq.categories && Array.isArray(faq.categories)) {
-        faq.categories.forEach(cat => categorySet.add(cat));
-      }
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (selectedCategory !== 'all') params.set('category', selectedCategory);
+    if (searchQuery.trim()) params.set('q', searchQuery.trim());
+    if (!isMobile && page > 1) params.set('page', String(page));
+    const query = params.toString();
+    const url = query ? `/faqs?${query}` : '/faqs';
+    window.history.replaceState({}, '', url);
+  }, [selectedCategory, searchQuery, page, isMobile]);
+
+  useEffect(() => {
+    setPage(1);
+    setMobileVisibleCount(MOBILE_BATCH_SIZE);
+    setExpandedSlug('');
+  }, [selectedCategory, searchQuery]);
+
+  const searchMatchedFaqs = useMemo(() => faqs.filter((faq) => matchesQuery(faq, searchQuery)), [faqs, searchQuery]);
+
+  const tabCounts = useMemo(() => {
+    const counts = {
+      all: searchMatchedFaqs.length,
+    };
+    FAQ_CATEGORY_CONFIG.forEach((item) => {
+      counts[item.key] = searchMatchedFaqs.filter((faq) => includesCategory(faq, item.key)).length;
     });
-    return Array.from(categorySet).sort();
-  }, [faqs]);
+    return counts;
+  }, [searchMatchedFaqs]);
 
-  // Filter and search FAQs
-  const filteredFaqs = useMemo(() => {
-    return faqs.filter(faq => {
-      // Category filter (case-insensitive matching)
-      if (selectedCategory) {
-        const normalizedCategory = selectedCategory.toLowerCase();
-        const hasCategory = faq.categories && Array.isArray(faq.categories) && 
-          faq.categories.some(cat => cat.toLowerCase() === normalizedCategory);
-        if (!hasCategory) return false;
-      }
+  const categoryFilteredFaqs = useMemo(() => {
+    if (selectedCategory === 'all') return searchMatchedFaqs;
+    return searchMatchedFaqs.filter((faq) => includesCategory(faq, selectedCategory));
+  }, [searchMatchedFaqs, selectedCategory]);
 
-      // Search filter
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const matchesTitle = faq.title?.toLowerCase().includes(query);
-        const matchesBody = faq.body?.toLowerCase().includes(query);
-        const matchesCategories = faq.categories?.some(cat => cat.toLowerCase().includes(query));
-        return matchesTitle || matchesBody || matchesCategories;
-      }
+  const totalPages = Math.max(1, Math.ceil(categoryFilteredFaqs.length / DESKTOP_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
 
-      return true;
-    });
-  }, [faqs, selectedCategory, searchQuery]);
-
-  const toggleFaq = (slug) => {
-    const newExpanded = new Set(expandedFaqs);
-    if (newExpanded.has(slug)) {
-      newExpanded.delete(slug);
-    } else {
-      newExpanded.add(slug);
+  useEffect(() => {
+    if (page !== safePage) {
+      setPage(safePage);
     }
-    setExpandedFaqs(newExpanded);
-  };
+  }, [page, safePage]);
 
-  const clearFilters = () => {
-    setSelectedCategory('');
-    setSearchQuery('');
-    // Update URL to remove query parameters
-    window.history.pushState({}, '', '/faqs');
-  };
+  const desktopFaqs = useMemo(() => {
+    const start = (safePage - 1) * DESKTOP_PER_PAGE;
+    return categoryFilteredFaqs.slice(start, start + DESKTOP_PER_PAGE);
+  }, [categoryFilteredFaqs, safePage]);
 
-  const handleCategoryChange = (category) => {
+  const mobileFaqs = useMemo(
+    () => categoryFilteredFaqs.slice(0, mobileVisibleCount),
+    [categoryFilteredFaqs, mobileVisibleCount]
+  );
+
+  const visibleFaqs = isMobile ? mobileFaqs : desktopFaqs;
+
+  const groupedFaqs = useMemo(() => {
+    if (selectedCategory !== 'all') return [];
+    return FAQ_CATEGORY_CONFIG.map((category) => ({
+      ...category,
+      items: visibleFaqs.filter((faq) => getPrimaryCategory(faq) === category.key),
+    })).filter((group) => group.items.length > 0);
+  }, [selectedCategory, visibleFaqs]);
+
+  const hasMoreMobile = isMobile && mobileVisibleCount < categoryFilteredFaqs.length;
+
+  const resultMessage = searchQuery.trim()
+    ? `${categoryFilteredFaqs.length} results for "${searchQuery.trim()}"`
+    : '';
+
+  const onCategorySelect = (category) => {
     setSelectedCategory(category);
-    // Update URL with category parameter
-    if (category) {
-      window.history.pushState({}, '', `/faqs?category=${category}`);
-    } else {
-      window.history.pushState({}, '', '/faqs');
-    }
+  };
+
+  const toggleAccordion = (slug) => {
+    setExpandedSlug((prev) => (prev === slug ? '' : slug));
+  };
+
+  const navigate = (event, path) => {
+    event.preventDefault();
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const renderFaqItem = (faq) => {
+    const isOpen = expandedSlug === faq.slug;
+    return (
+      <article key={faq.slug} className="border-b border-[rgba(26,26,26,0.08)] bg-white">
+        <button
+          type="button"
+          onClick={() => toggleAccordion(faq.slug)}
+          aria-expanded={isOpen}
+          className="w-full px-4 sm:px-10 py-[22px] text-left flex items-center justify-between gap-6"
+        >
+          <h3 className="text-[14px] sm:text-[15px] leading-[1.5] font-semibold text-[#1A1A1A]">{faq.title}</h3>
+          <svg
+            className={`w-5 h-5 shrink-0 ${isOpen ? 'rotate-180 text-[#DB0812]' : 'text-[#A8A9AD]'}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {isOpen && (
+          <div className="bg-[#E1DED8] border-b-2 border-[rgba(26,26,26,0.10)] px-4 sm:px-10 pt-6 pb-8">
+            <div
+              className="max-w-[760px] text-[14px] leading-[1.8] text-[#3A3A3A] [&>p]:mb-4 [&>p:last-child]:mb-0 [&>ul]:mb-4 [&>ol]:mb-4"
+              dangerouslySetInnerHTML={{ __html: markdownToHtml(faq.body || '') }}
+            />
+          </div>
+        )}
+      </article>
+    );
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white py-24 sm:py-32 md:py-40">
-        <div className="container mx-auto px-4 sm:px-6 md:px-12">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-lg text-[#1A1A1A]/70">Loading FAQs...</p>
-          </div>
+      <div className="min-h-screen bg-white py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
+          <p className="text-[#6B6B6B]">Loading FAQs...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-white py-16 sm:py-20 md:py-24 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 md:px-12">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] mb-6 sm:mb-8">
-              FAQs
+    <div className="bg-[#FAFAF9] text-[#1A1A1A]">
+      <section className="bg-white border-b-2 border-[#FAFAF9]">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-8 py-14 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
+          <div>
+            <div className="text-[11px] font-semibold tracking-[0.16em] uppercase text-[#8B7D72] mb-5">
+              Frequently Asked Questions
+            </div>
+            <h1 className="font-serif text-[38px] sm:text-[52px] leading-[1.08] mb-6">
+              Common questions, answered directly.
             </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 font-light max-w-3xl mx-auto">
-              Find answers to common questions about leadership, culture, and how we work.
+            <p className="text-[16px] leading-[1.8] text-[#6B6B6B]">
+              148 questions covering the work, the tools, the philosophy, and what it looks like to work with Bart. Use the filters to find what you are looking for.
+            </p>
+          </div>
+          <div className="pt-1">
+            <p className="text-[15px] leading-[1.85] text-[#3A3A3A] mb-5">
+              These answers come from the same philosophy that drives everything else here: clarity matters more than comfort, and most questions deserve a real answer.
+            </p>
+            <p className="text-[15px] leading-[1.85] text-[#3A3A3A]">
+              If you do not find what you are looking for, start a conversation with Archy or reach out directly.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Search and Filter Section */}
-      <section className="bg-[#FAFAF9] border-b border-[#1A1A1A]/10 sticky top-20 z-30">
-        <div className="container mx-auto px-4 sm:px-6 md:px-12 py-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              {/* Search Input */}
-              <div className="flex-1 w-full">
-                <div className="relative">
-                  <svg 
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#6B6B6B]" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <input
-                    type="text"
-                    placeholder="Search FAQs..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Category Filter */}
-              <div className="w-full sm:w-auto">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => handleCategoryChange(e.target.value)}
-                  className="w-full sm:w-auto px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
-                >
-                  <option value="">All Categories</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>
-                      {category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ')}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Clear Filters Button */}
-              {(selectedCategory || searchQuery) && (
-                <button
-                  onClick={clearFilters}
-                  className="px-4 py-3 text-sm font-medium text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors whitespace-nowrap"
-                >
-                  Clear Filters
-                </button>
-              )}
-            </div>
-
-            {/* Active Filters Display */}
-            {(selectedCategory || searchQuery) && (
-              <div className="mt-4 flex flex-wrap gap-2 items-center">
-                <span className="text-sm text-[#6B6B6B]">Active filters:</span>
-                {selectedCategory && (
-                  <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#DB0812]/10 text-[#DB0812] rounded-full text-sm font-medium">
-                    {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).replace(/-/g, ' ')}
-                    <button
-                      onClick={() => handleCategoryChange('')}
-                      className="hover:text-[#DB0812]/70"
-                      aria-label="Remove category filter"
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-                {searchQuery && (
-                  <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#1A1A1A]/10 text-[#1A1A1A] rounded-full text-sm font-medium">
-                    Search: "{searchQuery}"
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="hover:text-[#1A1A1A]/70"
-                      aria-label="Clear search"
-                    >
-                      ×
-                    </button>
-                  </span>
-                )}
-              </div>
-            )}
+      <section className="bg-[#E1DED8] border-b-2 border-[#FAFAF9]">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-8 py-7">
+          <div className="max-w-[640px] relative">
+            <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B6B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search questions..."
+              className="w-full bg-white border border-[rgba(26,26,26,0.12)] text-[#1A1A1A] placeholder-[#6B6B6B] h-[52px] pl-12 pr-4 outline-none focus:border-[#DB0812]"
+            />
           </div>
+          {resultMessage && <p className="text-[13px] text-[#6B6B6B] mt-3">{resultMessage}</p>}
         </div>
       </section>
 
-      {/* FAQs List */}
-      <section className="bg-white py-12 sm:py-16 md:py-20">
-        <div className="container mx-auto px-4 sm:px-6 md:px-12">
-          <div className="max-w-4xl mx-auto">
-            {filteredFaqs.length === 0 ? (
-              <div className="text-center py-16">
-                <p className="text-lg text-[#6B6B6B] mb-4">
-                  {searchQuery || selectedCategory 
-                    ? 'No FAQs found matching your filters.' 
-                    : 'No FAQs available at this time.'}
-                </p>
-                {(searchQuery || selectedCategory) && (
-                  <button
-                    onClick={clearFilters}
-                    className="text-[#DB0812] hover:text-[#DB0812]/70 font-medium"
-                  >
-                    Clear filters to see all FAQs
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="text-sm text-[#6B6B6B] mb-6">
-                  Showing {filteredFaqs.length} {filteredFaqs.length === 1 ? 'FAQ' : 'FAQs'}
-                  {selectedCategory && ` in "${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).replace(/-/g, ' ')}"`}
-                </div>
-
-                {filteredFaqs.map((faq) => {
-                  const isExpanded = expandedFaqs.has(faq.slug);
-                  return (
-                    <div
-                      key={faq.slug}
-                      className="bg-white border border-[#1A1A1A]/10 rounded-lg overflow-hidden hover:shadow-md transition-all duration-300"
-                    >
-                      <button
-                        onClick={() => toggleFaq(faq.slug)}
-                        className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-[#FAFAF9] transition-colors focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:ring-inset"
-                        aria-expanded={isExpanded}
-                      >
-                        <div className="flex-1">
-                          <h3 className="text-lg sm:text-xl font-semibold text-[#1A1A1A] mb-2">
-                            {faq.title}
-                          </h3>
-                          {faq.categories && faq.categories.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {faq.categories.map(category => (
-                                <span
-                                  key={category}
-                                  className="inline-block px-2 py-1 text-xs font-medium text-[#6B6B6B] bg-[#FAFAF9] rounded"
-                                >
-                                  {category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ')}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <svg
-                          className={`w-6 h-6 text-[#6B6B6B] flex-shrink-0 transition-transform duration-200 ${
-                            isExpanded ? 'rotate-180' : ''
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-
-                      {isExpanded && (
-                        <div className="px-6 py-5 border-t border-[#1A1A1A]/10 bg-[#FAFAF9]">
-                          <div
-                            className="prose prose-sm max-w-none text-[#1A1A1A]/80 mb-4 space-y-4 [&>p]:mb-4 [&>ul]:mb-4 [&>ol]:mb-4 [&>li]:mb-1"
-                            dangerouslySetInnerHTML={{
-                              __html: markdownToHtml(faq.body || '')
-                            }}
-                          />
-                          {/* Engagement Inquiry Button for Engagement FAQs */}
-                          {faq.categories && faq.categories.includes('engagement') && (
-                            <div className="mt-6 pt-4 border-t border-[#1A1A1A]/10">
-                              <button
-                                onClick={() => {
-                                  window.history.pushState({}, '', '/engagement-inquiry');
-                                  window.dispatchEvent(new PopStateEvent('popstate'));
-                                  window.scrollTo({ top: 0, behavior: 'instant' });
-                                }}
-                                className="bg-[#DB0812] text-white px-6 py-3 font-medium hover:bg-[#b30610] transition-colors rounded-lg"
-                              >
-                                Start an Engagement Inquiry
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-[#FAFAF9] py-16 sm:py-20 md:py-24">
-        <div className="container mx-auto px-4 sm:px-6 md:px-12">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-4">
-              Still have questions?
-            </h2>
-            <p className="text-lg text-[#1A1A1A]/70 mb-8 max-w-2xl mx-auto">
-              Can't find what you're looking for? Chat with Archy or reach out directly.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.pushState({}, '', '/contact');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="min-h-[44px] inline-flex items-center justify-center bg-[#1A1A1A] text-white px-8 py-4 font-medium hover:bg-[#1A1A1A]/90 transition-colors text-center rounded-lg"
-              >
-                Contact Us
-              </a>
+      <section className="sticky top-[58px] md:top-[72px] z-20 bg-white border-b border-[rgba(26,26,26,0.10)]">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-8 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-6 min-w-max">
+            <button
+              type="button"
+              onClick={() => onCategorySelect('all')}
+              className={`h-12 text-[12px] uppercase tracking-[0.08em] font-semibold border-b-2 ${
+                selectedCategory === 'all' ? 'text-[#1A1A1A] border-[#DB0812]' : 'text-[#6B6B6B] border-transparent'
+              }`}
+            >
+              All <span className="font-normal text-[#A8A9AD] ml-1">{tabCounts.all}</span>
+            </button>
+            {FAQ_CATEGORY_CONFIG.map((category) => (
               <button
-                onClick={() => {
-                  const archyButton = document.querySelector('[data-archy-button]');
-                  if (archyButton) archyButton.click();
-                }}
-                className="min-h-[44px] inline-flex items-center justify-center bg-transparent text-[#1A1A1A] px-8 py-4 font-medium border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-colors text-center rounded-lg"
+                key={category.key}
+                type="button"
+                onClick={() => onCategorySelect(category.key)}
+                className={`h-12 text-[12px] uppercase tracking-[0.08em] font-semibold border-b-2 whitespace-nowrap ${
+                  selectedCategory === category.key
+                    ? 'text-[#1A1A1A] border-[#DB0812]'
+                    : 'text-[#6B6B6B] border-transparent'
+                }`}
               >
-                Chat with Archy
+                {category.label}
+                <span className="font-normal text-[#A8A9AD] ml-1">{tabCounts[category.key] || 0}</span>
               </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-10 sm:py-14">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
+          {visibleFaqs.length === 0 ? (
+            <div className="py-24 text-center">
+              <h2 className="text-[30px] font-serif text-[#1A1A1A] mb-3">No results found.</h2>
+              <p className="text-[#6B6B6B]">Try a different search term or browse by category above.</p>
             </div>
+          ) : (
+            <>
+              {selectedCategory === 'all' ? (
+                <div className="space-y-10">
+                  {groupedFaqs.map((group) => (
+                    <div key={group.key}>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                          {group.label}
+                        </div>
+                        <div className="text-[12px] text-[#6B6B6B]">{group.items.length}</div>
+                      </div>
+                      <div>{group.items.map((faq) => renderFaqItem(faq))}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div>{visibleFaqs.map((faq) => renderFaqItem(faq))}</div>
+              )}
+
+              {!isMobile && totalPages > 1 && (
+                <div className="mt-10 flex items-center justify-center gap-2">
+                  {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNumber) => (
+                    <button
+                      key={pageNumber}
+                      type="button"
+                      onClick={() => setPage(pageNumber)}
+                      className={`min-w-[40px] h-10 px-3 border text-sm ${
+                        safePage === pageNumber
+                          ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white'
+                          : 'bg-white border-[rgba(26,26,26,0.16)] text-[#1A1A1A]'
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {hasMoreMobile && (
+                <div className="mt-8 flex justify-center md:hidden">
+                  <button
+                    type="button"
+                    onClick={() => setMobileVisibleCount((count) => count + MOBILE_BATCH_SIZE)}
+                    className="h-11 px-6 bg-white border border-[rgba(26,26,26,0.16)] text-[13px] tracking-[0.06em] uppercase font-semibold text-[#1A1A1A]"
+                  >
+                    Show More
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+
+      <section className="bg-[#2B2929] py-14 sm:py-20">
+        <div className="mx-auto max-w-[860px] px-4 sm:px-8 text-center">
+          <h2 className="font-serif text-white text-[34px] sm:text-[44px] leading-[1.15] mb-4">Still have questions?</h2>
+          <p className="text-white/80 text-[15px] leading-[1.8] mb-8">
+            Can&apos;t find what you&apos;re looking for? Chat with Archy or reach out directly.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/contact"
+              onClick={(event) => navigate(event, '/contact')}
+              className="min-h-[44px] inline-flex items-center justify-center px-8 py-3 bg-[#DB0812] text-white text-[13px] uppercase tracking-[0.08em] font-semibold"
+            >
+              Contact Us
+            </a>
+            <a
+              href="/archy"
+              onClick={(event) => navigate(event, '/archy')}
+              className="min-h-[44px] inline-flex items-center justify-center px-8 py-3 border border-white/40 text-white text-[13px] uppercase tracking-[0.08em] font-semibold"
+            >
+              Chat with Archy
+            </a>
           </div>
         </div>
       </section>

@@ -8,13 +8,10 @@ featured: false
 status: published
 ---
 
-Leaders struggle to see drift because they sit inside the system they're trying to evaluate.
+Because they're inside the system they're trying to evaluate.
 
-From inside, it feels normal.
-From outside, the pattern is obvious.
+From inside, drift feels normal. You've adapted to it gradually. The team has too. What looks obvious from the outside looks like business as usual from the inside.
 
-Teams adapt quietly.
-Leaders interpret generously.
-And drift appears slowly.
+Teams adapt quietly. Leaders interpret what they see generously. And drift appears slowly enough that by the time it's visible, it's already cost something.
 
-ALI gives leaders external visibility into the conditions they are unintentionally shaping.
+ALI gives you external visibility into conditions you're unintentionally shaping. That's the gap it closes.

@@ -8,13 +8,8 @@ featured: false
 status: published
 ---
 
-It depends on:
+It depends on the leadership more than the tool.
 
-leadership willingness
-depth of drift
-consistency of corrections
-environmental pressure
-communication alignment
-tone stability
+The variables are willingness, depth of drift, consistency of corrections, environmental pressure, and communication alignment. When leaders act on what ALI reveals, small corrections often create immediate stabilization because people respond quickly to improved conditions. They've been waiting for something to change.
 
-Small corrections often create immediate stabilization because people respond quickly to improved conditions.
+When leaders see the data and don't act, nothing changes. ALI doesn't improve culture on its own.

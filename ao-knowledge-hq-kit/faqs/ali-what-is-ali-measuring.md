@@ -4,28 +4,14 @@ slug: ali-what-is-ali-measuring
 categories:
   - ali
   - culture-science
-  - leadership-measurement
 featured: true
 featured_on:
   - ali
 status: published
 ---
 
-ALI measures the leadership conditions people work inside every day—**Clarity, Trust, Communication, Consistency, Safety, and Emotional Tone**.
+ALI measures the conditions people work inside every day: Clarity, Trust, Communication, Consistency, Safety, and Emotional Tone.
 
-These conditions determine:
+Those conditions determine how teams think, how they communicate, how they make decisions, how they take risks, how they handle conflict, how they align, and how they execute.
 
-- how teams think  
-- how they communicate  
-- how they make decisions  
-- how they take risks  
-- how they handle conflict  
-- how they align  
-- how they execute  
-
-Most leadership tools measure emotions.
-
-ALI measures the **environment leadership creates**, which is far more predictive and far more reliable.
-
-Conditions shape behavior long before results appear.  
-ALI makes those conditions visible.
+Most leadership tools measure emotions. ALI measures the environment leadership creates. That's a different thing entirely, and it's far more predictive. Conditions shape behavior long before results appear. ALI makes those conditions visible while there's still time to act on them.

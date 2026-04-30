@@ -7,16 +7,8 @@ featured: false
 status: published
 ---
 
-This matters just as much as what he does.
+This matters as much as what I do.
 
-Bart does not:
+I don't provide motivational-only speaking. I don't sell leadership programs disconnected from the reality leaders are actually living. I don't act as a shield so leaders can avoid accountability. And I don't implement culture change without leadership involvement.
 
-- provide motivational-only speaking
-- sell leadership programs disconnected from reality
-- act as a shield so leaders can avoid accountability
-- implement culture change without leadership involvement
-
-This work is about clarity, not comfort.
-
-Learn more about [our philosophy](/meet-bart) and [what makes us different](/methods).
-
+If you need someone to make your team feel good for a day, I'm not the right fit. This work is about clarity. That's a different thing.

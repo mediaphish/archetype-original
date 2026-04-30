@@ -7,8 +7,8 @@ featured: false
 status: published
 ---
 
-Archetype Original is built from lived leadership, not theory alone.
+It's built from lived leadership, not theory alone.
 
-The work is grounded in responsibility, restraint, and long-term cultural health.
+I spent 33 years inside real organizations before I started teaching anyone else. The frameworks here came from that experience, not from academic research or someone else's model.
 
-There is no hype, no motivational performance, and no borrowed language.
+There's no hype here. No motivational performance. No borrowed language dressed up as original thinking. The work is grounded in responsibility, restraint, and the kind of leadership that holds up when things get hard.

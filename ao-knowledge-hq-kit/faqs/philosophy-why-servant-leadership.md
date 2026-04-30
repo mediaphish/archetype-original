@@ -7,10 +7,8 @@ featured: false
 status: published
 ---
 
-Because leadership is not primarily about authority—it's about responsibility.
+Because leadership is not primarily about authority. It's about responsibility.
 
-Servant leadership is the practice of carrying what others cannot carry yet: pressure, complexity, and consequence. When leaders absorb pressure instead of passing it down, teams gain clarity and stability.
+Servant leadership is the practice of carrying what others cannot carry yet: pressure, complexity, and consequence. When leaders absorb pressure instead of passing it down, teams gain clarity and stability. They can do their best work because they're not spending energy managing the emotional volatility coming from above.
 
-This approach doesn't reduce standards. It makes them sustainable.
-
-[Learn more about our philosophy](/meet-bart) and [how ALI measures servant leadership in practice](/culture-science/ali).
+This approach doesn't reduce standards. It makes them sustainable. And it produces the kind of culture where performance and trust build together instead of trading against each other.

@@ -7,13 +7,10 @@ featured: false
 status: published
 ---
 
-Possibly—but only if leadership is willing to be involved.
+Possibly, but only if leadership is willing to be part of the solution.
 
-Struggling organizations rarely need better ideas. They need clearer responsibility, steadier leadership under pressure, and fewer mixed signals. Bart can help diagnose what's actually happening beneath the surface and identify where instability is coming from.
+Struggling organizations rarely need better ideas. They need clearer responsibility, steadier leadership under pressure, and fewer mixed signals. I can help diagnose what's actually happening beneath the surface and identify where instability is coming from.
 
-What he won't do is implement cosmetic fixes or carry responsibility that belongs to leadership. If the expectation is that culture can be repaired without leaders changing how they show up, this won't be the right fit.
+What I won't do is implement cosmetic fixes or carry responsibility that belongs to leadership. If the expectation is that culture can be repaired without leaders changing how they show up, this won't work.
 
 When leaders are willing to engage honestly, meaningful repair is possible.
-
-Learn more about [our consulting approach](/methods/consulting) and [Culture Science](/culture-science).
-

@@ -4,8 +4,6 @@ slug: ali-why-measure-conditions-instead-of-sentiment
 categories:
   - ali
   - culture-science
-  - leadership-measurement
-  - employee-surveys
 featured: true
 featured_on:
   - ali
@@ -14,13 +12,6 @@ status: published
 
 Because sentiment is unreliable.
 
-People can feel frustrated even in a strong leadership environment.  
-People can feel content even while conditions are quietly eroding.
+People can feel frustrated even in a strong leadership environment. People can feel content even while conditions are quietly eroding. Sentiment fluctuates with stress, home life, personality, and season. It's not a stable signal.
 
-Sentiment fluctuates with stress, home life, personalities, and seasons.  
-Conditions do not lie.
-
-ALI measures the **reality leaders create**, not the fleeting emotional interpretation of it.
-
-By focusing on conditions, ALI gives leaders something sentiment-based tools never can:  
-a clear view of what is actually forming beneath the surface.
+Conditions don't lie that way. ALI measures the reality leaders create, not the fleeting emotional interpretation of it. That gives you something sentiment-based tools never can: a clear view of what's actually forming beneath the surface, before it shows up in results.

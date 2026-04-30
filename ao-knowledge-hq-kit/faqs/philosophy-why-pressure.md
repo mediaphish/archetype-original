@@ -9,6 +9,6 @@ status: published
 
 Because pressure reveals truth.
 
-Under pressure, patterns surface and values are tested instead of discussed.
+In calm conditions, almost any leader can look good. Decisions are easier. People are more forgiving. The stakes are lower. Under pressure, the real patterns surface. Values get tested instead of discussed. Habits take over.
 
-[Explore our philosophy](/meet-bart) and [how Culture Science studies pressure flow](/culture-science).
+The leadership that matters is the leadership that holds up when things get hard. That's what this work prepares people for.

@@ -7,10 +7,8 @@ featured: false
 status: published
 ---
 
-Most leadership books are built in controlled environments.
+Most leadership books are built in controlled environments. Accidental CEO was built in real ones.
 
-Accidental CEO was built in real ones.
+It doesn't separate people from performance. It doesn't avoid the cost of leadership. And it doesn't present leadership as something clean or predictable, because it isn't.
 
-It doesn't separate people from performance. It doesn't avoid the cost of leadership. And it doesn't present leadership as clean or predictable.
-
-It focuses on what actually holds a culture together—and what it takes to lead in a way that lasts.
+What it focuses on is what actually holds a culture together, and what it takes to lead in a way that lasts beyond a good quarter.

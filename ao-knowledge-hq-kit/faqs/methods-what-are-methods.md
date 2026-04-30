@@ -1,5 +1,5 @@
 ---
-title: "What do you mean by “methods” at Archetype Original?"
+title: "What do you mean by methods at Archetype Original?"
 slug: methods-what-are-methods
 categories:
   - methods
@@ -9,8 +9,6 @@ status: published
 
 Methods are how the philosophy shows up in real leadership situations.
 
-This isn't a fixed program or a step-by-step system meant to be applied the same way everywhere. Methods here are principles-in-action—ways of diagnosing what's happening, responding under pressure, and correcting course without creating fear or instability.
+This isn't a fixed program or a step-by-step system meant to be applied the same way everywhere. Methods here are principles in action: ways of diagnosing what's happening, responding under pressure, and correcting course without creating fear or instability.
 
-The goal isn't compliance. It's clarity and consistency.
-
-[Explore our methods](/methods) and [learn about our philosophy](/meet-bart).
+The goal isn't compliance with a process. It's clarity and consistency in how you lead, regardless of what the situation looks like.

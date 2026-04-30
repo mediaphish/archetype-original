@@ -8,14 +8,8 @@ featured: false
 status: published
 ---
 
-Yes.
+Yes, and remote environments often make it more necessary, not less.
 
-In fact, drift appears faster in remote environments:
+Drift appears faster when teams aren't in the same room. Silence increases sooner. Tone becomes harder to read. Clarity becomes more critical. Alignment fractures more easily. Communication distortion becomes more visible, and more costly.
 
-silence increases sooner
-tone becomes harder to read
-clarity becomes more critical
-alignment fractures more easily
-communication distortion becomes more visible
-
-ALI reveals these conditions before they escalate.
+ALI surfaces those conditions before they escalate into something harder to fix.

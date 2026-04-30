@@ -9,4 +9,6 @@ status: published
 
 Accountability is clarity plus ownership.
 
-It focuses on responsibility and correction—not blame.
+Not blame. Not punishment. Not the performance of consequences in front of a team.
+
+It's knowing what's expected, and being willing to own the outcome when those expectations aren't met. When you separate accountability from fear, it becomes something people can actually operate inside of.

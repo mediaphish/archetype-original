@@ -8,14 +8,6 @@ featured: false
 status: published
 ---
 
-ALI provides:
+One of the hardest things about leadership communication is that leaders and teams are often arguing about different things without realizing it. Leaders are defending intent. Teams are describing experience. Neither side feels heard.
 
-a shared language
-a shared framework
-shared visibility
-shared understanding of what’s working
-shared awareness of drift
-
-Instead of debating feelings, teams can discuss conditions.
-
-This reduces defensiveness and increases alignment.
+ALI gives both sides a shared language and a shared frame. Instead of debating feelings, you can discuss conditions. That shift alone reduces defensiveness significantly and creates space for real alignment.

@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-Every repeated leadership behavior sends a signal.
+Every repeated behavior sends a signal.
 
-Those signals compound into conditions that either enable focus and trust—or create fear and instability.
+Not just the big decisions. The tone in a tense meeting. What gets ignored. What gets rewarded. How you respond when something goes wrong. Those signals compound over time into conditions that either enable focus and trust, or quietly create fear and instability.
+
+Leaders are always creating conditions. The question is whether they know what they're creating.

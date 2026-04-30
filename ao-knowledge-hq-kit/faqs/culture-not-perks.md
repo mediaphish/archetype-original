@@ -1,5 +1,5 @@
 ---
-title: "Why don’t perks and morale programs fix culture?"
+title: "Why don't perks and morale programs fix culture?"
 slug: culture-not-perks
 categories:
   - culture-science
@@ -7,7 +7,8 @@ featured: false
 status: published
 ---
 
-Perks operate at the surface.
-Culture operates at the behavioral level.
+Because perks operate at the surface and culture operates at the behavioral level.
 
-When leadership behavior remains misaligned, morale programs become compensators rather than correctives.
+You can put a ping pong table in the break room. You can offer unlimited PTO. None of that changes how decisions get made, how pressure moves through the organization, or whether people feel safe telling the truth.
+
+When leadership behavior is misaligned, morale programs become compensators. They signal that something is wrong without doing anything about it. People notice the gap.

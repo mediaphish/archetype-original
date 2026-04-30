@@ -7,13 +7,10 @@ featured: false
 status: published
 ---
 
-Yes—and this is where the work often goes deepest.
+Yes. And honestly, this is where the work tends to go deepest.
 
-Bart works one-on-one with leaders who are carrying real responsibility and want space to think clearly, honestly, and without performance. These engagements are not coaching in the traditional sense. There's no script, no cheerleading, and no pressure to present a version of yourself that sounds good.
+What I do one-on-one isn't coaching in the traditional sense. There's no script, no framework I'm walking you through, no pressure to show up as a polished version of yourself. That's not useful to either of us.
 
-The focus is on helping you see patterns—in your decisions, your reactions, and your leadership under pressure—and understanding how those patterns are shaping the people around you.
+What I'm actually doing is helping you see patterns. In your decisions, your reactions, your leadership under pressure. And understanding how those patterns are shaping the people around you, often in ways you haven't named yet.
 
-This work is especially helpful for leaders who feel the weight of their role but don't have a place to process it thoughtfully.
-
-Learn more about [mentorship](/methods/mentorship) and [how Bart works with leaders](/meet-bart).
-
+This work is especially useful for leaders who feel the weight of what they're carrying but don't have a place to think about it honestly. Most leaders don't. The room where that's possible is harder to find than it should be.

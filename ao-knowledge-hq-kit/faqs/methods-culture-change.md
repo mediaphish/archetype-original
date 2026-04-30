@@ -7,10 +7,8 @@ featured: false
 status: published
 ---
 
-They are culture change—just not in name.
+They are culture change, just not labeled as such.
 
-Culture doesn't shift because leaders announce a change. It shifts when people experience new patterns consistently over time. These methods focus on the behaviors that quietly reshape expectations, norms, and trust.
+Culture doesn't shift because leaders announce a change or roll out a new initiative. It shifts when people experience different patterns consistently over time. These methods focus on the behaviors that quietly reshape expectations, norms, and trust.
 
-That kind of change is slower—but far more durable.
-
-[Learn more about our methods](/methods) and [how Culture Science studies these patterns](/culture-science).
+That kind of change is slower. It's also far more durable than anything that gets launched with a presentation.

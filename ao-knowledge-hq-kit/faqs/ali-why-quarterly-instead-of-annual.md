@@ -4,27 +4,14 @@ slug: ali-why-quarterly-instead-of-annual
 categories:
   - ali
   - culture-science
-  - leadership-measurement
-  - cadence
 featured: true
 featured_on:
   - ali
 status: published
 ---
 
-Annual surveys are obsolete before the results are presented.
+Because annual surveys are obsolete before the results are presented.
 
-Small and mid-sized organizations shift quickly:
+Small and mid-sized organizations shift quickly. New hires change chemistry. Seasonality affects tone. Stress cycles impact consistency. Growth shifts clarity and alignment. Leaders drift when they're overwhelmed.
 
-- new hires change chemistry  
-- seasonality affects tone  
-- stress cycles impact consistency  
-- growth shifts clarity and alignment  
-- leaders drift when overwhelmed  
-
-Quarterly measurement captures **movement**, not snapshots.
-
-Leadership doesn’t change annually.  
-It changes weekly.
-
-ALI detects quarterly patterns so leaders can respond while change is still manageable.
+Quarterly measurement captures movement, not snapshots. Leadership doesn't change annually. It changes weekly. ALI detects the patterns quarterly so you can respond while the change is still manageable, not after it's already cost you something.

@@ -7,11 +7,8 @@ featured: false
 status: published
 ---
 
-Start by reaching out.
+Reach out.
 
-Most engagements begin with a conversation—not a proposal—to understand what's actually happening and whether this work makes sense for your situation. There's no pressure to move forward, and no obligation to fit into a predefined package.
+Most engagements begin with a conversation, not a proposal. I want to understand what's actually happening and whether this work makes sense for your situation. There's no pressure to move forward, and no expectation that you'll fit into a predefined package.
 
-The goal is clarity first. Everything else follows from that.
-
-Learn more about [our methods](/methods) and [how we work with clients](/methods).
-
+The goal of that first conversation is clarity. Everything else follows from that.

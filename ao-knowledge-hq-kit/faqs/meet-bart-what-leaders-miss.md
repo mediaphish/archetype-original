@@ -9,8 +9,6 @@ status: published
 
 Most leaders think leadership is primarily about decisions, direction, and outcomes.
 
-Those things matter—but they're only part of the picture. Long before a decision shows up in results, it has already shaped the environment people are working inside. Tone, consistency, emotional regulation, and what gets tolerated day after day quietly determine whether people feel safe enough to think clearly or pressured into self-protection.
+Those things matter. But they're only part of the picture. Long before a decision shows up in results, it has already shaped the environment people are working inside. Tone, consistency, emotional regulation, and what gets tolerated day after day quietly determine whether people feel safe enough to think clearly or pressured into self-protection.
 
-What leaders often miss is that they are always teaching through behavior whether they intend to or not. This work focuses on that invisible layer, because that's where cultures are either stabilized or slowly eroded.
-
-Explore [our philosophy](/meet-bart) and [Culture Science](/culture-science) to understand these patterns more deeply.
+What most leaders miss is that they're always teaching through behavior, whether they intend to or not. That invisible layer is where cultures either stabilize or slowly erode. It's where this work focuses.

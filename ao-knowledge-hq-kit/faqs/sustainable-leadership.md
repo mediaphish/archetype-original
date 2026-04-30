@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-Sustainability requires regulated pressure, clear responsibility, and consistent behavior.
+Regulated pressure, clear responsibility, and consistent behavior.
 
-Short-term performance without these foundations always extracts long-term cost.
+Those three things, maintained over time, create the conditions where people can do their best work without burning out or disengaging.
+
+Short-term performance without these foundations always extracts a long-term cost. The cost is usually invisible until it isn't. By then, rebuilding takes far more than what was saved.

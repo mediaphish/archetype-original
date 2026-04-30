@@ -9,8 +9,6 @@ status: published
 
 Some changes are felt quickly. Others take time.
 
-Tone, clarity, and decision-making often improve first. Trust and engagement take longer because people watch patterns before believing them. These methods are designed for long-term health, not quick wins.
+Tone, clarity, and decision-making often improve first. People notice those things immediately. Trust and engagement take longer because people watch patterns before they believe them. They've usually been disappointed before.
 
-If you're looking for immediate transformation, you'll likely be disappointed. If you're willing to build steadily, the results compound.
-
-[Learn more about our methods](/methods) and [how ALI measures progress over time](/culture-science/ali).
+These methods are designed for long-term health, not quick wins. If you're looking for immediate transformation, you'll likely be disappointed. If you're willing to build steadily, the results compound in ways that are hard to unwind.

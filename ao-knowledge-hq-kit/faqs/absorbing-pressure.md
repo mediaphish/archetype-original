@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-Absorbing pressure means leaders regulate their tone, reactions, and decisions under stress.
+Most leaders think absorbing pressure means staying quiet and gritting through it. That's not what I mean.
 
-It is a learned discipline, not a personality trait.
+It means you regulate your tone, your reactions, and your decisions when everything in you wants to react. You don't pass the weight down. You carry it.
+
+That's a skill. Not a personality type. It can be developed.

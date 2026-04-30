@@ -7,10 +7,10 @@ featured: false
 status: published
 ---
 
-Archy is the interpretive intelligence inside Archetype Original.
+Archy is the AI I built to extend the work beyond what I can do in a room.
 
-He isn't meant to replace leadership thinking or tell people what to do. His role is to help readers navigate the ideas, language, and frameworks that already exist here—so they don't get lost, misinterpret concepts, or flatten the work into something it isn't.
+He's trained exclusively on the Archetype Original canon: Culture Science, leadership doctrine, and the lived experience that underlies all of it. He doesn't generate generic leadership advice. He reflects this body of work with consistency, context, and restraint.
 
-Think of Archy less as an "answer engine" and more as a guide who knows the terrain well enough to help you move through it thoughtfully.
+His job isn't to replace your thinking. It's to help you navigate the ideas, language, and frameworks that already exist here without getting lost, misreading something, or flattening it into something simpler than it is.
 
-[Learn more about Archy](/archy) or [start a conversation](/archy) with him.
+Think of him less as an answer engine and more as someone who knows this terrain well enough to help you move through it thoughtfully.

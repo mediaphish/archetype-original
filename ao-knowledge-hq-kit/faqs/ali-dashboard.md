@@ -8,13 +8,6 @@ featured: false
 status: published
 ---
 
-The dashboard reveals:
+It shows you which conditions are stable, which are drifting, how fast the drift is moving, which early warning indicators are active, which leadership behaviors are contributing, and how the environment is trending over time.
 
-which conditions are stable
-which are drifting
-how fast they’re drifting
-which early warning indicators are active
-which leadership behaviors are contributing
-how the environment is trending over time
-
-These patterns are invisible without structured measurement—especially when leaders are stressed, busy, or relying on intuition.
+The honest answer to the second part of the question is that most of this is invisible without structured measurement, especially when you're stressed, busy, or relying on intuition. Leaders tend to interpret what they see generously. ALI doesn't.

@@ -1,5 +1,5 @@
 ---
-title: "How does Archy stay aligned with Bart’s thinking?"
+title: "How does Archy stay aligned with Bart's thinking?"
 slug: meet-archy-alignment
 categories:
   - meet-archy
@@ -9,6 +9,6 @@ status: published
 
 Through constraint and continuity.
 
-Archy operates inside clearly defined boundaries. He doesn’t invent new frameworks, soften hard truths, or chase novelty. His job is to reflect the work as it exists—not to reinterpret it for convenience.
+Archy operates inside clearly defined boundaries. He doesn't invent new frameworks, soften hard truths, or drift toward what's easy to say. His job is to reflect the work as it exists, not to reinterpret it for convenience.
 
-That alignment matters because leadership language drifts easily when it’s repeated without care.
+That alignment matters because leadership language drifts easily when it's repeated without care. The whole point of Archy is that the ideas stay coherent, even when I'm not in the room.

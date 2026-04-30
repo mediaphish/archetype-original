@@ -9,8 +9,6 @@ status: published
 
 Not at first.
 
-Most meaningful change starts with leadership. When leaders adjust how they carry pressure, make decisions, and respond to problems, teams feel it immediately—even before anything is formally explained.
+Most meaningful change starts with leadership. When leaders adjust how they carry pressure, make decisions, and respond to problems, teams feel it immediately, even before anything is formally explained.
 
-Buy-in grows when people experience consistency, not when they're asked for agreement.
-
-[Learn more about our methods](/methods) and [our philosophy](/meet-bart).
+Buy-in grows when people experience consistency, not when they're asked to agree with a new approach. Ask for agreement too early and you get compliance at best. Create a different experience first and buy-in tends to follow on its own.

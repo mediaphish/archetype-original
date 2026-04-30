@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-When leaders do not change first, initiatives feel performative.
+Because leaders didn't change first.
 
-Teams respond with skepticism rather than engagement.
+When an organization launches a culture initiative without changing leadership behavior, it feels performative. People have seen enough of those to be skeptical. They participate in the workshops, they fill out the surveys, and they wait to see if anything actually changes.
+
+When nothing does, trust erodes further. The initiative becomes evidence that the organization says one thing and does another.

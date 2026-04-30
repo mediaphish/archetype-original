@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-Calm allows discernment, not delay.
+Because calm is what creates the space for good decisions.
 
-Culture Science treats emotional regulation as a prerequisite for sound leadership decisions.
+A leader who can't regulate their own emotional state under pressure is going to transmit that instability to the people around them. Calm isn't passivity. It's not slowing down when urgency is real. It's the capacity to stay clear enough to respond rather than react.
+
+That's a skill. And like most leadership skills, it atrophies without practice.

@@ -9,8 +9,6 @@ status: published
 
 Because behavior is what people actually experience.
 
-Intentions matter, but people don't work inside a leader's intent. They work inside patterns: how decisions are made, how mistakes are handled, how pressure shows up, and how consistently leaders respond.
+Intentions matter. But people don't work inside a leader's intent. They work inside patterns: how decisions are made, how mistakes are handled, how pressure shows up, and how consistently leaders respond.
 
-Behavior is the delivery system for values. Without it, values remain theoretical.
-
-[Explore our philosophy](/meet-bart) and [learn how Culture Science measures these patterns](/culture-science).
+Behavior is the delivery system for values. Without it, values remain theoretical. The most important leadership question isn't what you believe. It's what you consistently do.

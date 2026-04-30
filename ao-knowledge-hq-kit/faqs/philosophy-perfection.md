@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-No.
+No. Perfection is not the standard here.
 
-What matters isn’t perfection—it’s pattern correction.
+Pattern correction is.
+
+Leaders will make mistakes. The question is whether they notice, acknowledge, and adjust, or whether they rationalize and repeat. That pattern of correction, done consistently and openly, is what builds the trust that perfection never could.

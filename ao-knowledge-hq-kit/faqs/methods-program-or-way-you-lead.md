@@ -9,8 +9,6 @@ status: published
 
 It's a way you lead.
 
-Programs can help create momentum, but they don't sustain culture on their own. The methods at Archetype Original are designed to change how leaders think, notice, and respond—especially when things don't go as planned.
+Programs can create momentum and structure. But they don't sustain culture on their own. The methods at Archetype Original are designed to change how leaders think, notice, and respond, especially when things don't go as planned.
 
-When leadership behavior changes consistently, systems tend to follow.
-
-[Explore our methods](/methods) and [learn about our philosophy](/meet-bart).
+When leadership behavior changes consistently, systems tend to follow. When it doesn't, programs become wallpaper.

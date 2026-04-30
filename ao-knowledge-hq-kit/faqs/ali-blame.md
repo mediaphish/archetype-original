@@ -8,12 +8,8 @@ featured: false
 status: published
 ---
 
-ALI is not a tool for blame.
+ALI is not a blame tool.
 
-But it does show:
+What it does show is which conditions are drifting, which indicators are active, and which leadership behaviors typically cause those patterns. That's different from naming individuals.
 
-which conditions are drifting
-which indicators are active
-which leadership behaviors typically cause these patterns
-
-Patterns always point to root causes, often without naming individuals.
+Patterns point to root causes. Most of the time, the cause isn't a bad person. It's a behavior that's creating unintended consequences. That distinction matters a lot in terms of how you respond.

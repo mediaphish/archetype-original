@@ -9,4 +9,6 @@ status: published
 
 Pressure compresses identity.
 
-Leaders often default to control, speed, or self-protection when their internal anchors are stressed.
+Under enough stress, leaders default to whatever pattern is most deeply ingrained, often control, speed, or self-protection. The values they've articulated recede. The habits take over.
+
+This is why leadership development that only happens in calm conditions doesn't hold. The work has to include pressure, or it's not preparing anyone for the actual job.

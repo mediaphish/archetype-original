@@ -7,10 +7,10 @@ featured: false
 status: published
 ---
 
-Yes. Results matter—but they are not the only thing that matters.
+Yes. Results matter.
 
-Every result has a hidden cost or benefit attached to it: trust, fatigue, clarity, stability, or fear. Archetype Original is concerned with how results are produced, because that determines whether success compounds or eventually collapses.
+But they're not the only thing that matters, and they're not the right sole measure of leadership quality.
 
-Short-term wins that damage culture always cost more than they appear.
+Every result has a hidden cost or benefit attached to it: trust, fatigue, clarity, stability, or fear. This work is concerned with how results are produced, because that determines whether success compounds over time or eventually collapses under its own weight.
 
-[Explore our philosophy](/meet-bart) and [learn about Culture Science](/culture-science).
+Short-term wins that damage culture always cost more than they appear to.

@@ -3,32 +3,14 @@
  * Displays featured FAQs for a specific page/section
  */
 import React, { useState, useEffect } from 'react';
-
-// Simple markdown to HTML converter for FAQ content
-const markdownToHtml = (text) => {
-  if (!text) return '';
-  
-  let html = text
-    // Convert **bold** to <strong>
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Convert *italic* to <em>
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Convert line breaks to <br>
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>');
-  
-  // Wrap in paragraph if not already wrapped
-  if (!html.startsWith('<p>')) {
-    html = '<p>' + html + '</p>';
-  }
-  
-  return html;
-};
+import { markdownToHtml } from '../lib/faqMarkdownToHtml';
+import { normalizeFaqCategory } from '../lib/faqCategories';
 
 export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true }) {
   const [faqs, setFaqs] = useState([]);
-  const [expandedFaqs, setExpandedFaqs] = useState(new Set());
+  const [expandedSlug, setExpandedSlug] = useState('');
   const [loading, setLoading] = useState(true);
+  const normalizedPageKey = normalizeFaqCategory(pageKey);
 
   useEffect(() => {
     const loadFeaturedFAQs = async () => {
@@ -41,7 +23,7 @@ export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true })
           if (doc.type !== 'faq') return false;
           if (!doc.featured) return false;
           if (doc.featured_on && Array.isArray(doc.featured_on)) {
-            return doc.featured_on.includes(pageKey);
+            return doc.featured_on.some((item) => normalizeFaqCategory(item) === normalizedPageKey);
           }
           return false;
         });
@@ -56,19 +38,13 @@ export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true })
       }
     };
 
-    if (pageKey) {
+    if (normalizedPageKey) {
       loadFeaturedFAQs();
     }
-  }, [pageKey, limit]);
+  }, [normalizedPageKey, limit]);
 
   const toggleFaq = (slug) => {
-    const newExpanded = new Set(expandedFaqs);
-    if (newExpanded.has(slug)) {
-      newExpanded.delete(slug);
-    } else {
-      newExpanded.add(slug);
-    }
-    setExpandedFaqs(newExpanded);
+    setExpandedSlug((prev) => (prev === slug ? '' : slug));
   };
 
   const handleLinkClick = (e, href) => {
@@ -96,8 +72,8 @@ export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true })
             </h2>
             {showViewAll && (
               <a
-                href={`/faqs?category=${pageKey}`}
-                onClick={(e) => handleLinkClick(e, `/faqs?category=${pageKey}`)}
+                href={`/faqs?category=${normalizedPageKey}`}
+                onClick={(e) => handleLinkClick(e, `/faqs?category=${normalizedPageKey}`)}
                 className="text-[#DB0812] hover:text-[#DB0812]/70 font-medium text-sm sm:text-base transition-colors"
               >
                 View All →
@@ -107,7 +83,7 @@ export default function FeaturedFAQs({ pageKey, limit = 5, showViewAll = true })
 
           <div className="space-y-4">
             {faqs.map((faq) => {
-              const isExpanded = expandedFaqs.has(faq.slug);
+              const isExpanded = expandedSlug === faq.slug;
               return (
                 <div
                   key={faq.slug}

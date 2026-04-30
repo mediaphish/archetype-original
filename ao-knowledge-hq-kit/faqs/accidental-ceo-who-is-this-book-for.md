@@ -7,11 +7,6 @@ featured: false
 status: published
 ---
 
-This book is written for:
+It's written for founders carrying more than they expected. Leaders responsible for people, not just outcomes. Operators navigating growth, pressure, and uncertainty. And new leaders stepping into responsibility before they feel ready for it.
 
-- Founders carrying more than they expected
-- Leaders responsible for people, not just outcomes
-- Operators navigating growth, pressure, and uncertainty
-- New leaders stepping into responsibility before feeling ready
-
-If you've felt the weight of leadership, this will feel familiar.
+If you've felt the weight of leading people, this will feel familiar. Not because I wrote it to be relatable, but because the experience itself is more universal than most leadership books acknowledge.

@@ -8,17 +8,10 @@ featured: false
 status: published
 ---
 
-Three things:
+Three things happen, in sequence.
 
-Interpretation  
-Archy explains what the patterns mean.
+Archy interprets what the patterns mean. Not just the scores, but what's actually going on beneath them and why it matters.
 
-Application  
-Leaders choose where to stabilize conditions.
+Then leaders choose where to stabilize. Not everything at once. The most important conditions first.
 
-Adjustment  
-Leadership behavior shifts based on environmental needs.
-
-ALI doesn’t prescribe programs.
-It reveals truth.
-Leaders act on that truth with intention.
+Then behavior shifts based on what the environment actually needs. That's the work. ALI doesn't prescribe programs. It reveals what's true. What leaders do with that truth is the real test.

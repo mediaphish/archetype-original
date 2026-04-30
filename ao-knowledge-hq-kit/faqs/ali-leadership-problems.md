@@ -8,15 +8,8 @@ featured: false
 status: published
 ---
 
-Nearly all leadership problems trace back to one or more weakened conditions:
+Nearly all of them trace back to one or more weakened conditions.
 
-misalignment → Clarity
-conflict → Communication or Safety
-turnover → Trust, Tone, or Safety
-slow execution → Clarity or Consistency
-disengagement → Tone, Safety, or Trust
-friction → Communication
-reactive leadership → Consistency
-strategy breakdown → Clarity
+Misalignment points to Clarity. Conflict usually points to Communication or Safety. Turnover points to Trust, Tone, or Safety. Slow execution points to Clarity or Consistency. Disengagement points to Tone, Safety, or Trust. Friction points to Communication. Reactive leadership points to Consistency. Strategy breakdown points to Clarity.
 
-ALI reveals the root condition, not just the symptom.
+Most organizations treat the surface problem. ALI reveals the root condition. That's the difference between solving something and managing it indefinitely.

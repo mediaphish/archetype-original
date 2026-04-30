@@ -9,8 +9,6 @@ status: published
 
 Yes.
 
-Bart works with organizations, leadership teams, and operators through speaking, advisory, and Clarity Sessions.
+I work with organizations, leadership teams, and operators through speaking, advisory, and focused leadership sessions.
 
-If your team is navigating growth, culture challenges, or leadership pressure, these conversations are designed to bring clarity without adding noise.
-
-You can learn more or inquire through the site.
+If your team is navigating growth, culture challenges, or leadership pressure, these conversations are designed to bring clarity without adding noise. You can learn more or reach out through the site.

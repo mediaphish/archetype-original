@@ -7,10 +7,8 @@ featured: false
 status: published
 ---
 
-By making accountability predictable and fair.
+By making accountability predictable and fair rather than personal and threatening.
 
-Accountability here isn't about punishment or performance theater. It's about clarity: clear expectations, clear feedback, and clear follow-through. When people know what matters and what will happen if standards aren't met, accountability stops feeling personal.
+Accountability here isn't about punishment or performance theater. It's about clarity: clear expectations, clear feedback, and clear follow-through. When people know what matters and what will happen if standards aren't met, accountability stops feeling like something done to them.
 
-Good methods reduce fear instead of increasing it.
-
-[Learn more about our methods](/methods) and [how ALI measures accountability](/culture-science/ali).
+Good methods reduce fear instead of increasing it. That's what makes accountability sustainable.

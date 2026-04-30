@@ -8,16 +8,8 @@ featured: false
 status: published
 ---
 
-Yes.
+Yes, and strong cultures may need it most.
 
-The strongest leaders use ALI to:
+Strong cultures drift fastest when leaders assume they're immune. Growth, leadership transitions, and increased complexity all create pressure that quietly erodes conditions even in healthy organizations.
 
-prevent blind spots
-sustain momentum during growth
-avoid drift during change
-deepen consistency
-model servant leadership
-improve tone stability
-increase clarity as complexity rises
-
-Strong cultures drift fastest when leaders assume they are immune.
+The strongest leaders I know use ALI to prevent blind spots, sustain momentum, deepen consistency, and catch drift before it compounds. They're not using it because something's wrong. They're using it because they know how fast wrong can develop without warning.

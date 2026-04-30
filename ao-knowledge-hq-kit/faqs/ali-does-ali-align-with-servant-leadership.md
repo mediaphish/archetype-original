@@ -4,24 +4,14 @@ slug: ali-does-ali-align-with-servant-leadership
 categories:
   - ali
   - culture-science
-  - servant-leadership
-  - leadership-philosophy
 featured: true
 featured_on:
   - ali
 status: published
 ---
 
-Yes.
+Yes. ALI is built on the structural logic of servant leadership.
 
-ALI is built on the structural truths of servant leadership:
+Leaders create conditions. Conditions shape people. People shape outcomes. And leaders are responsible for the wake they leave behind, whether they intended it or not.
 
-- leaders create conditions  
-- conditions shape people  
-- people shape outcomes  
-- leaders are responsible for the wake they create  
-
-ALI is not a philosophical tool.  
-It is a **measurement system for servant leadership in practice**.
-
-It gives servant leaders visibility into whether their leadership is actually creating the conditions they intend.
+ALI is not a philosophical tool. It's a measurement system for servant leadership in practice. It gives leaders visibility into whether their leadership is actually creating the conditions they intend to create. Most leaders believe their intent is good. ALI helps you see whether the impact matches.

@@ -7,10 +7,12 @@ featured: false
 status: published
 ---
 
-No. It's disciplined leadership.
+No. And I'd push back on the framing itself.
 
-Soft leadership avoids hard conversations and accountability. Unrestrained leadership creates volatility, fear, and burnout. Archetype Original sits between the two—strength under control.
+Soft leadership avoids hard conversations. It lets things slide to keep the peace. It mistakes comfort for kindness. That's not what this is.
 
-It asks leaders to regulate themselves under pressure, to correct problems without exporting stress, and to lead in ways that hold up over time rather than creating short-term compliance.
+But unrestrained leadership, the kind that leads through pressure and fear, creates volatility, burnout, and people who perform compliance instead of doing real work. That's not strength either.
 
-[Read more about our philosophy](/meet-bart) and [our methods](/methods).
+What I teach sits between those two. Strength under control. You regulate yourself under pressure. You correct problems without exporting stress. You lead in a way that holds up over time, not just through the current quarter.
+
+That's harder than either extreme. Most leaders haven't been taught how to do it.

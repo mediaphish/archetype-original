@@ -8,18 +8,8 @@ featured: false
 status: published
 ---
 
-No.
+No. That was a design priority from the start.
 
-ALI was designed to be:
+ALI is intuitive, fast, and non-invasive. It doesn't feel corporate. It doesn't require training. Most people complete it without needing any explanation beyond what's on the screen.
 
-intuitive
-simple
-clear
-fast
-non-invasive
-non-corporate
-relatable
-easy to complete
-easy to read
-
-The sophistication lives in the interpretation, not the experience.
+The sophistication is in the interpretation, not the experience. The survey itself stays out of the way.

@@ -7,6 +7,8 @@ featured: false
 status: published
 ---
 
-Work typically includes diagnostics, coaching, teaching, and cultural assessment.
+The work typically includes diagnostics, direct advisory, teaching, and cultural assessment.
 
-Engagements are designed to build clarity, accountability, and long-term leadership health—not dependency.
+But the form follows the need. Some leaders need a thinking partner. Some organizations need a clearer read on what's actually happening below the surface. Some need help translating diagnosis into behavioral change.
+
+The through-line is always the same: build clarity, accountability, and long-term leadership health. Not dependency on an outside voice.

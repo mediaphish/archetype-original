@@ -7,10 +7,10 @@ featured: false
 status: published
 ---
 
-These methods still apply—but expectations matter.
+The methods still apply. But the sequencing matters more when trust is already thin.
 
-When trust is already thin, leaders need to move more carefully, not more forcefully. The methods here emphasize steadiness, consistency, and visible correction over speed. Trying to rush repair usually causes more damage.
+When an organization is in trouble, the instinct is usually to move faster and apply more force. That almost always makes it worse. People are already watching to see if the pattern changes. Rushing repair signals that it hasn't.
 
-Stability comes before momentum.
+What works is steadiness. Visible correction. Consistency over speed. You're not trying to convince anyone with words at this point. You're demonstrating something with behavior, repeatedly, until people believe it.
 
-[Learn more about our methods](/methods) and [how we approach cultural repair](/culture-science).
+Stability comes before momentum. That's not a concession. That's how repair actually works.

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FAQ source review — Archetype Original</title>
+  <style>
+    :root { font-family: ui-sans-serif, system-ui, sans-serif; color: #1a1a1a; background: #fafaf9; }
+    body { margin: 0; line-height: 1.5; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; margin: 0 0 0.5rem; }
+    .summary { background: #fff; border: 1px solid #e5e2dc; padding: 1rem 1.25rem; margin-bottom: 1.25rem; border-radius: 6px; font-size: 0.95rem; }
+    .summary strong { font-weight: 600; }
+    .toc { background: #fff; border: 1px solid #e5e2dc; padding: 1rem 1.25rem; margin-bottom: 1.5rem; border-radius: 6px; max-height: 40vh; overflow-y: auto; }
+    .toc h2 { font-size: 1rem; margin: 0 0 0.75rem; }
+    .toc ul { margin: 0; padding-left: 1.25rem; }
+    .toc li { margin: 0.35rem 0; }
+    .toc .wc { color: #6b6b6b; font-size: 0.85em; }
+    #filter { width: 100%; max-width: 28rem; padding: 0.5rem 0.65rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; box-sizing: border-box; }
+    .faq-card { background: #fff; border: 1px solid #e5e2dc; border-radius: 6px; padding: 1rem 1.25rem 1.25rem; margin-bottom: 1rem; }
+    .faq-head h2 { font-size: 1.1rem; margin: 0 0 0.5rem; font-weight: 600; }
+    .meta { font-size: 0.85rem; color: #444; margin: 0.25rem 0; }
+    .body.prose { margin-top: 0.75rem; font-size: 1rem; color: #222; }
+    .hidden { display: none !important; }
+    @media print { .toc, #filter, .summary { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>FAQ markdown review</h1>
+    <p>Open this file in your browser (double-click or drag into Chrome/Safari). Use the filter box to narrow by title, filename, or body text.</p>
+    <div class="summary">
+      <strong>Files:</strong> 42 &nbsp;·&nbsp;
+      <strong>Total words (body):</strong> 720 &nbsp;·&nbsp;
+      <strong>Average:</strong> 17 words<br/>
+      <strong>Length buckets:</strong>
+      ≤25 words: 41 ·
+      26–80: 1 ·
+      81–200: 0 ·
+      &gt;200: 0
+    </div>
+    <label class="sr-only" for="filter">Filter</label>
+    <input type="search" id="filter" placeholder="Filter by title, file name, or body text…" autocomplete="off" />
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Jump to</h2>
+      <ul><li><a href="#faq-0">Why does Culture Science treat silence as data?</a> <span class="wc">(33 w)</span></li>
+<li><a href="#faq-1">Why does honest feedback disappear before trust collapses?</a> <span class="wc">(23 w)</span></li>
+<li><a href="#faq-2">How does leadership behavior create cultural conditions?</a> <span class="wc">(22 w)</span></li>
+<li><a href="#faq-3">Why do teams sense instability before leaders do?</a> <span class="wc">(22 w)</span></li>
+<li><a href="#faq-4">How early does the leader’s shadow form?</a> <span class="wc">(21 w)</span></li>
+<li><a href="#faq-5">What does it mean for leaders to absorb pressure?</a> <span class="wc">(21 w)</span></li>
+<li><a href="#faq-6">What is cultural drift?</a> <span class="wc">(20 w)</span></li>
+<li><a href="#faq-7">What is pressure transmission in leadership?</a> <span class="wc">(20 w)</span></li>
+<li><a href="#faq-8">How does urgency distort leadership judgment?</a> <span class="wc">(19 w)</span></li>
+<li><a href="#faq-9">What is the difference between cultural conditions and events?</a> <span class="wc">(19 w)</span></li>
+<li><a href="#faq-10">How does Culture Science define leadership responsibility?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-11">How does leadership tone shape culture?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-12">What does cultural stability actually mean?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-13">What is the leader’s shadow?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-14">What makes leadership sustainable over time?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-15">Why do conditions matter more than individual decisions?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-16">Why does stress amplify leadership patterns?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-17">Why does the leader’s shadow matter more than intent?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-18">Why don’t replacement cycles fix broken cultures?</a> <span class="wc">(18 w)</span></li>
+<li><a href="#faq-19">How does leadership identity change under pressure?</a> <span class="wc">(17 w)</span></li>
+<li><a href="#faq-20">Why do cultures usually fail late rather than early?</a> <span class="wc">(17 w)</span></li>
+<li><a href="#faq-21">Why do leaders avoid ownership under pressure?</a> <span class="wc">(17 w)</span></li>
+<li><a href="#faq-22">Why is calm considered a leadership capability?</a> <span class="wc">(17 w)</span></li>
+<li><a href="#faq-23">What is the difference between signals and symptoms?</a> <span class="wc">(16 w)</span></li>
+<li><a href="#faq-24">What is the performance-pressure trap?</a> <span class="wc">(16 w)</span></li>
+<li><a href="#faq-25">Why does execution follow environment, not motivation?</a> <span class="wc">(16 w)</span></li>
+<li><a href="#faq-26">Why don’t meetings reveal the true state of culture?</a> <span class="wc">(16 w)</span></li>
+<li><a href="#faq-27">How does control get disguised as care in leadership?</a> <span class="wc">(15 w)</span></li>
+<li><a href="#faq-28">What happens when leaders stop being human under pressure?</a> <span class="wc">(15 w)</span></li>
+<li><a href="#faq-29">Why does cultural repair take time even after change begins?</a> <span class="wc">(15 w)</span></li>
+<li><a href="#faq-30">Why does Culture Science pay attention to what people don’t say?</a> <span class="wc">(15 w)</span></li>
+<li><a href="#faq-31">What is the difference between ownership and blame?</a> <span class="wc">(14 w)</span></li>
+<li><a href="#faq-32">Why do good leadership intentions still fail?</a> <span class="wc">(14 w)</span></li>
+<li><a href="#faq-33">Why do strong leaders sometimes destabilize healthy teams?</a> <span class="wc">(14 w)</span></li>
+<li><a href="#faq-34">Why does Culture Science treat rest as strategic rather than optional?</a> <span class="wc">(14 w)</span></li>
+<li><a href="#faq-35">Why does Culture Science treat trust as an outcome?</a> <span class="wc">(14 w)</span></li>
+<li><a href="#faq-36">How does the leader’s shadow create fear without words?</a> <span class="wc">(13 w)</span></li>
+<li><a href="#faq-37">What is the difference between leadership image and responsibility?</a> <span class="wc">(13 w)</span></li>
+<li><a href="#faq-38">Why does cultural drift go unnoticed?</a> <span class="wc">(13 w)</span></li>
+<li><a href="#faq-39">Why does Culture Science treat burnout as a leadership signal?</a> <span class="wc">(13 w)</span></li>
+<li><a href="#faq-40">How does Culture Science define accountability?</a> <span class="wc">(12 w)</span></li>
+<li><a href="#faq-41">Why does self-awareness often break down at higher levels of leadership?</a> <span class="wc">(12 w)</span></li></ul>
+    </nav>
+    <main id="faq-main">
+<section class="faq-card" id="faq-0" data-title="Why does Culture Science treat silence as data?" data-file="silence-as-data.md" data-body="Silence is rarely neutrality.
+
+When teams stop speaking, it often signals learned futility, fear of consequences, or exhaustion from being unheard.
+
+Culture Science trains leaders to investigate silence before interpreting it as alignment.">
+  <header class="faq-head">
+    <h2>Why does Culture Science treat silence as data?</h2>
+    <p class="meta"><strong>File:</strong> silence-as-data.md · <strong>Slug:</strong> silence-as-data · <strong>Words:</strong> 33 · <strong>Chars:</strong> 239</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Silence is rarely neutrality.<br/><br/>When teams stop speaking, it often signals learned futility, fear of consequences, or exhaustion from being unheard.<br/><br/>Culture Science trains leaders to investigate silence before interpreting it as alignment.</div>
+</section>
+
+<section class="faq-card" id="faq-1" data-title="Why does honest feedback disappear before trust collapses?" data-file="feedback-dries-up.md" data-body="Feedback disappears when the cost of honesty outweighs the benefit.
+
+Culture Science treats the absence of feedback as a warning signal—not a success.">
+  <header class="faq-head">
+    <h2>Why does honest feedback disappear before trust collapses?</h2>
+    <p class="meta"><strong>File:</strong> feedback-dries-up.md · <strong>Slug:</strong> feedback-dries-up · <strong>Words:</strong> 23 · <strong>Chars:</strong> 150</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Feedback disappears when the cost of honesty outweighs the benefit.<br/><br/>Culture Science treats the absence of feedback as a warning signal—not a success.</div>
+</section>
+
+<section class="faq-card" id="faq-2" data-title="How does leadership behavior create cultural conditions?" data-file="behavior-creates-conditions.md" data-body="Every repeated leadership behavior sends a signal.
+
+Those signals compound into conditions that either enable focus and trust—or create fear and instability.">
+  <header class="faq-head">
+    <h2>How does leadership behavior create cultural conditions?</h2>
+    <p class="meta"><strong>File:</strong> behavior-creates-conditions.md · <strong>Slug:</strong> behavior-creates-conditions · <strong>Words:</strong> 22 · <strong>Chars:</strong> 157</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Every repeated leadership behavior sends a signal.<br/><br/>Those signals compound into conditions that either enable focus and trust—or create fear and instability.</div>
+</section>
+
+<section class="faq-card" id="faq-3" data-title="Why do teams sense instability before leaders do?" data-file="teams-sense-instability-first.md" data-body="Teams live inside the system leaders create.
+
+They experience the friction, ambiguity, and pressure long before it surfaces in metrics or results.">
+  <header class="faq-head">
+    <h2>Why do teams sense instability before leaders do?</h2>
+    <p class="meta"><strong>File:</strong> teams-sense-instability-first.md · <strong>Slug:</strong> teams-sense-instability-first · <strong>Words:</strong> 22 · <strong>Chars:</strong> 146</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Teams live inside the system leaders create.<br/><br/>They experience the friction, ambiguity, and pressure long before it surfaces in metrics or results.</div>
+</section>
+
+<section class="faq-card" id="faq-4" data-title="How early does the leader’s shadow form?" data-file="shadow-formed-early.md" data-body="The leader’s shadow forms immediately.
+
+People calibrate expectations based on early reactions, tone, and tolerance—long before formal systems are in place.">
+  <header class="faq-head">
+    <h2>How early does the leader’s shadow form?</h2>
+    <p class="meta"><strong>File:</strong> shadow-formed-early.md · <strong>Slug:</strong> leader-shadow-early · <strong>Words:</strong> 21 · <strong>Chars:</strong> 156</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">The leader’s shadow forms immediately.<br/><br/>People calibrate expectations based on early reactions, tone, and tolerance—long before formal systems are in place.</div>
+</section>
+
+<section class="faq-card" id="faq-5" data-title="What does it mean for leaders to absorb pressure?" data-file="absorbing-pressure.md" data-body="Absorbing pressure means leaders regulate their tone, reactions, and decisions under stress.
+
+It is a learned discipline, not a personality trait.">
+  <header class="faq-head">
+    <h2>What does it mean for leaders to absorb pressure?</h2>
+    <p class="meta"><strong>File:</strong> absorbing-pressure.md · <strong>Slug:</strong> absorbing-pressure · <strong>Words:</strong> 21 · <strong>Chars:</strong> 146</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Absorbing pressure means leaders regulate their tone, reactions, and decisions under stress.<br/><br/>It is a learned discipline, not a personality trait.</div>
+</section>
+
+<section class="faq-card" id="faq-6" data-title="What is cultural drift?" data-file="what-is-drift.md" data-body="Drift is the gradual separation between stated values and lived behavior.
+
+It rarely happens intentionally and almost always starts small.">
+  <header class="faq-head">
+    <h2>What is cultural drift?</h2>
+    <p class="meta"><strong>File:</strong> what-is-drift.md · <strong>Slug:</strong> what-is-drift · <strong>Words:</strong> 20 · <strong>Chars:</strong> 138</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Drift is the gradual separation between stated values and lived behavior.<br/><br/>It rarely happens intentionally and almost always starts small.</div>
+</section>
+
+<section class="faq-card" id="faq-7" data-title="What is pressure transmission in leadership?" data-file="pressure-transmission.md" data-body="Pressure transmission occurs when leaders pass stress downward instead of carrying it.
+
+Culture Science treats pressure as a leadership responsibility.">
+  <header class="faq-head">
+    <h2>What is pressure transmission in leadership?</h2>
+    <p class="meta"><strong>File:</strong> pressure-transmission.md · <strong>Slug:</strong> pressure-transmission · <strong>Words:</strong> 20 · <strong>Chars:</strong> 151</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Pressure transmission occurs when leaders pass stress downward instead of carrying it.<br/><br/>Culture Science treats pressure as a leadership responsibility.</div>
+</section>
+
+<section class="faq-card" id="faq-8" data-title="How does urgency distort leadership judgment?" data-file="urgency-distorts-judgment.md" data-body="Urgency narrows perception.
+
+Under pressure, leaders default to habits—not values. Culture Science focuses on strengthening habits before pressure arrives.">
+  <header class="faq-head">
+    <h2>How does urgency distort leadership judgment?</h2>
+    <p class="meta"><strong>File:</strong> urgency-distorts-judgment.md · <strong>Slug:</strong> urgency-distorts-judgment · <strong>Words:</strong> 19 · <strong>Chars:</strong> 155</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Urgency narrows perception.<br/><br/>Under pressure, leaders default to habits—not values. Culture Science focuses on strengthening habits before pressure arrives.</div>
+</section>
+
+<section class="faq-card" id="faq-9" data-title="What is the difference between cultural conditions and events?" data-file="conditions-vs-events.md" data-body="Events are visible moments.
+Conditions are the environment those moments emerge from.
+
+Culture Science teaches leaders to work upstream.">
+  <header class="faq-head">
+    <h2>What is the difference between cultural conditions and events?</h2>
+    <p class="meta"><strong>File:</strong> conditions-vs-events.md · <strong>Slug:</strong> conditions-vs-events · <strong>Words:</strong> 19 · <strong>Chars:</strong> 136</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Events are visible moments.<br/>Conditions are the environment those moments emerge from.<br/><br/>Culture Science teaches leaders to work upstream.</div>
+</section>
+
+<section class="faq-card" id="faq-10" data-title="How does Culture Science define leadership responsibility?" data-file="responsibility-not-control.md" data-body="Responsibility is not control.
+
+It is the willingness to absorb consequences, regulate pressure, and protect clarity for others.">
+  <header class="faq-head">
+    <h2>How does Culture Science define leadership responsibility?</h2>
+    <p class="meta"><strong>File:</strong> responsibility-not-control.md · <strong>Slug:</strong> responsibility-not-control · <strong>Words:</strong> 18 · <strong>Chars:</strong> 128</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Responsibility is not control.<br/><br/>It is the willingness to absorb consequences, regulate pressure, and protect clarity for others.</div>
+</section>
+
+<section class="faq-card" id="faq-11" data-title="How does leadership tone shape culture?" data-file="tone-shapes-environment.md" data-body="Tone determines psychological safety.
+
+Leaders set the emotional temperature of the organization whether they intend to or not.">
+  <header class="faq-head">
+    <h2>How does leadership tone shape culture?</h2>
+    <p class="meta"><strong>File:</strong> tone-shapes-environment.md · <strong>Slug:</strong> tone-shapes-environment · <strong>Words:</strong> 18 · <strong>Chars:</strong> 127</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Tone determines psychological safety.<br/><br/>Leaders set the emotional temperature of the organization whether they intend to or not.</div>
+</section>
+
+<section class="faq-card" id="faq-12" data-title="What does cultural stability actually mean?" data-file="what-is-stability.md" data-body="Stability is the capacity to absorb pressure without exporting it.
+
+Stable cultures slow chaos.
+Unstable cultures accelerate it.">
+  <header class="faq-head">
+    <h2>What does cultural stability actually mean?</h2>
+    <p class="meta"><strong>File:</strong> what-is-stability.md · <strong>Slug:</strong> what-is-stability · <strong>Words:</strong> 18 · <strong>Chars:</strong> 128</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Stability is the capacity to absorb pressure without exporting it.<br/><br/>Stable cultures slow chaos.<br/>Unstable cultures accelerate it.</div>
+</section>
+
+<section class="faq-card" id="faq-13" data-title="What is the leader’s shadow?" data-file="leader-shadow.md" data-body="The leader’s shadow is the unspoken influence of their behavior, reactions, and habits.
+
+People organize themselves around it.">
+  <header class="faq-head">
+    <h2>What is the leader’s shadow?</h2>
+    <p class="meta"><strong>File:</strong> leader-shadow.md · <strong>Slug:</strong> leader-shadow · <strong>Words:</strong> 18 · <strong>Chars:</strong> 126</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">The leader’s shadow is the unspoken influence of their behavior, reactions, and habits.<br/><br/>People organize themselves around it.</div>
+</section>
+
+<section class="faq-card" id="faq-14" data-title="What makes leadership sustainable over time?" data-file="sustainable-leadership.md" data-body="Sustainability requires regulated pressure, clear responsibility, and consistent behavior.
+
+Short-term performance without these foundations always extracts long-term cost.">
+  <header class="faq-head">
+    <h2>What makes leadership sustainable over time?</h2>
+    <p class="meta"><strong>File:</strong> sustainable-leadership.md · <strong>Slug:</strong> sustainable-leadership · <strong>Words:</strong> 18 · <strong>Chars:</strong> 172</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Sustainability requires regulated pressure, clear responsibility, and consistent behavior.<br/><br/>Short-term performance without these foundations always extracts long-term cost.</div>
+</section>
+
+<section class="faq-card" id="faq-15" data-title="Why do conditions matter more than individual decisions?" data-file="why-conditions-matter.md" data-body="Because decisions are made inside conditions.
+
+Leaders shape outcomes indirectly by shaping the environment decisions are made in.">
+  <header class="faq-head">
+    <h2>Why do conditions matter more than individual decisions?</h2>
+    <p class="meta"><strong>File:</strong> why-conditions-matter.md · <strong>Slug:</strong> why-conditions-matter · <strong>Words:</strong> 18 · <strong>Chars:</strong> 130</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Because decisions are made inside conditions.<br/><br/>Leaders shape outcomes indirectly by shaping the environment decisions are made in.</div>
+</section>
+
+<section class="faq-card" id="faq-16" data-title="Why does stress amplify leadership patterns?" data-file="stress-amplifies-patterns.md" data-body="Stress does not create behavior.
+It reveals it.
+
+Leadership patterns under calm conditions are amplified when pressure increases.">
+  <header class="faq-head">
+    <h2>Why does stress amplify leadership patterns?</h2>
+    <p class="meta"><strong>File:</strong> stress-amplifies-patterns.md · <strong>Slug:</strong> stress-amplifies-patterns · <strong>Words:</strong> 18 · <strong>Chars:</strong> 129</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Stress does not create behavior.<br/>It reveals it.<br/><br/>Leadership patterns under calm conditions are amplified when pressure increases.</div>
+</section>
+
+<section class="faq-card" id="faq-17" data-title="Why does the leader’s shadow matter more than intent?" data-file="shadow-vs-intent.md" data-body="Intent is private.
+Shadow is experienced.
+
+Culture responds to what leaders consistently project, not what they internally mean.">
+  <header class="faq-head">
+    <h2>Why does the leader’s shadow matter more than intent?</h2>
+    <p class="meta"><strong>File:</strong> shadow-vs-intent.md · <strong>Slug:</strong> shadow-vs-intent · <strong>Words:</strong> 18 · <strong>Chars:</strong> 128</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Intent is private.<br/>Shadow is experienced.<br/><br/>Culture responds to what leaders consistently project, not what they internally mean.</div>
+</section>
+
+<section class="faq-card" id="faq-18" data-title="Why don’t replacement cycles fix broken cultures?" data-file="replacement-cycles.md" data-body="Replacing people without changing conditions resets the same outcome.
+
+Culture Science focuses on system repair, not personnel churn.">
+  <header class="faq-head">
+    <h2>Why don’t replacement cycles fix broken cultures?</h2>
+    <p class="meta"><strong>File:</strong> replacement-cycles.md · <strong>Slug:</strong> replacement-cycles · <strong>Words:</strong> 18 · <strong>Chars:</strong> 133</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Replacing people without changing conditions resets the same outcome.<br/><br/>Culture Science focuses on system repair, not personnel churn.</div>
+</section>
+
+<section class="faq-card" id="faq-19" data-title="How does leadership identity change under pressure?" data-file="identity-shifts-under-pressure.md" data-body="Pressure compresses identity.
+
+Leaders often default to control, speed, or self-protection when their internal anchors are stressed.">
+  <header class="faq-head">
+    <h2>How does leadership identity change under pressure?</h2>
+    <p class="meta"><strong>File:</strong> identity-shifts-under-pressure.md · <strong>Slug:</strong> identity-shifts-under-pressure · <strong>Words:</strong> 17 · <strong>Chars:</strong> 132</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Pressure compresses identity.<br/><br/>Leaders often default to control, speed, or self-protection when their internal anchors are stressed.</div>
+</section>
+
+<section class="faq-card" id="faq-20" data-title="Why do cultures usually fail late rather than early?" data-file="why-cultures-fail-late.md" data-body="Early warning signals are often ignored or normalized.
+
+Collapse happens only after long periods of unmanaged drift.">
+  <header class="faq-head">
+    <h2>Why do cultures usually fail late rather than early?</h2>
+    <p class="meta"><strong>File:</strong> why-cultures-fail-late.md · <strong>Slug:</strong> cultures-fail-late · <strong>Words:</strong> 17 · <strong>Chars:</strong> 116</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Early warning signals are often ignored or normalized.<br/><br/>Collapse happens only after long periods of unmanaged drift.</div>
+</section>
+
+<section class="faq-card" id="faq-21" data-title="Why do leaders avoid ownership under pressure?" data-file="why-leaders-avoid-ownership.md" data-body="Avoidance often signals overload, not malice.
+
+Culture Science treats avoidance as a signal requiring support or correction.">
+  <header class="faq-head">
+    <h2>Why do leaders avoid ownership under pressure?</h2>
+    <p class="meta"><strong>File:</strong> why-leaders-avoid-ownership.md · <strong>Slug:</strong> leaders-avoid-ownership · <strong>Words:</strong> 17 · <strong>Chars:</strong> 124</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Avoidance often signals overload, not malice.<br/><br/>Culture Science treats avoidance as a signal requiring support or correction.</div>
+</section>
+
+<section class="faq-card" id="faq-22" data-title="Why is calm considered a leadership capability?" data-file="calm-as-capability.md" data-body="Calm allows discernment, not delay.
+
+Culture Science treats emotional regulation as a prerequisite for sound leadership decisions.">
+  <header class="faq-head">
+    <h2>Why is calm considered a leadership capability?</h2>
+    <p class="meta"><strong>File:</strong> calm-as-capability.md · <strong>Slug:</strong> calm-as-capability · <strong>Words:</strong> 17 · <strong>Chars:</strong> 130</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Calm allows discernment, not delay.<br/><br/>Culture Science treats emotional regulation as a prerequisite for sound leadership decisions.</div>
+</section>
+
+<section class="faq-card" id="faq-23" data-title="What is the difference between signals and symptoms?" data-file="signals-vs-symptoms.md" data-body="Signals are early indicators.
+Symptoms are late-stage consequences.
+
+Culture Science trains leaders to respond to signals.">
+  <header class="faq-head">
+    <h2>What is the difference between signals and symptoms?</h2>
+    <p class="meta"><strong>File:</strong> signals-vs-symptoms.md · <strong>Slug:</strong> signals-vs-symptoms · <strong>Words:</strong> 16 · <strong>Chars:</strong> 122</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Signals are early indicators.<br/>Symptoms are late-stage consequences.<br/><br/>Culture Science trains leaders to respond to signals.</div>
+</section>
+
+<section class="faq-card" id="faq-24" data-title="What is the performance-pressure trap?" data-file="performance-pressure-trap.md" data-body="When results are demanded without environmental stability, leaders increase pressure.
+
+This accelerates burnout and erodes trust.">
+  <header class="faq-head">
+    <h2>What is the performance-pressure trap?</h2>
+    <p class="meta"><strong>File:</strong> performance-pressure-trap.md · <strong>Slug:</strong> performance-pressure-trap · <strong>Words:</strong> 16 · <strong>Chars:</strong> 129</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">When results are demanded without environmental stability, leaders increase pressure.<br/><br/>This accelerates burnout and erodes trust.</div>
+</section>
+
+<section class="faq-card" id="faq-25" data-title="Why does execution follow environment, not motivation?" data-file="execution-follows-environment.md" data-body="People execute best in environments that are predictable, fair, and calm.
+
+Motivation cannot overcome chaotic conditions.">
+  <header class="faq-head">
+    <h2>Why does execution follow environment, not motivation?</h2>
+    <p class="meta"><strong>File:</strong> execution-follows-environment.md · <strong>Slug:</strong> execution-follows-environment · <strong>Words:</strong> 16 · <strong>Chars:</strong> 121</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">People execute best in environments that are predictable, fair, and calm.<br/><br/>Motivation cannot overcome chaotic conditions.</div>
+</section>
+
+<section class="faq-card" id="faq-26" data-title="Why don’t meetings reveal the true state of culture?" data-file="meetings-vs-conversations.md" data-body="Meetings are managed environments.
+
+Culture reveals itself in informal conversations, hallway decisions, and what goes unsaid.">
+  <header class="faq-head">
+    <h2>Why don’t meetings reveal the true state of culture?</h2>
+    <p class="meta"><strong>File:</strong> meetings-vs-conversations.md · <strong>Slug:</strong> meetings-vs-conversations · <strong>Words:</strong> 16 · <strong>Chars:</strong> 126</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Meetings are managed environments.<br/><br/>Culture reveals itself in informal conversations, hallway decisions, and what goes unsaid.</div>
+</section>
+
+<section class="faq-card" id="faq-27" data-title="How does control get disguised as care in leadership?" data-file="control-disguised-as-care.md" data-body="Control often masquerades as protection or urgency.
+
+Culture Science examines motive through behavior, not explanation.">
+  <header class="faq-head">
+    <h2>How does control get disguised as care in leadership?</h2>
+    <p class="meta"><strong>File:</strong> control-disguised-as-care.md · <strong>Slug:</strong> control-disguised-as-care · <strong>Words:</strong> 15 · <strong>Chars:</strong> 119</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Control often masquerades as protection or urgency.<br/><br/>Culture Science examines motive through behavior, not explanation.</div>
+</section>
+
+<section class="faq-card" id="faq-28" data-title="What happens when leaders stop being human under pressure?" data-file="leaders-stop-being-human.md" data-body="Emotional suppression creates distance.
+
+When leaders disconnect from their own limits, teams compensate by disengaging.">
+  <header class="faq-head">
+    <h2>What happens when leaders stop being human under pressure?</h2>
+    <p class="meta"><strong>File:</strong> leaders-stop-being-human.md · <strong>Slug:</strong> leaders-stop-being-human · <strong>Words:</strong> 15 · <strong>Chars:</strong> 120</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Emotional suppression creates distance.<br/><br/>When leaders disconnect from their own limits, teams compensate by disengaging.</div>
+</section>
+
+<section class="faq-card" id="faq-29" data-title="Why does cultural repair take time even after change begins?" data-file="repair-requires-time.md" data-body="Teams wait for patterns to prove real.
+
+Time allows new behaviors to displace old expectations.">
+  <header class="faq-head">
+    <h2>Why does cultural repair take time even after change begins?</h2>
+    <p class="meta"><strong>File:</strong> repair-requires-time.md · <strong>Slug:</strong> repair-requires-time · <strong>Words:</strong> 15 · <strong>Chars:</strong> 95</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Teams wait for patterns to prove real.<br/><br/>Time allows new behaviors to displace old expectations.</div>
+</section>
+
+<section class="faq-card" id="faq-30" data-title="Why does Culture Science pay attention to what people don’t say?" data-file="what-people-dont-say.md" data-body="Avoidance indicates risk.
+
+When topics become taboo, systems adapt around them rather than addressing them.">
+  <header class="faq-head">
+    <h2>Why does Culture Science pay attention to what people don’t say?</h2>
+    <p class="meta"><strong>File:</strong> what-people-dont-say.md · <strong>Slug:</strong> what-people-dont-say · <strong>Words:</strong> 15 · <strong>Chars:</strong> 107</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Avoidance indicates risk.<br/><br/>When topics become taboo, systems adapt around them rather than addressing them.</div>
+</section>
+
+<section class="faq-card" id="faq-31" data-title="What is the difference between ownership and blame?" data-file="ownership-vs-blame.md" data-body="Blame assigns fault.
+Ownership accepts obligation.
+
+Culture Science treats ownership as a stabilizing force.">
+  <header class="faq-head">
+    <h2>What is the difference between ownership and blame?</h2>
+    <p class="meta"><strong>File:</strong> ownership-vs-blame.md · <strong>Slug:</strong> ownership-vs-blame · <strong>Words:</strong> 14 · <strong>Chars:</strong> 108</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Blame assigns fault.<br/>Ownership accepts obligation.<br/><br/>Culture Science treats ownership as a stabilizing force.</div>
+</section>
+
+<section class="faq-card" id="faq-32" data-title="Why do good leadership intentions still fail?" data-file="why-good-intentions-fail.md" data-body="Intent without discipline collapses under pressure.
+
+Culture Science emphasizes practiced behavior over internal conviction.">
+  <header class="faq-head">
+    <h2>Why do good leadership intentions still fail?</h2>
+    <p class="meta"><strong>File:</strong> why-good-intentions-fail.md · <strong>Slug:</strong> good-intentions-fail · <strong>Words:</strong> 14 · <strong>Chars:</strong> 124</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Intent without discipline collapses under pressure.<br/><br/>Culture Science emphasizes practiced behavior over internal conviction.</div>
+</section>
+
+<section class="faq-card" id="faq-33" data-title="Why do strong leaders sometimes destabilize healthy teams?" data-file="strong-leaders-destabilize.md" data-body="Strength without restraint creates volatility.
+
+Culture Science distinguishes between power and regulated leadership capacity.">
+  <header class="faq-head">
+    <h2>Why do strong leaders sometimes destabilize healthy teams?</h2>
+    <p class="meta"><strong>File:</strong> strong-leaders-destabilize.md · <strong>Slug:</strong> strong-leaders-destabilize · <strong>Words:</strong> 14 · <strong>Chars:</strong> 126</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Strength without restraint creates volatility.<br/><br/>Culture Science distinguishes between power and regulated leadership capacity.</div>
+</section>
+
+<section class="faq-card" id="faq-34" data-title="Why does Culture Science treat rest as strategic rather than optional?" data-file="why-rest-is-strategic.md" data-body="Rest preserves judgment.
+
+Without recovery, leaders trade discernment for speed and clarity for reactivity.">
+  <header class="faq-head">
+    <h2>Why does Culture Science treat rest as strategic rather than optional?</h2>
+    <p class="meta"><strong>File:</strong> why-rest-is-strategic.md · <strong>Slug:</strong> rest-is-strategic · <strong>Words:</strong> 14 · <strong>Chars:</strong> 107</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Rest preserves judgment.<br/><br/>Without recovery, leaders trade discernment for speed and clarity for reactivity.</div>
+</section>
+
+<section class="faq-card" id="faq-35" data-title="Why does Culture Science treat trust as an outcome?" data-file="trust-as-output.md" data-body="Trust is produced by consistent leadership behavior.
+
+It cannot be demanded, announced, or rushed.">
+  <header class="faq-head">
+    <h2>Why does Culture Science treat trust as an outcome?</h2>
+    <p class="meta"><strong>File:</strong> trust-as-output.md · <strong>Slug:</strong> trust-as-output · <strong>Words:</strong> 14 · <strong>Chars:</strong> 98</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Trust is produced by consistent leadership behavior.<br/><br/>It cannot be demanded, announced, or rushed.</div>
+</section>
+
+<section class="faq-card" id="faq-36" data-title="How does the leader’s shadow create fear without words?" data-file="shadow-and-fear.md" data-body="Fear emerges from unpredictability.
+
+When leaders react inconsistently, teams self-protect instead of executing.">
+  <header class="faq-head">
+    <h2>How does the leader’s shadow create fear without words?</h2>
+    <p class="meta"><strong>File:</strong> shadow-and-fear.md · <strong>Slug:</strong> shadow-and-fear · <strong>Words:</strong> 13 · <strong>Chars:</strong> 112</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Fear emerges from unpredictability.<br/><br/>When leaders react inconsistently, teams self-protect instead of executing.</div>
+</section>
+
+<section class="faq-card" id="faq-37" data-title="What is the difference between leadership image and responsibility?" data-file="image-vs-responsibility.md" data-body="Image focuses on perception.
+Responsibility focuses on consequence.
+
+Culture Science prioritizes the latter.">
+  <header class="faq-head">
+    <h2>What is the difference between leadership image and responsibility?</h2>
+    <p class="meta"><strong>File:</strong> image-vs-responsibility.md · <strong>Slug:</strong> image-vs-responsibility · <strong>Words:</strong> 13 · <strong>Chars:</strong> 108</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Image focuses on perception.<br/>Responsibility focuses on consequence.<br/><br/>Culture Science prioritizes the latter.</div>
+</section>
+
+<section class="faq-card" id="faq-38" data-title="Why does cultural drift go unnoticed?" data-file="why-drift-goes-unnoticed.md" data-body="Drift happens incrementally.
+
+Leaders acclimate to it long before they recognize the damage.">
+  <header class="faq-head">
+    <h2>Why does cultural drift go unnoticed?</h2>
+    <p class="meta"><strong>File:</strong> why-drift-goes-unnoticed.md · <strong>Slug:</strong> drift-goes-unnoticed · <strong>Words:</strong> 13 · <strong>Chars:</strong> 92</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Drift happens incrementally.<br/><br/>Leaders acclimate to it long before they recognize the damage.</div>
+</section>
+
+<section class="faq-card" id="faq-39" data-title="Why does Culture Science treat burnout as a leadership signal?" data-file="burnout-as-signal.md" data-body="Burnout reflects sustained pressure without recovery.
+
+It indicates systemic imbalance, not individual weakness.">
+  <header class="faq-head">
+    <h2>Why does Culture Science treat burnout as a leadership signal?</h2>
+    <p class="meta"><strong>File:</strong> burnout-as-signal.md · <strong>Slug:</strong> burnout-as-signal · <strong>Words:</strong> 13 · <strong>Chars:</strong> 112</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Burnout reflects sustained pressure without recovery.<br/><br/>It indicates systemic imbalance, not individual weakness.</div>
+</section>
+
+<section class="faq-card" id="faq-40" data-title="How does Culture Science define accountability?" data-file="accountability-defined.md" data-body="Accountability is clarity plus ownership.
+
+It focuses on responsibility and correction—not blame.">
+  <header class="faq-head">
+    <h2>How does Culture Science define accountability?</h2>
+    <p class="meta"><strong>File:</strong> accountability-defined.md · <strong>Slug:</strong> accountability-defined · <strong>Words:</strong> 12 · <strong>Chars:</strong> 97</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Accountability is clarity plus ownership.<br/><br/>It focuses on responsibility and correction—not blame.</div>
+</section>
+
+<section class="faq-card" id="faq-41" data-title="Why does self-awareness often break down at higher levels of leadership?" data-file="self-awareness-breakdown.md" data-body="Power reduces corrective feedback.
+
+Without intentional reflection systems, leaders lose accurate mirrors.">
+  <header class="faq-head">
+    <h2>Why does self-awareness often break down at higher levels of leadership?</h2>
+    <p class="meta"><strong>File:</strong> self-awareness-breakdown.md · <strong>Slug:</strong> self-awareness-breakdown · <strong>Words:</strong> 12 · <strong>Chars:</strong> 106</p>
+    <p class="meta"><strong>Categories:</strong> culture-science</p>
+    <p class="meta"><strong>Status:</strong> published</p>
+  </header>
+  <div class="body prose">Power reduces corrective feedback.<br/><br/>Without intentional reflection systems, leaders lose accurate mirrors.</div>
+</section></main>
+  </div>
+  <script>
+    (function () {
+      var input = document.getElementById('filter');
+      var cards = document.querySelectorAll('.faq-card');
+      input.addEventListener('input', function () {
+        var q = (input.value || '').trim().toLowerCase();
+        cards.forEach(function (card) {
+          var title = (card.getAttribute('data-title') || '').toLowerCase();
+          var file = (card.getAttribute('data-file') || '').toLowerCase();
+          var body = (card.getAttribute('data-body') || '').toLowerCase();
+          var show = !q || title.indexOf(q) !== -1 || file.indexOf(q) !== -1 || body.indexOf(q) !== -1;
+          card.classList.toggle('hidden', !show);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

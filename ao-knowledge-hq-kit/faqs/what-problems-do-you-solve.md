@@ -7,12 +7,8 @@ featured: false
 status: published
 ---
 
-Archetype Original helps leaders address:
+The work addresses cultural drift, loss of trust, low accountability, burnout, and misaligned leadership behavior.
 
-cultural drift  
-loss of trust  
-low accountability  
-burnout  
-misaligned leadership behavior  
+But those are the categories. The actual problems show up as: teams that have gone quiet, execution that's slower than it should be, turnover that keeps happening, conflict that never gets resolved, and leaders who know something is wrong but can't name what it is.
 
-The work focuses on root causes, not surface symptoms.
+The focus is always on root causes. Surface symptoms are just the thing that finally made the problem visible.

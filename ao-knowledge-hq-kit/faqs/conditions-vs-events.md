@@ -7,7 +7,8 @@ featured: false
 status: published
 ---
 
-Events are visible moments.
-Conditions are the environment those moments emerge from.
+Events are visible moments. The meeting that went sideways. The decision that caused friction. The conversation that damaged trust.
 
-Culture Science teaches leaders to work upstream.
+Conditions are the environment those moments emerge from. The event is what people see. The condition is what made it possible.
+
+Culture Science focuses on conditions because that's where the real leverage is. You can manage events indefinitely. When you change conditions, you change what's possible.

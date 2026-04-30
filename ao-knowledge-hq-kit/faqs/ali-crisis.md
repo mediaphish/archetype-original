@@ -8,14 +8,8 @@ featured: false
 status: published
 ---
 
-Yes.
+Yes, and it's often most valuable exactly then.
 
-Change amplifies:
+Change amplifies everything. Tone becomes more variable. Communication distorts. Clarity erodes. Trust gets fragile. Safety shrinks.
 
-tone variability
-communication distortion
-clarity loss
-trust fragility
-safety shrinkage
-
-ALI reveals how fast conditions are shifting so leaders can stabilize the environment.
+ALI shows you how fast those conditions are shifting so you can stabilize the environment before the wheels come off. Most leaders in crisis are flying blind on the cultural side. ALI changes that.

@@ -8,14 +8,8 @@ featured: false
 status: published
 ---
 
-ALI gives leaders:
+ALI gives leaders visibility into what they're actually creating. Their own patterns. How their behavior impacts conditions. How stability or drift is affecting execution. How their tone is shaping the environment people work inside every day.
 
-visibility into their own patterns
-visibility into how behavior impacts conditions
-visibility into how stability or drift affects execution
-visibility into how tone influences the environment
+Leaders rarely drift intentionally. What ALI does is surface that drift early enough to correct it before it becomes a cultural problem.
 
-Leaders rarely drift intentionally.
-ALI reveals drift early enough to correct it quickly.
-
-Accountability becomes about meaningful change, not punishment.
+When you can see what's actually happening, accountability becomes about meaningful adjustment rather than damage control.
