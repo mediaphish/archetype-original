@@ -18,6 +18,65 @@ const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
 const FAQ_DIR = 'ao-knowledge-hq-kit/faqs';
 const OUTPUT_FILE = 'public/knowledge.json';
 
+/** Journal-only category cleanup (see journal implementation plan). Not applied to FAQs. */
+const JOURNAL_CATEGORY_NORMALIZE = {
+  neuroscience: 'psychology',
+  'organizational-psychology': 'psychology',
+  'organizational-dynamics': 'psychology',
+  'emotional-dynamics': 'psychology',
+  'emotional-intelligence': 'psychology',
+  'data-research': 'psychology',
+  power: 'power-control',
+  'team-building': 'culture',
+  collaboration: 'culture',
+  'culture-values': 'culture',
+  formation: 'culture',
+  'leadership-development': 'leadership',
+  'leadership-principles': 'leadership',
+  'high-performance': 'leadership',
+  'decision-making': 'leadership',
+  advisory: 'leadership',
+  consulting: 'leadership',
+  'case-studies': 'leadership',
+  teams: 'leadership',
+  editorial: null,
+  journal: null,
+  'personal-reflection': null,
+  balance: 'leadership',
+  boundaries: 'leadership',
+  fear: 'psychology',
+  burnout: 'psychology',
+  innovation: 'leadership',
+  systems: 'leadership',
+  legacy: 'servant-leadership',
+  purpose: 'servant-leadership',
+  identity: 'servant-leadership',
+  faith: 'servant-leadership',
+  ethics: 'accountability',
+  authoritarianism: 'narcissism',
+  empathy: 'psychology',
+  trust: 'leadership',
+  communication: 'leadership',
+  development: 'leadership',
+  'scoreboard-leadership': 'leadership',
+};
+
+function normalizeJournalCategories(categories) {
+  if (!Array.isArray(categories)) return [];
+  const normalized = categories
+    .map((cat) => {
+      const raw = String(cat ?? '').trim();
+      if (!raw) return null;
+      const key = raw.toLowerCase();
+      const mapped = JOURNAL_CATEGORY_NORMALIZE[key];
+      if (mapped === null) return null;
+      if (mapped !== undefined) return mapped;
+      return raw;
+    })
+    .filter(Boolean);
+  return [...new Set(normalized)];
+}
+
 // Recursively find all markdown files
 function findMarkdownFiles(dir) {
   const files = [];
@@ -335,7 +394,7 @@ async function buildKnowledgeCorpus() {
           slug: slug,
           type: postType,
           tags: frontmatter.tags || [],
-          categories: frontmatter.categories || [],
+          categories: normalizeJournalCategories(frontmatter.categories || []),
           status: status,
           created_at: frontmatter.created_at || new Date().toISOString(),
           updated_at: frontmatter.updated_at || new Date().toISOString(),

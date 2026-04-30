@@ -43,8 +43,9 @@ export default function handler(req, res) {
     // Filter by type
     // Special case: type=all means “no type filter”
     if (type && String(type).toLowerCase() !== 'all') {
-      filteredDocs = filteredDocs.filter(doc => 
-        doc.type && doc.type.toLowerCase().includes(type.toLowerCase())
+      const want = String(type).toLowerCase();
+      filteredDocs = filteredDocs.filter(
+        (doc) => doc.type && String(doc.type).toLowerCase() === want
       );
     }
 

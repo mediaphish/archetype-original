@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import JournalSubscription from '../components/JournalSubscription';
 import { OptimizedImage } from '../components/OptimizedImage';
 
 const PAGE_SIZE = 12;
+
+function toLabel(cat) {
+  if (cat === 'all') return 'All';
+  return cat.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+}
 
 export default function Journal() {
   const [posts, setPosts] = useState([]);
@@ -10,115 +15,36 @@ export default function Journal() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [listPage, setListPage] = useState(1);
 
-  // Map actual categories to display categories (comprehensive mapping)
-  const categoryMapping = {
-    'leadership': [
-      'leadership-development', 
-      'leadership-principles', 
-      'servant-leadership', 
-      'power-control', 
-      'accountability', 
-      'trust',
-      'case-studies' // Leadership case studies
-    ],
-    'culture': [
-      'culture', 
-      'culture-values', 
-      'team-building', 
-      'collaboration', 
-      'communication', 
-      'systems'
-    ],
-    'growth': [
-      'leadership-development', 
-      'personal-reflection', 
-      'innovation', 
-      'balance', 
-      'boundaries',
-      'fear' // Growth through facing fear
-    ],
-    'philosophy': [
-      'servant-leadership', 
-      'purpose', 
-      'legacy', 
-      'neuroscience', 
-      'empathy', 
-      'data-research'
-    ],
-    'devotional': [
-      'devotional'
-    ]
-  };
-
   useEffect(() => {
-    // Ensure scroll restoration is disabled for journal pages
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
-    
-    // Always scroll to top when Journal page loads (including on back navigation)
-    // Use multiple attempts to ensure it sticks, even with browser scroll restoration
+
     const scrollToTop = () => window.scrollTo(0, 0);
-    
-    // Immediate scroll (synchronous)
     scrollToTop();
-    
-    // Multiple delayed attempts to catch any late scroll restoration
+
     requestAnimationFrame(() => {
       scrollToTop();
       requestAnimationFrame(() => {
         scrollToTop();
       });
     });
-    
-    // Additional delayed attempts - more aggressive
-    const timers = [0, 10, 50, 100, 200, 300, 500].map(delay => 
-      setTimeout(scrollToTop, delay)
+
+    const timers = [0, 10, 50, 100, 200, 300, 500].map((delay) =>
+      setTimeout(scrollToTop, delay),
     );
-    
-    // Check if we're navigating back from a journal post
+
     const isNavigatingBack = sessionStorage.getItem('journalPostNavigating') === 'true';
     if (isNavigatingBack) {
-      // Clear the flag
       sessionStorage.removeItem('journalPostNavigating');
     }
-    
-    // Load both journal posts and devotionals from the knowledge corpus
-    Promise.all([
-      fetch('/api/knowledge?type=journal-post').then(r => r.json()),
-      fetch('/api/knowledge?type=devotional').then(r => r.json())
-    ])
-      .then(([journalData, devotionalData]) => {
-        // Get today's date in YYYY-MM-DD format using local timezone (not UTC)
-        // This prevents timezone shifts that cause dates to be off by a day
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const todayStr = `${year}-${month}-${day}`; // "2026-01-21" in local timezone
-        
-        // Filter devotionals to only include those with publish_date <= today
-        const publishedDevotionals = (devotionalData.docs || []).filter(devotional => {
-          if (devotional.status !== 'published' && devotional.status !== undefined) {
-            return false;
-          }
-          if (!devotional.publish_date) {
-            return false;
-          }
-          // Extract date string (YYYY-MM-DD) for accurate comparison
-          const publishDateStr = String(devotional.publish_date).split('T')[0].split(' ')[0];
-          return publishDateStr <= todayStr;
-        });
-        
-        // Combine both types - include only published devotionals
-        const allPosts = [
-          ...journalData.docs,
-          ...publishedDevotionals
-        ];
-        
-        // Filter to only published posts, then sort by publish date, newest first
-        const publishedPosts = allPosts.filter(post => 
-          post.status === 'published' || post.status === undefined
+
+    fetch('/api/knowledge?type=journal-post')
+      .then((r) => r.json())
+      .then((journalData) => {
+        const docs = journalData.docs || [];
+        const publishedPosts = docs.filter(
+          (post) => post.status === 'published' || post.status === undefined,
         );
         const sortedPosts = publishedPosts.sort((a, b) => {
           const dateA = new Date(a.publish_date || a.created_at || 0);
@@ -127,8 +53,7 @@ export default function Journal() {
         });
         setPosts(sortedPosts);
         setLoading(false);
-        
-        // Ensure scroll stays at top after content loads - multiple attempts
+
         requestAnimationFrame(() => {
           scrollToTop();
           requestAnimationFrame(() => {
@@ -138,11 +63,11 @@ export default function Journal() {
         setTimeout(scrollToTop, 100);
         setTimeout(scrollToTop, 200);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error loading journal posts:', error);
         setLoading(false);
       });
-    
+
     return () => {
       timers.forEach(clearTimeout);
     };
@@ -159,17 +84,32 @@ export default function Journal() {
     return () => window.removeEventListener('popstate', syncFromUrl);
   }, []);
 
-  const filteredPosts = selectedCategory === 'all' 
-    ? posts.filter(post => post.type !== 'devotional') // Exclude devotionals from "all" view
-    : selectedCategory === 'devotional'
-    ? posts.filter(post => post.type === 'devotional') // Show only devotionals
-    : posts.filter(post => {
-        // For other categories, exclude devotionals and filter by category
-        if (post.type === 'devotional') return false;
-        const postCategories = post.categories || [];
-        const mappedCategories = categoryMapping[selectedCategory] || [];
-        return postCategories.some(cat => mappedCategories.includes(cat));
+  const { derivedCategories, categoryCounts } = useMemo(() => {
+    const counts = {};
+    posts.forEach((post) => {
+      (post.categories || []).forEach((cat) => {
+        const slug = String(cat || '')
+          .trim()
+          .toLowerCase();
+        if (!slug || slug === 'devotional') return;
+        counts[slug] = (counts[slug] || 0) + 1;
       });
+    });
+    const derived = Object.entries(counts)
+      .filter(([cat]) => cat !== 'devotional')
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat]) => cat);
+    return { derivedCategories: derived, categoryCounts: counts };
+  }, [posts]);
+
+  const filteredPosts =
+    selectedCategory === 'all'
+      ? posts
+      : posts.filter((post) =>
+          (post.categories || []).some(
+            (c) => String(c || '').trim().toLowerCase() === selectedCategory,
+          ),
+        );
 
   const totalPages = Math.max(1, Math.ceil(filteredPosts.length / PAGE_SIZE));
   const safePage = Math.min(listPage, totalPages);
@@ -203,47 +143,40 @@ export default function Journal() {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    
-    // Extract YYYY-MM-DD from any date format (handles ISO strings, YYYY-MM-DD, etc.)
+
     let dateStr = String(dateString);
-    
-    // Extract just the date part (YYYY-MM-DD) from ISO strings like "2026-01-22T00:00:00.000Z"
+
     if (dateStr.includes('T')) {
       dateStr = dateStr.split('T')[0];
     }
-    // Remove any time portion if present
     if (dateStr.includes(' ')) {
       dateStr = dateStr.split(' ')[0];
     }
-    
-    // Parse YYYY-MM-DD as local date (not UTC) to avoid timezone shifts
-    // This ensures "2026-01-22" displays as January 22, 2026, not January 21
+
     if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
       const [year, month, day] = dateStr.split('-').map(Number);
       const date = new Date(year, month - 1, day);
-      
-      // Check if date is valid
+
       if (isNaN(date.getTime())) {
         return '';
       }
-      
+
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
       });
     }
-    
-    // Fallback for other formats
+
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
       return '';
     }
-    
+
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -254,8 +187,8 @@ export default function Journal() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 md:px-12">
+      <div className="min-h-screen bg-[#FAFAF9] py-12 sm:py-16 md:py-20">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-10">
           <div className="max-w-4xl mx-auto">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#DB0812] mx-auto"></div>
@@ -268,198 +201,206 @@ export default function Journal() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] py-12 sm:py-16 md:py-20 lg:py-20">
-      <div className="container mx-auto px-4 sm:px-6 md:px-12">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12 sm:mb-16 md:mb-20">
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 leading-[0.9] tracking-tight">
-              Journal
-            </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl leading-relaxed text-[#1A1A1A]/70 max-w-2xl mx-auto font-light">
-              Thoughts, insights, and lessons learned from 32+ years of building companies and growing people.
+    <div className="min-h-screen bg-[#FAFAF9] text-[#1A1A1A]">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-10 py-14 sm:py-20">
+        <div className="text-center mb-14 sm:mb-16">
+          <h1 className="font-serif text-[clamp(3rem,7vw,5rem)] font-normal leading-[0.95] tracking-[-0.02em] mb-5">
+            Journal
+          </h1>
+          <p className="text-lg sm:text-[18px] font-light text-[#6B6B6B] max-w-[540px] mx-auto leading-relaxed">
+            Thoughts, insights, and lessons learned from 33 years of building companies and growing people.
+          </p>
+        </div>
+
+        <div className="mb-14 sm:mb-16">
+          <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('all');
+                setListPage(1);
+                window.history.replaceState({}, '', '/journal');
+              }}
+              className={`px-5 py-2 text-xs font-semibold tracking-[0.06em] uppercase border transition-colors ${
+                selectedCategory === 'all'
+                  ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                  : 'bg-transparent text-[#6B6B6B] border-[rgba(26,26,26,0.15)] hover:border-[#DB0812] hover:text-[#DB0812]'
+              }`}
+            >
+              All ({posts.length})
+            </button>
+            {derivedCategories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setListPage(1);
+                  window.history.replaceState({}, '', '/journal');
+                }}
+                className={`px-5 py-2 text-xs font-semibold tracking-[0.06em] uppercase border transition-colors ${
+                  selectedCategory === category
+                    ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                    : 'bg-transparent text-[#6B6B6B] border-[rgba(26,26,26,0.15)] hover:border-[#DB0812] hover:text-[#DB0812]'
+                }`}
+              >
+                {toLabel(category)} ({categoryCounts[category] || 0})
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {filteredPosts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-[#6B6B6B]">
+              {selectedCategory === 'all'
+                ? 'No journal posts yet. Check back soon!'
+                : `No posts found in "${toLabel(selectedCategory)}" category.`}
             </p>
           </div>
-
-          {/* Category Filters */}
-          <div className="mb-12 sm:mb-16 lg:mb-20">
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              {['all', 'leadership', 'culture', 'growth', 'philosophy', 'devotional'].map(category => (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setListPage(1);
-                    window.history.replaceState({}, '', '/journal');
-                  }}
-                  className={`px-6 py-2.5 text-sm font-medium border transition-all duration-200 ${
-                    selectedCategory === category
-                      ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                      : 'bg-transparent text-[#1A1A1A] border-[#1A1A1A]/10 hover:border-[#DB0812] hover:text-[#DB0812] hover:bg-[#FAFAF9]'
-                  }`}
-                >
-                  {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Posts */}
-          {filteredPosts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-[#6B6B6B]">
-                {selectedCategory === 'all' 
-                  ? 'No journal posts yet. Check back soon!'
-                  : `No posts found in "${selectedCategory}" category.`
-                }
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Featured Article */}
-              {featuredPost && (
-                <article 
-                  className="mb-16 lg:mb-20 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 cursor-pointer"
-                  onClick={() => handlePostClick(featuredPost.slug)}
-                >
-                  {/* Image */}
-                  {featuredPost.image && (
-                    <div className="w-full overflow-hidden">
-                      <OptimizedImage
-                        src={featuredPost.image}
-                        alt={featuredPost.title}
-                        className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
-                      />
-                    </div>
+        ) : (
+          <>
+            {featuredPost && (
+              <article
+                className="mb-16 lg:mb-20 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 cursor-pointer items-center"
+                onClick={() => handlePostClick(featuredPost.slug)}
+              >
+                <div className="w-full overflow-hidden bg-[#E1DED8] aspect-[4/3] flex items-center justify-center">
+                  {featuredPost.image ? (
+                    <OptimizedImage
+                      src={featuredPost.image}
+                      alt={featuredPost.title}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    />
+                  ) : (
+                    <span className="text-[12px] text-[#A8A9AD] tracking-[0.08em] uppercase">Post image</span>
                   )}
-                  
-                  {/* Content */}
-                  <div className="flex flex-col justify-center">
-                    <div className="mb-4">
-                      <span className="inline-block px-3 py-1 bg-[#1A1A1A] text-white text-xs font-medium uppercase tracking-wide">
-                        Featured
-                      </span>
-                    </div>
-                    <time className="text-sm text-[#1A1A1A]/60 mb-3 block">
-                      {formatDate(featuredPost.publish_date || featuredPost.created_at)}
-                    </time>
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 sm:mb-6 font-serif tracking-tight text-balance hover:text-[#DB0812] transition-colors">
-                      <a 
-                        href={`/journal/${featuredPost.slug}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handlePostClick(featuredPost.slug);
-                        }}
-                      >
-                        {featuredPost.title}
-                      </a>
-                    </h2>
-                    <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6 text-pretty line-clamp-4">
-                      {featuredPost.summary || featuredPost.body?.substring(0, 200) + '...'}
-                    </p>
-                    <a 
+                </div>
+
+                <div className="flex flex-col justify-center">
+                  <div className="mb-4">
+                    <span className="inline-block px-2.5 py-1 bg-[#1A1A1A] text-white text-[10px] font-semibold uppercase tracking-[0.12em]">
+                      Featured
+                    </span>
+                  </div>
+                  <time className="text-[13px] text-[#6B6B6B] mb-3 block">
+                    {formatDate(featuredPost.publish_date || featuredPost.created_at)}
+                  </time>
+                  <h2 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] font-normal text-[#1A1A1A] mb-4 sm:mb-5 leading-tight tracking-[-0.01em] text-balance hover:text-[#DB0812] transition-colors">
+                    <a
                       href={`/journal/${featuredPost.slug}`}
-                      className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#DB0812] transition-colors inline-flex items-center"
                       onClick={(e) => {
                         e.preventDefault();
                         handlePostClick(featuredPost.slug);
                       }}
+                      className="text-inherit no-underline"
                     >
-                      Read Article →
+                      {featuredPost.title}
                     </a>
-                  </div>
-                </article>
-              )}
+                  </h2>
+                  <p className="text-base leading-[1.8] text-[#6B6B6B] mb-6 text-pretty line-clamp-4">
+                    {featuredPost.summary || featuredPost.body?.substring(0, 200) + '...'}
+                  </p>
+                  <a
+                    href={`/journal/${featuredPost.slug}`}
+                    className="text-[15px] font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors inline-flex items-center gap-1.5"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePostClick(featuredPost.slug);
+                    }}
+                  >
+                    Read Article →
+                  </a>
+                </div>
+              </article>
+            )}
 
-              {/* Remaining Articles Grid */}
-              {gridPosts.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-                  {gridPosts.map((post) => (
-                    <article 
-                      key={post.slug} 
-                      className="cursor-pointer"
-                      onClick={() => handlePostClick(post.slug)}
-                    >
-                      {/* Image */}
-                      {post.image && (
-                        <div className="w-full mb-4 overflow-hidden">
-                          <OptimizedImage
-                            src={post.image}
-                            alt={post.title}
-                            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
-                          />
-                        </div>
+            {gridPosts.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
+                {gridPosts.map((post) => (
+                  <article
+                    key={post.slug}
+                    className="cursor-pointer"
+                    onClick={() => handlePostClick(post.slug)}
+                  >
+                    <div className="w-full mb-4 overflow-hidden bg-[#E1DED8] aspect-video flex items-center justify-center">
+                      {post.image ? (
+                        <OptimizedImage
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        />
+                      ) : (
+                        <span className="text-[12px] text-[#A8A9AD] tracking-[0.08em] uppercase">Post image</span>
                       )}
-                      
-                      {/* Content */}
-                      <div>
-                        <time className="text-sm text-[#1A1A1A]/60 mb-2 block">
-                          {formatDate(post.publish_date || post.created_at)}
-                        </time>
-                        <h3 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-3 sm:mb-4 font-serif tracking-tight text-balance hover:text-[#DB0812] transition-colors">
-                          <a 
-                            href={`/journal/${post.slug}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handlePostClick(post.slug);
-                            }}
-                          >
-                            {post.title}
-                          </a>
-                        </h3>
-                        <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-4 line-clamp-3 text-pretty">
-                          {post.summary || post.body?.substring(0, 150) + '...'}
-                        </p>
-                        <a 
+                    </div>
+
+                    <div>
+                      <time className="text-[12px] text-[#6B6B6B] mb-2 block">
+                        {formatDate(post.publish_date || post.created_at)}
+                      </time>
+                      <h3 className="font-serif text-[22px] font-normal text-[#1A1A1A] mb-3 leading-snug tracking-[-0.01em] text-balance hover:text-[#DB0812] transition-colors">
+                        <a
                           href={`/journal/${post.slug}`}
-                          className="text-[#1A1A1A] font-medium text-base sm:text-lg hover:text-[#DB0812] transition-colors inline-flex items-center"
                           onClick={(e) => {
                             e.preventDefault();
                             handlePostClick(post.slug);
                           }}
+                          className="text-inherit no-underline"
                         >
-                          Read Article →
+                          {post.title}
                         </a>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              )}
+                      </h3>
+                      <p className="text-[14px] leading-[1.75] text-[#6B6B6B] mb-4 line-clamp-3 text-pretty">
+                        {post.summary || post.body?.substring(0, 150) + '...'}
+                      </p>
+                      <a
+                        href={`/journal/${post.slug}`}
+                        className="text-[14px] font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors inline-flex items-center"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePostClick(post.slug);
+                        }}
+                      >
+                        Read Article →
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
 
-              {totalPages > 1 && (
-                <nav
-                  className="mt-14 flex flex-col items-center justify-center gap-4 sm:mt-20 sm:flex-row"
-                  aria-label="Journal pages"
+            {totalPages > 1 && (
+              <nav
+                className="mt-14 flex flex-col items-center justify-center gap-4 sm:mt-20 sm:flex-row"
+                aria-label="Journal pages"
+              >
+                <button
+                  type="button"
+                  onClick={() => goToJournalPage(safePage - 1)}
+                  disabled={safePage <= 1}
+                  className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#DB0812] hover:text-[#DB0812] disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  <button
-                    type="button"
-                    onClick={() => goToJournalPage(safePage - 1)}
-                    disabled={safePage <= 1}
-                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#DB0812] hover:text-[#DB0812] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-sm text-[#6B6B6B]">
-                    Page {safePage} of {totalPages}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => goToJournalPage(safePage + 1)}
-                    disabled={safePage >= totalPages}
-                    className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#DB0812] hover:text-[#DB0812] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Next
-                  </button>
-                </nav>
-              )}
-            </>
-          )}
+                  Previous
+                </button>
+                <span className="text-sm text-[#6B6B6B]">
+                  Page {safePage} of {totalPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => goToJournalPage(safePage + 1)}
+                  disabled={safePage >= totalPages}
+                  className="min-h-[44px] min-w-[8rem] border border-[#1A1A1A]/20 px-4 py-2 text-sm font-medium text-[#1A1A1A] transition-colors hover:border-[#DB0812] hover:text-[#DB0812] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next
+                </button>
+              </nav>
+            )}
+          </>
+        )}
 
-          {/* Email Subscription Section */}
-          <div className="mt-16 sm:mt-20 md:mt-24 lg:mt-32">
-            <JournalSubscription />
-          </div>
+        <div className="mt-16 sm:mt-20 md:mt-28">
+          <JournalSubscription />
         </div>
       </div>
     </div>

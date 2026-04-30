@@ -13,6 +13,8 @@ export default function JournalPost() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDevotional, setIsDevotional] = useState(false);
+  /** All journal posts for resolving related slugs to real titles */
+  const [allJournalPosts, setAllJournalPosts] = useState([]);
 
   useEffect(() => {
     // Ensure scroll restoration is disabled for journal pages
@@ -56,6 +58,8 @@ export default function JournalPost() {
       fetch('/api/knowledge?type=devotional').then(r => r.json())
     ])
       .then(([journalData, devotionalData]) => {
+        setAllJournalPosts(journalData.docs || []);
+
         // Check journal posts first
         let foundPost = journalData.docs.find(p => p.slug === slug);
         let devotional = false;
@@ -800,6 +804,21 @@ export default function JournalPost() {
                 })()}
               </div>
 
+              {post.takeaways && Array.isArray(post.takeaways) && post.takeaways.length > 0 && (
+                <div className="mt-12 sm:mt-16 border-l-2 border-[#DB0812] pl-6 sm:pl-8">
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-[#DB0812] mb-4">
+                    Key Takeaways
+                  </h3>
+                  <ul className="space-y-3 list-none pl-0">
+                    {post.takeaways.map((item, i) => (
+                      <li key={i} className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                        {typeof item === 'string' ? item : String(item)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Tags - only show if they exist and filter out generic ones */}
               {post.tags && post.tags.filter(tag => 
                 tag.toLowerCase() !== 'journal' && 
@@ -899,17 +918,23 @@ export default function JournalPost() {
                         Related Journal Posts
                       </h4>
                       <ul className="space-y-2">
-                        {post.related.map((relatedSlug, index) => (
+                        {post.related.map((relatedSlug, index) => {
+                          const relatedPost = allJournalPosts.find((p) => p.slug === relatedSlug);
+                          const displayTitle = relatedPost
+                            ? relatedPost.title
+                            : relatedSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+                          return (
                           <li key={index}>
                             <a 
                               href={`/journal/${relatedSlug}`}
                               onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', `/journal/${relatedSlug}`); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
-                              {relatedSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                              {displayTitle}
                             </a>
                           </li>
-                        ))}
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
