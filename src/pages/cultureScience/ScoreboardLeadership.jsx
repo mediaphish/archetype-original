@@ -161,33 +161,6 @@ const standards = [
   },
 ];
 
-const faqs = [
-  {
-    q: 'Is Scoreboard Leadership against metrics?',
-    a: 'No. It is against weaponized metrics and optics-driven behavior. Measurement matters. The question is whether you point it at service and outcomes or at compliance and appearance.',
-  },
-  {
-    q: 'What changes first?',
-    a: 'Standards and rhythms. One-page plays, weekly inspect-and-improve, and redefining prestige around service and trust. Most teams feel the shift within weeks.',
-  },
-  {
-    q: 'How fast can we see impact?',
-    a: 'Most teams see it in two to four weeks as meetings shrink and owners gain clarity. Measurable compounding typically follows in one to two quarters.',
-  },
-  {
-    q: 'Does this replace our KPIs?',
-    a: 'It reframes them. Keep your KPIs. Add counter-metrics like first-time quality, handoff reliability, and role tenure. The scoreboard serves the team, not the other way around.',
-  },
-  {
-    q: 'What if leadership is the bottleneck?',
-    a: 'We start there. Servant standards are leader-carried first. Pressure is replaced with clarity and consistency. The work begins with the person at the top of the room.',
-  },
-  {
-    q: 'How do we engage?',
-    a: 'Start a conversation. The advisory room is where the honest diagnosis happens, outside your system, where consequence disappears and the real picture can finally surface.',
-  },
-];
-
 export default function ScoreboardLeadership() {
   return (
     <>
@@ -415,38 +388,6 @@ export default function ScoreboardLeadership() {
                   <div key={row.label} className="bg-[#FAFAF9] px-10 py-8">
                     <div className="font-playfair text-5xl font-normal leading-none text-[#1A1A1A]">{row.num}</div>
                     <div className="mt-2 text-[13px] font-medium uppercase tracking-[0.06em] text-warm-grey">{row.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="bg-[#FAFAF9]">
-          <div className={`${inner} py-24 sm:py-28`}>
-            <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-[100px]">
-              <div className="lg:sticky lg:top-[88px]">
-                <span className={sectionLabel}>Frequently Asked Questions</span>
-                <h2 className="mt-5 font-playfair text-[clamp(1.5rem,2.5vw,2.25rem)] font-normal leading-tight text-[#1A1A1A]">
-                  Common questions about Scoreboard Leadership.
-                </h2>
-                <a
-                  href="/faqs"
-                  onClick={go('/faqs')}
-                  className="mt-6 inline-block text-[13px] font-semibold uppercase tracking-[0.06em] text-ao-red hover:underline"
-                >
-                  View all FAQs
-                </a>
-              </div>
-              <div>
-                {faqs.map((f, i) => (
-                  <div
-                    key={f.q}
-                    className={`border-t border-[#1A1A1A]/[0.08] py-6 ${i === faqs.length - 1 ? 'border-b border-[#1A1A1A]/[0.08]' : ''}`}
-                  >
-                    <h3 className="mb-2.5 font-playfair text-lg font-normal text-[#1A1A1A]">{f.q}</h3>
-                    <p className="text-sm leading-[1.7] text-warm-grey">{f.a}</p>
                   </div>
                 ))}
               </div>

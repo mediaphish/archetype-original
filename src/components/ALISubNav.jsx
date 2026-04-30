@@ -56,7 +56,6 @@ export default function ALISubNav() {
     { label: 'Dashboard', href: '/culture-science/ali/dashboard' },
     { label: 'Six Conditions', href: '/culture-science/ali/six-leadership-conditions' },
     { label: 'Early Warning', href: '/culture-science/ali/early-warning' },
-    { label: 'FAQs', href: '/faqs?category=ali' },
   ];
 
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';

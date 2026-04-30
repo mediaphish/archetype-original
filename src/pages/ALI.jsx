@@ -291,30 +291,6 @@ export default function ALI() {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className="py-20 md:py-32" style={{ backgroundColor: "#E8E2D0" }}>
-          <div className="container max-w-4xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center" style={{ color: "#1D1F21" }}>
-              Frequently Asked Questions
-            </h2>
-            
-            <div className="space-y-4">
-              {Array.from({ length: 10 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-lg border-2 p-6"
-                  style={{ borderColor: "#E8E2D0" }}
-                >
-                  <h3 className="text-lg font-semibold mb-2" style={{ color: "#1D1F21" }}>
-                    Question {idx + 1}
-                  </h3>
-                  <ContentGoesHere placeholder="FAQ answer placeholder" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Final CTA */}
         <section className="py-20 md:py-32">
           <div className="container max-w-3xl mx-auto px-6 text-center">

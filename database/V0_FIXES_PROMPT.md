@@ -105,10 +105,7 @@ Deployment Settings (optional overrides - only if explicitly allowed):
    - Data security
    - Privacy policy link
 
-7. **FAQ Section**
-   - Common questions about ALI
-
-8. **Final CTA**
+7. **Final CTA**
    - "Apply to Join the ALI Pilot" → `/ali/signup`
 
 **Content Status:** We have existing ALI content in `/src/pages/ALI.jsx` and `/src/pages/ALIApply.jsx`. The landing page should use similar content structure but may need ChatGPT to refine/write new content.
