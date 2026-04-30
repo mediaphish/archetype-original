@@ -475,8 +475,6 @@ export default function Header() {
                 </div>
 
                 <a href="/books" onClick={(e) => { e.preventDefault(); handleNavigation('/books'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/books') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Books</a>
-                {/* Methods overview (still reachable) */}
-                <a href="/methods" onClick={(e) => { e.preventDefault(); handleNavigation('/methods'); }} className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${isActive('/methods') ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red' : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'}`}>Methods overview</a>
 
                 {/* Culture Science Mobile Accordion */}
                 <div>
