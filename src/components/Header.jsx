@@ -5,6 +5,7 @@
  * Mobile: Side drawer with accordion submenus
  */
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -44,7 +45,6 @@ export default function Header() {
     // Note: Scroll handling is now done in App.jsx based on navigation direction
     setMobileMenuOpen(false);
     setAdvisoryDropdownOpen(false);
-    setConsultingDropdownOpen(false);
     setMeetBartDropdownOpen(false);
     setCultureScienceDropdownOpen(false);
     setMobileExpanded(null);
@@ -373,12 +373,14 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile Side Drawer */}
-      <div 
-        className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
-          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-      >
+      {/* Mobile drawer portals to body so position:fixed is viewport-relative (ArchySlideContainer uses transform on an ancestor, which breaks fixed positioning inside it). */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className={`md:hidden fixed inset-0 z-[100] transition-opacity duration-300 ${
+              mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
         {/* Backdrop */}
         <div 
           className="absolute inset-0 bg-black/20"
@@ -583,7 +585,9 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </div>
+      </div>,
+            document.body
+          )}
     </>
   );
 }
