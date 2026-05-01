@@ -19,7 +19,7 @@
  *   node scripts/ali/curate-instrument.mjs --apply --in notes/ali-instrument-v2-curation.approved.csv --confirm
  */
 
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -75,6 +75,19 @@ console.log('\n[4/5] verify paired coverage\n');
 runNode(curate, ['--verify']);
 
 console.log('\n[5/5] readability / scale audit →', auditMd, '\n');
-runNode(audit, ['--out', auditMd]);
+const auditRun = spawnSync(process.execPath, [audit, '--out', auditMd], {
+  cwd: root,
+  stdio: 'inherit',
+  env: process.env,
+});
+if (auditRun.status !== 0) {
+  console.log(
+    '\nNote: Audit finished with exit code',
+    auditRun.status,
+    '(often means some grade-level flags — not a failed write). See:',
+    auditMd,
+    '\n'
+  );
+}
 
 console.log('\nDone. Review:', planCsv, 'and', auditMd, '\n');
