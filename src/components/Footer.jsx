@@ -55,17 +55,8 @@ export default function Footer() {
               <ul className="space-y-0.5">
                 <li>
                   <a
-                    href="/methods"
-                    onClick={(e) => handleLinkClick(e, '/methods')}
-                    className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
-                  >
-                    How I Work
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/methods/consulting"
-                    onClick={(e) => handleLinkClick(e, '/methods/consulting')}
+                    href="/consulting"
+                    onClick={(e) => handleLinkClick(e, '/consulting')}
                     className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
                   >
                     Consulting
@@ -73,8 +64,8 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/methods/fractional-roles"
-                    onClick={(e) => handleLinkClick(e, '/methods/fractional-roles')}
+                    href="/fractional-roles"
+                    onClick={(e) => handleLinkClick(e, '/fractional-roles')}
                     className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
                   >
                     Fractional Roles

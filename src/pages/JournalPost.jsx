@@ -877,11 +877,11 @@ export default function JournalPost() {
                         {post.categories.some(cat => ['servant-leadership', 'leadership', 'mentorship', 'consulting'].includes(cat.toLowerCase())) && (
                           <li>
                             <a 
-                              href="/methods" 
-                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/methods'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
+                              href="/advisory" 
+                              onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/advisory'); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo({ top: 0, behavior: 'instant' }); }}
                               className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
                             >
-                              Methods — How I work with leaders and teams
+                              Advisory — How I work with leaders and teams
                             </a>
                           </li>
                         )}

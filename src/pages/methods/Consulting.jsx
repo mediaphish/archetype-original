@@ -149,7 +149,7 @@ export default function Consulting() {
             style={{ backgroundImage: HERO_TEXTURE }}
           />
           <div className="relative z-[3] max-w-[580px] px-6 py-12 md:px-16 md:py-20">
-            <p className="mb-4 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-brown">Methods · Archetype Original</p>
+            <p className="mb-4 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-brown">Archetype Original</p>
             <p className="mb-5 font-sans text-[13px] tracking-[0.04em] text-ao-midGray">Consulting</p>
             <h1 className="mb-5 max-w-[520px] font-serif text-[clamp(28px,7vw,36px)] font-normal italic leading-[1.06] text-[#F0ECE4] md:text-[clamp(32px,3.8vw,48px)]">
               Real solutions for real organizations.

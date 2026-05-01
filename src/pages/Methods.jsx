@@ -29,7 +29,7 @@ const services = [
     number: '01',
     title: 'Mentorship',
     subtitle: 'Helping leaders at every level find clarity, courage, and confidence',
-    link: '/methods/mentorship',
+    link: '/advisory',
     nextService: 'Consulting',
     content: (
       <>
@@ -57,7 +57,7 @@ const services = [
     number: '02',
     title: 'Consulting',
     subtitle: 'Strengthening systems, communication, alignment, and culture',
-    link: '/methods/consulting',
+    link: '/consulting',
     nextService: 'Fractional Roles',
     content: (
       <>
@@ -85,7 +85,7 @@ const services = [
     number: '03',
     title: 'Fractional Roles',
     subtitle: 'Stepping in when teams need stability and direction during transitional seasons',
-    link: '/methods/fractional-roles',
+    link: '/fractional-roles',
     nextService: null,
     content: (
       <>

@@ -132,11 +132,11 @@ export default function CCO() {
               </p>
               <div className="flex flex-wrap gap-4 sm:gap-6">
                 <a 
-                  href="/methods/mentorship" 
+                  href="/advisory" 
                   className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
-                    window.history.pushState({}, '', '/methods/mentorship');
+                    window.history.pushState({}, '', '/advisory');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
                 >
@@ -144,11 +144,11 @@ export default function CCO() {
                 </a>
                 <span className="text-sm text-[#6B6B6B]">→</span>
                 <a 
-                  href="/methods/consulting" 
+                  href="/consulting" 
                   className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
-                    window.history.pushState({}, '', '/methods/consulting');
+                    window.history.pushState({}, '', '/consulting');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
                 >
@@ -156,11 +156,11 @@ export default function CCO() {
                 </a>
                 <span className="text-sm text-[#6B6B6B]">→</span>
                 <a 
-                  href="/methods/fractional-roles" 
+                  href="/fractional-roles" 
                   className="text-sm text-[#1A1A1A] hover:text-[#DB0812] transition-colors"
                   onClick={(e) => {
                     e.preventDefault();
-                    window.history.pushState({}, '', '/methods/fractional-roles');
+                    window.history.pushState({}, '', '/fractional-roles');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
                 >

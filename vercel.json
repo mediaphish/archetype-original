@@ -20,12 +20,37 @@
     },
     {
       "source": "/methods/speaking-seminars",
-      "destination": "/methods/consulting",
+      "destination": "/consulting#how-work-shows-up",
       "permanent": true
     },
     {
       "source": "/methods/training-education",
-      "destination": "/methods/consulting",
+      "destination": "/consulting#how-work-shows-up",
+      "permanent": true
+    },
+    {
+      "source": "/methods/fractional-roles/cco",
+      "destination": "/fractional-roles/cco",
+      "permanent": true
+    },
+    {
+      "source": "/methods/fractional-roles",
+      "destination": "/fractional-roles",
+      "permanent": true
+    },
+    {
+      "source": "/methods/consulting",
+      "destination": "/consulting",
+      "permanent": true
+    },
+    {
+      "source": "/methods/mentorship",
+      "destination": "/advisory",
+      "permanent": true
+    },
+    {
+      "source": "/methods",
+      "destination": "/advisory",
       "permanent": true
     },
     {

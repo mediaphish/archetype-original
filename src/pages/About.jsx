@@ -274,14 +274,14 @@ export default function About() {
                   n: '02',
                   title: 'Fractional Roles',
                   body: 'C-suite presence for the seasons that require more than guidance. COO, CMO, CEO. Real leadership in the room, not a consultant looking in from outside.',
-                  href: '/methods/fractional-roles',
+                  href: '/fractional-roles',
                   link: 'See the roles',
                 },
                 {
                   n: '03',
                   title: 'Consulting',
                   body: 'Clarity for teams. Alignment for organizations. Cultural repair, operational steadiness, and communication systems that support real growth.',
-                  href: '/methods/consulting',
+                  href: '/consulting',
                   link: 'How consulting works',
                 },
               ].map((card) => (

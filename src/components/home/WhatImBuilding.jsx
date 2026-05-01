@@ -71,8 +71,8 @@ export default function WhatImBuilding() {
                 Clarity, courage, responsibility, and adaptive support for leaders at every stage — from rising leaders to seasoned executives. This is real-time leadership development grounded in lived experience, not programs or scripts.
               </p>
               <a
-                href="/methods/mentorship"
-                onClick={(e) => handleLinkClick(e, '/methods/mentorship')}
+                href="/advisory"
+                onClick={(e) => handleLinkClick(e, '/advisory')}
                 className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Mentorship →
@@ -95,8 +95,8 @@ export default function WhatImBuilding() {
                 Clarity for teams. Alignment for organizations. Cultural repair, operational steadiness, communication systems, and leadership behavior calibrated to support real growth. When clarity is missing, consulting brings it back.
               </p>
               <a
-                href="/methods/consulting"
-                onClick={(e) => handleLinkClick(e, '/methods/consulting')}
+                href="/consulting"
+                onClick={(e) => handleLinkClick(e, '/consulting')}
                 className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Explore Consulting →
@@ -119,8 +119,8 @@ export default function WhatImBuilding() {
                 Workshops, playbooks, and leadership curriculum rooted in experience and backed by research. For leaders, teams, and emerging talent who need clarity they can actually apply the next day.
               </p>
               <a
-                href="/methods/consulting#how-work-shows-up"
-                onClick={(e) => handleLinkClick(e, '/methods/consulting#how-work-shows-up')}
+                href="/consulting#how-work-shows-up"
+                onClick={(e) => handleLinkClick(e, '/consulting#how-work-shows-up')}
                 className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 How formats show up (consulting) →
@@ -143,8 +143,8 @@ export default function WhatImBuilding() {
                 Leadership in the room — not a performance on a stage. Talks, seminars, workshops, and intensives built around clarity, steadiness, and lived truth instead of hype or theatrics.
               </p>
               <a
-                href="/methods/consulting#how-work-shows-up"
-                onClick={(e) => handleLinkClick(e, '/methods/consulting#how-work-shows-up')}
+                href="/consulting#how-work-shows-up"
+                onClick={(e) => handleLinkClick(e, '/consulting#how-work-shows-up')}
                 className="inline-flex items-center text-base sm:text-lg md:text-xl font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors break-words"
               >
                 Speaking & seminars (consulting) →

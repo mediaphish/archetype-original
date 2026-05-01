@@ -73,16 +73,12 @@ export default function FloatingArchyButton() {
         setContext('faith');
       } else if (path === '/journal' || path.startsWith('/journal/')) {
         setContext('journal');
-      } else if (path === '/methods/mentorship') {
-        setContext('methods-mentorship');
-      } else if (path === '/methods/consulting') {
+      } else if (path === '/consulting') {
         setContext('methods-consulting');
-      } else if (path === '/methods/fractional-roles') {
-        setContext('methods-fractional-roles');
-      } else if (path === '/methods/fractional-roles/cco') {
+      } else if (path === '/fractional-roles/cco') {
         setContext('methods-fractional-cco');
-      } else if (path === '/methods' || path.startsWith('/methods/')) {
-        setContext('methods');
+      } else if (path === '/fractional-roles') {
+        setContext('methods-fractional-roles');
       } else if (path.includes('scoreboard-leadership')) {
         setContext('scoreboard-leadership');
       } else if (path === '/culture-science' || path.startsWith('/culture-science/')) {

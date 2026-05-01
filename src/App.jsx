@@ -11,8 +11,6 @@ import JournalPost from "./pages/JournalPost";
 import DevotionalPost from "./pages/DevotionalPost";
 import Faith from "./pages/Faith";
 import AboutPage from "./pages/About";
-import MethodsPage from "./pages/Methods";
-import MentorshipPage from "./pages/methods/Mentorship";
 import ConsultingPage from "./pages/methods/Consulting";
 import FractionalRolesPage from "./pages/methods/FractionalRoles";
 import CCOPage from "./pages/methods/fractionalRoles/CCO";
@@ -150,7 +148,9 @@ export default function App() {
     }
     if (path === '/archy' || path.startsWith('/archy/')) return 'archy';
     if (path === '/philosophy') return 'about';
-    if (path === '/methods' || path.startsWith('/methods/')) return 'methods';
+    if (path === '/consulting') return 'methods-consulting';
+    if (path === '/fractional-roles/cco') return 'methods-fractional-cco';
+    if (path === '/fractional-roles') return 'methods-fractional-roles';
     if (path === '/what-i-do') return 'what-i-do';
     if (path === '/accidental-ceo') return 'accidental-ceo';
     if (path === '/the-room') return 'the-room';
@@ -558,21 +558,12 @@ export default function App() {
       } else if (path === '/archy' || path.startsWith('/archy/')) {
         // Only allow main Archy page - placeholder subpages removed
         setCurrentPage('archy');
-      } else if (path === '/methods' || path.startsWith('/methods/')) {
-        if (path === '/methods/speaking-seminars' || path === '/methods/training-education') {
-          window.history.replaceState({}, '', '/methods/consulting');
-          setCurrentPage('methods-consulting');
-        } else if (path === '/methods/mentorship') {
-          setCurrentPage('methods-mentorship');
-        } else if (path === '/methods/consulting') {
-          setCurrentPage('methods-consulting');
-        } else if (path === '/methods/fractional-roles/cco') {
-          setCurrentPage('methods-fractional-cco');
-        } else if (path === '/methods/fractional-roles') {
-          setCurrentPage('methods-fractional-roles');
-        } else {
-          setCurrentPage('methods');
-        }
+      } else if (path === '/consulting') {
+        setCurrentPage('methods-consulting');
+      } else if (path === '/fractional-roles/cco') {
+        setCurrentPage('methods-fractional-cco');
+      } else if (path === '/fractional-roles') {
+        setCurrentPage('methods-fractional-roles');
       } else if (path === '/what-i-do') {
         setCurrentPage('what-i-do');
       } else if (path === '/accidental-ceo') {
@@ -658,28 +649,6 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <AboutPage />
-        <Footer />
-      </main>
-    );
-  }
-
-  // Render Methods page
-  if (currentPage === 'methods') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <MethodsPage />
-        <Footer />
-      </main>
-    );
-  }
-
-  // Render Methods Mentorship page
-  if (currentPage === 'methods-mentorship') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <MentorshipPage />
         <Footer />
       </main>
     );

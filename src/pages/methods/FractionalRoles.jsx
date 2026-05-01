@@ -69,7 +69,7 @@ export default function FractionalRoles() {
         {/* SECTION 1 — Hero */}
         <SectionShell bgClassName="border-b border-[#E0DBD4] bg-white" pyClassName="pb-20 pt-[72px] md:pb-[80px] md:pt-[88px]">
           <p className="mb-4 font-sans text-[10px] uppercase tracking-[0.2em] text-ao-red">
-            Methods · Archetype Original
+            Archetype Original
           </p>
           <p className="mb-6 font-sans text-[13px] tracking-[0.04em] text-ao-midGray">
             Fractional Roles

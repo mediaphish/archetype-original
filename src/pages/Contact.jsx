@@ -304,19 +304,19 @@ export default function ContactPage() {
             <p className="text-sm text-[#6B6B6B] text-center mb-6">Explore what I offer:</p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="/methods/mentorship"
+                href="/advisory"
                 className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Mentorship
               </a>
               <a
-                href="/methods/consulting"
+                href="/consulting"
                 className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Consulting
               </a>
               <a
-                href="/methods/fractional-roles"
+                href="/fractional-roles"
                 className="text-sm text-[#1A1A1A] hover:text-[#DB0812] hover:underline transition-colors"
               >
                 Fractional Roles

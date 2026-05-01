@@ -191,10 +191,10 @@ export default function Header() {
                             Leadership Advisory
                           </a>
                           <a
-                            href="/methods/fractional-roles"
+                            href="/fractional-roles"
                             onClick={(e) => {
                               e.preventDefault();
-                              handleNavigation('/methods/fractional-roles');
+                              handleNavigation('/fractional-roles');
                             }}
                             className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
                           >
@@ -207,12 +207,12 @@ export default function Header() {
 
                   {/* Consulting — single destination (formats covered on page) */}
                   <a
-                    href="/methods/consulting"
+                    href="/consulting"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavigation('/methods/consulting');
+                      handleNavigation('/consulting');
                     }}
-                    className={navLinkClass('/methods/consulting')}
+                    className={navLinkClass('/consulting')}
                   >
                     Consulting
                   </a>
@@ -430,19 +430,19 @@ export default function Header() {
                   {mobileExpanded === 'advisory' && (
                     <div className="bg-[#FAFAF9] py-1">
                       <a href="/advisory" onClick={(e) => { e.preventDefault(); handleNavigation('/advisory'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Leadership Advisory</a>
-                      <a href="/methods/fractional-roles" onClick={(e) => { e.preventDefault(); handleNavigation('/methods/fractional-roles'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Fractional Roles</a>
+                      <a href="/fractional-roles" onClick={(e) => { e.preventDefault(); handleNavigation('/fractional-roles'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Fractional Roles</a>
                     </div>
                   )}
                 </div>
 
                 <a
-                  href="/methods/consulting"
+                  href="/consulting"
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavigation('/methods/consulting');
+                    handleNavigation('/consulting');
                   }}
                   className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/methods/consulting')
+                    isActive('/consulting')
                       ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
                       : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                   }`}
