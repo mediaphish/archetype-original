@@ -9,6 +9,9 @@ lerna-debug.log*
 
 node_modules
 dist-ssr
+
+# Local secrets (see .env.example)
+.env
 *.local
 # Note: dist/ is NOT ignored - we commit pre-rendered HTML files for SEO
 # But ignore build artifacts that change every build
