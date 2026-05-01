@@ -79,10 +79,13 @@ Default for v1: **no copy changes** to `src/pages/cultureScience/ALI.jsx`; the p
 | Stability  | Yes     | Yes              | No         | No                |
 | Drift      | Yes     | Yes              | No         | No                |
 
-When you expand scope later, duplicate this table in a new row set or extend with “Social / quote hooks” if those become explicit deliverables.
+**Full cross-surface bundle decisions, Archy/FAQ overlap map, quote-hook stance, and reusable expansion checklists:** see `notes/ali-conditions-cross-surface-artifacts.md`.
+
+When you expand scope later, duplicate the matrix there or add quote-hook rows per condition.
 
 ---
 
 ## Revision history
 
 - **2026-04-30**: Initial series bible aligned to Culture Science Section 7 Part IV and the public ALI conditions section.
+- **2026-04-30**: Linked detailed cross-surface artifact doc (`notes/ali-conditions-cross-surface-artifacts.md`).
