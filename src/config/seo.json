@@ -87,6 +87,18 @@
       "description": "Anonymous stories of leadership dysfunction and leadership health, neutralized before publishing and reviewed before release. Pattern visibility at scale for leaders and teams.",
       "keywords": "Bad Leader Project, leadership behavior, Culture Science, anonymous stories, leadership patterns, Archetype Original",
       "image": "/og-default.jpg"
+    },
+    "contact": {
+      "title": "Contact Bart Paden | Archetype Original",
+      "description": "A direct line to Bart Paden. General questions about the work, the books, speaking, or what working with Bart looks like.",
+      "keywords": "contact Bart Paden, Archetype Original contact, leadership advisory inquiry",
+      "image": "/og-default.jpg"
+    },
+    "engagement-inquiry": {
+      "title": "Work Together | Archetype Original",
+      "description": "Start a conversation with Bart Paden about advisory, consulting, or partnership work. The engagement inquiry is where that conversation begins.",
+      "keywords": "work with Bart Paden, leadership advisory, Archetype Original engagement, start a conversation",
+      "image": "/images/Bart-32.jpg"
     }
   }
 }

@@ -6,6 +6,13 @@ import React, { useState } from 'react';
 import SEO from '../components/SEO';
 import ChatApp from '../app/ChatApp';
 
+function go(e, path) {
+  e.preventDefault();
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
 export default function EngagementInquiry() {
   const [formData, setFormData] = useState({
     q1: '',
@@ -19,24 +26,25 @@ export default function EngagementInquiry() {
     q8: '',
     role: '',
     roleOther: '',
-    orgSize: ''
+    orgSize: '',
   });
 
   const [formStatus, setFormStatus] = useState({
     loading: false,
     success: false,
-    error: null
+    error: null,
   });
 
   const [archyInitialMessage, setArchyInitialMessage] = useState('');
   const [chatKey, setChatKey] = useState(0);
 
   const handleMultiSelect = (field, value, maxSelections = 2) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       const current = prev[field] || [];
       if (current.includes(value)) {
-        return { ...prev, [field]: current.filter(v => v !== value) };
-      } else if (current.length < maxSelections) {
+        return { ...prev, [field]: current.filter((v) => v !== value) };
+      }
+      if (current.length < maxSelections) {
         return { ...prev, [field]: [...current, value] };
       }
       return prev;
@@ -44,24 +52,30 @@ export default function EngagementInquiry() {
   };
 
   const handleSingleSelect = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleTextChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus({ loading: true, success: false, error: null });
 
-    // Validation
-    if (!formData.q1 || !formData.q2.length || !formData.q3 || !formData.q4.length || 
-        !formData.q5 || !formData.q6 || !formData.q7) {
-      setFormStatus({ 
-        loading: false, 
-        success: false, 
-        error: 'Please complete all required fields.' 
+    if (
+      !formData.q1 ||
+      !formData.q2.length ||
+      !formData.q3 ||
+      !formData.q4.length ||
+      !formData.q5 ||
+      !formData.q6 ||
+      !formData.q7
+    ) {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: 'Please complete all required fields.',
       });
       return;
     }
@@ -76,30 +90,28 @@ export default function EngagementInquiry() {
       const data = await res.json();
 
       if (res.ok) {
-        // Generate Archy's initial message based on form submission BEFORE showing success
         const archyMessage = await generateArchyReflections(formData);
         setArchyInitialMessage(archyMessage);
         setFormStatus({ loading: false, success: true, error: null });
-        setChatKey(prev => prev + 1); // Force ChatApp to re-render with new message
+        setChatKey((prev) => prev + 1);
       } else {
-        setFormStatus({ 
-          loading: false, 
-          success: false, 
-          error: data?.error || 'Something went wrong. Please try again.' 
+        setFormStatus({
+          loading: false,
+          success: false,
+          error: data?.error || 'Something went wrong. Please try again.',
         });
       }
-    } catch (err) {
-      setFormStatus({ 
-        loading: false, 
-        success: false, 
-        error: 'Network error. Please check your connection and try again.' 
+    } catch {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: 'Network error. Please check your connection and try again.',
       });
     }
   };
 
   const generateArchyReflections = async (submission) => {
     try {
-      // Format submission for Archy
       const submissionText = `
 Engagement Inquiry Submission:
 
@@ -152,7 +164,7 @@ Generate the full response following the structure above.`;
         body: JSON.stringify({
           message: reflectionPrompt,
           context: 'engagement-inquiry',
-          conversationHistory: []
+          conversationHistory: [],
         }),
       });
 
@@ -173,7 +185,7 @@ Generate the full response following the structure above.`;
     'Re-aligning after change',
     'Strong but stretched',
     'Early stage',
-    'Other'
+    'Other',
   ];
   const supportOptions = [
     'Strategic perspective',
@@ -182,43 +194,38 @@ Generate the full response following the structure above.`;
     'Ongoing advisory support',
     'Leadership development',
     'Organizational assessment',
-    'Still discerning'
+    'Still discerning',
   ];
   const partnershipOptions = [
     'Periodic perspective and counsel',
     'Ongoing advisory relationship',
     'Project-based engagement',
-    'Still determining'
+    'Still determining',
   ];
+
+  const textareaClass =
+    'w-full resize-y border border-[#1A1A1A]/15 bg-[#FAFAF9] px-4 py-3.5 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:bg-white focus:outline-none';
 
   if (formStatus.success) {
     return (
       <>
         <SEO pageKey="engagement-inquiry" />
-        <div className="min-h-screen bg-[#FAFAF9]">
-          {/* Confirmation Section */}
-          <section className="bg-white py-12 sm:py-16 md:py-20">
-            <div className="container mx-auto px-4 sm:px-6 md:px-12">
-              <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] break-words">
-                  Thanks — your message has been sent to Bart.
-                </h1>
-                <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1A1A1A]/70 font-light break-words">
-                  While that's being delivered, here are a few initial thoughts based on what you shared.
-                </p>
-              </div>
+        <div className="min-h-screen bg-[#FAFAF9] font-inter antialiased">
+          <section className="border-b border-[#1A1A1A]/08 bg-white px-6 py-20 lg:px-10">
+            <div className="mx-auto max-w-[1400px]">
+              <h1 className="mb-5 max-w-[640px] font-serif text-[clamp(28px,3.5vw,48px)] font-normal leading-[1.15] text-[#1A1A1A]">
+                Your message has been sent to Bart.
+              </h1>
+              <p className="max-w-[520px] font-sans text-[16px] leading-[1.8] text-[#6B6B6B]">
+                While that is being delivered, here are a few initial thoughts from Archy based on what you
+                shared.
+              </p>
             </div>
           </section>
-
-          {/* Archy Chat Section */}
-          <section className="py-12 sm:py-16 md:py-20 bg-[#FAFAF9]">
-            <div className="container mx-auto px-4 sm:px-6 md:px-12">
-              <div className="max-w-4xl mx-auto">
-                <ChatApp 
-                  key={chatKey}
-                  context="engagement-inquiry" 
-                  initialMessage={archyInitialMessage}
-                />
+          <section className="bg-[#FAFAF9] px-6 py-16 lg:px-10">
+            <div className="mx-auto max-w-[1400px]">
+              <div className="max-w-[860px]">
+                <ChatApp key={chatKey} context="engagement-inquiry" initialMessage={archyInitialMessage} />
               </div>
             </div>
           </section>
@@ -230,271 +237,348 @@ Generate the full response following the structure above.`;
   return (
     <>
       <SEO pageKey="engagement-inquiry" />
-      <div className="min-h-screen bg-[#FAFAF9]">
-        {/* Hero Section */}
-        <section className="bg-white py-12 sm:py-16 md:py-20">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
-              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-[0.9] tracking-tight text-[#1A1A1A] break-words">
-                Work Together
-              </h1>
-              
-              {/* Supporting Copy */}
-              <div className="space-y-4 text-base sm:text-lg leading-relaxed text-[#1A1A1A]/80">
-                <p>
-                  If you're exploring advisory, consulting, or partnership work with Bart Paden through Archetype Original, this is where that conversation begins.
-                </p>
-                <p>
-                  This inquiry helps establish context so any next step—whether a single conversation or ongoing work—starts from understanding.
-                </p>
-              </div>
-            </div>
+      <div className="min-h-screen bg-[#FAFAF9] font-inter antialiased">
+        <section className="bg-[#2B2929] px-6 pb-20 pt-24 lg:px-10">
+          <div className="mx-auto max-w-[1400px]">
+            <p className="mb-4 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+              Engagement Inquiry
+            </p>
+            <h1 className="mb-6 max-w-[680px] font-serif text-[clamp(36px,4.5vw,60px)] font-normal leading-[1.1] tracking-[-0.01em] text-white">
+              The conversation starts here.
+            </h1>
+            <p className="max-w-[560px] font-sans text-[16px] leading-[1.8] text-white/65">
+              This is not an application. It is a starting point. Your answers help Bart understand what you are
+              carrying before any conversation begins. Takes about five minutes.
+            </p>
           </div>
         </section>
 
-        {/* Form Section */}
-        <section className="py-8 sm:py-12 md:py-16">
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto">
-              {/* Optional Micro-Line */}
-              <div className="mb-6">
-                <p className="text-sm text-[#6B6B6B]">
-                  Takes about 3–5 minutes.
-                </p>
+        <div className="border-b-2 border-[#FAFAF9] bg-[#E1DED8] px-6 py-5 lg:px-10">
+          <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-8">
+            {[
+              'Sent directly to Bart',
+              'No routing system',
+              'Archy reflects your answers while you wait',
+              'About five minutes',
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-2.5">
+                <div className="h-1.5 w-1.5 shrink-0 bg-[#DB0812]" aria-hidden />
+                <span className="font-sans text-[13px] text-[#6B6B6B]">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <section className="bg-[#FAFAF9] py-[72px]">
+          <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-12 px-6 lg:grid-cols-[1fr_340px] lg:gap-20 lg:px-10">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-[2px]">
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  01
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  What prompted you to reach out at this point? <span className="text-[#DB0812]">*</span>
+                </span>
+                <textarea
+                  value={formData.q1}
+                  onChange={(e) => handleTextChange('q1', e.target.value)}
+                  required
+                  rows={5}
+                  placeholder="Share what led you to reach out now..."
+                  className={textareaClass}
+                />
               </div>
 
-              <form onSubmit={handleSubmit} className="bg-white border border-[#1A1A1A]/10 rounded-lg p-6 sm:p-8 md:p-10 space-y-8">
-                
-                {/* Q1 */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What prompted you to reach out at this point? <span className="text-[#DB0812]">*</span>
-                  </label>
-                  <textarea
-                    value={formData.q1}
-                    onChange={(e) => handleTextChange('q1', e.target.value)}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
-                    placeholder="Share what led you to reach out now..."
-                  />
-                </div>
-
-                {/* Q2 */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    How would you describe your organization right now? <span className="text-[#DB0812]">*</span>
-                    <span className="text-sm font-normal text-[#6B6B6B] ml-2">(Select up to 2)</span>
-                  </label>
-                  <div className="space-y-2">
-                    {orgStateOptions.map(option => (
-                      <label key={option} className="flex items-start gap-3 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          checked={formData.q2.includes(option)}
-                          onChange={() => handleMultiSelect('q2', option, 2)}
-                          disabled={!formData.q2.includes(option) && formData.q2.length >= 2}
-                          className="mt-1 w-5 h-5 text-[#DB0812] border-[#1A1A1A]/20 rounded focus:ring-[#DB0812] disabled:opacity-50 disabled:cursor-not-allowed"
-                        />
-                        <span className="text-base text-[#1A1A1A] group-hover:text-[#1A1A1A]/80">
-                          {option}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                  {formData.q2.includes('Other') && (
-                    <div className="mt-4">
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  02
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  How would you describe your organization right now? <span className="text-[#DB0812]">*</span>
+                  <span className="ml-2 font-sans text-[13px] font-normal text-[#6B6B6B]">(Select up to 2)</span>
+                </span>
+                <div className="flex flex-col gap-2">
+                  {orgStateOptions.map((option) => (
+                    <label
+                      key={option}
+                      className="flex cursor-pointer items-start gap-3 border border-[#1A1A1A]/10 bg-[#FAFAF9] px-4 py-3 transition-all hover:border-[#1A1A1A]/25 hover:bg-white"
+                    >
                       <input
-                        type="text"
-                        value={formData.q2Other}
-                        onChange={(e) => handleTextChange('q2Other', e.target.value)}
-                        placeholder="Briefly describe."
-                        className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
+                        type="checkbox"
+                        checked={formData.q2.includes(option)}
+                        onChange={() => handleMultiSelect('q2', option, 2)}
+                        disabled={!formData.q2.includes(option) && formData.q2.length >= 2}
+                        className="mt-0.5 h-4 w-4 border-[#1A1A1A]/20 text-[#DB0812] focus:ring-0 disabled:cursor-not-allowed disabled:opacity-40"
                       />
-                    </div>
-                  )}
-                </div>
-
-                {/* Q3 */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What are you hoping an outside perspective would help you see or think through? <span className="text-[#DB0812]">*</span>
-                  </label>
-                  <textarea
-                    value={formData.q3}
-                    onChange={(e) => handleTextChange('q3', e.target.value)}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
-                    placeholder="What clarity or perspective are you seeking?"
-                  />
-                </div>
-
-                {/* Q4 */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What type of leadership support are you most interested in exploring? <span className="text-[#DB0812]">*</span>
-                    <span className="text-sm font-normal text-[#6B6B6B] ml-2">(Select up to 2)</span>
-                  </label>
-                  <div className="space-y-2">
-                    {supportOptions.map(option => (
-                      <label key={option} className="flex items-start gap-3 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          checked={formData.q4.includes(option)}
-                          onChange={() => handleMultiSelect('q4', option, 2)}
-                          disabled={!formData.q4.includes(option) && formData.q4.length >= 2}
-                          className="mt-1 w-5 h-5 text-[#DB0812] border-[#1A1A1A]/20 rounded focus:ring-[#DB0812] disabled:opacity-50 disabled:cursor-not-allowed"
-                        />
-                        <span className="text-base text-[#1A1A1A] group-hover:text-[#1A1A1A]/80">
-                          {option}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Q5 */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    Looking ahead 6–12 months, what would meaningful progress look like to you? <span className="text-[#DB0812]">*</span>
-                  </label>
-                  <textarea
-                    value={formData.q5}
-                    onChange={(e) => handleTextChange('q5', e.target.value)}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
-                    placeholder="Describe what success would look like..."
-                  />
-                </div>
-
-                {/* Q6 */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What's currently working well that you want to protect as things evolve? <span className="text-[#DB0812]">*</span>
-                  </label>
-                  <textarea
-                    value={formData.q6}
-                    onChange={(e) => handleTextChange('q6', e.target.value)}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
-                    placeholder="What strengths or practices do you want to preserve?"
-                  />
-                </div>
-
-                {/* Q7 */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    What level of partnership are you considering? <span className="text-[#DB0812]">*</span>
-                  </label>
-                  <div className="space-y-2">
-                    {partnershipOptions.map(option => (
-                      <label key={option} className="flex items-start gap-3 cursor-pointer group">
-                        <input
-                          type="radio"
-                          name="q7"
-                          value={option}
-                          checked={formData.q7 === option}
-                          onChange={(e) => handleSingleSelect('q7', e.target.value)}
-                          className="mt-1 w-5 h-5 text-[#DB0812] border-[#1A1A1A]/20 focus:ring-[#DB0812]"
-                        />
-                        <span className="text-base text-[#1A1A1A] group-hover:text-[#1A1A1A]/80">
-                          {option}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Context Section */}
-                <div className="pt-6 border-t border-[#1A1A1A]/10">
-                  <h3 className="text-lg sm:text-xl font-semibold text-[#1A1A1A] mb-6">
-                    Context (optional)
-                  </h3>
-                  
-                  {/* Role */}
-                  <div className="mb-6">
-                    <label className="block text-base font-medium text-[#1A1A1A] mb-3">
-                      Your role
+                      <span className="font-sans text-[14px] leading-[1.5] text-[#1A1A1A]">{option}</span>
                     </label>
+                  ))}
+                </div>
+                {formData.q2.includes('Other') && (
+                  <input
+                    type="text"
+                    value={formData.q2Other}
+                    onChange={(e) => handleTextChange('q2Other', e.target.value)}
+                    placeholder="Briefly describe."
+                    className="mt-4 w-full border border-[#1A1A1A]/15 bg-[#FAFAF9] px-4 py-3 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:bg-white focus:outline-none"
+                  />
+                )}
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  03
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  What are you hoping an outside perspective would help you see or think through?{' '}
+                  <span className="text-[#DB0812]">*</span>
+                </span>
+                <textarea
+                  value={formData.q3}
+                  onChange={(e) => handleTextChange('q3', e.target.value)}
+                  required
+                  rows={5}
+                  placeholder="What clarity or perspective are you seeking?"
+                  className={textareaClass}
+                />
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  04
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  What type of leadership support are you most interested in exploring?{' '}
+                  <span className="text-[#DB0812]">*</span>
+                  <span className="ml-2 font-sans text-[13px] font-normal text-[#6B6B6B]">(Select up to 2)</span>
+                </span>
+                <div className="flex flex-col gap-2">
+                  {supportOptions.map((option) => (
+                    <label
+                      key={option}
+                      className="flex cursor-pointer items-start gap-3 border border-[#1A1A1A]/10 bg-[#FAFAF9] px-4 py-3 transition-all hover:border-[#1A1A1A]/25 hover:bg-white"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.q4.includes(option)}
+                        onChange={() => handleMultiSelect('q4', option, 2)}
+                        disabled={!formData.q4.includes(option) && formData.q4.length >= 2}
+                        className="mt-0.5 h-4 w-4 border-[#1A1A1A]/20 text-[#DB0812] focus:ring-0 disabled:cursor-not-allowed disabled:opacity-40"
+                      />
+                      <span className="font-sans text-[14px] leading-[1.5] text-[#1A1A1A]">{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  05
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  Looking ahead 6 to 12 months, what would meaningful progress look like to you?{' '}
+                  <span className="text-[#DB0812]">*</span>
+                </span>
+                <textarea
+                  value={formData.q5}
+                  onChange={(e) => handleTextChange('q5', e.target.value)}
+                  required
+                  rows={5}
+                  placeholder="Describe what success would look like..."
+                  className={textareaClass}
+                />
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  06
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  What is currently working well that you want to protect as things evolve?{' '}
+                  <span className="text-[#DB0812]">*</span>
+                </span>
+                <textarea
+                  value={formData.q6}
+                  onChange={(e) => handleTextChange('q6', e.target.value)}
+                  required
+                  rows={5}
+                  placeholder="What strengths or practices do you want to preserve?"
+                  className={textareaClass}
+                />
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  07
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  What level of partnership are you considering? <span className="text-[#DB0812]">*</span>
+                </span>
+                <div className="flex flex-col gap-2">
+                  {partnershipOptions.map((option) => (
+                    <label
+                      key={option}
+                      className="flex cursor-pointer items-start gap-3 border border-[#1A1A1A]/10 bg-[#FAFAF9] px-4 py-3.5 transition-all hover:border-[#1A1A1A]/25 hover:bg-white"
+                    >
+                      <input
+                        type="radio"
+                        name="q7"
+                        value={option}
+                        checked={formData.q7 === option}
+                        onChange={(e) => handleSingleSelect('q7', e.target.value)}
+                        className="mt-0.5 h-4 w-4 border-[#1A1A1A]/20 text-[#DB0812] focus:ring-0"
+                      />
+                      <span className="font-sans text-[14px] leading-[1.5] text-[#1A1A1A]">{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-[#E1DED8] p-8">
+                <h3 className="mb-6 font-serif text-[18px] font-normal text-[#1A1A1A]">A bit of context</h3>
+                <div className="space-y-5">
+                  <div>
+                    <label className="mb-2 block font-sans text-[13px] font-medium text-[#1A1A1A]">Your role</label>
                     <select
                       value={formData.role}
                       onChange={(e) => handleSingleSelect('role', e.target.value)}
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
+                      className="w-full cursor-pointer appearance-none border border-[#1A1A1A]/15 bg-white px-4 py-3 font-sans text-[14px] text-[#1A1A1A] transition-colors focus:border-[#1A1A1A] focus:outline-none"
                     >
                       <option value="">Select your role</option>
-                      {roleOptions.map(option => (
-                        <option key={option} value={option}>{option}</option>
+                      {roleOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
                       ))}
                     </select>
                     {formData.role === 'Other' && (
-                      <div className="mt-4">
-                        <input
-                          type="text"
-                          value={formData.roleOther}
-                          onChange={(e) => handleTextChange('roleOther', e.target.value)}
-                          placeholder="Your role"
-                          className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        value={formData.roleOther}
+                        onChange={(e) => handleTextChange('roleOther', e.target.value)}
+                        placeholder="Your role"
+                        className="mt-3 w-full border border-[#1A1A1A]/15 bg-white px-4 py-3 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:outline-none"
+                      />
                     )}
                   </div>
-
-                  {/* Organization Size */}
                   <div>
-                    <label className="block text-base font-medium text-[#1A1A1A] mb-3">
+                    <label className="mb-2 block font-sans text-[13px] font-medium text-[#1A1A1A]">
                       Organization size
                     </label>
                     <select
                       value={formData.orgSize}
                       onChange={(e) => handleSingleSelect('orgSize', e.target.value)}
-                      className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent"
+                      className="w-full cursor-pointer appearance-none border border-[#1A1A1A]/15 bg-white px-4 py-3 font-sans text-[14px] text-[#1A1A1A] transition-colors focus:border-[#1A1A1A] focus:outline-none"
                     >
-                      <option value="">Select organization size</option>
-                      {orgSizeOptions.map(option => (
-                        <option key={option} value={option}>{option}</option>
+                      <option value="">Select size</option>
+                      {orgSizeOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
                       ))}
                     </select>
                   </div>
                 </div>
+              </div>
 
-                {/* Q8 - Must be last */}
-                <div>
-                  <label className="block text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3">
-                    Is there anything else you'd like to share?
-                  </label>
-                  <textarea
-                    value={formData.q8}
-                    onChange={(e) => handleTextChange('q8', e.target.value)}
-                    rows={4}
-                    className="w-full px-4 py-3 border border-[#1A1A1A]/20 rounded-lg bg-white text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:ring-2 focus:ring-[#DB0812] focus:border-transparent resize-y"
-                    placeholder="Anything you think adds context, nuance, or helps us better understand you."
-                  />
-                  <p className="mt-2 text-sm text-[#6B6B6B]">
-                    Anything you think adds context, nuance, or helps us better understand you.
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                  08
+                </span>
+                <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  Is there anything else you would like to share?
+                </span>
+                <textarea
+                  value={formData.q8}
+                  onChange={(e) => handleTextChange('q8', e.target.value)}
+                  rows={5}
+                  placeholder="Anything you think adds context, nuance, or helps us better understand you."
+                  className={textareaClass}
+                />
+                <p className="mt-2 font-sans text-[13px] text-[#6B6B6B]">
+                  Anything you think adds context, nuance, or helps us better understand you.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-4 border border-[#1A1A1A]/08 bg-white p-8">
+                {formStatus.error && (
+                  <p className="font-sans text-[13px] text-[#DB0812]" role="alert">
+                    {formStatus.error}
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={formStatus.loading}
+                  className="inline-flex min-h-[44px] items-center justify-center self-start bg-[#DB0812] px-12 py-3.5 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {formStatus.loading ? 'Sending...' : 'Send'}
+                </button>
+                <p className="font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
+                  Your answers go directly to Bart. Archy will offer some initial reflections while you wait for a
+                  personal response.
+                </p>
+              </div>
+            </form>
+
+            <div className="flex flex-col gap-[2px] lg:sticky lg:top-[88px]">
+              <div className="border border-[#1A1A1A]/08 bg-white p-7">
+                <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                  What happens next
+                </p>
+                <p className="mb-3 font-sans text-[13px] leading-[1.75] text-[#6B6B6B]">
+                  Your answers go to Bart directly. While that is being delivered, Archy reads your submission and
+                  offers some initial reflections.
+                </p>
+                <p className="font-sans text-[13px] leading-[1.75] text-[#6B6B6B]">
+                  Bart responds personally, usually within a few business days.
+                </p>
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-7">
+                <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                  Why these questions
+                </p>
+                <div className="mb-4 border-l-2 border-[#DB0812] pl-4">
+                  <p className="font-serif text-[15px] italic leading-[1.6] text-[#1A1A1A]">
+                    Context matters more than credentials. What you are carrying and what you are trying to protect
+                    tells Bart more than any resume would.
                   </p>
                 </div>
+                <p className="font-sans text-[13px] leading-[1.75] text-[#6B6B6B]">
+                  The answers help make the first conversation actually useful rather than spent on orientation.
+                </p>
+              </div>
 
-                {/* Error Message */}
-                {formStatus.error && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-sm text-red-800">{formStatus.error}</p>
-                  </div>
-                )}
-
-                {/* Submit Button */}
-                <div className="pt-6">
-                  <button
-                    type="submit"
-                    disabled={formStatus.loading}
-                    className="w-full sm:w-auto bg-[#1A1A1A] text-white px-8 py-4 font-medium hover:bg-[#1A1A1A]/90 transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
-                  >
-                    {formStatus.loading ? 'Sending...' : 'Send'}
-                  </button>
+              <div className="border border-[#1A1A1A]/08 bg-white p-7">
+                <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                  Not ready for this?
+                </p>
+                <div className="flex flex-col gap-2">
+                  {[
+                    ['/the-room', 'Read The Room first'],
+                    ['/advisory', 'How advisory works'],
+                    ['/contact', 'General contact form'],
+                  ].map(([href, label]) => (
+                    <a
+                      key={href}
+                      href={href}
+                      onClick={(e) => go(e, href)}
+                      className="flex items-center gap-1.5 font-sans text-[13px] font-medium text-[#DB0812] hover:text-[#b30610]"
+                    >
+                      {label} <span aria-hidden>&rarr;</span>
+                    </a>
+                  ))}
                 </div>
-              </form>
+              </div>
+
+              <div className="bg-[#2B2929] p-7">
+                <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                  Advisory
+                </p>
+                <p className="font-sans text-[13px] leading-[1.75] text-white/55">
+                  Available to a limited number of leaders at any given time. That limit is intentional.
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -502,4 +586,3 @@ Generate the full response following the structure above.`;
     </>
   );
 }
-
