@@ -119,25 +119,15 @@ for (const r of rows) {
 const pairs = Array.from(byConstruct.entries()).sort((a, b) => a[0].localeCompare(b[0]));
 
 let md = '';
-md += '# ALI v2 — Paired questions (read this first)\n\n';
-md +=
-  'This is the **review sheet**: one idea per heading — **Leader** wording (how I lead / what I do) and **Team** wording (what people experience). ';
-md +=
-  'Nothing here is about spreadsheets, migrations, or database ids.\n\n';
-md +=
-  'Because the pilot is **not live**, we did **not** need to rewrite every line for drama. ';
-md +=
-  'Most stems stayed **word-identical** to the v1 bank when they were already written in the correct voice for that role. ';
-md +=
-  'What v2 adds is **explicit pairing** so leader and team answers can be compared fairly on the same scale.\n\n';
-md += `**Constructs in this list:** ${pairs.length}\n\n`;
+md += '# ALI v2 — Paired questions\n\n';
+md += `**Constructs:** ${pairs.length} (stems revised for leader–team equivalence where the audit flagged a mismatch).\n\n`;
 md += '---\n\n';
 
 for (const [cid, { pattern, leader, team }] of pairs) {
   const label = pattern ? `${cid} · ${pattern}` : cid;
   md += `## ${label}\n\n`;
-  md += `**Leader**\n\n${leader || '_(missing)_'}\n\n`;
-  md += `**Team member**\n\n${team || '_(missing)_'}\n\n`;
+  md += `Leader:\n\n${leader || '_(missing)_'}\n\n`;
+  md += `Team member:\n\n${team || '_(missing)_'}\n\n`;
   md += '---\n\n';
 }
 
