@@ -15,6 +15,7 @@
  */
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
+import { evaluateNarrativeTriggers } from '../../lib/ali-narrative-triggers.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -112,14 +113,56 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to submit response' });
     }
 
-    // Count total responses for this deployment
     const { count: totalResponses } = await supabaseAdmin
       .from('ali_survey_responses')
       .select('*', { count: 'exact', head: true })
       .eq('deployment_id', deployment.id);
 
-    // Check if minimum threshold is met
     const thresholdMet = totalResponses >= deployment.minimum_responses;
+
+    let narrativePrompt = null;
+    try {
+      const stableIds = Object.keys(responses || {});
+      if (stableIds.length > 0) {
+        const { data: questionRows, error: qbError } = await supabaseAdmin
+          .from('ali_question_bank')
+          .select('stable_id, pattern, is_negative, role, construct_id')
+          .in('stable_id', stableIds);
+
+        if (qbError) {
+          console.warn('[narrative-trigger] Question bank lookup failed:', qbError);
+        } else if (questionRows && questionRows.length > 0) {
+          const questionBank = {};
+          for (const q of questionRows) {
+            questionBank[q.stable_id] = {
+              pattern: q.pattern,
+              is_negative: !!q.is_negative,
+              role: q.role,
+              construct_id: q.construct_id || null,
+            };
+          }
+
+          const evaluated = evaluateNarrativeTriggers({
+            responses,
+            questionBank,
+            respondentRole,
+          });
+
+          if (evaluated) {
+            narrativePrompt = {
+              type: evaluated.type,
+              condition: evaluated.condition,
+              prompt_text: evaluated.prompt_text,
+              deployment_id: deployment.id,
+              tenant_id: deployment.company_id,
+              issued_at: new Date().toISOString(),
+            };
+          }
+        }
+      }
+    } catch (triggerErr) {
+      console.warn('[narrative-trigger] Evaluation failed:', triggerErr?.message || triggerErr);
+    }
 
     return res.status(201).json({
       success: true,
@@ -132,6 +175,7 @@ export default async function handler(req, res) {
         minimumRequired: deployment.minimum_responses,
         thresholdMet
       },
+      narrativePrompt,
       message: thresholdMet 
         ? 'Response submitted successfully. Results are now available.'
         : `Response submitted successfully. ${deployment.minimum_responses - totalResponses} more response(s) needed before results are available.`

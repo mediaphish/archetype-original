@@ -23,8 +23,15 @@ import { calculateAvailableAt, getNextSurveyIndex } from '../../lib/ali-cadence.
 import {
   generateSeed,
   buildSurvey,
+  buildPairedSurvey,
   validateSurveyComposition
 } from '../../lib/ali-survey-builder.js';
+
+const DEFAULT_INSTRUMENT_VERSION = process.env.ALI_DEFAULT_INSTRUMENT_VERSION || 'v2.0';
+
+function isV2(instrumentVersion) {
+  return instrumentVersion === 'v2.0' || (typeof instrumentVersion === 'string' && instrumentVersion.startsWith('v2.'));
+}
 
 // In-memory cache for question bank (refreshed periodically)
 let questionBankCache = null;
@@ -76,7 +83,6 @@ function generateDeploymentToken() {
  * Get or create survey snapshot
  */
 async function getOrCreateSnapshot(companyId, surveyIndex, instrumentVersion) {
-  // Check for existing snapshot
   const { data: existing } = await supabaseAdmin
     .from('ali_survey_snapshots')
     .select('*')
@@ -88,35 +94,71 @@ async function getOrCreateSnapshot(companyId, surveyIndex, instrumentVersion) {
   if (existing) {
     return existing;
   }
-  
-  // Generate new snapshot using builder logic directly
+
   const questionBank = await loadQuestionBank(instrumentVersion);
-  const surveyResult = buildSurvey(questionBank, companyId, surveyIndex, instrumentVersion);
-  
-  // Final validation
-  const finalValidation = validateSurveyComposition(surveyResult.questions);
-  if (!finalValidation.isValid) {
-    throw new Error(`Survey composition validation failed: ${finalValidation.errors.join('; ')}`);
+
+  let questionStableIds;
+  let questionOrder;
+  let composition;
+
+  if (isV2(instrumentVersion)) {
+    const surveyResult = buildPairedSurvey(questionBank, companyId, surveyIndex, instrumentVersion);
+    if (!surveyResult.validation.isValid) {
+      throw new Error(`Paired survey composition validation failed: ${surveyResult.validation.errors.join('; ')}`);
+    }
+    questionStableIds = [];
+    questionOrder = surveyResult.constructs.map((c, idx) => {
+      questionStableIds.push(c.leader.stable_id, c.team_member.stable_id);
+      return {
+        order: idx + 1,
+        construct_id: c.construct_id,
+        pattern: c.pattern,
+        is_anchor: !!c.is_anchor,
+        response_scale: c.leader.response_scale || c.team_member.response_scale || '1_5_likert',
+        leader_item: {
+          stable_id: c.leader.stable_id,
+          question_text: c.leader.question_text,
+          angle: c.leader.angle,
+          lens: c.leader.lens,
+          is_negative: !!c.leader.is_negative,
+          is_anchor: !!c.leader.is_anchor,
+          role: 'leader'
+        },
+        team_item: {
+          stable_id: c.team_member.stable_id,
+          question_text: c.team_member.question_text,
+          angle: c.team_member.angle,
+          lens: c.team_member.lens,
+          is_negative: !!c.team_member.is_negative,
+          is_anchor: !!c.team_member.is_anchor,
+          role: 'team_member'
+        }
+      };
+    });
+    composition = surveyResult.validation.composition;
+  } else {
+    const surveyResult = buildSurvey(questionBank, companyId, surveyIndex, instrumentVersion);
+    const finalValidation = validateSurveyComposition(surveyResult.questions);
+    if (!finalValidation.isValid) {
+      throw new Error(`Survey composition validation failed: ${finalValidation.errors.join('; ')}`);
+    }
+    questionStableIds = surveyResult.questions.map(q => q.stable_id);
+    questionOrder = surveyResult.questions.map((q, index) => ({
+      order: index + 1,
+      stable_id: q.stable_id,
+      question_text: q.question_text,
+      pattern: q.pattern,
+      role: q.role,
+      angle: q.angle,
+      lens: q.lens,
+      is_negative: q.is_negative,
+      is_anchor: q.is_anchor
+    }));
+    composition = finalValidation.composition;
   }
-  
-  // Prepare question metadata for snapshot
-  const questionStableIds = surveyResult.questions.map(q => q.stable_id);
-  const questionOrder = surveyResult.questions.map((q, index) => ({
-    order: index + 1,
-    stable_id: q.stable_id,
-    question_text: q.question_text,
-    pattern: q.pattern,
-    role: q.role,
-    angle: q.angle,
-    lens: q.lens,
-    is_negative: q.is_negative,
-    is_anchor: q.is_anchor
-  }));
-  
-  // Generate seed
+
   const generationSeed = generateSeed(companyId, surveyIndex, instrumentVersion);
-  
-  // Create snapshot in database
+
   const { data: snapshot, error: snapshotError } = await supabaseAdmin
     .from('ali_survey_snapshots')
     .insert({
@@ -127,10 +169,10 @@ async function getOrCreateSnapshot(companyId, surveyIndex, instrumentVersion) {
       generated_by: 'system',
       question_stable_ids: questionStableIds,
       question_order: questionOrder,
-      anchor_count: finalValidation.composition.anchorCount,
-      pattern_question_count: finalValidation.composition.patternCount,
-      total_question_count: finalValidation.composition.totalCount,
-      negative_item_count: finalValidation.composition.negativeCount,
+      anchor_count: composition.anchorCount,
+      pattern_question_count: composition.patternCount,
+      total_question_count: composition.totalCount,
+      negative_item_count: composition.negativeCount,
       is_locked: true
     })
     .select()
@@ -168,9 +210,9 @@ export default async function handler(req, res) {
     const {
       companyId: companyIdParam,
       email: emailParam,
-      surveyIndex, // Optional - will be calculated if not provided
+      surveyIndex,
       divisionId,
-      instrumentVersion = 'v1.0',
+      instrumentVersion = DEFAULT_INSTRUMENT_VERSION,
       opensAt,
       closesAt,
       minimumResponses = 5

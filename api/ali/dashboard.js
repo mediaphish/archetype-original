@@ -27,6 +27,10 @@ import {
 import {
   calculateTeamExperienceMapCoordinates
 } from '../../lib/ali-scoring.js';
+import {
+  calculatePairedDeploymentScores,
+  buildAnchorTrajectories
+} from '../../lib/ali-paired-scoring.js';
 
 /**
  * Transform response data from database format to scoring function format
@@ -386,24 +390,24 @@ export default async function handler(req, res) {
       });
     }
 
-    // Load question bank (cache this in production)
     const { data: questionBankData, error: qbError } = await supabaseAdmin
       .from('ali_question_bank')
-      .select('stable_id, pattern, is_negative, is_anchor, role')
-      .eq('status', 'active');
+      .select('stable_id, pattern, is_negative, is_anchor, role, construct_id, instrument_version')
+      .in('status', ['active', 'deprecated']);
 
     if (qbError || !questionBankData) {
       return res.status(500).json({ error: 'Failed to load question bank' });
     }
 
-    // Create question bank map for quick lookup
     const questionBank = {};
     questionBankData.forEach(q => {
       questionBank[q.stable_id] = {
         pattern: q.pattern,
         is_negative: q.is_negative,
         is_anchor: q.is_anchor,
-        role: q.role
+        role: q.role,
+        construct_id: q.construct_id || null,
+        instrument_version: q.instrument_version || null
       };
     });
 
@@ -439,11 +443,11 @@ export default async function handler(req, res) {
       responsesByDeployment[response.deployment_id]?.push(response);
     });
 
-    // Process each deployment's responses
     const historicalScores = [];
     const historicalClarityScores = [];
     const experienceMapPoints = [];
     const systemMapRespondents = [];
+    const pairedDeploymentResults = [];
 
     for (const deployment of deployments) {
       const deploymentResponses = responsesByDeployment[deployment.id] || [];
@@ -506,7 +510,6 @@ export default async function handler(req, res) {
         allTransformedResponses.push(...transformed);
       });
 
-      // Calculate scores for this deployment
       const deploymentScores = calculateScoresForResponses(
         transformedForDeployment,
         questionBank,
@@ -516,6 +519,23 @@ export default async function handler(req, res) {
       historicalScores.push(deploymentScores);
       if (deploymentScores.patterns.clarity?.current !== null) {
         historicalClarityScores.push(deploymentScores.patterns.clarity.current);
+      }
+
+      try {
+        const paired = calculatePairedDeploymentScores(transformedForDeployment, questionBank);
+        const deploymentDate = deployment.available_at || deployment.opens_at || deployment.created_at;
+        pairedDeploymentResults.push({
+          period: deploymentDate
+            ? `${new Date(deploymentDate).getFullYear()}-${getQuarterFromDate(deploymentDate)}`
+            : deployment.survey_index,
+          survey_index: deployment.survey_index,
+          deployment_id: deployment.id,
+          constructMirrorGaps: paired.constructs,
+          conditionMirror: paired.conditionMirror,
+          overallMirror: paired.overallMirror
+        });
+      } catch (err) {
+        console.warn('paired scoring skipped for deployment', deployment.id, err?.message || err);
       }
     }
 
@@ -749,6 +769,26 @@ export default async function handler(req, res) {
       dataQuality
     });
 
+    let pairedScoring = null;
+    try {
+      const overallPaired = calculatePairedDeploymentScores(allTransformedResponses, questionBank);
+      const hasAnyConstructData = overallPaired.constructs.some(
+        (c) => typeof c.leader_score === 'number' || typeof c.team_score === 'number'
+      );
+      if (hasAnyConstructData) {
+        const anchorTrajectory = buildAnchorTrajectories(pairedDeploymentResults);
+        pairedScoring = {
+          constructs: overallPaired.constructs,
+          conditionMirror: overallPaired.conditionMirror,
+          overallMirror: overallPaired.overallMirror,
+          anchorTrajectory,
+          perDeployment: pairedDeploymentResults
+        };
+      }
+    } catch (err) {
+      console.warn('paired scoring overall skipped:', err?.message || err);
+    }
+
     // Simple recent activity for pilots (avoid fake years)
     const mostRecent = allResponses && allResponses.length > 0 ? allResponses[allResponses.length - 1] : null;
     const recentActivity = mostRecent ? [
@@ -795,6 +835,7 @@ export default async function handler(req, res) {
       surveys: surveysArray,
       historicalTrends,
       patternTrends,
+      pairedScoring,
       insights,
       recentActivity
     });

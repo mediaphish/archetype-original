@@ -295,3 +295,46 @@ Every question must measure one or more of the 7 patterns through the 3 lenses:
 - No revealing what's being tested
 - No personality profiling
 
+---
+
+## v2.0 Paired Architecture (Pilot)
+
+The v2.0 instrument keeps everything above and adds one structural change: every active idea is delivered as **two paired items**, one written for a leader's voice and one written for a team member's voice. Both items are linked by a single `construct_id` and answered on the same scale, so the gap between what a leader believes they are doing and what their team is experiencing becomes a calculable, defensible number rather than an inference.
+
+### Construct, not question, is the unit of measurement
+
+Every active v2.0 row in `ali_question_bank` carries:
+
+- `construct_id` — a stable identifier for the underlying idea (e.g., `C-CLARITY-01`, `C-TRUST-02`).
+- `equivalence_note` — a short rationale stating that the leader and team-member items measure the same observable behavior, just from different vantage points.
+- `lineage_source_ids` — the v1.x stable_ids the v2.0 item was derived from (so the v1.x corpus is honored, not discarded).
+- `lineage_action` — one of `preserved`, `edited`, `rewritten`, or `new`.
+- `response_scale` — both halves of a pair must share the same scale (default `1_5_likert`).
+
+A construct is **launch-eligible** only when there is at least one `role='leader'` row and at least one `role='team_member'` row, both `status='active'` in v2.0, on identical response scales. The `ali_v2_construct_coverage` view and `ali_v2_unpaired_constructs()` function in `ALI_INSTRUMENT_V2_SCHEMA.sql` make this verifiable on demand.
+
+### Role intent (why the wording differs)
+
+- **Leader stems** speak from agency: "I do / I provide / I make sure / I keep …"
+- **Team-member stems** speak from received experience: "My leader does / I see / I can / I know …"
+- Both sides rate the **same observable behavior** on the same Likert scale, so paired aggregation produces a valid dissonance signal.
+
+### Selection and delivery
+
+- The deterministic survey builder selects **10 constructs per quarterly window** with **3 anchors** that persist quarter-to-quarter for trajectory.
+- For each selected construct, the deployment carries both the leader stem and the team-member stem; respondents see only the items matching their role, in identical construct order so longitudinal comparison stays honest even if wording shifts inside a construct.
+
+### Scoring (Leadership Mirror is now a paired calculation)
+
+- Per construct: `mirror_gap = leader_score - team_avg_score` (sign and magnitude reported).
+- Per condition (Clarity, Trust, etc.): aggregated team-side score is the lived experience; aggregated leader-side score is the self-view.
+- Anchor trajectory uses anchor `construct_id`s, not raw stable_ids.
+- Snapshots store per-construct paired aggregates so wording revisions inside a construct never break historical comparison.
+
+### What v2.0 does NOT change
+
+- Multi-angle phrasing inside a construct is still allowed (we vary how we ask, never what we ask).
+- 10-questions-per-survey cadence is preserved (now interpreted as 10 constructs).
+- Invisible weights and no personality scoring remain as written.
+- v1.x items are deprecated, not deleted; lineage is captured in `lineage_source_ids`.
+

@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "exposure_n_threshold": 3,
+  "small_tenant_min_respondents": 8,
+  "tenant_overrides": {}
+}

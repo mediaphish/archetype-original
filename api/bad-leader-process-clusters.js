@@ -1,30 +1,6 @@
 import { supabaseAdmin } from '../lib/supabase-admin.js';
 import { requireBlpAdmin } from '../lib/badLeaderAuth.js';
-
-function parseEmbedding(value) {
-  if (!value) return null;
-  if (Array.isArray(value)) return value.map(Number);
-  if (typeof value === 'string') {
-    const clean = value.replace(/^\[/, '').replace(/\]$/, '');
-    if (!clean) return null;
-    return clean.split(',').map((n) => Number(n.trim())).filter((n) => Number.isFinite(n));
-  }
-  return null;
-}
-
-function cosineSimilarity(a, b) {
-  if (!a || !b || a.length !== b.length || a.length === 0) return 0;
-  let dot = 0;
-  let magA = 0;
-  let magB = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    dot += a[i] * b[i];
-    magA += a[i] * a[i];
-    magB += b[i] * b[i];
-  }
-  if (magA === 0 || magB === 0) return 0;
-  return dot / (Math.sqrt(magA) * Math.sqrt(magB));
-}
+import { parseEmbedding, cosineSimilarity } from '../lib/narrativeClustering.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

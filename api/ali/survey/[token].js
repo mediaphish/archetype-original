@@ -1,9 +1,17 @@
 /**
  * ALI Survey Questions Fetch
- * 
- * Get survey questions for a deployment token
- * 
- * GET /api/ali/survey/[token]
+ *
+ * Get survey questions for a deployment token.
+ *
+ * GET /api/ali/survey/[token]?role=leader|team_member
+ *
+ * For v1.x snapshots the role parameter is ignored and the existing
+ * (role-agnostic) question list is returned.
+ *
+ * For v2.0 paired snapshots the role parameter selects the role-matched
+ * stems in identical construct order. If role is omitted, both stems are
+ * returned for each construct under `leader_item` and `team_item`, so
+ * the client can decide how to render them.
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
@@ -14,13 +22,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { token } = req.query;
+    const { token, role: roleParam } = req.query;
 
     if (!token) {
       return res.status(400).json({ error: 'Token is required' });
     }
 
-    // Find deployment by token
+    let respondentRole = null;
+    if (typeof roleParam === 'string') {
+      const normalized = roleParam.trim().toLowerCase();
+      if (normalized === 'leader' || normalized === 'team_member') {
+        respondentRole = normalized;
+      } else if (normalized.length > 0) {
+        return res.status(400).json({ error: 'role must be "leader" or "team_member"' });
+      }
+    }
+
     const { data: deployment, error: deploymentError } = await supabaseAdmin
       .from('ali_survey_deployments')
       .select(`
@@ -60,10 +77,9 @@ export default async function handler(req, res) {
       }
     }
 
-    // Get survey snapshot with questions
     const { data: snapshot, error: snapshotError } = await supabaseAdmin
       .from('ali_survey_snapshots')
-      .select('question_stable_ids, question_order')
+      .select('question_stable_ids, question_order, instrument_version')
       .eq('id', deployment.snapshot_id)
       .single();
 
@@ -71,9 +87,70 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to load survey questions' });
     }
 
-    // Prefer serving immutable question wording from the snapshot itself.
-    // This ensures editing the question bank later does NOT change already-issued survey links.
     const snapshotOrder = snapshot.question_order;
+    const isV2Snapshot =
+      typeof snapshot.instrument_version === 'string' && snapshot.instrument_version.startsWith('v2.');
+
+    const isPairedConstructArray =
+      Array.isArray(snapshotOrder) &&
+      snapshotOrder.length > 0 &&
+      typeof snapshotOrder[0] === 'object' &&
+      snapshotOrder[0] !== null &&
+      Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'construct_id') &&
+      (Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'leader_item') ||
+        Object.prototype.hasOwnProperty.call(snapshotOrder[0], 'team_item'));
+
+    if (isPairedConstructArray) {
+      const orderedConstructs = snapshotOrder
+        .slice()
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+      const constructs = orderedConstructs.map((c, idx) => ({
+        order: c.order ?? idx + 1,
+        construct_id: c.construct_id,
+        pattern: c.pattern,
+        is_anchor: !!c.is_anchor,
+        response_scale: c.response_scale || '1_5_likert',
+        leader_item: c.leader_item || null,
+        team_item: c.team_item || null
+      }));
+
+      let questions = null;
+      if (respondentRole) {
+        questions = constructs
+          .map((c, idx) => {
+            const item = respondentRole === 'leader' ? c.leader_item : c.team_item;
+            if (!item) return null;
+            return {
+              id: item.stable_id,
+              construct_id: c.construct_id,
+              question_text: item.question_text,
+              pattern: c.pattern,
+              role: respondentRole,
+              response_scale: c.response_scale || '1_5_likert',
+              is_negative: !!item.is_negative,
+              is_anchor: !!c.is_anchor,
+              order: c.order ?? idx + 1
+            };
+          })
+          .filter(Boolean);
+      }
+
+      return res.status(200).json({
+        survey_index: deployment.survey_index,
+        deployment_id: deployment.id,
+        instrument_version: snapshot.instrument_version,
+        role: respondentRole,
+        constructs,
+        questions,
+        closes_at: deployment.closes_at
+      });
+    }
+
+    if (isV2Snapshot && !isPairedConstructArray) {
+      console.error('v2.x snapshot stored in non-paired format:', deployment.snapshot_id);
+      return res.status(500).json({ error: 'Survey configuration error' });
+    }
 
     const isObjectArray =
       Array.isArray(snapshotOrder) &&
