@@ -30,6 +30,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
 
   const isSA = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
   const isCO = useMemo(() => userRoles.includes('chief_operator'), [userRoles]);
+  const canManageCandidates = isCO || isSA;
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -75,7 +76,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
             >
               Profile
             </button>
-            {isCO && (
+            {canManageCandidates && (
               <button 
                 onClick={() => handleNavigate('/operators/candidates')} 
                 onKeyDown={handleKeyDown(() => handleNavigate('/operators/candidates'))}
@@ -156,7 +157,7 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
               >
                 Profile
               </button>
-              {isCO && (
+              {canManageCandidates && (
                 <button
                   onClick={() => handleNavigate('/operators/candidates')}
                   onKeyDown={handleKeyDown(() => handleNavigate('/operators/candidates'))}
