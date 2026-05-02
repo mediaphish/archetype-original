@@ -33,12 +33,14 @@ const OperatorsLogin = () => {
 
       const data = await response.json();
 
-      if (data.ok || response.ok) {
+      if (data.ok && response.ok) {
         setStatus('sent');
         setErrorMessage('');
       } else {
         setStatus('error');
-        setErrorMessage(data.error || 'Failed to send magic link. Please try again.');
+        setErrorMessage(
+          data.error || 'Failed to send magic link. Please try again.'
+        );
       }
     } catch (err) {
       console.error('Magic link request error:', err);

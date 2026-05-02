@@ -24,16 +24,20 @@ export default async function handler(req, res) {
 
     const emailLower = email.toLowerCase().trim();
 
-    // Check if user exists in operators_users table (optional check, don't reveal if user doesn't exist)
-    let userExists = false;
+    // Membership is invite-only: only people already in operators_users can receive a link.
+    // (Sending a link to anyone and failing at verify was confusing and looked like a bug.)
     const { data: user } = await supabaseAdmin
       .from('operators_users')
       .select('email')
       .eq('email', emailLower)
       .maybeSingle();
 
-    if (user) {
-      userExists = true;
+    if (!user) {
+      return res.status(403).json({
+        ok: false,
+        error:
+          "We couldn't find a membership for this email. The Operators is invitation-only—ask your Chief Operator to add you, or contact support at Archetype Original if you need help.",
+      });
     }
 
     // Generate secure token

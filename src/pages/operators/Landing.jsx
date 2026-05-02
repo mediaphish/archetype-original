@@ -115,7 +115,7 @@ const OperatorsLanding = () => {
               onClick={() => handleNavigate('/operators/login')}
               className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
             >
-              Sign Up Now
+              Sign in
             </button>
           </div>
         </section>
