@@ -93,19 +93,12 @@ const raw = fs.readFileSync(ARGS.in, 'utf8');
 const rows = fromCsv(raw);
 
 const byConstruct = new Map();
-const orphans = [];
 
 for (const r of rows) {
   const keep = String(r.keep || '').toLowerCase();
-  if (keep !== 'yes') {
-    orphans.push(r);
-    continue;
-  }
+  if (keep !== 'yes') continue;
   const cid = String(r.construct_id || '').trim();
-  if (!cid) {
-    orphans.push(r);
-    continue;
-  }
+  if (!cid) continue;
   if (!byConstruct.has(cid)) {
     byConstruct.set(cid, { pattern: r.pattern, leader: '', team: '' });
   }
@@ -120,7 +113,7 @@ const pairs = Array.from(byConstruct.entries()).sort((a, b) => a[0].localeCompar
 
 let md = '';
 md += '# ALI v2 — Paired questions\n\n';
-md += `**Constructs:** ${pairs.length} (stems revised for leader–team equivalence where the audit flagged a mismatch).\n\n`;
+md += `**Constructs:** ${pairs.length}\n\n`;
 md += '---\n\n';
 
 for (const [cid, { pattern, leader, team }] of pairs) {
@@ -129,18 +122,6 @@ for (const [cid, { pattern, leader, team }] of pairs) {
   md += `Leader:\n\n${leader || '_(missing)_'}\n\n`;
   md += `Team member:\n\n${team || '_(missing)_'}\n\n`;
   md += '---\n\n';
-}
-
-const orphanKept = orphans.filter((r) => String(r.keep || '').toLowerCase() === 'no');
-if (orphanKept.length > 0) {
-  md += '## Left out of the paired set (for awareness)\n\n';
-  md +=
-    'These items did not land in a clean leader+team pair during automated grouping; they were marked **not** activated as v2. ';
-  md += 'You can ignore them unless you want to fold them into a future edit.\n\n';
-  for (const r of orphanKept) {
-    md += `- **${r.role}** (${r.pattern || '?'}): ${String(r.v1_source_text || '').slice(0, 200)}${String(r.v1_source_text || '').length > 200 ? '…' : ''}\n`;
-  }
-  md += '\n';
 }
 
 fs.writeFileSync(ARGS.out, md, 'utf8');

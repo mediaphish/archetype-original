@@ -1,6 +1,6 @@
 # ALI v2 — Paired questions
 
-**Constructs:** 32 (stems revised for leader–team equivalence where the audit flagged a mismatch).
+**Constructs:** 32
 
 ---
 
@@ -387,15 +387,4 @@ Team member:
 Mistakes are handled in a way that supports learning rather than fear.
 
 ---
-
-## Left out of the paired set (for awareness)
-
-These items did not land in a clean leader+team pair during automated grouping; they were marked **not** activated as v2. You can ignore them unless you want to fold them into a future edit.
-
-- **leader** (clarity): I communicate the top priorities clearly enough that people can act without guessing.
-- **team_member** (clarity): I spend time moving forward without being sure what the priority actually is.
-- **leader** (stability): The day-to-day environment feels steady and predictable.
-- **team_member** (stability): The tone of the environment shifts quickly in ways that make it hard to predict what comes next.
-- **leader** (trust): I encourage people to raise concerns early without fear of being blamed or labeled.
-- **team_member** (trust): I can speak honestly about issues that matter without worrying about negative consequences.
 
