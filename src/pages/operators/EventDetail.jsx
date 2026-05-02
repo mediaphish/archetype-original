@@ -566,6 +566,26 @@ export default function EventDetail() {
     return `${displayHour}:${minutes} ${ampm}`;
   }, []);
 
+  // Role / permission flags — must run every render (Rules of Hooks); use optional event.*
+  const isSA = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
+  const isCO = useMemo(() => userRoles.includes('chief_operator') || userRoles.includes('super_admin'), [userRoles]);
+  const isOperator = useMemo(() => userRoles.includes('operator'), [userRoles]);
+  const isAccountant = useMemo(() => userRoles.includes('accountant'), [userRoles]);
+  const canRSVP = useMemo(() => isOperator || userRoles.includes('candidate'), [isOperator, userRoles]);
+  const canInviteCandidate = useMemo(() => isOperator && event?.state === 'LIVE' && !event?.rsvp_closed, [isOperator, event?.state, event?.rsvp_closed]);
+  const canApproveCandidate = useMemo(() => isCO && event?.state === 'LIVE', [isCO, event?.state]);
+  const canManageEvent = useMemo(() => isCO || isAccountant, [isCO, isAccountant]);
+  const canManageRSVPs = useMemo(() => isSA || isCO, [isSA, isCO]);
+  const canManageTopics = useMemo(() => isSA || isCO || isAccountant, [isSA, isCO, isAccountant]);
+  const canEdit = useMemo(() => isCO && event?.state === 'LIVE', [isCO, event?.state]);
+  const isFutureEvent = useMemo(() => {
+    if (!event?.event_date) return false;
+    const eventDate = new Date(event.event_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return eventDate >= today;
+  }, [event?.event_date]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
@@ -758,27 +778,6 @@ export default function EventDetail() {
       </div>
     );
   }
-
-  const isSA = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
-  const isCO = useMemo(() => userRoles.includes('chief_operator') || userRoles.includes('super_admin'), [userRoles]);
-  const isOperator = useMemo(() => userRoles.includes('operator'), [userRoles]);
-  const isAccountant = useMemo(() => userRoles.includes('accountant'), [userRoles]);
-  const canRSVP = useMemo(() => isOperator || userRoles.includes('candidate'), [isOperator, userRoles]);
-  const canInviteCandidate = useMemo(() => isOperator && event?.state === 'LIVE' && !event?.rsvp_closed, [isOperator, event?.state, event?.rsvp_closed]);
-  const canApproveCandidate = useMemo(() => isCO && event?.state === 'LIVE', [isCO, event?.state]);
-  const canManageEvent = useMemo(() => isCO || isAccountant, [isCO, isAccountant]);
-  const canManageRSVPs = useMemo(() => isSA || isCO, [isSA, isCO]);
-  const canManageTopics = useMemo(() => isSA || isCO || isAccountant, [isSA, isCO, isAccountant]);
-  
-  // Check if event can be edited (LIVE state and future date)
-  const canEdit = useMemo(() => isCO && event?.state === 'LIVE', [isCO, event?.state]);
-  const isFutureEvent = useMemo(() => {
-    if (!event?.event_date) return false;
-    const eventDate = new Date(event.event_date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return eventDate >= today;
-  }, [event?.event_date]);
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
