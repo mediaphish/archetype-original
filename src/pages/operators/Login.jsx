@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { OptimizedImage } from '../../components/OptimizedImage';
 
 const OperatorsLogin = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, sending, sent, error
   const [errorMessage, setErrorMessage] = useState('');
+  const [showTestLogin, setShowTestLogin] = useState(false);
+  const [testSecret, setTestSecret] = useState('');
+  const [testBusy, setTestBusy] = useState(false);
+
+  useEffect(() => {
+    if (import.meta.env.VITE_SHOW_OPERATORS_TEST_LOGIN === 'true') {
+      setShowTestLogin(true);
+      return;
+    }
+    try {
+      const q = new URLSearchParams(window.location.search).get('operatorsTest');
+      if (q === '1') setShowTestLogin(true);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -46,6 +62,46 @@ const OperatorsLogin = () => {
       console.error('Magic link request error:', err);
       setStatus('error');
       setErrorMessage('Network error. Please try again.');
+    }
+  };
+
+  const handleTestLogin = async (e) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) {
+      setErrorMessage('Please enter your Operators email');
+      return;
+    }
+    if (!testSecret.trim()) {
+      setErrorMessage('Enter the test secret from your host configuration');
+      return;
+    }
+    setTestBusy(true);
+    setErrorMessage('');
+    try {
+      const response = await fetch('/api/operators/auth/test-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, secret: testSecret }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && data.ok && data.email) {
+        try {
+          localStorage.setItem('operators_email', data.email);
+        } catch (err) {
+          console.error(err);
+          setErrorMessage('Could not save session in this browser.');
+          setTestBusy(false);
+          return;
+        }
+        handleNavigate('/operators/dashboard');
+        return;
+      }
+      setErrorMessage(data.error || 'Test sign-in failed.');
+    } catch (err) {
+      console.error(err);
+      setErrorMessage('Network error. Try again.');
+    } finally {
+      setTestBusy(false);
     }
   };
 
@@ -125,6 +181,40 @@ const OperatorsLogin = () => {
                 </div>
               )}
             </form>
+          )}
+
+          {showTestLogin && status !== 'sent' && (
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <p className="text-xs font-semibold uppercase tracking-wide text-amber-800 mb-2">Testing only</p>
+              <p className="text-sm text-gray-600 mb-4">
+                Skip the magic link when your host has{' '}
+                <code className="text-xs bg-gray-100 px-1 rounded">OPERATORS_TEST_LOGIN_SECRET</code> set. Same email must
+                already exist in Operators membership.
+              </p>
+              <form onSubmit={handleTestLogin} className="space-y-3">
+                <div>
+                  <label htmlFor="test-secret" className="block text-sm font-medium text-gray-700 mb-1">
+                    Test secret
+                  </label>
+                  <input
+                    id="test-secret"
+                    type="password"
+                    autoComplete="off"
+                    value={testSecret}
+                    onChange={(e) => setTestSecret(e.target.value)}
+                    className="w-full px-4 py-2 sm:py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent"
+                    placeholder="Server secret (not your password)"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={testBusy}
+                  className="w-full min-h-[44px] bg-amber-700 text-white py-2 rounded-lg font-semibold hover:bg-amber-800 disabled:opacity-50"
+                >
+                  {testBusy ? 'Signing in…' : 'Sign in without email link (test)'}
+                </button>
+              </form>
+            </div>
           )}
 
           <div className="mt-6 text-center">
