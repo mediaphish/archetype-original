@@ -550,7 +550,7 @@ export default function EventDetail() {
     }
   }, []);
 
-  const getMapLink = useMemo(() => {
+  const mapLink = useMemo(() => {
     if (!event?.host_location) return '';
     const encodedAddress = encodeURIComponent(event.host_location);
     return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
@@ -876,7 +876,7 @@ export default function EventDetail() {
                       <div className="flex-1">
                         <p className="text-gray-900">{event.host_location}</p>
                         <a
-                          href={getMapLink()}
+                          href={mapLink}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="min-h-[44px] inline-flex items-center justify-center gap-1 text-sm text-blue-600 hover:text-blue-700 mt-1"
