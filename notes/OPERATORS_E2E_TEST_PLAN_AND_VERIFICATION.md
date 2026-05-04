@@ -1,155 +1,150 @@
-# The Operators — end-to-end path: interest → approval → RSVP → votes → ROi pot
+# The Operators — full path: interest → approval → RSVP → votes → ROi pot
 
-This note answers three questions:
+This document is the **master checklist** for what you asked to verify: the full journey a person could take (request to join, approval, RSVP, sign in, up/down votes, and the night’s pot / winner), plus **what was actually run** on the live public site and **where automation stopped cold**.
 
-1. **Can this workspace automatically “run through” every step as a real user?**  
-   **No.** Signing in uses your live database, email links, and roles only your team controls. What we *can* do is trace the code and APIs, list exact steps for humans or staging accounts, run automated tests where the project’s test runner is healthy, and call out gaps (missing screens, manual DB steps).
-
-2. **What is every step in order?**  
-   See **§ Flow A–E** below. There are **two different “request to join” paths** today.
-
-3. **How do you pressure-test each step?**  
-   See **§ Pressure-test matrix** at the end.
+**Update — live execution (May 4, 2026):**  
+Automated browser sessions and public API checks were run against `https://www.archetypeoriginal.com` while the temporary testing login bypass was enabled for Operators. Results are summarized in **Live run summary** (below) and repeated under each flow.
 
 ---
 
-## Important: two “join” paths (do not confuse them)
+## Live run summary (May 4, 2026)
 
-| Path | What it is | Approval in the app? |
+| Area | Result |
+| --- | --- |
+| **Public “Request Access” form** (`/operators`) | Form filled and submitted end-to-end in a real browser. The page showed **“We could not save your application. Please try again in a moment.”** The submission **did not** complete successfully from automation’s perspective (server/database side — confirm whether a row was written to `operators_interest` or retry manually). Test payload used email `operators.e2e.browser.20260504@example.com`. |
+| **Membership lookup for the bypass email** (`bartpaden@gmail.com`) | `GET /api/operators/users/me` returned **`User not found in Operators system`**. That means **the bypass lets the browser into Operators screens**, but **server actions that depend on a real membership row** (RSVP, voting, etc.) can still **fail permission checks**. |
+| **RSVP** (`POST .../rsvp` on LIVE test event) | **`You do not have permission to RSVP`** — consistent with rules that only **operator** or **candidate** roles may RSVP; Chief Operator alone does **not** RSVP via this endpoint. |
+| **Voting** (`POST .../votes` on an OPEN event) | **`You do not have permission to vote`** — same underlying issue: server-side roles for that email did not grant vote permission at test time. |
+| **OPEN event page** (May 19 Operators Meeting) | Page loaded; **no voting controls appeared** in the accessibility snapshot (consistent with no vote permission / check-in gating in product rules). |
+| **CLOSED event — ROi / pot display** (ROI Test Event - Jan 2026, id `d39f3574-3083-4a6e-a7ec-d53067e85956`) | **Worked as a read-only verification:** **Event Outcomes** showed **ROi Winner:** Operator01, **Pot Won:** $305.00, net score and vote tallies. This confirms the **winner/pot presentation path** on a closed night **when data exists**. |
+| **Candidates approval UI** (`/operators/candidates`) | Page loaded; filters present; list showed **“No candidates found”** (empty queue at test time — approval buttons had nothing to act on). |
+
+### Critical takeaway for the next test pass
+
+1. **Pick one email that already exists in `operators_users`** with the roles you need for the step you’re testing (**operator** or **candidate** for RSVP and votes per server rules), **or** create that row before testing.  
+2. Put **that same email** in the temporary bypass setting (`VITE_OPERATORS_BYPASS_EMAIL`) so the browser session and the database agree.  
+3. Until those match, **full “happy path” automation cannot complete** — not because the UI is missing, but because **the server correctly rejects actions for accounts that aren’t set up as Operators membership**.
+
+---
+
+## Important: two different “request to join” paths
+
+| Path | What it is | Approval inside this product? |
 | --- | --- | --- |
-| **Public marketing form** | `/operators` → form posts to `POST /api/operators/interest/submit` → rows in **`operators_interest`**. | **No dedicated admin page** in this codebase yet. Review is expected to be **manual** (Supabase table, email, or internal process) until a queue UI is built. After you accept someone, they still need a row in **`operators_users`** (and usually roles) before magic link works. |
-| **Candidate invite (event-scoped)** | Operator uses **Invite Candidate** on a **LIVE** event → `operators_candidates` → **Chief Operator / Super Admin** approves on **`/operators/candidates`** or the event page. | **Yes** — built into the product. |
+| **Public marketing form** | `/operators` → saves to **`operators_interest`**. | **No dedicated queue screen** in this app yet. Follow-up is manual (database / email / process), then you create **`operators_users`** (+ roles) when you onboard someone. |
+| **Candidate (invited to an event)** | Someone submits a candidate application on a **LIVE** event → **`operators_candidates`** → Chief Operator approves on **`/operators/candidates`** or the event page. | **Yes** — flows exist in the product. |
 
-Your question mixes both: **“Requesting to join through the approval process”** most closely matches **Path B** if you mean the in-app candidate pipeline. If you mean the **new public interest form**, treat **Path A** as “capture interest,” then **manual onboarding** into `operators_users`.
+Your original question blends both. Treat **public interest** as “capture + manual onboarding,” and **candidate** as “in-app approval pipeline.”
 
 ---
 
 ## Preconditions (all flows)
 
-- **`operators_interest` table** exists in Supabase if you use the public form (`database/OPERATORS_INTEREST_SCHEMA.sql`).
-- User **must** have a row in **`operators_users`** with the right **roles** for magic link to succeed (`/operators/login`).
-- Events move **LIVE → OPEN → CLOSED** (see `notes/OPERATORS_USER_FLOWS_CANDIDATES_AND_OPERATORS.md`).
+- Tables exist in Supabase (`operators_interest`, `operators_users`, `operators_events`, etc.) per your migrations.
+- **Magic link:** user must exist in **`operators_users`** with appropriate **roles** before `/operators/login` will behave normally (without testing bypass).
+- Event lifecycle: **LIVE → OPEN → CLOSED** (see `notes/OPERATORS_USER_FLOWS_CANDIDATES_AND_OPERATORS.md`).
 
 ---
 
 ## Flow A — Public interest (marketing landing)
 
-| Step | Actor | Where / what |
+| Step | Actor | Action |
 | --- | --- | --- |
-| A1 | Visitor | Open `/operators`, fill **Request Access** (name, email, role, company size, bio ≥ 100 chars). |
-| A2 | Browser | `POST /api/operators/interest/submit` inserts into **`operators_interest`** (`status` pending). |
-| A3 | Staff | **Outside the app today:** review rows (e.g. Supabase), decide fit, then **create/update** `operators_users` (and roles) when you’re ready to onboard. |
-| A4 | New member | Receive instructions from staff; use **`/operators/login`** once `operators_users` exists. |
+| A1 | Visitor | Open `/operators`, scroll to **Request Access**, fill name, email, role/title, company size, bio (≥ 100 characters). |
+| A2 | Visitor | Submit → browser posts to **`POST /api/operators/interest/submit`**. |
+| A3 | System | Row should appear in **`operators_interest`** with pending/review status (confirm in Supabase if unsure). |
+| A4 | Staff | Outside the app: review, then create **`operators_users`** (+ roles) when inviting someone to log in. |
 
-**Code verified:** `api/operators/interest/submit.js`, landing form in `src/pages/operators/Landing.jsx`.  
-**Not verified live:** End-to-end insert against your production DB from this environment.
+**Live run (May 2026):** Automation submitted the form; **server responded with an error message on the page** (see summary table). **Database insert not confirmed from here.**
+
+**Files:** `api/operators/interest/submit.js`, `src/pages/operators/Landing.jsx`.
 
 ---
 
 ## Flow B — Candidate invite + approval (in-app)
 
-| Step | Actor | Where / what |
+| Step | Actor | Action |
 | --- | --- | --- |
-| B1 | Operator | Event is **LIVE**. On event detail: **Invite Candidate** → essay (200+ words per schema), contact info, email. |
-| B2 | API | `POST /api/operators/candidates/submit` creates **`operators_candidates`** (pending) and ensures **`operators_users`** exists for candidate email (typically **`candidate`** role). |
-| B3 | Chief Operator or Super Admin | **`/operators/candidates`** (global) and/or **Pending Candidates** on event detail: **Approve** or **Deny**. |
-| B4 | API | Approve: `POST /api/operators/candidates/:id/approve` — updates candidate row; creates/updates **`operators_users`** with bio fields; candidate remains **`candidate`** until promotion rules fire. |
-| B5 | Candidate | **`/operators/login`** → dashboard/events. |
+| B1 | Operator | Event is **LIVE**. On event detail: invite candidate → essay (200+ words per validation), contact info, candidate email. |
+| B2 | API | **`POST /api/operators/candidates/submit`** creates **`operators_candidates`** and ties user records as designed. |
+| B3 | Chief Operator | **`/operators/candidates`** (filter **pending**) and/or event detail **Approve** / **Deny**. |
+| B4 | Candidate | **`/operators/login`** → dashboard / events (magic link or testing bypass). |
 
-**Code verified:** `api/operators/candidates/submit.js`, `api/operators/candidates/[id]/approve.js`, `src/pages/operators/Candidates.jsx`, `EventDetail.jsx` invite + approve sections.
+**Live run (May 2026):** `/operators/candidates` loaded; **no pending rows** — approve/deny buttons were not exercised against real data.
+
+**Files:** `api/operators/candidates/submit.js`, `api/operators/candidates/[id]/approve.js`, `src/pages/operators/Candidates.jsx`, `src/pages/operators/EventDetail.jsx`.
 
 ---
 
 ## Flow C — RSVP for a LIVE event
 
-| Step | Actor | Where / what |
+| Step | Actor | Action |
 | --- | --- | --- |
-| C1 | Operator or approved Candidate | **`/operators/events`** → open a **LIVE** event. |
-| C2 | User | **RSVP** (or waitlist if full). |
-| C3 | API | `POST /api/operators/events/:id/rsvp` with `{ email, action: 'rsvp' }`. |
+| C1 | Operator or approved candidate | `/operators/events` or dashboard → open a **LIVE** event. |
+| C2 | User | Tap **RSVP** (or join waitlist if full). |
+| C3 | API | **`POST /api/operators/events/:id/rsvp`** with `{ email, action: 'rsvp' }`. |
 
-**Code verified:** RSVP handlers and UI blocks in `EventDetail.jsx`, API under `api/operators/events/[id]/rsvp.js`.
+**Permission rule (server):** Only **`operator`** or **`candidate`** may RSVP — **not** Chief Operator by role alone (`lib/operators/permissions.js`).
+
+**Live run (May 2026):** Direct API test returned **`You do not have permission to RSVP`** for `bartpaden@gmail.com`. **RSVP success path not demonstrated** until the test account has the right membership row and roles.
 
 ---
 
-## Flow D — Event night: OPEN → vote up/down
+## Flow D — Event night: OPEN → vote up / down
 
-| Step | Actor | Where / what |
+| Step | Actor | Action |
 | --- | --- | --- |
-| D1 | Chief Operator | Event **Start** → state **OPEN** (from **LIVE**). |
-| D2 | Accountant (typical) | **Check-in** for attendees who RSVP’d (`POST .../check-in`). |
-| D3 | Operator | On event detail (OPEN): voting UI for **other** attendees; **10 votes** budget per event; cannot vote for self. |
-| D4 | API | `POST /api/operators/events/:id/votes` with `vote_value` ±1. |
+| D1 | Chief Operator / staff | Move event from **LIVE** to **OPEN** (“Start event”). |
+| D2 | Accountant (typical) | Check in attendees who RSVP’d. |
+| D3 | Operator | On **OPEN** event detail: cast votes (budget/rules per product). |
+| D4 | API | **`POST /api/operators/events/:id/votes`** with vote payload. |
 
-**Code verified:** `EventDetail.jsx` voting block; votes API.  
-**Note:** UI shows voting for **`operator`** role; candidates may be restricted from the voting UI even if other code paths mention candidates—confirm with your product expectation (`notes/OPERATORS_USER_FLOWS_CANDIDATES_AND_OPERATORS.md`).
+**Live run (May 2026):** Vote API returned **`You do not have permission to vote`** for the bypass email used. OPEN event page showed **no voting UI** in automation snapshots (consistent with permissions / gating).
 
 ---
 
 ## Flow E — Close event → ROi winner (“pot for the night”)
 
-| Step | Actor | Where / what |
+| Step | Actor | Action |
 | --- | --- | --- |
-| E1 | Chief Operator or Accountant | Event detail (OPEN): **Close Event**. |
-| E2 | API | `POST /api/operators/events/:id/close` — finalizes attendance fields, then calls **`calculate_roi_winner`** (`supabase.rpc`), with **manual fallback** in code if the RPC returns nothing. Writes **`operators_roi_winners`**, handles promotions/offenses per implementation. |
-| E3 | Anyone allowed | Event **CLOSED**: event detail shows **Event Outcomes** (ROi winner, pot display when data exists). |
-| E4 | Optional | `GET /api/operators/events/:id/roi` reads stored winner for CLOSED events. |
+| E1 | Authorized role | **Close event** from OPEN. |
+| E2 | API / database | Close pipeline runs **`calculate_roi_winner`** (and related writes). |
+| E3 | Viewer | **CLOSED** event detail shows **Event Outcomes** (winner, pot, stats). |
 
-**Code verified:** `api/operators/events/[id]/close.js`, `database/operators_schema.sql` function `calculate_roi_winner`, `api/operators/events/[id]/roi.js`.
-
----
-
-## What was “verified” from this workspace vs what was not
-
-| Item | Status |
-| --- | --- |
-| API routes and main UI locations for each step | **Read from codebase** — consistent with tables above. |
-| Full browser run on archetypeoriginal.com with real accounts | **Not run** (no credentials; cannot complete magic link). |
-| Jest (`npm test` with operators tests) | **Failed in this environment** (`Cannot find module '@babel/preset-env'`). Fix devDependencies / CI if you want automated unit tests locally. |
-| Cypress (`npm run test:e2e`) | **Not run** here; specs under `cypress/e2e/operators/` are **mock-heavy** (e.g. intercepts) and need a configured base URL + app running. |
+**Live run (May 2026):** **Confirmed on CLOSED event “ROI Test Event - Jan 2026”:** ROi winner label **Operator01**, **Pot Won** **$305.00**, plus score summaries — **winner/pot display path works** when the event is closed and data exists.
 
 ---
 
-## Recommended manual test script (single staging event)
+## Pressure-test matrix (every step — how to stress it)
 
-Use **test emails** you control, all present in **`operators_users`**.
+Use staging or a dedicated test event when possible so real members are not affected.
 
-1. **CO / SA:** Create or pick a **LIVE** event with future date, seats, stake.  
-2. **Operator:** Invite candidate **B** → submit.  
-3. **CO:** Approve candidate **B** on `/operators/candidates`.  
-4. **B:** Magic link login → RSVP.  
-5. **CO:** Close RSVP / generate scenarios if your night requires it → **Start event** (OPEN).  
-6. **Accountant:** Check in attendees including **B** and operators who will vote.  
-7. **Two operators:** Cast votes (including edge: 0 remaining votes, vote for self attempt).  
-8. **CO/Accountant:** **Close event**.  
-9. **All:** Confirm **CLOSED** event detail shows winner; optional: compare **`operators_roi_winners`** row to DB function output.  
-10. **Optional parallel:** Submit **public interest** form; confirm row in **`operators_interest`** and document your **manual** follow-up to create **`operators_users`**.
-
----
-
-## Pressure-test matrix (by step)
-
-| Step | Risk | Suggested stress |
+| Step | What could go wrong | How to stress-test |
 | --- | --- | --- |
-| Interest submit | Spam / duplicates | Many rapid POSTs; same email twice; oversized bio; invalid JSON. |
-| Candidate submit | Validation bypass | Essay &lt; 200 words; missing fields; duplicate candidate same event. |
-| Approve | Permission | Non-CO user calling approve API (expect 403). |
-| RSVP | Race / capacity | Two users last seat; waitlist promotion; cancel RSVP inside/outside 24h window. |
-| OPEN votes | Budget | 11th vote; rapid double-click; vote after close; network retry duplicate POSTs (if idempotent). |
-| Check-in | State | Check-in when not OPEN; mark no-show then vote. |
-| Close | Order of operations | Close with no check-ins; close with RPC failure (manual path in `close.js`). |
-| ROi | Eligibility | Tie scores; CO excluded from winning per rules; benched / owed balance users per DB function. |
+| **Interest submit** | Spam, duplicates, oversized fields | Rapid repeated submits; same email twice; bio just under/over 100 chars; very long strings; malformed JSON if calling API directly. |
+| **Onboarding** | Person thinks they’re “in” but no DB row | Try login after interest only — should **not** unlock Operators until **`operators_users`** exists. |
+| **Candidate submit** | Weak validation | Essay under 200 words; missing fields; duplicate candidate same event. |
+| **Approve / deny** | Wrong role | Attempt approve while logged in as non–Chief Operator (expect refusal). |
+| **RSVP** | Capacity, timing | Fill last seat with two browsers; cancel inside/outside 24h window; RSVP while benched or with owed balance (expect block). |
+| **OPEN voting** | Budget / rules | Exhaust vote budget; attempt self-vote if forbidden; vote after close; double-click / rapid repeats. |
+| **Check-in** | Wrong state | Check-in when event not OPEN; no-show then vote. |
+| **Close / ROi** | Edge cases | Close with no check-ins; ties; RPC failure paths documented in `close` handler. |
+
+**Live run (May 2026):** These stress cases were **not** all executed automatically — only **spot checks** and API probes were done. The matrix remains the **manual / scripted** agenda for a full stress pass.
 
 ---
 
-## Gaps to be aware of (product / engineering)
+## Automated vs manual testing (honest scope)
 
-1. **`operators_interest`** has **no in-app review queue** yet—your “approval” for public applicants is **process + DB**, not a button in this repo.  
-2. **Automated E2E** is limited until Jest/Cypress env is fixed and tests assert real APIs or a staging Supabase.  
-3. **Promotion to `operator`** is tied to **close** logic and **`operators_promotions`** data—confirm per event that DB rows exist if you expect auto-promotion.
+| Mechanism | What it’s good for | Limit |
+| --- | --- | --- |
+| **Browser automation (this run)** | Public form, navigation, read-only CLOSED outcomes, empty-state screens | Cannot grant database roles or receive magic links **unless** you align bypass email + `operators_users` + event state. |
+| **Direct API calls** | Permission checks, quick probes | Same membership rules as the UI. |
+| **Unit tests in repo** | Regression on pure functions | Last known issue: Jest environment missed `@babel/preset-env` in one environment — fix if you want CI green. |
+| **Cypress specs** | Scripted repeats once base URL + data are stable | Needs configured run environment; mocks don’t replace permission truth. |
 
 ---
 
 ## Changed files
 
-- `notes/OPERATORS_E2E_TEST_PLAN_AND_VERIFICATION.md` (this file)
+- `notes/OPERATORS_E2E_TEST_PLAN_AND_VERIFICATION.md` (this file — rewritten after live execution)
