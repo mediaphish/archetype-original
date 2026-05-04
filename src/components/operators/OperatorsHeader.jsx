@@ -30,7 +30,9 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
 
   const isSA = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
   const isCO = useMemo(() => userRoles.includes('chief_operator'), [userRoles]);
+  const isAccountant = useMemo(() => userRoles.includes('accountant'), [userRoles]);
   const canManageCandidates = isCO || isSA;
+  const canViewDashboard = isSA || isCO || isAccountant;
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -58,15 +60,17 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
             >
               Events
             </button>
-            <button 
-              onClick={() => handleNavigate('/operators/dashboard')} 
-              onKeyDown={handleKeyDown(() => handleNavigate('/operators/dashboard'))}
-              className={tabClass('dashboard')}
-              aria-label="Navigate to Dashboard"
-              aria-current={active === 'dashboard' ? 'page' : undefined}
-            >
-              Dashboard
-            </button>
+            {canViewDashboard && (
+              <button 
+                onClick={() => handleNavigate('/operators/dashboard')} 
+                onKeyDown={handleKeyDown(() => handleNavigate('/operators/dashboard'))}
+                className={tabClass('dashboard')}
+                aria-label="Navigate to Dashboard"
+                aria-current={active === 'dashboard' ? 'page' : undefined}
+              >
+                Dashboard
+              </button>
+            )}
             <button 
               onClick={() => handleNavigate('/operators/profile')} 
               onKeyDown={handleKeyDown(() => handleNavigate('/operators/profile'))}
@@ -139,15 +143,17 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
               >
                 Events
               </button>
-              <button
-                onClick={() => handleNavigate('/operators/dashboard')}
-                onKeyDown={handleKeyDown(() => handleNavigate('/operators/dashboard'))}
-                className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('dashboard')}`}
-                aria-label="Navigate to Dashboard"
-                aria-current={active === 'dashboard' ? 'page' : undefined}
-              >
-                Dashboard
-              </button>
+              {canViewDashboard && (
+                <button
+                  onClick={() => handleNavigate('/operators/dashboard')}
+                  onKeyDown={handleKeyDown(() => handleNavigate('/operators/dashboard'))}
+                  className={`min-h-[44px] px-4 py-3 rounded-lg text-left ${mobileTabClass('dashboard')}`}
+                  aria-label="Navigate to Dashboard"
+                  aria-current={active === 'dashboard' ? 'page' : undefined}
+                >
+                  Dashboard
+                </button>
+              )}
               <button
                 onClick={() => handleNavigate('/operators/profile')}
                 onKeyDown={handleKeyDown(() => handleNavigate('/operators/profile'))}

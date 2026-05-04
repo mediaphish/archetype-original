@@ -39,7 +39,7 @@ const OperatorsLogin = () => {
     } catch {
       /* ignore */
     }
-    handleNavigate('/operators/dashboard');
+    handleNavigate('/operators/events');
   }, []);
 
   const handleSubmit = async (e) => {
@@ -107,7 +107,7 @@ const OperatorsLogin = () => {
           setTestBusy(false);
           return;
         }
-        handleNavigate('/operators/dashboard');
+        handleNavigate('/operators/events');
         return;
       }
       setErrorMessage(data.error || 'Test sign-in failed.');

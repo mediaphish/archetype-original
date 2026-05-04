@@ -9,14 +9,14 @@
  */
 
 describe('Operators Dashboard', () => {
-  const testEmail = 'operator@test.com';
+  const testEmail = 'chief@test.com';
 
   beforeEach(() => {
-    cy.loginAsOperator(testEmail);
+    cy.loginAsChiefOperator(testEmail);
   });
 
   it('should load and display dashboard metrics', () => {
-    cy.intercept('GET', '/api/operators/dashboard', {
+    cy.intercept('GET', '/api/operators/dashboard*', {
       statusCode: 200,
       body: {
         ok: true,
@@ -59,7 +59,7 @@ describe('Operators Dashboard', () => {
   });
 
   it('should display empty state when no dashboard data', () => {
-    cy.intercept('GET', '/api/operators/dashboard', {
+    cy.intercept('GET', '/api/operators/dashboard*', {
       statusCode: 200,
       body: {
         ok: false,
@@ -75,7 +75,7 @@ describe('Operators Dashboard', () => {
   });
 
   it('should display upcoming events section', () => {
-    cy.intercept('GET', '/api/operators/dashboard', {
+    cy.intercept('GET', '/api/operators/dashboard*', {
       statusCode: 200,
       body: {
         ok: true,

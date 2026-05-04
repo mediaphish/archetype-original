@@ -10,6 +10,7 @@ import { EmptyDashboard, EmptyEvents } from '../../components/operators/EmptySta
 import { handleKeyDown } from '../../lib/operators/accessibility';
 import { trackPageLoad, trackAPIResponseTime } from '../../lib/operators/performance';
 import { trackError } from '../../lib/operators/errorTracking';
+import { rolesCanViewOperatorsDashboard } from '../../lib/operators/permissions';
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -19,7 +20,25 @@ export default function Dashboard() {
   const [candidateForm, setCandidateForm] = useState({});
   const [confirmModal, setConfirmModal] = useState({ isOpen: false });
   const toast = useToast();
-  const { email, userRoles } = useUser();
+  const { email, userRoles, loading: userLoading } = useUser();
+  const canViewDashboard = useMemo(() => rolesCanViewOperatorsDashboard(userRoles), [userRoles]);
+
+  useEffect(() => {
+    if (userLoading) return;
+    if (!rolesCanViewOperatorsDashboard(userRoles)) {
+      try {
+        window.history.replaceState({}, '', '/operators/events');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      } catch (e) {
+        console.error('[DASHBOARD] redirect', e);
+      }
+    }
+  }, [userLoading, userRoles]);
+
+  const dashboardMetricsUrl = useMemo(() => {
+    if (!email) return null;
+    return `/api/operators/dashboard?email=${encodeURIComponent(email)}`;
+  }, [email]);
 
   const handleNavigate = useCallback((path) => {
     window.history.pushState({}, '', path);
@@ -29,16 +48,18 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-    // Track page load performance
+    if (userLoading || !canViewDashboard || !dashboardMetricsUrl) {
+      return;
+    }
+
     trackPageLoad('dashboard');
 
     const fetchData = async () => {
       try {
         setLoading(true);
         const startTime = performance.now();
-        
-        // Fetch dashboard metrics (doesn't require email, returns aggregate data)
-        const dashboardResp = await fetch('/api/operators/dashboard');
+
+        const dashboardResp = await fetch(dashboardMetricsUrl);
         const apiDuration = performance.now() - startTime;
         await trackAPIResponseTime('/api/operators/dashboard', apiDuration, dashboardResp.ok ? 'success' : 'error');
         
@@ -107,9 +128,8 @@ export default function Dashboard() {
       }
     };
 
-    // Only fetch if UserContext has finished loading (or if email is not required for dashboard)
     fetchData();
-  }, [email, toast]);
+  }, [email, toast, userLoading, canViewDashboard, dashboardMetricsUrl]);
 
   // Hooks must run unconditionally before any early return (React #310 if placed after loading branch).
   const getStateColor = useCallback((state) => {
@@ -139,7 +159,11 @@ export default function Dashboard() {
   const isOperator = useMemo(() => userRoles.includes('operator'), [userRoles]);
   const canRSVP = useMemo(() => isOperator || userRoles.includes('candidate'), [isOperator, userRoles]);
 
-  if (loading) {
+  if (!userLoading && !canViewDashboard) {
+    return null;
+  }
+
+  if (userLoading || loading) {
     return (
       <div className="min-h-screen bg-[#fafafa]">
         <OperatorsHeader active="dashboard" />
@@ -172,7 +196,7 @@ export default function Dashboard() {
             <button
               onClick={() => {
                 setLoading(true);
-                fetch('/api/operators/dashboard')
+                fetch(dashboardMetricsUrl)
                   .then(r => r.json())
                   .then(json => {
                     console.log('[DASHBOARD] Retry response:', json);
@@ -185,7 +209,7 @@ export default function Dashboard() {
               }}
               onKeyDown={handleKeyDown(() => {
                 setLoading(true);
-                fetch('/api/operators/dashboard')
+                fetch(dashboardMetricsUrl)
                   .then(r => r.json())
                   .then(json => {
                     console.log('[DASHBOARD] Retry response:', json);
@@ -357,7 +381,7 @@ export default function Dashboard() {
               <button
                 onClick={() => {
                   setLoading(true);
-                  fetch('/api/operators/dashboard')
+                  fetch(dashboardMetricsUrl)
                     .then(r => r.json())
                     .then(json => {
                       console.log('[DASHBOARD] Retry response:', json);
@@ -370,7 +394,7 @@ export default function Dashboard() {
                 }}
                 onKeyDown={handleKeyDown(() => {
                   setLoading(true);
-                  fetch('/api/operators/dashboard')
+                  fetch(dashboardMetricsUrl)
                     .then(r => r.json())
                     .then(json => {
                       console.log('[DASHBOARD] Retry response:', json);
@@ -405,7 +429,7 @@ export default function Dashboard() {
             <button
               onClick={() => {
                 setLoading(true);
-                fetch('/api/operators/dashboard')
+                fetch(dashboardMetricsUrl)
                   .then(r => r.json())
                   .then(json => {
                     console.log('[DASHBOARD] Retry response:', json);
@@ -423,7 +447,7 @@ export default function Dashboard() {
               }}
               onKeyDown={handleKeyDown(() => {
                 setLoading(true);
-                fetch('/api/operators/dashboard')
+                fetch(dashboardMetricsUrl)
                   .then(r => r.json())
                   .then(json => {
                     console.log('[DASHBOARD] Retry response:', json);

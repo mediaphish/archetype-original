@@ -131,9 +131,8 @@ export default async function handler(req, res) {
       `);
     }
 
-    // Redirect to dashboard with email in query string
-    // Frontend will handle storing email in localStorage
-    const redirectUrl = `${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/operators/dashboard?email=${encodeURIComponent(emailLower)}`;
+    // Redirect to events hub; aggregate dashboard is staff-only
+    const redirectUrl = `${process.env.SITE_URL || 'https://www.archetypeoriginal.com'}/operators/events?email=${encodeURIComponent(emailLower)}`;
     
     return res.status(302).setHeader('Location', redirectUrl).send(`
       <!DOCTYPE html>

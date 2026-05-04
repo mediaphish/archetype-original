@@ -356,20 +356,22 @@ export default function EventDetail() {
       });
       const json = await resp.json();
       if (json.ok) {
-        // Refresh event data with cache-busting to ensure fresh data
         const eventResp = await fetch(`/api/operators/events/${id}?email=${encodeURIComponent(email)}&_t=${Date.now()}`);
         const eventJson = await eventResp.json();
         if (eventJson.ok) {
           setEvent(eventJson.event);
           console.log('Event reopened to OPEN. RSVP Closed:', eventJson.event.rsvp_closed);
-        }
         } else {
-          const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to reopen event';
-          console.error('Reopen event error:', json);
-          toast.error(errorMsg);
+          console.error('Reopen refresh failed:', eventJson);
+          toast.warning('Event reopened but failed to refresh. Please reload the page.');
         }
-      } catch (error) {
-        toast.error('Failed to reopen event. Please try again.');
+      } else {
+        const errorMsg = json.details ? `${json.error}: ${json.details}` : json.error || 'Failed to reopen event';
+        console.error('Reopen event error:', json);
+        toast.error(errorMsg);
+      }
+    } catch (error) {
+      toast.error('Failed to reopen event. Please try again.');
     } finally {
       setActionLoading(false);
     }
@@ -415,6 +417,40 @@ export default function EventDetail() {
       }
     } catch (error) {
       toast.error('Failed to revert event to LIVE. Please try again.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteEvent = () => {
+    if (!event) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete this event?',
+      message: `Permanently delete "${event.title}"? This removes RSVPs, scenarios, and related records. Closed events cannot be deleted here.`,
+      onConfirm: performDeleteEvent,
+      variant: 'danger',
+      confirmText: 'Delete event',
+    });
+  };
+
+  const performDeleteEvent = async () => {
+    setActionLoading(true);
+    try {
+      const resp = await fetch(
+        `/api/operators/events/${id}/delete?email=${encodeURIComponent(email)}`,
+        { method: 'DELETE' }
+      );
+      const json = await resp.json().catch(() => ({}));
+      if (resp.ok && json.ok) {
+        toast.success('Event deleted');
+        handleNavigate('/operators/events');
+      } else {
+        toast.error(json.error || 'Could not delete event');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not delete event');
     } finally {
       setActionLoading(false);
     }
@@ -1656,6 +1692,16 @@ export default function EventDetail() {
                       className="w-full min-h-[44px] px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center"
                     >
                       Reopen Event
+                    </button>
+                  )}
+                  {isCO && (event.state === 'LIVE' || event.state === 'OPEN') && (
+                    <button
+                      type="button"
+                      onClick={handleDeleteEvent}
+                      disabled={actionLoading}
+                      className="w-full min-h-[44px] px-4 py-2 bg-red-50 text-red-900 border border-red-200 rounded-lg hover:bg-red-100 disabled:opacity-50 flex items-center justify-center font-medium"
+                    >
+                      Delete event
                     </button>
                   )}
                 </div>

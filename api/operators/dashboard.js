@@ -8,12 +8,23 @@
  */
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
+import { getUserOperatorsRoles, rolesCanViewOperatorsDashboard } from '../../lib/operators/permissions.js';
 
 export const config = { runtime: 'nodejs' };
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
+
+  const { email } = req.query;
+  if (!email || typeof email !== 'string') {
+    return res.status(400).json({ ok: false, error: 'Email is required' });
+  }
+
+  const roles = await getUserOperatorsRoles(email);
+  if (!rolesCanViewOperatorsDashboard(roles)) {
+    return res.status(403).json({ ok: false, error: 'You do not have access to the dashboard' });
   }
 
   try {
