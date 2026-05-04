@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { OptimizedImage } from '../../components/OptimizedImage';
+import { getOperatorsBypassEmail, isOperatorsAuthBypassActive } from '../../lib/operatorsSession';
 
 const OperatorsLogin = () => {
   const [email, setEmail] = useState('');
@@ -27,6 +28,19 @@ const OperatorsLogin = () => {
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
+
+  // Private testing: when host enables VITE_OPERATORS_AUTH_BYPASS, skip the login screen
+  useEffect(() => {
+    if (!isOperatorsAuthBypassActive()) return;
+    const em = getOperatorsBypassEmail();
+    if (!em) return;
+    try {
+      localStorage.setItem('operators_email', em);
+    } catch {
+      /* ignore */
+    }
+    handleNavigate('/operators/dashboard');
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

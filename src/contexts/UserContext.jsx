@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { getOperatorsBypassEmail, isOperatorsAuthBypassActive } from '../lib/operatorsSession';
 
 const UserContext = createContext(null);
 
@@ -14,6 +15,9 @@ export default function UserProvider({ children, initialEmail = null }) {
   // Get email from localStorage first (from magic link auth), then URL param (backward compatibility)
   const getEmail = () => {
     if (typeof window === 'undefined') return '';
+    if (isOperatorsAuthBypassActive()) {
+      return getOperatorsBypassEmail() || '';
+    }
     // Check localStorage first (from magic link authentication)
     const stored = localStorage.getItem('operators_email');
     if (stored) return stored;
@@ -51,6 +55,19 @@ export default function UserProvider({ children, initialEmail = null }) {
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
+
+  // Match bypass email into storage so parts of the app that read localStorage stay aligned
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!isOperatorsAuthBypassActive()) return;
+    const em = getOperatorsBypassEmail();
+    if (!em) return;
+    try {
+      localStorage.setItem('operators_email', em);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   // Sync email from localStorage when it changes (e.g., from magic link verification)
   useEffect(() => {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, lazy, Suspense } from "react";
+import { operatorsAuthAllowed } from "./lib/operatorsSession";
 import SEO from "./components/SEO";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -168,14 +169,10 @@ export default function App() {
         return path === '/operators' ? 'operators-landing' : 'operators-login';
       }
       // Protected routes - check authentication
-      if (typeof window !== 'undefined') {
-        const storedEmail = localStorage.getItem('operators_email');
-        const urlEmail = new URLSearchParams(window.location.search).get('email');
-        if (!storedEmail && !urlEmail) {
-          // Not authenticated - will redirect to login in handleRoute
-          // But for now, return login page to prevent flash of protected content
-          return 'operators-login';
-        }
+      if (typeof window !== 'undefined' && !operatorsAuthAllowed()) {
+        // Not authenticated - will redirect to login in handleRoute
+        // But for now, return login page to prevent flash of protected content
+        return 'operators-login';
       }
       // Authenticated - return appropriate page based on path
       if (path === '/operators/events') return 'operators-events';
@@ -225,9 +222,7 @@ export default function App() {
   useEffect(() => {
     const path = window.location.pathname;
     if (path.startsWith('/operators/') && path !== '/operators' && path !== '/operators/login') {
-      const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('operators_email') : null;
-      const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
-      if (!storedEmail && !urlEmail) {
+      if (typeof window !== 'undefined' && !operatorsAuthAllowed()) {
         window.location.replace('/operators/login');
         return;
       }
@@ -353,10 +348,10 @@ export default function App() {
           }
         }
         
-        // Check authentication (allow if email in localStorage or URL)
+        // Check authentication (allow if email in localStorage, URL, or short-lived env bypass)
         // Only check for protected routes (not landing or login)
         if (path !== '/operators' && path !== '/operators/login') {
-          if (!storedEmail && !urlEmail) {
+          if (!operatorsAuthAllowed()) {
             // Not authenticated - redirect to login
             window.location.replace('/operators/login');
             return;
