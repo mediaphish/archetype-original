@@ -65,6 +65,13 @@ export default function Header() {
     return `${base} ${active}`;
   };
 
+  const inactivePrimaryNavClass =
+    "text-sm font-medium tracking-wide transition-all duration-200 whitespace-nowrap text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9] px-1.5 py-0.5 rounded-sm";
+  const advisoryGroupActive =
+    isActive('/advisory') || isActive('/consulting') || isActive('/fractional-roles');
+  /** Public marketing page only — not /operators/login or app subroutes */
+  const isOperatorsLandingNav = currentPath === '/operators';
+
   return (
     <>
       <nav className="sticky top-0 z-50 border-b border-[#1A1A1A]/10 bg-white/95 backdrop-blur-sm">
@@ -157,7 +164,7 @@ export default function Header() {
               {/* Desktop Navigation — centered in bar (reference layout) */}
               <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 md:flex md:justify-center">
                 <div className="pointer-events-auto flex max-w-[calc(100%-18rem)] items-center justify-center gap-2 lg:gap-4 xl:gap-5">
-                  {/* Advisory Roles */}
+                  {/* Leadership Advisory */}
                   <div
                     className="relative"
                     onMouseEnter={() => setAdvisoryDropdownOpen(true)}
@@ -165,9 +172,11 @@ export default function Header() {
                   >
                     <button
                       type="button"
-                      className={`${navLinkClass('/advisory')} flex items-center gap-0.5`}
+                      className={`${
+                        advisoryGroupActive ? navLinkClass('/advisory') : inactivePrimaryNavClass
+                      } flex items-center gap-0.5`}
                     >
-                      Advisory Roles
+                      Leadership Advisory
                       <svg
                         className={`w-4 h-4 transition-transform duration-200 ${advisoryDropdownOpen ? 'rotate-180' : ''}`}
                         fill="none"
@@ -200,21 +209,33 @@ export default function Header() {
                           >
                             Fractional Roles
                           </a>
+                          <div className="my-1 border-t border-[#1A1A1A]/10" />
+                          <a
+                            href="/consulting"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavigation('/consulting');
+                            }}
+                            className="block px-4 py-2 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]"
+                          >
+                            Consulting
+                          </a>
                         </div>
                       </div>
                     )}
                   </div>
 
-                  {/* Consulting — single destination (formats covered on page) */}
                   <a
-                    href="/consulting"
+                    href="/operators"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavigation('/consulting');
+                      handleNavigation('/operators');
                     }}
-                    className={navLinkClass('/consulting')}
+                    className={
+                      isOperatorsLandingNav ? navLinkClass('/operators') : inactivePrimaryNavClass
+                    }
                   >
-                    Consulting
+                    The Operators
                   </a>
 
                   {/* Meet Bart */}
@@ -411,18 +432,18 @@ export default function Header() {
             {/* Drawer Content - Scrollable */}
             <div className="flex-1 overflow-y-auto py-4">
               <div className="flex flex-col space-y-1">
-                {/* Advisory Roles */}
+                {/* Leadership Advisory */}
                 <div>
                   <button
                     type="button"
                     onClick={() => setMobileExpanded(mobileExpanded === 'advisory' ? null : 'advisory')}
                     className={`w-full px-6 py-3 text-base font-medium text-left transition-all duration-200 flex items-center justify-between ${
-                      isActive('/advisory')
+                      advisoryGroupActive
                         ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
                         : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                     }`}
                   >
-                    Advisory Roles
+                    Leadership Advisory
                     <svg className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded === 'advisory' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -431,23 +452,25 @@ export default function Header() {
                     <div className="bg-[#FAFAF9] py-1">
                       <a href="/advisory" onClick={(e) => { e.preventDefault(); handleNavigation('/advisory'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Leadership Advisory</a>
                       <a href="/fractional-roles" onClick={(e) => { e.preventDefault(); handleNavigation('/fractional-roles'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Fractional Roles</a>
+                      <div className="mx-6 my-1 border-t border-[#1A1A1A]/10" />
+                      <a href="/consulting" onClick={(e) => { e.preventDefault(); handleNavigation('/consulting'); }} className="block min-h-[44px] px-6 py-2 pl-12 text-sm text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-white">Consulting</a>
                     </div>
                   )}
                 </div>
 
                 <a
-                  href="/consulting"
+                  href="/operators"
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavigation('/consulting');
+                    handleNavigation('/operators');
                   }}
                   className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
-                    isActive('/consulting')
+                    isOperatorsLandingNav
                       ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
                       : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
                   }`}
                 >
-                  Consulting
+                  The Operators
                 </a>
 
                 {/* Meet Bart */}
