@@ -43,7 +43,12 @@ export default async function handler(req, res) {
     });
 
     if (error) {
-      console.error('operators_interest insert', error);
+      console.error('operators_interest insert', error.message || error);
+      console.error('[OPERATORS_INTEREST]', {
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
       return res.status(500).json({
         ok: false,
         error: 'We could not save your application. Please try again in a moment.',

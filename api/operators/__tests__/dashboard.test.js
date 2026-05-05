@@ -25,12 +25,9 @@ describe('Dashboard API Integration', () => {
   describe('Event Metrics', () => {
     it('should return total events count', async () => {
       mockFrom.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          count: jest.fn().mockResolvedValue({ count: 10 }),
-        }),
+        select: jest.fn().mockResolvedValue({ count: 10, error: null }),
       });
 
-      // Simulate the API logic
       const { count: totalEvents } = await supabaseAdmin
         .from('operators_events')
         .select('*', { count: 'exact', head: true });

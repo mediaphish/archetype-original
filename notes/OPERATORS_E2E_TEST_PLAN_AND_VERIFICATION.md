@@ -5,6 +5,12 @@ This document is the **master checklist** for what you asked to verify: the full
 **Update — live execution (May 4, 2026):**  
 Automated browser sessions and public API checks were run against `https://www.archetypeoriginal.com` while the temporary testing login bypass was enabled for Operators. Results are summarized in **Live run summary** (below) and repeated under each flow.
 
+**Update — tooling + data (May 5, 2026):**  
+- **Root cause of Request Access errors:** `operators_interest` is **not created in production** (PostgREST `PGRST205` / schema cache: table missing). The repo file `database/OPERATORS_INTEREST_SCHEMA.sql` was never applied in that Supabase project. Applying that SQL (dashboard SQL Editor) **or** running `node scripts/operators-apply-interest-schema.mjs` with a valid `SUPABASE_DB_CONNECTION_URI` / pooler connection in `.env.local` fixes inserts.  
+- **Proof:** `curl` to `POST …/api/operators/interest/submit` on production still returns HTTP 500 until the table exists; `node scripts/operators-probe-interest-table.mjs` reproduces `PGRST205` against the same Supabase project via the service-role client.  
+- **Simulation cast seeded** (idempotent script `node scripts/operators-seed-simulation.mjs`): Operators membership rows for real accounts + sim aliases, one **LIVE** event **“Simulation Event - 2026-05-05”** (latest id from run: `cb4d6b05-381e-4222-b3e1-1af375bc44bf`), and **two** `operators_candidates` rows (one pending, one approved). This unblocks RSVP/vote testing for the addresses in the plan once the live site session matches those emails.  
+- **Full browser RSVP → OPEN → votes → CLOSE** was **not** re-run end-to-end from this pass (magic link + production bypass settings + check-in UI). Next step: run that flow on production with bypass email aligned to seeded operators and the simulation event id above; then update this note again.
+
 ---
 
 ## Live run summary (May 4, 2026)
@@ -147,4 +153,4 @@ Use staging or a dedicated test event when possible so real members are not affe
 
 ## Changed files
 
-- `notes/OPERATORS_E2E_TEST_PLAN_AND_VERIFICATION.md` (this file — rewritten after live execution)
+- `notes/OPERATORS_E2E_TEST_PLAN_AND_VERIFICATION.md` (this file — rewritten after live execution; May 5 update above)
