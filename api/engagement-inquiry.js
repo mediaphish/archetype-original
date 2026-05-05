@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { contactFormRecipient } from "../lib/contact-form-inbox.js";
 import { evaluateSpamGuards } from "../lib/contact-spam-guard.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -57,8 +58,8 @@ export default async function handler(req, res) {
     }
 
     const from = process.env.CONTACT_FROM;
-    const to = process.env.CONTACT_TO;
-    if (!process.env.RESEND_API_KEY || !from || !to) {
+    const to = contactFormRecipient();
+    if (!process.env.RESEND_API_KEY || !from) {
       return res.status(500).json({ error: "Email is not configured." });
     }
 
