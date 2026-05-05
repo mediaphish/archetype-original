@@ -2,9 +2,15 @@
  * Contact Section / Final CTA
  * Editorial Minimal Design - Orange Border Frame
  */
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function Contact() {
+  const formLoadedAtRef = useRef(null);
+  const [trapField, setTrapField] = useState("");
+  useEffect(() => {
+    if (formLoadedAtRef.current == null) formLoadedAtRef.current = Date.now();
+  }, []);
+
   const [state, setState] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState({ loading: false, ok: null, msg: "" });
 
@@ -15,12 +21,19 @@ export default function Contact() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(state),
+        body: JSON.stringify({
+          ...state,
+          form_loaded_at: formLoadedAtRef.current,
+          _trap: trapField,
+        }),
       });
       const data = await res.json();
       if (res.ok) setStatus({ loading: false, ok: true, msg: "Message sent. I'll respond soon." });
       else setStatus({ loading: false, ok: false, msg: data?.error || "Something went wrong." });
-      if (res.ok) setState({ name: "", email: "", message: "" });
+      if (res.ok) {
+        setState({ name: "", email: "", message: "" });
+        setTrapField("");
+      }
     } catch (err) {
       setStatus({ loading: false, ok: false, msg: "Network error." });
     }
@@ -34,7 +47,21 @@ export default function Contact() {
             <h2 className="text-[48px] sm:text-[64px] md:text-[72px] lg:text-[96px] font-bold text-[#1A1A1A] mb-6 sm:mb-8 md:mb-10 font-serif tracking-tight text-balance text-center">
               Contact
             </h2>
-            <form onSubmit={submit} className="space-y-6">
+            <form onSubmit={submit} className="relative space-y-6">
+              <div
+                className="absolute -left-[10000px] h-px w-px overflow-hidden opacity-0"
+                aria-hidden="true"
+              >
+                <label htmlFor="contact-section-trap">Leave blank</label>
+                <input
+                  id="contact-section-trap"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={trapField}
+                  onChange={(e) => setTrapField(e.target.value)}
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Name</label>
                 <input 

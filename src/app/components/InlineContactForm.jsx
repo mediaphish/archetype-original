@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function InlineContactForm({ onSuccess }) {
+  const formLoadedAtRef = useRef(null);
+  const [trapField, setTrapField] = useState('');
+  useEffect(() => {
+    if (formLoadedAtRef.current == null) formLoadedAtRef.current = Date.now();
+  }, []);
+
   const [state, setState] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState({ loading: false, ok: null, msg: "" });
 
@@ -11,12 +17,17 @@ export default function InlineContactForm({ onSuccess }) {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(state),
+        body: JSON.stringify({
+          ...state,
+          form_loaded_at: formLoadedAtRef.current,
+          _trap: trapField,
+        }),
       });
       const data = await res.json();
       if (res.ok) {
         setStatus({ loading: false, ok: true, msg: "Message sent! Bart will respond soon." });
         setState({ name: "", email: "", message: "" });
+        setTrapField("");
         if (onSuccess) {
           setTimeout(() => onSuccess(), 2000);
         }
@@ -31,7 +42,21 @@ export default function InlineContactForm({ onSuccess }) {
   return (
     <div className="mt-4 p-4 bg-white border border-warm-border rounded-lg">
       <h3 className="text-lg font-semibold text-warm-charcoal mb-4">Contact Bart</h3>
-      <form onSubmit={submit} className="space-y-4">
+      <form onSubmit={submit} className="relative space-y-4">
+        <div
+          className="absolute -left-[9999px] h-px w-px overflow-hidden opacity-0"
+          aria-hidden="true"
+        >
+          <label htmlFor="inline-contact-trap">Leave blank</label>
+          <input
+            id="inline-contact-trap"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={trapField}
+            onChange={(e) => setTrapField(e.target.value)}
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium text-warm-charcoal mb-1">Name</label>
           <input 

@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { evaluateSpamGuards } from "../lib/contact-spam-guard.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -21,7 +22,34 @@ export default async function handler(req, res) {
   }
   
   try {
-    const { q1, q2, q2Other, q3, q4, q5, q6, q7, q8, role, roleOther, orgSize } = req.body || {};
+    const spam = evaluateSpamGuards("engagement", req, req.body || {});
+    if (spam.outcome === "silently_accept") {
+      if (spam.detail === "honeypot") return res.status(200).json({ ok: true });
+      return res.status(400).json({
+        error:
+          "Please wait a few seconds after the page loads, then try submitting again.",
+      });
+    }
+    if (spam.outcome === "rate_limit") {
+      return res.status(429).json({ error: spam.message || "Too many requests." });
+    }
+
+    const {
+      form_loaded_at: _fl,
+      _trap: _tp,
+      q1,
+      q2,
+      q2Other,
+      q3,
+      q4,
+      q5,
+      q6,
+      q7,
+      q8,
+      role,
+      roleOther,
+      orgSize,
+    } = req.body || {};
     
     // Validate required fields
     if (!q1 || !q2 || !q2.length || !q3 || !q4 || !q4.length || !q5 || !q6 || !q7) {

@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { evaluateSpamGuards } from "../lib/contact-spam-guard.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -20,7 +21,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
   try {
-    const { name, email, message, company, phone } = req.body || {};
+    const spam = evaluateSpamGuards("contact", req, req.body || {});
+    if (spam.outcome === "silently_accept") {
+      return res.status(200).json({ ok: true });
+    }
+    if (spam.outcome === "rate_limit") {
+      return res.status(429).json({ error: spam.message || "Too many requests." });
+    }
+
+    const { form_loaded_at: _fl, _trap: _tp, ...payload } = req.body || {};
+    const { name, email, message, company, phone } = payload;
     if (!name || !email || !message) {
       return res.status(400).json({ error: "Missing required fields." });
     }

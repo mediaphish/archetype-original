@@ -2,7 +2,7 @@
  * Engagement Inquiry Form Page
  * Collects context about potential clients and triggers Archy chat with AI-generated reflections
  */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SEO from '../components/SEO';
 import ChatApp from '../app/ChatApp';
 
@@ -14,6 +14,13 @@ function go(e, path) {
 }
 
 export default function EngagementInquiry() {
+  const formLoadedAtRef = useRef(null);
+  const [trapField, setTrapField] = useState('');
+
+  useEffect(() => {
+    if (formLoadedAtRef.current == null) formLoadedAtRef.current = Date.now();
+  }, []);
+
   const [formData, setFormData] = useState({
     q1: '',
     q2: [],
@@ -84,7 +91,11 @@ export default function EngagementInquiry() {
       const res = await fetch('/api/engagement-inquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          form_loaded_at: formLoadedAtRef.current,
+          _trap: trapField,
+        }),
       });
 
       const data = await res.json();
@@ -93,6 +104,7 @@ export default function EngagementInquiry() {
         const archyMessage = await generateArchyReflections(formData);
         setArchyInitialMessage(archyMessage);
         setFormStatus({ loading: false, success: true, error: null });
+        setTrapField('');
         setChatKey((prev) => prev + 1);
       } else {
         setFormStatus({
@@ -271,7 +283,21 @@ Generate the full response following the structure above.`;
 
         <section className="bg-[#FAFAF9] py-[72px]">
           <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-start gap-12 px-6 lg:grid-cols-[1fr_340px] lg:gap-20 lg:px-10">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-[2px]">
+            <form onSubmit={handleSubmit} className="relative flex flex-col gap-[2px]">
+              <div
+                className="absolute -left-[10000px] h-px w-px overflow-hidden opacity-0"
+                aria-hidden="true"
+              >
+                <label htmlFor="engagement-form-trap">Leave this field blank</label>
+                <input
+                  id="engagement-form-trap"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={trapField}
+                  onChange={(e) => setTrapField(e.target.value)}
+                />
+              </div>
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
                 <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
                   01

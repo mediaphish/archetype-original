@@ -1,7 +1,7 @@
 /**
  * Contact Page — general questions; form posts to /api/contact
  */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SEO from '../components/SEO';
 
 function go(e, path) {
@@ -12,6 +12,15 @@ function go(e, path) {
 }
 
 export default function ContactPage() {
+  const formLoadedAtRef = useRef(null);
+  const [trapField, setTrapField] = useState('');
+
+  useEffect(() => {
+    if (formLoadedAtRef.current == null) {
+      formLoadedAtRef.current = Date.now();
+    }
+  }, []);
+
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -33,7 +42,11 @@ export default function ContactPage() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formState),
+        body: JSON.stringify({
+          ...formState,
+          form_loaded_at: formLoadedAtRef.current,
+          _trap: trapField,
+        }),
       });
 
       const data = await res.json();
@@ -41,6 +54,7 @@ export default function ContactPage() {
       if (res.ok) {
         setFormStatus({ loading: false, success: true, error: null });
         setFormState({ name: '', email: '', company: '', phone: '', message: '' });
+        setTrapField('');
       } else {
         setFormStatus({
           loading: false,
@@ -101,7 +115,23 @@ export default function ContactPage() {
               <p className="mb-8 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
                 Send a message
               </p>
-              <form onSubmit={handleFormSubmit} className="space-y-6">
+              <form onSubmit={handleFormSubmit} className="relative space-y-6">
+                <div
+                  className="absolute -left-[10000px] h-px w-px overflow-hidden opacity-0"
+                  aria-hidden="true"
+                  tabIndex={-1}
+                >
+                  <label htmlFor="contact-form-trap">Leave this field blank</label>
+                  <input
+                    id="contact-form-trap"
+                    type="text"
+                    name="_trap_visual"
+                    autoComplete="off"
+                    tabIndex={-1}
+                    value={trapField}
+                    onChange={(e) => setTrapField(e.target.value)}
+                  />
+                </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="mb-2 block font-sans text-[13px] font-medium text-[#1A1A1A]">
