@@ -2,6 +2,7 @@ import React, { useState, memo, useMemo, useCallback } from 'react';
 import { Menu, X, LogOut } from 'lucide-react';
 import { handleKeyDown } from '../../lib/operators/accessibility';
 import { useUser } from '../../contexts/UserContext';
+import { emailMayViewOperatorsDashboard } from '../../lib/operators/permissions';
 import SkipLink from './SkipLink';
 import { OptimizedImage } from '../OptimizedImage';
 
@@ -30,9 +31,12 @@ function OperatorsHeader({ active = 'events', onNavigate }) {
 
   const isSA = useMemo(() => userRoles.includes('super_admin'), [userRoles]);
   const isCO = useMemo(() => userRoles.includes('chief_operator'), [userRoles]);
-  const isAccountant = useMemo(() => userRoles.includes('accountant'), [userRoles]);
   const canManageCandidates = isCO || isSA;
-  const canViewDashboard = isSA || isCO || isAccountant;
+  const dashboardAllowlistEnv = import.meta.env.VITE_OPERATORS_DASHBOARD_ALLOWED_EMAILS;
+  const canViewDashboard = useMemo(
+    () => emailMayViewOperatorsDashboard(email, userRoles, dashboardAllowlistEnv),
+    [email, userRoles, dashboardAllowlistEnv]
+  );
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">

@@ -8,7 +8,7 @@
  */
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
-import { getUserOperatorsRoles, rolesCanViewOperatorsDashboard } from '../../lib/operators/permissions.js';
+import { getUserOperatorsRoles, emailMayViewOperatorsDashboard } from '../../lib/operators/permissions.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   }
 
   const roles = await getUserOperatorsRoles(email);
-  if (!rolesCanViewOperatorsDashboard(roles)) {
+  if (!emailMayViewOperatorsDashboard(email, roles, process.env.OPERATORS_DASHBOARD_ALLOWED_EMAILS)) {
     return res.status(403).json({ ok: false, error: 'You do not have access to the dashboard' });
   }
 

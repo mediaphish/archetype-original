@@ -21,8 +21,8 @@ jest.mock('../../../components/operators/ToastProvider', () => ({
 }));
 jest.mock('../../../contexts/UserContext', () => ({
   useUser: () => ({
-    email: 'test@example.com',
-    userRoles: ['operator'],
+    email: 'bart@archetypeoriginal.com',
+    userRoles: ['chief_operator'],
   }),
 }));
 jest.mock('../../../components/operators/EmptyState', () => ({

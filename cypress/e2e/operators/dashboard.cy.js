@@ -9,7 +9,7 @@
  */
 
 describe('Operators Dashboard', () => {
-  const testEmail = 'chief@test.com';
+  const testEmail = 'bart@archetypeoriginal.com';
 
   beforeEach(() => {
     cy.loginAsChiefOperator(testEmail);

@@ -10,7 +10,7 @@ import { EmptyDashboard, EmptyEvents } from '../../components/operators/EmptySta
 import { handleKeyDown } from '../../lib/operators/accessibility';
 import { trackPageLoad, trackAPIResponseTime } from '../../lib/operators/performance';
 import { trackError } from '../../lib/operators/errorTracking';
-import { rolesCanViewOperatorsDashboard } from '../../lib/operators/permissions';
+import { emailMayViewOperatorsDashboard } from '../../lib/operators/permissions';
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
@@ -21,11 +21,15 @@ export default function Dashboard() {
   const [confirmModal, setConfirmModal] = useState({ isOpen: false });
   const toast = useToast();
   const { email, userRoles, loading: userLoading } = useUser();
-  const canViewDashboard = useMemo(() => rolesCanViewOperatorsDashboard(userRoles), [userRoles]);
+  const dashboardAllowlistEnv = import.meta.env.VITE_OPERATORS_DASHBOARD_ALLOWED_EMAILS;
+  const canViewDashboard = useMemo(
+    () => emailMayViewOperatorsDashboard(email, userRoles, dashboardAllowlistEnv),
+    [email, userRoles, dashboardAllowlistEnv]
+  );
 
   useEffect(() => {
     if (userLoading) return;
-    if (!rolesCanViewOperatorsDashboard(userRoles)) {
+    if (!emailMayViewOperatorsDashboard(email, userRoles, dashboardAllowlistEnv)) {
       try {
         window.history.replaceState({}, '', '/operators/events');
         window.dispatchEvent(new PopStateEvent('popstate'));
@@ -33,7 +37,7 @@ export default function Dashboard() {
         console.error('[DASHBOARD] redirect', e);
       }
     }
-  }, [userLoading, userRoles]);
+  }, [userLoading, email, userRoles, dashboardAllowlistEnv]);
 
   const dashboardMetricsUrl = useMemo(() => {
     if (!email) return null;

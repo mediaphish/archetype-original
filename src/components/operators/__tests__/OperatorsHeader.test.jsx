@@ -12,7 +12,7 @@ const mockNavigate = jest.fn();
 
 jest.mock('../../../contexts/UserContext', () => ({
   useUser: () => ({
-    email: 'test@example.com',
+    email: 'bart@archetypeoriginal.com',
     userRoles: ['chief_operator'],
     loading: false,
     logout: mockLogout,
