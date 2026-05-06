@@ -66,6 +66,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [phraseLegendOpen, setPhraseLegendOpen] = useState(false);
+  const [capabilitiesOpen, setCapabilitiesOpen] = useState(false);
   const [activityLogOpen, setActivityLogOpen] = useState(false);
   const [activityResearchHint, setActivityResearchHint] = useState('');
   const [pendingFiles, setPendingFiles] = useState([]);
@@ -442,11 +443,31 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           <div className="text-sm text-gray-600 mt-1">
             Internal research and packaging — not the public Archy chat. One conversation at a time; use New chat for a clean thread.
           </div>
+          <button
+            type="button"
+            onClick={() => setCapabilitiesOpen((o) => !o)}
+            className="mt-2 text-sm text-blue-800 hover:text-blue-950 underline underline-offset-2 text-left"
+          >
+            What Auto can help with
+          </button>
+          {capabilitiesOpen ? (
+            <ul className="mt-2 text-sm text-gray-700 list-disc pl-5 space-y-1.5 max-w-prose">
+              <li>Ask anything in plain language—research, planning, drafting, design ideas, scheduling, or counts (what’s published / queued).</li>
+              <li>You don’t need special “paths” or yes/no gates for brainstorming; irreversible posting steps stay explicit when something would actually go live.</li>
+              <li>
+                <strong>Training:</strong> paste finished posts in Training mode (long paste) to lock in tone and voice for future drafts.
+              </li>
+            </ul>
+          ) : null}
         </div>
         {/* Mobile: badges + single More — avoids horizontal button sprawl */}
         <div className="flex md:hidden flex-wrap items-center gap-2">
-          <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
-            Mode: {modeLabel(thread?.current_mode)}
+          <span className="px-2 py-1 rounded-md bg-gray-100 text-gray-700 text-xs font-medium" title="Soft label only—you can always talk normally">
+            {thread?.current_mode === 'training'
+              ? 'Training'
+              : thread?.current_mode === 'package' || thread?.current_mode === 'publish'
+                ? modeLabel(thread?.current_mode)
+                : 'Chat'}
           </span>
           {rapidWriteBanner && (
             <span
@@ -467,8 +488,12 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
         </div>
         {/* Desktop: full toolbar */}
         <div className="hidden md:flex flex-wrap items-center justify-end gap-2">
-          <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
-            Mode: {modeLabel(thread?.current_mode)}
+          <span className="px-2 py-1 rounded-md bg-gray-100 text-gray-700 text-xs font-medium" title="Soft label only—you can always talk normally">
+            {thread?.current_mode === 'training'
+              ? 'Training'
+              : thread?.current_mode === 'package' || thread?.current_mode === 'publish'
+                ? modeLabel(thread?.current_mode)
+                : 'Chat'}
           </span>
           {rapidWriteBanner && (
             <span
@@ -528,7 +553,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           onClick={() => setPhraseLegendOpen((o) => !o)}
           className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-800 flex items-center justify-between gap-2 hover:bg-stone-100/80 min-h-[44px]"
         >
-          <span>How phrases work (quote cards and corpus)</span>
+          <span>Optional tips (corpus and quote cards)</span>
           <span className="text-gray-500 shrink-0" aria-hidden>
             {phraseLegendOpen ? '−' : '+'}
           </span>

@@ -378,6 +378,86 @@ function isExplicitPathPivot(text) {
   return /\b(instead|switch|change|different path|pivot|not this|stop this)\b/.test(s);
 }
 
+/** Guess a series / campaign label from natural language (quoted phrase or known series names). */
+function guessSeriesFocus(text) {
+  const raw = String(text || '').trim();
+  if (!raw) return '';
+  const m = raw.match(/['"]([^'"]{3,56})['"]/);
+  if (m) return m[1].trim();
+  if (/\bpower\s+says\b/i.test(raw)) return 'Power Says';
+  return '';
+}
+
+/** Extract structured voice traits from pasted posts (Training mode). */
+async function extractTrainingVoiceFromPaste(sampleText) {
+  const apiKey = getOpenAiKey();
+  if (!apiKey) return { ok: false, error: 'Voice analysis unavailable (no API key).' };
+  const prompt = `You analyze writing samples for an internal authoring assistant. Given pasted post(s) below, return ONLY valid JSON (no markdown fence) with keys:
+cadence, diction, openings, closures, avoid, themes (array of 3-8 short strings), digest_one_line (one sentence summarizing voice).
+Keep each string field under 200 characters. Be concrete (sentence length, directness, theological/pastoral register if present).
+
+SAMPLES:
+${safeText(sampleText, 14000)}`;
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.AO_AUTO_MODEL || 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 700,
+        temperature: 0.25,
+      }),
+    });
+    if (!res.ok) return { ok: false, error: 'Voice analysis request failed.' };
+    const json = await res.json().catch(() => ({}));
+    let content = json.choices?.[0]?.message?.content?.trim() || '';
+    content = content.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '');
+    const parsed = JSON.parse(content);
+    const themes = Array.isArray(parsed.themes) ? parsed.themes.map((t) => safeText(t, 120)).filter(Boolean) : [];
+    const digest = safeText(parsed.digest_one_line, 400);
+    const profileMerge = {
+      preferences: {
+        voice_from_corpus: true,
+      },
+      clarified_answers: {
+        voice_cadence: safeText(parsed.cadence, 400),
+        voice_diction: safeText(parsed.diction, 400),
+        voice_openings: safeText(parsed.openings, 400),
+        voice_closures: safeText(parsed.closures, 400),
+        voice_avoid: safeText(parsed.avoid, 400),
+        voice_themes_sample: themes.slice(0, 8).join(' · '),
+      },
+      voice_training_extraction: {
+        at: new Date().toISOString(),
+        digest_one_line: digest,
+      },
+    };
+    const userMessage = [
+      '**Voice profile updated** from your pasted sample(s). Here is what I locked in for future drafts in this thread:',
+      '',
+      digest ? `**Summary:** ${digest}` : '',
+      '',
+      `- **Cadence:** ${safeText(parsed.cadence, 320) || '—'}`,
+      `- **Diction:** ${safeText(parsed.diction, 320) || '—'}`,
+      `- **Openings:** ${safeText(parsed.openings, 280) || '—'}`,
+      `- **Closures:** ${safeText(parsed.closures, 280) || '—'}`,
+      `- **Avoid:** ${safeText(parsed.avoid, 280) || '—'}`,
+      themes.length ? `- **Recurring themes:** ${themes.join('; ')}` : '',
+      '',
+      'This complements your published corpus—paste more samples anytime in Training to refresh.',
+    ]
+      .filter(Boolean)
+      .join('\n');
+    return { ok: true, profileMerge, userMessage };
+  } catch (e) {
+    return { ok: false, error: safeText(e.message, 200) || 'Could not parse voice profile.' };
+  }
+}
+
 function mergeMemoryProfiles(base, current) {
   const a = base && typeof base === 'object' ? base : {};
   const b = current && typeof current === 'object' ? current : {};
@@ -392,6 +472,12 @@ function mergeMemoryProfiles(base, current) {
       ...(a.clarified_answers && typeof a.clarified_answers === 'object' ? a.clarified_answers : {}),
       ...(b.clarified_answers && typeof b.clarified_answers === 'object' ? b.clarified_answers : {}),
     },
+    voice_training_extraction:
+      b.voice_training_extraction && typeof b.voice_training_extraction === 'object'
+        ? b.voice_training_extraction
+        : a.voice_training_extraction && typeof a.voice_training_extraction === 'object'
+          ? a.voice_training_extraction
+          : undefined,
     path_history: Array.isArray(b.path_history) ? b.path_history : Array.isArray(a.path_history) ? a.path_history : [],
   };
 }
@@ -537,9 +623,8 @@ function detectConversationPath({ userMessage, msgForQuoteRouting, hasAttachment
       primary: 'planning',
       confidence: 0.45,
       secondary,
-      needsClarification: true,
-      clarifyingQuestion:
-        'I can run this a few ways. Which do you want first: research pass, outline/plan, or direct drafting?',
+      needsClarification: false,
+      clarifyingQuestion: '',
     };
   }
 
@@ -1310,9 +1395,9 @@ ${snap.rapid_write_active ? '\nRapid Write: the snapshot includes rapid_write_se
 Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
 - If intent is ambiguous, ask direct clarifying questions before doing heavy work. Do not guess.
-- If thread snapshot includes confirmed_path, stay on that path unless Bart clearly pivots.
+- **Conversation-first:** Bart does **not** need special phrases or "path" confirmations for research, planning, drafts, design ideas, librarian counts, or discussion. Answer directly in plain language. Optional \`confirmed_path\` in the snapshot is an internal hint only—not something you ask him to confirm unless he is about to trigger an irreversible publish/schedule action described in the snapshot.
 - **Honesty about research:** Do NOT say Scout, internet crawls, external scans, or "background research" **started**, **is running**, **was initiated**, or **will continue in the background** unless the thread snapshot explicitly documents a **completed** matching action for this same turn (for example \`series_research_pack_this_turn.completed === true\` means **in-corpus** snippet retrieval only—not an open-web crawl). If nothing in the snapshot proves a crawl or background job, say plainly what did and did not run.
-- Confirm-first behavior: before major execution steps, restate path and wait for explicit yes/proceed.
+- **Irreversible actions only:** Ask for explicit yes/proceed only when the snapshot shows a pending **publisher schedule**, **package Proceed**, or similar real-world posting step—not for brainstorming or drafting.
 - Do **not** invent numbered **software / implementation / compliance** task lists, fake **todo boards**, or pretend you are **executing** a development plan, Cursor todos, or edits to an attached plan file. You are Auto inside this product only.
 - If his message sounds like meta-instructions for an external task system ("implement the plan," "mark todos in progress"), answer in one short paragraph: you do not run those systems here; give **one** concrete next step for quote cards in AO (e.g. pick numbers, **Show card N**, or ask for a full list of lines in this thread).
 - If current mode is "plan" or "write" or he is asking to plan, design, brainstorm, or figure out pull quotes / a series / campaigns: stay in conversation. Offer steps, tradeoffs, and questions. Do NOT say you already packaged a post, do NOT list fake receipts, and do NOT tell him to tap Proceed — there is no bundle until he pastes a finished post or explicitly asks to package.
@@ -1321,6 +1406,9 @@ Non-negotiables (hard rules):
 - Quality: only challenge wording for major public risks if relevant; do not nitpick style.
 - Be conversational, direct, short paragraphs. If unsure, one clarifying question.
 - Use memory_profile from thread snapshot as durable preference memory (voice, execution style, recovery style). Apply it across turns.
+${snap.voice_training_digest ? `\n- **Voice training:** snapshot includes voice_training_digest / clarified voice fields from Training-mode paste—prioritize them when drafting so tone matches Bart.\n` : ''}
+${Array.isArray(snap.series_overlap_hints) && snap.series_overlap_hints.length ? '\n- **Series overlap hints:** numbered excerpts in snapshot may overlap a named series—cite them when advising on non-redundant posts.\n' : ''}
+- **Capabilities (no magic words):** Bart may combine research, planning, writing, visual/design ideas, publishing timing, and factual "librarian" questions in one conversation. Treat these as normal dialogue; never tell him to "run a path" or reply yes to a labeled workflow unless posting is truly imminent.
 ${isPlanOrWrite ? '\n- For quote-card requests, infer intent from natural language first; do not require exact trigger wording. If he pasted his own quote lines, use that text verbatim on images rather than corpus retrieval.\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask for corpus retrieval.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
 ${hasSeriesResearchPack ? '\n- **Series corpus pack this turn:** \`series_research_pack_this_turn\` is true. The UI will prepend a "### Corpus research (this turn)" block for Bart—**do not paste that full numbered excerpt list again** inside \`assistant_message\`; acknowledge themes briefly and continue the series plan.\n' : ''}
 
@@ -1429,7 +1517,8 @@ export default async function handler(req, res) {
       }
     }
 
-    const majorConfirmPaths = new Set(['quote_campaign', 'series_build', 'one_off_post', 'corpus_build_day', 'package_publish']);
+    /** No forced "reply yes to run this path" walls — conversation-first. Irreversible publisher actions keep their own in-flow confirms. */
+    const majorConfirmPaths = new Set();
     const pathDecision = detectConversationPath({
       userMessage,
       msgForQuoteRouting,
@@ -1451,7 +1540,8 @@ export default async function handler(req, res) {
         pathState.pending_path = '';
         pathReceipts.push(`Path confirmed: ${activePath}`);
       } else if (!pivot) {
-        forcedAssistantMessage = buildPathConfirmationMessage(safeText(pathState.pending_path, 60), pathDecision);
+        pathState.pending_path = '';
+        pathReceipts.push('Cleared old path confirmation — continuing in conversation.');
       }
     }
 
@@ -1593,7 +1683,6 @@ export default async function handler(req, res) {
       rapidWriteHandled = true;
       nextMode = 'plan';
       assistantMessage = forcedAssistantMessage;
-      receipts.push('Path check: awaiting confirmation before major execution');
     }
 
     const rwExisting = currentState.rapid_write && typeof currentState.rapid_write === 'object' ? currentState.rapid_write : null;
@@ -2356,31 +2445,52 @@ export default async function handler(req, res) {
 
     if (!rapidWriteHandled) {
     if (nextMode === 'training') {
-      const cleanRule = userMessage
-        .replace(/switch to training mode/i, '')
-        .replace(/training mode/i, '')
-        .trim();
-      if (!cleanRule) {
-        assistantMessage = 'Mode: Training. Tell me the behavior you want to lock in, and I’ll turn it into a guardrail.';
+      const trainingPaste = [userMessage, textAttachment].filter(Boolean).join('\n\n').trim();
+      const voiceProbe =
+        looksLikeContent(trainingPaste) &&
+        trainingPaste.length >= 400 &&
+        !wantsMetaDevAgentInstruction(userMessage);
+      if (voiceProbe) {
+        const extracted = await extractTrainingVoiceFromPaste(trainingPaste);
+        if (extracted.ok) {
+          statePatch.memory_profile = mergeMemoryProfiles(statePatch.memory_profile, extracted.profileMerge);
+          receipts.push('Training mode: voice traits extracted and merged into style memory');
+          pushTransparencyReceipt(receipts, 'Voice profile fields updated from pasted sample (cadence, diction, openings/closures, avoid list).');
+          assistantMessage = extracted.userMessage;
+        } else {
+          assistantMessage = [
+            'I could not fully analyze that paste for voice.',
+            extracted.error || 'Try again with less formatting or a shorter excerpt.',
+          ].join('\n');
+        }
       } else {
-        const title = cleanRule.length > 80 ? `${cleanRule.slice(0, 77)}...` : cleanRule;
-        const created = await supabaseAdmin
-          .from('ao_auto_guardrails')
-          .insert({
-            created_by_email: auth.email,
-            title,
-            rule_text: cleanRule,
-            enabled: true,
-            scope: 'global',
-            source: 'user',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
-          .select('*')
-          .single();
-        if (created.error) throw created.error;
-        receipts.push('Training mode: saved new guardrail');
-        assistantMessage = `Locked in. I saved this as a global guardrail: "${cleanRule}"`;
+        const cleanRule = userMessage
+          .replace(/switch to training mode/i, '')
+          .replace(/training mode/i, '')
+          .trim();
+        if (!cleanRule) {
+          assistantMessage =
+            '**Training mode.** Paste one or more finished posts (long paste) and I will extract tone and voice for future drafts—or type a short rule and I will save it as a guardrail.';
+        } else {
+          const title = cleanRule.length > 80 ? `${cleanRule.slice(0, 77)}...` : cleanRule;
+          const created = await supabaseAdmin
+            .from('ao_auto_guardrails')
+            .insert({
+              created_by_email: auth.email,
+              title,
+              rule_text: cleanRule,
+              enabled: true,
+              scope: 'global',
+              source: 'user',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .select('*')
+            .single();
+          if (created.error) throw created.error;
+          receipts.push('Training mode: saved new guardrail');
+          assistantMessage = `Locked in. I saved this as a global guardrail: "${cleanRule}"`;
+        }
       }
     } else if (nextMode === 'recall') {
       const qcBlock = accountQuoteCardContextItems?.length ? formatQuoteCardContextBlock(accountQuoteCardContextItems) : [];
@@ -3261,11 +3371,38 @@ export default async function handler(req, res) {
       const findings = await recentFindings(auth.email);
       const proofLines = await getAutomationProof(auth.email);
 
+      let seriesOverlapHints = [];
+      const sfOverlap = guessSeriesFocus(userMessage);
+      const careOverlap =
+        sfOverlap &&
+        /\b(overlap|series|quote|power says|scheduled|prior|duplicate|repeat|more cards|posts)\b/i.test(userMessage);
+      if (careOverlap) {
+        statePatch.series_focus = { label: sfOverlap, updated_at: new Date().toISOString() };
+        const ot = await getCorpusTopicSnippets({
+          queryText: `${sfOverlap} journal posts quotes`,
+          limitSnippets: 6,
+          topDocs: 22,
+          maxCharsPerSnippet: 380,
+          maxSnippetsPerDoc: 1,
+        });
+        if (ot.ok && Array.isArray(ot.snippets) && ot.snippets.length) {
+          seriesOverlapHints = ot.snippets.slice(0, 6).map((x, i) => ({
+            n: i + 1,
+            excerpt: safeText(x.excerpt, 360),
+            source_title: safeText(x.source_title, 120),
+            url: x.url ? String(x.url).slice(0, 500) : '',
+          }));
+          receipts.push(`Series overlap (${sfOverlap}): ${seriesOverlapHints.length} corpus excerpt(s)`);
+        }
+      }
+
       const seriesProceedThisTurn =
-        affirmative &&
         activePath === 'series_build' &&
-        (safeText(prevPathState.pending_path, 60) === 'series_build' ||
-          pathReceipts.some((r) => /Path (confirmed|set): series_build/.test(String(r || ''))));
+        (pathReceipts.some((r) => /Path set: series_build/.test(String(r || ''))) ||
+          (affirmative &&
+            (safeText(prevPathState.pending_path, 60) === 'series_build' ||
+              pathReceipts.some((r) => /Path confirmed: series_build/.test(String(r || ''))) ||
+              /\b(research|corpus|ALI|conditions|snippets?|please proceed|go ahead)\b/i.test(userMessage))));
 
       let seriesResearchSnippets = null;
       if (seriesProceedThisTurn) {
@@ -3299,6 +3436,13 @@ export default async function handler(req, res) {
         };
       }
 
+      if (seriesOverlapHints.length) {
+        threadSnapshotForModel = {
+          ...threadSnapshotForModel,
+          series_overlap_hints: seriesOverlapHints,
+        };
+      }
+
       const seriesResearchBlock =
         seriesResearchSnippets !== null ? formatSeriesCorpusResearchBlock(seriesResearchSnippets) : '';
 
@@ -3309,6 +3453,9 @@ export default async function handler(req, res) {
           : '',
         seriesResearchSnippets !== null
           ? 'thread_snapshot.series_research_pack_this_turn marks completed in-corpus retrieval for this series_build confirmation. Do not claim Scout/open-web crawls or background jobs. The "### Corpus research (this turn)" block is prepended to the user message after your JSON—keep assistant_message concise; do not duplicate the full excerpt list.'
+          : '',
+        seriesOverlapHints.length
+          ? 'thread_snapshot.series_overlap_hints lists corpus excerpts that may overlap the named series—use them for non-redundant planning.'
           : '',
       ]
         .filter(Boolean)
