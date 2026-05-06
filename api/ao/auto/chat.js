@@ -487,8 +487,11 @@ function detectConversationPath({ userMessage, msgForQuoteRouting, hasAttachment
   if (wantsScoutFindings(userMessage)) return { primary: 'scout_findings', confidence: 0.95, secondary, needsClarification: false };
   if (wantsCorpusThemeSearch(userMessage)) return { primary: 'corpus_lookup', confidence: 0.95, secondary, needsClarification: false };
   if (wantsCorpusTldrWork(userMessage)) return { primary: 'corpus_build_day', confidence: 0.9, secondary, needsClarification: false };
-  if (wantsUserSuppliedQuoteCards(msgForQuoteRouting) || wantsQuoteCardInventory(msgForQuoteRouting)) {
+  if (wantsUserSuppliedQuoteCards(msgForQuoteRouting)) {
     return { primary: 'quote_campaign', confidence: 0.95, secondary, needsClarification: false };
+  }
+  if (wantsPublisherQuoteScheduleInquiry(msgForQuoteRouting) || wantsQuoteCardInventory(msgForQuoteRouting)) {
+    return { primary: 'planning', confidence: 0.88, secondary: ['quote_status_inquiry'], needsClarification: false };
   }
 
   const quoteCampaignSignal =
@@ -926,12 +929,127 @@ function wantsQuoteCardInventory(userMessage) {
   if (looksLikeFreshPastedCardBatch(userMessage)) return false;
   if (wantsUserSuppliedQuoteCards(userMessage)) return false;
   if (wantsQuoteCardInspect(userMessage)) return false;
+  if (wantsPublisherQuoteScheduleInquiry(userMessage)) return false;
   return (
     /\b(where (?:did|are)|what happened to|lost|missing|disappear)\b.*\b(card|quote|line|lines)\b/.test(s) ||
     /\b(how many|full list|list all|inventory|every quote|all candidates|all cards|all lines)\b/.test(s) ||
     /\bwhere\b.*\b(my|the)\b.*\b(card|quote|quotes|lines)\b/.test(s) ||
     /\b(show|give)\s+me\s+(?:a\s+)?(?:full\s+)?(?:list|inventory)\b/.test(s)
   );
+}
+
+/** How many / status about quote cards in the Publisher queue — not starting a new quote-card campaign. */
+function wantsPublisherQuoteScheduleInquiry(userMessage) {
+  const s = String(userMessage || '').trim().toLowerCase();
+  if (!s) return false;
+  if (looksLikeFreshPastedCardBatch(userMessage)) return false;
+  if (wantsUserSuppliedQuoteCards(userMessage)) return false;
+  const cardish =
+    /\bquote\s+cards?\b/.test(s) ||
+    /\bpull\s+quotes?\b/.test(s) ||
+    (/\bcards?\b/.test(s) && /\b(quote|quotes)\b/.test(s));
+  if (!cardish) return false;
+  return (
+    /\b(scheduled|publisher|publish queue|in the queue|queued for publish|going live|social schedule)\b/.test(s) ||
+    (/\b(how many|count|number of|what'?s|research|find out|look up|check on)\b/.test(s) &&
+      /\b(scheduled|queue|publisher|publish)\b/.test(s))
+  );
+}
+
+function extractQuotedTopicPhrase(text) {
+  const m = String(text || '').match(/['"]([^'"]{2,80})['"]/);
+  return m ? String(m[1]).trim() : '';
+}
+
+async function fetchScheduledPublisherQuoteCardsForOwner(email, topicSubstring) {
+  const owner = String(email || '').toLowerCase().trim();
+  const needle = String(topicSubstring || '').trim().toLowerCase();
+  const nowIso = new Date().toISOString();
+  try {
+    const out = await supabaseAdmin
+      .from('ao_scheduled_posts')
+      .select('id, platform, scheduled_at, text, intent, source_kind, best_move, status')
+      .eq('status', 'scheduled')
+      .gte('scheduled_at', nowIso)
+      .order('scheduled_at', { ascending: true })
+      .limit(400);
+    if (out.error) return { ok: false, rows: [], error: out.error.message };
+    let rows = Array.isArray(out.data) ? out.data : [];
+    rows = rows.filter((r) => {
+      const intent = r.intent && typeof r.intent === 'object' ? r.intent : {};
+      const em = String(intent.created_by_email || '').toLowerCase().trim();
+      const isQuoteCard =
+        r.source_kind === 'auto_pull_quote_card' ||
+        r.best_move === 'pull_quote_card' ||
+        intent.auto_hub === true;
+      if (!isQuoteCard) return false;
+      if (owner) {
+        if (em && em !== owner) return false;
+        if (!em) return false;
+      }
+      return true;
+    });
+    if (needle) {
+      rows = rows.filter((r) => String(r.text || '').toLowerCase().includes(needle));
+    }
+    return { ok: true, rows };
+  } catch (e) {
+    return { ok: false, rows: [], error: e.message };
+  }
+}
+
+function formatScheduledPublisherQuoteCardsAnswer(rows, topicPhrase) {
+  const topic = String(topicPhrase || '').trim();
+  const header =
+    topic.length > 0
+      ? `**Publisher queue (scheduled)** — rows whose caption/body matches **${topic.slice(0, 80)}** (case-insensitive):`
+      : '**Publisher queue (scheduled)** — quote-card style rows from Auto Hub (future times only):';
+  if (!Array.isArray(rows) || !rows.length) {
+    return [
+      header,
+      '',
+      topic.length > 0
+        ? `No matching scheduled rows found. Try a shorter phrase, or open **Publisher** on your dashboard for the full list.`
+        : `No upcoming quote-card Publisher rows found. If you scheduled under a different account or before columns existed, check **Publisher** directly.`,
+    ].join('\n');
+  }
+  const indices = new Set();
+  for (const r of rows) {
+    const intent = r.intent && typeof r.intent === 'object' ? r.intent : {};
+    const ci = intent.corpus_index;
+    if (ci != null && Number.isFinite(Number(ci))) indices.add(Number(ci));
+  }
+  const distinctCards = indices.size;
+  const fmtWhen = (iso) => {
+    try {
+      return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    } catch {
+      return String(iso || '');
+    }
+  };
+  const lines = [
+    header,
+    '',
+    `**${rows.length}** scheduled post row(s) in the queue.`,
+    distinctCards > 0
+      ? `About **${distinctCards}** distinct card index(es) appear in metadata (quote cards often produce one row per network per card).`
+      : `These rows may predate per-card metadata—count rows ÷ networks if you always schedule all four.`,
+    '',
+    'Next slots:',
+    '',
+  ];
+  const cap = Math.min(rows.length, 24);
+  for (let i = 0; i < cap; i += 1) {
+    const r = rows[i];
+    const intent = r.intent && typeof r.intent === 'object' ? r.intent : {};
+    const ci = intent.corpus_index != null ? `#${intent.corpus_index}` : '—';
+    const excerpt = safeText(stripMarkdownBoldForCardDisplay(String(r.text || '').replace(/\s+/g, ' ')), 140);
+    lines.push(`- **${r.platform || '?'}** · ${fmtWhen(r.scheduled_at)} · card ${ci} · ${excerpt}${String(r.text || '').length > 140 ? '…' : ''}`);
+  }
+  if (rows.length > cap) lines.push(`… and **${rows.length - cap}** more row(s). Open Publisher for the full queue.`);
+  lines.push('');
+  lines.push('This is read from your scheduled-posts table in this same turn—not background research.');
+  return lines.join('\n');
 }
 
 /** Meta-instructions meant for external dev tools — not Auto on this site. */
@@ -2455,6 +2573,30 @@ export default async function handler(req, res) {
         });
       });
       statePatch.quote_card_origin = 'user_paste';
+    } else if (wantsPublisherQuoteScheduleInquiry(msgForQuoteRouting)) {
+      nextMode = 'plan';
+      const topicPhrase = extractQuotedTopicPhrase(userMessage);
+      const needle = topicPhrase || (/\bpower\s+says\b/i.test(userMessage) ? 'power says' : '');
+      const sched = await fetchScheduledPublisherQuoteCardsForOwner(auth.email, needle);
+      if (sched.ok) {
+        receipts.push(
+          `Publisher schedule lookup: ${sched.rows.length} upcoming quote-card row(s)${needle ? ` (filter: ${safeText(needle, 80)})` : ''}`
+        );
+        pushTransparencyReceipt(
+          receipts,
+          'Answer used ao_scheduled_posts for this account (same request)—not the generic quote-campaign confirmation path.'
+        );
+        assistantMessage = formatScheduledPublisherQuoteCardsAnswer(sched.rows, topicPhrase || needle);
+      } else {
+        assistantMessage = [
+          'I could not read your Publisher queue from the database this turn.',
+          safeText(sched.error, 200),
+          '',
+          'Open **Publisher** on your AO dashboard for the authoritative list.',
+        ]
+          .filter(Boolean)
+          .join('\n');
+      }
     } else if (wantsQuoteCardInventory(msgForQuoteRouting)) {
       nextMode = 'plan';
       let allQuotes =
