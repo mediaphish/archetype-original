@@ -385,6 +385,10 @@ function guessSeriesFocus(text) {
   const m = raw.match(/['"]([^'"]{3,56})['"]/);
   if (m) return m[1].trim();
   if (/\bpower\s+says\b/i.test(raw)) return 'Power Says';
+  // Pull corpus overlap snippets when designing servant-leadership contrast cards without typing "Power Says."
+  if (/\bservant\s+leadership\b/i.test(raw) && /\b(quote\s+cards?|cards?|series|contrast|versus|social)\b/i.test(raw)) {
+    return 'Power Says servant leadership contrast cards';
+  }
   return '';
 }
 
@@ -652,30 +656,48 @@ function shouldMergeQuoteCardContext(userMessage) {
   return false;
 }
 
-/** Pull digits 1–9 from a fragment (list like "4, 5" or "4 and 5"). */
+/** Numbered batches often exceed nine cards — parse card indices 1–99 (word boundaries avoid years like 2024). */
+const QUOTE_CARD_INDEX_MAX = 99;
+const RE_CARD_INDEX_TOKEN = /\b(?:[1-9]\d|[1-9])\b/g;
+
+/** Safe `.test` for the global card-index regex (resets lastIndex). */
+function messageMentionsCardIndex(text) {
+  RE_CARD_INDEX_TOKEN.lastIndex = 0;
+  return RE_CARD_INDEX_TOKEN.test(String(text || ''));
+}
+
+function parseCardIndexBound(n) {
+  return Number.isFinite(n) && n >= 1 && n <= QUOTE_CARD_INDEX_MAX ? n : null;
+}
+
+/** Pull digits from a fragment (list like "4, 5" or "10 and 11"). */
 function extractQuoteIndexDigits(fragment) {
   const out = new Set();
-  String(fragment || '')
-    .match(/\b[1-9]\b/g)
-    ?.forEach((d) => out.add(Number(d)));
+  let m;
+  const s = String(fragment || '');
+  RE_CARD_INDEX_TOKEN.lastIndex = 0;
+  while ((m = RE_CARD_INDEX_TOKEN.exec(s))) {
+    const n = parseCardIndexBound(Number(m[0]));
+    if (n != null) out.add(n);
+  }
   return out;
 }
 
 /**
  * Indices the user explicitly rules out (so we do not treat every digit in the message as a pick).
- * Handles e.g. "4 and 5 would not work as pull quotes", "but not 4", "skip 4 and 5".
+ * Handles e.g. "4 and 5 would not work as pull quotes", "but not 4", "skip 4 and 5", "exclude 10 and 11".
  */
 function parseExcludedQuoteIndicesFromMessage(text) {
   const excluded = new Set();
   const s = String(text || '');
+  const idx = '(?:[1-9]\\d|[1-9])';
+  const numList = `${idx}(?:\\s*(?:,|and|or|&)\\s*${idx})*`;
   const patterns = [
-    // "4 and 5 would not work", "4, 5 wouldn't work"
-    /\b([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\s+(?:would|will|do)\s+not\b/gi,
-    /\b([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\s+wouldn'?t\s+work\b/gi,
-    // "but not 4", "not 4 and 5"
-    /\b(?:but\s+)?not\s+([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\b/gi,
-    /\b(?:skip|exclude|excluding|reject|rule\s+out|without)\s+([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\b/gi,
-    /\b(?:don'?t|do\s+not)\s+want\s+([1-9](?:\s*(?:,|and|or|&)\s*[1-9])*)\b/gi,
+    new RegExp(`\\b(${numList})\\s+(?:would|will|do)\\s+not\\b`, 'gi'),
+    new RegExp(`\\b(${numList})\\s+wouldn'?t\\s+work\\b`, 'gi'),
+    new RegExp(`\\b(?:but\\s+)?not\\s+(${numList})\\b`, 'gi'),
+    new RegExp(`\\b(?:skip|exclude|excluding|reject|rule\\s+out|without)\\s+(${numList})\\b`, 'gi'),
+    new RegExp(`\\b(?:don'?t|do\\s+not)\\s+want\\s+(${numList})\\b`, 'gi'),
   ];
   for (const re of patterns) {
     re.lastIndex = 0;
@@ -689,15 +711,15 @@ function parseExcludedQuoteIndicesFromMessage(text) {
   return excluded;
 }
 
-/** Digits 1–9 only — for “quote #3” style picks (avoids matching years like 2024 as indices). */
+/** Card index picks / mentions (1–99); stripGapPhrases recommended by callers when parsing full messages. */
 function parseQuoteIndicesFromMessage(text) {
   const s = String(text || '');
   const nums = new Set();
-  const re = /\b([1-9])\b/g;
-  let m = re.exec(s);
-  while (m) {
-    nums.add(Number(m[1]));
-    m = re.exec(s);
+  let m;
+  RE_CARD_INDEX_TOKEN.lastIndex = 0;
+  while ((m = RE_CARD_INDEX_TOKEN.exec(s))) {
+    const n = parseCardIndexBound(Number(m[0]));
+    if (n != null) nums.add(n);
   }
   const excluded = parseExcludedQuoteIndicesFromMessage(s);
   excluded.forEach((n) => nums.delete(n));
@@ -712,8 +734,11 @@ function parseIndicesFromAssistantThread(messages) {
     const c = String(row.content || '');
     const receipt = /selected\s+quotes?\s*[:\s]*([0-9,\s]+)/i.exec(c);
     if (receipt) {
-      const nums = receipt[1].match(/\b[1-9]\b/g);
-      if (nums?.length) return [...new Set(nums.map(Number))].sort((a, b) => a - b);
+      const nums = receipt[1].match(RE_CARD_INDEX_TOKEN);
+      if (nums?.length) {
+        const parsed = nums.map(Number).filter((n) => parseCardIndexBound(n) != null);
+        if (parsed.length) return [...new Set(parsed)].sort((a, b) => a - b);
+      }
     }
   }
   return null;
@@ -742,7 +767,7 @@ function wantsPublishQuoteCardsIntent(userMessage, state) {
     /\bcards?\b/.test(s) ||
     /\bquotes?\b/.test(s) ||
     /\bpull[- ]?quote\b/.test(s) ||
-    /\b[1-9]\b/.test(s) ||
+    /\b(?:[1-9]\d|[1-9])\b/.test(s) ||
     /\ball\b/.test(s)
   );
 }
@@ -794,9 +819,9 @@ function wantsCorpusPullQuoteDeliverables(userMessage, state, messages) {
   if (!Array.isArray(quotes) || !quotes.length) return false;
   const s0 = String(userMessage || '').trim();
   const s = s0.toLowerCase();
-  const picking = /\b[1-9]\b/.test(s0) || /\ball\b/i.test(userMessage);
+  const picking = messageMentionsCardIndex(s0) || /\ball\b/i.test(userMessage);
   if (wantsCorpusPullQuotes(userMessage) && !picking) return false;
-  const hasDigit = /\b[1-9]\b/.test(s);
+  const hasDigit = messageMentionsCardIndex(s);
   const deliver =
     /\b(captions?|cards?|image cards?|branded|instagram|produce|generat|go ahead|get to work|make the|make them|selected|now|draft|minimal|square|fix|correct|repair|update|redo|rebuild|regenerat|refresh|logo|show|see|display|preview|read|pull up)\b/.test(
       s
@@ -821,7 +846,7 @@ function wantsQuoteCardInspect(userMessage) {
   const inspectIntent =
     /\b(show|see|display|preview|pull up|what(?:'s| is)|what are|text|words|copy|lines?|tell me|give me|need to see|look at|read (?:back|out|me))\b/.test(s) ||
     /\b(which|what)\b.*\b(card|quote)\b/.test(s);
-  const shortCardIndex = /\b(card|quote)\s*#?\s*(1[0-2]|[1-9])\b/.test(s) && s.length < 120;
+  const shortCardIndex = /\b(card|quote)\s*#?\s*(?:[1-9]\d|[1-9])\b/.test(s) && s.length < 120;
 
   if (!inspectIntent && !shortCardIndex) return false;
 
@@ -835,7 +860,7 @@ function wantsQuoteCardInspect(userMessage) {
   }
 
   return (
-    /\b(1[0-2]|[1-9])\b/.test(s) ||
+    /\b(?:[1-9]\d|[1-9])\b/.test(s) ||
     /\b(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b/.test(s) ||
     shortCardIndex
   );
@@ -854,6 +879,16 @@ function normalizeOrdinalWordsForCardParse(text) {
     ['eighth', '8'],
     ['ninth', '9'],
     ['tenth', '10'],
+    ['eleventh', '11'],
+    ['twelfth', '12'],
+    ['thirteenth', '13'],
+    ['fourteenth', '14'],
+    ['fifteenth', '15'],
+    ['sixteenth', '16'],
+    ['seventeenth', '17'],
+    ['eighteenth', '18'],
+    ['nineteenth', '19'],
+    ['twentieth', '20'],
   ];
   for (const [w, d] of pairs) {
     s = s.replace(new RegExp(`\\b${w}\\b`, 'gi'), d);
@@ -861,26 +896,30 @@ function normalizeOrdinalWordsForCardParse(text) {
   return s;
 }
 
-/** Card indices for inspect/show (supports card 10–12 and ordinals normalized to digits). */
+/** Card indices for inspect/show (supports multi-digit indices and ordinals normalized to digits). */
 function parseQuoteCardInspectIndices(text) {
   const s = normalizeOrdinalWordsForCardParse(stripGapPhrasesForCardIndexParse(String(text || '')));
   const nums = new Set();
-  const labeled = s.match(/\b(?:card|quote)\s*#?\s*(1[0-2]|[1-9])\b/gi);
+  const labeled = s.match(/\b(?:card|quote)\s*#?\s*(?:[1-9]\d|[1-9])\b/gi);
   if (labeled) {
     for (const frag of labeled) {
-      const m = frag.match(/(1[0-2]|[1-9])/);
-      if (m) nums.add(Number(m[1]));
+      const m = frag.match(/(?:[1-9]\d|[1-9])/);
+      if (m) {
+        const n = parseCardIndexBound(Number(m[0]));
+        if (n != null) nums.add(n);
+      }
     }
   }
   if (!nums.size) {
-    const re = /\b(1[0-2]|[1-9])\b/g;
     let m;
-    while ((m = re.exec(s))) {
-      nums.add(Number(m[1]));
+    RE_CARD_INDEX_TOKEN.lastIndex = 0;
+    while ((m = RE_CARD_INDEX_TOKEN.exec(s))) {
+      const n = parseCardIndexBound(Number(m[0]));
+      if (n != null) nums.add(n);
     }
   }
   const excluded = parseExcludedQuoteIndicesFromMessage(s);
-  return [...nums].filter((n) => !excluded.has(n) && n >= 1 && n <= 50).sort((a, b) => a - b);
+  return [...nums].filter((n) => !excluded.has(n) && n >= 1 && n <= QUOTE_CARD_INDEX_MAX).sort((a, b) => a - b);
 }
 
 /** Messages are oldest-first; walk newest-to-oldest so the latest caption wins per index. */
@@ -1441,7 +1480,7 @@ Non-negotiables (hard rules):
 ${snap.voice_training_digest ? `\n- **Voice training:** snapshot includes voice_training_digest / clarified voice fields from Training-mode paste—prioritize them when drafting so tone matches Bart.\n` : ''}
 ${Array.isArray(snap.series_overlap_hints) && snap.series_overlap_hints.length ? '\n- **Series overlap hints:** numbered excerpts in snapshot may overlap a named series—cite them when advising on non-redundant posts.\n' : ''}
 - **Capabilities (no magic words):** Bart may combine research, planning, writing, visual/design ideas, publishing timing, and factual "librarian" questions in one conversation. Treat these as normal dialogue; never tell him to "run a path" or reply yes to a labeled workflow unless posting is truly imminent.
-${isPlanOrWrite ? '\n- For quote-card requests, infer intent from natural language first; do not require exact trigger wording. If he pasted his own quote lines, use that text verbatim on images rather than corpus retrieval.\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask for corpus retrieval.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n' : ''}
+${isPlanOrWrite ? '\n- For quote-card requests, infer intent from natural language first; do not require exact trigger wording. If he pasted his own quote lines, use that text verbatim on images rather than corpus retrieval.\n- If he asks to find pull quotes from the corpus, the system may already inject real candidate lines in the same turn—do not promise to "gather quotes later" or imply background research; reinforce the numbered list if present.\n- If he already has candidate quotes in this thread and asks for captions and/or image cards (or picks numbers like 1, 2, 3), the system may attach captions and square card previews in the same turn. Do not only outline steps or ask for design choices he already settled—briefly confirm what was generated. Do not repeat the full numbered quote list unless he asks.\n- If he asks where something appears on the site / in his corpus and this turn did NOT include a numbered list of excerpts with sources from the system, do NOT invent specific page titles, slugs, or URLs. Say you cannot search the published library from this reply alone and suggest he ask for corpus retrieval.\n- He may be designing pull-quote cards or a content series: work with him iteratively. Suggest cadence and what to design next — without claiming the bundle is already built.\n- **Power Says / paired contrast lines ("Power says … / Servant leadership says …"):** Servant leadership includes legitimate **earned authority**—do not treat "authority" and "empathy" as opposites or contradict Bart\'s stated theology. Prefer genuine tensions (for example coercion vs. care, dominance vs. responsible empathy, fear vs. trust). When **series_overlap_hints** appear in the snapshot, align pairs with those excerpts before inventing new doctrinal contrasts.\n' : ''}
 ${hasSeriesResearchPack ? '\n- **Series corpus pack this turn:** \`series_research_pack_this_turn\` is true. The UI will prepend a "### Corpus research (this turn)" block for Bart—**do not paste that full numbered excerpt list again** inside \`assistant_message\`; acknowledge themes briefly and continue the series plan.\n' : ''}
 
 Guardrails:
@@ -3411,7 +3450,8 @@ export default async function handler(req, res) {
       const sfOverlap = guessSeriesFocus(userMessage);
       const careOverlap =
         sfOverlap &&
-        /\b(overlap|series|quote|power says|scheduled|prior|duplicate|repeat|more cards|posts)\b/i.test(userMessage);
+        (/\b(overlap|series|quote|power says|scheduled|prior|duplicate|repeat|more cards|posts)\b/i.test(userMessage) ||
+          /\b(servant\s+leadership|contrast|versus)\b/i.test(userMessage));
       if (careOverlap) {
         statePatch.series_focus = { label: sfOverlap, updated_at: new Date().toISOString() };
         const ot = await getCorpusTopicSnippets({

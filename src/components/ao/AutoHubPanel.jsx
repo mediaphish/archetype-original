@@ -570,6 +570,11 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
               paste your quotes in the same message, then ask to generate or make the cards. You do not need to say{' '}
               <em>corpus</em> for that.
             </p>
+            <p>
+              <span className="font-semibold text-gray-800">Drop cards from a numbered list: </span>
+              say things like <strong>exclude 2</strong>, <strong>skip 10 and 11</strong>, or{' '}
+              <strong>reject cards 4 and 8</strong>—Auto treats those numbers as off the list before picks or previews (works into the teens and beyond).
+            </p>
           </div>
         ) : null}
       </div>
