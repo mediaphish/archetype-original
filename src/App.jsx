@@ -47,6 +47,7 @@ import AOLogin from "./pages/ao/Login";
 import AOCommandCenter from "./pages/ao/CommandCenter";
 import AOInsights from "./pages/ao/Insights";
 import AOReview from "./pages/ao/Review";
+import AOAutoDrafts from "./pages/ao/AutoDrafts";
 import AOPublishing from "./pages/ao/Publishing";
 import AOWriting from "./pages/ao/Writing";
 import AOImport from "./pages/ao/Import";
@@ -200,6 +201,7 @@ export default function App() {
     if (path.startsWith('/ao/')) {
       if (path === '/ao/command-center') return 'ao-command-center';
       if (path === '/ao/import') return 'ao-import';
+      if (path === '/ao/library/drafts') return 'ao-auto-drafts';
       if (path === '/ao/library') return 'ao-ideas';
       if (path === '/ao/ideas') return 'ao-ideas';
       if (path === '/ao/scout') return 'ao-scout';
@@ -414,6 +416,7 @@ export default function App() {
         else if (path === '/ao/studio') setCurrentPage('ao-writing');
         else if (path === '/ao/publisher') setCurrentPage('ao-publishing');
         else if (path === '/ao/import') setCurrentPage('ao-import');
+        else if (path === '/ao/library/drafts') setCurrentPage('ao-auto-drafts');
         else if (path === '/ao/library') setCurrentPage('ao-ideas');
         else if (path === '/ao/ideas') {
           window.history.replaceState({}, '', '/ao/library');
@@ -931,6 +934,9 @@ export default function App() {
   }
   if (currentPage === 'ao-ideas') {
     return <AOIdeas />;
+  }
+  if (currentPage === 'ao-auto-drafts') {
+    return <AOAutoDrafts />;
   }
   if (currentPage === 'ao-insights') {
     return <AOInsights />;

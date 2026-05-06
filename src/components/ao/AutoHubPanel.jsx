@@ -52,7 +52,7 @@ async function fileToPayload(file) {
   };
 }
 
-export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts' }) {
+export default function AutoHubPanel({ onNavigate }) {
   const [loading, setLoading] = useState(true);
   const [thread, setThread] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -424,7 +424,9 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
         setBundles(Array.isArray(sessionJson.bundles) ? sessionJson.bundles : []);
         setGuardrails(Array.isArray(sessionJson.guardrails) ? sessionJson.guardrails : []);
       }
-      setSuccessTip('Saved as a draft. You’re in a fresh thread — open Drafts below to resume anytime.');
+      setSuccessTip(
+        'Saved as a draft. You’re in a fresh thread — open Conversation drafts under Library anytime to resume.'
+      );
       try {
         window.dispatchEvent(new CustomEvent('ao-auto-draft-saved'));
       } catch (_) {}
@@ -436,7 +438,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
   }, [savingDraft, startingNew, sending, loading]);
 
   return (
-    <section className="mb-6 border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden">
+    <section className="flex flex-col flex-1 min-h-0 border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden">
       <div className="px-4 py-4 border-b border-gray-200 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
         <div className="min-w-0">
           <div className="text-2xl font-bold text-gray-900">Auto</div>
@@ -529,10 +531,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
           </button>
           <button
             type="button"
-            onClick={() => {
-              const el = document.getElementById(draftsAnchorId);
-              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
+            onClick={() => onNavigate?.('/ao/library/drafts')}
             className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
           >
             Drafts
@@ -649,8 +648,9 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
         </div>
       ) : null}
 
-      {/* Desktop: page scrolls with the thread. Mobile: thread scrolls inside a capped area so the composer stays below the thread and does not cover Drafts / Activity log when you scroll the page. */}
-      <div className="px-4 py-4 bg-gray-50 space-y-3 max-md:max-h-[min(58dvh,560px)] max-md:overflow-y-auto max-md:overscroll-y-contain">
+      <div className="flex flex-col flex-1 min-h-0">
+      {/* Thread + activity log scroll; composer stays fixed to the viewport bottom (above mobile tab bar). */}
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-y-contain px-4 py-4 bg-gray-50 space-y-3 pb-[min(42vh,300px)]">
         {loading ? (
           <div className="text-sm text-gray-500">Loading Auto…</div>
         ) : null}
@@ -755,55 +755,55 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
             </div>
           );
         })}
+        {activityLogEntries.length ? (
+          <div className="rounded-lg border border-gray-200 bg-white text-xs mx-0">
+            <button
+              type="button"
+              onClick={() => setActivityLogOpen((o) => !o)}
+              className="w-full text-left px-3 py-2 font-medium text-gray-700 flex justify-between items-center gap-2 hover:bg-gray-50 rounded-lg"
+            >
+              <span>
+                Activity log — what Auto recorded this session ({activityLogEntries.length}). Optional; does not add to your main thread.
+              </span>
+              <span className="shrink-0 text-gray-500">{activityLogOpen ? 'Hide' : 'Show'}</span>
+            </button>
+            {activityLogOpen ? (
+              <ul className="px-3 pb-3 space-y-2 max-h-44 overflow-y-auto text-gray-600 border-t border-gray-100">
+                {[...activityLogEntries].reverse().map((e, i) => {
+                  let when = '';
+                  try {
+                    when = new Date(e.at).toLocaleString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: '2-digit',
+                    });
+                  } catch (_) {
+                    when = '';
+                  }
+                  return (
+                    <li key={`${e.at}-${i}`} className="whitespace-pre-wrap pt-2 first:pt-0 border-t border-gray-100 first:border-0">
+                      {when ? <span className="text-gray-400 block mb-0.5">{when}</span> : null}
+                      {e.text}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+          </div>
+        ) : null}
         <div ref={messagesEndRef} className="h-px w-full shrink-0" aria-hidden />
       </div>
 
-      {activityLogEntries.length ? (
-        <div className="mx-4 mb-2 rounded-lg border border-gray-200 bg-white text-xs">
-          <button
-            type="button"
-            onClick={() => setActivityLogOpen((o) => !o)}
-            className="w-full text-left px-3 py-2 font-medium text-gray-700 flex justify-between items-center gap-2 hover:bg-gray-50 rounded-lg"
-          >
-            <span>
-              Activity log — what Auto recorded this session ({activityLogEntries.length}). Optional; does not add to your main thread.
-            </span>
-            <span className="shrink-0 text-gray-500">{activityLogOpen ? 'Hide' : 'Show'}</span>
-          </button>
-          {activityLogOpen ? (
-            <ul className="px-3 pb-3 space-y-2 max-h-44 overflow-y-auto text-gray-600 border-t border-gray-100">
-              {[...activityLogEntries].reverse().map((e, i) => {
-                let when = '';
-                try {
-                  when = new Date(e.at).toLocaleString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                  });
-                } catch (_) {
-                  when = '';
-                }
-                return (
-                  <li key={`${e.at}-${i}`} className="whitespace-pre-wrap pt-2 first:pt-0 border-t border-gray-100 first:border-0">
-                    {when ? <span className="text-gray-400 block mb-0.5">{when}</span> : null}
-                    {e.text}
-                  </li>
-                );
-              })}
-            </ul>
-          ) : null}
-        </div>
-      ) : null}
-
       <div
-        className="border-t border-gray-200 px-4 py-3 bg-white"
+        className="fixed z-30 border-t border-gray-200 bg-white shadow-[0_-8px_28px_rgba(0,0,0,0.08)] left-0 right-0 max-md:bottom-[calc(3.65rem+env(safe-area-inset-bottom,0px))] bottom-0"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
           void onFiles(e.dataTransfer?.files || []);
         }}
       >
+        <div className="mx-auto max-w-7xl px-4 py-3 pointer-events-auto">
         {error ? (
           <div
             className="mb-3 md:hidden p-3 rounded-lg border-2 border-red-400 bg-red-50 text-red-950 text-base font-medium"
@@ -915,10 +915,12 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
         <div className="mt-2 pb-1 text-xs text-gray-500 leading-snug">
           Drag and drop works here too. Images and text files will show in the thread.
         </div>
+        </div>
+      </div>
       </div>
 
       {libraryOpen ? (
-        <div className="fixed inset-0 z-40 bg-black/40">
+        <div className="fixed inset-0 z-50 bg-black/40">
           <div className="absolute inset-x-0 bottom-0 top-0 md:inset-12 md:rounded-xl bg-white shadow-xl overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
               <div>
@@ -1021,12 +1023,11 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
               type="button"
               onClick={() => {
                 setMobileMoreOpen(false);
-                const el = document.getElementById(draftsAnchorId);
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                onNavigate?.('/ao/library/drafts');
               }}
               className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-gray-300 bg-white text-left text-sm font-medium text-gray-900 hover:bg-gray-50"
             >
-              Jump to Drafts
+              Open conversation drafts
             </button>
             <button
               type="button"
@@ -1050,7 +1051,7 @@ export default function AutoHubPanel({ onNavigate, draftsAnchorId = 'auto-drafts
       ) : null}
 
       {advancedOpen ? (
-        <div className="fixed inset-0 z-40 bg-black/40">
+        <div className="fixed inset-0 z-50 bg-black/40">
           <div className="absolute inset-x-0 bottom-0 top-auto md:inset-auto md:right-12 md:top-20 md:w-[360px] bg-white shadow-xl border border-gray-200 rounded-t-xl md:rounded-xl">
             <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
               <div className="text-sm font-semibold text-gray-900">Advanced tools</div>

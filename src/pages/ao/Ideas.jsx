@@ -552,6 +552,20 @@ export default function Ideas() {
             </p>
           </div>
 
+          <div className="mb-6 rounded-lg border border-blue-100 bg-blue-50/80 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="text-sm text-blue-950">
+              <span className="font-semibold">Conversation drafts</span>
+              <span className="text-blue-900/90"> — parked Auto threads (search and pages).</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleNavigate('/ao/library/drafts')}
+              className="min-h-[44px] px-4 py-2 rounded-lg bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800"
+            >
+              Open drafts
+            </button>
+          </div>
+
           {message ? (
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">{message}</div>
           ) : null}

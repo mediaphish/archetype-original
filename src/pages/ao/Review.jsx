@@ -213,7 +213,6 @@ function buildUseIdeasBullets(q) {
 }
 
 const TABS = [
-  { key: 'drafts', label: 'Drafts' },
   { key: 'corpus', label: 'Corpus drafts' },
   { key: 'held', label: 'Held' },
   { key: 'profiles', label: 'Profiles' },
@@ -222,7 +221,7 @@ const TABS = [
 export default function Review() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
-  const [activeTab, setActiveTab] = useState('drafts');
+  const [activeTab, setActiveTab] = useState('corpus');
   const [quotes, setQuotes] = useState([]);
   const [quotesPage, setQuotesPage] = useState({ status: 'pending', limit: 10, offset: 0, total: null });
   const [pageSize, setPageSize] = useState(10);
@@ -235,12 +234,6 @@ export default function Review() {
   const [acting, setActing] = useState(null);
   const [actionError, setActionError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
-
-  const [autoDrafts, setAutoDrafts] = useState([]);
-  const [draftsLoading, setDraftsLoading] = useState(false);
-  const [draftActingId, setDraftActingId] = useState(null);
-  const [draftMenuOpen, setDraftMenuOpen] = useState(null);
-  const [autoHubKey, setAutoHubKey] = useState(0);
 
   const [corpusDrafts, setCorpusDrafts] = useState([]);
   const [corpusLoading, setCorpusLoading] = useState(false);
@@ -276,15 +269,6 @@ export default function Review() {
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
-
-  useEffect(() => {
-    if (!draftMenuOpen) return undefined;
-    const onKey = (e) => {
-      if (e.key === 'Escape') setDraftMenuOpen(null);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [draftMenuOpen]);
 
   const loadProfilesPeople = useCallback(async () => {
     if (!authChecked) return;
@@ -709,37 +693,6 @@ export default function Review() {
     loadProfilesPeople();
   }, [authChecked, activeTab, loadProfilesPeople]);
 
-  const loadAutoDrafts = useCallback(async () => {
-    if (!authChecked) return;
-    setDraftsLoading(true);
-    try {
-      const res = await fetch('/api/ao/auto/drafts');
-      const json = await res.json().catch(() => ({}));
-      if (res.ok && json.ok && Array.isArray(json.drafts)) {
-        setAutoDrafts(json.drafts);
-      } else {
-        setAutoDrafts([]);
-      }
-    } catch (_) {
-      setAutoDrafts([]);
-    } finally {
-      setDraftsLoading(false);
-    }
-  }, [authChecked]);
-
-  useEffect(() => {
-    if (!authChecked || activeTab !== 'drafts') return;
-    loadAutoDrafts();
-  }, [authChecked, activeTab, loadAutoDrafts]);
-
-  useEffect(() => {
-    const onSaved = () => {
-      loadAutoDrafts();
-    };
-    window.addEventListener('ao-auto-draft-saved', onSaved);
-    return () => window.removeEventListener('ao-auto-draft-saved', onSaved);
-  }, [loadAutoDrafts]);
-
   const loadCorpusDrafts = useCallback(async () => {
     if (!authChecked) return;
     setCorpusLoading(true);
@@ -794,57 +747,6 @@ export default function Review() {
     [loadCorpusDrafts]
   );
 
-  const resumeAutoDraft = useCallback(
-    async (threadId) => {
-      const id = String(threadId || '').trim();
-      if (!id) return;
-      setDraftActingId(id);
-      setActionError('');
-      try {
-        const res = await fetch('/api/ao/auto/thread/resume', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ thread_id: id }),
-        });
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok || !json.ok) throw new Error(json.error || 'Could not open draft');
-        setAutoHubKey((k) => k + 1);
-        setActionMessage('Draft opened in Auto above.');
-        try {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (_) {}
-      } catch (e) {
-        setActionError(e.message || 'Could not open draft');
-      } finally {
-        setDraftActingId(null);
-      }
-    },
-    []
-  );
-
-  const deleteAutoDraft = useCallback(
-    async (threadId) => {
-      const id = String(threadId || '').trim();
-      if (!id) return;
-      const ok = window.confirm('Are you sure you want to delete this draft?');
-      if (!ok) return;
-      setDraftActingId(id);
-      setActionError('');
-      try {
-        const res = await fetch(`/api/ao/auto/thread/${encodeURIComponent(id)}`, { method: 'DELETE' });
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok || !json.ok) throw new Error(json.error || 'Could not delete draft');
-        setActionMessage('Draft deleted.');
-        await loadAutoDrafts();
-      } catch (e) {
-        setActionError(e.message || 'Could not delete draft');
-      } finally {
-        setDraftActingId(null);
-      }
-    },
-    [loadAutoDrafts]
-  );
-
   useEffect(() => {
     if (!authChecked) return;
     if (!email) {
@@ -894,26 +796,19 @@ export default function Review() {
   const canHeldNext = typeof heldPage.total === 'number' ? (heldOffset + pageSize) < heldPage.total : heldList.length === pageSize;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
-      <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-8">
-        <AutoHubPanel key={autoHubKey} onNavigate={handleNavigate} draftsAnchorId="auto-drafts" />
+      <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-8 flex flex-col flex-1 min-h-0">
+        <AutoHubPanel onNavigate={handleNavigate} />
 
         <div className="mb-2">
           <h1 className="text-3xl font-bold text-gray-900">
-            {activeTab === 'drafts'
-              ? 'Drafts'
-              : activeTab === 'corpus'
-                ? 'Corpus drafts'
-                : activeTab === 'held'
-                  ? 'Held'
-                  : 'Profiles'}
+            {activeTab === 'corpus'
+              ? 'Corpus drafts'
+              : activeTab === 'held'
+                ? 'Held'
+                : 'Profiles'}
           </h1>
-          {activeTab === 'drafts' ? (
-            <p className="text-gray-600 mt-1 text-sm">
-              Saved Auto conversations. <strong>Tap a draft</strong> to continue in Auto above. Use <strong>⋯</strong> on a card to delete.
-            </p>
-          ) : null}
           {activeTab === 'corpus' ? (
             <p className="text-gray-600 mt-1 text-sm">
               Rapid Write and other corpus queue items. Generate a <strong>hero image</strong> (16:9, no text in the frame), then approve it before publishing so it can flow into the journal file.
@@ -952,84 +847,6 @@ export default function Review() {
           </div>
         </div>
 
-        {activeTab === 'drafts' && (
-          <div id="auto-drafts" className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8 mb-6">
-            {draftsLoading ? (
-              <div className="text-sm text-gray-500">Loading drafts…</div>
-            ) : autoDrafts.length === 0 ? (
-              <p className="text-gray-500">
-                No drafts yet. Use <strong>Save draft</strong> in Auto when you want to park this conversation and start fresh.
-              </p>
-            ) : (
-              <ul className="space-y-3">
-                {autoDrafts.map((d) => (
-                  <li key={d.id} className="relative border border-gray-200 rounded-lg bg-gray-50 overflow-visible">
-                    <div className="flex items-stretch gap-2 p-4">
-                      <button
-                        type="button"
-                        disabled={draftActingId === d.id}
-                        onClick={() => {
-                          setDraftMenuOpen(null);
-                          resumeAutoDraft(d.id);
-                        }}
-                        className="min-w-0 flex-1 text-left rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 active:bg-gray-100/80"
-                      >
-                        <div className="font-semibold text-gray-900 line-clamp-2 break-words">{d.title || 'Draft'}</div>
-                        {d.updated_at ? (
-                          <div className="text-xs text-gray-500 mt-1">Updated {fmtAgoShort(d.updated_at)}</div>
-                        ) : null}
-                        {d.preview ? (
-                          <div className="text-sm text-gray-700 mt-2 line-clamp-6 whitespace-pre-wrap break-words">{d.preview}</div>
-                        ) : null}
-                        {draftActingId === d.id ? (
-                          <div className="text-xs text-blue-600 mt-2">Opening…</div>
-                        ) : (
-                          <div className="text-xs text-blue-600 mt-2 md:hidden">Tap to open in Auto</div>
-                        )}
-                      </button>
-                      <div className="relative shrink-0 flex flex-col justify-start">
-                        <button
-                          type="button"
-                          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-700 text-xl leading-none hover:bg-gray-50"
-                          aria-label="Draft actions"
-                          aria-expanded={draftMenuOpen === d.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDraftMenuOpen((prev) => (prev === d.id ? null : d.id));
-                          }}
-                        >
-                          ⋯
-                        </button>
-                        {draftMenuOpen === d.id ? (
-                          <>
-                            <button
-                              type="button"
-                              className="fixed inset-0 z-20 cursor-default bg-black/20 md:bg-transparent"
-                              aria-label="Close menu"
-                              onClick={() => setDraftMenuOpen(null)}
-                            />
-                            <div className="absolute right-0 top-full z-30 mt-1 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg md:right-0">
-                              <button
-                                type="button"
-                                className="w-full px-4 py-3 text-left text-sm font-medium text-red-700 hover:bg-red-50"
-                                onClick={() => {
-                                  setDraftMenuOpen(null);
-                                  deleteAutoDraft(d.id);
-                                }}
-                              >
-                                Delete draft…
-                              </button>
-                            </div>
-                          </>
-                        ) : null}
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
         {activeTab === 'corpus' && (
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 md:p-8 mb-6">
             {corpusLoading ? (
