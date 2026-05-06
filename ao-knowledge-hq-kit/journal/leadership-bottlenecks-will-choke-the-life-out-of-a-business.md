@@ -1,17 +1,24 @@
 ---
-title: "Leadership bottlenecks will choke the life out of a business."
-slug: "leadership-bottlenecks-will-choke-the-life-out-of-a-business"
-publish_date: "2025-06-04"
-created_at: "2025-06-04"
-updated_at: "2025-10-28"
-summary: "An exploration of how leadership bottlenecks form when fear, insecurity, and control stifle innovation, and how trust, curiosity, and flexibility restore growth."
-categories: ["trust", "culture", "innovation"]
-featured_image: "../images/leadership-bottlenecks-will-choke-the-life-out-of-a-business.jpg"
+title: Leadership bottlenecks will choke the life out of a business.
+slug: leadership-bottlenecks-will-choke-the-life-out-of-a-business
+publish_date: '2025-06-04'
+created_at: '2025-06-04'
+updated_at: '2025-10-28'
+summary: >-
+  An exploration of how leadership bottlenecks form when fear, insecurity, and
+  control stifle innovation, and how trust, curiosity, and flexibility restore
+  growth.
+categories:
+  - trust
+  - culture
+  - innovation
+featured_image: ../images/leadership-bottlenecks-will-choke-the-life-out-of-a-business.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/17DvV65Y2j/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/17DvV65Y2j/'
+status: published
 ---
 
 # Leadership bottlenecks will choke the life out of a business.

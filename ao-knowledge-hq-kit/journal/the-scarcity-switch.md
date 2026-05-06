@@ -1,21 +1,39 @@
 ---
-title: "The Scarcity Switch"
-slug: "the-scarcity-switch"
-publish_date: "2026-01-15"
-created_at: "2026-01-15"
-updated_at: "2026-01-15"
-summary: "Narcissistic leaders weaponize scarcity to maintain control. Servant leaders create abundance through clarity, trust, and shared opportunity."
-categories: ["leadership", "psychology", "narcissism", "organizational-dynamics", "servant-leadership", "culture"]
-featured_image: "../images/the-scarcity-switch.jpg"
+title: The Scarcity Switch
+slug: the-scarcity-switch
+publish_date: '2026-01-15'
+created_at: '2026-01-15'
+updated_at: '2026-01-15'
+summary: >-
+  Narcissistic leaders weaponize scarcity to maintain control. Servant leaders
+  create abundance through clarity, trust, and shared opportunity.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - organizational-dynamics
+  - servant-leadership
+  - culture
+featured_image: ../images/the-scarcity-switch.jpg
 takeaways:
-  - Narcissistic leaders use scarcity of opportunity, access, and approval to create dependency.
+  - >-
+    Narcissistic leaders use scarcity of opportunity, access, and approval to
+    create dependency.
   - Scarcity narrows thinking and makes people reactive instead of strategic.
-  - Servant leaders create emotional and structural abundance, not just financial.
-  - In scarcity cultures, everyone feels tense; in abundance cultures, everyone feels responsible.
+  - >-
+    Servant leaders create emotional and structural abundance, not just
+    financial.
+  - >-
+    In scarcity cultures, everyone feels tense; in abundance cultures, everyone
+    feels responsible.
 applications: []
-related: ["the-loyalty-economy", "manufactured-crisis", "the-proxy-trap"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/the-scarcity-switch"
+related:
+  - the-loyalty-economy
+  - manufactured-crisis
+  - the-proxy-trap
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/the-scarcity-switch'
+status: published
 ---
 
 # The Scarcity Switch

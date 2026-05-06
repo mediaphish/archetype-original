@@ -1,17 +1,26 @@
 ---
-title: "Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 2)"
-slug: "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2"
-publish_date: "2025-09-02"
-created_at: "2025-09-02"
-updated_at: "2025-10-28"
-summary: "Part two explores what real leadership looks like in action, listening before directing, protecting your people, teaching instead of telling, and leading with consistency through storms."
-categories: ["power-control", "servant-leadership", "communication"]
-featured_image: "../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2.jpg"
+title: 'Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 2)'
+slug: leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2
+publish_date: '2025-09-02'
+created_at: '2025-09-02'
+updated_at: '2025-10-28'
+summary: >-
+  Part two explores what real leadership looks like in action, listening before
+  directing, protecting your people, teaching instead of telling, and leading
+  with consistency through storms.
+categories:
+  - power-control
+  - servant-leadership
+  - communication
+featured_image: ../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2.jpg
 takeaways: []
 applications: []
-related: ["leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-1", "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3"]
-original_source: "Facebook"
-original_url: ""
+related:
+  - leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-1
+  - leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3
+original_source: Facebook
+original_url: ''
+status: published
 ---
 
 # Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 2)

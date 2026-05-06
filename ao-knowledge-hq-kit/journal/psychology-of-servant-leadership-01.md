@@ -1,30 +1,42 @@
 ---
-title: "Psychology of Servant Leadership, Part 1: The Servant Mindset"
-slug: "psychology-of-servant-leadership-part-1"
-publish_date: "2025-12-08"
-created_at: "2025-12-08"
-updated_at: "2025-12-08"
-summary: "Most people mistake servant leadership for softness. In reality, it’s power under control, strength aimed at serving others, not inflating ego."
-categories: ["servant-leadership", "leadership", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-01.jpg"
+title: 'Psychology of Servant Leadership, Part 1: The Servant Mindset'
+slug: psychology-of-servant-leadership-part-1
+publish_date: '2025-12-08'
+created_at: '2025-12-08'
+updated_at: '2025-12-08'
+summary: >-
+  Most people mistake servant leadership for softness. In reality, it’s power
+  under control, strength aimed at serving others, not inflating ego.
+categories:
+  - servant-leadership
+  - leadership
+  - psychology
+featured_image: ../images/psychology-of-servant-leadership-01.jpg
 takeaways:
   - Servant leadership is not passive or weak; it is disciplined strength.
-  - Psychological safety allows people to move from self-protection to problem-solving.
+  - >-
+    Psychological safety allows people to move from self-protection to
+    problem-solving.
   - Humility (“I don’t know”) unlocks creativity and ownership.
   - Clarity and calm are the foundations of sustainable power and culture.
 applications:
-  - In your next tense moment, ask: "What do you need from me to do your best work?"
+  - 'In your next tense moment, ask': What do you need from me to do your best work?
   - Audit one meeting for how much space you give other voices versus your own.
-  - Practice separating the person from the problem when you confront or correct.
-  - Notice one place this week where your ego wants to “prove” you’re in charge and choose restraint instead.
+  - >-
+    Practice separating the person from the problem when you confront or
+    correct.
+  - >-
+    Notice one place this week where your ego wants to “prove” you’re in charge
+    and choose restraint instead.
 related:
-  - "psychology-of-servant-leadership-part-2"
-  - "psychology-of-servant-leadership-part-3"
-  - "psychology-of-servant-leadership-part-4"
-  - "psychology-of-servant-leadership-part-5"
-  - "psychology-of-servant-leadership-part-6"
-original_source: ""
-original_url: ""
+  - psychology-of-servant-leadership-part-2
+  - psychology-of-servant-leadership-part-3
+  - psychology-of-servant-leadership-part-4
+  - psychology-of-servant-leadership-part-5
+  - psychology-of-servant-leadership-part-6
+original_source: ''
+original_url: ''
+status: published
 ---
 
 # Psychology of Servant Leadership, Part 1: The Servant Mindset: Why It Works and Why It’s Misunderstood

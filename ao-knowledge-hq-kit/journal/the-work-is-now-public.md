@@ -1,21 +1,30 @@
 ---
-title: "The Work Is Now Public"
-slug: "the-work-is-now-public"
-publish_date: "2025-12-19"
-created_at: "2025-12-19"
-updated_at: "2025-12-19"
-summary: "A reflection on the public launch of Archetype Original and the decision to make decades of leadership work visible and accessible."
-categories: ["leadership", "culture", "formation", "servant-leadership"]
-featured_image: "../images/the-work-is-now-public.jpg"
+title: The Work Is Now Public
+slug: the-work-is-now-public
+publish_date: '2025-12-19'
+created_at: '2025-12-19'
+updated_at: '2025-12-19'
+summary: >-
+  A reflection on the public launch of Archetype Original and the decision to
+  make decades of leadership work visible and accessible.
+categories:
+  - leadership
+  - culture
+  - formation
+  - servant-leadership
+featured_image: ../images/the-work-is-now-public.jpg
 takeaways:
-  - Archetype Original is not a finished product, but a public commitment.
-  - Most leadership problems surface as human signals long before they become crises.
-  - Leadership health matters more than scale, speed, or performance optics.
-  - Making work public creates responsibility, clarity, and shared learning.
+  - 'Archetype Original is not a finished product, but a public commitment.'
+  - >-
+    Most leadership problems surface as human signals long before they become
+    crises.
+  - 'Leadership health matters more than scale, speed, or performance optics.'
+  - 'Making work public creates responsibility, clarity, and shared learning.'
 applications: []
 related: []
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/the-work-is-now-public"
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/the-work-is-now-public'
+status: published
 ---
 
 # The Work Is Now Public

@@ -1,17 +1,22 @@
 ---
-title: "We’ve Lost the Plot on Leadership."
-slug: "weve-lost-the-plot-on-leadership"
-publish_date: "2025-06-20"
-created_at: "2025-06-20"
-updated_at: "2025-10-28"
-summary: "A call to return to servant leadership, rejecting the pursuit of power and ego in favor of service, sacrifice, and the courage to lead through humility."
-categories: ["servant-leadership", "power-control"]
-featured_image: "../images/weve-lost-the-plot-on-leadership.jpg"
+title: We’ve Lost the Plot on Leadership.
+slug: weve-lost-the-plot-on-leadership
+publish_date: '2025-06-20'
+created_at: '2025-06-20'
+updated_at: '2025-10-28'
+summary: >-
+  A call to return to servant leadership, rejecting the pursuit of power and ego
+  in favor of service, sacrifice, and the courage to lead through humility.
+categories:
+  - servant-leadership
+  - power-control
+featured_image: ../images/weve-lost-the-plot-on-leadership.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/19i8cqqv4H/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/19i8cqqv4H/'
+status: published
 ---
 
 # We’ve Lost the Plot on Leadership.

@@ -1,17 +1,25 @@
 ---
-title: "When Leaders Refuse to Change: The Enron Lesson"
-slug: "when-leaders-refuse-to-change-the-enron-lesson"
-publish_date: "2025-08-21"
-created_at: "2025-08-21"
-updated_at: "2025-10-28"
-summary: "A deep leadership case study drawn from Enron’s collapse, exploring how ego, fear, and denial destroy organizations, and why humility and adaptability are essential for survival."
-categories: ["case-studies", "power-control", "accountability", "culture"]
-featured_image: "../images/when-leaders-refuse-to-change-the-enron-lesson.jpg"
+title: 'When Leaders Refuse to Change: The Enron Lesson'
+slug: when-leaders-refuse-to-change-the-enron-lesson
+publish_date: '2025-08-21'
+created_at: '2025-08-21'
+updated_at: '2025-10-28'
+summary: >-
+  A deep leadership case study drawn from Enron’s collapse, exploring how ego,
+  fear, and denial destroy organizations, and why humility and adaptability are
+  essential for survival.
+categories:
+  - case-studies
+  - power-control
+  - accountability
+  - culture
+featured_image: ../images/when-leaders-refuse-to-change-the-enron-lesson.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/1K1nXbCHys/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/1K1nXbCHys/'
+status: published
 ---
 
 # When Leaders Refuse to Change: The Enron Lesson

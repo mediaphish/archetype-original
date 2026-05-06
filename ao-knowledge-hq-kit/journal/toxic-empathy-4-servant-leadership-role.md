@@ -1,30 +1,36 @@
 ---
-title: "Toxic Empathy Post 4: Servant Leadership Role"
-slug: "toxic-empathy-4-servant-leadership-role"
-publish_date: "2026-04-21"
-created_at: "2026-04-21"
-updated_at: "2026-04-21"
-summary: "A correction of servant leadership as a disciplined practice, clarifying the difference between empathy that serves and empathy that avoids responsibility, and how leaders must hold both awareness and accountability at the same time."
+title: 'Toxic Empathy Post 4: Servant Leadership Role'
+slug: toxic-empathy-4-servant-leadership-role
+publish_date: '2026-04-21'
+created_at: '2026-04-21'
+updated_at: '2026-04-21'
+summary: >-
+  A correction of servant leadership as a disciplined practice, clarifying the
+  difference between empathy that serves and empathy that avoids responsibility,
+  and how leaders must hold both awareness and accountability at the same time.
 categories:
   - editorial
   - leadership
   - servant-leadership
   - culture
   - accountability
-featured_image: "../images/toxic-empathy-4-servant-leadership-role.jpg"
+featured_image: ../images/toxic-empathy-4-servant-leadership-role.jpg
 takeaways:
-  - Empathy without responsibility becomes permission, not service.
+  - 'Empathy without responsibility becomes permission, not service.'
   - Understanding context does not remove the need to address the work.
-  - Servant leadership requires holding both awareness and accountability at the same time.
+  - >-
+    Servant leadership requires holding both awareness and accountability at the
+    same time.
   - Avoiding tension in the moment leads to instability over time.
-  - Discipline, not comfort, is what keeps the system aligned.
+  - 'Discipline, not comfort, is what keeps the system aligned.'
 applications: []
 related:
   - toxic-empathy
   - toxic-empathy-2-holding-the-line
   - toxic-empathy-3-the-cost-of-avoidance
-original_source: "Archetype Original Journal"
-original_url: ""
+original_source: Archetype Original Journal
+original_url: ''
+status: published
 ---
 
 ## Servant Leadership Role

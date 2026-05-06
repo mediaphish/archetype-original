@@ -1,17 +1,24 @@
 ---
-title: "The Cost of Calm"
-slug: "the-cost-of-calm"
-publish_date: "2025-10-20"
-created_at: "2025-10-20"
-updated_at: "2025-10-30"
-summary: "Calm under pressure isn’t always healthy. This post unpacks the personal cost of high-functioning leadership, offering five lessons on recovery, boundaries, and balance for leaders who carry too much weight."
-categories: ["balance", "personal-reflection", "boundaries"]
-featured_image: "../images/the-cost-of-calm.jpg"
+title: The Cost of Calm
+slug: the-cost-of-calm
+publish_date: '2025-10-20'
+created_at: '2025-10-20'
+updated_at: '2025-10-30'
+summary: >-
+  Calm under pressure isn’t always healthy. This post unpacks the personal cost
+  of high-functioning leadership, offering five lessons on recovery, boundaries,
+  and balance for leaders who carry too much weight.
+categories:
+  - balance
+  - personal-reflection
+  - boundaries
+featured_image: ../images/the-cost-of-calm.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/15qGni3rna/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/15qGni3rna/'
+status: published
 ---
 
 # The Cost of Calm

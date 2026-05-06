@@ -1,21 +1,34 @@
 ---
-title: "Mean People Suck (Especially When We Put Them in Charge)"
-slug: "mean-people-suck"
-publish_date: "2026-01-06"
-created_at: "2026-01-06"
-updated_at: "2026-01-06"
-summary: "A first-person editorial reflection on how meanness is tolerated, and even rewarded, in leadership, and why authoritarian and narcissistic behavior corrodes organizations from the inside out."
-categories: ["editorial", "leadership", "power", "culture", "authoritarianism"]
-featured_image: "../images/mean-people-suck.jpg"
+title: Mean People Suck (Especially When We Put Them in Charge)
+slug: mean-people-suck
+publish_date: '2026-01-06'
+created_at: '2026-01-06'
+updated_at: '2026-01-06'
+summary: >-
+  A first-person editorial reflection on how meanness is tolerated, and even
+  rewarded, in leadership, and why authoritarian and narcissistic behavior
+  corrodes organizations from the inside out.
+categories:
+  - editorial
+  - leadership
+  - power
+  - culture
+  - authoritarianism
+featured_image: ../images/mean-people-suck.jpg
 takeaways:
   - Meanness is often rebranded as strength once power enters the room.
-  - Authoritarian and narcissistic traits can look effective early but scale damage over time.
-  - Fear is not a leadership tool, it is a warning sign.
-  - Leadership requires restraint, self-awareness, and responsibility, not intimidation.
+  - >-
+    Authoritarian and narcissistic traits can look effective early but scale
+    damage over time.
+  - 'Fear is not a leadership tool, it is a warning sign.'
+  - >-
+    Leadership requires restraint, self-awareness, and responsibility, not
+    intimidation.
 applications: []
 related: []
-original_source: "Editorial Letter"
-original_url: ""
+original_source: Editorial Letter
+original_url: ''
+status: published
 ---
 
 # Mean People Suck. Especially When We Put Them in Charge.

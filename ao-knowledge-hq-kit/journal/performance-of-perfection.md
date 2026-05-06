@@ -1,21 +1,35 @@
 ---
-title: "The Performance of Perfection"
-slug: "performance-of-perfection"
-publish_date: "2025-12-04"
-created_at: "2025-12-04"
-updated_at: "2025-12-04"
-summary: "Narcissistic leaders hide behind curated competence and flawless optics. Servant leaders choose transparency, courage, and truth over image."
-categories: ["leadership", "psychology", "narcissism", "culture", "servant-leadership", "organizational-dynamics"]
-featured_image: "../images/performance-of-perfection.jpg"
+title: The Performance of Perfection
+slug: performance-of-perfection
+publish_date: '2025-12-04'
+created_at: '2025-12-04'
+updated_at: '2025-12-04'
+summary: >-
+  Narcissistic leaders hide behind curated competence and flawless optics.
+  Servant leaders choose transparency, courage, and truth over image.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - culture
+  - servant-leadership
+  - organizational-dynamics
+featured_image: ../images/performance-of-perfection.jpg
 takeaways:
   - Narcissistic leaders perform competence rather than develop it.
   - Perfectionistic environments create chronic stress and kill honesty.
   - Servant leaders pursue growth through transparency and humility.
-  - The strongest cultures are built by leaders who aren't afraid to be seen standing back up.
+  - >-
+    The strongest cultures are built by leaders who aren't afraid to be seen
+    standing back up.
 applications: []
-related: ["illusion-of-control", "cult-of-confusion", "shadow-of-shame"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/performance-of-perfection"
+related:
+  - illusion-of-control
+  - cult-of-confusion
+  - shadow-of-shame
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/performance-of-perfection'
+status: published
 ---
 
 # The Performance of Perfection

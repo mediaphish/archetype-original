@@ -1,17 +1,27 @@
 ---
-title: "The Case for Servant Leadership (Part 2)"
-slug: "the-case-for-servant-leadership-part-2"
-publish_date: "2025-11-10T10:00:00-06:00"
-created_at: "2025-11-10T10:00:00-06:00"
-updated_at: "2025-10-30"
-summary: "What the data actually says: neuroscience, engagement, and innovation studies confirm why servant leadership outperforms pressure-based models."
-categories: ["servant-leadership", "neuroscience", "data-research"]
-featured_image: "../images/the-case-for-servant-leadership-part-2.jpg"
+title: The Case for Servant Leadership (Part 2)
+slug: the-case-for-servant-leadership-part-2
+publish_date: '2025-11-10T10:00:00-06:00'
+created_at: '2025-11-10T10:00:00-06:00'
+updated_at: '2025-10-30'
+summary: >-
+  What the data actually says: neuroscience, engagement, and innovation studies
+  confirm why servant leadership outperforms pressure-based models.
+categories:
+  - servant-leadership
+  - neuroscience
+  - data-research
+featured_image: ../images/the-case-for-servant-leadership-part-2.jpg
 takeaways: []
 applications: []
-related: ["the-case-for-servant-leadership-part-1","the-case-for-servant-leadership-part-3","the-case-for-servant-leadership-part-4","the-case-for-servant-leadership-part-5"]
-original_source: "Facebook"
-original_url: ""
+related:
+  - the-case-for-servant-leadership-part-1
+  - the-case-for-servant-leadership-part-3
+  - the-case-for-servant-leadership-part-4
+  - the-case-for-servant-leadership-part-5
+original_source: Facebook
+original_url: ''
+status: published
 ---
 
 # The Case for Servant Leadership

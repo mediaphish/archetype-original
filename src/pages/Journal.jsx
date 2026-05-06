@@ -43,9 +43,7 @@ export default function Journal() {
       .then((r) => r.json())
       .then((journalData) => {
         const docs = journalData.docs || [];
-        const publishedPosts = docs.filter(
-          (post) => post.status === 'published' || post.status === undefined,
-        );
+        const publishedPosts = docs.filter((post) => post.status === 'published');
         const sortedPosts = publishedPosts.sort((a, b) => {
           const dateA = new Date(a.publish_date || a.created_at || 0);
           const dateB = new Date(b.publish_date || b.created_at || 0);

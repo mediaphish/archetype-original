@@ -1,17 +1,23 @@
 ---
-title: "Teams Are Not Wells"
-slug: "teams-are-not-wells"
-publish_date: "2025-08-11"
-created_at: "2025-08-11"
-updated_at: "2025-10-28"
-summary: "A leadership reflection contrasting extractive management with investment-driven leadership, reminding that teams thrive when they’re nurtured, not drained."
-categories: ["team-building", "leadership-development"]
-featured_image: "../images/teams-are-not-wells.jpg"
+title: Teams Are Not Wells
+slug: teams-are-not-wells
+publish_date: '2025-08-11'
+created_at: '2025-08-11'
+updated_at: '2025-10-28'
+summary: >-
+  A leadership reflection contrasting extractive management with
+  investment-driven leadership, reminding that teams thrive when they’re
+  nurtured, not drained.
+categories:
+  - team-building
+  - leadership-development
+featured_image: ../images/teams-are-not-wells.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/1JVzjT3Ln1/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/1JVzjT3Ln1/'
+status: published
 ---
 
 # Wells Run Dry

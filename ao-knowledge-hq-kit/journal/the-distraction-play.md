@@ -1,21 +1,38 @@
 ---
-title: "The Distraction Play"
-slug: "the-distraction-play"
-publish_date: "2026-02-18"
-created_at: "2026-02-18"
-updated_at: "2026-02-18"
-summary: "Narcissistic leaders keep teams busy with noise to avoid accountability. Servant leaders resist constant pivots and focus attention on what truly matters."
-categories: ["leadership", "psychology", "narcissism", "organizational-dynamics", "servant-leadership", "culture"]
-featured_image: "../images/the-distraction-play.jpg"
+title: The Distraction Play
+slug: the-distraction-play
+publish_date: '2026-02-18'
+created_at: '2026-02-18'
+updated_at: '2026-02-18'
+summary: >-
+  Narcissistic leaders keep teams busy with noise to avoid accountability.
+  Servant leaders resist constant pivots and focus attention on what truly
+  matters.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - organizational-dynamics
+  - servant-leadership
+  - culture
+featured_image: ../images/the-distraction-play.jpg
 takeaways:
-  - Narcissistic leaders use constant activity to avoid hard conversations and accountability.
-  - Distraction keeps teams moving but never toward what actually needs to be dealt with.
+  - >-
+    Narcissistic leaders use constant activity to avoid hard conversations and
+    accountability.
+  - >-
+    Distraction keeps teams moving but never toward what actually needs to be
+    dealt with.
   - Servant leaders stay with real problems long enough to understand them.
   - Clarity over time builds trust; constant pivots destroy it.
 applications: []
-related: ["the-isolation-strategy", "the-scarcity-switch", "the-loyalty-economy"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/the-distraction-play"
+related:
+  - the-isolation-strategy
+  - the-scarcity-switch
+  - the-loyalty-economy
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/the-distraction-play'
+status: published
 ---
 
 # The Distraction Play

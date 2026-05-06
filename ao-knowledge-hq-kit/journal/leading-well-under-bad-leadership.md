@@ -1,26 +1,36 @@
 ---
-title: "Leading Well Under Bad Leadership"
-slug: "leading-well-under-bad-leadership"
-publish_date: "2026-03-10"
-created_at: "2026-03-10"
-updated_at: "2026-03-10"
-summary: "The final entry in the Unaccountable Leadership series examining how leaders maintain integrity and influence when the system above them refuses accountability."
+title: Leading Well Under Bad Leadership
+slug: leading-well-under-bad-leadership
+publish_date: '2026-03-10'
+created_at: '2026-03-10'
+updated_at: '2026-03-10'
+summary: >-
+  The final entry in the Unaccountable Leadership series examining how leaders
+  maintain integrity and influence when the system above them refuses
+  accountability.
 categories:
   - editorial
   - leadership
   - accountability
   - power
   - servant-leadership
-featured_image: "../images/leading-well-under-bad-leadership.jpg"
+featured_image: ../images/leading-well-under-bad-leadership.jpg
 takeaways:
-  - Leadership influence always has limits, but integrity does not.
-  - Some systems cannot be corrected from the middle, and leaders must recognize those boundaries.
-  - Healthy leadership often becomes localized inside teams when larger systems drift.
-  - Protecting people and maintaining clarity are forms of leadership even when the broader system is unhealthy.
+  - 'Leadership influence always has limits, but integrity does not.'
+  - >-
+    Some systems cannot be corrected from the middle, and leaders must recognize
+    those boundaries.
+  - >-
+    Healthy leadership often becomes localized inside teams when larger systems
+    drift.
+  - >-
+    Protecting people and maintaining clarity are forms of leadership even when
+    the broader system is unhealthy.
 applications: []
 related: []
-original_source: "Archetype Original Editorial Series"
-original_url: ""
+original_source: Archetype Original Editorial Series
+original_url: ''
+status: published
 ---
 
 ## Leading Well Under Bad Leadership

@@ -1,30 +1,36 @@
 ---
-title: "Psychology of Servant Leadership, Part 2: Safety Before Strategy"
-slug: "psychology-of-servant-leadership-part-2"
-publish_date: "2025-12-15"
-created_at: "2025-12-15"
-updated_at: "2025-12-15"
-summary: "Strategy doesn’t fail because it’s bad, it fails because people are too afraid to tell the truth, ask for help, or take intelligent risks."
-categories: ["servant-leadership", "leadership", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-02.jpg"
+title: 'Psychology of Servant Leadership, Part 2: Safety Before Strategy'
+slug: psychology-of-servant-leadership-part-2
+publish_date: '2025-12-15'
+created_at: '2025-12-15'
+updated_at: '2025-12-15'
+summary: >-
+  Strategy doesn’t fail because it’s bad, it fails because people are too afraid
+  to tell the truth, ask for help, or take intelligent risks.
+categories:
+  - servant-leadership
+  - leadership
+  - psychology
+featured_image: ../images/psychology-of-servant-leadership-02.jpg
 takeaways:
   - Fear is one of the most expensive hidden costs in any organization.
   - Psychological safety is not comfort; it’s consistency and predictability.
   - Trust and voice are the real engines of innovation and speed.
-  - Calm, steady leaders create environments where truth moves quickly.
+  - 'Calm, steady leaders create environments where truth moves quickly.'
 applications:
   - Ask your team: “What are we not saying out loud that we should be?”
-  - When mistakes surface, respond with curiosity before correction.
-  - Protect the people who tell you hard truths, even when it stings.
+  - 'When mistakes surface, respond with curiosity before correction.'
+  - 'Protect the people who tell you hard truths, even when it stings.'
   - Pair urgency with visible composure; don’t outsource calm to your team.
 related:
-  - "psychology-of-servant-leadership-part-1"
-  - "psychology-of-servant-leadership-part-3"
-  - "psychology-of-servant-leadership-part-4"
-  - "psychology-of-servant-leadership-part-5"
-  - "psychology-of-servant-leadership-part-6"
-original_source: ""
-original_url: ""
+  - psychology-of-servant-leadership-part-1
+  - psychology-of-servant-leadership-part-3
+  - psychology-of-servant-leadership-part-4
+  - psychology-of-servant-leadership-part-5
+  - psychology-of-servant-leadership-part-6
+original_source: ''
+original_url: ''
+status: published
 ---
 
 # Psychology of Servant Leadership, Part 2: Safety Before Strategy: The Neuroscience of Trust and Performance

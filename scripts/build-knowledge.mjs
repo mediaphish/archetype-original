@@ -215,6 +215,8 @@ async function buildKnowledgeCorpus() {
     let skippedCount = 0;
     let futurePosts = 0;
     let draftPosts = 0;
+    /** Journal articles (not devotionals) missing explicit status: published */
+    let awaitingJournalApproval = 0;
     let errorCount = 0;
     
     for (const filePath of journalFiles) {
@@ -299,14 +301,28 @@ async function buildKnowledgeCorpus() {
           continue;
         }
 
-        // Check status - only skip if explicitly set to 'draft'
-        const status = frontmatter.status === 'draft' ? 'draft' : 'published';
-        if (status === 'draft') {
-          console.log(`📝 Skipping draft post: "${frontmatter.title || path.basename(filePath)}"`);
+        const statusNorm = String(frontmatter.status ?? '').trim().toLowerCase();
+
+        if (statusNorm === 'draft') {
+          console.log(
+            `📝 Skipping draft ${isDevotional ? 'devotional' : 'post'}: "${frontmatter.title || path.basename(filePath)}"`
+          );
           draftPosts++;
           continue;
         }
-        
+
+        // Long-form journal only: require an explicit `status: published` so drafts/seeds
+        // never go live by omission. Devotionals keep the old rule (non-draft = ok).
+        if (!isDevotional && statusNorm !== 'published') {
+          console.log(
+            `🔒 Skipping journal article (not approved for public Journal): "${frontmatter.title || path.basename(filePath)}" — add status: published when ready.`
+          );
+          awaitingJournalApproval++;
+          continue;
+        }
+
+        const status = 'published';
+
         const slug = frontmatter.slug || path.basename(filePath, '.md');
         
         // Determine if this is a devotional (check if file is in devotionals subdirectory)
@@ -429,6 +445,7 @@ async function buildKnowledgeCorpus() {
     console.log(`📊 Journal Processing Summary:`);
     console.log(`   ✅ Published: ${processedCount}`);
     console.log(`   📝 Drafts: ${draftPosts}`);
+    console.log(`   🔒 Journal articles waiting for status: published: ${awaitingJournalApproval}`);
     console.log(`   ⏰ Future posts: ${futurePosts}`);
     console.log(`   ⏭️  Skipped: ${skippedCount}`);
     console.log(`   ❌ Errors: ${errorCount}`);

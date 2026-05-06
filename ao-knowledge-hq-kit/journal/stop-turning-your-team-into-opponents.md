@@ -1,17 +1,24 @@
 ---
-title: "Stop Turning Your Team Into Opponents"
-slug: "stop-turning-your-team-into-opponents"
-publish_date: "2025-05-19"
-created_at: "2025-05-19"
-updated_at: "2025-10-28"
-summary: "This post warns leaders against creating competition and scarcity inside their teams, reminding that true leadership builds trust, clarity, and shared success."
-categories: ["team-building", "trust", "culture"]
-featured_image: "../images/stop-turning-your-team-into-opponents.jpg"
+title: Stop Turning Your Team Into Opponents
+slug: stop-turning-your-team-into-opponents
+publish_date: '2025-05-19'
+created_at: '2025-05-19'
+updated_at: '2025-10-28'
+summary: >-
+  This post warns leaders against creating competition and scarcity inside their
+  teams, reminding that true leadership builds trust, clarity, and shared
+  success.
+categories:
+  - team-building
+  - trust
+  - culture
+featured_image: ../images/stop-turning-your-team-into-opponents.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/1JTCe3XLJv/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/1JTCe3XLJv/'
+status: published
 ---
 
 # Stop Turning Your Team Into Opponents

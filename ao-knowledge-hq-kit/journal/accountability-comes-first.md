@@ -1,21 +1,30 @@
 ---
-title: "Accountability Comes First"
-slug: "accountability-comes-first"
-publish_date: "2026-01-20"
-created_at: "2026-01-20"
-updated_at: "2026-01-20"
-summary: "An editorial examination of why accountability must precede reconciliation, and how leadership systems often delay responsibility in the name of stability."
-categories: ["editorial", "servant-leadership", "accountability", "power", "culture"]
-featured_image: "../images/accountability-comes-first.jpg"
+title: Accountability Comes First
+slug: accountability-comes-first
+publish_date: '2026-01-20'
+created_at: '2026-01-20'
+updated_at: '2026-01-20'
+summary: >-
+  An editorial examination of why accountability must precede reconciliation,
+  and how leadership systems often delay responsibility in the name of
+  stability.
+categories:
+  - editorial
+  - servant-leadership
+  - accountability
+  - power
+  - culture
+featured_image: ../images/accountability-comes-first.jpg
 takeaways:
-  - Reconciliation without accountability is avoidance, not healing.
+  - 'Reconciliation without accountability is avoidance, not healing.'
   - Leadership systems often delay accountability to preserve stability.
-  - When accountability feels dangerous, something is already broken.
-  - Servant leadership treats accountability as fuel, not threat.
+  - 'When accountability feels dangerous, something is already broken.'
+  - 'Servant leadership treats accountability as fuel, not threat.'
 applications: []
 related: []
-original_source: "Editorial Letter"
-original_url: ""
+original_source: Editorial Letter
+original_url: ''
+status: published
 ---
 
 There is a quiet lie embedded in modern leadership language.

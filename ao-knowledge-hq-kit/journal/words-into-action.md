@@ -1,31 +1,43 @@
 ---
-title: "Are You a Leader Who Puts Your Words Into Action?"
-slug: "words-into-action"
-publish_date: "2026-04-27"
-created_at: "2026-04-27"
-updated_at: "2026-04-27"
-summary: "Servant leadership is not measured in declarations. It is measured in days. A look at what congruence actually costs, why the leader who has never failed is the most dangerous kind, and what it means to put your words into action."
+title: Are You a Leader Who Puts Your Words Into Action?
+slug: words-into-action
+publish_date: '2026-04-27'
+created_at: '2026-04-27'
+updated_at: '2026-04-27'
+summary: >-
+  Servant leadership is not measured in declarations. It is measured in days. A
+  look at what congruence actually costs, why the leader who has never failed is
+  the most dangerous kind, and what it means to put your words into action.
 categories:
   - editorial
   - leadership
   - servant-leadership
   - culture
   - accountability
-featured_image: "../images/words-into-action.jpg"
+featured_image: ../images/words-into-action.jpg
 takeaways:
-  - The space between what you say and what you do is the exact size of the trust problem inside your organization.
-  - Servant leadership costs comfort, certainty, and ego. All three.
-  - What your team brings you is a direct reflection of what they believe you can handle.
-  - The leader who protects their image above all else destroys psychological safety structurally.
-  - Servant leadership is not a permanent state you achieve. It is a daily choice you make with whatever you have that day.
+  - >-
+    The space between what you say and what you do is the exact size of the
+    trust problem inside your organization.
+  - 'Servant leadership costs comfort, certainty, and ego. All three.'
+  - >-
+    What your team brings you is a direct reflection of what they believe you
+    can handle.
+  - >-
+    The leader who protects their image above all else destroys psychological
+    safety structurally.
+  - >-
+    Servant leadership is not a permanent state you achieve. It is a daily
+    choice you make with whatever you have that day.
 applications: []
 related:
   - toxic-empathy
   - toxic-empathy-2-holding-the-line
   - toxic-empathy-4-servant-leadership-role
   - toxic-empathy-5-the-conversation
-original_source: "Archetype Original Journal"
-original_url: ""
+original_source: Archetype Original Journal
+original_url: ''
+status: published
 ---
 
 ## Are You a Leader Who Puts Your Words Into Action?

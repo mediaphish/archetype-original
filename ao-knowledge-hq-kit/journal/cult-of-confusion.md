@@ -1,21 +1,34 @@
 ---
-title: "The Cult of Confusion"
-slug: "cult-of-confusion"
-publish_date: "2025-12-11"
-created_at: "2025-12-11"
-updated_at: "2025-12-11"
-summary: "Narcissistic leaders use ambiguity, contradiction, and withheld information to maintain control. Servant leaders use clarity, consistency, and shared truth to build trust."
-categories: ["leadership", "psychology", "narcissism", "communication", "servant-leadership", "organizational-dynamics"]
-featured_image: "../images/cult-of-confusion.jpg"
+title: The Cult of Confusion
+slug: cult-of-confusion
+publish_date: '2025-12-11'
+created_at: '2025-12-11'
+updated_at: '2025-12-11'
+summary: >-
+  Narcissistic leaders use ambiguity, contradiction, and withheld information to
+  maintain control. Servant leaders use clarity, consistency, and shared truth
+  to build trust.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - communication
+  - servant-leadership
+  - organizational-dynamics
+featured_image: ../images/cult-of-confusion.jpg
 takeaways:
   - Strategic ambiguity is a control tactic that creates dependency.
   - Confusion destroys trust and causes teams to burn out from uncertainty.
-  - Servant leaders know clarity is emotional, not just operational.
-  - Most toxic cultures begin with inconsistency, not cruelty.
+  - 'Servant leaders know clarity is emotional, not just operational.'
+  - 'Most toxic cultures begin with inconsistency, not cruelty.'
 applications: []
-related: ["performance-of-perfection", "illusion-of-control", "servant-power"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/cult-of-confusion"
+related:
+  - performance-of-perfection
+  - illusion-of-control
+  - servant-power
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/cult-of-confusion'
+status: published
 ---
 
 # The Cult of Confusion

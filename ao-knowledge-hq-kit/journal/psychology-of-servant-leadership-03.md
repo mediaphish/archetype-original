@@ -1,30 +1,44 @@
 ---
-title: "Psychology of Servant Leadership, Part 3: Motivation and Meaning"
-slug: "psychology-of-servant-leadership-part-3"
-publish_date: "2025-12-22"
-created_at: "2025-12-22"
-updated_at: "2025-12-22"
-summary: "Servant leaders don’t squeeze results out of people, they design systems that satisfy the human needs that make motivation renewable."
-categories: ["servant-leadership", "leadership", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-03.jpg"
+title: 'Psychology of Servant Leadership, Part 3: Motivation and Meaning'
+slug: psychology-of-servant-leadership-part-3
+publish_date: '2025-12-22'
+created_at: '2025-12-22'
+updated_at: '2025-12-22'
+summary: >-
+  Servant leaders don’t squeeze results out of people, they design systems that
+  satisfy the human needs that make motivation renewable.
+categories:
+  - servant-leadership
+  - leadership
+  - psychology
+featured_image: ../images/psychology-of-servant-leadership-03.jpg
 takeaways:
   - Safety gets people honest; meaning keeps them fully engaged.
-  - Autonomy, competence, and relatedness are the core psychological drivers of sustained motivation.
-  - Foggy expectations and withheld feedback are often power plays, not kindness.
+  - >-
+    Autonomy, competence, and relatedness are the core psychological drivers of
+    sustained motivation.
+  - >-
+    Foggy expectations and withheld feedback are often power plays, not
+    kindness.
   - Connection and purpose compound performance over time.
 applications:
-  - Give one team member more choice in *how* they hit a clear outcome this week.
-  - Replace one vague compliment with specific, growth-focused feedback.
-  - Schedule a short conversation that’s about the person, not the project.
-  - Identify one place where you may be keeping things foggy and clarify the target.
+  - >-
+    Give one team member more choice in *how* they hit a clear outcome this
+    week.
+  - 'Replace one vague compliment with specific, growth-focused feedback.'
+  - 'Schedule a short conversation that’s about the person, not the project.'
+  - >-
+    Identify one place where you may be keeping things foggy and clarify the
+    target.
 related:
-  - "psychology-of-servant-leadership-part-1"
-  - "psychology-of-servant-leadership-part-2"
-  - "psychology-of-servant-leadership-part-4"
-  - "psychology-of-servant-leadership-part-5"
-  - "psychology-of-servant-leadership-part-6"
-original_source: ""
-original_url: ""
+  - psychology-of-servant-leadership-part-1
+  - psychology-of-servant-leadership-part-2
+  - psychology-of-servant-leadership-part-4
+  - psychology-of-servant-leadership-part-5
+  - psychology-of-servant-leadership-part-6
+original_source: ''
+original_url: ''
+status: published
 ---
 
 # Psychology of Servant Leadership, Part 3: Motivation and Meaning: Autonomy, Competence, and Relatedness

@@ -1,17 +1,22 @@
 ---
-title: "Clearing the Path"
-slug: "clearing-the-path"
-publish_date: "2025-11-05"
-created_at: "2025-11-03"
-updated_at: "2025-11-03"
-summary: "Servant leadership isn’t about getting people to make your job easier. It’s about making their path clear so they can do the work they were built to do."
-categories: ["servant-leadership", "team-building"]
-featured_image: "../images/clearing-the-path.jpg"
+title: Clearing the Path
+slug: clearing-the-path
+publish_date: '2025-11-05'
+created_at: '2025-11-03'
+updated_at: '2025-11-03'
+summary: >-
+  Servant leadership isn’t about getting people to make your job easier. It’s
+  about making their path clear so they can do the work they were built to do.
+categories:
+  - servant-leadership
+  - team-building
+featured_image: ../images/clearing-the-path.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/__________/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/__________/'
+status: published
 ---
 
 # Clearing the Path

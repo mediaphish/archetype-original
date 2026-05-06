@@ -1,21 +1,37 @@
 ---
-title: "The Loyalty Economy"
-slug: "the-loyalty-economy"
-publish_date: "2026-01-08"
-created_at: "2026-01-08"
-updated_at: "2026-01-08"
-summary: "Narcissistic leaders build in-groups, out-groups, and conditional loyalty. Servant leaders cultivate principled unity, honest input, and shared purpose."
-categories: ["leadership", "psychology", "narcissism", "organizational-dynamics", "servant-leadership", "culture"]
-featured_image: "../images/the-loyalty-economy.jpg"
+title: The Loyalty Economy
+slug: the-loyalty-economy
+publish_date: '2026-01-08'
+created_at: '2026-01-08'
+updated_at: '2026-01-08'
+summary: >-
+  Narcissistic leaders build in-groups, out-groups, and conditional loyalty.
+  Servant leaders cultivate principled unity, honest input, and shared purpose.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - organizational-dynamics
+  - servant-leadership
+  - culture
+featured_image: ../images/the-loyalty-economy.jpg
 takeaways:
-  - Healthy teams are loyal to mission and values; unhealthy teams are loyal to the leader's ego.
+  - >-
+    Healthy teams are loyal to mission and values; unhealthy teams are loyal to
+    the leader's ego.
   - Narcissistic leaders build in-groups and out-groups to maintain control.
-  - Servant leaders want loyalty to the work, not to them personally.
-  - Leaders who demand personal loyalty reveal their fear; those who cultivate principled loyalty reveal strength.
+  - 'Servant leaders want loyalty to the work, not to them personally.'
+  - >-
+    Leaders who demand personal loyalty reveal their fear; those who cultivate
+    principled loyalty reveal strength.
 applications: []
-related: ["manufactured-crisis", "the-proxy-trap", "shadow-of-shame"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/the-loyalty-economy"
+related:
+  - manufactured-crisis
+  - the-proxy-trap
+  - shadow-of-shame
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/the-loyalty-economy'
+status: published
 ---
 
 # The Loyalty Economy

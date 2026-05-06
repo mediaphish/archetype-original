@@ -1,17 +1,23 @@
 ---
-title: "The Pursuit of Power Corrupts"
-slug: "the-pursuit-of-power-corrupts"
-publish_date: "2025-05-12"
-created_at: "2025-05-12"
-updated_at: "2025-10-28"
-summary: "A reflection on how the pursuit of power can erode trust and culture, contrasting power-hungry leadership with servant-hearted leadership that carries people, not control."
-categories: ["power-control", "servant-leadership"]
-featured_image: "../images/the-pursuit-of-power-corrupts.jpg"
+title: The Pursuit of Power Corrupts
+slug: the-pursuit-of-power-corrupts
+publish_date: '2025-05-12'
+created_at: '2025-05-12'
+updated_at: '2025-10-28'
+summary: >-
+  A reflection on how the pursuit of power can erode trust and culture,
+  contrasting power-hungry leadership with servant-hearted leadership that
+  carries people, not control.
+categories:
+  - power-control
+  - servant-leadership
+featured_image: ../images/the-pursuit-of-power-corrupts.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/1CUJJEa4kr/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/1CUJJEa4kr/'
+status: published
 ---
 
 # The Pursuit of Power Corrupts

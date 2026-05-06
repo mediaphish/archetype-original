@@ -1,24 +1,41 @@
 ---
-title: "The Illusion of Control"
-slug: "illusion-of-control"
-publish_date: "2025-11-27"
-created_at: "2025-11-27"
-updated_at: "2025-11-27"
-summary: "Narcissistic leaders maintain control through hierarchy, ambiguity, and blame, creating the illusion of strength while hiding incompetence. Servant leaders lead by clarity, empowerment, and shared responsibility."
-categories: ["leadership", "psychology", "narcissism", "servant-leadership", "power-control", "organizational-dynamics"]
-featured_image: "../images/illusion-of-control.jpg"
+title: The Illusion of Control
+slug: illusion-of-control
+publish_date: '2025-11-27'
+created_at: '2025-11-27'
+updated_at: '2025-11-27'
+summary: >-
+  Narcissistic leaders maintain control through hierarchy, ambiguity, and blame,
+  creating the illusion of strength while hiding incompetence. Servant leaders
+  lead by clarity, empowerment, and shared responsibility.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - servant-leadership
+  - power-control
+  - organizational-dynamics
+featured_image: ../images/illusion-of-control.jpg
 takeaways:
-  - Narcissistic leaders build systems that look like control but function as insulation.
-  - Weaponized delegation and layered hierarchy exist to deflect blame, not create clarity.
-  - Healthy leadership empowers, equips, and accepts responsibility.
+  - >-
+    Narcissistic leaders build systems that look like control but function as
+    insulation.
+  - >-
+    Weaponized delegation and layered hierarchy exist to deflect blame, not
+    create clarity.
+  - 'Healthy leadership empowers, equips, and accepts responsibility.'
   - Control is a symptom of insecurity; clarity is a mark of leadership.
 applications:
-  - Delegate with clarity and context, not as a means of protection.
+  - 'Delegate with clarity and context, not as a means of protection.'
   - Build direct pathways of communication with your team.
   - Audit whether people rely on your guidance or fear your reactions.
-related: ["architecture-of-distance", "cult-of-confusion", "servant-power"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/illusion-of-control"
+related:
+  - architecture-of-distance
+  - cult-of-confusion
+  - servant-power
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/illusion-of-control'
+status: published
 ---
 
 # The Illusion of Control

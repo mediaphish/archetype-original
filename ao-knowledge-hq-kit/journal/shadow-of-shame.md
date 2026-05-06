@@ -1,21 +1,42 @@
 ---
-title: "The Shadow of Shame"
-slug: "shadow-of-shame"
-publish_date: "2025-12-18"
-created_at: "2025-12-18"
-updated_at: "2025-12-18"
-summary: "When leaders deflect, distort, or redirect blame, shame becomes a silent toxin inside the culture. Servant leaders face truth instead of shielding themselves from it."
-categories: ["leadership", "psychology", "emotional-intelligence", "narcissism", "servant-leadership", "accountability"]
-featured_image: "../images/shadow-of-shame.jpg"
+title: The Shadow of Shame
+slug: shadow-of-shame
+publish_date: '2025-12-18'
+created_at: '2025-12-18'
+updated_at: '2025-12-18'
+summary: >-
+  When leaders deflect, distort, or redirect blame, shame becomes a silent toxin
+  inside the culture. Servant leaders face truth instead of shielding themselves
+  from it.
+categories:
+  - leadership
+  - psychology
+  - emotional-intelligence
+  - narcissism
+  - servant-leadership
+  - accountability
+featured_image: ../images/shadow-of-shame.jpg
 takeaways:
-  - In healthy leaders, shame becomes humility; in insecure leaders, it becomes blame.
-  - No team can maintain psychological safety when leaders cannot tolerate shame.
-  - Servant leaders name mistakes before anyone else has to and take weight instead of shifting it.
-  - When truth becomes normal, shame loses its power over people who never deserved to carry it.
+  - >-
+    In healthy leaders, shame becomes humility; in insecure leaders, it becomes
+    blame.
+  - >-
+    No team can maintain psychological safety when leaders cannot tolerate
+    shame.
+  - >-
+    Servant leaders name mistakes before anyone else has to and take weight
+    instead of shifting it.
+  - >-
+    When truth becomes normal, shame loses its power over people who never
+    deserved to carry it.
 applications: []
-related: ["cult-of-confusion", "performance-of-perfection", "the-proxy-trap"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/shadow-of-shame"
+related:
+  - cult-of-confusion
+  - performance-of-perfection
+  - the-proxy-trap
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/shadow-of-shame'
+status: published
 ---
 
 # The Shadow of Shame

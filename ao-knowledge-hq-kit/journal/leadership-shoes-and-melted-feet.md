@@ -1,17 +1,24 @@
 ---
-title: "Leadership, Shoes, and Melted Feet"
-slug: "leadership-shoes-and-melted-feet"
-publish_date: "2025-06-24"
-created_at: "2025-06-24"
-updated_at: "2025-10-28"
-summary: "A humorous but insightful reflection on empathy in leadership, reminding both owners and employees to walk in each other's shoes to prevent misunderstanding and burnout."
-categories: ["empathy", "communication", "team-building"]
-featured_image: "../images/leadership-shoes-and-melted-feet.jpg"
+title: 'Leadership, Shoes, and Melted Feet'
+slug: leadership-shoes-and-melted-feet
+publish_date: '2025-06-24'
+created_at: '2025-06-24'
+updated_at: '2025-10-28'
+summary: >-
+  A humorous but insightful reflection on empathy in leadership, reminding both
+  owners and employees to walk in each other's shoes to prevent misunderstanding
+  and burnout.
+categories:
+  - empathy
+  - communication
+  - team-building
+featured_image: ../images/leadership-shoes-and-melted-feet.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/1B51wcGjvY/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/1B51wcGjvY/'
+status: published
 ---
 
 # Leadership, Shoes, and Melted Feet

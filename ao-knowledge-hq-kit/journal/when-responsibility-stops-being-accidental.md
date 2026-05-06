@@ -1,21 +1,41 @@
 ---
-title: "When Responsibility Stops Being Accidental"
-slug: "when-responsibility-stops-being-accidental"
-publish_date: "2026-01-27"
-created_at: "2026-01-27"
-updated_at: "2026-01-27"
-summary: "A research-informed editorial on what happens when leaders refuse accountability, how pressure gets redirected downward, harm becomes intentional, and teams absorb consequences leaders won’t own."
-categories: ["editorial", "servant-leadership", "accountability", "power", "culture", "organizational-psychology"]
-featured_image: "../images/when-responsibility-stops-being-accidental.jpg"
+title: When Responsibility Stops Being Accidental
+slug: when-responsibility-stops-being-accidental
+publish_date: '2026-01-27'
+created_at: '2026-01-27'
+updated_at: '2026-01-27'
+summary: >-
+  A research-informed editorial on what happens when leaders refuse
+  accountability, how pressure gets redirected downward, harm becomes
+  intentional, and teams absorb consequences leaders won’t own.
+categories:
+  - editorial
+  - servant-leadership
+  - accountability
+  - power
+  - culture
+  - organizational-psychology
+featured_image: ../images/when-responsibility-stops-being-accidental.jpg
 takeaways:
-  - Pressure moves upward in healthy systems; unaccountable leaders block it and redirect the cost downward.
-  - Accountability avoidance progresses from unintentional harm to moral disengagement and, sometimes, instrumental control.
-  - Sustained power left unchecked reduces self-monitoring and sensitivity to corrective input.
-  - When accountability is refused long enough, it eventually arrives externally and is imposed.
+  - >-
+    Pressure moves upward in healthy systems; unaccountable leaders block it and
+    redirect the cost downward.
+  - >-
+    Accountability avoidance progresses from unintentional harm to moral
+    disengagement and, sometimes, instrumental control.
+  - >-
+    Sustained power left unchecked reduces self-monitoring and sensitivity to
+    corrective input.
+  - >-
+    When accountability is refused long enough, it eventually arrives externally
+    and is imposed.
 applications: []
-related: ["accountability-comes-first", "when-stability-replaces-accountability"]
-original_source: "Editorial Letter"
-original_url: ""
+related:
+  - accountability-comes-first
+  - when-stability-replaces-accountability
+original_source: Editorial Letter
+original_url: ''
+status: published
 ---
 
 Pressure moves upward in every organization. It always has.

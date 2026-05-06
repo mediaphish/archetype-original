@@ -1,27 +1,39 @@
 ---
-title: "Toxic Empathy Post 2: Holding the Line"
-slug: "toxic-empathy-2-holding-the-line"
-publish_date: "2026-04-07"
-created_at: "2026-04-07"
-updated_at: "2026-04-07"
-summary: "A close examination of the exact moment leaders hesitate, why the decision to hold the line is difficult, and how avoiding that cost reshapes standards, effort, and culture in real time."
+title: 'Toxic Empathy Post 2: Holding the Line'
+slug: toxic-empathy-2-holding-the-line
+publish_date: '2026-04-07'
+created_at: '2026-04-07'
+updated_at: '2026-04-07'
+summary: >-
+  A close examination of the exact moment leaders hesitate, why the decision to
+  hold the line is difficult, and how avoiding that cost reshapes standards,
+  effort, and culture in real time.
 categories:
   - editorial
   - leadership
   - servant-leadership
   - culture
   - accountability
-featured_image: "../images/toxic-empathy-2-holding-the-line.jpg"
+featured_image: ../images/toxic-empathy-2-holding-the-line.jpg
 takeaways:
-  - Most leadership failures at this stage are not about clarity, but about avoiding the cost of action.
-  - The moment of hesitation is where standards begin to shift, even if nothing is formally changed.
-  - High performers do not disengage emotionally first, they realign their effort to match what is enforced.
-  - Leaders often soften conversations in real time to reduce tension, which removes the very pressure required for change.
+  - >-
+    Most leadership failures at this stage are not about clarity, but about
+    avoiding the cost of action.
+  - >-
+    The moment of hesitation is where standards begin to shift, even if nothing
+    is formally changed.
+  - >-
+    High performers do not disengage emotionally first, they realign their
+    effort to match what is enforced.
+  - >-
+    Leaders often soften conversations in real time to reduce tension, which
+    removes the very pressure required for change.
 applications: []
 related:
   - toxic-empathy
-original_source: "Archetype Original Journal"
-original_url: ""
+original_source: Archetype Original Journal
+original_url: ''
+status: published
 ---
 
 ## Holding the Line

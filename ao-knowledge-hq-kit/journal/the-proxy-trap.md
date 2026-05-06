@@ -1,21 +1,42 @@
 ---
-title: "The Proxy Trap"
-slug: "the-proxy-trap"
-publish_date: "2025-12-25"
-created_at: "2025-12-25"
-updated_at: "2025-12-25"
-summary: "Narcissistic leaders rely on high performers to mask their weaknesses, using them as proxies for competence. Servant leaders build capacity, share credit, and grow alongside their teams."
-categories: ["leadership", "psychology", "narcissism", "organizational-dynamics", "servant-leadership", "team-building"]
-featured_image: "../images/the-proxy-trap.jpg"
+title: The Proxy Trap
+slug: the-proxy-trap
+publish_date: '2025-12-25'
+created_at: '2025-12-25'
+updated_at: '2025-12-25'
+summary: >-
+  Narcissistic leaders rely on high performers to mask their weaknesses, using
+  them as proxies for competence. Servant leaders build capacity, share credit,
+  and grow alongside their teams.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - organizational-dynamics
+  - servant-leadership
+  - team-building
+featured_image: ../images/the-proxy-trap.jpg
 takeaways:
-  - Narcissistic leaders ride the strength of others instead of developing their own.
-  - Proxy leadership creates invisible leaders who carry responsibility without authority.
-  - Servant leaders work to close their own gaps and honor contributors honestly.
-  - Leadership is proven by how well you build others up without disappearing behind them.
+  - >-
+    Narcissistic leaders ride the strength of others instead of developing their
+    own.
+  - >-
+    Proxy leadership creates invisible leaders who carry responsibility without
+    authority.
+  - >-
+    Servant leaders work to close their own gaps and honor contributors
+    honestly.
+  - >-
+    Leadership is proven by how well you build others up without disappearing
+    behind them.
 applications: []
-related: ["shadow-of-shame", "cult-of-confusion", "performance-of-perfection"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/the-proxy-trap"
+related:
+  - shadow-of-shame
+  - cult-of-confusion
+  - performance-of-perfection
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/the-proxy-trap'
+status: published
 ---
 
 # The Proxy Trap

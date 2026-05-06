@@ -1,25 +1,37 @@
 ---
-title: "How Unaccountable Leadership Becomes Structural"
-slug: "how-unaccountable-leadership-becomes-structural"
-publish_date: "2026-01-29"
-created_at: "2026-01-29"
-updated_at: "2026-01-29"
-summary: "An editorial examination of how unaccountable leadership endures, not through personality, but through systems that reorganize to protect authority from consequence."
-categories: ["editorial", "servant-leadership", "accountability", "power", "culture", "organizational-psychology"]
-featured_image: "../images/how-unaccountable-leadership-becomes-structural.png"
+title: How Unaccountable Leadership Becomes Structural
+slug: how-unaccountable-leadership-becomes-structural
+publish_date: '2026-01-29'
+created_at: '2026-01-29'
+updated_at: '2026-01-29'
+summary: >-
+  An editorial examination of how unaccountable leadership endures, not through
+  personality, but through systems that reorganize to protect authority from
+  consequence.
+categories:
+  - editorial
+  - servant-leadership
+  - accountability
+  - power
+  - culture
+  - organizational-psychology
+featured_image: ../images/how-unaccountable-leadership-becomes-structural.png
 takeaways:
-  - Unaccountable leadership endures by reorganizing systems, not through personality alone.
+  - >-
+    Unaccountable leadership endures by reorganizing systems, not through
+    personality alone.
   - Pressure does not disappear when blocked; it is redirected downward.
   - Systems that protect authority from consequence eventually fracture.
-  - Accountability must function as infrastructure, not intention.
+  - 'Accountability must function as infrastructure, not intention.'
 applications: []
 related:
-  - "when-stability-replaces-accountability"
-  - "accountability-comes-first"
-  - "how-leaders-lose-the-capacity-for-accountability"
-  - "when-responsibility-stops-being-accidental"
-original_source: "Editorial Letter"
-original_url: ""
+  - when-stability-replaces-accountability
+  - accountability-comes-first
+  - how-leaders-lose-the-capacity-for-accountability
+  - when-responsibility-stops-being-accidental
+original_source: Editorial Letter
+original_url: ''
+status: published
 ---
 
 ## How Unaccountable Leadership Becomes Structural

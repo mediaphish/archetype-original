@@ -1,30 +1,41 @@
 ---
-title: "Psychology of Servant Leadership, Part 4: Flourishing and Flow"
-slug: "psychology-of-servant-leadership-part-4"
-publish_date: "2025-12-29"
-created_at: "2025-12-29"
-updated_at: "2025-12-29"
-summary: "High performance isn’t about red-lining people, it’s about aligning pressure, clarity, and trust so teams can live in the flow state more often."
-categories: ["servant-leadership", "leadership", "high-performance", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-04.jpg"
+title: 'Psychology of Servant Leadership, Part 4: Flourishing and Flow'
+slug: psychology-of-servant-leadership-part-4
+publish_date: '2025-12-29'
+created_at: '2025-12-29'
+updated_at: '2025-12-29'
+summary: >-
+  High performance isn’t about red-lining people, it’s about aligning pressure,
+  clarity, and trust so teams can live in the flow state more often.
+categories:
+  - servant-leadership
+  - leadership
+  - high-performance
+  - psychology
+featured_image: ../images/psychology-of-servant-leadership-04.jpg
 takeaways:
   - Performance without health is temporary; alignment beats adrenaline.
-  - Flow happens where meaningful challenge meets real capability, not in chaos.
+  - 'Flow happens where meaningful challenge meets real capability, not in chaos.'
   - Trust and psychological safety accelerate decisions and execution.
-  - Calm, regulated leaders create a competitive advantage under pressure.
+  - 'Calm, regulated leaders create a competitive advantage under pressure.'
 applications:
   - Clarify one key outcome and remove two distractions that compete with it.
-  - During a high-pressure week, explicitly name where pressure is *useful* and where it’s just noise.
-  - Ask your team what they need to stay focused instead of just asking for more output.
-  - Review one recurring meeting and tighten its purpose, length, and decisions.
+  - >-
+    During a high-pressure week, explicitly name where pressure is *useful* and
+    where it’s just noise.
+  - >-
+    Ask your team what they need to stay focused instead of just asking for more
+    output.
+  - 'Review one recurring meeting and tighten its purpose, length, and decisions.'
 related:
-  - "psychology-of-servant-leadership-part-1"
-  - "psychology-of-servant-leadership-part-2"
-  - "psychology-of-servant-leadership-part-3"
-  - "psychology-of-servant-leadership-part-5"
-  - "psychology-of-servant-leadership-part-6"
-original_source: ""
-original_url: ""
+  - psychology-of-servant-leadership-part-1
+  - psychology-of-servant-leadership-part-2
+  - psychology-of-servant-leadership-part-3
+  - psychology-of-servant-leadership-part-5
+  - psychology-of-servant-leadership-part-6
+original_source: ''
+original_url: ''
+status: published
 ---
 
 # Psychology of Servant Leadership, Part 4: Flourishing and Flow: Servant Leadership in High-Performance Systems

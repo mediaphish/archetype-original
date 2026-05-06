@@ -1,17 +1,23 @@
 ---
-title: "LONE WOLVES DIE YOUNG"
-slug: "lone-wolves-die-young"
-publish_date: "2025-07-25"
-created_at: "2025-07-25"
-updated_at: "2025-10-28"
-summary: "A challenge to the myth of the 'lone wolf' leader, reminding that isolation weakens leadership while community, collaboration, and shared purpose sustain success."
-categories: ["team-building", "collaboration"]
-featured_image: "../images/lone-wolves-die-young.jpg"
+title: LONE WOLVES DIE YOUNG
+slug: lone-wolves-die-young
+publish_date: '2025-07-25'
+created_at: '2025-07-25'
+updated_at: '2025-10-28'
+summary: >-
+  A challenge to the myth of the 'lone wolf' leader, reminding that isolation
+  weakens leadership while community, collaboration, and shared purpose sustain
+  success.
+categories:
+  - team-building
+  - collaboration
+featured_image: ../images/lone-wolves-die-young.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/1CznTppmme/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/1CznTppmme/'
+status: published
 ---
 
 # LONE WOLVES DIE YOUNG

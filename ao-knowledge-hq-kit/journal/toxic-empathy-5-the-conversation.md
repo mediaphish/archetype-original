@@ -1,20 +1,23 @@
 ---
-title: "Toxic Empathy Post 5: The Conversation"
-slug: "toxic-empathy-5-the-conversation"
-publish_date: "2026-04-23"
-created_at: "2026-04-23"
-updated_at: "2026-04-23"
-summary: "A practical look at what it actually means to lead through difficult conversations, how clarity is established in real time, and why holding both empathy and responsibility is what moves people and systems forward."
+title: 'Toxic Empathy Post 5: The Conversation'
+slug: toxic-empathy-5-the-conversation
+publish_date: '2026-04-23'
+created_at: '2026-04-23'
+updated_at: '2026-04-23'
+summary: >-
+  A practical look at what it actually means to lead through difficult
+  conversations, how clarity is established in real time, and why holding both
+  empathy and responsibility is what moves people and systems forward.
 categories:
   - editorial
   - leadership
   - servant-leadership
   - culture
   - accountability
-featured_image: "../images/toxic-empathy-5-the-conversation.jpg"
+featured_image: ../images/toxic-empathy-5-the-conversation.jpg
 takeaways:
   - The shift from awareness to action happens in a conversation.
-  - Clarity requires defining the issue, not referencing it.
+  - 'Clarity requires defining the issue, not referencing it.'
   - Empathy must remain connected to responsibility to be effective.
   - Conversations only create change when the standard is fully established.
   - Holding the moment is what moves people and systems forward.
@@ -24,8 +27,9 @@ related:
   - toxic-empathy-2-holding-the-line
   - toxic-empathy-3-the-cost-of-avoidance
   - toxic-empathy-4-servant-leadership-role
-original_source: "Archetype Original Journal"
-original_url: ""
+original_source: Archetype Original Journal
+original_url: ''
+status: published
 ---
 
 ## The Conversation

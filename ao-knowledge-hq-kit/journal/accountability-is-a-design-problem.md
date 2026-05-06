@@ -1,21 +1,26 @@
 ---
-title: "Accountability Is a Design Problem"
-slug: "accountability-is-a-design-problem"
-publish_date: "2026-02-26"
-created_at: "2026-02-26"
-updated_at: "2026-02-26"
-summary: "Post 8 of the Unaccountable series examines why goodwill and culture alone cannot sustain accountability, and why healthy leadership systems must design structural correction into authority itself."
+title: Accountability Is a Design Problem
+slug: accountability-is-a-design-problem
+publish_date: '2026-02-26'
+created_at: '2026-02-26'
+updated_at: '2026-02-26'
+summary: >-
+  Post 8 of the Unaccountable series examines why goodwill and culture alone
+  cannot sustain accountability, and why healthy leadership systems must design
+  structural correction into authority itself.
 categories:
   - editorial
   - leadership
   - accountability
   - power
   - servant-leadership
-featured_image: "../images/accountability-is-a-design-problem.jpg"
+featured_image: ../images/accountability-is-a-design-problem.jpg
 takeaways:
   - Accountability is not a personality trait; it is a structural commitment.
   - Goodwill fails under pressure when no mechanism reinforces correction.
-  - Culture collapses when dissent and transparency are not structurally protected.
+  - >-
+    Culture collapses when dissent and transparency are not structurally
+    protected.
   - Healthy systems assume future weakness and design for correction in advance.
 applications: []
 related:
@@ -26,8 +31,9 @@ related:
   - how-unaccountable-leadership-becomes-structural
   - how-pressure-triggers-threat-in-unaccountable-leaders
   - why-servant-leadership-disrupts-unaccountable-power
-original_source: "Archetype Original Editorial Series: Unaccountable"
-original_url: ""
+original_source: 'Archetype Original Editorial Series: Unaccountable'
+original_url: ''
+status: published
 ---
 
 # Accountability Is a Design Problem  

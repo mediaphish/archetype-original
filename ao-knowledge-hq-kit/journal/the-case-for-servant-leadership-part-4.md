@@ -1,17 +1,28 @@
 ---
-title: "The Case for Servant Leadership (Part 4)"
-slug: "the-case-for-servant-leadership-part-4"
-publish_date: "2025-11-24T10:00:00-06:00"
-created_at: "2025-11-24T10:00:00-06:00"
-updated_at: "2025-10-30"
-summary: "The Logic of Leadership: five principles, Clarity, Protect the Culture, Build Trust Daily, Empower Over Control, Serve the Standard, validated by research and experience."
-categories: ["servant-leadership", "leadership-principles", "systems"]
-featured_image: "../images/the-case-for-servant-leadership-part-4.jpg"
+title: The Case for Servant Leadership (Part 4)
+slug: the-case-for-servant-leadership-part-4
+publish_date: '2025-11-24T10:00:00-06:00'
+created_at: '2025-11-24T10:00:00-06:00'
+updated_at: '2025-10-30'
+summary: >-
+  The Logic of Leadership: five principles, Clarity, Protect the Culture, Build
+  Trust Daily, Empower Over Control, Serve the Standard, validated by research
+  and experience.
+categories:
+  - servant-leadership
+  - leadership-principles
+  - systems
+featured_image: ../images/the-case-for-servant-leadership-part-4.jpg
 takeaways: []
 applications: []
-related: ["the-case-for-servant-leadership-part-1","the-case-for-servant-leadership-part-2","the-case-for-servant-leadership-part-3","the-case-for-servant-leadership-part-5"]
-original_source: "Facebook"
-original_url: ""
+related:
+  - the-case-for-servant-leadership-part-1
+  - the-case-for-servant-leadership-part-2
+  - the-case-for-servant-leadership-part-3
+  - the-case-for-servant-leadership-part-5
+original_source: Facebook
+original_url: ''
+status: published
 ---
 
 # The Case for Servant Leadership

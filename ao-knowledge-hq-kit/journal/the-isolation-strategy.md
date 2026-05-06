@@ -1,21 +1,38 @@
 ---
-title: "The Isolation Strategy"
-slug: "the-isolation-strategy"
-publish_date: "2026-01-22"
-created_at: "2026-01-22"
-updated_at: "2026-01-22"
-summary: "Narcissistic leaders engineer distance to avoid accountability and truth. Servant leaders move toward their teams, building trust through presence, proximity, and transparency."
-categories: ["leadership", "psychology", "narcissism", "organizational-dynamics", "servant-leadership", "communication"]
-featured_image: "../images/the-isolation-strategy.jpg"
+title: The Isolation Strategy
+slug: the-isolation-strategy
+publish_date: '2026-01-22'
+created_at: '2026-01-22'
+updated_at: '2026-01-22'
+summary: >-
+  Narcissistic leaders engineer distance to avoid accountability and truth.
+  Servant leaders move toward their teams, building trust through presence,
+  proximity, and transparency.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - organizational-dynamics
+  - servant-leadership
+  - communication
+featured_image: ../images/the-isolation-strategy.jpg
 takeaways:
-  - Narcissistic leaders engineer distance through layers, buffers, and indirect communication.
+  - >-
+    Narcissistic leaders engineer distance through layers, buffers, and indirect
+    communication.
   - Isolation fractures teams and kills unity faster than anything else.
-  - Servant leaders know proximity doesn't weaken authority, it strengthens trust.
-  - The best leaders stand among their teams, not above them.
+  - >-
+    Servant leaders know proximity doesn't weaken authority, it strengthens
+    trust.
+  - 'The best leaders stand among their teams, not above them.'
 applications: []
-related: ["the-scarcity-switch", "the-loyalty-economy", "manufactured-crisis"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/the-isolation-strategy"
+related:
+  - the-scarcity-switch
+  - the-loyalty-economy
+  - manufactured-crisis
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/the-isolation-strategy'
+status: published
 ---
 
 # The Isolation Strategy

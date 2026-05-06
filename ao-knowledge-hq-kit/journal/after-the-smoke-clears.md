@@ -1,21 +1,41 @@
 ---
-title: "After the Smoke Clears"
-slug: "after-the-smoke-clears"
-publish_date: "2026-02-05"
-created_at: "2026-02-05"
-updated_at: "2026-02-05"
-summary: "A conclusion to the Narcissistic Leadership Tactics series, shifting focus from unhealthy patterns to the posture and practices of healthy, servant leadership."
-categories: ["leadership", "psychology", "organizational-dynamics", "servant-leadership", "culture"]
-featured_image: "../images/after-the-smoke-clears.jpg"
+title: After the Smoke Clears
+slug: after-the-smoke-clears
+publish_date: '2026-02-05'
+created_at: '2026-02-05'
+updated_at: '2026-02-05'
+summary: >-
+  A conclusion to the Narcissistic Leadership Tactics series, shifting focus
+  from unhealthy patterns to the posture and practices of healthy, servant
+  leadership.
+categories:
+  - leadership
+  - psychology
+  - organizational-dynamics
+  - servant-leadership
+  - culture
+featured_image: ../images/after-the-smoke-clears.jpg
 takeaways:
-  - Most unhealthy leadership is driven by insecurity, avoidance, and fear, not malice.
-  - The difference between unhealthy and servant leadership is posture, not complexity.
-  - Servant leadership requires courage, honesty, and presence, qualities that can't be faked.
-  - Cultures are rebuilt intentionally through presence, clarity, humility, and steady leadership over time.
+  - >-
+    Most unhealthy leadership is driven by insecurity, avoidance, and fear, not
+    malice.
+  - >-
+    The difference between unhealthy and servant leadership is posture, not
+    complexity.
+  - >-
+    Servant leadership requires courage, honesty, and presence, qualities that
+    can't be faked.
+  - >-
+    Cultures are rebuilt intentionally through presence, clarity, humility, and
+    steady leadership over time.
 applications: []
-related: ["the-distraction-play", "the-isolation-strategy", "the-scarcity-switch"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/after-the-smoke-clears"
+related:
+  - the-distraction-play
+  - the-isolation-strategy
+  - the-scarcity-switch
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/after-the-smoke-clears'
+status: published
 ---
 
 # Series Conclusion, Narcissistic Leadership Tactics

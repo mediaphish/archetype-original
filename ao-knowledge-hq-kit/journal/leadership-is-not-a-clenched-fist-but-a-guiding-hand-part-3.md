@@ -1,17 +1,26 @@
 ---
-title: "Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 3)"
-slug: "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3"
-publish_date: "2025-09-15"
-created_at: "2025-09-15"
-updated_at: "2025-10-28"
-summary: "Part three reveals the real cost and long-term return of leading with a guiding hand, time, patience, and sacrifice traded for trust, growth, and legacy that lasts."
-categories: ["power-control", "servant-leadership", "legacy"]
-featured_image: "../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3.jpg"
+title: 'Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 3)'
+slug: leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3
+publish_date: '2025-09-15'
+created_at: '2025-09-15'
+updated_at: '2025-10-28'
+summary: >-
+  Part three reveals the real cost and long-term return of leading with a
+  guiding hand, time, patience, and sacrifice traded for trust, growth, and
+  legacy that lasts.
+categories:
+  - power-control
+  - servant-leadership
+  - legacy
+featured_image: ../images/leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3.jpg
 takeaways: []
 applications: []
-related: ["leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-1", "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2"]
-original_source: "Facebook"
-original_url: ""
+related:
+  - leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-1
+  - leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-2
+original_source: Facebook
+original_url: ''
+status: published
 ---
 
 # Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 3)

@@ -1,17 +1,23 @@
 ---
-title: "Leadership isn’t a scoreboard."
-slug: "leadership-isnt-a-scoreboard"
-publish_date: "2025-05-29"
-created_at: "2025-05-29"
-updated_at: "2025-10-28"
-summary: "This post reminds leaders that their team's success is not competition but confirmation of great leadership, celebrating growth, shared wins, and lasting culture."
-categories: ["team-building", "trust"]
-featured_image: "../images/leadership-isnt-a-scoreboard.jpg"
+title: Leadership isn’t a scoreboard.
+slug: leadership-isnt-a-scoreboard
+publish_date: '2025-05-29'
+created_at: '2025-05-29'
+updated_at: '2025-10-28'
+summary: >-
+  This post reminds leaders that their team's success is not competition but
+  confirmation of great leadership, celebrating growth, shared wins, and lasting
+  culture.
+categories:
+  - team-building
+  - trust
+featured_image: ../images/leadership-isnt-a-scoreboard.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/19kvU4NhXA/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/19kvU4NhXA/'
+status: published
 ---
 
 # Leadership isn’t a scoreboard.

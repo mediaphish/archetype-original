@@ -1,26 +1,34 @@
 ---
-title: "How Pressure Triggers Threat in Unaccountable Leaders"
-slug: "how-pressure-triggers-threat-in-unaccountable-leaders"
-publish_date: "2026-02-03"
-created_at: "2026-02-03"
-updated_at: "2026-02-03"
-summary: "An applied neuroscience examination of why ordinary accountability demands are processed as threat by unaccountable leaders, and how power, nervous system adaptation, and control shape leadership behavior."
+title: How Pressure Triggers Threat in Unaccountable Leaders
+slug: how-pressure-triggers-threat-in-unaccountable-leaders
+publish_date: '2026-02-03'
+created_at: '2026-02-03'
+updated_at: '2026-02-03'
+summary: >-
+  An applied neuroscience examination of why ordinary accountability demands are
+  processed as threat by unaccountable leaders, and how power, nervous system
+  adaptation, and control shape leadership behavior.
 categories:
   - editorial
   - leadership
   - accountability
   - power
   - servant-leadership
-featured_image: "../images/how-pressure-triggers-threat-in-unaccountable-leaders.jpg"
+featured_image: ../images/how-pressure-triggers-threat-in-unaccountable-leaders.jpg
 takeaways:
   - Pressure is neutral; how leaders process it determines system health.
-  - Unaccountable leadership is often rooted in nervous system adaptation, not ignorance.
-  - Sustained power without accountability reshapes perception, empathy, and control.
-  - Accountability does not remove pressure, it holds it.
+  - >-
+    Unaccountable leadership is often rooted in nervous system adaptation, not
+    ignorance.
+  - >-
+    Sustained power without accountability reshapes perception, empathy, and
+    control.
+  - 'Accountability does not remove pressure, it holds it.'
 applications: []
 related: []
-original_source: "Archetype Original Editorial Series"
-original_url: ""
+original_source: Archetype Original Editorial Series
+original_url: ''
+status: published
 ---
 
 ## How Pressure Triggers Threat in Unaccountable Leaders

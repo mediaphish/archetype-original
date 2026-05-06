@@ -1,30 +1,49 @@
 ---
-title: "Psychology of Servant Leadership, Part 6: The System of Service"
-slug: "psychology-of-servant-leadership-part-6"
-publish_date: "2026-01-12"
-created_at: "2026-01-12"
-updated_at: "2026-01-12"
-summary: "Servant leadership stops being fragile when it’s baked into systems and rituals, not just resting on the personality of one good leader."
-categories: ["servant-leadership", "leadership", "culture", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-06.jpg"
+title: 'Psychology of Servant Leadership, Part 6: The System of Service'
+slug: psychology-of-servant-leadership-part-6
+publish_date: '2026-01-12'
+created_at: '2026-01-12'
+updated_at: '2026-01-12'
+summary: >-
+  Servant leadership stops being fragile when it’s baked into systems and
+  rituals, not just resting on the personality of one good leader.
+categories:
+  - servant-leadership
+  - leadership
+  - culture
+  - psychology
+featured_image: ../images/psychology-of-servant-leadership-06.jpg
 takeaways:
-  - Culture is what your systems consistently reward, not what you say you value.
-  - People mirror the emotional and ethical patterns they experience from leaders.
+  - >-
+    Culture is what your systems consistently reward, not what you say you
+    value.
+  - >-
+    People mirror the emotional and ethical patterns they experience from
+    leaders.
   - Rituals and rhythms shape behavior far more than posters or slogans.
-  - Servant leadership scales when hiring, feedback, and decision-making all protect the same values.
+  - >-
+    Servant leadership scales when hiring, feedback, and decision-making all
+    protect the same values.
 applications:
-  - List three recurring rhythms (meetings, reviews, rituals) that quietly teach “how we do things here.”
-  - Adjust one process so it rewards honesty, service, or collaboration more explicitly.
+  - >-
+    List three recurring rhythms (meetings, reviews, rituals) that quietly teach
+    “how we do things here.”
+  - >-
+    Adjust one process so it rewards honesty, service, or collaboration more
+    explicitly.
   - Add a simple ritual that reinforces your core value of serving people well.
-  - Define one non-negotiable guardrail that blocks fear-based leadership in your environment.
+  - >-
+    Define one non-negotiable guardrail that blocks fear-based leadership in
+    your environment.
 related:
-  - "psychology-of-servant-leadership-part-1-servant-mindset"
-  - "psychology-of-servant-leadership-part-2-safety-before-strategy"
-  - "psychology-of-servant-leadership-part-3-motivation-and-meaning"
-  - "psychology-of-servant-leadership-part-4-flourishing-and-flow"
-  - "psychology-of-servant-leadership-part-5-paradox-of-the-servant"
-original_source: ""
-original_url: ""
+  - psychology-of-servant-leadership-part-1-servant-mindset
+  - psychology-of-servant-leadership-part-2-safety-before-strategy
+  - psychology-of-servant-leadership-part-3-motivation-and-meaning
+  - psychology-of-servant-leadership-part-4-flourishing-and-flow
+  - psychology-of-servant-leadership-part-5-paradox-of-the-servant
+original_source: ''
+original_url: ''
+status: published
 ---
 
 # Psychology of Servant Leadership, Part 6: The System of Service: Scaling Humility

@@ -46,12 +46,17 @@ So in practice: the agent writes and edits code, runs builds, commits, and deplo
 - **Faith route**  
   Devotionals are served from the knowledge corpus and appear on the `/faith` route; the agent’s edits and deploys keep that content and behavior in sync.
 
-### 3. **Commit and deploy discipline**
+### 3. **Long-form Journal articles (guardrail)**
+
+- New or in-progress **journal articles** (markdown in `ao-knowledge-hq-kit/journal/`, not under `devotionals/`) must use **`status: draft`** until you approve them for the public Journal. Only **`status: published`** includes them in the built index and live Journal.
+- Devotionals keep their existing rule: **`status: draft`** hides them; **`status: published`** is used for scheduled devotionals.
+
+### 4. **Commit and deploy discipline**
 
 - The agent is required to **commit and push all project changes** (except things the project explicitly excludes, e.g. secrets) so the live site is never left behind.
 - When push is rejected (e.g. remote has new commits), the agent **stashes if needed, pulls, resolves conflicts** (e.g. for `public/knowledge.json`), and **pushes** so deploy happens. It does not hand off “run git pull/push” to the user.
 
-### 4. **Other technical work**
+### 5. **Other technical work**
 
 - The agent is also used for general **engineering and UX work**: architecture, bug fixes, UI/design decisions, and research—always with plans and explanations in **human, non-technical language** and with approval before execution.
 - **Notes and docs** (e.g. `notes/DEVOTIONAL_IMPORT_PROCESS.md`, `notes/CURSOR_GIT_PUSH.md`) are used to record processes so future agent sessions (or the user) can follow the same workflow.

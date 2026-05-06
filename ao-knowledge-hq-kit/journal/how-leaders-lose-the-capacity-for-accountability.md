@@ -1,23 +1,35 @@
 ---
-title: "How Leaders Lose the Capacity for Accountability"
-slug: "how-leaders-lose-the-capacity-for-accountability"
-publish_date: "2026-01-22"
-created_at: "2026-01-22"
-updated_at: "2026-01-22"
-summary: "A science-backed editorial examining how unchecked power reshapes perception, erodes accountability, and enables leaders to move from negligence to intentional harm without ever announcing the shift."
-categories: ["editorial", "servant-leadership", "accountability", "power", "organizational-psychology", "neuroscience"]
-featured_image: "../images/how-leaders-lose-the-capacity-for-accountability.jpg"
+title: How Leaders Lose the Capacity for Accountability
+slug: how-leaders-lose-the-capacity-for-accountability
+publish_date: '2026-01-22'
+created_at: '2026-01-22'
+updated_at: '2026-01-22'
+summary: >-
+  A science-backed editorial examining how unchecked power reshapes perception,
+  erodes accountability, and enables leaders to move from negligence to
+  intentional harm without ever announcing the shift.
+categories:
+  - editorial
+  - servant-leadership
+  - accountability
+  - power
+  - organizational-psychology
+  - neuroscience
+featured_image: ../images/how-leaders-lose-the-capacity-for-accountability.jpg
 takeaways:
-  - Accountability failure is often a conditioned process, not a sudden moral collapse.
+  - >-
+    Accountability failure is often a conditioned process, not a sudden moral
+    collapse.
   - Sustained power left unchecked reshapes perception and threat detection.
-  - Malicious leadership develops along a continuum, not as a binary.
+  - 'Malicious leadership develops along a continuum, not as a binary.'
   - Systems that protect leaders from accountability accelerate this descent.
 applications: []
 related:
-  - "when-stability-replaces-accountability"
-  - "accountability-comes-first"
-original_source: "Editorial Letter"
-original_url: ""
+  - when-stability-replaces-accountability
+  - accountability-comes-first
+original_source: Editorial Letter
+original_url: ''
+status: published
 ---
 
 There’s a question that sits underneath nearly every leadership failure we struggle to understand:

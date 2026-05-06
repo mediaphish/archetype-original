@@ -1,29 +1,37 @@
 ---
-title: "Toxic Empathy Post 3: The Cost of Avoidance"
-slug: "toxic-empathy-3-the-cost-of-avoidance"
-publish_date: "2026-04-10"
-created_at: "2026-04-10"
-updated_at: "2026-04-10"
-summary: "An examination of what actually happens when leaders avoid necessary action, how behavior is shaped through response, and how unaddressed issues compound into system-wide consequences over time."
+title: 'Toxic Empathy Post 3: The Cost of Avoidance'
+slug: toxic-empathy-3-the-cost-of-avoidance
+publish_date: '2026-04-10'
+created_at: '2026-04-10'
+updated_at: '2026-04-10'
+summary: >-
+  An examination of what actually happens when leaders avoid necessary action,
+  how behavior is shaped through response, and how unaddressed issues compound
+  into system-wide consequences over time.
 categories:
   - editorial
   - leadership
   - servant-leadership
   - culture
   - accountability
-featured_image: "../images/toxic-empathy-3-the-cost-of-avoidance.jpg"
+featured_image: ../images/toxic-empathy-3-the-cost-of-avoidance.jpg
 takeaways:
-  - What leaders fail to address does not stay contained, it spreads through the system.
-  - People learn what matters by what is enforced, not what is said.
+  - >-
+    What leaders fail to address does not stay contained, it spreads through the
+    system.
+  - 'People learn what matters by what is enforced, not what is said.'
   - High performers recalibrate when effort and outcome disconnect.
-  - Inconsistency creates instability, even when it feels situational to the leader.
-  - What is tolerated becomes what is normal, even if it is toxic.
+  - >-
+    Inconsistency creates instability, even when it feels situational to the
+    leader.
+  - 'What is tolerated becomes what is normal, even if it is toxic.'
 applications: []
 related:
   - toxic-empathy
   - toxic-empathy-2-holding-the-line
-original_source: "Archetype Original Journal"
-original_url: ""
+original_source: Archetype Original Journal
+original_url: ''
+status: published
 ---
 
 ## The Cost of Avoidance

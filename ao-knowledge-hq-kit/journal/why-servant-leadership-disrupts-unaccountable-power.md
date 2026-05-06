@@ -1,22 +1,29 @@
 ---
-title: "Why Servant Leadership Disrupts Unaccountable Power"
-slug: "why-servant-leadership-disrupts-unaccountable-power"
-publish_date: "2026-02-19"
-created_at: "2026-02-19"
-updated_at: "2026-02-19"
-summary: "Post 7 of the Unaccountable series marks the pivot from diagnosis to disruption, examining how Servant Leadership restores consequence to insulated systems and exposes authority that cannot survive accountability."
+title: Why Servant Leadership Disrupts Unaccountable Power
+slug: why-servant-leadership-disrupts-unaccountable-power
+publish_date: '2026-02-19'
+created_at: '2026-02-19'
+updated_at: '2026-02-19'
+summary: >-
+  Post 7 of the Unaccountable series marks the pivot from diagnosis to
+  disruption, examining how Servant Leadership restores consequence to insulated
+  systems and exposes authority that cannot survive accountability.
 categories:
   - editorial
   - leadership
   - accountability
   - power
   - servant-leadership
-featured_image: "../images/why-servant-leadership-disrupts-unaccountable-power.jpg"
+featured_image: ../images/why-servant-leadership-disrupts-unaccountable-power.jpg
 takeaways:
   - Servant Leadership restores consequence where insulation has blocked it.
   - Unaccountable systems depend on asymmetric power and filtered feedback.
-  - Exposure does not destabilize healthy authority, it destabilizes insulated authority.
-  - Defensive reactions to Servant Leadership reveal structural fragility, not hostility.
+  - >-
+    Exposure does not destabilize healthy authority, it destabilizes insulated
+    authority.
+  - >-
+    Defensive reactions to Servant Leadership reveal structural fragility, not
+    hostility.
 applications: []
 related:
   - accountability-comes-first
@@ -25,8 +32,9 @@ related:
   - how-leaders-lose-the-capacity-for-accountability
   - when-responsibility-stops-being-accidental
   - how-pressure-triggers-threat-in-unaccountable-leaders
-original_source: "Archetype Original Editorial Series: Unaccountable"
-original_url: ""
+original_source: 'Archetype Original Editorial Series: Unaccountable'
+original_url: ''
+status: published
 ---
 
 ## Why Servant Leadership Disrupts Unaccountable Power

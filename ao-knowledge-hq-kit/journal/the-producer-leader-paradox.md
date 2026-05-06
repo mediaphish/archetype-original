@@ -1,17 +1,23 @@
 ---
-title: "The Producer-Leader Paradox"
-slug: "the-producer-leader-paradox"
-publish_date: "2025-10-08"
-created_at: "2025-10-08"
-updated_at: "2025-10-28"
-summary: "When leaders are forced to keep producing at full speed, their ability to actually lead withers. The Producer-Leader Paradox exposes how short-term output kills long-term growth."
-categories: ["leadership-development", "balance"]
-featured_image: "../images/the-producer-leader-paradox.jpg"
+title: The Producer-Leader Paradox
+slug: the-producer-leader-paradox
+publish_date: '2025-10-08'
+created_at: '2025-10-08'
+updated_at: '2025-10-28'
+summary: >-
+  When leaders are forced to keep producing at full speed, their ability to
+  actually lead withers. The Producer-Leader Paradox exposes how short-term
+  output kills long-term growth.
+categories:
+  - leadership-development
+  - balance
+featured_image: ../images/the-producer-leader-paradox.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: ""
+original_source: Facebook
+original_url: ''
+status: published
 ---
 
 # The Producer-Leader Paradox

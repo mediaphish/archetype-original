@@ -1,21 +1,38 @@
 ---
-title: "The Manufactured Crisis"
-slug: "manufactured-crisis"
-publish_date: "2026-01-01"
-created_at: "2026-01-01"
-updated_at: "2026-01-01"
-summary: "Narcissistic leaders manufacture urgency to maintain control and relevance. Servant leaders calm the room, steward pressure wisely, and protect their teams from emotional volatility."
-categories: ["leadership", "psychology", "narcissism", "emotional-dynamics", "servant-leadership", "organizational-dynamics"]
-featured_image: "../images/manufactured-crisis.jpg"
+title: The Manufactured Crisis
+slug: manufactured-crisis
+publish_date: '2026-01-01'
+created_at: '2026-01-01'
+updated_at: '2026-01-01'
+summary: >-
+  Narcissistic leaders manufacture urgency to maintain control and relevance.
+  Servant leaders calm the room, steward pressure wisely, and protect their
+  teams from emotional volatility.
+categories:
+  - leadership
+  - psychology
+  - narcissism
+  - emotional-dynamics
+  - servant-leadership
+  - organizational-dynamics
+featured_image: ../images/manufactured-crisis.jpg
 takeaways:
   - Some leaders create problems because calm exposes their insecurity.
   - Manufactured crisis triggers the same physiological response as real danger.
-  - Servant leaders save crisis language for true emergencies and use clarity, not chaos.
-  - Crisis doesn't reveal the strongest leaders, sometimes it reveals the most insecure ones.
+  - >-
+    Servant leaders save crisis language for true emergencies and use clarity,
+    not chaos.
+  - >-
+    Crisis doesn't reveal the strongest leaders, sometimes it reveals the most
+    insecure ones.
 applications: []
-related: ["the-proxy-trap", "shadow-of-shame", "cult-of-confusion"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/manufactured-crisis"
+related:
+  - the-proxy-trap
+  - shadow-of-shame
+  - cult-of-confusion
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/manufactured-crisis'
+status: published
 ---
 
 # The Manufactured Crisis

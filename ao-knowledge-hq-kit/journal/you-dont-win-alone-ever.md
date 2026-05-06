@@ -1,21 +1,29 @@
 ---
-title: "You Don’t Win Alone. Ever."
-slug: "you-dont-win-alone-ever"
-publish_date: "2026-01-13"
-created_at: "2026-01-13"
-updated_at: "2026-01-13"
-summary: "A first-person editorial on why leadership is never a solo act, and how retreating under pressure often accelerates failure instead of preventing it."
-categories: ["editorial", "leadership", "teams", "power", "culture"]
-featured_image: "../images/you-dont-win-alone-ever.jpg"
+title: You Don’t Win Alone. Ever.
+slug: you-dont-win-alone-ever
+publish_date: '2026-01-13'
+created_at: '2026-01-13'
+updated_at: '2026-01-13'
+summary: >-
+  A first-person editorial on why leadership is never a solo act, and how
+  retreating under pressure often accelerates failure instead of preventing it.
+categories:
+  - editorial
+  - leadership
+  - teams
+  - power
+  - culture
+featured_image: ../images/you-dont-win-alone-ever.jpg
 takeaways:
   - Leadership outcomes rarely hinge on one exceptional individual.
   - Pressure often causes leaders to retreat when perspective is most needed.
-  - Teams exist not just to execute, but to stabilize leadership under strain.
+  - 'Teams exist not just to execute, but to stabilize leadership under strain.'
   - Friction from real teams keeps vision connected to reality.
 applications: []
 related: []
-original_source: "Editorial Letter"
-original_url: ""
+original_source: Editorial Letter
+original_url: ''
+status: published
 ---
 
 # You Don’t Win Alone. Ever.

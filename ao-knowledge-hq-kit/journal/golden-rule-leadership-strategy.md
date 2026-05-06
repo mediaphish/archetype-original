@@ -1,26 +1,54 @@
 ---
-title: "The Golden Rule Has Always Been a Leadership Strategy"
-slug: "golden-rule-leadership-strategy"
-publish_date: "2025-12-05"
-created_at: "2025-12-05"
-updated_at: "2025-12-05"
-summary: "The Golden Rule isn’t sentimental, it’s structural. It reveals the health of a leader, exposes misused power, and shapes the kind of culture people can rise inside of."
-categories: ["leadership", "servant-leadership", "culture", "scoreboard-leadership", "ethics"]
-featured_image: "../images/golden-rule-leadership-strategy.jpg"
+title: The Golden Rule Has Always Been a Leadership Strategy
+slug: golden-rule-leadership-strategy
+publish_date: '2025-12-05'
+created_at: '2025-12-05'
+updated_at: '2025-12-05'
+summary: >-
+  The Golden Rule isn’t sentimental, it’s structural. It reveals the health of a
+  leader, exposes misused power, and shapes the kind of culture people can rise
+  inside of.
+categories:
+  - leadership
+  - servant-leadership
+  - culture
+  - scoreboard-leadership
+  - ethics
+featured_image: ../images/golden-rule-leadership-strategy.jpg
 takeaways:
-  - The Golden Rule is not just a personal ethic; it is a structural leadership principle and diagnostic.
-  - When applied honestly, it makes certain harmful leadership behaviors impossible to justify.
-  - The Golden Rule forces clarity, consistency, responsibility, alignment, and trust into how power is used.
-  - Leaders who rely on control and image find the Golden Rule threatening because it exposes their gaps.
-  - Scoreboard Leadership and the Golden Rule cannot coexist, one uses people, the other builds them.
+  - >-
+    The Golden Rule is not just a personal ethic; it is a structural leadership
+    principle and diagnostic.
+  - >-
+    When applied honestly, it makes certain harmful leadership behaviors
+    impossible to justify.
+  - >-
+    The Golden Rule forces clarity, consistency, responsibility, alignment, and
+    trust into how power is used.
+  - >-
+    Leaders who rely on control and image find the Golden Rule threatening
+    because it exposes their gaps.
+  - >-
+    Scoreboard Leadership and the Golden Rule cannot coexist, one uses people,
+    the other builds them.
 applications:
   - Audit your current leadership behavior through a simple question: “Would I want to be led this way?”
-  - Identify one area where you’ve withheld clarity or shifted blame downward and correct it this week.
-  - Choose one relationship on your team where you will intentionally lead with proximity, not distance.
-  - Rewrite one key expectation in clear, human language and communicate it directly to your team.
-related: ["after-the-smoke-clears", "psychology-of-servant-leadership", "producer-leader-paradox"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/golden-rule-leadership-strategy"
+  - >-
+    Identify one area where you’ve withheld clarity or shifted blame downward
+    and correct it this week.
+  - >-
+    Choose one relationship on your team where you will intentionally lead with
+    proximity, not distance.
+  - >-
+    Rewrite one key expectation in clear, human language and communicate it
+    directly to your team.
+related:
+  - after-the-smoke-clears
+  - psychology-of-servant-leadership
+  - producer-leader-paradox
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/golden-rule-leadership-strategy'
+status: published
 ---
 
 # The Golden Rule Has Always Been a Leadership Strategy

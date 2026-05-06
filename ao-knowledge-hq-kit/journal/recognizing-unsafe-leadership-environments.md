@@ -1,22 +1,33 @@
 ---
-title: "Recognizing Unsafe Leadership Environments"
-slug: "recognizing-unsafe-leadership-environments"
-publish_date: "2026-01-28"
-created_at: "2026-01-28"
-updated_at: "2026-01-28"
-summary: "Post 9 of the Unaccountable series examines how unsafe leadership environments reveal themselves through patterns that restrict correction, narrow truth, and reorganize systems around protecting authority."
+title: Recognizing Unsafe Leadership Environments
+slug: recognizing-unsafe-leadership-environments
+publish_date: '2026-01-28'
+created_at: '2026-01-28'
+updated_at: '2026-01-28'
+summary: >-
+  Post 9 of the Unaccountable series examines how unsafe leadership environments
+  reveal themselves through patterns that restrict correction, narrow truth, and
+  reorganize systems around protecting authority.
 categories:
   - editorial
   - leadership
   - accountability
   - power
   - servant-leadership
-featured_image: "../images/recognizing-unsafe-leadership-environments.jpg"
+featured_image: ../images/recognizing-unsafe-leadership-environments.jpg
 takeaways:
-  - Unsafe leadership environments reveal themselves through repeated patterns, not single moments.
-  - When correction fails to move authority, systems quietly reorganize to protect power.
-  - Truth gradually loses influence in environments where leaders cannot be meaningfully corrected.
-  - Discernment begins when patterns of silence, distance, and redirected influence become visible.
+  - >-
+    Unsafe leadership environments reveal themselves through repeated patterns,
+    not single moments.
+  - >-
+    When correction fails to move authority, systems quietly reorganize to
+    protect power.
+  - >-
+    Truth gradually loses influence in environments where leaders cannot be
+    meaningfully corrected.
+  - >-
+    Discernment begins when patterns of silence, distance, and redirected
+    influence become visible.
 applications: []
 related:
   - when-stability-replaces-accountability
@@ -27,8 +38,9 @@ related:
   - how-pressure-triggers-threat-in-unaccountable-leaders
   - why-servant-leadership-disrupts-unaccountable-power
   - accountability-is-a-design-problem
-original_source: "Archetype Original Editorial Series: Unaccountable"
-original_url: ""
+original_source: 'Archetype Original Editorial Series: Unaccountable'
+original_url: ''
+status: published
 ---
 
 # Recognizing Unsafe Leadership Environments  

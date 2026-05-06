@@ -1,22 +1,33 @@
 ---
-title: "Build It On Purpose"
-slug: "build-it-on-purpose"
-publish_date: "2026-03-03"
-created_at: "2026-03-03"
-updated_at: "2026-03-03"
-summary: "Reflections from a talk given to first-generation college-bound students on purpose, discipline, curiosity, failure, and why the real legacy isn’t what you build, but who you help become better."
-categories: ["journal", "servant-leadership", "purpose", "development", "legacy"]
-featured_image: "../images/build-it-on-purpose.jpg"
+title: Build It On Purpose
+slug: build-it-on-purpose
+publish_date: '2026-03-03'
+created_at: '2026-03-03'
+updated_at: '2026-03-03'
+summary: >-
+  Reflections from a talk given to first-generation college-bound students on
+  purpose, discipline, curiosity, failure, and why the real legacy isn’t what
+  you build, but who you help become better.
+categories:
+  - journal
+  - servant-leadership
+  - purpose
+  - development
+  - legacy
+featured_image: ../images/build-it-on-purpose.jpg
 takeaways:
-  - Discipline and direction change trajectories more than background or advantage.
+  - >-
+    Discipline and direction change trajectories more than background or
+    advantage.
   - Curiosity is the engine of clarity.
   - Reliability and transparency build trust over time.
-  - Failure is data, not identity.
+  - 'Failure is data, not identity.'
   - The greatest legacy is helping people get better.
 applications: []
 related: []
-original_source: "Journal Entry"
-original_url: ""
+original_source: Journal Entry
+original_url: ''
+status: published
 ---
 
 I recently gave a talk to a group of students who are likely to be the first in their families to attend college.

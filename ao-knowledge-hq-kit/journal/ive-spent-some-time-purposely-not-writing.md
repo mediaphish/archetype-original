@@ -1,17 +1,23 @@
 ---
-title: "I’ve spent some time purposely not writing."
-slug: "ive-spent-some-time-purposely-not-writing"
-publish_date: "2025-07-15"
-created_at: "2025-07-15"
-updated_at: "2025-10-28"
-summary: "A reflective post about stepping back from constant output to rediscover purpose in the process, challenging the 'arrival fallacy' and redefining success as becoming, not winning."
-categories: ["personal-reflection", "purpose"]
-featured_image: "../images/ive-spent-some-time-purposely-not-writing.jpg"
+title: I’ve spent some time purposely not writing.
+slug: ive-spent-some-time-purposely-not-writing
+publish_date: '2025-07-15'
+created_at: '2025-07-15'
+updated_at: '2025-10-28'
+summary: >-
+  A reflective post about stepping back from constant output to rediscover
+  purpose in the process, challenging the 'arrival fallacy' and redefining
+  success as becoming, not winning.
+categories:
+  - personal-reflection
+  - purpose
+featured_image: ../images/ive-spent-some-time-purposely-not-writing.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/19pfQDMxyZ/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/19pfQDMxyZ/'
+status: published
 ---
 
 # I’ve spent some time purposely not writing.

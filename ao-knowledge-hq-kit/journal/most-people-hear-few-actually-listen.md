@@ -1,17 +1,22 @@
 ---
-title: "Most people hear. Few actually listen."
-slug: "most-people-hear-few-actually-listen"
-publish_date: "2025-06-12"
-created_at: "2025-06-12"
-updated_at: "2025-10-28"
-summary: "A reflection on the difference between hearing and listening in leadership, seeing beyond surface reactions to understand the real needs behind behavior."
-categories: ["communication", "empathy"]
-featured_image: "../images/most-people-hear-few-actually-listen.jpg"
+title: Most people hear. Few actually listen.
+slug: most-people-hear-few-actually-listen
+publish_date: '2025-06-12'
+created_at: '2025-06-12'
+updated_at: '2025-10-28'
+summary: >-
+  A reflection on the difference between hearing and listening in leadership,
+  seeing beyond surface reactions to understand the real needs behind behavior.
+categories:
+  - communication
+  - empathy
+featured_image: ../images/most-people-hear-few-actually-listen.jpg
 takeaways: []
 applications: []
 related: []
-original_source: "Facebook"
-original_url: "https://www.facebook.com/share/p/17LB25uJYt/"
+original_source: Facebook
+original_url: 'https://www.facebook.com/share/p/17LB25uJYt/'
+status: published
 ---
 
 # Most people hear. Few actually listen.

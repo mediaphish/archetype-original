@@ -1,21 +1,29 @@
 ---
-title: "Why Leaders Hire Me"
-slug: "why-leaders-hire-me"
-publish_date: "2025-12-28"
-created_at: "2025-12-28"
-updated_at: "2025-12-28"
-summary: "Why experienced leaders choose to work with me to sharpen judgment, reduce unforced errors, and grow without costing their people."
-categories: ["leadership", "advisory", "consulting", "decision-making", "trust"]
-featured_image: "../images/why-leaders-hire-me.jpg"
+title: Why Leaders Hire Me
+slug: why-leaders-hire-me
+publish_date: '2025-12-28'
+created_at: '2025-12-28'
+updated_at: '2025-12-28'
+summary: >-
+  Why experienced leaders choose to work with me to sharpen judgment, reduce
+  unforced errors, and grow without costing their people.
+categories:
+  - leadership
+  - advisory
+  - consulting
+  - decision-making
+  - trust
+featured_image: ../images/why-leaders-hire-me.jpg
 takeaways:
-  - Leaders hire advisors for judgment, not ideas.
+  - 'Leaders hire advisors for judgment, not ideas.'
   - Experience under real pressure sharpens decision-making.
   - Sustainable growth protects people as well as outcomes.
   - Reducing unforced errors compounds trust and momentum over time.
 applications: []
 related: []
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/why-leaders-hire-me"
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/why-leaders-hire-me'
+status: published
 ---
 
 # Why Leaders Hire Me

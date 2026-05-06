@@ -1,21 +1,42 @@
 ---
-title: "Why I Chose the Name Archetype Original"
-slug: "why-i-chose-the-name-archetype-original"
-publish_date: "2025-12-23"
-created_at: "2025-12-23"
-updated_at: "2025-12-23"
-summary: "A foundational explanation of the name Archetype Original, what it means, why it was chosen, and the conviction about leadership, alignment, and responsibility that sits beneath the work."
-categories: ["leadership", "servant-leadership", "culture", "identity", "formation"]
-featured_image: "../images/why-i-chose-the-name-archetype-original.jpg"
+title: Why I Chose the Name Archetype Original
+slug: why-i-chose-the-name-archetype-original
+publish_date: '2025-12-23'
+created_at: '2025-12-23'
+updated_at: '2025-12-23'
+summary: >-
+  A foundational explanation of the name Archetype Original, what it means, why
+  it was chosen, and the conviction about leadership, alignment, and
+  responsibility that sits beneath the work.
+categories:
+  - leadership
+  - servant-leadership
+  - culture
+  - identity
+  - formation
+featured_image: ../images/why-i-chose-the-name-archetype-original.jpg
 takeaways:
-  - Leadership has a form it was meant to take, shaped by intention rather than performance.
-  - Alignment is powerful but not inherently good; it amplifies whatever leadership is attached to.
-  - Original leadership is the discipline of returning to the form when pressure and incentives distort it.
-  - Archetype Original exists as a constraint to keep leadership oriented toward its source as responsibility grows.
+  - >-
+    Leadership has a form it was meant to take, shaped by intention rather than
+    performance.
+  - >-
+    Alignment is powerful but not inherently good; it amplifies whatever
+    leadership is attached to.
+  - >-
+    Original leadership is the discipline of returning to the form when pressure
+    and incentives distort it.
+  - >-
+    Archetype Original exists as a constraint to keep leadership oriented toward
+    its source as responsibility grows.
 applications: []
-related: ["the-work-is-now-public", "weve-lost-the-plot-on-leadership", "the-case-for-servant-leadership-part-1"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/why-i-chose-the-name-archetype-original"
+related:
+  - the-work-is-now-public
+  - weve-lost-the-plot-on-leadership
+  - the-case-for-servant-leadership-part-1
+original_source: Archetype Original Journal
+original_url: >-
+  https://www.archetypeoriginal.com/journal/why-i-chose-the-name-archetype-original
+status: published
 ---
 
 # Why the Name *Archetype Original*

@@ -1,25 +1,45 @@
 ---
-title: "Where We Begin"
-slug: "where-we-begin"
-publish_date: "2025-12-30"
-created_at: "2025-12-30"
-updated_at: "2025-12-30"
-summary: "Why Archetype Original begins with a 365-day Servant Leadership Devotional grounded in the Golden Rule."
-categories: ["leadership", "servant-leadership", "faith", "culture"]
-featured_image: "../images/where-we-begin.jpg"
+title: Where We Begin
+slug: where-we-begin
+publish_date: '2025-12-30'
+created_at: '2025-12-30'
+updated_at: '2025-12-30'
+summary: >-
+  Why Archetype Original begins with a 365-day Servant Leadership Devotional
+  grounded in the Golden Rule.
+categories:
+  - leadership
+  - servant-leadership
+  - faith
+  - culture
+featured_image: ../images/where-we-begin.jpg
 takeaways:
-  - Archetype Original is not a system for guaranteed outcomes, but a call to carry leadership differently.
-  - The Golden Rule is the ethical foundation beneath Servant Leadership, not a slogan layered on top.
+  - >-
+    Archetype Original is not a system for guaranteed outcomes, but a call to
+    carry leadership differently.
+  - >-
+    The Golden Rule is the ethical foundation beneath Servant Leadership, not a
+    slogan layered on top.
   - Leadership formation must precede leadership systems.
-  - A daily devotional creates a steady point of return that counters leadership drift.
-  - Service is foundational to healthy leadership, not optional.
+  - >-
+    A daily devotional creates a steady point of return that counters leadership
+    drift.
+  - 'Service is foundational to healthy leadership, not optional.'
 applications:
-  - Reflect on how your leadership decisions actually land on the people you lead.
-  - Identify one habit driven by urgency rather than care and slow it down this week.
-  - Use a daily moment of reflection to re-anchor your leadership posture before the day begins.
-related: ["golden-rule-leadership-strategy"]
-original_source: "Archetype Original Journal"
-original_url: "https://www.archetypeoriginal.com/journal/where-we-begin"
+  - >-
+    Reflect on how your leadership decisions actually land on the people you
+    lead.
+  - >-
+    Identify one habit driven by urgency rather than care and slow it down this
+    week.
+  - >-
+    Use a daily moment of reflection to re-anchor your leadership posture before
+    the day begins.
+related:
+  - golden-rule-leadership-strategy
+original_source: Archetype Original Journal
+original_url: 'https://www.archetypeoriginal.com/journal/where-we-begin'
+status: published
 ---
 
 # Where We Begin

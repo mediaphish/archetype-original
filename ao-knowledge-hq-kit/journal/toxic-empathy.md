@@ -1,26 +1,36 @@
 ---
-title: "Toxic Empathy"
-slug: "toxic-empathy"
-publish_date: "2026-03-31"
-created_at: "2026-03-31"
-updated_at: "2026-03-31"
-summary: "An examination of toxic empathy in leadership, how avoidance disguises itself as care, and why servant leadership requires the strength to hold both presence and accountability."
+title: Toxic Empathy
+slug: toxic-empathy
+publish_date: '2026-03-31'
+created_at: '2026-03-31'
+updated_at: '2026-03-31'
+summary: >-
+  An examination of toxic empathy in leadership, how avoidance disguises itself
+  as care, and why servant leadership requires the strength to hold both
+  presence and accountability.
 categories:
   - editorial
   - leadership
   - servant-leadership
   - culture
   - accountability
-featured_image: "../images/toxic-empathy.jpg"
+featured_image: ../images/toxic-empathy.jpg
 takeaways:
   - Toxic empathy occurs when empathy becomes unanchored from responsibility.
-  - Leaders often avoid necessary conversations because they do not want to pay the emotional cost of holding the line.
-  - When accountability is removed in the name of care, the cost does not disappear. It is absorbed by the team.
-  - Servant leadership refuses both harsh control and permissive avoidance by holding care and accountability together.
+  - >-
+    Leaders often avoid necessary conversations because they do not want to pay
+    the emotional cost of holding the line.
+  - >-
+    When accountability is removed in the name of care, the cost does not
+    disappear. It is absorbed by the team.
+  - >-
+    Servant leadership refuses both harsh control and permissive avoidance by
+    holding care and accountability together.
 applications: []
 related: []
-original_source: "Archetype Original Journal"
-original_url: ""
+original_source: Archetype Original Journal
+original_url: ''
+status: published
 ---
 
 ## Toxic Empathy

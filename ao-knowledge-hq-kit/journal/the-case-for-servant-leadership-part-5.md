@@ -1,17 +1,26 @@
 ---
-title: "The Case for Servant Leadership (Part 5)"
-slug: "the-case-for-servant-leadership-part-5"
-publish_date: "2025-12-01T10:00:00-06:00"
-created_at: "2025-12-01T10:00:00-06:00"
-updated_at: "2025-10-30"
-summary: "Archetype Original: rebirth from realization, turning proven leadership logic into systems leaders can live out today."
-categories: ["servant-leadership", "personal-reflection"]
-featured_image: "../images/the-case-for-servant-leadership-part-5.jpg"
+title: The Case for Servant Leadership (Part 5)
+slug: the-case-for-servant-leadership-part-5
+publish_date: '2025-12-01T10:00:00-06:00'
+created_at: '2025-12-01T10:00:00-06:00'
+updated_at: '2025-10-30'
+summary: >-
+  Archetype Original: rebirth from realization, turning proven leadership logic
+  into systems leaders can live out today.
+categories:
+  - servant-leadership
+  - personal-reflection
+featured_image: ../images/the-case-for-servant-leadership-part-5.jpg
 takeaways: []
 applications: []
-related: ["the-case-for-servant-leadership-part-1","the-case-for-servant-leadership-part-2","the-case-for-servant-leadership-part-3","the-case-for-servant-leadership-part-4"]
-original_source: "Facebook"
-original_url: ""
+related:
+  - the-case-for-servant-leadership-part-1
+  - the-case-for-servant-leadership-part-2
+  - the-case-for-servant-leadership-part-3
+  - the-case-for-servant-leadership-part-4
+original_source: Facebook
+original_url: ''
+status: published
 ---
 
 # The Case for Servant Leadership

@@ -11,9 +11,7 @@ export default function JournalHighlights() {
       .then(response => response.json())
       .then(data => {
         // Filter to only published posts, sort by date, get most recent for featured + 2 more
-        const publishedPosts = data.docs.filter(post => 
-          post.status === 'published' || post.status === undefined
-        );
+        const publishedPosts = data.docs.filter((post) => post.status === 'published');
         const sortedPosts = publishedPosts.sort((a, b) => {
           const dateA = new Date(a.publish_date || a.created_at || 0);
           const dateB = new Date(b.publish_date || b.created_at || 0);

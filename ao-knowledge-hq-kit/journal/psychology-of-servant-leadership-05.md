@@ -1,30 +1,43 @@
 ---
-title: "Psychology of Servant Leadership, Part 5: The Paradox of the Servant"
-slug: "psychology-of-servant-leadership-part-5"
-publish_date: "2026-01-05"
-created_at: "2026-01-05"
-updated_at: "2026-01-05"
-summary: "Servant leadership collapses when the leader abandons themselves. Boundaries aren’t the opposite of service, they’re what make it sustainable."
-categories: ["servant-leadership", "leadership", "burnout", "psychology"]
-featured_image: "../images/psychology-of-servant-leadership-05.jpg"
+title: 'Psychology of Servant Leadership, Part 5: The Paradox of the Servant'
+slug: psychology-of-servant-leadership-part-5
+publish_date: '2026-01-05'
+created_at: '2026-01-05'
+updated_at: '2026-01-05'
+summary: >-
+  Servant leadership collapses when the leader abandons themselves. Boundaries
+  aren’t the opposite of service, they’re what make it sustainable.
+categories:
+  - servant-leadership
+  - leadership
+  - burnout
+  - psychology
+featured_image: ../images/psychology-of-servant-leadership-05.jpg
 takeaways:
   - Servant leaders are vulnerable to burnout because they genuinely care.
   - Burnout is more than exhaustion; it’s erosion of identity and judgment.
   - Being needed can quietly become an ego addiction that creates dependency.
   - Healthy boundaries protect both the leader and the people they serve.
 applications:
-  - List the top three demands that drain you most; decide which need a boundary or a “no.”
-  - Block time in your calendar for recovery that you protect like a key meeting.
-  - When you feel the urge to rescue, ask, “Am I empowering them or avoiding discomfort?”
+  - >-
+    List the top three demands that drain you most; decide which need a boundary
+    or a “no.”
+  - >-
+    Block time in your calendar for recovery that you protect like a key
+    meeting.
+  - >-
+    When you feel the urge to rescue, ask, “Am I empowering them or avoiding
+    discomfort?”
   - Name one clear limit to your team: what you will gladly give and what you can’t.
 related:
-  - "psychology-of-servant-leadership-part-1"
-  - "psychology-of-servant-leadership-part-2"
-  - "psychology-of-servant-leadership-part-3"
-  - "psychology-of-servant-leadership-part-4"
-  - "psychology-of-servant-leadership-part-6"
-original_source: ""
-original_url: ""
+  - psychology-of-servant-leadership-part-1
+  - psychology-of-servant-leadership-part-2
+  - psychology-of-servant-leadership-part-3
+  - psychology-of-servant-leadership-part-4
+  - psychology-of-servant-leadership-part-6
+original_source: ''
+original_url: ''
+status: published
 ---
 
 # Psychology of Servant Leadership, Part 5: The Paradox of the Servant: Boundaries, Burnout, and Self-Stewardship

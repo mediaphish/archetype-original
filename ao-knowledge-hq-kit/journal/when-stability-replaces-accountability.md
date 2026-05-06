@@ -1,12 +1,20 @@
 ---
-title: "When Stability Replaces Accountability"
-slug: "when-stability-replaces-accountability"
-publish_date: "2026-01-15"
-created_at: "2026-01-08"
-updated_at: "2026-01-09"
-summary: "An editorial examination of why leadership systems often protect stability at the expense of accountability, and why servant leadership cannot survive in environments that avoid responsibility."
-categories: ["editorial", "servant-leadership", "power", "accountability", "culture"]
-featured_image: "../images/when-stability-replaces-accountability.jpg"
+title: When Stability Replaces Accountability
+slug: when-stability-replaces-accountability
+publish_date: '2026-01-15'
+created_at: '2026-01-08'
+updated_at: '2026-01-09'
+summary: >-
+  An editorial examination of why leadership systems often protect stability at
+  the expense of accountability, and why servant leadership cannot survive in
+  environments that avoid responsibility.
+categories:
+  - editorial
+  - servant-leadership
+  - power
+  - accountability
+  - culture
+featured_image: ../images/when-stability-replaces-accountability.jpg
 takeaways:
   - Leadership systems reveal their true values under pressure.
   - Stability without accountability leads to quiet institutional decay.
@@ -14,8 +22,9 @@ takeaways:
   - Systems that resist accountability often eliminate it indirectly.
 applications: []
 related: []
-original_source: "Editorial Letter"
-original_url: ""
+original_source: Editorial Letter
+original_url: ''
+status: published
 ---
 
 Leadership systems reveal their true values not by what they claim to believe, but by what they protect when pressure arrives.
