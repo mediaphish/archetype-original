@@ -665,13 +665,6 @@ export default function AutoHubPanel({ onNavigate, className }) {
           </button>
           <button
             type="button"
-            onClick={() => onNavigate?.('/ao/library/drafts')}
-            className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
-          >
-            Drafts
-          </button>
-          <button
-            type="button"
             onClick={() => setAdvancedOpen(true)}
             className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
           >
@@ -686,7 +679,7 @@ export default function AutoHubPanel({ onNavigate, className }) {
           onClick={() => setPhraseLegendOpen((o) => !o)}
           className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-800 flex items-center justify-between gap-2 hover:bg-stone-100/80 min-h-[44px]"
         >
-          <span>Optional tips (corpus and quote cards)</span>
+          <span>Quick tips (quote cards)</span>
           <span className="text-gray-500 shrink-0" aria-hidden>
             {phraseLegendOpen ? '−' : '+'}
           </span>
@@ -705,8 +698,8 @@ export default function AutoHubPanel({ onNavigate, className }) {
             </p>
             <p>
               <span className="font-semibold text-gray-800">Drop cards from a numbered list: </span>
-              say things like <strong>exclude 2</strong>, <strong>skip 10 and 11</strong>, or{' '}
-              <strong>reject cards 4 and 8</strong>—Auto treats those numbers as off the list before picks or previews (works into the teens and beyond).
+              say things like <strong>exclude 2</strong>, <strong>eliminate 21</strong>, <strong>skip 10 and 11</strong>, or{' '}
+              <strong>reject cards 4 and 8</strong>—same idea, different words—Auto drops those slots before picks or previews (works into the teens and beyond).
             </p>
           </div>
         ) : null}

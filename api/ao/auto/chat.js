@@ -670,6 +670,19 @@ function parseCardIndexBound(n) {
   return Number.isFinite(n) && n >= 1 && n <= QUOTE_CARD_INDEX_MAX ? n : null;
 }
 
+/** Extra caption guidance when Bart asks for explanation / unpack (passed into pull-quote caption model). */
+function extractCaptionStyleHint(text) {
+  const s = String(text || '');
+  if (
+    /\b(with\s+(?:an?\s+)?explanation|full(?:er)?\s+explanation|explain\s+why|unpack(?:\s+(?:this|it|the\s+line))?|deeper\s+(?:caption|context)|more\s+context)\b/i.test(
+      s
+    )
+  ) {
+    return 'The owner asked for a fuller interpretive caption—explain why the line lands, stakes, tension, or “so what?” in plain leader-to-leader language. Do not shorten just to be brief.';
+  }
+  return '';
+}
+
 /** Pull digits from a fragment (list like "4, 5" or "10 and 11"). */
 function extractQuoteIndexDigits(fragment) {
   const out = new Set();
@@ -701,6 +714,13 @@ function parseExcludedQuoteIndicesFromMessage(text) {
     new RegExp(`\\breject(?:ed|ing)?\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
     new RegExp(`\\bi\\s+reject\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
     new RegExp(`\\b(?:don'?t|do\\s+not)\\s+want\\s+(${numList})\\b`, 'gi'),
+    // Natural language Bart uses: eliminate / remove / delete / drop / scrap (+ optional "card")
+    new RegExp(`\\beliminate(?:s|d)?\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
+    new RegExp(`\\bremove(?:s|d)?\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
+    new RegExp(`\\bdelete(?:s|d)?\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
+    new RegExp(`\\bdrop(?:s|ped)?\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
+    new RegExp(`\\bscrap(?:s|ped)?\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
+    new RegExp(`\\bget\\s+rid\\s+of\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
   ];
   for (const re of patterns) {
     re.lastIndex = 0;
@@ -1487,6 +1507,7 @@ Non-negotiables (hard rules):
 - Never silently rewrite his words. Never "polish" or swap wording unless he explicitly asks for editing help.
 - If intent is ambiguous, ask direct clarifying questions before doing heavy work. Do not guess.
 - **Conversation-first:** Bart does **not** need special phrases or "path" confirmations for research, planning, drafts, design ideas, librarian counts, or discussion. Answer directly in plain language. Optional \`confirmed_path\` in the snapshot is an internal hint only—not something you ask him to confirm unless he is about to trigger an irreversible publish/schedule action described in the snapshot.
+- **He owns this workspace.** When he gives **clear, operational instructions** about numbered quote cards in **this thread**—for example **reject, skip, exclude, eliminate, remove** specific card numbers, or **redo, regenerate, rebuild, refresh** specific numbers—treat that as the main job for the turn. If the snapshot shows updated **quote_card_rejected_indices** or new **quote_card_previews**, confirm briefly what changed. If something blocks compliance (wrong number, no quote list loaded yet), say in plain language **why** and **one** concrete next step—do not ignore him, do not change the subject to unrelated coaching, and do not imply his wording was wrong if the system understands synonyms like **eliminate** the same as **reject**.
 - **Honesty about research:** Do NOT say Scout, internet crawls, external scans, or "background research" **started**, **is running**, **was initiated**, or **will continue in the background** unless the thread snapshot explicitly documents a **completed** matching action for this same turn (for example \`series_research_pack_this_turn.completed === true\` means **in-corpus** snippet retrieval only—not an open-web crawl). If nothing in the snapshot proves a crawl or background job, say plainly what did and did not run.
 - **Irreversible actions only:** Ask for explicit yes/proceed only when the snapshot shows a pending **publisher schedule**, **package Proceed**, or similar real-world posting step—not for brainstorming or drafting.
 - Do **not** invent numbered **software / implementation / compliance** task lists, fake **todo boards**, or pretend you are **executing** a development plan, Cursor todos, or edits to an attached plan file. You are Auto inside this product only.
@@ -2719,8 +2740,11 @@ export default async function handler(req, res) {
           'Every line in that paste lines up with a **rejected** card number—nothing new to render. Paste fresh quote lines, or ask to replace rejected slots after updating the text.';
         receipts.push('Paste skipped — all indices rejected');
       } else {
+      const captionHintPaste = extractCaptionStyleHint(userMessage);
       const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(quotesForCaps, {
-        maxChars: 2000,
+        maxChars: captionHintPaste ? 2800 : 2000,
+        maxCharsX: 220,
+        extraCaptionInstruction: captionHintPaste,
       });
       const previews = [];
       const lines = [
@@ -3251,7 +3275,12 @@ export default async function handler(req, res) {
         const selected = indices.map((n) => allQuotes[n - 1]).filter(Boolean);
         receipts.push('Drafted interpretive captions and minimal square cards for your picks');
         pushTransparencyReceipt(receipts, `Built ${selected.length} quote card(s) for your numbered picks.`);
-        const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(selected, { maxChars: 2000 });
+        const captionHint = extractCaptionStyleHint(userMessage);
+        const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(selected, {
+          maxChars: captionHint ? 2800 : 2000,
+          maxCharsX: 220,
+          extraCaptionInstruction: captionHint,
+        });
         const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
         const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
         const previews = [];
@@ -3263,9 +3292,10 @@ export default async function handler(req, res) {
         ];
         for (let i = 0; i < selected.length; i += 1) {
           const q = selected[i];
+          const cardNum = indices[i];
           const cap = captions[i] || '';
           const capX = captionsX[i] || '';
-          lines.push(`${i + 1}. ${cap}`);
+          lines.push(`${cardNum}. ${cap}`);
           if (capX) lines.push(`   (X: ${capX})`);
           lines.push(`   “${safeText(stripMarkdownBoldForCardDisplay(q.quote), 280)}”`);
           const attrTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
