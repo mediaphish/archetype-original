@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -52,7 +53,7 @@ async function fileToPayload(file) {
   };
 }
 
-export default function AutoHubPanel({ onNavigate }) {
+export default function AutoHubPanel({ onNavigate, className }) {
   const [loading, setLoading] = useState(true);
   const [thread, setThread] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -437,8 +438,141 @@ export default function AutoHubPanel({ onNavigate }) {
     }
   }, [savingDraft, startingNew, sending, loading]);
 
+  const shellClass = [
+    'flex flex-col flex-1 min-h-0 min-w-0 border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden',
+    className || '',
+  ]
+    .join(' ')
+    .trim();
+
+  const composer = (
+    <div
+      className="fixed z-40 border-t border-gray-200 bg-white shadow-[0_-8px_28px_rgba(0,0,0,0.08)] left-0 right-0 max-md:bottom-[calc(3.65rem+env(safe-area-inset-bottom,0px))] bottom-0"
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        void onFiles(e.dataTransfer?.files || []);
+      }}
+    >
+      <div className="mx-auto max-w-7xl px-4 py-3 pointer-events-auto">
+        {error ? (
+          <div
+            className="mb-3 md:hidden p-3 rounded-lg border-2 border-red-400 bg-red-50 text-red-950 text-base font-medium"
+            role="alert"
+          >
+            {error}
+          </div>
+        ) : null}
+        {pendingFiles.length ? (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {pendingFiles.map((f, idx) => (
+              <div key={`${f.file_name}-${idx}`} className="border border-gray-200 rounded-lg bg-gray-50 p-2 text-xs">
+                {f.kind === 'image' && f.preview_url ? (
+                  <img src={f.preview_url} alt={f.file_name} className="w-16 h-16 object-cover rounded mb-1" />
+                ) : null}
+                <input
+                  value={f.label}
+                  onChange={(e) => setPendingFiles((prev) => prev.map((x, i) => (i === idx ? { ...x, label: e.target.value } : x)))}
+                  className="w-full border border-gray-300 rounded px-2 py-1 mb-1"
+                  placeholder="Label"
+                />
+                <div className="text-gray-700">{f.file_name}</div>
+                <div className="mt-1 flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setPendingFiles((prev) => prev.filter((_, i) => i !== idx))}
+                    className="px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50"
+                  >
+                    Remove
+                  </button>
+                  <button
+                    type="button"
+                    disabled={idx === 0}
+                    onClick={() => setPendingFiles((prev) => {
+                      const next = [...prev];
+                      [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+                      return next;
+                    })}
+                    className="px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Up
+                  </button>
+                  <button
+                    type="button"
+                    disabled={idx === pendingFiles.length - 1}
+                    onClick={() => setPendingFiles((prev) => {
+                      const next = [...prev];
+                      [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
+                      return next;
+                    })}
+                    className="px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Down
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        <div className="flex items-end gap-2">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
+          >
+            Add file
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.md,image/jpeg,image/jpg,image/png,image/webp"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              void onFiles(e.target.files || []);
+              e.target.value = '';
+            }}
+          />
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            rows={3}
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-base md:text-sm"
+            placeholder="Talk to Auto…"
+          />
+          <button
+            type="button"
+            onClick={send}
+            disabled={sending || (!String(input || '').trim() && pendingFiles.length === 0)}
+            className="min-h-[44px] px-4 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
+          >
+            {sending ? 'Sending…' : 'Send'}
+          </button>
+        </div>
+        {sending ? (
+          <div className="mt-2 text-sm text-gray-700" role="status" aria-live="polite">
+            Auto is working on your last message…
+          </div>
+        ) : null}
+        {activityResearchHint ? (
+          <div
+            className="mt-2 text-sm text-amber-950 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2"
+            role="status"
+            aria-live="polite"
+          >
+            {activityResearchHint}
+          </div>
+        ) : null}
+        <div className="mt-2 pb-1 text-xs text-gray-500 leading-snug">
+          Drag and drop works here too. Images and text files will show in the thread.
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <section className="flex flex-col flex-1 min-h-0 border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden">
+    <>
+    <section className={shellClass}>
       <div className="px-4 py-4 border-b border-gray-200 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
         <div className="min-w-0">
           <div className="text-2xl font-bold text-gray-900">Auto</div>
@@ -794,129 +928,6 @@ export default function AutoHubPanel({ onNavigate }) {
         ) : null}
         <div ref={messagesEndRef} className="h-px w-full shrink-0" aria-hidden />
       </div>
-
-      <div
-        className="fixed z-30 border-t border-gray-200 bg-white shadow-[0_-8px_28px_rgba(0,0,0,0.08)] left-0 right-0 max-md:bottom-[calc(3.65rem+env(safe-area-inset-bottom,0px))] bottom-0"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          void onFiles(e.dataTransfer?.files || []);
-        }}
-      >
-        <div className="mx-auto max-w-7xl px-4 py-3 pointer-events-auto">
-        {error ? (
-          <div
-            className="mb-3 md:hidden p-3 rounded-lg border-2 border-red-400 bg-red-50 text-red-950 text-base font-medium"
-            role="alert"
-          >
-            {error}
-          </div>
-        ) : null}
-        {pendingFiles.length ? (
-          <div className="mb-3 flex flex-wrap gap-2">
-            {pendingFiles.map((f, idx) => (
-              <div key={`${f.file_name}-${idx}`} className="border border-gray-200 rounded-lg bg-gray-50 p-2 text-xs">
-                {f.kind === 'image' && f.preview_url ? (
-                  <img src={f.preview_url} alt={f.file_name} className="w-16 h-16 object-cover rounded mb-1" />
-                ) : null}
-                <input
-                  value={f.label}
-                  onChange={(e) => setPendingFiles((prev) => prev.map((x, i) => (i === idx ? { ...x, label: e.target.value } : x)))}
-                  className="w-full border border-gray-300 rounded px-2 py-1 mb-1"
-                  placeholder="Label"
-                />
-                <div className="text-gray-700">{f.file_name}</div>
-                <div className="mt-1 flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setPendingFiles((prev) => prev.filter((_, i) => i !== idx))}
-                    className="px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50"
-                  >
-                    Remove
-                  </button>
-                  <button
-                    type="button"
-                    disabled={idx === 0}
-                    onClick={() => setPendingFiles((prev) => {
-                      const next = [...prev];
-                      [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
-                      return next;
-                    })}
-                    className="px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
-                  >
-                    Up
-                  </button>
-                  <button
-                    type="button"
-                    disabled={idx === pendingFiles.length - 1}
-                    onClick={() => setPendingFiles((prev) => {
-                      const next = [...prev];
-                      [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
-                      return next;
-                    })}
-                    className="px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50"
-                  >
-                    Down
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-        <div className="flex items-end gap-2">
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50"
-          >
-            Add file
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".txt,.md,image/jpeg,image/jpg,image/png,image/webp"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              void onFiles(e.target.files || []);
-              e.target.value = '';
-            }}
-          />
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            rows={3}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-base md:text-sm"
-            placeholder="Talk to Auto…"
-          />
-          <button
-            type="button"
-            onClick={send}
-            disabled={sending || (!String(input || '').trim() && pendingFiles.length === 0)}
-            className="min-h-[44px] px-4 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 disabled:opacity-50"
-          >
-            {sending ? 'Sending…' : 'Send'}
-          </button>
-        </div>
-        {sending ? (
-          <div className="mt-2 text-sm text-gray-700" role="status" aria-live="polite">
-            Auto is working on your last message…
-          </div>
-        ) : null}
-        {activityResearchHint ? (
-          <div
-            className="mt-2 text-sm text-amber-950 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2"
-            role="status"
-            aria-live="polite"
-          >
-            {activityResearchHint}
-          </div>
-        ) : null}
-        <div className="mt-2 pb-1 text-xs text-gray-500 leading-snug">
-          Drag and drop works here too. Images and text files will show in the thread.
-        </div>
-        </div>
-      </div>
       </div>
 
       {libraryOpen ? (
@@ -1058,6 +1069,7 @@ export default function AutoHubPanel({ onNavigate }) {
               <button type="button" onClick={() => setAdvancedOpen(false)} className="text-sm text-gray-600 hover:text-gray-900">Close</button>
             </div>
             <div className="p-3 space-y-2">
+              <button type="button" onClick={() => onNavigate?.('/ao/library/review-queue')} className="w-full min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-left text-sm hover:bg-gray-50">Review queue (corpus / held / profiles)</button>
               <button type="button" onClick={() => onNavigate?.('/ao/scout')} className="w-full min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-left text-sm hover:bg-gray-50">Open Scout</button>
               <button type="button" onClick={() => onNavigate?.('/ao/studio')} className="w-full min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-left text-sm hover:bg-gray-50">Open Studio</button>
               <button type="button" onClick={() => onNavigate?.('/ao/publisher')} className="w-full min-h-[44px] px-3 py-2 rounded-lg border border-gray-300 bg-white text-left text-sm hover:bg-gray-50">Open Publisher</button>
@@ -1066,5 +1078,7 @@ export default function AutoHubPanel({ onNavigate }) {
         </div>
       ) : null}
     </section>
+    {typeof document !== 'undefined' ? createPortal(composer, document.body) : null}
+    </>
   );
 }

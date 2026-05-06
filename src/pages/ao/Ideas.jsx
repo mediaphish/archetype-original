@@ -566,6 +566,20 @@ export default function Ideas() {
             </button>
           </div>
 
+          <div className="mb-6 rounded-lg border border-gray-200 bg-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="text-sm text-gray-800">
+              <span className="font-semibold">Review queue</span>
+              <span className="text-gray-600"> — corpus drafts (hero images), held quotes, and profiles. Kept off the Auto screen.</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleNavigate('/ao/library/review-queue')}
+              className="min-h-[44px] px-4 py-2 rounded-lg border border-gray-300 bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800"
+            >
+              Open review queue
+            </button>
+          </div>
+
           {message ? (
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">{message}</div>
           ) : null}
