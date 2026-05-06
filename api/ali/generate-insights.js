@@ -1,7 +1,27 @@
 import fs from 'fs';
 import path from 'path';
+import { CONDITION_KEYS, CONDITION_LABELS } from '../../lib/ali-conditions.js';
 
 export const config = { runtime: 'nodejs' };
+
+const INSIGHT_KEY_HINTS = {
+  clarity: 'Brief insight about what this clarity score means',
+  communication: 'Brief insight about what this communication score means',
+  consistency: 'Brief insight about what this consistency score means',
+  trust: 'Brief insight about what this trust score means',
+  alignment: 'Brief insight about what this alignment score means',
+  stability: 'Brief insight about what this stability score means',
+  leadership_drift: 'Brief insight about what this Drift score means (mismatch between stated leadership and team experience; lower is better)',
+};
+
+function buildInsightSchemaBlock() {
+  const lines = CONDITION_KEYS.map((key, idx) => {
+    const value = INSIGHT_KEY_HINTS[key] || `Brief insight about what this ${CONDITION_LABELS[key] || key} score means`;
+    const trailingComma = idx === CONDITION_KEYS.length - 1 ? '' : ',';
+    return `  "${key}": "${value}"${trailingComma}`;
+  });
+  return `{\n${lines.join('\n')}\n}`;
+}
 
 // Load knowledge corpus (same as chat.js)
 function loadKnowledgeCorpus() {
@@ -101,15 +121,7 @@ Generate brief, actionable insights (one sentence each) for each metric. Focus o
 Do NOT just describe the relationship between scores (e.g., "Leader overestimates"). Instead, explain what the score means and what it suggests about leadership effectiveness.
 
 Return ONLY a JSON object with metric keys and insight strings:
-{
-  "clarity": "Brief insight about what this clarity score means",
-  "consistency": "Brief insight about what this consistency score means",
-  "trust": "Brief insight about what this trust score means",
-  "communication": "Brief insight about what this communication score means",
-  "alignment": "Brief insight about what this alignment score means",
-  "stability": "Brief insight about what this stability score means",
-  "leadership_drift": "Brief insight about what this Drift score means (mismatch between stated leadership and team experience; lower is better)"
-}
+${buildInsightSchemaBlock()}
 
 Metrics data:
 ${JSON.stringify(metrics, null, 2)}`;

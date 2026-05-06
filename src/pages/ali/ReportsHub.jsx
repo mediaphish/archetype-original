@@ -89,7 +89,7 @@ const ReportsHub = () => {
           />
           <Card
             title="Patterns"
-            description="Explore the seven leadership patterns (clarity, consistency, trust, etc.) with trend charts. Coming soon."
+            description="Explore the seven leadership patterns (clarity, communication, consistency, trust, alignment, stability, drift) with trend charts. Coming soon."
             disabled
           />
           <Card

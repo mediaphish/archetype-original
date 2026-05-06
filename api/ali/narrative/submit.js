@@ -22,19 +22,12 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 
 const MAX_LENGTH = 4000;
 const MIN_LENGTH = 8;
 
-const VALID_CONDITIONS = new Set([
-  'clarity',
-  'consistency',
-  'trust',
-  'communication',
-  'alignment',
-  'stability',
-  'leadership_drift',
-]);
+const VALID_CONDITIONS = new Set(CONDITION_KEYS);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

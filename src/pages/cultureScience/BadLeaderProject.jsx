@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import SEO from '../../components/SEO';
 import { splitNeutralizedParagraphs } from '../../lib/blpStoryParagraphs.js';
+import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
 import './badLeaderProject.css';
 
 function BlpStoryParagraphs({ text, excerpt }) {
@@ -18,7 +19,7 @@ function BlpStoryParagraphs({ text, excerpt }) {
 
 const REGIONS = ['Northeast', 'Mid-Atlantic', 'Southeast', 'Midwest', 'South Central', 'Mountain West', 'Pacific West', 'Canada', 'International'];
 const INDUSTRIES = ['Technology', 'Healthcare', 'Manufacturing', 'Retail', 'Professional Services', 'Education', 'Government', 'Nonprofit', 'Finance', 'Other'];
-const CONDITIONS = ['Clarity', 'Consistency', 'Trust', 'Communication', 'Alignment', 'Stability', 'Drift'];
+const CONDITIONS = CONDITION_KEYS.map((k) => CONDITION_LABELS[k]);
 
 function spaNavigate(path, e) {
   if (e) e.preventDefault();

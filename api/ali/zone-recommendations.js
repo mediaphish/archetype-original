@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
+import { CONDITION_LABELS } from '../../lib/ali-conditions.js';
 
 function loadKnowledgeCorpus() {
   try {
@@ -115,10 +116,11 @@ export default async function handler(req, res) {
       'zone',
       zone,
       ...(Array.isArray(lowestPatterns) ? lowestPatterns : []),
-      'consistency',
-      'clarity',
-      'trust',
-      'alignment'
+      CONDITION_LABELS.clarity,
+      CONDITION_LABELS.communication,
+      CONDITION_LABELS.consistency,
+      CONDITION_LABELS.trust,
+      CONDITION_LABELS.alignment,
     ].join(' ');
     const relevantKnowledge = searchKnowledge(query, corpus);
 

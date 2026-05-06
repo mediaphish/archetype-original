@@ -14,6 +14,11 @@
       "permanent": true
     },
     {
+      "source": "/culture-science/ali/six-leadership-conditions",
+      "destination": "/culture-science/ali/seven-leadership-conditions",
+      "permanent": true
+    },
+    {
       "source": "/culture-science/anti-projects/bad-leader-project",
       "destination": "/culture-science/bad-leader-project",
       "permanent": true

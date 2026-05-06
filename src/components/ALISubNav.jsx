@@ -54,7 +54,7 @@ export default function ALISubNav() {
     { label: 'Why ALI Exists', href: '/culture-science/ali/why-ali-exists' },
     { label: 'The Method', href: '/culture-science/ali/method' },
     { label: 'Dashboard', href: '/culture-science/ali/dashboard' },
-    { label: 'Six Conditions', href: '/culture-science/ali/six-leadership-conditions' },
+    { label: 'Seven Conditions', href: '/culture-science/ali/seven-leadership-conditions' },
     { label: 'Early Warning', href: '/culture-science/ali/early-warning' },
   ];
 

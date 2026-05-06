@@ -13,6 +13,14 @@ import {
   calculateALIScore,
   calculateRollingScore
 } from '../../lib/ali-scoring.js';
+import { CONDITION_KEYS } from '../../lib/ali-conditions.js';
+
+function emptyPatternTrends() {
+  return CONDITION_KEYS.reduce((acc, k) => {
+    acc[k] = [];
+    return acc;
+  }, {});
+}
 
 /**
  * Transform response data from database format to scoring function format
@@ -51,7 +59,7 @@ function calculateDeploymentScores(responses, questionBank, historicalScores = [
     return null;
   }
 
-  const patterns = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+  const patterns = [...CONDITION_KEYS];
   const patternScores = {};
   
   patterns.forEach(pattern => {
@@ -143,15 +151,7 @@ export default async function handler(req, res) {
     if (!deployments || deployments.length === 0) {
       return res.status(200).json({
         overall_trend: [],
-        pattern_trends: {
-          clarity: [],
-          consistency: [],
-          trust: [],
-          communication: [],
-          alignment: [],
-          stability: [],
-          leadership_drift: []
-        },
+        pattern_trends: emptyPatternTrends(),
         key_insights: []
       });
     }
@@ -200,15 +200,7 @@ export default async function handler(req, res) {
 
     // Calculate scores for each deployment
     const overallTrend = [];
-    const patternTrends = {
-      clarity: [],
-      consistency: [],
-      trust: [],
-      communication: [],
-      alignment: [],
-      stability: [],
-      leadership_drift: []
-    };
+    const patternTrends = emptyPatternTrends();
     const historicalScores = [];
 
     for (const deployment of deployments) {

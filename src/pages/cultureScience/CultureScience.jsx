@@ -42,7 +42,7 @@ export default function CultureScience() {
               </h1>
               <p className="mt-6 text-[15px] leading-[1.75] text-white/80">
                 Most leaders never measure the thing that drives everything else. Not performance. Not output.
-                The conditions that make performance and output possible: clarity, consistency, trust, communication,
+                The conditions that make performance and output possible: clarity, communication, consistency, trust,
                 alignment, stability, and drift. Culture Science exists to make those measurable.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
@@ -239,7 +239,7 @@ export default function CultureScience() {
                 </p>
                 <p>
                   ALI, the Archetype Leadership Index, is the first tool built from this foundation. It exists because
-                  of Culture Science, not above it. Seven conditions: Clarity, Consistency, Trust, Communication,
+                  of Culture Science, not above it. Seven conditions: Clarity, Communication, Consistency, Trust,
                   Alignment, Stability, and Drift. Four times a year. The data your internal rooms will never produce on
                   their own.
                 </p>

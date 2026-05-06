@@ -4,6 +4,7 @@ import DefinitionModal from '../../components/ali/DefinitionModal';
 import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import { buildAliReportsSnapshot } from '../../lib/ali/archyContextPayload';
+import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 
 const ALIReports = () => {
   const [animatedValues, setAnimatedValues] = useState({});
@@ -699,7 +700,7 @@ const ALIReports = () => {
       ? ((last.score - first.score) / first.score) * 100
       : null;
 
-    const patternsOrder = ['clarity','consistency','trust','communication','alignment','stability','leadership_drift'];
+    const patternsOrder = [...CONDITION_KEYS];
     const patternTrends = liveReports.pattern_trends || {};
 
     const patternCards = patternsOrder.map((name) => {

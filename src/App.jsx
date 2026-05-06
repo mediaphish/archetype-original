@@ -450,6 +450,8 @@ export default function App() {
             path === '/culture-science/ali/method' ||
             path === '/culture-science/ali/early-warning' ||
             path === '/culture-science/ali/early-warning-indicators' ||
+            path === '/culture-science/ali/seven-leadership-conditions' ||
+            path === '/culture-science/ali/seven-leadership-conditions/' ||
             path === '/culture-science/ali/six-leadership-conditions' ||
             path === '/culture-science/ali/six-leadership-conditions/' ||
             path === '/culture-science/ali/faqs'
@@ -509,6 +511,8 @@ export default function App() {
             path === '/culture-science/ali/method' ||
             path === '/culture-science/ali/early-warning' ||
             path === '/culture-science/ali/early-warning-indicators' ||
+            path === '/culture-science/ali/seven-leadership-conditions' ||
+            path === '/culture-science/ali/seven-leadership-conditions/' ||
             path === '/culture-science/ali/six-leadership-conditions' ||
             path === '/culture-science/ali/six-leadership-conditions/' ||
             path === '/culture-science/ali/faqs'

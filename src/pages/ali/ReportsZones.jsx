@@ -17,6 +17,7 @@ import AliHeader from '../../components/ali/AliHeader';
 import { buildAliZonesSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
+import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 
 function fmt1(n) {
   if (typeof n !== 'number' || !Number.isFinite(n)) return '—';
@@ -199,15 +200,7 @@ const CONSTRAINT_ACTIONS = {
   }
 };
 
-const TEST_ORDER = [
-  'clarity',
-  'consistency',
-  'trust',
-  'communication',
-  'alignment',
-  'stability',
-  'leadership_drift'
-];
+const TEST_ORDER = [...CONDITION_KEYS];
 
 export default function ReportsZones() {
   const [showArchyChat, setShowArchyChat] = useState(false);

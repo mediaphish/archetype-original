@@ -20,6 +20,14 @@ import {
 import {
   calculateLeadershipMirror
 } from '../../../lib/ali-dashboard-calculations.js';
+import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
+
+function emptyPatternBuckets() {
+  return CONDITION_KEYS.reduce((acc, k) => {
+    acc[k] = [];
+    return acc;
+  }, {});
+}
 
 /**
  * Transform response data for scoring
@@ -43,7 +51,7 @@ function transformResponsesForScoring(responseData, questionBank, role) {
   return transformed;
 }
 
-const PATTERN_KEYS = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+const PATTERN_KEYS = [...CONDITION_KEYS];
 
 function percentile(sorted, p) {
   if (!sorted.length) return null;
@@ -473,7 +481,7 @@ export default async function handler(req, res) {
     };
 
     // Pattern analysis across platform - calculate from all responses
-    const allPatternScores = { clarity: [], consistency: [], trust: [], communication: [], alignment: [], stability: [], leadership_drift: [] };
+    const allPatternScores = emptyPatternBuckets();
     
     // Calculate patterns from all responses across all companies with responses
     const allTransformedResponses = [];
@@ -516,7 +524,7 @@ export default async function handler(req, res) {
       const lowPercent = avg < 60 ? 100 : 0;
       
       return {
-        name: name === 'leadership_drift' ? 'Drift' : name.charAt(0).toUpperCase() + name.slice(1),
+        name: CONDITION_LABELS[name] || (name.charAt(0).toUpperCase() + name.slice(1)),
         score: avg,
         change,
         distribution: { 
@@ -579,26 +587,20 @@ export default async function handler(req, res) {
       const leaderALI = calculateALIScore(leaderPatterns, leaderAnchor);
       const teamALI = calculateALIScore(teamPatterns, teamAnchor);
 
-      const leaderMirrorScores = {
-        ali: leaderALI,
-        clarity: leaderPatterns.clarity ?? null,
-        consistency: leaderPatterns.consistency ?? null,
-        trust: leaderPatterns.trust ?? null,
-        communication: leaderPatterns.communication ?? null,
-        alignment: leaderPatterns.alignment ?? null,
-        stability: leaderPatterns.stability ?? null,
-        leadership_drift: asFinite(leaderPatterns.leadership_drift)
-      };
-      const teamMirrorScores = {
-        ali: teamALI,
-        clarity: teamPatterns.clarity ?? null,
-        consistency: teamPatterns.consistency ?? null,
-        trust: teamPatterns.trust ?? null,
-        communication: teamPatterns.communication ?? null,
-        alignment: teamPatterns.alignment ?? null,
-        stability: teamPatterns.stability ?? null,
-        leadership_drift: asFinite(teamPatterns.leadership_drift)
-      };
+      const leaderMirrorScores = CONDITION_KEYS.reduce(
+        (acc, k) => {
+          acc[k] = k === 'leadership_drift' ? asFinite(leaderPatterns[k]) : (leaderPatterns[k] ?? null);
+          return acc;
+        },
+        { ali: leaderALI }
+      );
+      const teamMirrorScores = CONDITION_KEYS.reduce(
+        (acc, k) => {
+          acc[k] = k === 'leadership_drift' ? asFinite(teamPatterns[k]) : (teamPatterns[k] ?? null);
+          return acc;
+        },
+        { ali: teamALI }
+      );
       leadershipMirror = calculateLeadershipMirror(leaderMirrorScores, teamMirrorScores);
 
       // Platform Experience Map: team-only clarity, stability, trust
@@ -637,8 +639,8 @@ export default async function handler(req, res) {
     const hardestPatternCounts = {};
     PATTERN_KEYS.forEach((p) => { hardestPatternCounts[p] = 0; });
     let companiesWithBottom2 = 0;
-    const gapSeverityCounts = { clarity: {}, consistency: {}, trust: {}, communication: {}, alignment: {}, stability: {} };
-    const mirrorGapKeys = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability'];
+    const mirrorGapKeys = CONDITION_KEYS.filter((k) => k !== 'leadership_drift');
+    const gapSeverityCounts = mirrorGapKeys.reduce((acc, k) => { acc[k] = {}; return acc; }, {});
     mirrorGapKeys.forEach((k) => {
       gapSeverityCounts[k] = { critical: 0, significant: 0, moderate: 0, neutral: 0, caution: 0 };
     });
@@ -685,8 +687,8 @@ export default async function handler(req, res) {
         lp[p] = calculatePatternScore(lTransformed, p);
         tp[p] = calculatePatternScore(tTransformed, p);
       });
-      const lMirror = { ali: null, clarity: lp.clarity, consistency: lp.consistency, trust: lp.trust, communication: lp.communication, alignment: lp.alignment, stability: lp.stability, leadership_drift: asFinite(lp.leadership_drift) };
-      const tMirror = { ali: null, clarity: tp.clarity, consistency: tp.consistency, trust: tp.trust, communication: tp.communication, alignment: tp.alignment, stability: tp.stability, leadership_drift: asFinite(tp.leadership_drift) };
+      const lMirror = CONDITION_KEYS.reduce((acc, k) => { acc[k] = k === 'leadership_drift' ? asFinite(lp[k]) : lp[k]; return acc; }, { ali: null });
+      const tMirror = CONDITION_KEYS.reduce((acc, k) => { acc[k] = k === 'leadership_drift' ? asFinite(tp[k]) : tp[k]; return acc; }, { ali: null });
       const mir = calculateLeadershipMirror(lMirror, tMirror);
       mirrorGapKeys.forEach((k) => {
         const sev = (mir.severity && mir.severity[k]) ? String(mir.severity[k]).toLowerCase() : 'neutral';

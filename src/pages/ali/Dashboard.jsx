@@ -6,6 +6,7 @@ import AliHeader from '../../components/ali/AliHeader';
 import { buildAliDashboardSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
+import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
 
 const ALIDashboard = () => {
   const [expandedZone, setExpandedZone] = useState(null);
@@ -90,7 +91,7 @@ const ALIDashboard = () => {
     return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
-  const MIRROR_METRIC_ORDER = ['ali', 'clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+  const MIRROR_METRIC_ORDER = ['ali', ...CONDITION_KEYS];
 
   // Lightweight number animation helper (used when live data loads)
   const animateNumber = (key, start, end, duration = 800) => {
@@ -320,9 +321,9 @@ const ALIDashboard = () => {
           </p>
           <ul className="list-disc pl-6 space-y-2 mb-4">
             <li><strong>Clarity:</strong> How clearly you communicate expectations and decisions</li>
+            <li><strong>Communication:</strong> How well information flows in both directions</li>
             <li><strong>Consistency:</strong> How predictable and steady your behavior is</li>
             <li><strong>Trust:</strong> How safe your team feels to speak truth</li>
-            <li><strong>Communication:</strong> How well information flows in both directions</li>
             <li><strong>Alignment:</strong> How well your team understands and follows direction</li>
             <li><strong>Stability:</strong> How steady and reliable your leadership feels</li>
             <li><strong>Drift:</strong> The gap between what leadership signals and what the team experiences. <span className="font-semibold">Lower scores mean less drift</span> (better); higher scores mean more mismatch to work on.</li>
@@ -818,12 +819,13 @@ const ALIDashboard = () => {
   };
 
   // Leadership System Map (7-test capstone)
-  const SYSTEM_KEYS = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+  const SYSTEM_KEYS = [...CONDITION_KEYS];
   const systemKeyToLabel = (k) => {
     if (!k) return '—';
-    if (k === 'leadership_drift') return 'Drift';
-    const words = String(k).replace(/_/g, ' ').split(' ').filter(Boolean);
-    return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    return CONDITION_LABELS[k] || (() => {
+      const words = String(k).replace(/_/g, ' ').split(' ').filter(Boolean);
+      return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    })();
   };
 
 
@@ -1051,7 +1053,7 @@ const ALIDashboard = () => {
         {/* HERO: ALI Score Breakdown (2-column: Breakdown left, Zone/Mirror/Trajectory right) */}
         {(() => {
           // Calculate ALI Score Breakdown (same logic as System Map section)
-          const patternKeysForALI = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+          const patternKeysForALI = [...CONDITION_KEYS];
           const aliCurrentScore = dashboardData?.scores?.ali?.current ?? null;
           const anchorCurrentScore = dashboardData?.scores?.anchors?.current ?? null;
           const patternRaw = patternKeysForALI.reduce((acc, k) => {
@@ -1076,15 +1078,21 @@ const ALIDashboard = () => {
           const fmt1 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v.toFixed(1) : '—');
           const fmt0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? String(Math.round(v)) : '—');
 
-          const breakdownRows = [
-            { key: 'clarity', label: 'Clarity', value: patternRaw.clarity, color: '#2563eb' },
-            { key: 'consistency', label: 'Consistency', value: patternRaw.consistency, color: '#14b8a6' },
-            { key: 'trust', label: 'Trust', value: patternRaw.trust, color: '#8b5cf6' },
-            { key: 'communication', label: 'Communication', value: patternRaw.communication, color: '#f59e0b' },
-            { key: 'alignment', label: 'Alignment', value: patternRaw.alignment, color: '#10b981' },
-            { key: 'stability', label: 'Stability', value: patternRaw.stability, color: '#6366f1' },
-            { key: 'leadership_drift', label: driftDisplayLabel, value: patternRaw.leadership_drift, color: '#fb923c' }
-          ];
+          const BREAKDOWN_COLORS = {
+            clarity: '#2563eb',
+            communication: '#f59e0b',
+            consistency: '#14b8a6',
+            trust: '#8b5cf6',
+            alignment: '#10b981',
+            stability: '#6366f1',
+            leadership_drift: '#fb923c',
+          };
+          const breakdownRows = CONDITION_KEYS.map((key) => ({
+            key,
+            label: key === 'leadership_drift' ? driftDisplayLabel : CONDITION_LABELS[key],
+            value: patternRaw[key],
+            color: BREAKDOWN_COLORS[key],
+          }));
 
           const patternHealth = (row) => {
             if (typeof row.value !== 'number' || !Number.isFinite(row.value)) return null;
@@ -1246,7 +1254,7 @@ const ALIDashboard = () => {
                         <div>
                           <div className="text-[14px] font-semibold text-black/[0.87] mb-2">7 Tests (70%)</div>
                           <p className="text-[13px] text-black/[0.6] mb-4">
-                            These seven patterns capture current leadership conditions that can change quickly: Clarity, Consistency, Trust, Communication, Alignment, Stability, and Drift.
+                            These seven patterns capture current leadership conditions that can change quickly: Clarity, Communication, Consistency, Trust, Alignment, Stability, and Drift.
                           </p>
                           <div className="text-[13px] text-black/[0.6]">
                             <span className="font-semibold text-black/[0.87]">Current mean:</span> {fmt1(patternMeanUsed)}

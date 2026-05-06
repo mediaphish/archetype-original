@@ -4,6 +4,7 @@ import SuperAdminNav from '../../components/ali/SuperAdminNav';
 import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import { buildSuperAdminOverviewSnapshot } from '../../lib/ali/archyContextPayload';
+import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 
 const SuperAdminOverview = () => {
   const [data, setData] = useState(null);
@@ -746,7 +747,7 @@ const SuperAdminOverview = () => {
             <h2 className="text-[22px] font-semibold text-black/[0.87] mb-2">Benchmarks</h2>
             <p className="text-[13px] text-black/[0.6] mb-6">25th, 50th, 75th percentiles across companies (ALI and patterns)</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {['ali', 'clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'].filter((k) => data.benchmarks[k]).map((k) => (
+              {['ali', ...CONDITION_KEYS].filter((k) => data.benchmarks[k]).map((k) => (
                 <div key={k} className="rounded-lg border border-black/[0.12] p-4">
                   <div className="text-[12px] font-medium text-black/[0.6] mb-2 capitalize">{benchmarkKeyLabel(k)}</div>
                   <div className="text-sm">

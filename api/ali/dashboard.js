@@ -31,6 +31,7 @@ import {
   calculatePairedDeploymentScores,
   buildAnchorTrajectories
 } from '../../lib/ali-paired-scoring.js';
+import { CONDITION_KEYS } from '../../lib/ali-conditions.js';
 
 /**
  * Transform response data from database format to scoring function format
@@ -68,7 +69,7 @@ function transformResponsesForScoring(responseData, questionBank, role) {
  */
 function calculateScoresForResponses(allResponses, questionBank, historicalScores = []) {
   // Calculate pattern scores
-  const patterns = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+  const patterns = [...CONDITION_KEYS];
   const patternScores = {};
   
   patterns.forEach(pattern => {
@@ -172,7 +173,7 @@ function computeExperiencePointForSingleResponse(transformedResponses, questionB
 function computeSystemVectorForSingleResponse(transformedResponses) {
   if (!Array.isArray(transformedResponses) || transformedResponses.length === 0) return null;
 
-  const patterns = ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'];
+  const patterns = [...CONDITION_KEYS];
   const scores = {};
   patterns.forEach((pattern) => {
     scores[pattern] = calculatePatternScore(transformedResponses, pattern);
@@ -740,7 +741,7 @@ export default async function handler(req, res) {
 
     // Build pattern trends for reports
     const patternTrends = {};
-    ['clarity', 'consistency', 'trust', 'communication', 'alignment', 'stability', 'leadership_drift'].forEach(pattern => {
+    CONDITION_KEYS.forEach(pattern => {
       patternTrends[pattern] = historicalScores.map((score, index) => ({
         survey_index: deployments[index].survey_index,
         score: score.patterns[pattern]?.current

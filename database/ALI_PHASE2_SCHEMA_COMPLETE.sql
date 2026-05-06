@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS ali_question_bank (
   
   -- Classification Metadata
   pattern TEXT NOT NULL CHECK (pattern IN (
-    'clarity', 'consistency', 'trust', 'communication', 
+    'clarity', 'communication', 'consistency', 'trust',
     'alignment', 'stability', 'leadership_drift'
   )),
   role TEXT NOT NULL CHECK (role IN ('leader', 'team_member')),

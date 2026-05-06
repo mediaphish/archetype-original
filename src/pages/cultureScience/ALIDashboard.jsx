@@ -1,15 +1,22 @@
 import React from 'react';
 import ALISubNav from '../../components/ALISubNav';
+import { CONDITION_CARDS } from '../../../lib/ali-conditions.js';
+
+function go(path) {
+  return (e) => {
+    e.preventDefault();
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+}
 
 const ALIDashboard = () => {
-  const conditions = [
-    { number: 1, title: "Clarity", description: "How clearly expectations, priorities, and direction are communicated and understood." },
-    { number: 2, title: "Trust", description: "The perceived reliability, consistency, and integrity of leadership behavior over time." },
-    { number: 3, title: "Communication", description: "How information flows — accessibility, transparency, frequency, and quality of exchange." },
-    { number: 4, title: "Consistency", description: "The predictability and reliability of leadership decisions, follow-through, and standards." },
-    { number: 5, title: "Safety", description: "Whether people feel secure enough to speak honestly, take risks, and surface problems." },
-    { number: 6, title: "Emotional Tone", description: "The underlying emotional climate leadership creates — supportive, tense, neutral, or guarded." }
-  ];
+  const conditions = CONDITION_CARDS.map((c, i) => ({
+    number: i + 1,
+    title: c.label,
+    description: c.tagline,
+  }));
 
   return (
     <>
@@ -33,7 +40,6 @@ const ALIDashboard = () => {
         <section className="bg-gradient-to-b from-white via-[#FFF8F0] to-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              {/* Numbered section header */}
               <div className="relative">
                 <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   01
@@ -52,7 +58,7 @@ const ALIDashboard = () => {
                   It shows leaders where their leadership conditions currently sit, which direction they are moving, how quickly they are changing, and what underlying signals are forming beneath the surface.
                 </p>
                 <p>
-                  Every quarter, your team completes a 10-question pulse. The data flows into ALI, which translates those responses into condition-level insight across six dimensions.
+                  Every quarter, your team completes a 10-question pulse. The data flows into ALI, which translates those responses into condition-level insight across the seven leadership conditions.
                 </p>
                 <p>The dashboard displays:</p>
 
@@ -60,7 +66,7 @@ const ALIDashboard = () => {
                   <li className="flex items-start gap-3">
                     <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
-                      Current condition strength for all six leadership conditions
+                      Current condition strength for all seven leadership conditions
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
@@ -104,41 +110,37 @@ const ALIDashboard = () => {
           </div>
         </section>
 
-        {/* SECTION 3: THE SIX LEADERSHIP CONDITIONS */}
+        {/* SECTION 3: THE SEVEN LEADERSHIP CONDITIONS */}
         <section className="bg-white py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-6xl mx-auto space-y-12">
-              {/* Numbered section header */}
               <div className="relative max-w-3xl">
                 <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   02
                 </div>
                 <div className="relative z-10">
                   <h2 className="font-serif font-bold text-3xl sm:text-4xl md:text-5xl text-[#1A1A1A] mb-6">
-                    The Six Leadership Conditions
+                    The Seven Leadership Conditions
                   </h2>
                 </div>
               </div>
 
               <div className="max-w-3xl">
                 <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                  ALI measures six core leadership conditions. These are not personality traits. They are environmental conditions that leadership creates, maintains, or allows to drift.
+                  ALI measures seven core leadership conditions in a deliberate sequence. These are not personality traits. They are environmental conditions that leadership creates, maintains, or allows to drift. Clarity creates Communication. Communication earns Consistency. Consistency builds Trust. Trust enables Alignment. Alignment produces Stability. Drift is what happens when any of those begin to erode.
                 </p>
               </div>
 
-              {/* Six elevated cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12">
                 {conditions.map((condition) => (
                   <div
                     key={condition.number}
                     className="bg-white p-6 sm:p-8 rounded-lg border border-[#1A1A1A]/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden"
                   >
-                    {/* Large decorative number in background */}
                     <div className="absolute top-4 right-4 text-7xl font-serif font-bold text-[#1A1A1A]/5">
                       {condition.number}
                     </div>
 
-                    {/* Small numbered badge */}
                     <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#DB0812] text-white text-sm font-bold mb-4">
                       {condition.number}
                     </div>
@@ -174,7 +176,6 @@ const ALIDashboard = () => {
         <section className="bg-[#FFF8F0] py-16 sm:py-24 md:py-32">
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-3xl mx-auto space-y-8">
-              {/* Numbered section header */}
               <div className="relative">
                 <div className="absolute -top-8 -left-4 text-8xl sm:text-9xl font-serif font-bold text-[#1A1A1A]/5 pointer-events-none">
                   03
@@ -201,12 +202,6 @@ const ALIDashboard = () => {
                   <li className="flex items-start gap-3">
                     <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
-                      Is trust stable or beginning to thin?
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
-                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
                       Is communication improving or compressing under pressure?
                     </span>
                   </li>
@@ -219,13 +214,25 @@ const ALIDashboard = () => {
                   <li className="flex items-start gap-3">
                     <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
-                      Is safety expanding or contracting?
+                      Is trust stable or beginning to thin?
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
                     <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
-                      Is emotional tone stabilizing or shifting?
+                      Is alignment forming or fragmenting?
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
+                      Is stability strengthening or showing strain?
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#DB0812] mt-1 flex-shrink-0">→</span>
+                    <span className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/70">
+                      Is drift forming quietly beneath the surface?
                     </span>
                   </li>
                 </ul>
@@ -307,13 +314,13 @@ const ALIDashboard = () => {
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                {/* Card 1 */}
-                <Link
-                  to="/culture-science/ali/six-leadership-conditions"
+                <a
+                  href="/culture-science/ali/seven-leadership-conditions"
+                  onClick={go('/culture-science/ali/seven-leadership-conditions')}
                   className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
                   <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
-                    The Six Leadership Conditions
+                    The Seven Leadership Conditions
                   </h3>
                   <p className="text-base sm:text-lg text-[#1A1A1A]/70 group-hover:text-white/80 mb-4">
                     Explore each condition in detail and understand what they reveal about leadership impact.
@@ -321,11 +328,11 @@ const ALIDashboard = () => {
                   <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
                     Explore →
                   </span>
-                </Link>
+                </a>
 
-                {/* Card 2 */}
-                <Link
-                  to="/culture-science/ali/early-warning"
+                <a
+                  href="/culture-science/ali/early-warning"
+                  onClick={go('/culture-science/ali/early-warning')}
                   className="bg-white p-6 sm:p-8 rounded-lg border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 group block"
                 >
                   <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-white text-[#1A1A1A]">
@@ -337,7 +344,7 @@ const ALIDashboard = () => {
                   <span className="inline-flex items-center gap-2 font-semibold group-hover:text-white text-[#1A1A1A]">
                     Explore →
                   </span>
-                </Link>
+                </a>
               </div>
             </div>
           </div>
@@ -348,4 +355,3 @@ const ALIDashboard = () => {
 };
 
 export default ALIDashboard;
-
