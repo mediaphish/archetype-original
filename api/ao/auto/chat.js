@@ -1046,21 +1046,32 @@ function extractQuotedTopicPhrase(text) {
   return m ? String(m[1]).trim() : '';
 }
 
+function scheduledPostTextMatchesTopic(text, needleRaw) {
+  const t = String(text || '').toLowerCase();
+  const needle = String(needleRaw || '').trim().toLowerCase();
+  if (!needle) return true;
+  if (t.includes(needle)) return true;
+  if (/\bpower\s+says\b/i.test(needleRaw || '') || (needle.includes('power') && needle.includes('says'))) {
+    return /\bpower\s+says\b/i.test(t) || (t.includes('power') && t.includes('says'));
+  }
+  const parts = needle.split(/\s+/).filter((w) => w.length >= 3);
+  if (parts.length >= 2) return parts.every((w) => t.includes(w));
+  return false;
+}
+
 async function fetchScheduledPublisherQuoteCardsForOwner(email, topicSubstring) {
   const owner = String(email || '').toLowerCase().trim();
   const needle = String(topicSubstring || '').trim().toLowerCase();
-  const nowIso = new Date().toISOString();
   try {
     const out = await supabaseAdmin
       .from('ao_scheduled_posts')
       .select('id, platform, scheduled_at, text, intent, source_kind, best_move, status')
       .eq('status', 'scheduled')
-      .gte('scheduled_at', nowIso)
       .order('scheduled_at', { ascending: true })
-      .limit(400);
-    if (out.error) return { ok: false, rows: [], error: out.error.message };
-    let rows = Array.isArray(out.data) ? out.data : [];
-    rows = rows.filter((r) => {
+      .limit(500);
+    if (out.error) return { ok: false, rows: [], unfilteredQuoteCardRows: [], error: out.error.message };
+    let baseRows = Array.isArray(out.data) ? out.data : [];
+    baseRows = baseRows.filter((r) => {
       const intent = r.intent && typeof r.intent === 'object' ? r.intent : {};
       const em = String(intent.created_by_email || '').toLowerCase().trim();
       const isQuoteCard =
@@ -1068,38 +1079,54 @@ async function fetchScheduledPublisherQuoteCardsForOwner(email, topicSubstring) 
         r.best_move === 'pull_quote_card' ||
         intent.auto_hub === true;
       if (!isQuoteCard) return false;
-      if (owner) {
-        if (em && em !== owner) return false;
-        if (!em) return false;
-      }
+      if (owner && em && em !== owner) return false;
       return true;
     });
+    let filtered = baseRows;
     if (needle) {
-      rows = rows.filter((r) => String(r.text || '').toLowerCase().includes(needle));
+      filtered = baseRows.filter((r) => scheduledPostTextMatchesTopic(r.text, topicSubstring || needle));
     }
-    return { ok: true, rows };
+    return { ok: true, rows: filtered, unfilteredQuoteCardRows: baseRows };
   } catch (e) {
-    return { ok: false, rows: [], error: e.message };
+    return { ok: false, rows: [], unfilteredQuoteCardRows: [], error: e.message };
   }
 }
 
-function formatScheduledPublisherQuoteCardsAnswer(rows, topicPhrase) {
+function formatScheduledPublisherQuoteCardsAnswer(rows, topicPhrase, opts = {}) {
   const topic = String(topicPhrase || '').trim();
+  const unf = Array.isArray(opts.unfilteredQuoteCardRows) ? opts.unfilteredQuoteCardRows : [];
+  const needleUsed = String(opts.needle || '').trim();
+  const usedTopicFallback = !!(needleUsed && unf.length && (!Array.isArray(rows) || !rows.length));
+
+  const rowsToShow = usedTopicFallback ? unf : rows;
   const header =
-    topic.length > 0
-      ? `**Publisher queue (scheduled)** — rows whose caption/body matches **${topic.slice(0, 80)}** (case-insensitive):`
-      : '**Publisher queue (scheduled)** — quote-card style rows from Auto Hub (future times only):';
-  if (!Array.isArray(rows) || !rows.length) {
+    usedTopicFallback && topic.length > 0
+      ? `**Publisher queue (scheduled)** — quote cards from your account`
+      : topic.length > 0 && !usedTopicFallback
+        ? `**Publisher queue (scheduled)** — rows whose caption/body matches **${topic.slice(0, 80)}** (case-insensitive):`
+        : '**Publisher queue (scheduled)** — quote-card style rows from Auto Hub:';
+
+  if (!Array.isArray(rowsToShow) || !rowsToShow.length) {
     return [
       header,
       '',
       topic.length > 0
-        ? `No matching scheduled rows found. Try a shorter phrase, or open **Publisher** on your dashboard for the full list.`
-        : `No upcoming quote-card Publisher rows found. If you scheduled under a different account or before columns existed, check **Publisher** directly.`,
+        ? `No scheduled quote-card rows found in Publisher right now (or none tied to this account). Open **Publisher** on your AO dashboard to confirm—captions here don’t always include a series name like **${topic.slice(0, 40)}**.`
+        : `No scheduled quote-card Publisher rows found. If something should be queued, open **Publisher** on your dashboard.`,
     ].join('\n');
   }
+
+  const preamble =
+    usedTopicFallback && topic.length > 0
+      ? [
+          `You asked about **${topic.slice(0, 80)}**. The scheduled post **caption text** on file often **does not** repeat the marketing series title (e.g. “Power Says”)—it’s usually interpretive copy plus source line. So a literal search can return zero even when those cards are in the queue.`,
+          '',
+          `Here is your **full** upcoming quote-card Publisher queue (**${unf.length}** row(s) across networks). Approximate **distinct cards**: about **${Math.ceil(unf.length / 4)}** if you typically schedule all four networks per card—confirm in Publisher.`,
+          '',
+        ].join('\n')
+      : '';
   const indices = new Set();
-  for (const r of rows) {
+  for (const r of rowsToShow) {
     const intent = r.intent && typeof r.intent === 'object' ? r.intent : {};
     const ci = intent.corpus_index;
     if (ci != null && Number.isFinite(Number(ci))) indices.add(Number(ci));
@@ -1115,7 +1142,8 @@ function formatScheduledPublisherQuoteCardsAnswer(rows, topicPhrase) {
   const lines = [
     header,
     '',
-    `**${rows.length}** scheduled post row(s) in the queue.`,
+    preamble,
+    `**${rowsToShow.length}** scheduled post row(s) in the queue.`,
     distinctCards > 0
       ? `About **${distinctCards}** distinct card index(es) appear in metadata (quote cards often produce one row per network per card).`
       : `These rows may predate per-card metadata—count rows ÷ networks if you always schedule all four.`,
@@ -1123,17 +1151,21 @@ function formatScheduledPublisherQuoteCardsAnswer(rows, topicPhrase) {
     'Next slots:',
     '',
   ];
-  const cap = Math.min(rows.length, 24);
+  const cap = Math.min(rowsToShow.length, 24);
   for (let i = 0; i < cap; i += 1) {
-    const r = rows[i];
+    const r = rowsToShow[i];
     const intent = r.intent && typeof r.intent === 'object' ? r.intent : {};
     const ci = intent.corpus_index != null ? `#${intent.corpus_index}` : '—';
     const excerpt = safeText(stripMarkdownBoldForCardDisplay(String(r.text || '').replace(/\s+/g, ' ')), 140);
     lines.push(`- **${r.platform || '?'}** · ${fmtWhen(r.scheduled_at)} · card ${ci} · ${excerpt}${String(r.text || '').length > 140 ? '…' : ''}`);
   }
-  if (rows.length > cap) lines.push(`… and **${rows.length - cap}** more row(s). Open Publisher for the full queue.`);
+  if (rowsToShow.length > cap) lines.push(`… and **${rowsToShow.length - cap}** more row(s). Open Publisher for the full queue.`);
   lines.push('');
-  lines.push('This is read from your scheduled-posts table in this same turn—not background research.');
+  lines.push(
+    usedTopicFallback
+      ? 'Counts come from your Publisher queue in this same turn. Series titles may only appear on the card image or in the thread—not always in the caption line stored here.'
+      : 'This is read from your scheduled-posts table in this same turn—not background research.'
+  );
   return lines.join('\n');
 }
 
@@ -2689,14 +2721,18 @@ export default async function handler(req, res) {
       const needle = topicPhrase || (/\bpower\s+says\b/i.test(userMessage) ? 'power says' : '');
       const sched = await fetchScheduledPublisherQuoteCardsForOwner(auth.email, needle);
       if (sched.ok) {
+        const displayCount = sched.rows.length || sched.unfilteredQuoteCardRows?.length || 0;
         receipts.push(
-          `Publisher schedule lookup: ${sched.rows.length} upcoming quote-card row(s)${needle ? ` (filter: ${safeText(needle, 80)})` : ''}`
+          `Publisher schedule lookup: ${displayCount} quote-card row(s)${needle ? ` (topic filter: ${safeText(needle, 80)}${sched.rows.length ? '' : ' → fell back to full queue'})` : ''}`
         );
         pushTransparencyReceipt(
           receipts,
           'Answer used ao_scheduled_posts for this account (same request)—not the generic quote-campaign confirmation path.'
         );
-        assistantMessage = formatScheduledPublisherQuoteCardsAnswer(sched.rows, topicPhrase || needle);
+        assistantMessage = formatScheduledPublisherQuoteCardsAnswer(sched.rows, topicPhrase || needle, {
+          unfilteredQuoteCardRows: sched.unfilteredQuoteCardRows || [],
+          needle,
+        });
       } else {
         assistantMessage = [
           'I could not read your Publisher queue from the database this turn.',
