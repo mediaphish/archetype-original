@@ -697,6 +697,9 @@ function parseExcludedQuoteIndicesFromMessage(text) {
     new RegExp(`\\b(${numList})\\s+wouldn'?t\\s+work\\b`, 'gi'),
     new RegExp(`\\b(?:but\\s+)?not\\s+(${numList})\\b`, 'gi'),
     new RegExp(`\\b(?:skip|exclude|excluding|reject|rule\\s+out|without)\\s+(${numList})\\b`, 'gi'),
+    // "reject card 21", "rejected card 3 and 4" (word "card" sits between verb and index)
+    new RegExp(`\\breject(?:ed|ing)?\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
+    new RegExp(`\\bi\\s+reject\\s+(?:card\\s*)?(?:#\\s*)?(${numList})\\b`, 'gi'),
     new RegExp(`\\b(?:don'?t|do\\s+not)\\s+want\\s+(${numList})\\b`, 'gi'),
   ];
   for (const re of patterns) {
@@ -709,6 +712,20 @@ function parseExcludedQuoteIndicesFromMessage(text) {
     }
   }
   return excluded;
+}
+
+/** Persists "skip / exclude / I reject card N" across turns so dropped cards are not rebuilt or published. */
+function mergeQuoteCardRejections(prevArr, userMessage) {
+  const next = new Set(
+    Array.isArray(prevArr) ? prevArr.map(Number).filter((n) => parseCardIndexBound(n) != null) : []
+  );
+  parseExcludedQuoteIndicesFromMessage(userMessage).forEach((n) => next.add(n));
+  return [...next].sort((a, b) => a - b);
+}
+
+function getQuoteCardRejectedSet(state) {
+  const a = state?.quote_card_rejected_indices;
+  return new Set(Array.isArray(a) ? a.filter((n) => parseCardIndexBound(n) != null) : []);
 }
 
 /** Card index picks / mentions (1–99); stripGapPhrases recommended by callers when parsing full messages. */
@@ -979,8 +996,10 @@ async function mergePublishCandidatesForAllQuotes({
   captions,
   captionsX,
   logoUrl,
+  rejectedIndices = null,
 }) {
   const PLACEHOLDER_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>';
+  const skip = rejectedIndices && rejectedIndices.size ? rejectedIndices : null;
   const maxN = allQuotes.length;
   const prevList =
     Array.isArray(currentState.publish_candidates) && currentState.publish_candidates.length
@@ -1006,6 +1025,7 @@ async function mergePublishCandidatesForAllQuotes({
   });
   const out = [];
   for (let n = 1; n <= maxN; n += 1) {
+    if (skip?.has(n)) continue;
     if (built.has(n)) {
       out.push(built.get(n));
     } else if (prevByIdx.has(n)) {
@@ -1569,6 +1589,7 @@ export default async function handler(req, res) {
     const initialMemoryProfile = mergeMemoryProfiles(persistedMemoryProfile, currentState.memory_profile);
     let nextMode = detectAutoMode(userMessage, fullState.thread.current_mode || 'general');
     let statePatch = { ...currentState, memory_profile: initialMemoryProfile };
+    statePatch.quote_card_rejected_indices = mergeQuoteCardRejections(currentState.quote_card_rejected_indices, userMessage);
 
     let msgForQuoteRouting = userMessage;
     let intentRoute = null;
@@ -2679,11 +2700,26 @@ export default async function handler(req, res) {
     } else if (wantsUserSuppliedQuoteCards(msgForQuoteRouting)) {
       nextMode = 'plan';
       const userQuotes = parseUserSuppliedQuoteCards(msgForQuoteRouting);
+      if (!userQuotes.length) {
+        assistantMessage =
+          'I could not parse usable quote lines from that paste (instruction-only lines are skipped). Paste numbered card lines or Power says / Servant leadership pairs—without meta questions mixed in as numbered rows.';
+        receipts.push('Paste quote parse returned zero rows');
+      } else {
+      statePatch.quote_card_rejected_indices = (statePatch.quote_card_rejected_indices || []).filter(
+        (n) => n >= 1 && n <= userQuotes.length
+      );
+      const rejectedSet = getQuoteCardRejectedSet(statePatch);
       receipts.push('Generated minimal quote cards from the text you pasted (verbatim on the images)');
       pushTransparencyReceipt(receipts, `Quote cards from your paste (${userQuotes.length} line(s)); say Publish cards when ready.`);
       const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
       const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
-      const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(userQuotes, {
+      const quotesForCaps = userQuotes.filter((_, i) => !rejectedSet.has(i + 1));
+      if (!quotesForCaps.length) {
+        assistantMessage =
+          'Every line in that paste lines up with a **rejected** card number—nothing new to render. Paste fresh quote lines, or ask to replace rejected slots after updating the text.';
+        receipts.push('Paste skipped — all indices rejected');
+      } else {
+      const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(quotesForCaps, {
         maxChars: 2000,
       });
       const previews = [];
@@ -2693,11 +2729,15 @@ export default async function handler(req, res) {
         'Captions (copy under each image in the thread; X-sized line included where useful):',
         '',
       ];
+      let capIx = 0;
       for (let i = 0; i < userQuotes.length; i += 1) {
+        const cardIdx = i + 1;
+        if (rejectedSet.has(cardIdx)) continue;
         const q = userQuotes[i];
-        const cap = captions[i] || '';
-        const capX = captionsX[i] || '';
-        lines.push(`${i + 1}. ${cap}`);
+        const cap = captions[capIx] || '';
+        const capX = captionsX[capIx] || '';
+        capIx += 1;
+        lines.push(`${cardIdx}. ${cap}`);
         if (capX) lines.push(`   (X: ${capX})`);
         lines.push(`   “${safeText(stripMarkdownBoldForCardDisplay(q.quote), 280)}”`);
         const pasteTail = [q.source_title, q.url].filter((x) => String(x || '').trim());
@@ -2725,12 +2765,18 @@ export default async function handler(req, res) {
           previews.push({
             svg: rendered.svg,
             image_url,
-            index: i + 1,
+            index: cardIdx,
             caption: cap,
             caption_x: capX,
             source_title: q.source_title,
           });
         }
+      }
+      if (rejectedSet.size) {
+        lines.push(
+          '',
+          `**Rejected / omitted this turn:** card **${[...rejectedSet].sort((a, b) => a - b).join(', ')}** — no images generated for those slots (saved on this thread until you clear them by replacing the list).`
+        );
       }
       assistantMessage = lines.join('\n');
       assistantMeta = {
@@ -2740,20 +2786,21 @@ export default async function handler(req, res) {
         quote_card_preview_image_url: previews[0]?.image_url || null,
       };
       statePatch.corpus_pull_quotes = userQuotes;
-      statePatch.publish_candidates = userQuotes.map((q, i) => {
-        const pr = previews[i];
-        return normalizePublishCandidate({
-          corpus_index: i + 1,
-          quote: q.quote,
-          source_title: q.source_title,
-          url: q.url || '',
-          caption: captions[i] || '',
-          caption_x: captionsX[i] || '',
-          svg: pr?.svg || null,
-          image_url: pr?.image_url || '',
-        });
-      });
+      statePatch.publish_candidates = previews.map((p) =>
+        normalizePublishCandidate({
+          corpus_index: p.index,
+          quote: userQuotes[p.index - 1].quote,
+          source_title: userQuotes[p.index - 1].source_title,
+          url: userQuotes[p.index - 1].url || '',
+          caption: p.caption || '',
+          caption_x: p.caption_x || '',
+          svg: p.svg || null,
+          image_url: p.image_url || '',
+        })
+      );
       statePatch.quote_card_origin = 'user_paste';
+      }
+      }
     } else if (wantsPublisherQuoteScheduleInquiry(msgForQuoteRouting)) {
       nextMode = 'plan';
       const topicPhrase = extractQuotedTopicPhrase(userMessage);
@@ -2814,9 +2861,11 @@ export default async function handler(req, res) {
           '**All candidate lines (numbered):**',
           '',
         ];
+        const invRejected = getQuoteCardRejectedSet(statePatch);
         allQuotes.forEach((q, idx) => {
           const n = idx + 1;
-          lines.push(`${n}. “${safeText(stripMarkdownBoldForCardDisplay(q.quote), 400)}”`);
+          const rejNote = invRejected.has(n) ? ' _(rejected — omitted from card rebuilds / publish picks)_' : '';
+          lines.push(`${n}. “${safeText(stripMarkdownBoldForCardDisplay(q.quote), 400)}”${rejNote}`);
           const tail = [q.source_title, q.url].filter((x) => String(x || '').trim());
           if (tail.length) lines.push(`   — ${tail.join(' · ')}`);
           lines.push('');
@@ -2872,7 +2921,17 @@ export default async function handler(req, res) {
             const rawLogo = await getDefaultLogoUrl({ background: 'dark' });
             const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
             const previews = [];
+            const rejectedInspect = getQuoteCardRejectedSet(statePatch);
             for (const n of indices) {
+              if (rejectedInspect.has(n)) {
+                lines.push(
+                  `**Card ${n}**`,
+                  '',
+                  'You marked this number **rejected** on this thread—it is intentionally omitted from new card images and publish picks until you paste a fresh list (or continue without that slot).',
+                  ''
+                );
+                continue;
+              }
               const q = allQuotes[n - 1];
               if (!q) continue;
               const cand = (candidates || []).find((c) => c.corpus_index === n);
@@ -3099,7 +3158,11 @@ export default async function handler(req, res) {
         indices = pool.map((x) => x.corpus_index).sort((a, b) => a - b);
       }
       const publishCap = isUserPasteQuoteBatch(currentState, corpusQuotes) ? 50 : 12;
-      indices = indices.filter((n) => n >= 1 && n <= (corpusQuotes.length || 99)).slice(0, publishCap);
+      const rejectedPub = getQuoteCardRejectedSet(statePatch);
+      indices = indices
+        .filter((n) => n >= 1 && n <= (corpusQuotes.length || 99))
+        .filter((n) => !rejectedPub.has(n))
+        .slice(0, publishCap);
 
       if (!indices.length) {
         assistantMessage =
@@ -3172,12 +3235,16 @@ export default async function handler(req, res) {
       }
       const usedDefaultCorpusFirstFive = !fromPaste && filledDefaultIndices && maxN > 5;
       const batchCap = fromPaste ? Math.min(50, maxN) : 6;
-      const indicesBeforeBatchCap = indices.filter((n) => n >= 1 && n <= maxN);
+      const rejectedDeliver = getQuoteCardRejectedSet(statePatch);
+      const picksInRangeBeforeReject = indices.filter((n) => n >= 1 && n <= maxN);
+      const indicesBeforeBatchCap = picksInRangeBeforeReject.filter((n) => !rejectedDeliver.has(n));
       const truncatedByBatchCap = indicesBeforeBatchCap.length > batchCap;
       indices = indicesBeforeBatchCap.slice(0, batchCap);
       if (!indices.length) {
         assistantMessage =
-          'Tell me which quote numbers to use from the list above (for example 1, 3, and 5), or say “all.”';
+          picksInRangeBeforeReject.length > 0 && indicesBeforeBatchCap.length === 0
+            ? 'Those picks are all **rejected** slots on this thread—choose different numbers or paste an updated quote list.'
+            : 'Tell me which quote numbers to use from the list above (for example 1, 3, and 5), or say “all.”';
       } else {
         statePatch.corpus_pull_quotes = allQuotes;
         statePatch.corpus_pull_quote_selection = indices;
@@ -3273,6 +3340,7 @@ export default async function handler(req, res) {
           captions,
           captionsX,
           logoUrl,
+          rejectedIndices: getQuoteCardRejectedSet(statePatch),
         });
       }
     } else if (
