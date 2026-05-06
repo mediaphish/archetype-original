@@ -16,6 +16,12 @@
 import matter from 'gray-matter';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { auditPublicationEvent } from '../../../lib/ao/auditPublicationEvent.js';
+
+function vercelRequestId(req) {
+  const h = req?.headers || {};
+  return h['x-vercel-id'] || h['x-request-id'] || null;
+}
 
 export const config = {
   api: {
@@ -198,6 +204,22 @@ export default async function handler(req, res) {
 
     const validatedCount = (insertedItems || []).filter((i) => i.status === 'validated').length;
     const rejectedCount = (insertedItems || []).filter((i) => i.status === 'rejected').length;
+
+    await auditPublicationEvent({
+      source: 'api:ao/import/upload',
+      action: 'import_batch_created',
+      outcome: 'success',
+      actor_email: auth.email,
+      vercel_id: vercelRequestId(req),
+      resource_paths: (insertedItems || []).map((i) => i.target_path).filter(Boolean),
+      detail: {
+        batch_id: batch.id,
+        kind,
+        file_count: files.length,
+        validated_count: validatedCount,
+        rejected_count: rejectedCount,
+      },
+    });
 
     return res.status(200).json({
       ok: true,

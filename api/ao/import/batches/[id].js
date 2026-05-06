@@ -9,6 +9,12 @@
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
 import { buildGroupReadyText } from '../../../../lib/ao/groupReadyPost.js';
+import { auditPublicationEvent } from '../../../../lib/ao/auditPublicationEvent.js';
+
+function vercelRequestId(req) {
+  const h = req?.headers || {};
+  return h['x-vercel-id'] || h['x-request-id'] || null;
+}
 
 const DEFAULT_REPO = 'mediaphish/archetype-original';
 const DEFAULT_BRANCH = 'main';
@@ -277,13 +283,30 @@ export default async function handler(req, res) {
         return res.status(400).json({ ok: false, error: 'No validated items to publish', rejected_count: rejected.length });
       }
 
-      const message = `AO Import: publish ${validated.length} devotional file(s) (batch ${id})`;
+      const batchKind = String(batch.kind || 'devotional').trim() || 'devotional';
+      const message = `AO Import: publish ${validated.length} file(s) (${batchKind}, batch ${id})`;
       const published = await publishBatchToGitHub({ token, repo, branch, items: validated, message });
       if (!published.ok) {
         await supabaseAdmin
           .from('ao_import_batches')
           .update({ status: 'failed', publish_error: published.error, updated_at: new Date().toISOString() })
           .eq('id', id);
+        await auditPublicationEvent({
+          source: 'api:ao/import/batches/publish',
+          action: 'github_tree_commit',
+          outcome: 'failure',
+          actor_email: auth.email,
+          vercel_id: vercelRequestId(req),
+          resource_paths: validated.map((i) => i.target_path).filter(Boolean),
+          error_message: published.error || 'GitHub publish failed',
+          detail: {
+            batch_id: id,
+            batch_kind: batchKind,
+            repo,
+            branch,
+            validated_count: validated.length,
+          },
+        });
         return res.status(500).json({ ok: false, error: published.error, details: published.details || null });
       }
 
@@ -302,6 +325,23 @@ export default async function handler(req, res) {
         .update({ status: 'published', updated_at: new Date().toISOString() })
         .eq('batch_id', id)
         .eq('status', 'validated');
+
+      await auditPublicationEvent({
+        source: 'api:ao/import/batches/publish',
+        action: 'github_tree_commit',
+        outcome: 'success',
+        actor_email: auth.email,
+        vercel_id: vercelRequestId(req),
+        github_commit_sha: published.commitSha || null,
+        resource_paths: validated.map((i) => i.target_path).filter(Boolean),
+        detail: {
+          batch_id: id,
+          batch_kind: batchKind,
+          repo,
+          branch,
+          published_count: validated.length,
+        },
+      });
 
       return res.status(200).json({ ok: true, commit_sha: published.commitSha, published_count: validated.length });
     } catch (e) {

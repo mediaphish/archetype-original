@@ -6,6 +6,12 @@
 import matter from 'gray-matter';
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
+import { auditPublicationEvent } from '../../../../lib/ao/auditPublicationEvent.js';
+
+function vercelRequestId(req) {
+  const h = req?.headers || {};
+  return h['x-vercel-id'] || h['x-request-id'] || null;
+}
 
 function slugify(input) {
   const s = String(input || '').toLowerCase().trim();
@@ -187,6 +193,21 @@ export default async function handler(req, res) {
     if (itemsErr) {
       return res.status(500).json({ ok: false, error: itemsErr.message });
     }
+
+    await auditPublicationEvent({
+      source: 'api:ao/ideas/send-to-import',
+      action: 'ready_post_import_batch_created',
+      outcome: 'success',
+      actor_email: auth.email,
+      vercel_id: vercelRequestId(req),
+      resource_paths: (inserted || []).map((i) => i.target_path).filter(Boolean),
+      detail: {
+        idea_id: idea.id,
+        import_batch_id: batch.id,
+        slug,
+        title,
+      },
+    });
 
     return res.status(200).json({
       ok: true,

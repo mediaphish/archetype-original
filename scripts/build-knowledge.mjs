@@ -527,6 +527,28 @@ async function buildKnowledgeCorpus() {
   
   // Write to output file
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(knowledgeCorpus, null, 2));
+
+  try {
+    const { auditPublicationEvent } = await import('../lib/ao/auditPublicationEvent.js');
+    const journalPostCount = scheduleSafeDocs.filter((d) => d.type === 'journal-post').length;
+    const devotionalCount = scheduleSafeDocs.filter((d) => d.type === 'devotional').length;
+    await auditPublicationEvent({
+      source: 'script:build-knowledge',
+      action: 'write_public_knowledge_json',
+      outcome: 'success',
+      actor_email: null,
+      resource_paths: [OUTPUT_FILE],
+      detail: {
+        doc_count: scheduleSafeDocs.length,
+        journal_post_count: journalPostCount,
+        devotional_count: devotionalCount,
+        publication_tz: publicationTimeZone(),
+        dropped_future_scheduled: droppedGuard || 0,
+      },
+    });
+  } catch (auditErr) {
+    console.warn('[build-knowledge] audit log skipped:', auditErr?.message || auditErr);
+  }
   
   console.log(`✅ Knowledge corpus built successfully!`);
   console.log(`   📊 Processed: ${processed} files`);

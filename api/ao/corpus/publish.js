@@ -8,6 +8,12 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { checkCorpusPublishOverlap } from '../../../lib/ao/corpusOverlapCheck.js';
 import { pushMarkdownFileToGithub } from '../../../lib/ao/githubCorpusPublish.js';
+import { auditPublicationEvent } from '../../../lib/ao/auditPublicationEvent.js';
+
+function vercelRequestId(req) {
+  const h = req?.headers || {};
+  return h['x-vercel-id'] || h['x-request-id'] || null;
+}
 
 function slugify(s) {
   return String(s || '')
@@ -130,6 +136,20 @@ export default async function handler(req, res) {
     }
 
     if (!gh.ok && !process.env.GITHUB_TOKEN) {
+      await auditPublicationEvent({
+        source: 'api:ao/corpus/publish',
+        action: 'corpus_publish_no_github_token',
+        outcome: 'partial',
+        actor_email: auth.email,
+        resource_paths: [relativePath],
+        vercel_id: vercelRequestId(req),
+        detail: {
+          draft_id: draftId || null,
+          title,
+          slug,
+          note: 'Overlap OK; GitHub token missing — user must paste markdown or configure token.',
+        },
+      });
       return res.status(200).json({
         ok: true,
         storedOnly: true,
@@ -141,6 +161,16 @@ export default async function handler(req, res) {
     }
 
     if (!gh.ok) {
+      await auditPublicationEvent({
+        source: 'api:ao/corpus/publish',
+        action: 'github_contents_api_push',
+        outcome: 'failure',
+        actor_email: auth.email,
+        resource_paths: [relativePath],
+        vercel_id: vercelRequestId(req),
+        error_message: gh.error || 'GitHub publish failed',
+        detail: { draft_id: draftId || null, title, slug },
+      });
       return res.status(502).json({
         ok: false,
         error: gh.error || 'GitHub publish failed',
@@ -148,6 +178,21 @@ export default async function handler(req, res) {
         markdown: fileContent,
       });
     }
+
+    await auditPublicationEvent({
+      source: 'api:ao/corpus/publish',
+      action: 'github_contents_api_push',
+      outcome: 'success',
+      actor_email: auth.email,
+      resource_paths: [relativePath],
+      vercel_id: vercelRequestId(req),
+      detail: {
+        draft_id: draftId || null,
+        title,
+        slug,
+        github_html_url: gh.url || null,
+      },
+    });
 
     return res.status(200).json({
       ok: true,
