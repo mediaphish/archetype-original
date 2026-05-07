@@ -1002,6 +1002,76 @@ function extractLastBuiltIndicesFromMessages(messages) {
   return [...out].sort((a, b) => a - b);
 }
 
+/** Working quote pool for this turn (statePatch wins after explicit text replacement). */
+function corpusPullQuotesForTurn(statePatch, currentState) {
+  const q = statePatch?.corpus_pull_quotes;
+  if (Array.isArray(q) && q.length) return q;
+  const c = currentState?.corpus_pull_quotes;
+  return Array.isArray(c) && c.length ? c : [];
+}
+
+function wantsExplicitQuoteTextReplacementCue(userMessage) {
+  return /\b(change|replace|update|fix|correct|swap|edit|rewrite|use\s+this|here'?s\s+the|corrected|new\s+wording|my\s+new|updated)\b/i.test(
+    String(userMessage || '')
+  );
+}
+
+function inferReplacementCardIndex(userMessage, statePatch, existingMessages) {
+  const stripped = stripGapPhrasesForCardIndexParse(userMessage);
+  const fromMsg = parseQuoteIndicesFromMessage(stripped);
+  if (fromMsg.length >= 1) return fromMsg[0];
+
+  const sel = statePatch.corpus_pull_quote_selection;
+  if (Array.isArray(sel) && sel.length === 1) return sel[0];
+
+  const lastBuilt = extractLastBuiltIndicesFromMessages(existingMessages);
+  if (lastBuilt.length === 1) return lastBuilt[0];
+  if (lastBuilt.length > 1 && Array.isArray(sel) && sel.length) {
+    const overlap = lastBuilt.filter((n) => sel.includes(n));
+    if (overlap.length === 1) return overlap[0];
+    if (overlap.length > 1) return overlap[overlap.length - 1];
+  }
+  if (lastBuilt.length > 1) return lastBuilt[lastBuilt.length - 1];
+
+  return null;
+}
+
+/**
+ * When Bart pastes new pull-quote lines and says change/replace/etc., merge into the existing
+ * thread pool before captions/cards run. Otherwise deliverables keeps stale lines because
+ * "card" matches the deliverables keyword list but nothing updates corpus_pull_quotes.
+ */
+function mergeExplicitQuoteTextIntoThreadPool(userMessage, statePatch, currentState, existingMessages) {
+  if (!userMessage || /\bcorpus\b/i.test(userMessage)) return null;
+  if (wantsUserSuppliedQuoteCards(userMessage)) return null;
+  if (!wantsExplicitQuoteTextReplacementCue(userMessage)) return null;
+
+  const pool = corpusPullQuotesForTurn(statePatch, currentState);
+  if (!Array.isArray(pool) || !pool.length) return null;
+
+  const parsed = parseUserSuppliedQuoteCards(userMessage);
+  if (!parsed.length) return null;
+  if (parsed.length >= pool.length && parsed.length > 3) return null;
+
+  let targetIdx = inferReplacementCardIndex(userMessage, statePatch, existingMessages);
+  if (targetIdx == null && pool.length === 1) targetIdx = 1;
+  if (targetIdx == null || targetIdx < 1 || targetIdx > pool.length) return null;
+
+  const next = pool.map((q) => ({ ...q }));
+  next[targetIdx - 1] = {
+    quote: parsed[0].quote,
+    source_title: next[targetIdx - 1].source_title || '',
+    url: next[targetIdx - 1].url || '',
+  };
+
+  return {
+    quotes: next,
+    corpus_pull_quote_selection: [targetIdx],
+    receipt: `Replaced the pull-quote text for card **${targetIdx}** with the lines you pasted—cards use your wording now.`,
+    transparency: `Slot ${targetIdx} in quote pool overwritten from your message before generating previews (previous line replaced).`,
+  };
+}
+
 /**
  * After a partial card build, keep every index 1..N in publish_candidates so edits and Publish
  * still see the full pool (merge new rows with previous state; stub missing SVG only when needed).
@@ -1758,6 +1828,13 @@ export default async function handler(req, res) {
 
     const receipts = [];
     if (pathReceipts.length) receipts.push(...pathReceipts);
+    const quoteTextMerge = mergeExplicitQuoteTextIntoThreadPool(userMessage, statePatch, currentState, existingMessages);
+    if (quoteTextMerge) {
+      statePatch.corpus_pull_quotes = quoteTextMerge.quotes;
+      statePatch.corpus_pull_quote_selection = quoteTextMerge.corpus_pull_quote_selection;
+      receipts.push(quoteTextMerge.receipt);
+      pushTransparencyReceipt(receipts, quoteTextMerge.transparency);
+    }
     if (accountQuoteCardContextItems?.length) {
       receipts.push('Loaded quote-card memory from your account for continuity');
     }
@@ -2857,10 +2934,9 @@ export default async function handler(req, res) {
       }
     } else if (wantsQuoteCardInventory(msgForQuoteRouting)) {
       nextMode = 'plan';
-      let allQuotes =
-        Array.isArray(currentState.corpus_pull_quotes) && currentState.corpus_pull_quotes.length
-          ? currentState.corpus_pull_quotes
-          : restoreCorpusPullQuotesFromMessages(existingMessages);
+      let allQuotes = corpusPullQuotesForTurn(statePatch, currentState).length
+        ? corpusPullQuotesForTurn(statePatch, currentState)
+        : restoreCorpusPullQuotesFromMessages(existingMessages);
       if (!Array.isArray(allQuotes) || !allQuotes.length) {
         assistantMessage =
           'I do not have quote lines stored in this thread yet. Pull quotes from your corpus (include the word **corpus** and your topic) or paste lines for cards—then ask again.';
@@ -2916,10 +2992,9 @@ export default async function handler(req, res) {
       }
     } else if (wantsQuoteCardInspect(msgForQuoteRouting)) {
       nextMode = 'plan';
-      let allQuotes =
-        Array.isArray(currentState.corpus_pull_quotes) && currentState.corpus_pull_quotes.length
-          ? currentState.corpus_pull_quotes
-          : restoreCorpusPullQuotesFromMessages(existingMessages);
+      let allQuotes = corpusPullQuotesForTurn(statePatch, currentState).length
+        ? corpusPullQuotesForTurn(statePatch, currentState)
+        : restoreCorpusPullQuotesFromMessages(existingMessages);
       if (!Array.isArray(allQuotes) || !allQuotes.length) {
         assistantMessage =
           'I do not have quote lines stored in this thread yet. Pull quotes from your corpus (include the word **corpus** and your topic) or paste lines for cards—then ask again.';
@@ -3167,9 +3242,9 @@ export default async function handler(req, res) {
           scheduleNote: scheduleNote || undefined,
         });
       }
-    } else if (wantsPublishQuoteCardsIntent(msgForQuoteRouting, currentState)) {
+    } else if (wantsPublishQuoteCardsIntent(msgForQuoteRouting, { ...currentState, corpus_pull_quotes: corpusPullQuotesForTurn(statePatch, currentState) })) {
       nextMode = 'plan';
-      const corpusQuotes = currentState.corpus_pull_quotes || [];
+      const corpusQuotes = corpusPullQuotesForTurn(statePatch, currentState);
       let pool =
         Array.isArray(currentState.publish_candidates) && currentState.publish_candidates.length
           ? currentState.publish_candidates
@@ -3241,16 +3316,19 @@ export default async function handler(req, res) {
         }
       }
       }
-    } else if (wantsCorpusPullQuoteDeliverables(msgForQuoteRouting, currentState, existingMessages)) {
+    } else if (
+      wantsCorpusPullQuoteDeliverables(msgForQuoteRouting, { ...currentState, corpus_pull_quotes: corpusPullQuotesForTurn(statePatch, currentState) }, existingMessages)
+    ) {
       nextMode = 'plan';
-      const allQuotes = currentState.corpus_pull_quotes;
+      const allQuotes = corpusPullQuotesForTurn(statePatch, currentState);
       let indices = parseQuoteIndicesFromMessage(stripGapPhrasesForCardIndexParse(userMessage));
       if (!indices.length) {
         const fromThread = parseIndicesFromAssistantThread(existingMessages);
         if (fromThread?.length) indices = fromThread;
       }
-      if (!indices.length && Array.isArray(currentState.corpus_pull_quote_selection) && currentState.corpus_pull_quote_selection.length) {
-        indices = [...currentState.corpus_pull_quote_selection];
+      if (!indices.length) {
+        const sel = statePatch.corpus_pull_quote_selection ?? currentState.corpus_pull_quote_selection;
+        if (Array.isArray(sel) && sel.length) indices = [...sel];
       }
       const maxN = allQuotes.length;
       const fromPaste = isUserPasteQuoteBatch(currentState, allQuotes);
