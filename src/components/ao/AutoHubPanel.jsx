@@ -814,7 +814,7 @@ export default function AutoHubPanel({ onNavigate, className }) {
             multiPreviews && multiPreviews.length
               ? multiPreviews
               : previewSvg
-                ? [{ svg: previewSvg, image_url: previewPng, caption: '', index: 1 }]
+                ? [{ svg: previewSvg, image_url: previewPng, caption: '', graphic_quote: '', index: 1 }]
                 : [];
           return (
             <div key={m.id} className={isAssistant ? '' : 'text-right'}>
@@ -828,21 +828,43 @@ export default function AutoHubPanel({ onNavigate, className }) {
               </div>
               {isAssistant && cardBlocks.length ? (
                 <div className="mt-2 space-y-3 max-w-lg mx-auto text-left">
-                  {cardBlocks.map((block, bi) => (
+                  {cardBlocks.map((block, bi) => {
+                    const graphicQ = typeof block.graphic_quote === 'string' ? block.graphic_quote.trim() : '';
+                    return (
                     <div key={`${m.id}-card-${bi}`} className="border border-gray-200 rounded-lg overflow-hidden bg-neutral-100">
                       <div className="px-3 py-2.5 bg-white border-b border-gray-100">
                         <div className="text-sm font-semibold text-gray-800">
                           {multiPreviews && multiPreviews.length > 1
                             ? `Card ${block.index != null ? block.index : bi + 1}`
-                            : 'Minimal card preview'}
+                            : 'Quote card'}
                         </div>
+                        <p className="text-[11px] text-gray-500 mt-1 leading-snug">
+                          The graphic is only your pull-quote lines (and logo). The longer paragraph is caption copy—not printed on the image.
+                        </p>
+                        {graphicQ ? (
+                          <div className="mt-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                              Text on the graphic
+                            </div>
+                            <div className="font-normal text-gray-900 mt-1 text-[15px] sm:text-base leading-relaxed whitespace-pre-wrap">
+                              {graphicQ}
+                            </div>
+                          </div>
+                        ) : null}
                         {block.caption ? (
-                          <div className="font-normal text-gray-900 mt-2 text-[15px] sm:text-base leading-relaxed whitespace-normal">
-                            {block.caption}
+                          <div className={`${graphicQ ? 'mt-3' : 'mt-2'}`}>
+                            <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                              Suggested caption (for the thread—not on the graphic)
+                            </div>
+                            <div className="font-normal text-gray-900 mt-1 text-[15px] sm:text-base leading-relaxed whitespace-normal">
+                              {block.caption}
+                            </div>
                           </div>
                         ) : null}
                         {block.image_url ? (
-                          <div className="text-[11px] text-gray-500 mt-1">Preview matches the image sent to social (server PNG).</div>
+                          <div className="text-[11px] text-gray-500 mt-2">
+                            The file linked here matches the pull-quote graphic only—not the caption text.
+                          </div>
                         ) : null}
                       </div>
                       <img
@@ -851,11 +873,12 @@ export default function AutoHubPanel({ onNavigate, className }) {
                             ? block.image_url
                             : `data:image/svg+xml;charset=utf-8,${encodeURIComponent(block.svg)}`
                         }
-                        alt={block.caption ? 'Quote card with caption' : 'Quote card preview'}
+                        alt={graphicQ ? `Quote graphic: ${graphicQ.slice(0, 160)}${graphicQ.length > 160 ? '…' : ''}` : 'Minimal quote card preview'}
                         className="w-full h-auto block"
                       />
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : null}
               {linked.length ? (

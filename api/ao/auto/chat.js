@@ -2748,7 +2748,7 @@ export default async function handler(req, res) {
       });
       const previews = [];
       const lines = [
-        'Here are interpretive captions and minimal black square cards using **your pasted lines** (the images show your wording, not corpus search results).',
+        'Here are interpretive captions (for threads—the **graphic** is only your pull-quote wording plus logo) and minimal square cards.',
         '',
         'Captions (copy under each image in the thread; X-sized line included where useful):',
         '',
@@ -2793,6 +2793,7 @@ export default async function handler(req, res) {
             caption: cap,
             caption_x: capX,
             source_title: q.source_title,
+            graphic_quote: safeText(stripMarkdownBoldForCardDisplay(q.quote), 2000),
           });
         }
       }
@@ -2994,6 +2995,7 @@ export default async function handler(req, res) {
                   caption: cap,
                   caption_x: capX,
                   source_title: q.source_title,
+                  graphic_quote: safeText(stripMarkdownBoldForCardDisplay(q.quote), 2000),
                 });
               }
             }
@@ -3275,6 +3277,12 @@ export default async function handler(req, res) {
         const selected = indices.map((n) => allQuotes[n - 1]).filter(Boolean);
         receipts.push('Drafted interpretive captions and minimal square cards for your picks');
         pushTransparencyReceipt(receipts, `Built ${selected.length} quote card(s) for your numbered picks.`);
+        if (/\b(redo|rebuild|regenerat|refresh)\b/i.test(userMessage)) {
+          pushTransparencyReceipt(
+            receipts,
+            `Regenerated graphic file(s) for card number(s): ${indices.join(', ')} — each upload is a fresh image URL.`
+          );
+        }
         const captionHint = extractCaptionStyleHint(userMessage);
         const { captions, captions_x: captionsX } = await generatePullQuoteCaptionsForQuotes(selected, {
           maxChars: captionHint ? 2800 : 2000,
@@ -3285,7 +3293,7 @@ export default async function handler(req, res) {
         const logoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
         const previews = [];
         const lines = [
-          'Here are interpretive captions (they explain or enhance the line—the image carries the quote) and minimal black square cards (same style as the preview—larger type, logo lightened for contrast).',
+          'Interpretive captions are for threads (longer prose). Each **card graphic** carries only the pull-quote lines—and the logo—with larger type.',
           '',
           'Captions (copy under each image in the thread; X-sized line included where useful):',
           '',
@@ -3328,6 +3336,7 @@ export default async function handler(req, res) {
             caption: cap,
             caption_x: capX,
             source_title: q.source_title,
+            graphic_quote: safeText(stripMarkdownBoldForCardDisplay(q.quote), 2000),
           });
         }
         assistantMessage = lines.join('\n');
