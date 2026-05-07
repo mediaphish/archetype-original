@@ -205,6 +205,7 @@
     { "src": "/api/ao/corpus/drafts/([^/]+)", "dest": "/api/ao/corpus/drafts/[id].js?id=$1" },
     { "src": "/api/ao/corpus/drafts", "dest": "/api/ao/corpus/drafts/index.js" },
     { "src": "/api/ao/corpus/publish", "dest": "/api/ao/corpus/publish.js" },
+    { "src": "/api/ao/journal/publish-approval", "dest": "/api/ao/journal/publish-approval.js" },
     { "src": "/api/ao/auto/attachments", "dest": "/api/ao/auto/attachments.js" },
     { "src": "/api/ao/auto/undo", "dest": "/api/ao/auto/undo.js" },
     { "src": "/api/ao/auto/bundles/([^/]+)", "dest": "/api/ao/auto/bundles/[id].js?id=$1" },

@@ -51,7 +51,12 @@ So in practice: the agent writes and edits code, runs builds, commits, and deplo
 - New or in-progress **journal articles** (markdown in `ao-knowledge-hq-kit/journal/`, not under `devotionals/`) must use **`status: draft`** until you approve them for the public Journal. Only **`status: published`** includes them in the built index and live Journal.
 - Devotionals keep their existing rule: **`status: draft`** hides them; **`status: published`** is used for scheduled devotionals.
 
-### 3b. **Publication audit trail**
+### 3b. **Corpus publish → Journal (explicit live approval)**
+
+- `POST /api/ao/corpus/publish` writes `ao-knowledge-hq-kit/journal/<slug>.md` **as draft by default** (public Journal excludes drafts).
+- To commit as **`status: published`**, Bart must first `POST /api/ao/journal/publish-approval` with `{ slug }`, then call corpus publish again with **`live_on_site: true`** and **`publish_approval_token`** (single-use, bound to AO email + path). Auto/tools must not imply “live” without that human-initiated mint step.
+
+### 3c. **Publication audit trail**
 
 - Server actions that can push site content or merge to Git write rows to **`ao_publication_audit`** (install script: `database/ao_publication_audit.sql`). **`GET /api/ao/audit/publication`** (AO login required) returns recent events so Bart can see what touched the repo or knowledge index without guessing.
 - The knowledge build script also logs a summary row when Supabase env vars are present (e.g. CI after secrets are set).

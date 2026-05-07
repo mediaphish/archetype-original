@@ -9,6 +9,10 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { checkCorpusPublishOverlap } from '../../../lib/ao/corpusOverlapCheck.js';
 import { pushMarkdownFileToGithub } from '../../../lib/ao/githubCorpusPublish.js';
 import { auditPublicationEvent } from '../../../lib/ao/auditPublicationEvent.js';
+import {
+  validateJournalPublishApproval,
+  consumeJournalPublishApprovalRow,
+} from '../../../lib/ao/consumeJournalPublishApproval.js';
 
 function vercelRequestId(req) {
   const h = req?.headers || {};
@@ -24,7 +28,8 @@ function slugify(s) {
     .slice(0, 120);
 }
 
-function buildMarkdownFile({ title, slug, summary, tags, body, featured_image }) {
+function buildMarkdownFile({ title, slug, summary, tags, body, featured_image, status }) {
+  const publicationStatus = status === 'published' ? 'published' : 'draft';
   const tagLine = Array.isArray(tags) && tags.length ? `tags: [${tags.map((t) => `"${String(t).replace(/"/g, '')}"`).join(', ')}]` : 'tags: []';
   const heroLine =
     featured_image && String(featured_image).trim().startsWith('http')
@@ -34,7 +39,7 @@ function buildMarkdownFile({ title, slug, summary, tags, body, featured_image })
 title: "${String(title).replace(/"/g, '\\"')}"
 slug: ${slug}
 type: article
-status: published
+status: ${publicationStatus}
 summary: "${String(summary || '').replace(/"/g, '\\"').slice(0, 400)}"
 ${tagLine}
 ${heroLine}created_at: "${new Date().toISOString()}"
@@ -99,6 +104,48 @@ export default async function handler(req, res) {
       rwImg?.status === 'approved' && rwImg?.url && String(rwImg.url).startsWith('https://') ? String(rwImg.url) : null;
 
     const relativePath = `ao-knowledge-hq-kit/journal/${slug}.md`;
+    const wantsLive =
+      body.live_on_site === true ||
+      body.live_on_site === 'true' ||
+      String(body.live_on_site || '').toLowerCase() === 'yes';
+    const approvalToken =
+      typeof body.publish_approval_token === 'string' ? body.publish_approval_token.trim() : '';
+
+    let journalPublicationStatus = 'draft';
+    /** @type {{ rowId?: string }|null} */
+    let pendingApprovalConsume = null;
+    if (wantsLive) {
+      if (!approvalToken) {
+        return res.status(400).json({
+          ok: false,
+          error:
+            'Live Journal requires explicit approval: call POST /api/ao/journal/publish-approval with this slug, then retry with publish_approval_token and live_on_site: true.',
+          targetPath: relativePath,
+        });
+      }
+      const approval = await validateJournalPublishApproval({
+        token: approvalToken,
+        email: auth.email,
+        targetPath: relativePath,
+      });
+      if (!approval.ok || !approval.rowId) {
+        if (approval.error === 'approval_table_missing') {
+          return res.status(503).json({
+            ok: false,
+            error:
+              'Journal approval table missing. Run database/ao_journal_publish_approvals.sql in Supabase, then mint a token and retry.',
+          });
+        }
+        return res.status(403).json({
+          ok: false,
+          error: `Journal publish approval failed: ${approval.error}`,
+          targetPath: relativePath,
+        });
+      }
+      pendingApprovalConsume = { rowId: approval.rowId };
+      journalPublicationStatus = 'published';
+    }
+
     const fileContent = buildMarkdownFile({
       title,
       slug,
@@ -106,6 +153,7 @@ export default async function handler(req, res) {
       tags,
       body: body_md,
       featured_image: approvedHeroUrl || undefined,
+      status: journalPublicationStatus,
     });
 
     const gh = await pushMarkdownFileToGithub({
@@ -120,12 +168,13 @@ export default async function handler(req, res) {
         slug,
         published_via: 'github',
         github_ok: gh.ok,
+        journal_site_status: journalPublicationStatus,
         ...(approvedHeroUrl ? { published_featured_image_url: approvedHeroUrl } : {}),
       };
       await supabaseAdmin
         .from('ao_corpus_drafts')
         .update({
-          status: 'published',
+          status: journalPublicationStatus === 'published' ? 'published' : 'approved',
           target_path: relativePath,
           full_markdown: body_md,
           meta: mergedMeta,
@@ -147,12 +196,14 @@ export default async function handler(req, res) {
           draft_id: draftId || null,
           title,
           slug,
+          journal_site_status: journalPublicationStatus,
           note: 'Overlap OK; GitHub token missing — user must paste markdown or configure token.',
         },
       });
       return res.status(200).json({
         ok: true,
         storedOnly: true,
+        journal_site_status: journalPublicationStatus,
         message:
           'Overlap check passed. GitHub token not configured — file was not pushed. Copy from `markdown` or configure GITHUB_TOKEN + GITHUB_REPO.',
         targetPath: relativePath,
@@ -169,7 +220,7 @@ export default async function handler(req, res) {
         resource_paths: [relativePath],
         vercel_id: vercelRequestId(req),
         error_message: gh.error || 'GitHub publish failed',
-        detail: { draft_id: draftId || null, title, slug },
+        detail: { draft_id: draftId || null, title, slug, journal_site_status: journalPublicationStatus },
       });
       return res.status(502).json({
         ok: false,
@@ -190,15 +241,27 @@ export default async function handler(req, res) {
         draft_id: draftId || null,
         title,
         slug,
+        journal_site_status: journalPublicationStatus,
         github_html_url: gh.url || null,
       },
     });
 
+    if (pendingApprovalConsume?.rowId) {
+      const burned = await consumeJournalPublishApprovalRow(pendingApprovalConsume.rowId);
+      if (!burned.ok) {
+        console.error('[ao/corpus/publish] approval token consume failed after successful push:', burned.error);
+      }
+    }
+
     return res.status(200).json({
       ok: true,
       targetPath: relativePath,
+      journal_site_status: journalPublicationStatus,
       url: gh.url,
-      message: 'Committed to repo. Run knowledge build on the next deploy so the live library updates.',
+      message:
+        journalPublicationStatus === 'published'
+          ? 'Committed to repo as published. Run knowledge build / deploy so the live Journal picks it up.'
+          : 'Committed to repo as draft (not on public Journal until you mint approval and republish live, or set status to published manually). Knowledge build runs on deploy as usual.',
     });
   } catch (e) {
     console.error('[ao/corpus/publish]', e);

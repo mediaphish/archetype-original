@@ -3530,11 +3530,11 @@ export default async function handler(req, res) {
             assistantMessage = [
               `I packaged this into a ready-to-publish bundle: ${bundle.title}`,
               '',
-              `Journal: ready`,
+              `Journal format: saved as draft in the bundle (not public on the Journal until you publish through Import / Ideas or corpus publish with an approval token).`,
               `Channels: ${Object.keys(bundle.channel_drafts?.drafts_by_channel || {}).join(', ') || 'none'}`,
               `Pull-quote companions: ${Array.isArray(bundle.pull_quote_companions) ? bundle.pull_quote_companions.length : 0}`,
               '',
-              'Nothing will go live until you say Proceed.',
+              'Social stays queued until you say Proceed. Site Journal never uses Auto alone as the approval step.',
             ].join('\n');
 
           }
