@@ -29,6 +29,7 @@
     "install-prerender": "npm install --save-dev puppeteer"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.95.1",
     "@napi-rs/canvas": "^0.1.97",
     "@sparticuz/chromium": "^131.0.0",
     "@supabase/supabase-js": "^2.38.4",
