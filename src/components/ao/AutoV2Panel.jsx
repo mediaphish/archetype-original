@@ -313,6 +313,28 @@ function ArtifactPanel({ artifact, onApprove, onRevise, onViewAll, onClose }) {
             </div>
           </>
         )}
+
+        {artifact?.type === 'captions' && (
+          <>
+            <div className="space-y-3">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{artifact.label}</p>
+              <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed bg-white border border-gray-200 rounded-xl p-4 max-h-80 overflow-y-auto">
+                {artifact.content}
+              </div>
+            </div>
+            <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-700 leading-relaxed">
+              Approve these captions to send the full package to Design.
+            </div>
+            <div className="flex flex-col gap-2">
+              <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
+                Approve captions — ready for Design
+              </button>
+              <button type="button" onClick={onRevise} className="w-full py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                Revise captions
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
