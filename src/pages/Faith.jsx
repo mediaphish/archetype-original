@@ -160,6 +160,21 @@ export default function Faith() {
     });
   };
 
+  /** Single-devotional URL (`/faith?slug=…`): mockup shows prev/next only, not the full archive. */
+  const isSingleDevotionalView = Boolean(selectedSlug);
+
+  const { neighborNewer, neighborOlder } = useMemo(() => {
+    if (!currentDevotional || !devotionals.length) {
+      return { neighborNewer: null, neighborOlder: null };
+    }
+    const idx = devotionals.findIndex((d) => d.slug === currentDevotional.slug);
+    if (idx === -1) return { neighborNewer: null, neighborOlder: null };
+    return {
+      neighborNewer: idx > 0 ? devotionals[idx - 1] : null,
+      neighborOlder: idx < devotionals.length - 1 ? devotionals[idx + 1] : null,
+    };
+  }, [devotionals, currentDevotional]);
+
   const filteredDevotionals = useMemo(() => {
     return previousDevotionals.filter((d) => {
       if (!archiveSearch) return true;
@@ -181,6 +196,21 @@ export default function Faith() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const goToDevotionalSlug = (slug) => {
+    setSelectedSlug(slug);
+    window.history.pushState({}, '', `/faith?slug=${encodeURIComponent(slug)}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const backToAllDevotionals = (e) => {
+    e.preventDefault();
+    setSelectedSlug(null);
+    window.history.pushState({}, '', '/faith');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   return (
     <>
       <SEO pageKey="faith" />
@@ -192,44 +222,46 @@ export default function Faith() {
       <div className="min-h-screen bg-[#FAFAF9]">
         <Header />
 
-        <section className="bg-white border-b-2 border-[#FAFAF9]">
-          <div className="mx-auto max-w-[1400px] px-6 sm:px-10 py-16 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            <div>
-              <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72] mb-4">
-                Servant Leadership Devotional
-              </p>
-              <h1 className="font-serif text-[clamp(36px,4vw,52px)] font-normal leading-[1.1] tracking-[-0.01em] text-[#1A1A1A] mb-5">
-                Daily formation for leaders who want to lead well.
-              </h1>
-              <p className="font-sans text-[16px] leading-[1.8] text-[#6B6B6B]">
-                Scripture connected to the real pressures of leadership. Power, responsibility, trust, restraint, and care for people. Written for leaders who take both seriously.
-              </p>
+        {!isSingleDevotionalView && (
+          <section className="bg-white border-b-2 border-[#FAFAF9]">
+            <div className="mx-auto max-w-[1400px] px-6 sm:px-10 py-16 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+              <div>
+                <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72] mb-4">
+                  Servant Leadership Devotional
+                </p>
+                <h1 className="font-serif text-[clamp(36px,4vw,52px)] font-normal leading-[1.1] tracking-[-0.01em] text-[#1A1A1A] mb-5">
+                  Daily formation for leaders who want to lead well.
+                </h1>
+                <p className="font-sans text-[16px] leading-[1.8] text-[#6B6B6B]">
+                  Scripture connected to the real pressures of leadership. Power, responsibility, trust, restraint, and care for people. Written for leaders who take both seriously.
+                </p>
+              </div>
+              <div className="pt-2">
+                <p className="font-serif text-[20px] italic font-normal leading-[1.5] text-[#1A1A1A] mb-5">
+                  Lead others the way you would want to be led.
+                </p>
+                <p className="font-sans text-[15px] leading-[1.85] text-[#3A3A3A] mb-4">
+                  The goal is not inspiration for inspiration&apos;s sake. It is formation. Each entry invites leaders to slow down, examine their assumptions, and renew how they think about influence and responsibility.
+                </p>
+                <p className="font-sans text-[15px] leading-[1.85] text-[#3A3A3A] mb-5">
+                  These reflections sit at the intersection of faith and the real demands of leading people. They are not theoretical. They are written from inside the rooms where leadership either holds or breaks.
+                </p>
+                <a
+                  href="/journal/golden-rule-leadership-strategy"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+                  }}
+                  className="font-sans text-[13px] font-semibold uppercase tracking-[0.06em] text-[#DB0812] hover:text-[#b30610]"
+                >
+                  Read: The Golden Rule Has Always Been a Leadership Strategy &rarr;
+                </a>
+              </div>
             </div>
-            <div className="pt-2">
-              <p className="font-serif text-[20px] italic font-normal leading-[1.5] text-[#1A1A1A] mb-5">
-                Lead others the way you would want to be led.
-              </p>
-              <p className="font-sans text-[15px] leading-[1.85] text-[#3A3A3A] mb-4">
-                The goal is not inspiration for inspiration&apos;s sake. It is formation. Each entry invites leaders to slow down, examine their assumptions, and renew how they think about influence and responsibility.
-              </p>
-              <p className="font-sans text-[15px] leading-[1.85] text-[#3A3A3A] mb-5">
-                These reflections sit at the intersection of faith and the real demands of leading people. They are not theoretical. They are written from inside the rooms where leadership either holds or breaks.
-              </p>
-              <a
-                href="/journal/golden-rule-leadership-strategy"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.pushState({}, '', '/journal/golden-rule-leadership-strategy');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                  window.scrollTo({ top: 0, behavior: 'instant' });
-                }}
-                className="font-sans text-[13px] font-semibold uppercase tracking-[0.06em] text-[#DB0812] hover:text-[#b30610]"
-              >
-                Read: The Golden Rule Has Always Been a Leadership Strategy &rarr;
-              </a>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {!loading && currentDevotional && (
           <section className="bg-[#E1DED8] py-[72px] border-b-2 border-[#FAFAF9]">
@@ -272,7 +304,80 @@ export default function Faith() {
           </section>
         )}
 
-        {previousDevotionals.length > 0 && (
+        {!loading && currentDevotional && isSingleDevotionalView && (
+          <section className="bg-[#FAFAF9] py-16 sm:py-[64px] border-b-2 border-[#FAFAF9]">
+            <div className="mx-auto max-w-[1400px] px-6 sm:px-10">
+              <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72] mb-6">
+                Continue reading
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-[2px] mb-6">
+                {neighborNewer && (
+                  <a
+                    href={`/faith?slug=${encodeURIComponent(neighborNewer.slug)}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goToDevotionalSlug(neighborNewer.slug);
+                    }}
+                    className="block bg-white border border-[#1A1A1A]/08 p-8 cursor-pointer hover:bg-[#FAFAF9] transition-colors no-underline text-inherit"
+                  >
+                    <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8B7D72] block mb-2.5">
+                      Next &rarr;
+                    </span>
+                    <div className="font-serif text-[20px] font-normal text-[#1A1A1A] leading-[1.25] mb-2">
+                      {neighborNewer.title}
+                    </div>
+                    {neighborNewer.scripture_reference && (
+                      <span className="font-sans text-[12px] font-medium text-[#8B7D72] block mb-2.5">
+                        {neighborNewer.scripture_reference}
+                      </span>
+                    )}
+                    {neighborNewer.summary && (
+                      <p className="font-sans text-[13px] leading-[1.65] text-[#6B6B6B] m-0">
+                        {neighborNewer.summary}
+                      </p>
+                    )}
+                  </a>
+                )}
+                {neighborOlder && (
+                  <a
+                    href={`/faith?slug=${encodeURIComponent(neighborOlder.slug)}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goToDevotionalSlug(neighborOlder.slug);
+                    }}
+                    className="block bg-white border border-[#1A1A1A]/08 p-8 cursor-pointer hover:bg-[#FAFAF9] transition-colors no-underline text-inherit"
+                  >
+                    <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8B7D72] block mb-2.5">
+                      &larr; Previous
+                    </span>
+                    <div className="font-serif text-[20px] font-normal text-[#1A1A1A] leading-[1.25] mb-2">
+                      {neighborOlder.title}
+                    </div>
+                    {neighborOlder.scripture_reference && (
+                      <span className="font-sans text-[12px] font-medium text-[#8B7D72] block mb-2.5">
+                        {neighborOlder.scripture_reference}
+                      </span>
+                    )}
+                    {neighborOlder.summary && (
+                      <p className="font-sans text-[13px] leading-[1.65] text-[#6B6B6B] m-0">
+                        {neighborOlder.summary}
+                      </p>
+                    )}
+                  </a>
+                )}
+              </div>
+              <a
+                href="/faith"
+                onClick={backToAllDevotionals}
+                className="font-sans text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+              >
+                &larr; Back to all devotionals
+              </a>
+            </div>
+          </section>
+        )}
+
+        {previousDevotionals.length > 0 && !isSingleDevotionalView && (
           <section className="archive-section bg-[#FAFAF9] py-[72px]">
             <div className="mx-auto max-w-[1400px] px-6 sm:px-10">
 
@@ -325,17 +430,11 @@ export default function Faith() {
                         className={`grid grid-cols-1 sm:grid-cols-[120px_1fr_auto] gap-4 sm:gap-6 items-start px-6 sm:px-7 py-5 cursor-pointer hover:bg-[#FAFAF9] transition-colors ${
                           i < archivePageItems.length - 1 ? 'border-b border-[#1A1A1A]/06' : ''
                         }`}
-                        onClick={() => {
-                          setSelectedSlug(devotional.slug);
-                          window.history.pushState({}, '', `/faith?slug=${encodeURIComponent(devotional.slug)}`);
-                          window.scrollTo({ top: 0, behavior: 'instant' });
-                        }}
+                        onClick={() => goToDevotionalSlug(devotional.slug)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
-                            setSelectedSlug(devotional.slug);
-                            window.history.pushState({}, '', `/faith?slug=${encodeURIComponent(devotional.slug)}`);
-                            window.scrollTo({ top: 0, behavior: 'instant' });
+                            goToDevotionalSlug(devotional.slug);
                           }
                         }}
                         role="button"
@@ -364,9 +463,7 @@ export default function Faith() {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            setSelectedSlug(devotional.slug);
-                            window.history.pushState({}, '', `/faith?slug=${encodeURIComponent(devotional.slug)}`);
-                            window.scrollTo({ top: 0, behavior: 'instant' });
+                            goToDevotionalSlug(devotional.slug);
                           }}
                           className="font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-[#DB0812] hover:text-[#b30610] whitespace-nowrap sm:justify-self-end"
                         >
