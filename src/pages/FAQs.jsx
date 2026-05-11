@@ -63,16 +63,30 @@ export default function FAQs() {
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const categoryParam = normalizeFaqCategory(params.get('category') || '');
-    const queryParam = (params.get('q') || '').trim();
-    const pageParam = parseInt(params.get('page') || '1', 10);
+    const applyParamsFromLocation = () => {
+      const params = new URLSearchParams(window.location.search);
+      const categoryParam = normalizeFaqCategory(params.get('category') || '');
+      const queryParam = (params.get('q') || '').trim();
+      const pageParam = parseInt(params.get('page') || '1', 10);
 
-    if (categoryParam && FAQ_CATEGORY_CONFIG.some((item) => item.key === categoryParam)) {
-      setSelectedCategory(categoryParam);
-    }
-    if (queryParam) setSearchQuery(queryParam);
-    if (!Number.isNaN(pageParam) && pageParam > 0) setPage(pageParam);
+      if (categoryParam && FAQ_CATEGORY_CONFIG.some((item) => item.key === categoryParam)) {
+        setSelectedCategory(categoryParam);
+      } else {
+        setSelectedCategory('all');
+      }
+      setSearchQuery(queryParam);
+      if (!Number.isNaN(pageParam) && pageParam > 0) {
+        setPage(pageParam);
+      } else {
+        setPage(1);
+      }
+      setMobileVisibleCount(MOBILE_BATCH_SIZE);
+      setExpandedSlug('');
+    };
+
+    applyParamsFromLocation();
+    window.addEventListener('popstate', applyParamsFromLocation);
+    return () => window.removeEventListener('popstate', applyParamsFromLocation);
   }, []);
 
   useEffect(() => {

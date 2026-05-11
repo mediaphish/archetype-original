@@ -15,7 +15,9 @@ function goHash(id) {
   return (e) => {
     e.preventDefault();
     const next = `/culture-science/ali#${id}`;
-    window.history.pushState({}, "", next);
+    // replaceState: same marketing page, only the hash changes — avoids an extra history step per click
+    // so Back leaves ALI in one press instead of undoing only the in-page anchor.
+    window.history.replaceState({}, "", next);
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };

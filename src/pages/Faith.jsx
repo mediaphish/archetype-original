@@ -41,17 +41,23 @@ export default function Faith() {
   const [archivePage, setArchivePage] = useState(1);
   const [archiveSearch, setArchiveSearch] = useState('');
 
+  // Keep ?slug= in sync with browser Back/Forward (pathname stays /faith; App would not remount).
+  useEffect(() => {
+    const syncSlugFromUrl = () => {
+      const slug =
+        typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search).get('slug')
+          : null;
+      setSelectedSlug(slug || null);
+    };
+    syncSlugFromUrl();
+    window.addEventListener('popstate', syncSlugFromUrl);
+    return () => window.removeEventListener('popstate', syncSlugFromUrl);
+  }, []);
+
   useEffect(() => {
     // Always scroll to top when page loads
     window.scrollTo({ top: 0, behavior: 'instant' });
-
-    // If a devotional slug is provided in the URL, prefer showing that devotional
-    // Example: /faith?slug=integrity-under-pressure
-    const initialSlug =
-      typeof window !== 'undefined'
-        ? new URLSearchParams(window.location.search).get('slug')
-        : null;
-    if (initialSlug) setSelectedSlug(initialSlug);
 
     // Load devotionals from the knowledge corpus
     fetch('/api/knowledge?type=devotional')
