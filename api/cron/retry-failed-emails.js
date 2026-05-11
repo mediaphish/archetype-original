@@ -4,7 +4,7 @@
  * Runs periodically to automatically retry failed email sends.
  * Stops retrying after MAX_RETRIES attempts.
  * 
- * Configured in vercel.json to run at specified intervals.
+ * Configured in vercel.json (see crons → retry-failed-emails; currently :05 past every 6th hour UTC).
  */
 
 import { supabaseAdmin } from "../../lib/supabase-admin.js";

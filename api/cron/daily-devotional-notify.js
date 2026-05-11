@@ -4,7 +4,7 @@
  * Runs daily to check for devotionals published today and send email notifications
  * to subscribers who have opted in to receive devotional emails.
  * 
- * Configured in vercel.json to run daily at a specified time.
+ * Configured in vercel.json (see crons → daily-devotional-notify; currently 6:20 UTC daily).
  */
 
 import { supabaseAdmin } from "../../lib/supabase-admin.js";
