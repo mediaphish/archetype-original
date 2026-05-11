@@ -14,6 +14,10 @@ import {
   publicationTimeZone,
   publishDateCalendarOnly,
 } from "../../lib/publish-eligibility.mjs";
+import {
+  claimDevotionalBroadcast,
+  releaseDevotionalBroadcastClaim,
+} from "../../lib/journal-devotional-notify-dedupe.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -128,6 +132,7 @@ export default async function handler(req, res) {
     let totalFailed = 0;
     const errors = [];
     const sentEmails = [];
+    let skippedAlreadySent = 0;
 
     // Send notifications for each devotional published today
     for (const devotional of todayDevotionals) {
@@ -137,6 +142,21 @@ export default async function handler(req, res) {
         console.warn(`⚠️  Skipping devotional with missing title or slug:`, slug);
         continue;
       }
+
+      const pubDay =
+        publishDateCalendarOnly(publish_date ?? devotional.date) || todayStr;
+
+      const claim = await claimDevotionalBroadcast(supabaseAdmin, slug, pubDay, 'daily_cron');
+      if (claim.duplicate) {
+        console.log(`⏭️ Skipping ${slug} — devotional already broadcast for ${pubDay}`);
+        skippedAlreadySent += 1;
+        continue;
+      }
+      if (claim.error) {
+        throw new Error(claim.error);
+      }
+
+      const totalSentBefore = totalSent;
 
       console.log(`📧 Processing devotional: ${title} (${slug})`);
 
@@ -357,9 +377,17 @@ export default async function handler(req, res) {
           console.error(`Failed to store email failures in database:`, dbError);
         }
       }
+
+      const sentForThisDevotional = totalSent - totalSentBefore;
+      if (sentForThisDevotional === 0) {
+        await releaseDevotionalBroadcastClaim(supabaseAdmin, slug, pubDay);
+        console.warn(
+          `⚠️ Released send lock for ${slug} (${pubDay}): no successful deliveries — a later run can retry`
+        );
+      }
     }
 
-    console.log(`✅ Daily notification complete: ${totalSent} sent, ${totalFailed} failed`);
+    console.log(`✅ Daily notification complete: ${totalSent} sent, ${totalFailed} failed, skipped_duplicates=${skippedAlreadySent}`);
 
     return res.status(200).json({ 
       ok: true, 
@@ -368,6 +396,7 @@ export default async function handler(req, res) {
       found: todayDevotionals.length,
       sent: totalSent,
       failed: totalFailed,
+      skipped_duplicates: skippedAlreadySent,
       total_subscribers: subscribers.length,
       devotionals: todayDevotionals.map(d => ({ title: d.title, slug: d.slug })),
       sent_emails: sentEmails,

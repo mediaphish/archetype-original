@@ -1,5 +1,14 @@
 import { supabaseAdmin } from "../../lib/supabase-admin.js";
 import { Resend } from "resend";
+import {
+  calendarTodayPublicationTz,
+  publicationTimeZone,
+  publishDateCalendarOnly,
+} from "../../lib/publish-eligibility.mjs";
+import {
+  claimDevotionalBroadcast,
+  releaseDevotionalBroadcastClaim,
+} from "../../lib/journal-devotional-notify-dedupe.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -103,6 +112,32 @@ export default async function handler(req, res) {
       });
     }
 
+    let claimedDevotional = false;
+    let dedupeDay = null;
+    if (isDevotional) {
+      dedupeDay =
+        publishDateCalendarOnly(publish_date ?? postData.date) ||
+        calendarTodayPublicationTz(new Date(), publicationTimeZone());
+      const claim = await claimDevotionalBroadcast(supabaseAdmin, slug, dedupeDay, "journal_notify");
+      if (claim.duplicate) {
+        return res.status(200).json({
+          ok: true,
+          sent: 0,
+          skipped: "already_sent",
+          post_slug: slug,
+          publish_calendar_date: dedupeDay,
+        });
+      }
+      if (claim.error) {
+        return res.status(500).json({
+          error:
+            "Could not reserve devotional send slot. If this is a new install, run database/journal_devotional_notify_sent.sql in Supabase.",
+          details: claim.error,
+        });
+      }
+      if (claim.claimed) claimedDevotional = true;
+    }
+
     // Prepare email content
     const siteUrl = process.env.PUBLIC_SITE_URL || "https://www.archetypeoriginal.com";
     const postUrl = isDevotional
@@ -171,6 +206,7 @@ export default async function handler(req, res) {
     const errors = [];
     const failedEmails = [];
 
+    try {
     // Split subscribers into batches of 100
     for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
       const batch = subscribers.slice(i, i + BATCH_SIZE);
@@ -338,6 +374,11 @@ export default async function handler(req, res) {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
+    } finally {
+      if (isDevotional && claimedDevotional && dedupeDay && sentCount === 0) {
+        await releaseDevotionalBroadcastClaim(supabaseAdmin, slug, dedupeDay);
+      }
+    }
 
     // Store all failures in database
     if (failedEmails.length > 0) {
@@ -355,6 +396,7 @@ export default async function handler(req, res) {
       sent: sentCount,
       failed: failedCount,
       total_subscribers: subscribers.length,
+      publish_calendar_date: isDevotional ? dedupeDay : undefined,
       errors: errors.length > 0 ? errors : undefined
     });
 

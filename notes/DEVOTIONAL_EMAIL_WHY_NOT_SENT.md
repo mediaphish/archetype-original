@@ -9,9 +9,15 @@
    - Loads subscribers from `journal_subscriptions` where `subscribe_devotionals = true` and `is_active = true`
    - Sends one email per subscriber via Resend (requires `RESEND_API_KEY` on Vercel; otherwise the job returns 500 with a clear message).
 
-3. **GitHub Actions backup** (`.github/workflows/update-journal.yml`): after the workflow **commits** an updated `public/knowledge.json`, it waits **90 seconds** then runs `scripts/notify-todays-devotionals-from-corpus.mjs`, which POSTs to `/api/journal/notify` with the **full post object** from the freshly built corpus. That covers the common case where the **1am cron already ran** before the deploy that added today’s devotional to the live site. **Tradeoff:** a later same-day push that commits `knowledge.json` again can send a second round of emails for that day’s devotional (uncommon).
+3. **GitHub Actions backup** (`.github/workflows/update-journal.yml`): after the workflow **commits** an updated `public/knowledge.json`, it waits **90 seconds** then runs `scripts/notify-todays-devotionals-from-corpus.mjs`, which POSTs to `/api/journal/notify` with the **full post object** from the freshly built corpus. That covers the common case where the **1am cron already ran** before the deploy that added today’s devotional to the live site.
 
-4. **Knowledge API** (`api/knowledge/index.js`) returns whatever is in the deployed `public/knowledge.json`. That file is produced by `build-knowledge.mjs`, which **excludes future devotionals** (only includes entries with `publish_date <= build date` in the publication timezone).
+4. **No duplicate broadcasts:** Supabase table `journal_devotional_notify_sent` (see `database/journal_devotional_notify_sent.sql`) stores one row per devotional **slug + publish calendar date**. The cron and `/api/journal/notify` **claim** that row before sending; a second caller gets `skipped: already_sent` and sends nothing. If a run claims the row but **zero** emails succeed, the row is **removed** so a later retry can still go out.
+
+5. **Knowledge API** (`api/knowledge/index.js`) returns whatever is in the deployed `public/knowledge.json`. That file is produced by `build-knowledge.mjs`, which **excludes future devotionals** (only includes entries with `publish_date <= build date` in the publication timezone).
+
+### Required once: dedupe table
+
+Run the SQL in **`database/journal_devotional_notify_sent.sql`** in the Supabase SQL editor (same project the site uses for `journal_subscriptions`). Until that table exists, devotional notify and the daily cron will return a **500** with a hint to apply the migration — no silent skip.
 
 ## Most likely cause: timing
 

@@ -3,6 +3,7 @@
  * Notify devotional subscribers using the freshly built local public/knowledge.json.
  * Intended for CI right after knowledge.json is committed: sends full `post` in the body
  * so the live site does not need to have redeployed yet for the payload to be correct.
+ * The notify API dedupes by slug + publish calendar day (journal_devotional_notify_sent).
  *
  * Matches the same "today" and publish_date rules as api/cron/daily-devotional-notify.js
  * (publication timezone via PUBLICATION_TIME_ZONE / VITE_PUBLICATION_TIME_ZONE, default America/Chicago).
