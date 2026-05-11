@@ -36,16 +36,32 @@ jobs:
     - name: Process knowledge corpus and journal posts
       run: node scripts/build-knowledge.mjs
       
-    - name: Commit and push changes
+    - name: Commit knowledge changes (if any)
+      id: corpus_commit
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add public/knowledge.json
-        git diff --staged --quiet || git commit -m "Auto-update: Process knowledge corpus and journal posts [skip ci]"
+        if git diff --staged --quiet; then
+          echo "committed=false" >> "$GITHUB_OUTPUT"
+        else
+          git commit -m "Auto-update: Process knowledge corpus and journal posts [skip ci]"
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+        fi
       
     - name: Push changes
+      if: steps.corpus_commit.outputs.committed == 'true'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: main
         force: false
+
+    # Backup for the 1am ET cron: if today’s devotional landed in knowledge.json after the cron
+    # already ran, or deploy lagged, this sends using the built corpus (full post body).
+    - name: Notify devotional subscribers (backup for 1am cron + deploy lag)
+      if: success() && steps.corpus_commit.outputs.committed == 'true'
+      env:
+        PUBLIC_SITE_URL: https://www.archetypeoriginal.com
+        NOTIFY_DELAY_MS: '90000'
+      run: node scripts/notify-todays-devotionals-from-corpus.mjs

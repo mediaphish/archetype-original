@@ -58,6 +58,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Post data or postSlug is required." });
     }
 
+    if (!process.env.RESEND_API_KEY) {
+      console.error("[journal/notify] RESEND_API_KEY is not set");
+      return res.status(500).json({ error: "Email provider is not configured." });
+    }
+
     const { title, slug, email_summary, summary, publish_date, type } = postData;
     
     if (!title || !slug) {

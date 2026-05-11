@@ -9,6 +9,11 @@
 
 import { supabaseAdmin } from "../../lib/supabase-admin.js";
 import { Resend } from "resend";
+import {
+  calendarTodayPublicationTz,
+  publicationTimeZone,
+  publishDateCalendarOnly,
+} from "../../lib/publish-eligibility.mjs";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -41,11 +46,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get today's date in YYYY-MM-DD format for accurate comparison (UTC)
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+    if (!process.env.RESEND_API_KEY) {
+      console.error('❌ RESEND_API_KEY is not set; cannot send devotional emails.');
+      return res.status(500).json({
+        ok: false,
+        error: 'Email provider is not configured (missing RESEND_API_KEY).',
+      });
+    }
 
-    console.log(`🔍 Checking for devotionals published on ${todayStr}...`);
+    // Same "today" as build-knowledge / public schedule (PUBLICATION_TIME_ZONE, default America/Chicago).
+    // Using UTC-only here caused misses when the publication calendar and UTC date disagreed near boundaries.
+    const todayStr = calendarTodayPublicationTz(new Date(), publicationTimeZone());
+    const tz = publicationTimeZone();
+
+    console.log(`🔍 Checking for devotionals with publish_date === ${todayStr} (publication TZ: ${tz})...`);
 
     // Fetch all published devotionals from knowledge corpus
     const siteUrl = process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com';
@@ -59,12 +73,14 @@ export default async function handler(req, res) {
     const allDevotionals = knowledgeData.docs || [];
 
     // Find devotionals published today (using string comparison to avoid timezone issues)
-    const todayDevotionals = allDevotionals.filter(devotional => {
-      if (!devotional.publish_date || devotional.status !== 'published') return false;
-      
-      // Extract date string (YYYY-MM-DD) for accurate comparison
-      const publishDateStr = String(devotional.publish_date).split('T')[0].split(' ')[0];
-      
+    const todayDevotionals = allDevotionals.filter((devotional) => {
+      if (devotional.status !== 'published') return false;
+      const publishDateStr =
+        publishDateCalendarOnly(devotional.publish_date ?? devotional.date) ||
+        String(devotional.publish_date ?? '')
+          .split('T')[0]
+          .split(' ')[0];
+      if (!publishDateStr) return false;
       return publishDateStr === todayStr;
     });
 

@@ -2,14 +2,16 @@
 
 ## How the email flow works
 
-1. **Cron job** (`api/cron/daily-devotional-notify.js`) runs **once per day at 6:00 AM UTC** (see `vercel.json` → `crons` → `"0 6 * * *"`).
+1. **Cron job** (`api/cron/daily-devotional-notify.js`) runs **once per day at 6:00 AM UTC** (see `vercel.json` → `crons` → `"0 6 * * *"`). That is **1:00 AM US Eastern** during standard time (EST); during daylight saving (EDT) it is **2:00 AM Eastern**.
 2. At that time it:
    - Fetches devotionals from the **live site**: `GET https://www.archetypeoriginal.com/api/knowledge?type=devotional`
-   - Filters for devotionals where `publish_date` (YYYY-MM-DD) equals **today in UTC**
+   - Filters for devotionals where `publish_date` (YYYY-MM-DD) equals **today’s calendar date in the publication timezone** (`PUBLICATION_TIME_ZONE`, default `America/Chicago`) — **same rule as `build-knowledge.mjs`**, so the cron and the corpus stay aligned.
    - Loads subscribers from `journal_subscriptions` where `subscribe_devotionals = true` and `is_active = true`
-   - Sends one email per subscriber via Resend
+   - Sends one email per subscriber via Resend (requires `RESEND_API_KEY` on Vercel; otherwise the job returns 500 with a clear message).
 
-3. **Knowledge API** (`api/knowledge/index.js`) returns whatever is in the deployed `public/knowledge.json`. That file is produced by `build-knowledge.mjs`, which **excludes future devotionals** (only includes entries with `publish_date <= build date`).
+3. **GitHub Actions backup** (`.github/workflows/update-journal.yml`): after the workflow **commits** an updated `public/knowledge.json`, it waits **90 seconds** then runs `scripts/notify-todays-devotionals-from-corpus.mjs`, which POSTs to `/api/journal/notify` with the **full post object** from the freshly built corpus. That covers the common case where the **1am cron already ran** before the deploy that added today’s devotional to the live site. **Tradeoff:** a later same-day push that commits `knowledge.json` again can send a second round of emails for that day’s devotional (uncommon).
+
+4. **Knowledge API** (`api/knowledge/index.js`) returns whatever is in the deployed `public/knowledge.json`. That file is produced by `build-knowledge.mjs`, which **excludes future devotionals** (only includes entries with `publish_date <= build date` in the publication timezone).
 
 ## Most likely cause: timing
 
@@ -53,19 +55,18 @@ That uses the **current** knowledge corpus on the live site and sends to all act
 - **Vercel** → Project → **Cron Jobs** (or **Logs**): confirm `daily-devotional-notify` runs at 6:00 AM UTC and check for 401/5xx or Resend errors.
 - **Database**: confirm there are rows in `journal_subscriptions` with `subscribe_devotionals = true` and `is_active = true`.
 
-### 3. Optional: run notify after deploy
+### 3. Optional: manual notify after deploy
 
-To avoid missing a day when deploy is after 6 AM UTC, you could:
-- Add a step in your deploy pipeline that, after a successful deploy, calls `POST /api/journal/notify` with the slug of the devotional whose `publish_date` is “today” (e.g. in UTC), or
-- Run the same `curl` above manually on days when you deploy new devotionals.
+If the GitHub backup did not run (no `knowledge.json` commit) or you need an immediate send, use the `curl` above or `node scripts/send-journal-notification.mjs <slug>`.
 
-### 4. Optional: cron time or duplicate run
+### 4. Optional: cron time
 
 - Change the cron to a time **after** your usual deploy window (e.g. 12:00 UTC instead of 6:00 UTC), or
-- Keep 6 AM UTC and use the manual `POST /api/journal/notify` as a backup when you know you deployed “today’s” devotional after 6 AM UTC.
+- Keep 6 AM UTC and rely on the **GitHub Actions** backup + manual `POST` when needed.
 
 ## Summary
 
-- **Most likely:** Cron ran at 6 AM UTC before the deploy that added today’s devotional to the live site, so it saw 0 devotionals for “today” and sent no emails.
-- **Quick fix:** Use `POST /api/journal/notify` with today’s devotional slug to send the email now.
-- **Ongoing:** Check Vercel cron logs and subscriber count; consider triggering notify after deploy or adjusting cron time.
+- **Most likely:** The 1am (ET) cron ran **before** the live site had today’s devotional in `knowledge.json`, so it sent nothing — **not** necessarily a Resend outage.
+- **Now also:** After each committed knowledge refresh on `main`, CI waits 90s and runs `notify-todays-devotionals-from-corpus.mjs` so the same day can still be emailed once the corpus is built.
+- **Quick fix:** `POST /api/journal/notify` with today’s slug.
+- **Ongoing:** Vercel cron logs and `RESEND_API_KEY` on the host.
