@@ -207,7 +207,7 @@ export default function DevotionalPost({ post: postProp = null }) {
       if (paragraph.startsWith('<ul')) {
         return paragraph;
       }
-      return `<p class="mb-4 text-base sm:text-lg leading-relaxed text-[#1A1A1A]">${paragraph.replace(/\n/g, '<br>')}</p>`;
+      return `<p class="mb-4 text-base sm:text-lg leading-relaxed text-[#3A3A3A]">${paragraph.replace(/\n/g, '<br>')}</p>`;
     }).join('');
 
     return html;
@@ -238,47 +238,42 @@ export default function DevotionalPost({ post: postProp = null }) {
 
       <div className={isInline ? '' : 'min-h-screen bg-white'}>
         {!isInline && (
-          /* Hero Section */
-          <section className="bg-gradient-to-b from-[#FFF8F0] via-white to-white py-12 sm:py-16 md:py-20">
-            <div className="container mx-auto px-4 sm:px-6 md:px-12">
-              <div className="max-w-4xl mx-auto text-center">
-                <p className="text-sm sm:text-base uppercase tracking-wider font-semibold text-[#DB0812] mb-4">
-                  SERVANT LEADERSHIP DEVOTIONAL
-                </p>
-                <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
-                  {post.title}
-                </h1>
-                <div className="flex items-center justify-center gap-4">
-                  {(post.publish_date || post.date) && (
-                    <time className="text-base sm:text-lg text-[#6B6B6B]">
-                      {formatDate(post.publish_date || post.date)}
-                    </time>
-                  )}
-                  <ShareLinks
-                    url={canonicalUrl}
-                    title={post.title}
-                    description={post.summary || ''}
-                  />
-                </div>
+          <section className="bg-white border-b-2 border-[#FAFAF9] px-6 sm:px-10 py-16 sm:py-20">
+            <div className="mx-auto max-w-[1400px]">
+              <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72] mb-3">
+                Servant Leadership Devotional
+              </p>
+              <h1 className="font-serif text-[clamp(32px,4vw,52px)] font-normal leading-[1.1] tracking-[-0.01em] text-[#1A1A1A] mb-5 max-w-[720px]">
+                {post.title}
+              </h1>
+              <div className="flex items-center gap-6 flex-wrap">
+                {(post.publish_date || post.date) && (
+                  <time className="font-sans text-[14px] text-[#6B6B6B]">
+                    {formatDate(post.publish_date || post.date)}
+                  </time>
+                )}
+                <ShareLinks
+                  url={canonicalUrl}
+                  title={post.title}
+                  description={post.summary || ''}
+                />
               </div>
             </div>
           </section>
         )}
 
         {/* Content Section */}
-        <section className={isInline ? 'py-6 sm:py-8' : 'py-12 sm:py-16 md:py-20'}>
-          <div className="container mx-auto px-4 sm:px-6 md:px-12">
-            <div className="max-w-4xl mx-auto space-y-12 sm:space-y-16">
+        <section className={isInline ? '' : 'py-12 sm:py-16 md:py-20'}>
+          <div className={isInline ? '' : 'container mx-auto px-4 sm:px-6 md:px-12'}>
+            <div className={isInline ? 'space-y-10 sm:space-y-12' : 'max-w-4xl mx-auto space-y-12 sm:space-y-16'}>
               {isInline && (
-                <div className="text-center mb-8">
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    {(post.publish_date || post.date) && (
-                      <time className="text-sm text-[#6B6B6B]">
-                        {formatDate(post.publish_date || post.date)}
-                      </time>
-                    )}
-                  </div>
-                  <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-2 leading-tight">
+                <div className="mb-8">
+                  {(post.publish_date || post.date) && (
+                    <time className="font-sans text-[12px] font-semibold uppercase tracking-[0.12em] text-[#6B6B6B] mb-2 block">
+                      {formatDate(post.publish_date || post.date)}
+                    </time>
+                  )}
+                  <h1 className="font-serif text-[clamp(24px,3vw,38px)] font-normal leading-[1.15] text-[#1A1A1A] mb-0">
                     {post.title}
                   </h1>
                 </div>
@@ -286,9 +281,9 @@ export default function DevotionalPost({ post: postProp = null }) {
 
               {/* Month Overview (first-of-month only: e.g. ### March Overview) — before Scripture, distinct styling */}
               {sections.monthOverview && (
-                <div className="mb-10 sm:mb-12 p-6 sm:p-8 rounded-lg bg-[#FFF8F0] border border-[#E8D5CC]">
+                <div className="mb-10 p-6 sm:p-8 bg-[#E1DED8] border border-[#1A1A1A]/08">
                   <div 
-                    className="prose prose-lg max-w-none text-[#3D3D3D] font-serif leading-relaxed"
+                    className="prose prose-lg max-w-none text-[#3A3A3A] font-serif leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: processMarkdown(sections.monthOverview) }}
                   />
                 </div>
@@ -302,11 +297,11 @@ export default function DevotionalPost({ post: postProp = null }) {
               {/* Reflection */}
               {sections.reflection && (
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#DB0812] pl-4 sm:pl-6">
+                  <h2 className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#DB0812] mb-4 border-l-2 border-[#DB0812] pl-3.5">
                     Reflection
                   </h2>
                   <div 
-                    className="prose prose-lg max-w-none"
+                    className="prose prose-lg max-w-none text-[#3A3A3A]"
                     dangerouslySetInnerHTML={{ __html: processMarkdown(sections.reflection) }}
                   />
                 </div>
@@ -315,11 +310,11 @@ export default function DevotionalPost({ post: postProp = null }) {
               {/* Practical Application */}
               {sections.practicalApplication && (
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#DB0812] pl-4 sm:pl-6">
+                  <h2 className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#DB0812] mb-4 border-l-2 border-[#DB0812] pl-3.5">
                     Practical Application
                   </h2>
                   <div 
-                    className="prose prose-lg max-w-none"
+                    className="prose prose-lg max-w-none text-[#3A3A3A]"
                     dangerouslySetInnerHTML={{ __html: processMarkdown(sections.practicalApplication) }}
                   />
                 </div>
@@ -328,11 +323,11 @@ export default function DevotionalPost({ post: postProp = null }) {
               {/* Takeaways */}
               {sections.takeaways && (
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6 border-l-4 border-[#DB0812] pl-4 sm:pl-6">
+                  <h2 className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#DB0812] mb-4 border-l-2 border-[#DB0812] pl-3.5">
                     Takeaways
                   </h2>
                   <div 
-                    className="prose prose-lg max-w-none"
+                    className="prose prose-lg max-w-none text-[#3A3A3A]"
                     dangerouslySetInnerHTML={{ __html: processMarkdown(sections.takeaways) }}
                   />
                 </div>
@@ -340,11 +335,11 @@ export default function DevotionalPost({ post: postProp = null }) {
 
               {/* Closing Thought */}
               {sections.closingThought && (
-                <div className="bg-[#FAFAF9] border-l-4 border-[#DB0812] p-6 sm:p-8 md:p-10">
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4">
+                <div className="bg-[#FAFAF9] border-l-2 border-[#DB0812] p-6 sm:p-8 md:p-10 mt-8">
+                  <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#DB0812] mb-4">
                     Closing Thought
-                  </h2>
-                  <p className="text-lg sm:text-xl leading-relaxed text-[#1A1A1A] italic">
+                  </p>
+                  <p className="text-lg sm:text-xl leading-relaxed text-[#3A3A3A] italic">
                     {sections.closingThought}
                   </p>
                 </div>

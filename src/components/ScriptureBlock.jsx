@@ -51,10 +51,10 @@ export default function ScriptureBlock({ reference }) {
 
   return (
     <div className="my-8 sm:my-10">
-      <div className="bg-[#FAFAF9] border-l-4 border-[#DB0812] p-6 sm:p-8 md:p-10">
-        <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-4">
+      <div className="bg-[#E1DED8] border-l-2 border-[#DB0812] p-6 sm:p-7 md:p-8">
+        <span className="font-sans text-[13px] font-semibold uppercase tracking-[0.08em] text-[#8B7D72] mb-3 block">
           {reference}
-        </h3>
+        </span>
         
         {loading && (
           <p className="text-[#6B6B6B] text-sm sm:text-base italic">
@@ -98,7 +98,7 @@ export default function ScriptureBlock({ reference }) {
           <>
             <div className="prose prose-lg max-w-none mb-6">
               <div 
-                className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] whitespace-pre-wrap"
+                className="font-serif text-[17px] italic leading-[1.7] text-[#1A1A1A] whitespace-pre-wrap"
                 dangerouslySetInnerHTML={{ 
                   __html: scripture.text
                     .replace(/\n\n/g, '</p><p class="mb-4">')
