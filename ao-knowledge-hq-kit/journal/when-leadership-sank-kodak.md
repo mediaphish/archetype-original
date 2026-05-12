@@ -1,5 +1,6 @@
 ---
-status: published
+# Off public Journal until frontmatter is repaired (file was saved as RTF; title/date never parsed).
+status: draft
 ---
 {\rtf1\ansi\ansicpg1252\cocoartf2822
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
