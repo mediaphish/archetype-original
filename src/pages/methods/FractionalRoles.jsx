@@ -277,6 +277,37 @@ export default function FractionalRoles() {
               </p>
             </div>
           </article>
+
+          {/* CTO */}
+          <article className="grid grid-cols-1 gap-10 border-t border-[#E0DBD4] pb-2 pt-12 md:grid-cols-[200px_1fr] md:gap-12">
+            <div>
+              <h3 className="font-serif text-[22px] font-normal text-[#1a1a1a]">Fractional CTO</h3>
+              <p className="mt-1.5 font-sans text-[10px] uppercase tracking-[0.12em] text-ao-red">
+                Technology &amp; Build Leadership
+              </p>
+            </div>
+            <div className="font-sans text-[15px] leading-[1.75] text-[#444]">
+              <p className="mb-3.5">
+                Most organizations that need a fractional CTO do not actually need a developer. They need someone who
+                can see the full scope of what they are building, assemble the right team to build it, and lead that team
+                through execution without losing the thread of what they are actually trying to deliver.
+              </p>
+              <p className="mb-3.5">
+                I have spent thirty-three years building things. Software companies, platforms, digital systems, and the
+                teams that bring them to life. I know how to evaluate technical talent, how to structure a build process,
+                how to manage the communication between the people who want the thing and the people building it, and how
+                to hold the whole operation together when complexity increases and timelines compress.
+              </p>
+              <p className="mb-3.5">
+                What I bring into a CTO role: clarity on scope and timeline, the ability to hire and lead a technical and
+                creative team, and the judgment to know when to push and when to protect the work from premature speed.
+              </p>
+              <p className="mt-1 border-t border-[#E0DBD4] pt-3.5 font-sans text-[14px] italic text-[#777]">
+                This role is best suited to organizations in a specific build season. If you are launching something,
+                scaling a platform, or rebuilding what exists, that is the environment where this works.
+              </p>
+            </div>
+          </article>
         </SectionShell>
 
         {/* SECTION 5 — Additional roles */}
@@ -286,11 +317,11 @@ export default function FractionalRoles() {
             Other C-suite engagements available depending on the season.
           </h3>
           <p className="mb-6 max-w-[640px] font-sans text-[15px] leading-[1.7] text-[#555]">
-            Depending on what an organization needs, I also step into creative, technology, and project delivery
-            leadership. These engagements are evaluated individually — the fit matters as much as the role.
+            Depending on what an organization needs, I also step into creative and project delivery leadership. These
+            engagements are evaluated individually. The fit matters as much as the role.
           </p>
           <div className="flex flex-wrap gap-3">
-            {['Fractional CDO', 'Fractional CTO', 'Executive Project Delivery'].map((label) => (
+            {['Fractional CDO', 'Executive Project Delivery'].map((label) => (
               <span
                 key={label}
                 className="rounded-[2px] border border-[#C8C4BE] bg-transparent px-3.5 py-1.5 font-sans text-[12px] text-[#555]"
