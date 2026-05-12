@@ -259,7 +259,7 @@ async function buildKnowledgeCorpus() {
         
         // Now parse frontmatter from cleaned content
         let { data: frontmatter, content: body } = matter(content);
-        
+
         const fileName = path.basename(filePath);
         
         // gray-matter already removes frontmatter, but check if there's any leftover
@@ -274,6 +274,14 @@ async function buildKnowledgeCorpus() {
         body = body.trim();
 
         const isDevotional = filePath.includes('devotionals') || frontmatter.type === 'devotional';
+
+        if (!isDevotional && /\{\\rtf|\\rtf1\b/i.test(body)) {
+          console.warn(
+            `⚠️  Skipping journal file (RTF still present in body after cleanup — repair source): ${path.basename(filePath)}`,
+          );
+          skippedCount++;
+          continue;
+        }
 
         if (frontmatter.publish_date) {
           try {
@@ -394,9 +402,17 @@ async function buildKnowledgeCorpus() {
         // Preserve publish_date as YYYY-MM-DD string if it's in that format
         // Don't convert to ISO string to avoid timezone issues
         let publishDateValue = frontmatter.publish_date || frontmatter.date;
-        
+
         if (!publishDateValue) {
-          publishDateValue = new Date().toISOString();
+          if (isDevotional) {
+            publishDateValue = new Date().toISOString();
+          } else {
+            console.warn(
+              `⚠️  Skipping journal post (missing publish_date and date in frontmatter): "${frontmatter.title || path.basename(filePath)}"`,
+            );
+            skippedCount++;
+            continue;
+          }
         } else if (typeof publishDateValue === 'string' && publishDateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
           // Keep as YYYY-MM-DD string, don't convert
           publishDateValue = publishDateValue;

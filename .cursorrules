@@ -339,6 +339,7 @@ If any duplicates/overlaps are found:
 
 - **After adding or updating devotionals**: Commit the new/edited devotional markdown files and the updated `public/knowledge.json`, then push to the host. Deploy so the site reflects the changes.
 - **After running the knowledge build** (`node scripts/build-knowledge.mjs`): Commit `public/knowledge.json` and any new journal/devotional source files, then push. Do not leave knowledge or content changes uncommitted or undeployed.
+- **Journal bulk `status: published` (agents and scripts):** Do **not** hand-edit or mass-apply `status: published` to journal `.md` files that contain Rich Text (`{\rtf`), lack a parseable `title` in YAML, or do not open with valid `---` frontmatter. The script `scripts/migrate-journal-explicit-published.mjs` enforces this automatically—do not bypass it. Broken files must be repaired as normal markdown first.
 - **After other content or site-affecting changes**: Commit and push **all** changed project files so the live site is updated. The AI commits and deploys to the host routinely; this is expected.
 
 #### Content pipeline: expected auto-publish + generated output (do not treat as “surprise”)
