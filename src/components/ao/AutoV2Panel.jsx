@@ -473,16 +473,39 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }, []);
 
   const syncArtifactFromMessages = useCallback((msgs) => {
-    const lastAssistant = [...(msgs || [])].reverse().find((m) => m.role === 'assistant');
+    const allMsgs = msgs || [];
+
+    // Artifact: read from last assistant message only
+    const lastAssistant = [...allMsgs].reverse().find((m) => m.role === 'assistant');
     if (!lastAssistant) {
       setArtifact(null);
-      setGeneratedImages([]);
+      // Do not clear images — they persist for the whole thread session
       return;
     }
     const raw = String(lastAssistant.content || '');
     const { artifact: a } = parseArtifact(raw);
     setArtifact(a || null);
-    setGeneratedImages(extractGeneratedImagesFromAssistantContent(raw));
+
+    // Images: scan ALL assistant messages and accumulate unique URLs
+    // This makes images persist across messages in the same thread
+    const seen = new Set();
+    const allImages = [];
+    for (const m of allMsgs) {
+      if (m.role !== 'assistant') continue;
+      const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
+      for (const img of imgs) {
+        const key = img.url;
+        if (!seen.has(key)) {
+          seen.add(key);
+          allImages.push(img);
+        }
+      }
+    }
+    if (allImages.length > 0) {
+      setGeneratedImages(allImages);
+    }
+    // If no images found in any message, leave existing images in place
+    // Images only clear when starting a new thread (handled in startNewThread)
   }, []);
 
   const loadThreadList = useCallback(async () => {
@@ -740,7 +763,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }
 
   return (
-    <div className={`flex h-full overflow-hidden bg-white rounded-xl border border-gray-200 shadow-sm ${className || ''}`}>
+    <div className={`flex h-full overflow-hidden bg-white ${className || ''}`}>
 
       {sidebarOpen && (
         <ThreadSidebar
