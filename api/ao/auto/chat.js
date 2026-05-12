@@ -10,6 +10,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
 import { runAutoChat } from '../../../lib/ao/autoV2.js';
+import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -43,6 +44,12 @@ export default async function handler(req, res) {
     if (!result.ok) {
       return res.status(500).json({ ok: false, error: result.error || 'Auto reply failed' });
     }
+
+    result.reply = await appendQuoteCardImagesToReplyIfNeeded({
+      userMessage,
+      priorMessages: prior.messages,
+      reply: result.reply,
+    });
 
     await addAutoMessage({
       threadId: thread.id,

@@ -40,6 +40,20 @@ function parseArtifact(text) {
   return { artifact, cleanText };
 }
 
+function extractGeneratedImagesFromAssistantContent(content) {
+  const m = String(content || '').match(/\[IMAGES_GENERATED\]([\s\S]*?)\[\/IMAGES_GENERATED\]/);
+  if (!m) return [];
+  return m[1]
+    .trim()
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => {
+      const mm = line.match(/Card (\d+): (.+)/);
+      return mm ? { card: parseInt(mm[1], 10), url: mm[2].trim() } : null;
+    })
+    .filter(Boolean);
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatRelativeDate(iso) {
@@ -155,8 +169,10 @@ function TypingIndicator() {
 
 function MessageBubble({ message }) {
   const isUser = message.role === 'user';
-  const { cleanText } = parseArtifact(String(message.content || ''));
-  const text = cleanText || String(message.content || '');
+  const raw = String(message.content || '');
+  const withoutImages = raw.replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '').trim();
+  const { cleanText } = parseArtifact(withoutImages);
+  const text = cleanText || withoutImages;
 
   if (!text && !message.meta?.image_url) return null;
 
@@ -229,12 +245,12 @@ function DraftArtifact({ content, label }) {
   );
 }
 
-function ArtifactPanel({ artifact, onApprove, onRevise, onViewAll, onClose }) {
+function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewAll, onClose }) {
   return (
     <div className="w-64 flex-shrink-0 border-l border-gray-200 bg-gray-50 flex flex-col">
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
-          {artifact?.label || 'Artifact'}
+          {artifact?.label || (generatedImages?.length > 0 ? 'Generated cards' : 'Artifact')}
         </span>
         <button
           type="button"
@@ -247,7 +263,17 @@ function ArtifactPanel({ artifact, onApprove, onRevise, onViewAll, onClose }) {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-        {!artifact && (
+        {generatedImages?.length > 0 && (
+          <div className="space-y-3">
+            {generatedImages.map((img) => (
+              <div key={img.card} className="rounded-xl overflow-hidden border border-gray-200 bg-black">
+                <img src={img.url} alt={`Card ${img.card}`} className="w-full h-auto block" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!artifact && (!generatedImages || generatedImages.length === 0) && (
           <div className="flex flex-col items-center justify-center text-center py-10">
             <AOMark className="w-8 h-8 text-gray-200 mb-3" />
             <p className="text-xs text-gray-400 leading-relaxed">
@@ -258,7 +284,9 @@ function ArtifactPanel({ artifact, onApprove, onRevise, onViewAll, onClose }) {
 
         {artifact?.type === 'quote_card' && (
           <>
-            <QuoteCardPreview content={artifact.content} />
+            {(!generatedImages || generatedImages.length === 0) && (
+              <QuoteCardPreview content={artifact.content} />
+            )}
             <div className="text-xs space-y-1.5">
               <div className="flex justify-between gap-2">
                 <span className="text-gray-400">Status</span>
@@ -402,6 +430,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [pendingFile, setPendingFile] = useState(null);
   const [startingNew, setStartingNew] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [generatedImages, setGeneratedImages] = useState([]);
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -421,6 +450,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
   useEffect(() => {
     if (artifact) setArtifactOpen(true);
   }, [artifact]);
+
+  useEffect(() => {
+    if (generatedImages.length > 0) setArtifactOpen(true);
+  }, [generatedImages]);
 
   const mergeThreadRows = useCallback((sessionJson, draftsJson) => {
     const active = sessionJson?.thread || null;
@@ -443,10 +476,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
     const lastAssistant = [...(msgs || [])].reverse().find((m) => m.role === 'assistant');
     if (!lastAssistant) {
       setArtifact(null);
+      setGeneratedImages([]);
       return;
     }
-    const { artifact: a } = parseArtifact(String(lastAssistant.content || ''));
+    const raw = String(lastAssistant.content || '');
+    const { artifact: a } = parseArtifact(raw);
     setArtifact(a || null);
+    setGeneratedImages(extractGeneratedImagesFromAssistantContent(raw));
   }, []);
 
   const loadThreadList = useCallback(async () => {
@@ -474,6 +510,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setActiveThreadId(null);
         setMessages([]);
         setArtifact(null);
+        setGeneratedImages([]);
       }
     } catch (e) {
       setError(e.message || 'Could not load Auto');
@@ -495,6 +532,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setLoading(true);
       setArtifact(null);
       setArtifactOpen(false);
+      setGeneratedImages([]);
       setError('');
       try {
         const res = await fetch('/api/ao/auto/thread/resume', {
@@ -529,6 +567,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setArtifact(null);
     setArtifactOpen(false);
     setPendingFile(null);
+    setGeneratedImages([]);
     try {
       const res = await fetch('/api/ao/auto/thread/new', { method: 'POST' });
       const json = await res.json().catch(() => ({}));
@@ -636,6 +675,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
         if (Array.isArray(json.messages) && json.messages.length > 0) {
           setMessages(json.messages);
+          syncArtifactFromMessages(json.messages);
         } else {
           setMessages((prev) => {
             const withoutOpt = prev.filter((m) => m.id !== optimisticMsg.id);
@@ -645,13 +685,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
               { role: 'assistant', content: json.assistant_message || '' },
             ];
           });
+          const synthetic = [
+            { role: 'user', content: displayText },
+            { role: 'assistant', content: json.assistant_message || '' },
+          ];
+          syncArtifactFromMessages(synthetic);
         }
 
         if (json.thread?.id) setActiveThreadId(json.thread.id);
-
-        const replyText = json.assistant_message || '';
-        const { artifact: newArtifact } = parseArtifact(replyText);
-        setArtifact(newArtifact || null);
 
         await loadThreadList();
       } catch (e) {
@@ -661,7 +702,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setSending(false);
       }
     },
-    [input, sending, activeThreadId, pendingFile, loadThreadList]
+    [input, sending, activeThreadId, pendingFile, loadThreadList, syncArtifactFromMessages]
   );
 
   const handleKeyDown = useCallback(
@@ -871,6 +912,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       {artifactOpen && (
         <ArtifactPanel
           artifact={artifact}
+          generatedImages={generatedImages}
           onApprove={handleApprove}
           onRevise={handleRevise}
           onViewAll={handleViewAll}
