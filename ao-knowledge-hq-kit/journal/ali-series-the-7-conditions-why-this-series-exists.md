@@ -12,7 +12,7 @@ summary: >-
 categories:
   - servant-leadership
   - culture-science
-featured_image: ../images/ali-hero.jpg
+featured_image: ../images/ali-series-the-7-conditions-why-this-series-exists.jpg
 takeaways:
   - >-
     The gap between what leaders believe they are creating and what teams
