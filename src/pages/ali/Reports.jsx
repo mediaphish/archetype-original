@@ -5,6 +5,7 @@ import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import { buildAliReportsSnapshot } from '../../lib/ali/archyContextPayload';
 import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
+import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 const ALIReports = () => {
   const [animatedValues, setAnimatedValues] = useState({});
@@ -31,7 +32,7 @@ const ALIReports = () => {
   // Preserve magic-link email across ALI app navigation (used for role-aware links)
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
-  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+  const email = (emailParam || getAliSessionEmail() || '').toLowerCase().trim();
   const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
   const withEmail = (path) => {
     if (!email) return path;
@@ -40,6 +41,11 @@ const ALIReports = () => {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
+
+  useEffect(() => {
+    if (!emailParam) return;
+    if (email) setAliSessionEmail(email);
+  }, [emailParam, email]);
 
   // Fetch live reports (used to validate wiring; UI below is still mock-heavy)
   useEffect(() => {

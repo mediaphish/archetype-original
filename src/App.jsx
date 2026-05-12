@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import { operatorsAuthAllowed } from "./lib/operatorsSession";
+import {
+  getAliSessionEmail,
+  getOperatorsSessionEmail,
+  setOperatorsSessionEmail,
+} from "./lib/magicLinkBrowserSession";
 import SEO from "./components/SEO";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -263,7 +268,7 @@ export default function App() {
       if (path.startsWith('/ali/')) {
         const hasAliEmail = () => {
           if (typeof window === 'undefined') return false;
-          const e = (new URLSearchParams(window.location.search).get('email') || localStorage.getItem('ali_email') || '').trim();
+          const e = (new URLSearchParams(window.location.search).get('email') || getAliSessionEmail() || '').trim();
           return e.length > 0;
         };
 
@@ -337,13 +342,13 @@ export default function App() {
       }
       if (path.startsWith('/operators/')) {
         // Route protection: check if user is authenticated
-        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('operators_email') : null;
+        const storedEmail = typeof window !== 'undefined' ? getOperatorsSessionEmail() : null;
         const urlEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
         
         // If email comes from URL (magic link verification), store it in localStorage
         if (urlEmail && !storedEmail) {
           try {
-            localStorage.setItem('operators_email', urlEmail);
+            setOperatorsSessionEmail(urlEmail);
             // Clear email from URL for clean URLs
             const cleanUrl = window.location.pathname;
             window.history.replaceState({}, '', cleanUrl);

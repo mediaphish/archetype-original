@@ -17,6 +17,7 @@ import AliHeader from '../../components/ali/AliHeader';
 import { buildAliZonesSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
+import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
 
 function fmt1(n) {
@@ -224,14 +225,7 @@ export default function ReportsZones() {
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
 
-  const storedEmail = (() => {
-    try {
-      return localStorage.getItem('ali_email') || '';
-    } catch {
-      return '';
-    }
-  })();
-
+  const storedEmail = getAliSessionEmail();
   const emailRaw = (emailParam || storedEmail || '').toString();
   const email = emailRaw ? emailRaw.toLowerCase().trim() : '';
 
@@ -248,7 +242,7 @@ export default function ReportsZones() {
   useEffect(() => {
     if (!emailParam) return;
     try {
-      if (email) localStorage.setItem('ali_email', email);
+      if (email) setAliSessionEmail(email);
     } catch {
       // ignore
     }

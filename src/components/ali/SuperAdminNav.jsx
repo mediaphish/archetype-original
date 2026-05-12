@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
+import { setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 import { OptimizedImage } from '../OptimizedImage';
 
 const SuperAdminNav = ({ activeTab }) => {
@@ -9,7 +10,7 @@ const SuperAdminNav = ({ activeTab }) => {
     const trimmed = email.trim();
     if (!trimmed) return;
     try {
-      localStorage.setItem('ali_email', trimmed);
+      setAliSessionEmail(trimmed);
     } catch (_) {}
   }, []);
 

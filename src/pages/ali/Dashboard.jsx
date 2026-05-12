@@ -7,6 +7,7 @@ import { buildAliDashboardSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
 import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
+import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 const ALIDashboard = () => {
   const [expandedZone, setExpandedZone] = useState(null);
@@ -39,13 +40,7 @@ const ALIDashboard = () => {
   // Preserve magic-link email across ALI app navigation (used for role-aware links)
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
-  const storedEmail = (() => {
-    try {
-      return localStorage.getItem('ali_email') || '';
-    } catch {
-      return '';
-    }
-  })();
+  const storedEmail = getAliSessionEmail();
   const emailRaw = (emailParam || storedEmail || '').toString();
   const email = emailRaw ? emailRaw.toLowerCase().trim() : '';
   const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
@@ -61,7 +56,7 @@ const ALIDashboard = () => {
   useEffect(() => {
     if (!emailParam) return;
     try {
-      if (email) localStorage.setItem('ali_email', email);
+      if (email) setAliSessionEmail(email);
     } catch {
       // ignore
     }

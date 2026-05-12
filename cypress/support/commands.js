@@ -8,6 +8,16 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
+/** Matches src/lib/magicLinkBrowserSession.js shape (30-day TTL). */
+function mockOperatorsSessionPayload(email) {
+  const em = String(email || '').trim().toLowerCase();
+  return JSON.stringify({
+    v: 1,
+    email: em,
+    expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+  });
+}
+
 /**
  * Navigate to Operators page with email parameter
  */
@@ -31,7 +41,7 @@ Cypress.Commands.add('mockOperatorsAPI', (endpoint, method = 'GET', response) =>
  */
 Cypress.Commands.add('loginAsOperator', (email = 'operator@test.com') => {
   cy.window().then((win) => {
-    win.localStorage.setItem('operators_email', email);
+    win.localStorage.setItem('operators_email', mockOperatorsSessionPayload(email));
   });
   
   // Mock user data API
@@ -52,7 +62,7 @@ Cypress.Commands.add('loginAsOperator', (email = 'operator@test.com') => {
  */
 Cypress.Commands.add('loginAsChiefOperator', (email = 'chief@test.com') => {
   cy.window().then((win) => {
-    win.localStorage.setItem('operators_email', email);
+    win.localStorage.setItem('operators_email', mockOperatorsSessionPayload(email));
   });
   
   cy.intercept('GET', `/api/operators/users/me?email=*`, {
@@ -72,7 +82,7 @@ Cypress.Commands.add('loginAsChiefOperator', (email = 'chief@test.com') => {
  */
 Cypress.Commands.add('loginAsSuperAdmin', (email = 'admin@test.com') => {
   cy.window().then((win) => {
-    win.localStorage.setItem('operators_email', email);
+    win.localStorage.setItem('operators_email', mockOperatorsSessionPayload(email));
   });
   
   cy.intercept('GET', `/api/operators/users/me?email=*`, {

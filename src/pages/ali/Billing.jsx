@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 const ALIBilling = () => {
   const handleNavigate = (path) => {
@@ -10,7 +11,7 @@ const ALIBilling = () => {
   // Preserve magic-link email across ALI app navigation (used for role-aware links)
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
-  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+  const email = (emailParam || getAliSessionEmail() || '').toLowerCase().trim();
   const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
   const withEmail = (path) => {
     if (!email) return path;
@@ -19,6 +20,11 @@ const ALIBilling = () => {
     const joiner = path.includes('?') ? '&' : '?';
     return `${path}${joiner}email=${encodeURIComponent(email)}`;
   };
+
+  useEffect(() => {
+    if (!emailParam) return;
+    if (email) setAliSessionEmail(email);
+  }, [emailParam, email]);
 
   // Mock data
   const subscription = {

@@ -1,5 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { getOperatorsBypassEmail, isOperatorsAuthBypassActive } from '../lib/operatorsSession';
+import {
+  clearOperatorsSessionEmail,
+  getOperatorsSessionEmail,
+  setOperatorsSessionEmail,
+} from '../lib/magicLinkBrowserSession';
 
 const UserContext = createContext(null);
 
@@ -19,7 +24,7 @@ export default function UserProvider({ children, initialEmail = null }) {
       return getOperatorsBypassEmail() || '';
     }
     // Check localStorage first (from magic link authentication)
-    const stored = localStorage.getItem('operators_email');
+    const stored = getOperatorsSessionEmail();
     if (stored) return stored;
     // Fall back to URL param (backward compatibility)
     return new URLSearchParams(window.location.search).get('email') || '';
@@ -63,7 +68,7 @@ export default function UserProvider({ children, initialEmail = null }) {
     const em = getOperatorsBypassEmail();
     if (!em) return;
     try {
-      localStorage.setItem('operators_email', em);
+      setOperatorsSessionEmail(em);
     } catch {
       /* ignore */
     }
@@ -74,7 +79,7 @@ export default function UserProvider({ children, initialEmail = null }) {
     if (typeof window === 'undefined') return;
     
     const checkStorage = () => {
-      const stored = localStorage.getItem('operators_email');
+      const stored = getOperatorsSessionEmail();
       if (stored && stored !== email) {
         setEmail(stored);
       }
@@ -98,7 +103,7 @@ export default function UserProvider({ children, initialEmail = null }) {
     // Store in localStorage when email is set (from magic link verification)
     if (typeof window !== 'undefined' && newEmail) {
       try {
-        localStorage.setItem('operators_email', newEmail);
+        setOperatorsSessionEmail(newEmail);
       } catch (e) {
         console.error('Failed to store email in localStorage:', e);
       }
@@ -112,7 +117,7 @@ export default function UserProvider({ children, initialEmail = null }) {
     // Clear localStorage
     if (typeof window !== 'undefined') {
       try {
-        localStorage.removeItem('operators_email');
+        clearOperatorsSessionEmail();
       } catch (e) {
         console.error('Failed to remove email from localStorage:', e);
       }

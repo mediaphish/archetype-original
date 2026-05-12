@@ -5,6 +5,7 @@ import AliHeader from '../../components/ali/AliHeader';
 import { buildAliMirrorSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
+import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 function fmt1(n) {
   if (typeof n !== 'number' || !Number.isFinite(n)) return '—';
@@ -33,14 +34,7 @@ function severityToCopy(sev) {
 export default function ReportsMirror() {
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
-  const storedEmail = (() => {
-    try {
-      return localStorage.getItem('ali_email') || '';
-    } catch {
-      return '';
-    }
-  })();
-
+  const storedEmail = getAliSessionEmail();
   const emailRaw = (emailParam || storedEmail || '').toString();
   const email = emailRaw ? emailRaw.toLowerCase().trim() : '';
   const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
@@ -69,7 +63,7 @@ export default function ReportsMirror() {
   useEffect(() => {
     if (!emailParam) return;
     try {
-      if (email) localStorage.setItem('ali_email', email);
+      if (email) setAliSessionEmail(email);
     } catch {
       // ignore
     }

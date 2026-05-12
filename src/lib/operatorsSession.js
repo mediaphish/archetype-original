@@ -1,7 +1,9 @@
 /**
- * Operators client session helpers (magic link stores email in localStorage).
+ * Operators client session helpers (magic link stores email in localStorage with 30-day TTL).
  * Optional short-lived bypass for private/staging testing via Vite env — see .env.example.
  */
+
+import { getOperatorsSessionEmail } from './magicLinkBrowserSession';
 
 export function isOperatorsAuthBypassActive() {
   if (import.meta.env.VITE_OPERATORS_AUTH_BYPASS !== 'true') return false;
@@ -25,7 +27,7 @@ export function getOperatorsBypassEmail() {
 export function operatorsAuthAllowed() {
   if (isOperatorsAuthBypassActive()) return true;
   if (typeof window === 'undefined') return false;
-  const stored = localStorage.getItem('operators_email');
+  const stored = getOperatorsSessionEmail();
   const urlEmail = new URLSearchParams(window.location.search).get('email');
   return !!(stored || urlEmail);
 }

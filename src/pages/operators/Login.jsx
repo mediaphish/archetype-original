@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import { getOperatorsBypassEmail, isOperatorsAuthBypassActive } from '../../lib/operatorsSession';
+import { setOperatorsSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 const OperatorsLogin = () => {
   const [email, setEmail] = useState('');
@@ -35,7 +36,7 @@ const OperatorsLogin = () => {
     const em = getOperatorsBypassEmail();
     if (!em) return;
     try {
-      localStorage.setItem('operators_email', em);
+      setOperatorsSessionEmail(em);
     } catch {
       /* ignore */
     }
@@ -100,7 +101,7 @@ const OperatorsLogin = () => {
       const data = await response.json().catch(() => ({}));
       if (response.ok && data.ok && data.email) {
         try {
-          localStorage.setItem('operators_email', data.email);
+          setOperatorsSessionEmail(data.email);
         } catch (err) {
           console.error(err);
           setErrorMessage('Could not save session in this browser.');

@@ -2,14 +2,14 @@
  * Shared helper for Super Admin email (URL or localStorage).
  * Used by SuperAdminNav, Deletions, Tenants, Intelligence.
  */
+import { getAliSessionEmail } from './magicLinkBrowserSession';
+
 export function getSuperAdminEmail() {
   if (typeof window === 'undefined') return '';
   const params = new URLSearchParams(window.location.search);
   const fromUrl = params.get('email');
   if (fromUrl) return fromUrl.trim();
-  try {
-    const stored = localStorage.getItem('ali_email');
-    if (stored) return stored.trim();
-  } catch (_) {}
+  const stored = getAliSessionEmail();
+  if (stored) return stored;
   return '';
 }

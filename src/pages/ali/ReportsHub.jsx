@@ -3,6 +3,7 @@ import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import AliHeader from '../../components/ali/AliHeader';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
+import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 const ReportsHub = () => {
   const [showArchyChat, setShowArchyChat] = useState(false);
@@ -16,7 +17,8 @@ const ReportsHub = () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
-  const email = emailParam ? emailParam.toLowerCase().trim() : '';
+  const stored = getAliSessionEmail();
+  const email = (emailParam || stored || '').toLowerCase().trim();
   const isSuperAdminUser = !!email && email.endsWith('@archetypeoriginal.com');
   const withEmail = (path) => {
     if (!email) return path;
@@ -30,7 +32,7 @@ const ReportsHub = () => {
   useEffect(() => {
     if (!emailParam) return;
     try {
-      if (email) localStorage.setItem('ali_email', email);
+      if (email) setAliSessionEmail(email);
     } catch {
       // ignore
     }
