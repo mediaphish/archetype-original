@@ -49,6 +49,7 @@ export default async function handler(req, res) {
       userMessage,
       priorMessages: prior.messages,
       reply: result.reply,
+      threadId: thread.id,
     });
 
     await addAutoMessage({
