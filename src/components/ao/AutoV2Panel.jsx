@@ -436,6 +436,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
 
+  const focusChatInput = useCallback(() => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        textareaRef.current?.focus({ preventScroll: true });
+      });
+    });
+  }, []);
+
   const visibleChatMessages = useMemo(
     () => (Array.isArray(messages) ? messages.filter((m) => m.role !== 'receipt') : []),
     [messages]
@@ -446,6 +454,12 @@ export default function AutoV2Panel({ onNavigate, className }) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [visibleChatMessages, sending]);
+
+  /** Keep the message field focused whenever Auto is idle (after load, send, or new thread). */
+  useEffect(() => {
+    if (loading || startingNew || sending) return;
+    focusChatInput();
+  }, [loading, startingNew, sending, focusChatInput]);
 
   useEffect(() => {
     if (artifact) setArtifactOpen(true);
