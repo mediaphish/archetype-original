@@ -753,8 +753,30 @@ export default function AutoV2Panel({ onNavigate, className }) {
   );
 
   const handleApprove = useCallback(() => {
-    sendMessage('Approve this and move to the next.');
-  }, [sendMessage]);
+    if (!artifact) {
+      sendMessage('Approved.');
+      return;
+    }
+    switch (artifact.type) {
+      case 'list':
+        // Batch of seeds or final copy list — approve everything and move to next stage
+        sendMessage(`All ${artifact.label || 'cards'} approved. Develop final copy for all of them now.`);
+        break;
+      case 'quote_card':
+        // Single card review
+        sendMessage('Approved. Move to the next card.');
+        break;
+      case 'captions':
+        // Caption review — next stage is image generation
+        sendMessage(`All captions approved. Generate the card images now.`);
+        break;
+      case 'draft':
+        sendMessage('Approved.');
+        break;
+      default:
+        sendMessage('Approved.');
+    }
+  }, [sendMessage, artifact]);
 
   const handleRevise = useCallback(() => {
     setInput('Revise — ');
