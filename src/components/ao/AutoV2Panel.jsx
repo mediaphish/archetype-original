@@ -765,6 +765,37 @@ export default function AutoV2Panel({ onNavigate, className }) {
     sendMessage('Show me all cards in this batch.');
   }, [sendMessage]);
 
+  const publishCards = useCallback(async () => {
+    if (!generatedImages || generatedImages.length === 0) {
+      setError('No generated images found. Generate card images before publishing.');
+      return;
+    }
+
+    const cards = generatedImages.map((img) => ({
+      card_index: img.card,
+      image_url: img.url,
+    }));
+
+    setError('');
+    try {
+      const res = await fetch('/api/ao/auto/schedule-cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cards, thread_id: activeThreadId }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setError(json.error || 'Publishing failed');
+        return;
+      }
+      await sendMessage(
+        `Publishing confirmed. ${json.total} posts scheduled across all platforms.`
+      );
+    } catch (e) {
+      setError(e.message || 'Publishing failed');
+    }
+  }, [generatedImages, activeThreadId, sendMessage]);
+
   if (loading && !activeThreadId && visibleChatMessages.length === 0) {
     return (
       <div className={`flex items-center justify-center h-full ${className || ''}`}>
@@ -823,7 +854,17 @@ export default function AutoV2Panel({ onNavigate, className }) {
             <button type="button" onClick={() => onNavigate?.('/ao/library')} className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
               Library
             </button>
-            <button type="button" onClick={() => onNavigate?.('/ao/publisher')} className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <button
+              type="button"
+              onClick={publishCards}
+              disabled={!generatedImages || generatedImages.length === 0}
+              className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              title={
+                generatedImages?.length > 0
+                  ? `Publish ${generatedImages.length} cards`
+                  : 'Generate card images first'
+              }
+            >
               Publish
             </button>
           </div>
