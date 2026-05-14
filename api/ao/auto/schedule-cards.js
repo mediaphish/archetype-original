@@ -1,48 +1,25 @@
 /**
  * POST /api/ao/auto/schedule-cards
  *
- * Takes an approved package of quote cards from Auto V2
- * (copy + captions + image URLs + optional per-channel schedule) and writes
- * rows to ao_scheduled_posts so the existing cron publisher picks them up.
+ * Writes approved Auto quote cards to ao_scheduled_posts for the cron publisher.
  *
- * When `schedule` is omitted on a card, times default from the shared
- * schedule heuristic (owner timezone, queue-aware), one calendar day per card.
+ * Channels (no X): LinkedIn personal, LinkedIn business (second row), Instagram, Facebook.
+ * Times: reads card dates from assistant table text in the thread; combines with peak
+ * wall-clock slots (LinkedIn 10:00 / Instagram 11:00 / Facebook 13:00 US Central as UTC hours in code).
+ * Optional per-card `schedule` body keys: linkedin, linkedin_business, instagram, facebook (ISO).
  *
- * Body: {
- *   thread_id?: string,
- *   cards: [
- *     {
- *       card_index: 1,
- *       image_url: "https://...",
- *       line1?, line2?, caption?,
- *       schedule?: { linkedin?, facebook?, instagram?, x? } // ISO strings
- *     },
- *     ...
- *   ]
- * }
+ * Body: { thread_id?, cards: [{ card_index, image_url, line1?, line2?, caption?, schedule? }] }
  */
 
-import { addHours } from 'date-fns';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { getAutoThreadState } from '../../../lib/ao/autoHub.js';
-import { buildScheduleSuggestionForChannels } from '../../../lib/ao/scheduleHeuristic.js';
 
 function parseIso(v) {
   if (!v) return null;
   const d = new Date(String(v));
   if (Number.isNaN(d.getTime())) return null;
   return d.toISOString();
-}
-
-function toPlatform(channel) {
-  if (channel === 'x') return 'twitter';
-  return channel;
-}
-
-function toAccountId(platform) {
-  if (platform === 'facebook' || platform === 'instagram') return 'meta';
-  return 'personal';
 }
 
 function extractCaptionsMapFromThread(threadMessages) {
@@ -104,21 +81,54 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'cards array is required' });
   }
 
-  const channels = ['linkedin', 'facebook', 'instagram', 'x'];
+  // Approved channels — LinkedIn Personal, LinkedIn Business, Instagram Business, Facebook Business.
+  // No X/Twitter. The caption length fights the format and this content is not built for that conversation.
+  // LinkedIn posts twice (personal + business page) using the same token/adapter but counted as separate rows.
+  const APPROVED_CHANNELS = [
+    { platform: 'linkedin', account_id: 'personal', label: 'linkedin_personal' },
+    { platform: 'linkedin', account_id: 'personal', label: 'linkedin_business' }, // same token, posts to page via pageUrn
+    { platform: 'instagram', account_id: 'meta', label: 'instagram' },
+    { platform: 'facebook', account_id: 'meta', label: 'facebook' },
+  ];
 
-  let baseSchedule = {};
-  try {
-    baseSchedule = await buildScheduleSuggestionForChannels();
-  } catch (e) {
-    console.error('[schedule-cards] buildScheduleSuggestionForChannels', e?.message || e);
-  }
-  const anchor = Date.now() + 60 * 60 * 1000;
-  for (let i = 0; i < channels.length; i += 1) {
-    const c = channels[i];
-    if (!baseSchedule[c]) {
-      baseSchedule[c] = new Date(anchor + i * 2 * 60 * 60 * 1000).toISOString();
+  // Peak reach times per platform (CDT = UTC-5)
+  // LinkedIn: 10:00 AM CDT = 15:00 UTC
+  // Instagram: 11:00 AM CDT = 16:00 UTC
+  // Facebook: 1:00 PM CDT = 18:00 UTC
+  const PLATFORM_TIMES = {
+    linkedin: '15:00:00',
+    instagram: '16:00:00',
+    facebook: '18:00:00',
+  };
+
+  // Extract the approved schedule from the thread.
+  // Auto documented the schedule as a table in the conversation.
+  // Parse card dates from messages like "Card 1 | Thu May 14" or "| Card 1 | Thu May 14 |"
+  function extractScheduleFromThread(messages) {
+    const scheduleMap = {};
+    const list = Array.isArray(messages) ? messages : [];
+    for (const m of [...list].reverse()) {
+      if (m.role !== 'assistant') continue;
+      const content = String(m.content || '');
+      // Match table rows: | Card N | Date | or Card N | Date
+      const rows = content.matchAll(/\|\s*Card\s+(\d+)\s*\|\s*([^|\n]+)/gi);
+      for (const row of rows) {
+        const cardNum = parseInt(row[1], 10);
+        const dateStr = row[2].trim();
+        if (!Number.isFinite(cardNum) || !dateStr) continue;
+        // Parse date like "Thu May 14" or "Mon Jun 2"
+        const y = new Date().getFullYear();
+        const parsed = new Date(`${dateStr} ${y}`);
+        if (!Number.isNaN(parsed.getTime())) {
+          scheduleMap[cardNum] = parsed;
+        }
+      }
+      if (Object.keys(scheduleMap).length > 0) break;
     }
+    return scheduleMap;
   }
+
+  const threadSchedule = extractScheduleFromThread(threadMessages);
 
   const rows = [];
   const sortedCards = [...cards].sort(
@@ -128,8 +138,9 @@ export default async function handler(req, res) {
   for (let idx = 0; idx < sortedCards.length; idx += 1) {
     const card = sortedCards[idx];
     const { card_index, image_url, schedule = {} } = card;
+    const cardNum = Number(card_index) || idx + 1;
 
-    const threadData = captionsMap[Number(card_index)] || {};
+    const threadData = captionsMap[cardNum] || {};
     const line1 = card.line1 || threadData.line1 || '';
     const line2 = card.line2 || threadData.line2 || '';
     const caption = card.caption || threadData.caption || '';
@@ -137,35 +148,46 @@ export default async function handler(req, res) {
     const captionText = String(caption || '').trim();
     const cardText = [String(line1 || '').trim(), String(line2 || '').trim()].filter(Boolean).join('\n').trim();
     const hasLines = Boolean(cardText);
-    const textBody = cardText || captionText || `Quote card ${card_index || idx + 1}`;
-
+    const textBody = cardText || captionText || `Quote card ${cardNum}`;
     const imageUrl = String(image_url || '').trim();
 
-    for (const channel of channels) {
-      const fromSchedule = schedule[channel];
-      const fromBase = baseSchedule[channel];
-      let whenRaw = fromSchedule || null;
-      if (!whenRaw && fromBase) {
-        whenRaw = addHours(new Date(fromBase), idx * 24).toISOString();
-      }
-      const when = parseIso(whenRaw);
-      if (!when) continue;
+    // Get the approved date for this card from the thread schedule
+    const approvedDate = threadSchedule[cardNum] || null;
 
-      const platform = toPlatform(channel);
-      const account_id = toAccountId(platform);
+    for (const ch of APPROVED_CHANNELS) {
+      let when = null;
+
+      // First try explicit schedule passed in body
+      const explicitKey = ch.label === 'linkedin_business' ? 'linkedin_business' : ch.label.replace('_personal', '');
+      if (schedule[explicitKey]) {
+        when = parseIso(schedule[explicitKey]);
+      }
+
+      // Then use the approved date from thread + platform time
+      if (!when && approvedDate) {
+        const dateStr = approvedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+        const timeStr = PLATFORM_TIMES[ch.platform] || '15:00:00';
+        when = parseIso(`${dateStr}T${timeStr}+00:00`);
+      }
+
+      // Fallback: stagger from now
+      if (!when) {
+        when = new Date(Date.now() + (idx * 24 + APPROVED_CHANNELS.indexOf(ch)) * 60 * 60 * 1000).toISOString();
+      }
 
       rows.push({
-        platform,
-        account_id,
+        platform: ch.platform,
+        account_id: ch.account_id,
         scheduled_at: when,
         text: textBody,
         image_url: imageUrl || null,
-        first_comment: hasLines ? captionText || null : null,
+        first_comment: hasLines && captionText ? captionText : null,
         status: 'scheduled',
         source_kind: 'auto_quote_card',
         intent: {
           auto_hub: true,
-          card_index: card_index || null,
+          card_index: cardNum,
+          channel_label: ch.label,
           created_by_email: auth.email,
           thread_id: threadId || null,
         },
