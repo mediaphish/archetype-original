@@ -9,6 +9,7 @@
 
 import { supabaseAdmin } from "../../lib/supabase-admin.js";
 import { Resend } from "resend";
+import { resendBroadcastSameHtml } from "../../lib/resend-broadcast-same-html.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const MAX_RETRIES = 5; // Maximum number of retry attempts before marking as permanently failed
@@ -191,235 +192,68 @@ export default async function handler(req, res) {
         </div>
       `;
 
-      // Use batch sending: up to 100 emails per batch
-      const BATCH_SIZE = 100;
-      for (let i = 0; i < failures.length; i += BATCH_SIZE) {
-        const batch = failures.slice(i, i + BATCH_SIZE);
-        const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
-        const totalBatches = Math.ceil(failures.length / BATCH_SIZE);
-        
-        console.log(`📦 Retrying batch ${batchNumber}/${totalBatches} for ${slug} (${batch.length} emails)...`);
+      console.log(`📦 Retrying ${failures.length} recipient(s) for ${slug} (single-mail)...`);
 
-        // Build batch array for Resend
-        const batchEmails = batch.map(failure => ({
-          from,
-          // Resend batch API requires `to` as an array of addresses (not a single string).
-          to: [String(failure.email || '').trim()],
-          subject: emailSubject,
-          html: emailHtml
-        }));
+      const { sentAddresses, failures: sendFailures } = await resendBroadcastSameHtml({
+        resend,
+        from,
+        subject: emailSubject,
+        html: emailHtml,
+        recipients: failures,
+      });
 
-        let retries = 3;
-        let batchSent = false;
+      const sentSet = new Set(sentAddresses.map((e) => String(e).trim().toLowerCase()));
+      const errByEmail = new Map(
+        sendFailures.map((f) => [String(f.recipient.email || '').trim().toLowerCase(), f.error])
+      );
 
-        while (retries > 0 && !batchSent) {
-          try {
-            const result = await resend.batch.send(batchEmails);
-
-            if (result?.error) {
-              if (result.error.name === 'rate_limit_exceeded' || result.error.statusCode === 429) {
-                retries--;
-                if (retries > 0) {
-                  console.warn(`⏳ Rate limit hit for retry batch ${batchNumber}, waiting 2 seconds...`);
-                  await new Promise(resolve => setTimeout(resolve, 2000));
-                  continue;
-                } else {
-                  // Batch failed - update individual records
-                  for (const failure of batch) {
-                    const newRetryCount = failure.retry_count + 1;
-                    const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
-                    
-                    stillFailedCount++;
-                    errors.push({ email: failure.email, post_slug: slug, error: result.error });
-                    
-                    await supabaseAdmin
-                      .from("journal_email_failures")
-                      .update({ 
-                        retry_count: newRetryCount,
-                        last_retry_at: new Date().toISOString(),
-                        status: shouldMarkAsFailed ? 'failed' : 'pending',
-                        resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
-                        error_message: result.error.message || JSON.stringify(result.error)
-                      })
-                      .eq("id", failure.id);
-                    
-                    if (shouldMarkAsFailed) {
-                      maxedOutCount++;
-                    }
-                  }
-                  batchSent = true;
-                }
-              } else {
-                // Non-rate-limit error
-                for (const failure of batch) {
-                  const newRetryCount = failure.retry_count + 1;
-                  const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
-                  
-                  stillFailedCount++;
-                  errors.push({ email: failure.email, post_slug: slug, error: result.error });
-                  
-                  await supabaseAdmin
-                    .from("journal_email_failures")
-                    .update({ 
-                      status: shouldMarkAsFailed ? 'failed' : 'pending',
-                      retry_count: newRetryCount,
-                      last_retry_at: new Date().toISOString(),
-                      resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
-                      error_message: result.error.message || JSON.stringify(result.error)
-                    })
-                    .eq("id", failure.id);
-                  
-                  if (shouldMarkAsFailed) {
-                    maxedOutCount++;
-                  }
-                }
-                batchSent = true;
-              }
-            } else {
-              // Batch success - check individual results
-              const raw = result?.data;
-              const batchResults = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : null);
-
-              // Resend batch responses may not include per-recipient results. If they don't, treat the batch as accepted.
-              if (!batchResults) {
-                for (const failure of batch) {
-                  const newRetryCount = failure.retry_count + 1;
-                  retriedCount++;
-                  await supabaseAdmin
-                    .from("journal_email_failures")
-                    .update({ 
-                      status: 'sent',
-                      retry_count: newRetryCount,
-                      last_retry_at: new Date().toISOString(),
-                      resolved_at: new Date().toISOString(),
-                      resend_email_id: null
-                    })
-                    .eq("id", failure.id);
-                }
-              } else {
-                const n = Math.min(batchResults.length, batch.length);
-                for (let j = 0; j < n; j++) {
-                  const emailResult = batchResults[j];
-                  const failure = batch[j];
-                  const newRetryCount = failure.retry_count + 1;
-                  
-                  if (emailResult?.error) {
-                    const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
-                    stillFailedCount++;
-                    errors.push({ email: failure.email, post_slug: slug, error: emailResult.error });
-                    await supabaseAdmin
-                      .from("journal_email_failures")
-                      .update({ 
-                        retry_count: newRetryCount,
-                        last_retry_at: new Date().toISOString(),
-                        status: shouldMarkAsFailed ? 'failed' : 'pending',
-                        resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
-                        error_message: emailResult.error.message || JSON.stringify(emailResult.error)
-                      })
-                      .eq("id", failure.id);
-                    
-                    if (shouldMarkAsFailed) {
-                      maxedOutCount++;
-                    }
-                  } else {
-                    retriedCount++;
-                    await supabaseAdmin
-                      .from("journal_email_failures")
-                      .update({ 
-                        status: 'sent',
-                        retry_count: newRetryCount,
-                        last_retry_at: new Date().toISOString(),
-                        resolved_at: new Date().toISOString(),
-                        resend_email_id: emailResult?.id || null
-                      })
-                      .eq("id", failure.id);
-                  }
-                }
-
-                // If Resend returned fewer results than recipients, treat the rest as accepted.
-                if (batch.length > n) {
-                  for (const failure of batch.slice(n)) {
-                    const newRetryCount = failure.retry_count + 1;
-                    retriedCount++;
-                    await supabaseAdmin
-                      .from("journal_email_failures")
-                      .update({ 
-                        status: 'sent',
-                        retry_count: newRetryCount,
-                        last_retry_at: new Date().toISOString(),
-                        resolved_at: new Date().toISOString(),
-                        resend_email_id: null
-                      })
-                      .eq("id", failure.id);
-                  }
-                }
-              }
-              console.log(`✅ Retry batch ${batchNumber} completed for ${slug}`);
-              batchSent = true;
-            }
-          } catch (batchError) {
-            if (batchError.message?.includes('rate_limit') || batchError.statusCode === 429) {
-              retries--;
-              if (retries > 0) {
-                console.warn(`⏳ Rate limit hit for retry batch ${batchNumber}, waiting 2 seconds...`);
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                continue;
-              } else {
-                for (const failure of batch) {
-                  const newRetryCount = failure.retry_count + 1;
-                  const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
-                  
-                  stillFailedCount++;
-                  errors.push({ email: failure.email, post_slug: slug, error: batchError.message });
-                  await supabaseAdmin
-                    .from("journal_email_failures")
-                    .update({ 
-                      retry_count: newRetryCount,
-                      last_retry_at: new Date().toISOString(),
-                      status: shouldMarkAsFailed ? 'failed' : 'pending',
-                      resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
-                      error_message: batchError.message
-                    })
-                    .eq("id", failure.id);
-                  
-                  if (shouldMarkAsFailed) {
-                    maxedOutCount++;
-                  }
-                }
-                batchSent = true;
-              }
-            } else {
-              for (const failure of batch) {
-                const newRetryCount = failure.retry_count + 1;
-                const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
-                
-                stillFailedCount++;
-                errors.push({ email: failure.email, post_slug: slug, error: batchError.message });
-                await supabaseAdmin
-                  .from("journal_email_failures")
-                  .update({ 
-                    status: shouldMarkAsFailed ? 'failed' : 'pending',
-                    retry_count: newRetryCount,
-                    last_retry_at: new Date().toISOString(),
-                    resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
-                    error_message: batchError.message
-                  })
-                  .eq("id", failure.id);
-                
-                if (shouldMarkAsFailed) {
-                  maxedOutCount++;
-                }
-              }
-              batchSent = true;
-            }
-          }
+      for (const failure of failures) {
+        const key = String(failure.email || '').trim().toLowerCase();
+        if (sentSet.has(key)) {
+          const newRetryCount = failure.retry_count + 1;
+          retriedCount++;
+          await supabaseAdmin
+            .from("journal_email_failures")
+            .update({
+              status: 'sent',
+              retry_count: newRetryCount,
+              last_retry_at: new Date().toISOString(),
+              resolved_at: new Date().toISOString(),
+              resend_email_id: null,
+            })
+            .eq("id", failure.id);
+          continue;
         }
 
-        // Small delay between batches
-        if (i + BATCH_SIZE < failures.length) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+        const newRetryCount = failure.retry_count + 1;
+        const shouldMarkAsFailed = newRetryCount >= MAX_RETRIES;
+        stillFailedCount++;
+        const err = errByEmail.get(key);
+        errors.push({
+          email: failure.email,
+          post_slug: slug,
+          error: err || { message: 'Recipient skipped or invalid address' },
+        });
+
+        await supabaseAdmin
+          .from("journal_email_failures")
+          .update({
+            retry_count: newRetryCount,
+            last_retry_at: new Date().toISOString(),
+            status: shouldMarkAsFailed ? 'failed' : 'pending',
+            resolved_at: shouldMarkAsFailed ? new Date().toISOString() : null,
+            error_message: err
+              ? err.message || JSON.stringify(err)
+              : 'Recipient skipped (invalid address)',
+          })
+          .eq("id", failure.id);
+
+        if (shouldMarkAsFailed) {
+          maxedOutCount++;
         }
       }
+
+      console.log(`✅ Retry complete for ${slug}: ${sentAddresses.length} sent via provider`);
     }
 
     console.log(`✅ Automatic retry complete: ${retriedCount} sent, ${stillFailedCount} still pending, ${maxedOutCount} maxed out`);

@@ -10,6 +10,7 @@
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { canPerformAction } from '../../../../lib/operators/permissions.js';
 import { Resend } from 'resend';
+import { resendBroadcastDynamicHtml } from '../../../../lib/resend-broadcast-same-html.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -140,83 +141,31 @@ export default async function handler(req, res) {
       `;
     };
 
-    // Send emails in batches using Resend Batch API (up to 100 per batch)
-    const BATCH_SIZE = 100;
     let successCount = 0;
     let failureCount = 0;
     const errors = [];
 
-    for (let i = 0; i < allRecipients.length; i += BATCH_SIZE) {
-      const batch = allRecipients.slice(i, i + BATCH_SIZE);
-      const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
-      const totalBatches = Math.ceil(allRecipients.length / BATCH_SIZE);
-      
-      console.log(`[ANNOUNCE_EVENT] Sending batch ${batchNumber}/${totalBatches} (${batch.length} emails)...`);
+    const recipients = allRecipients
+      .map((e) => ({ email: String(e || '').trim() }))
+      .filter((r) => r.email.includes('@'));
 
-      // Build batch array for Resend
-      const batchEmails = batch.map(recipientEmail => ({
-        from: fromEmail,
-        // Resend batch API requires `to` as an array of addresses (not a single string).
-        to: [String(recipientEmail || '').trim()],
-        subject: `New Operators Event: ${event.title}`,
-        html: buildEmailHtml(recipientEmail)
-      }));
+    console.log(`[ANNOUNCE_EVENT] Sending ${recipients.length} email(s) (single-mail)...`);
 
-      let retries = 3;
-      let batchSent = false;
+    const { sent, failed, failures } = await resendBroadcastDynamicHtml({
+      resend,
+      from: fromEmail,
+      subject: `New Operators Event: ${event.title}`,
+      recipients,
+      getHtml: (recipient) => buildEmailHtml(recipient.email),
+    });
 
-      while (retries > 0 && !batchSent) {
-        try {
-          const result = await resend.batch.send(batchEmails);
-
-          if (result?.error) {
-            // Check if it's a rate limit error
-            if (result.error.name === 'rate_limit_exceeded' || result.error.statusCode === 429) {
-              retries--;
-              if (retries > 0) {
-                console.warn(`[ANNOUNCE_EVENT] Rate limit hit for batch ${batchNumber}, waiting 2 seconds before retry...`);
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                continue;
-              } else {
-                // Batch failed after retries
-                console.error(`[ANNOUNCE_EVENT] Batch ${batchNumber} failed after retries:`, result.error);
-                batch.forEach(email => {
-                  failureCount++;
-                  errors.push({ email, error: result.error.message || 'Rate limit exceeded' });
-                });
-                batchSent = true;
-              }
-            } else {
-              // Other error
-              console.error(`[ANNOUNCE_EVENT] Batch ${batchNumber} error:`, result.error);
-              batch.forEach(email => {
-                failureCount++;
-                errors.push({ email, error: result.error.message || 'Batch send failed' });
-              });
-              batchSent = true;
-            }
-          } else {
-            // Success - all emails in batch were sent
-            successCount += batch.length;
-            console.log(`[ANNOUNCE_EVENT] Batch ${batchNumber} sent successfully: ${batch.length} emails`);
-            batchSent = true;
-          }
-        } catch (error) {
-          retries--;
-          if (retries > 0) {
-            console.warn(`[ANNOUNCE_EVENT] Batch ${batchNumber} error, retrying...`, error.message);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          } else {
-            console.error(`[ANNOUNCE_EVENT] Batch ${batchNumber} failed after retries:`, error);
-            batch.forEach(email => {
-              failureCount++;
-              errors.push({ email, error: error.message || 'Batch send failed' });
-            });
-            batchSent = true;
-          }
-        }
-      }
+    successCount = sent;
+    failureCount = failed;
+    for (const { recipient, error } of failures) {
+      errors.push({ email: recipient.email, error: error.message || 'Send failed' });
     }
+
+    console.log(`[ANNOUNCE_EVENT] Completed: ${successCount} sent, ${failureCount} failed`);
 
     // Update event with announced_at timestamp (optional, but useful for tracking)
     // Note: If announced_at column doesn't exist, this will fail silently

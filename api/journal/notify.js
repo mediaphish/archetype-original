@@ -9,6 +9,7 @@ import {
   claimDevotionalBroadcast,
   releaseDevotionalBroadcastClaim,
 } from "../../lib/journal-devotional-notify-dedupe.js";
+import { resendBroadcastSameHtml } from "../../lib/resend-broadcast-same-html.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -198,183 +199,41 @@ export default async function handler(req, res) {
       </div>
     `;
 
-    // Use Resend Batch API: up to 100 emails per batch
-    // With 10 req/sec limit, we can send batches much faster
-    const BATCH_SIZE = 100;
     let sentCount = 0;
     let failedCount = 0;
     const errors = [];
     const failedEmails = [];
 
     try {
-    // Split subscribers into batches of 100
-    for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
-      const batch = subscribers.slice(i, i + BATCH_SIZE);
-      const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
-      const totalBatches = Math.ceil(subscribers.length / BATCH_SIZE);
-      
-      console.log(`📦 Sending batch ${batchNumber}/${totalBatches} (${batch.length} emails)...`);
+      console.log(`📦 Sending to ${subscribers.length} subscriber(s) (single-mail broadcast)...`);
 
-      // Build batch array for Resend
-      const batchEmails = batch.map(subscriber => ({
+      const { sent, failed, failures } = await resendBroadcastSameHtml({
+        resend,
         from,
-        // Resend batch API requires `to` as an array of addresses (not a single string).
-        to: [String(subscriber.email || '').trim()],
         subject: emailSubject,
-        html: emailHtml
-      }));
+        html: emailHtml,
+        recipients: subscribers,
+      });
 
-      let retries = 3;
-      let batchSent = false;
+      sentCount = sent;
+      failedCount = failed;
 
-      while (retries > 0 && !batchSent) {
-        try {
-          const result = await resend.batch.send(batchEmails);
-
-          if (result?.error) {
-            // Check if it's a rate limit error
-            if (result.error.name === 'rate_limit_exceeded' || result.error.statusCode === 429) {
-              retries--;
-              if (retries > 0) {
-                console.warn(`⏳ Rate limit hit for batch ${batchNumber}, waiting 2 seconds before retry...`);
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                continue;
-              } else {
-                // Batch failed after retries - store individual failures
-                console.error(`❌ Batch ${batchNumber} failed after retries:`, result.error);
-                batch.forEach(subscriber => {
-                  failedCount++;
-                  errors.push({ email: subscriber.email, error: result.error });
-                  failedEmails.push({
-                    email: subscriber.email,
-                    subscription_id: subscriber.id,
-                    post_slug: slug,
-                    post_type: isDevotional ? 'devotional' : 'journal-post',
-                    post_title: title,
-                    error_type: 'rate_limit_exceeded',
-                    error_message: result.error.message || JSON.stringify(result.error),
-                    error_code: 429,
-                    status: 'pending'
-                  });
-                });
-                batchSent = true;
-              }
-            } else {
-              // Non-rate-limit error
-              console.error(`❌ Batch ${batchNumber} failed:`, result.error);
-              batch.forEach(subscriber => {
-                failedCount++;
-                errors.push({ email: subscriber.email, error: result.error });
-                failedEmails.push({
-                  email: subscriber.email,
-                  subscription_id: subscriber.id,
-                  post_slug: slug,
-                  post_type: isDevotional ? 'devotional' : 'journal-post',
-                  post_title: title,
-                  error_type: result.error.name || 'unknown',
-                  error_message: result.error.message || JSON.stringify(result.error),
-                  error_code: result.error.statusCode || 500,
-                  status: 'pending'
-                });
-              });
-              batchSent = true;
-            }
-          } else {
-            // Batch success - check individual results
-            const raw = result?.data;
-            const batchResults = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : null);
-
-            // Resend batch responses may not include per-recipient results. If they don't, treat the batch as accepted.
-            if (!batchResults) {
-              sentCount += batch.length;
-            } else {
-              const n = Math.min(batchResults.length, batch.length);
-              for (let j = 0; j < n; j++) {
-                const emailResult = batchResults[j];
-                const subscriber = batch[j];
-                if (emailResult?.error) {
-                  failedCount++;
-                  errors.push({ email: subscriber.email, error: emailResult.error });
-                  failedEmails.push({
-                    email: subscriber.email,
-                    subscription_id: subscriber.id,
-                    post_slug: slug,
-                    post_type: isDevotional ? 'devotional' : 'journal-post',
-                    post_title: title,
-                    error_type: emailResult.error.name || 'unknown',
-                    error_message: emailResult.error.message || JSON.stringify(emailResult.error),
-                    error_code: emailResult.error.statusCode || 500,
-                    status: 'pending'
-                  });
-                } else {
-                  sentCount++;
-                }
-              }
-
-              // If Resend returned fewer results than recipients, treat the rest as accepted.
-              if (batch.length > n) {
-                sentCount += (batch.length - n);
-              }
-            }
-            console.log(`✅ Batch ${batchNumber} completed: ${sentCount} sent, ${failedCount} failed`);
-            batchSent = true;
-          }
-        } catch (batchError) {
-          // Check if it's a rate limit error
-          if (batchError.message?.includes('rate_limit') || batchError.statusCode === 429) {
-            retries--;
-            if (retries > 0) {
-              console.warn(`⏳ Rate limit hit for batch ${batchNumber}, waiting 2 seconds before retry...`);
-              await new Promise(resolve => setTimeout(resolve, 2000));
-              continue;
-            } else {
-              console.error(`❌ Batch ${batchNumber} error after retries:`, batchError);
-              batch.forEach(subscriber => {
-                failedCount++;
-                errors.push({ email: subscriber.email, error: batchError.message });
-                failedEmails.push({
-                  email: subscriber.email,
-                  subscription_id: subscriber.id,
-                  post_slug: slug,
-                  post_type: isDevotional ? 'devotional' : 'journal-post',
-                  post_title: title,
-                  error_type: 'rate_limit_exceeded',
-                  error_message: batchError.message,
-                  error_code: 429,
-                  status: 'pending'
-                });
-              });
-              batchSent = true;
-            }
-          } else {
-            // Non-rate-limit error
-            console.error(`❌ Batch ${batchNumber} error:`, batchError);
-            batch.forEach(subscriber => {
-              failedCount++;
-              errors.push({ email: subscriber.email, error: batchError.message });
-              failedEmails.push({
-                email: subscriber.email,
-                subscription_id: subscriber.id,
-                post_slug: slug,
-                post_type: isDevotional ? 'devotional' : 'journal-post',
-                post_title: title,
-                error_type: batchError.name || 'unknown',
-                error_message: batchError.message,
-                error_code: batchError.statusCode || 500,
-                status: 'pending'
-              });
-            });
-            batchSent = true;
-          }
-        }
+      for (const { recipient, error } of failures) {
+        errors.push({ email: recipient.email, error });
+        failedEmails.push({
+          email: recipient.email,
+          subscription_id: recipient.id,
+          post_slug: slug,
+          post_type: isDevotional ? 'devotional' : 'journal-post',
+          post_title: title,
+          error_type: error.name || 'unknown',
+          error_message: error.message || JSON.stringify(error),
+          error_code: error.statusCode || 500,
+          status: 'pending',
+        });
       }
 
-      // Small delay between batches to respect rate limits (100ms = 10 batches/second max)
-      // With 10 req/sec, we can send batches faster, but add small buffer
-      if (i + BATCH_SIZE < subscribers.length) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-    }
+      console.log(`✅ Broadcast complete: ${sentCount} sent, ${failedCount} failed`);
     } finally {
       if (isDevotional && claimedDevotional && dedupeDay && sentCount === 0) {
         await releaseDevotionalBroadcastClaim(supabaseAdmin, slug, dedupeDay);
