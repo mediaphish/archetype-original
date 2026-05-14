@@ -156,7 +156,8 @@ export default async function handler(req, res) {
       // Build batch array for Resend
       const batchEmails = batch.map(recipientEmail => ({
         from: fromEmail,
-        to: recipientEmail,
+        // Resend batch API requires `to` as an array of addresses (not a single string).
+        to: [String(recipientEmail || '').trim()],
         subject: `New Operators Event: ${event.title}`,
         html: buildEmailHtml(recipientEmail)
       }));
