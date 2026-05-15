@@ -203,6 +203,8 @@ export default async function handler(req, res) {
     let failedCount = 0;
     const errors = [];
     const failedEmails = [];
+    /** If false, broadcast threw before finishing — do not release dedupe (partial sends may have occurred). */
+    let broadcastSettled = false;
 
     try {
       console.log(`📦 Sending to ${subscribers.length} subscriber(s) (single-mail broadcast)...`);
@@ -233,9 +235,16 @@ export default async function handler(req, res) {
         });
       }
 
+      broadcastSettled = true;
       console.log(`✅ Broadcast complete: ${sentCount} sent, ${failedCount} failed`);
     } finally {
-      if (isDevotional && claimedDevotional && dedupeDay && sentCount === 0) {
+      if (
+        isDevotional &&
+        claimedDevotional &&
+        dedupeDay &&
+        sentCount === 0 &&
+        broadcastSettled
+      ) {
         await releaseDevotionalBroadcastClaim(supabaseAdmin, slug, dedupeDay);
       }
     }
