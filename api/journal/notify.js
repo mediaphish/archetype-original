@@ -16,6 +16,7 @@ import {
   isDevotionalNotifyEnabled,
 } from "../../lib/journal-devotional-notify-guards.js";
 import { resendBroadcastSameHtml } from "../../lib/resend-broadcast-same-html.js";
+import { sendDuplicateApologyBroadcast } from "../../lib/journal-duplicate-apology-broadcast.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -35,6 +36,7 @@ function escapeHtml(str = "") {
  * 
  * POST /api/journal/notify
  * Body: { postSlug: "post-slug" } or { post: { title, slug, email_summary, publish_date, ... } }
+ * Body: { send_duplicate_apology: true } — one-time apology for duplicate devotional emails (requires CRON_SECRET when set)
  */
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -42,7 +44,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { postSlug, post } = req.body || {};
+    const { postSlug, post, send_duplicate_apology } = req.body || {};
+
+    if (send_duplicate_apology === true) {
+      const auth = checkDevotionalNotifyAuth(req);
+      if (!auth.ok) {
+        return res.status(auth.status).json({ error: auth.error });
+      }
+      if (!process.env.RESEND_API_KEY) {
+        return res.status(500).json({ error: "Email provider is not configured." });
+      }
+      const result = await sendDuplicateApologyBroadcast(supabaseAdmin, resend);
+      if (!result.ok) {
+        return res.status(result.status || 500).json({ error: result.error });
+      }
+      return res.status(200).json(result);
+    }
     
     // If postSlug is provided, fetch post from knowledge corpus
     // Check both journal-post and devotional types

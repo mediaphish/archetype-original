@@ -17,10 +17,10 @@ if (process.env.CRON_SECRET) {
   headers.Authorization = `Bearer ${process.env.CRON_SECRET}`;
 }
 
-const res = await fetch(`${SITE_URL}/api/journal/send-duplicate-apology`, {
+const res = await fetch(`${SITE_URL}/api/journal/notify`, {
   method: 'POST',
   headers,
-  body: '{}',
+  body: JSON.stringify({ send_duplicate_apology: true }),
 });
 
 const body = await res.json().catch(() => ({}));
