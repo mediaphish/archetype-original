@@ -122,6 +122,7 @@
     { "src": "/api/cron/ao/competitor-digest", "dest": "/api/cron/ao/competitor-digest.js" },
         { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
         { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
+        { "src": "/api/journal/send-duplicate-apology", "dest": "/api/journal/send-duplicate-apology.js" },
         { "src": "/api/journal/retry-failed-emails", "dest": "/api/journal/retry-failed-emails.js" },
         { "src": "/api/journal/check-subscription", "dest": "/api/journal/check-subscription.js" },
         { "src": "/api/journal/diagnose-subscriptions", "dest": "/api/journal/diagnose-subscriptions.js" },
