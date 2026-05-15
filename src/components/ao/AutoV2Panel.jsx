@@ -14,6 +14,8 @@ import React, {
   useMemo,
 } from 'react';
 
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+
 // ─── Artifact parsing ─────────────────────────────────────────────────────────
 
 function parseArtifact(text) {
@@ -238,9 +240,9 @@ function QuoteCardPreview({ content }) {
 
 function ListArtifact({ content, label }) {
   return (
-    <div className="space-y-3">
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</p>
-      <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed bg-white border border-gray-200 rounded-xl p-4 max-h-80 overflow-y-auto">
+    <div className="flex flex-col flex-1 min-h-0 space-y-3">
+      <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{label}</p>
+      <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
         {content}
       </div>
     </div>
@@ -249,9 +251,9 @@ function ListArtifact({ content, label }) {
 
 function DraftArtifact({ content, label }) {
   return (
-    <div className="space-y-3">
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</p>
-      <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed bg-white border border-gray-200 rounded-xl p-4 max-h-80 overflow-y-auto">
+    <div className="flex flex-col flex-1 min-h-0 space-y-3">
+      <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{label}</p>
+      <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
         {content}
       </div>
     </div>
@@ -286,9 +288,16 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4">
         {generatedImages?.length > 0 && (
-          <div className="space-y-3">
+          <div
+            className={
+              artifact
+                ? 'max-h-[min(50vh,24rem)] shrink-0 overflow-y-auto'
+                : 'min-h-0 flex-1 overflow-y-auto'
+            }
+          >
+            <div className="space-y-3">
             {generatedImages.map((img) => (
               <div key={`${img.card}-${img.url}`} className="rounded-xl overflow-hidden border border-gray-200 bg-black">
                 <img
@@ -304,11 +313,12 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
                 ) : null}
               </div>
             ))}
+            </div>
           </div>
         )}
 
         {!artifact && (!generatedImages || generatedImages.length === 0) && (
-          <div className="flex flex-col items-center justify-center text-center py-10">
+          <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
             <AOMark className="w-8 h-8 text-gray-200 mb-3" />
             <p className="text-xs text-gray-400 leading-relaxed">
               Quote cards, drafts, and content will appear here as you work.
@@ -349,9 +359,9 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
         )}
 
         {artifact?.type === 'list' && (
-          <>
+          <div className="flex flex-col flex-1 min-h-0 gap-3">
             <ListArtifact content={artifact.content} label={artifact.label} />
-            <div className="flex flex-col gap-2">
+            <div className="flex shrink-0 flex-col gap-2">
               <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
                 Approve all
               </button>
@@ -359,13 +369,13 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
                 Revise
               </button>
             </div>
-          </>
+          </div>
         )}
 
         {artifact?.type === 'draft' && (
-          <>
+          <div className="flex flex-col flex-1 min-h-0 gap-3">
             <DraftArtifact content={artifact.content} label={artifact.label} />
-            <div className="flex flex-col gap-2">
+            <div className="flex shrink-0 flex-col gap-2">
               <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
                 Approve
               </button>
@@ -373,21 +383,21 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
                 Revise
               </button>
             </div>
-          </>
+          </div>
         )}
 
         {artifact?.type === 'captions' && (
-          <>
-            <div className="space-y-3">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{artifact.label}</p>
-              <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed bg-white border border-gray-200 rounded-xl p-4 max-h-80 overflow-y-auto">
+          <div className="flex flex-col flex-1 min-h-0 gap-3">
+            <div className="flex flex-col flex-1 min-h-0 space-y-3">
+              <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{artifact.label}</p>
+              <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
                 {artifact.content}
               </div>
             </div>
-            <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-700 leading-relaxed">
+            <div className="flex-shrink-0 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs leading-relaxed text-blue-700">
               Approve these captions to send the full package to Design.
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex shrink-0 flex-col gap-2">
               <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
                 Approve captions — ready for Design
               </button>
@@ -395,7 +405,7 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
                 Revise captions
               </button>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -967,12 +977,15 @@ export default function AutoV2Panel({ onNavigate, className }) {
             <button
               type="button"
               onClick={() => setSidebarOpen((o) => !o)}
-              className="text-gray-400 hover:text-gray-700 transition-colors md:hidden"
-              aria-label="Toggle sidebar"
+              className="text-gray-400 transition-colors hover:text-gray-700"
+              aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+              title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              {sidebarOpen ? (
+                <PanelLeftClose className="h-4 w-4" aria-hidden strokeWidth={2} />
+              ) : (
+                <PanelLeftOpen className="h-4 w-4" aria-hidden strokeWidth={2} />
+              )}
             </button>
             {contextPill ? (
               <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
