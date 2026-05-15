@@ -258,7 +258,7 @@ function DraftArtifact({ content, label }) {
   );
 }
 
-function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewAll, onClose, onClearGenerated }) {
+function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewAll, onClose, onClearGenerated, onGeneratedImageError }) {
   return (
     <div className="w-64 flex-shrink-0 border-l border-gray-200 bg-gray-50 flex flex-col">
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
@@ -291,7 +291,12 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
           <div className="space-y-3">
             {generatedImages.map((img) => (
               <div key={`${img.card}-${img.url}`} className="rounded-xl overflow-hidden border border-gray-200 bg-black">
-                <img src={img.url} alt={`Card ${img.card}`} className="w-full h-auto block" />
+                <img
+                  src={img.url}
+                  alt={`Card ${img.card}`}
+                  className="w-full h-auto block"
+                  onError={() => onGeneratedImageError?.(img.url)}
+                />
                 {formatImageAddedTime(img.addedAt) ? (
                   <p className="text-xs text-gray-400 text-center py-1.5 bg-black/80 border-t border-gray-800">
                     {formatImageAddedTime(img.addedAt)}
@@ -529,29 +534,42 @@ export default function AutoV2Panel({ onNavigate, className }) {
     const { artifact: a } = parseArtifact(raw);
     setArtifact(a || null);
 
-    // Images: scan ALL assistant messages and accumulate unique URLs
-    // This makes images persist across messages in the same thread
-    setGeneratedImages((prev) => {
-      const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
+    const lastBatchImgs = extractGeneratedImagesFromAssistantContent(raw);
+    // Full batch in one assistant reply replaces the gallery; smaller batches merge with existing
+    if (lastBatchImgs.length >= 3) {
       const seen = new Set();
-      const allImages = [];
-      for (const m of allMsgs) {
-        if (m.role !== 'assistant') continue;
-        const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
-        for (const img of imgs) {
-          const key = img.url;
-          if (seen.has(key)) continue;
-          seen.add(key);
-          const older = prevByUrl.get(key);
-          allImages.push({
-            ...img,
-            addedAt: older?.addedAt ?? Date.now(),
-          });
-        }
+      const now = Date.now();
+      const replaced = [];
+      for (const img of lastBatchImgs) {
+        if (!img.url || seen.has(img.url)) continue;
+        seen.add(img.url);
+        replaced.push({ ...img, addedAt: now });
       }
-      if (allImages.length > 0) return allImages;
-      return prev;
-    });
+      setGeneratedImages(replaced);
+    } else {
+      // Images: scan ALL assistant messages and accumulate unique URLs
+      setGeneratedImages((prev) => {
+        const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
+        const seenUrls = new Set();
+        const allImages = [];
+        for (const m of allMsgs) {
+          if (m.role !== 'assistant') continue;
+          const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
+          for (const img of imgs) {
+            const key = img.url;
+            if (!key || seenUrls.has(key)) continue;
+            seenUrls.add(key);
+            const older = prevByUrl.get(key);
+            allImages.push({
+              ...img,
+              addedAt: older?.addedAt ?? Date.now(),
+            });
+          }
+        }
+        if (allImages.length > 0) return allImages;
+        return prev;
+      });
+    }
     // If no images found in any message, leave existing images in place
     // Images only clear when starting a new thread (handled in startNewThread)
   }, []);
@@ -821,6 +839,12 @@ export default function AutoV2Panel({ onNavigate, className }) {
     sendMessage('Show me all cards in this batch.');
   }, [sendMessage]);
 
+  const handleGeneratedImageLoadError = useCallback((brokenUrl) => {
+    const u = String(brokenUrl || '');
+    if (!u) return;
+    setGeneratedImages((prev) => (prev || []).filter((p) => p.url !== u));
+  }, []);
+
   const publishCards = useCallback(async () => {
     if (!generatedImages || generatedImages.length === 0) {
       setError('No generated images found. Generate card images before publishing.');
@@ -1052,6 +1076,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
           onViewAll={handleViewAll}
           onClose={() => setArtifactOpen(false)}
           onClearGenerated={() => setGeneratedImages([])}
+          onGeneratedImageError={handleGeneratedImageLoadError}
         />
       )}
 
