@@ -338,7 +338,7 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
               </div>
               <div className="flex justify-between gap-2">
                 <span className="text-gray-400">Channels</span>
-                <span className="font-medium text-gray-600 text-right">LinkedIn · Facebook · X · IG</span>
+                <span className="font-medium text-gray-600 text-right">LinkedIn · Facebook · IG</span>
               </div>
             </div>
             <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-700 leading-relaxed">
@@ -905,10 +905,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
     sendMessage('Show me all cards in this batch.');
   }, [sendMessage]);
 
-  const handleGeneratedImageLoadError = useCallback((brokenUrl) => {
-    const u = String(brokenUrl || '');
-    if (!u) return;
-    setGeneratedImages((prev) => (prev || []).filter((p) => p.url !== u));
+  const handleGeneratedImageError = useCallback((url) => {
+    setGeneratedImages((prev) => prev.filter((img) => img.url !== url));
   }, []);
 
   const publishCards = useCallback(async () => {
@@ -1164,7 +1162,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
                 onViewAll={handleViewAll}
                 onClose={() => setArtifactOpen(false)}
                 onClearGenerated={() => setGeneratedImages([])}
-                onGeneratedImageError={handleGeneratedImageLoadError}
+                onGeneratedImageError={handleGeneratedImageError}
               />
             </div>
           </>
