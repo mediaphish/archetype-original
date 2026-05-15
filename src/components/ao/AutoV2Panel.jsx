@@ -56,6 +56,19 @@ function extractGeneratedImagesFromAssistantContent(content) {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
+function formatImageAddedTime(timestampMs) {
+  if (timestampMs == null || !Number.isFinite(timestampMs)) return '';
+  try {
+    return new Date(timestampMs).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  } catch {
+    return '';
+  }
+}
+
 function formatRelativeDate(iso) {
   if (!iso) return '';
   try {
@@ -245,29 +258,45 @@ function DraftArtifact({ content, label }) {
   );
 }
 
-function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewAll, onClose }) {
+function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewAll, onClose, onClearGenerated }) {
   return (
     <div className="w-64 flex-shrink-0 border-l border-gray-200 bg-gray-50 flex flex-col">
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
           {artifact?.label || (generatedImages?.length > 0 ? 'Generated cards' : 'Artifact')}
         </span>
-        <button
-          type="button"
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
-          aria-label="Close artifact panel"
-        >
-          <CloseIcon />
-        </button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            type="button"
+            onClick={onClearGenerated}
+            disabled={!generatedImages?.length}
+            className="text-xs font-medium text-gray-600 px-2 py-1 rounded-md hover:bg-gray-200/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            aria-label="Clear generated cards"
+          >
+            Clear
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
+            aria-label="Close artifact panel"
+          >
+            <CloseIcon />
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
         {generatedImages?.length > 0 && (
           <div className="space-y-3">
             {generatedImages.map((img) => (
-              <div key={img.card} className="rounded-xl overflow-hidden border border-gray-200 bg-black">
+              <div key={`${img.card}-${img.url}`} className="rounded-xl overflow-hidden border border-gray-200 bg-black">
                 <img src={img.url} alt={`Card ${img.card}`} className="w-full h-auto block" />
+                {formatImageAddedTime(img.addedAt) ? (
+                  <p className="text-xs text-gray-400 text-center py-1.5 bg-black/80 border-t border-gray-800">
+                    {formatImageAddedTime(img.addedAt)}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>
@@ -502,22 +531,27 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
     // Images: scan ALL assistant messages and accumulate unique URLs
     // This makes images persist across messages in the same thread
-    const seen = new Set();
-    const allImages = [];
-    for (const m of allMsgs) {
-      if (m.role !== 'assistant') continue;
-      const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
-      for (const img of imgs) {
-        const key = img.url;
-        if (!seen.has(key)) {
+    setGeneratedImages((prev) => {
+      const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
+      const seen = new Set();
+      const allImages = [];
+      for (const m of allMsgs) {
+        if (m.role !== 'assistant') continue;
+        const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
+        for (const img of imgs) {
+          const key = img.url;
+          if (seen.has(key)) continue;
           seen.add(key);
-          allImages.push(img);
+          const older = prevByUrl.get(key);
+          allImages.push({
+            ...img,
+            addedAt: older?.addedAt ?? Date.now(),
+          });
         }
       }
-    }
-    if (allImages.length > 0) {
-      setGeneratedImages(allImages);
-    }
+      if (allImages.length > 0) return allImages;
+      return prev;
+    });
     // If no images found in any message, leave existing images in place
     // Images only clear when starting a new thread (handled in startNewThread)
   }, []);
@@ -1017,6 +1051,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
           onRevise={handleRevise}
           onViewAll={handleViewAll}
           onClose={() => setArtifactOpen(false)}
+          onClearGenerated={() => setGeneratedImages([])}
         />
       )}
 
