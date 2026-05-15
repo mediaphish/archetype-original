@@ -42,11 +42,29 @@ export default async function handler(req, res) {
   try {
     console.log('🔄 Starting automatic retry of failed emails...');
 
+    // Devotional mass-mail retries re-sent the same "New Devotional" to subscribers who already
+    // received it (every 6h). Cancel pending devotional rows; journal-post retries continue.
+    const { error: cancelDevotionalError } = await supabaseAdmin
+      .from('journal_email_failures')
+      .update({
+        status: 'failed',
+        resolved_at: new Date().toISOString(),
+        error_message:
+          'Devotional mass-mail auto-retry disabled to prevent duplicate devotional emails.',
+      })
+      .eq('status', 'pending')
+      .eq('post_type', 'devotional');
+
+    if (cancelDevotionalError) {
+      console.error('Error cancelling pending devotional email retries:', cancelDevotionalError);
+    }
+
     // Get pending failures that haven't exceeded max retries
     const { data: failedEmails, error: queryError } = await supabaseAdmin
       .from("journal_email_failures")
       .select("*")
       .eq("status", "pending")
+      .neq("post_type", "devotional")
       .lt("retry_count", MAX_RETRIES)
       .order("created_at", { ascending: true })
       .limit(100); // Process up to 100 at a time to avoid timeout

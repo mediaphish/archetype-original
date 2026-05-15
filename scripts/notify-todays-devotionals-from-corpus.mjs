@@ -69,6 +69,9 @@ async function main() {
   }
 
   const headers = { 'Content-Type': 'application/json' };
+  if (process.env.CRON_SECRET) {
+    headers.Authorization = `Bearer ${process.env.CRON_SECRET}`;
+  }
 
   for (const post of todays) {
     const slug = post.slug;

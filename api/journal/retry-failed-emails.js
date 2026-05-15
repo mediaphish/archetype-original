@@ -50,6 +50,9 @@ export default async function handler(req, res) {
       query = query.eq("status", status);
     }
 
+    // Never auto-retry devotional mass mail (causes duplicate "New Devotional" sends).
+    query = query.neq('post_type', 'devotional');
+
     // Optional: filter by error code
     if (error_code) {
       query = query.eq("error_code", error_code);

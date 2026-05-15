@@ -5,10 +5,16 @@ import {
   publicationTimeZone,
   publishDateCalendarOnly,
 } from "../../lib/publish-eligibility.mjs";
+import { claimDevotionalBroadcast } from "../../lib/journal-devotional-notify-dedupe.js";
 import {
-  claimDevotionalBroadcast,
-  releaseDevotionalBroadcastClaim,
-} from "../../lib/journal-devotional-notify-dedupe.js";
+  filterDevotionalRecipientsNotYetSent,
+  recordDevotionalRecipientsSent,
+} from "../../lib/journal-devotional-recipient-dedupe.js";
+import {
+  checkDevotionalNotifyAuth,
+  devotionalPublishDateGuard,
+  isDevotionalNotifyEnabled,
+} from "../../lib/journal-devotional-notify-guards.js";
 import { resendBroadcastSameHtml } from "../../lib/resend-broadcast-same-html.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -83,6 +89,31 @@ export default async function handler(req, res) {
     const postType = type || 'journal-post';
     const isDevotional = postType === 'devotional';
 
+    if (isDevotional) {
+      if (!isDevotionalNotifyEnabled()) {
+        return res.status(200).json({
+          ok: true,
+          sent: 0,
+          skipped: "devotional_notify_disabled",
+        });
+      }
+      const auth = checkDevotionalNotifyAuth(req);
+      if (!auth.ok) {
+        return res.status(auth.status).json({ error: auth.error });
+      }
+      const dateGuard = devotionalPublishDateGuard(publish_date, postData);
+      if (!dateGuard.allowed) {
+        return res.status(200).json({
+          ok: true,
+          sent: 0,
+          skipped: dateGuard.skip,
+          publish_calendar_date: dateGuard.pubDay,
+          today: dateGuard.todayStr,
+          post_slug: slug,
+        });
+      }
+    }
+
     // Get active subscribers, filtering by their preferences
     // For journal posts: only subscribers who have subscribe_journal_entries = true
     // For devotionals: only subscribers who have subscribe_devotionals = true
@@ -113,8 +144,8 @@ export default async function handler(req, res) {
       });
     }
 
-    let claimedDevotional = false;
     let dedupeDay = null;
+    let recipientsToSend = subscribers;
     if (isDevotional) {
       dedupeDay =
         publishDateCalendarOnly(publish_date ?? postData.date) ||
@@ -136,7 +167,21 @@ export default async function handler(req, res) {
           details: claim.error,
         });
       }
-      if (claim.claimed) claimedDevotional = true;
+      recipientsToSend = await filterDevotionalRecipientsNotYetSent(
+        supabaseAdmin,
+        slug,
+        dedupeDay,
+        subscribers
+      );
+      if (recipientsToSend.length === 0) {
+        return res.status(200).json({
+          ok: true,
+          sent: 0,
+          skipped: "all_recipients_already_sent",
+          post_slug: slug,
+          publish_calendar_date: dedupeDay,
+        });
+      }
     }
 
     // Prepare email content
@@ -203,30 +248,33 @@ export default async function handler(req, res) {
     let failedCount = 0;
     const errors = [];
     const failedEmails = [];
-    /** If false, broadcast threw before finishing — do not release dedupe (partial sends may have occurred). */
-    let broadcastSettled = false;
+    let sentAddresses = [];
 
-    try {
-      console.log(`📦 Sending to ${subscribers.length} subscriber(s) (single-mail broadcast)...`);
+    console.log(
+      `📦 Sending to ${recipientsToSend.length} subscriber(s) (single-mail broadcast)...`
+    );
 
-      const { sent, failed, failures } = await resendBroadcastSameHtml({
+    const { sent, failed, failures, sentAddresses: sentList } =
+      await resendBroadcastSameHtml({
         resend,
         from,
         subject: emailSubject,
         html: emailHtml,
-        recipients: subscribers,
+        recipients: recipientsToSend,
       });
 
-      sentCount = sent;
-      failedCount = failed;
+    sentCount = sent;
+    failedCount = failed;
+    sentAddresses = sentList || [];
 
-      for (const { recipient, error } of failures) {
-        errors.push({ email: recipient.email, error });
+    for (const { recipient, error } of failures) {
+      errors.push({ email: recipient.email, error });
+      if (!isDevotional) {
         failedEmails.push({
           email: recipient.email,
           subscription_id: recipient.id,
           post_slug: slug,
-          post_type: isDevotional ? 'devotional' : 'journal-post',
+          post_type: 'journal-post',
           post_title: title,
           error_type: error.name || 'unknown',
           error_message: error.message || JSON.stringify(error),
@@ -234,20 +282,19 @@ export default async function handler(req, res) {
           status: 'pending',
         });
       }
-
-      broadcastSettled = true;
-      console.log(`✅ Broadcast complete: ${sentCount} sent, ${failedCount} failed`);
-    } finally {
-      if (
-        isDevotional &&
-        claimedDevotional &&
-        dedupeDay &&
-        sentCount === 0 &&
-        broadcastSettled
-      ) {
-        await releaseDevotionalBroadcastClaim(supabaseAdmin, slug, dedupeDay);
-      }
     }
+
+    if (isDevotional && dedupeDay && sentAddresses.length > 0) {
+      await recordDevotionalRecipientsSent(
+        supabaseAdmin,
+        slug,
+        dedupeDay,
+        sentAddresses,
+        "journal_notify"
+      );
+    }
+
+    console.log(`✅ Broadcast complete: ${sentCount} sent, ${failedCount} failed`);
 
     // Store all failures in database
     if (failedEmails.length > 0) {

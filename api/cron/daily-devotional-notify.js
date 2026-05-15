@@ -14,10 +14,12 @@ import {
   publicationTimeZone,
   publishDateCalendarOnly,
 } from "../../lib/publish-eligibility.mjs";
+import { claimDevotionalBroadcast } from "../../lib/journal-devotional-notify-dedupe.js";
 import {
-  claimDevotionalBroadcast,
-  releaseDevotionalBroadcastClaim,
-} from "../../lib/journal-devotional-notify-dedupe.js";
+  filterDevotionalRecipientsNotYetSent,
+  recordDevotionalRecipientsSent,
+} from "../../lib/journal-devotional-recipient-dedupe.js";
+import { isDevotionalNotifyEnabled } from "../../lib/journal-devotional-notify-guards.js";
 import { resendBroadcastSameHtml } from "../../lib/resend-broadcast-same-html.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -51,6 +53,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (!isDevotionalNotifyEnabled()) {
+      console.log('⏸️ Devotional notify disabled (DEVOTIONAL_NOTIFY_ENABLED).');
+      return res.status(200).json({
+        ok: true,
+        message: 'Devotional notify disabled.',
+        sent: 0,
+        skipped: 'devotional_notify_disabled',
+      });
+    }
+
     if (!process.env.RESEND_API_KEY) {
       console.error('❌ RESEND_API_KEY is not set; cannot send devotional emails.');
       return res.status(500).json({
@@ -157,7 +169,17 @@ export default async function handler(req, res) {
         throw new Error(claim.error);
       }
 
-      const totalSentBefore = totalSent;
+      let recipientsToSend = await filterDevotionalRecipientsNotYetSent(
+        supabaseAdmin,
+        slug,
+        pubDay,
+        subscribers
+      );
+      if (recipientsToSend.length === 0) {
+        console.log(`⏭️ Skipping ${slug} — all subscribers already received for ${pubDay}`);
+        skippedAlreadySent += 1;
+        continue;
+      }
 
       console.log(`📧 Processing devotional: ${title} (${slug})`);
 
@@ -194,16 +216,16 @@ export default async function handler(req, res) {
         </div>
       `;
 
-      const failedEmails = [];
-
-      console.log(`📦 Broadcasting ${slug} to ${subscribers.length} subscriber(s) (single-mail)...`);
+      console.log(
+        `📦 Broadcasting ${slug} to ${recipientsToSend.length} subscriber(s) (single-mail)...`
+      );
 
       const { sent, failed, failures, sentAddresses } = await resendBroadcastSameHtml({
         resend,
         from,
         subject: `New Devotional: ${escapeHtml(title)}`,
         html: emailHtml,
-        recipients: subscribers,
+        recipients: recipientsToSend,
       });
 
       totalSent += sent;
@@ -212,38 +234,19 @@ export default async function handler(req, res) {
 
       for (const { recipient, error } of failures) {
         errors.push({ email: recipient.email, devotional: slug, error });
-        failedEmails.push({
-          email: recipient.email,
-          subscription_id: recipient.id,
-          post_slug: slug,
-          post_type: 'devotional',
-          post_title: title,
-          error_type: error.name || 'unknown',
-          error_message: error.message || JSON.stringify(error),
-          error_code: error.statusCode || 500,
-          status: 'pending',
-        });
+      }
+
+      if (sentAddresses?.length > 0) {
+        await recordDevotionalRecipientsSent(
+          supabaseAdmin,
+          slug,
+          pubDay,
+          sentAddresses,
+          'daily_cron'
+        );
       }
 
       console.log(`✅ Broadcast for ${slug}: ${sent} sent, ${failed} failed (this devotional)`);
-
-      // Store all failures in database
-      if (failedEmails.length > 0) {
-        try {
-          await supabaseAdmin.from('journal_email_failures').insert(failedEmails);
-          console.log(`📝 Stored ${failedEmails.length} email failures in database for retry`);
-        } catch (dbError) {
-          console.error(`Failed to store email failures in database:`, dbError);
-        }
-      }
-
-      const sentForThisDevotional = totalSent - totalSentBefore;
-      if (sentForThisDevotional === 0) {
-        await releaseDevotionalBroadcastClaim(supabaseAdmin, slug, pubDay);
-        console.warn(
-          `⚠️ Released send lock for ${slug} (${pubDay}): no successful deliveries — a later run can retry`
-        );
-      }
     }
 
     console.log(`✅ Daily notification complete: ${totalSent} sent, ${totalFailed} failed, skipped_duplicates=${skippedAlreadySent}`);

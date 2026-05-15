@@ -64,4 +64,5 @@ jobs:
       env:
         PUBLIC_SITE_URL: https://www.archetypeoriginal.com
         NOTIFY_DELAY_MS: '90000'
+        CRON_SECRET: ${{ secrets.CRON_SECRET }}
       run: node scripts/notify-todays-devotionals-from-corpus.mjs
