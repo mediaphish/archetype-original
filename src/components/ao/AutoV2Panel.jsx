@@ -260,7 +260,7 @@ function DraftArtifact({ content, label }) {
 
 function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewAll, onClose, onClearGenerated, onGeneratedImageError }) {
   return (
-    <div className="w-64 flex-shrink-0 border-l border-gray-200 bg-gray-50 flex flex-col">
+    <div className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
           {artifact?.label || (generatedImages?.length > 0 ? 'Generated cards' : 'Artifact')}
@@ -465,10 +465,66 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [startingNew, setStartingNew] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generatedImages, setGeneratedImages] = useState([]);
+  const [splitPercent, setSplitPercent] = useState(50);
+  const [dividerDragging, setDividerDragging] = useState(false);
 
+  const splitContainerRef = useRef(null);
+  const userAdjustedSplit = useRef(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  const isJournalEntry = useMemo(() => {
+    if (!artifact) return false;
+    const label = String(artifact.label || '').toLowerCase();
+    const content = artifact.content || '';
+    const draftWithFm = artifact.type === 'draft' && content.startsWith('---') && content.includes('publish_date');
+    return (
+      artifact.type === 'journal' ||
+      draftWithFm ||
+      label.includes('journal') ||
+      label.includes('ali series') ||
+      label.includes('conditions') ||
+      (content.startsWith('---') && content.includes('publish_date'))
+    );
+  }, [artifact]);
+
+  useEffect(() => {
+    if (userAdjustedSplit.current) return;
+    if (!artifactOpen) {
+      setSplitPercent(50);
+      return;
+    }
+    if (isJournalEntry) setSplitPercent(30);
+    else setSplitPercent(50);
+  }, [isJournalEntry, artifactOpen]);
+
+  const handleDividerMouseDown = useCallback((e) => {
+    e.preventDefault();
+    userAdjustedSplit.current = true;
+    const container = splitContainerRef.current;
+    if (!container) return;
+
+    setDividerDragging(true);
+    const prevBodyCursor = document.body.style.cursor;
+    document.body.style.cursor = 'col-resize';
+
+    const onMouseMove = (moveEvent) => {
+      const rect = container.getBoundingClientRect();
+      const newPercent = ((moveEvent.clientX - rect.left) / rect.width) * 100;
+      setSplitPercent(Math.min(80, Math.max(20, newPercent)));
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      setDividerDragging(false);
+      document.body.style.cursor = prevBodyCursor || '';
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }, []);
 
   const focusChatInput = useCallback(() => {
     requestAnimationFrame(() => {
@@ -899,9 +955,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
         />
       )}
 
-      <div className="flex-1 flex flex-col min-w-0">
-
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white flex-shrink-0">
+      <div ref={splitContainerRef} className="flex flex-1 min-h-0 min-w-0 flex-row overflow-hidden">
+        <div
+          className={`flex min-h-0 min-w-0 flex-col overflow-hidden ${dividerDragging ? 'select-none' : ''} ${
+            artifactOpen ? '' : 'flex-1'
+          }`}
+          style={artifactOpen ? { width: `${splitPercent}%`, flexShrink: 0 } : undefined}
+        >
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -1065,20 +1126,37 @@ export default function AutoV2Panel({ onNavigate, className }) {
           </div>
           <p className="text-xs text-gray-400 mt-2 text-center">Shift + Enter for new line</p>
         </div>
-      </div>
+        </div>
 
-      {artifactOpen && (
-        <ArtifactPanel
-          artifact={artifact}
-          generatedImages={generatedImages}
-          onApprove={handleApprove}
-          onRevise={handleRevise}
-          onViewAll={handleViewAll}
-          onClose={() => setArtifactOpen(false)}
-          onClearGenerated={() => setGeneratedImages([])}
-          onGeneratedImageError={handleGeneratedImageLoadError}
-        />
-      )}
+        {artifactOpen && (
+          <>
+            <div
+              role="separator"
+              aria-orientation="vertical"
+              aria-label="Resize panels"
+              className={`w-1 shrink-0 cursor-col-resize select-none bg-gray-200 transition-colors hover:bg-ao-red ${
+                dividerDragging ? 'bg-ao-red' : ''
+              }`}
+              onMouseDown={handleDividerMouseDown}
+            />
+            <div
+              className={`flex min-h-0 min-w-0 shrink-0 flex-col overflow-hidden ${dividerDragging ? 'select-none' : ''}`}
+              style={{ width: `${100 - splitPercent}%`, flexShrink: 0 }}
+            >
+              <ArtifactPanel
+                artifact={artifact}
+                generatedImages={generatedImages}
+                onApprove={handleApprove}
+                onRevise={handleRevise}
+                onViewAll={handleViewAll}
+                onClose={() => setArtifactOpen(false)}
+                onClearGenerated={() => setGeneratedImages([])}
+                onGeneratedImageError={handleGeneratedImageLoadError}
+              />
+            </div>
+          </>
+        )}
+      </div>
 
     </div>
   );
