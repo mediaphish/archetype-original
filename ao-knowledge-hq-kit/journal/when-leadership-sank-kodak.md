@@ -1,7 +1,7 @@
 ---
 title: When Leadership Sank Kodak
 slug: when-leadership-sank-kodak
-publish_date: '2026-05-12'
+publish_date: '2025-08-26'
 created_at: '2025-08-26'
 updated_at: '2026-05-12'
 summary: >-
