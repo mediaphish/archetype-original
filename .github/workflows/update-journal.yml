@@ -35,13 +35,16 @@ jobs:
         
     - name: Process knowledge corpus and journal posts
       run: node scripts/build-knowledge.mjs
+
+    - name: Update devotional index (planning list)
+      run: node scripts/generate-devotional-index.mjs
       
-    - name: Commit knowledge changes (if any)
+    - name: Commit knowledge + devotional index changes (if any)
       id: corpus_commit
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add public/knowledge.json
+        git add public/knowledge.json notes/DEVOTIONAL_INDEX.md
         if git diff --staged --quiet; then
           echo "committed=false" >> "$GITHUB_OUTPUT"
         else

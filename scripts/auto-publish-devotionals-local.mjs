@@ -145,6 +145,7 @@ function readFrontmatter(filePath) {
 function ensureCleanScope(entries) {
   const allowedPrefixes = [
     'ao-knowledge-hq-kit/journal/devotionals/',
+    'notes/DEVOTIONAL_INDEX.md',
     'public/knowledge.json',
   ];
   const disallowed = entries
@@ -291,6 +292,12 @@ function main() {
   // Guardrail: check overlaps before publishing
   checkOverlaps(changedDevotionals);
 
+  // Update the devotional planning index (only rewrites if needed)
+  const indexRes = sh('node', ['scripts/generate-devotional-index.mjs'], { cwd: ROOT });
+  if (indexRes.status !== 0) {
+    fail('Failed to update the devotional planning index.', indexRes.stderr || indexRes.stdout);
+  }
+
   // Rebuild knowledge index
   const buildRes = sh('node', ['scripts/build-knowledge.mjs'], { cwd: ROOT });
   if (buildRes.status !== 0) {
@@ -300,6 +307,7 @@ function main() {
   // Stage devotionals + knowledge.json
   const addArgs = ['add', ...changedDevotionals];
   if (fs.existsSync(KNOWLEDGE_JSON)) addArgs.push('public/knowledge.json');
+  if (fs.existsSync(path.join(ROOT, 'notes', 'DEVOTIONAL_INDEX.md'))) addArgs.push('notes/DEVOTIONAL_INDEX.md');
   const addRes = sh('git', addArgs, { cwd: ROOT });
   if (addRes.status !== 0) {
     fail('Failed to stage changes for publishing.', addRes.stderr || addRes.stdout);

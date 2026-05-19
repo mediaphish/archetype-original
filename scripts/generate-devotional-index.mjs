@@ -131,10 +131,8 @@ function generate() {
 
   const missing = devotionals.filter((d) => !d.publishDate || !d.title || !d.slug || !d.scriptureReference);
 
-  const now = new Date().toISOString();
   let md = '';
   md += `# Devotional index (for planning / duplicate checks)\n\n`;
-  md += `Generated: \`${now}\`\n\n`;
   md += `This file is auto-generated from the devotionals folder. It’s meant to be copy/paste friendly for sharing with other tools while you plan new devotionals.\n\n`;
   md += `## Devotionals (date, topic, scripture)\n\n`;
   md += `| Date | Topic (title) | Scripture reference | Slug | File |\n`;
@@ -169,8 +167,13 @@ function generate() {
   }
 
   ensureNotesDir();
-  fs.writeFileSync(OUTPUT_PATH, md, 'utf8');
+  const existing = fs.existsSync(OUTPUT_PATH) ? fs.readFileSync(OUTPUT_PATH, 'utf8') : '';
+  if (existing === md) {
+    console.log(`ℹ️  No changes: ${path.relative(ROOT_DIR, OUTPUT_PATH)} (${devotionals.length} devotionals)`);
+    return;
+  }
 
+  fs.writeFileSync(OUTPUT_PATH, md, 'utf8');
   console.log(`✅ Wrote ${path.relative(ROOT_DIR, OUTPUT_PATH)} (${devotionals.length} devotionals)`);
 }
 

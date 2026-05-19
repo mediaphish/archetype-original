@@ -1,7 +1,5 @@
 # Devotional index (for planning / duplicate checks)
 
-Generated: `2026-03-12T18:17:41.903Z`
-
 This file is auto-generated from the devotionals folder. It’s meant to be copy/paste friendly for sharing with other tools while you plan new devotionals.
 
 ## Devotionals (date, topic, scripture)
@@ -86,18 +84,69 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-03-17 | Removing the Weights That Cause Drift | Hebrews 12:1–2 (ESV) | `removing-the-weights-that-cause-drift` | `2026-03-17-removing-the-weights-that-cause-drift.md` |
 | 2026-03-18 | Discernment in How We Care | 1 Thessalonians 5:12–15 (ESV) | `discernment-in-how-we-care` | `2026-03-18-discernment-in-how-we-care.md` |
 | 2026-03-19 | Evidence of a Formed Leader | Galatians 5:22–25 (ESV) | `evidence-of-a-formed-leader` | `2026-03-19-evidence-of-a-formed-leader.md` |
-| 2026-03-20 | March 20 — Peace That Governs Decisions | Colossians 3:15–17 (ESV) | `peace-that-governs-decisions` | `2026-03-20-peace-that-governs-decisions.md` |
-| 2026-03-21 | March 21 — Strength That Comes From Within | Ephesians 3:16–19 (ESV) | `strength-that-comes-from-within` | `2026-03-21-strength-that-comes-from-within.md` |
-| 2026-03-22 | March 22 — Disciplined Self-Control Under Pressure | Titus 2:11–12 (ESV) | `disciplined-self-control-under-pressure` | `2026-03-22-disciplined-self-control-under-pressure.md` |
-| 2026-03-23 | March 23 — Standing Firm Without Aggression | 1 Corinthians 16:13–14 (ESV) | `standing-firm-without-aggression` | `2026-03-23-standing-firm-without-aggression.md` |
-| 2026-03-24 | March 24 — Guarding Against Quiet Drift | Hebrews 2:1 (ESV) | `guarding-against-quiet-drift` | `2026-03-24-guarding-against-quiet-drift.md` |
-| 2026-03-25 | March 25 — Endurance That Refuses Bitterness | Hebrews 12:14–15 (ESV) | `endurance-that-refuses-bitterness` | `2026-03-25-endurance-that-refuses-bitterness.md` |
-| 2026-03-26 | March 26 — Faithfulness in the Long Middle | 2 Thessalonians 3:13 (ESV) | `faithfulness-in-the-long-middle` | `2026-03-26-faithfulness-in-the-long-middle.md` |
-| 2026-03-27 | March 27 — Wisdom That Stays Teachable | James 3:17–18 (ESV) | `wisdom-that-stays-teachable` | `2026-03-27-wisdom-that-stays-teachable.md` |
-| 2026-03-28 | March 28 — Discernment About the Voices You Follow | 1 John 4:1 (ESV) | `discernment-about-the-voices-you-follow` | `2026-03-28-discernment-about-the-voices-you-follow.md` |
-| 2026-03-29 | March 29 — Integrity That Remains Consistent | Psalm 15:1–2 (ESV) | `integrity-that-remains-consistent` | `2026-03-29-integrity-that-remains-consistent.md` |
-| 2026-03-30 | March 30 — Deliberate Leadership in a Rushed World | Proverbs 21:5 (ESV) | `deliberate-leadership-in-a-rushed-world` | `2026-03-30-deliberate-leadership-in-a-rushed-world.md` |
-| 2026-03-31 | March 31 — A Life That Finishes Well | 2 Timothy 4:7–8 (ESV) | `a-life-that-finishes-well` | `2026-03-31-a-life-that-finishes-well.md` |
+| 2026-03-20 | March 20: Peace That Governs Decisions | Colossians 3:15–17 (ESV) | `peace-that-governs-decisions` | `2026-03-20-peace-that-governs-decisions.md` |
+| 2026-03-21 | March 21: Strength That Comes From Within | Ephesians 3:16–19 (ESV) | `strength-that-comes-from-within` | `2026-03-21-strength-that-comes-from-within.md` |
+| 2026-03-22 | March 22: Disciplined Self-Control Under Pressure | Titus 2:11–12 (ESV) | `disciplined-self-control-under-pressure` | `2026-03-22-disciplined-self-control-under-pressure.md` |
+| 2026-03-23 | March 23: Standing Firm Without Aggression | 1 Corinthians 16:13–14 (ESV) | `standing-firm-without-aggression` | `2026-03-23-standing-firm-without-aggression.md` |
+| 2026-03-24 | March 24: Guarding Against Quiet Drift | Hebrews 2:1 (ESV) | `guarding-against-quiet-drift` | `2026-03-24-guarding-against-quiet-drift.md` |
+| 2026-03-25 | March 25: Endurance That Refuses Bitterness | Hebrews 12:14–15 (ESV) | `endurance-that-refuses-bitterness` | `2026-03-25-endurance-that-refuses-bitterness.md` |
+| 2026-03-26 | March 26: Faithfulness in the Long Middle | 2 Thessalonians 3:13 (ESV) | `faithfulness-in-the-long-middle` | `2026-03-26-faithfulness-in-the-long-middle.md` |
+| 2026-03-27 | March 27: Wisdom That Stays Teachable | James 3:17–18 (ESV) | `wisdom-that-stays-teachable` | `2026-03-27-wisdom-that-stays-teachable.md` |
+| 2026-03-28 | March 28: Discernment About the Voices You Follow | 1 John 4:1 (ESV) | `discernment-about-the-voices-you-follow` | `2026-03-28-discernment-about-the-voices-you-follow.md` |
+| 2026-03-29 | March 29: Integrity That Remains Consistent | Psalm 15:1–2 (ESV) | `integrity-that-remains-consistent` | `2026-03-29-integrity-that-remains-consistent.md` |
+| 2026-03-30 | March 30: Deliberate Leadership in a Rushed World | Proverbs 21:5 (ESV) | `deliberate-leadership-in-a-rushed-world` | `2026-03-30-deliberate-leadership-in-a-rushed-world.md` |
+| 2026-03-31 | March 31: A Life That Finishes Well | 2 Timothy 4:7–8 (ESV) | `a-life-that-finishes-well` | `2026-03-31-a-life-that-finishes-well.md` |
+| 2026-04-01 | April 1: Steady Direction | Luke 9:51–53 (ESV) | `steady-direction` | `2026-04-01-steady-direction.md` |
+| 2026-04-02 | April 2: Faithful Preparation | Luke 19:28–31 (ESV) | `faithful-preparation` | `2026-04-02-faithful-preparation.md` |
+| 2026-04-03 | April 3: Grounded Recognition | John 12:12–15 (ESV) | `grounded-recognition` | `2026-04-03-grounded-recognition.md` |
+| 2026-04-04 | April 4: Compassionate Clarity | Luke 19:41–44 (ESV) | `compassionate-clarity` | `2026-04-04-compassionate-clarity.md` |
+| 2026-04-05 | April 5: Protecting the Mission | Mark 11:15–18 (ESV) | `protecting-the-mission` | `2026-04-05-protecting-the-mission.md` |
+| 2026-04-06 | April 6: Discerning the Trap | Matthew 22:15–18 (ESV) | `discerning-the-trap` | `2026-04-06-discerning-the-trap.md` |
+| 2026-04-07 | April 7: Fruitful Surrender | John 12:24–26 (ESV) | `fruitful-surrender` | `2026-04-07-fruitful-surrender.md` |
+| 2026-04-08 | Quiet Authority | Matthew 21:23–27 (ESV) | `quiet-authority` | `2026-04-08-quiet-authority.md` |
+| 2026-04-09 | Responsibility Without Avoidance | Matthew 21:28–32 (ESV) | `responsibility-without-avoidance` | `2026-04-09-responsibility-without-avoidance.md` |
+| 2026-04-10 | Stewardship of Influence | Matthew 21:33–38 (ESV) | `stewardship-of-influence` | `2026-04-10-stewardship-of-influence.md` |
+| 2026-04-11 | Ordered Priorities | Matthew 22:36–40 (ESV) | `ordered-priorities` | `2026-04-11-ordered-priorities.md` |
+| 2026-04-12 | Integrity Over Image | Matthew 23:5–7 (ESV) | `integrity-over-image` | `2026-04-12-integrity-over-image.md` |
+| 2026-04-13 | Weightier Matters | Matthew 23:23–24 (ESV) | `weightier-matters` | `2026-04-13-weightier-matters.md` |
+| 2026-04-14 | Prepared Readiness | Matthew 24:42–44 (ESV) | `prepared-readiness` | `2026-04-14-prepared-readiness.md` |
+| 2026-04-15 | Faithful Stewardship | Matthew 25:14–19 (ESV) | `faithful-stewardship` | `2026-04-15-faithful-stewardship.md` |
+| 2026-04-16 | Readiness That Endures | Matthew 25:1–4, 10 (ESV) | `readiness-that-endures` | `2026-04-16-readiness-that-endures.md` |
+| 2026-04-17 | Accountability That Reveals | Matthew 25:31–33 (ESV) | `accountability-that-reveals` | `2026-04-17-accountability-that-reveals.md` |
+| 2026-04-18 | Willing Surrender | Matthew 26:36–39 (ESV) | `willing-surrender` | `2026-04-18-willing-surrender.md` |
+| 2026-04-19 | Refusal to Control | Matthew 26:50–52 (ESV) | `refusal-to-control` | `2026-04-19-refusal-to-control.md` |
+| 2026-04-20 | Steadiness Under Accusation | Matthew 26:62–63 (ESV) | `steadiness-under-accusation` | `2026-04-20-steadiness-under-accusation.md` |
+| 2026-04-21 | Faithful Witness | Matthew 27:11 (ESV) | `faithful-witness` | `2026-04-21-faithful-witness.md` |
+| 2026-04-22 | Integrity Under Pressure | Matthew 27:22–23 (ESV) | `integrity-under-pressure` | `2026-04-22-integrity-under-pressure.md` |
+| 2026-04-23 | Endurance Without Retaliation | Matthew 27:27–29 (ESV) | `endurance-without-retaliation` | `2026-04-23-endurance-without-retaliation.md` |
+| 2026-04-24 | Focus in the Middle of Suffering | John 19:25–27 (ESV) | `focus-in-suffering` | `2026-04-24-focus-in-suffering.md` |
+| 2026-04-25 | Obedience Through Doubt | Matthew 27:45–46 (ESV) | `obedience-through-doubt` | `2026-04-25-obedience-through-doubt.md` |
+| 2026-04-26 | The Final Act of Service | John 19:28–30 (ESV) | `the-final-act-of-service` | `2026-04-26-the-final-act-of-service.md` |
+| 2026-04-27 | Faithfulness in the Silence | Matthew 27:59–60 (ESV) | `faithfulness-in-the-silence` | `2026-04-27-faithfulness-in-the-silence.md` |
+| 2026-04-28 | He Has Risen | Matthew 28:5–6 (ESV) | `he-has-risen` | `2026-04-28-he-has-risen.md` |
+| 2026-04-29 | Restoring the Leader | John 21:15–17 (ESV) | `restoring-the-leader` | `2026-04-29-restoring-the-leader.md` |
+| 2026-04-30 | April 30: Leadership That Continues | Acts 1:6–8 (ESV) | `leadership-that-continues` | `2026-04-30-leadership-that-continues.md` |
+| 2026-05-01 | When the Mind Feels Overwhelmed | Psalm 13:1–2 (ESV) | `when-the-mind-feels-overwhelmed` | `2026-05-01-when-the-mind-feels-overwhelmed.md` |
+| 2026-05-02 | Internal Dialogue Matters | Psalm 42:5–6 (ESV) | `internal-dialogue-matters` | `2026-05-02-internal-dialogue-matters.md` |
+| 2026-05-03 | Anxiety Is Acknowledged | Matthew 6:25–27 (ESV) | `anxiety-is-acknowledged` | `2026-05-03-anxiety-is-acknowledged.md` |
+| 2026-05-04 | The Pressure Leaders Carry | 2 Corinthians 11:28–29 (ESV) | `the-pressure-leaders-carry` | `2026-05-04-the-pressure-leaders-carry.md` |
+| 2026-05-05 | Exhaustion Is Not Failure | 1 Kings 19:3–5 (ESV) | `exhaustion-is-not-failure` | `2026-05-05-exhaustion-is-not-failure.md` |
+| 2026-05-06 | Fear Has Physical Weight | Psalm 55:4–5 (ESV) | `fear-has-physical-weight` | `2026-05-06-fear-has-physical-weight.md` |
+| 2026-05-07 | When You Feel Alone | 2 Timothy 4:16–17 (ESV) | `when-you-feel-alone` | `2026-05-07-when-you-feel-alone.md` |
+| 2026-05-08 | A Divided Mind | James 1:5–8 (ESV) | `a-divided-mind` | `2026-05-08-a-divided-mind.md` |
+| 2026-05-09 | Carrying Too Much Alone | Exodus 18:17–18 (ESV) | `carrying-too-much-alone` | `2026-05-09-carrying-too-much-alone.md` |
+| 2026-05-10 | Discouragement Spreads | Nehemiah 4:10 (ESV) | `discouragement-spreads` | `2026-05-10-discouragement-spreads.md` |
+| 2026-05-11 | Losing Heart Quietly | Hebrews 12:3 (ESV) | `losing-heart-quietly` | `2026-05-11-losing-heart-quietly.md` |
+| 2026-05-12 | Suppressed Strain Surfaces | Psalm 32:3–4 (ESV) | `suppressed-strain-surfaces` | `2026-05-12-suppressed-strain-surfaces.md` |
+| 2026-05-13 | When Responsibility Feels Too Heavy | Numbers 11:14–15 (ESV) | `when-responsibility-feels-too-heavy` | `2026-05-13-when-responsibility-feels-too-heavy.md` |
+| 2026-05-14 | Worn Down Internally | Psalm 38:6–8 (ESV) | `worn-down-internally` | `2026-05-14-worn-down-internally.md` |
+| 2026-05-15 | Taking Thoughts Seriously | 2 Corinthians 10:5 (ESV) | `taking-thoughts-seriously` | `2026-05-15-taking-thoughts-seriously.md` |
+| 2026-05-16 | Putting Off and Renewing | Ephesians 4:22–24 (ESV) | `putting-off-and-renewing` | `2026-05-16-putting-off-and-renewing.md` |
+| 2026-05-17 | Speaking Back to Yourself | Lamentations 3:24–26 (ESV) | `speaking-back-to-yourself` | `2026-05-17-speaking-back-to-yourself.md` |
+| 2026-05-18 | Releasing What You Carry | 1 Peter 5:7 (ESV) | `releasing-what-you-carry` | `2026-05-18-releasing-what-you-carry.md` |
+| 2026-05-19 | Directing Your Focus | Philippians 4:8 (ESV) | `directing-your-focus` | `2026-05-19-directing-your-focus.md` |
+| 2026-05-20 | Rest Is Not Optional | Exodus 34:21 (ESV) | `rest-is-not-optional` | `2026-05-20-rest-is-not-optional.md` |
+| 2026-05-21 | Truth Stabilizes the Mind | John 8:31–32 (ESV) | `truth-stabilizes-the-mind` | `2026-05-21-truth-stabilizes-the-mind.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
