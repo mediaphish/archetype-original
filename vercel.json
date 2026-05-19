@@ -68,6 +68,12 @@
     { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
     { "src": "api/**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png"] } }
   ],
+  "functions": {
+    "api/ao/auto/schedule-status.js": {
+      "memory": 512,
+      "maxDuration": 10
+    }
+  },
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/api/chat/cannot-answer", "dest": "/api/chat/cannot-answer.js" },
@@ -205,6 +211,7 @@
     { "src": "/api/ao/auto/generate-card-image", "dest": "/api/ao/auto/generate-card-image.js" },
     { "src": "/api/ao/auto/generate-design-image", "dest": "/api/ao/auto/generate-design-image.js" },
     { "src": "/api/ao/auto/schedule-cards", "dest": "/api/ao/auto/schedule-cards.js" },
+    { "src": "/api/ao/auto/schedule-status", "dest": "/api/ao/auto/schedule-status.js" },
     { "src": "/api/ao/corpus/drafts/([^/]+)/hero-image", "dest": "/api/ao/corpus/drafts/[id]/hero-image.js?id=$1" },
     { "src": "/api/ao/corpus/drafts/([^/]+)", "dest": "/api/ao/corpus/drafts/[id].js?id=$1" },
     { "src": "/api/ao/corpus/drafts", "dest": "/api/ao/corpus/drafts/index.js" },
