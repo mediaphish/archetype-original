@@ -147,6 +147,16 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-05-19 | Directing Your Focus | Philippians 4:8 (ESV) | `directing-your-focus` | `2026-05-19-directing-your-focus.md` |
 | 2026-05-20 | Rest Is Not Optional | Exodus 34:21 (ESV) | `rest-is-not-optional` | `2026-05-20-rest-is-not-optional.md` |
 | 2026-05-21 | Truth Stabilizes the Mind | John 8:31–32 (ESV) | `truth-stabilizes-the-mind` | `2026-05-21-truth-stabilizes-the-mind.md` |
+| 2026-05-22 | Fear Spreads Through Leadership | Proverbs 29:25–26 (ESV) | `fear-spreads-through-leadership` | `2026-05-22-fear-spreads-through-leadership.md` |
+| 2026-05-23 | Anxiety Transfers | Proverbs 12:25 (ESV) | `anxiety-transfers` | `2026-05-23-anxiety-transfers.md` |
+| 2026-05-24 | Safety Changes People | Psalm 4:6–8 (ESV) | `safety-changes-people` | `2026-05-24-safety-changes-people.md` |
+| 2026-05-25 | Tone Shapes Environments | Proverbs 15:1 (ESV) | `tone-shapes-environments` | `2026-05-25-tone-shapes-environments.md` |
+| 2026-05-26 | Overload Has Consequences | Ecclesiastes 4:4–6 (ESV) | `overload-has-consequences` | `2026-05-26-overload-has-consequences.md` |
+| 2026-05-27 | Leading Without Adding Burden | Psalm 23:1–3 (ESV) | `leading-without-adding-burden` | `2026-05-27-leading-without-adding-burden.md` |
+| 2026-05-28 | Stability Builds Trust | Isaiah 33:5–6 (ESV) | `stability-builds-trust` | `2026-05-28-stability-builds-trust.md` |
+| 2026-05-29 | When You Need Higher Ground | Psalm 61:1–2 (ESV) | `when-you-need-higher-ground` | `2026-05-29-when-you-need-higher-ground.md` |
+| 2026-05-30 | Delivered From Fear | Psalm 34:4 (ESV) | `delivered-from-fear` | `2026-05-30-delivered-from-fear.md` |
+| 2026-05-31 | Letting Peace Govern | 1 Corinthians 14:33 (ESV) | `letting-peace-govern` | `2026-05-31-letting-peace-govern.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 

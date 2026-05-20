@@ -1,23 +1,32 @@
 ---
-title: "The 7 Conditions: Communication"
-slug: "ali-series-communication-the-message-that-actually-arrives"
-publish_date: "2026-05-14"
-created_at: "2026-05-14"
-updated_at: "2026-05-14"
-summary: "Communication is not whether the leader talks. It is whether the message arrives. The gap between what was sent and what was received is where organizations lose decisions, lose time, and lose people."
+title: 'The 7 Conditions: Communication'
+slug: ali-series-communication-the-message-that-actually-arrives
+publish_date: '2026-05-14'
+created_at: '2026-05-14'
+updated_at: '2026-05-14'
+summary: >-
+  Communication is not whether the leader talks. It is whether the message
+  arrives. The gap between what was sent and what was received is where
+  organizations lose decisions, lose time, and lose people.
 categories:
   - servant-leadership
   - culture-science
 featured_image: ../images/ali-series-communication-the-message-that-actually-arrives.jpg
 takeaways:
-  - "Communication is not measured by what the leader sends. It is measured by what the team receives."
-  - "The gap between what leaders say and what teams hear is almost always larger two layers down."
-  - "Clarity and Communication sharpen each other. Neither functions well without the other."
+  - >-
+    Communication is not measured by what the leader sends. It is measured by
+    what the team receives.
+  - >-
+    The gap between what leaders say and what teams hear is almost always
+    larger two layers down.
+  - >-
+    Clarity and Communication sharpen each other. Neither functions well
+    without the other.
 applications: []
 related:
-  - "ali-series-clarity-what-actually-lands"
-  - "ali-series-consistency-the-leader-people-learn-to-predict"
-original_source: "Archetype Original Journal"
+  - ali-series-clarity-what-actually-lands
+  - ali-series-consistency-the-leader-people-learn-to-predict
+original_source: Archetype Original Journal
 original_url: ""
 status: published
 ---

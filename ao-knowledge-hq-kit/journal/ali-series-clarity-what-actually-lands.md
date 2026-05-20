@@ -13,7 +13,8 @@ categories:
   - culture-science
 featured_image: ../images/ali-series-clarity-what-actually-lands.jpg
 takeaways:
-  - "Clarity is measured from the team's experience, not the leader's intention."
+  - >-
+    Clarity is measured from the team's experience, not the leader's intention.
   - A Clarity gap does not just cost productivity. It costs people.
   - >-
     All seven conditions must exist at meaningful levels. A Clarity gap creates
