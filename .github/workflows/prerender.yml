@@ -60,8 +60,8 @@ jobs:
       - name: Commit pre-rendered files
         if: steps.changes.outputs.changed == 'true'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "bartpaden@gmail.com"
+          git config --local user.name "mediaphish"
           git commit -m "Auto-update pre-rendered HTML for all URLs [skip ci]"
 
       - name: Push changes

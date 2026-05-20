@@ -42,8 +42,8 @@ jobs:
     - name: Commit knowledge + devotional index changes (if any)
       id: corpus_commit
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git config --local user.email "bartpaden@gmail.com"
+        git config --local user.name "mediaphish"
         git add public/knowledge.json notes/DEVOTIONAL_INDEX.md
         if git diff --staged --quiet; then
           echo "committed=false" >> "$GITHUB_OUTPUT"
