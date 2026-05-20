@@ -1,0 +1,36 @@
+name: Send today’s devotional email
+
+on:
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  send-devotional-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Refresh the content list (knowledge)
+        run: node scripts/build-knowledge.mjs
+
+      - name: Send devotional email(s) for today
+        env:
+          PUBLIC_SITE_URL: https://www.archetypeoriginal.com
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: node scripts/notify-todays-devotionals-from-corpus.mjs
+
