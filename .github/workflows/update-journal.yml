@@ -60,17 +60,11 @@ jobs:
         branch: main
         force: false
 
-    - name: Trigger hosting refresh (deploy hook)
-      if: steps.corpus_commit.outputs.committed == 'true'
-      env:
-        VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+    - name: Trigger Vercel deployment
+      if: always()
       run: |
-        if [ -z "$VERCEL_DEPLOY_HOOK_URL" ]; then
-          echo "No deploy hook configured (VERCEL_DEPLOY_HOOK_URL). Skipping."
-          exit 0
-        fi
-        echo "Triggering deploy hook..."
-        curl -sS -X POST "$VERCEL_DEPLOY_HOOK_URL" >/dev/null
+        curl -s -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+        echo "Vercel deploy hook triggered"
 
     # Backup for the 1am ET cron: if today’s devotional landed in knowledge.json after the cron
     # already ran, or deploy lagged, this sends using the built corpus (full post body).
