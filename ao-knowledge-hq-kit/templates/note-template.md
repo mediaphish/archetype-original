@@ -29,4 +29,4 @@ related: []
 > Optional short excerpts.
 
 ## Links
-- 
+- Optional related links here.
