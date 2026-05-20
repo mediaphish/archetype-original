@@ -523,8 +523,24 @@ async function buildKnowledgeCorpus() {
     console.log(`   ⏭️  Skipped: ${faqSkipped}`);
   }
   
-  // Sort by updated_at (newest first)
-  docs.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+  // Sort: journal posts and devotionals by publish_date, everything else by updated_at
+  docs.sort((a, b) => {
+    const aIsJournal = a.type === 'journal-post' || a.type === 'devotional';
+    const bIsJournal = b.type === 'journal-post' || b.type === 'devotional';
+
+    if (aIsJournal && bIsJournal) {
+      // Both journal/devotional: sort by publish_date descending
+      const aDate = a.publish_date || a.date || a.updated_at || '';
+      const bDate = b.publish_date || b.date || b.updated_at || '';
+      return bDate.localeCompare(aDate);
+    }
+
+    if (aIsJournal && !bIsJournal) return -1;
+    if (!aIsJournal && bIsJournal) return 1;
+
+    // Both non-journal: sort by updated_at descending
+    return new Date(b.updated_at) - new Date(a.updated_at);
+  });
 
   const beforeGuard = docs.length;
   const scheduleSafeDocs = filterPublishedScheduledDocs(docs);

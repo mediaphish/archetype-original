@@ -3,7 +3,7 @@ title: 'The 7 Conditions: Clarity'
 slug: ali-series-clarity-what-actually-lands
 publish_date: '2026-05-07'
 created_at: '2026-05-07'
-updated_at: '2026-05-14'
+updated_at: '2026-05-07'
 summary: >-
   Clarity is not the certainty a leader feels. It is whether the people on
   their team actually know what matters, right now, in the work they are doing

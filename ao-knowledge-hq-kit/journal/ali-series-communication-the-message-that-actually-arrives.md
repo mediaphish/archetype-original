@@ -3,7 +3,7 @@ title: "The 7 Conditions: Communication"
 slug: "ali-series-communication-the-message-that-actually-arrives"
 publish_date: "2026-05-14"
 created_at: "2026-05-14"
-updated_at: "2026-05-19"
+updated_at: "2026-05-14"
 summary: "Communication is not whether the leader talks. It is whether the message arrives. The gap between what was sent and what was received is where organizations lose decisions, lose time, and lose people."
 categories:
   - servant-leadership

@@ -3,7 +3,7 @@ title: When Leadership Sank Kodak
 slug: when-leadership-sank-kodak
 publish_date: '2025-08-26'
 created_at: '2025-08-26'
-updated_at: '2026-05-12'
+updated_at: '2025-08-26'
 summary: >-
   Kodak's downfall wasn't technological—it was a failure of leadership. A
   reflection on fear, control, and how servant leadership could have saved an
