@@ -56,6 +56,42 @@ function extractGeneratedImagesFromAssistantContent(content) {
     .filter(Boolean);
 }
 
+function parseImageGeneratedAttributes(attrString) {
+  const attrs = {};
+  const pattern = /(\w+)="([^"]*)"/g;
+  let match;
+  while ((match = pattern.exec(attrString)) !== null) {
+    attrs[match[1]] = match[2];
+  }
+  return attrs;
+}
+
+function extractDesignImagesFromAssistantContent(content) {
+  const text = String(content || '');
+  const pattern = /\[IMAGE_GENERATED([^\]]*)\]/gi;
+  const results = [];
+  let match;
+  while ((match = pattern.exec(text)) !== null) {
+    const attrs = parseImageGeneratedAttributes(match[1]);
+    if (attrs.url) {
+      results.push({
+        label: attrs.label || 'Generated Image',
+        url: attrs.url,
+        size: attrs.size || '',
+      });
+    }
+  }
+  return results;
+}
+
+function stripGeneratedImageBlocksFromChat(text) {
+  return String(text || '')
+    .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '')
+    .replace(/\[DALLE_GENERATE[^\]]*\]/gi, '')
+    .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '')
+    .trim();
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatImageAddedTime(timestampMs) {
@@ -185,7 +221,7 @@ function TypingIndicator() {
 function MessageBubble({ message }) {
   const isUser = message.role === 'user';
   const raw = String(message.content || '');
-  const withoutImages = raw.replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '').trim();
+  const withoutImages = stripGeneratedImageBlocksFromChat(raw);
   const { cleanText } = parseArtifact(withoutImages);
   const text = cleanText || withoutImages;
 
@@ -260,20 +296,34 @@ function DraftArtifact({ content, label }) {
   );
 }
 
-function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewAll, onClose, onClearGenerated, onGeneratedImageError }) {
+function ArtifactPanel({
+  artifact,
+  generatedImages,
+  generatedDesignImages,
+  onApprove,
+  onRevise,
+  onViewAll,
+  onClose,
+  onClearGenerated,
+  onGeneratedImageError,
+  onGeneratedDesignImageError,
+}) {
+  const hasCards = generatedImages?.length > 0;
+  const hasDesign = generatedDesignImages?.length > 0;
+  const hasAnyGenerated = hasCards || hasDesign;
   return (
     <div className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
-          {artifact?.label || (generatedImages?.length > 0 ? 'Generated cards' : 'Artifact')}
+          {artifact?.label || (hasCards ? 'Generated cards' : hasDesign ? 'Generated images' : 'Artifact')}
         </span>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             type="button"
             onClick={onClearGenerated}
-            disabled={!generatedImages?.length}
+            disabled={!hasAnyGenerated}
             className="text-xs font-medium text-gray-600 px-2 py-1 rounded-md hover:bg-gray-200/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-            aria-label="Clear generated cards"
+            aria-label="Clear generated cards and images"
           >
             Clear
           </button>
@@ -289,35 +339,62 @@ function ArtifactPanel({ artifact, generatedImages, onApprove, onRevise, onViewA
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4">
-        {generatedImages?.length > 0 && (
+        {hasCards && (
           <div
             className={
-              artifact
+              artifact || hasDesign
                 ? 'max-h-[min(50vh,24rem)] shrink-0 overflow-y-auto'
                 : 'min-h-0 flex-1 overflow-y-auto'
             }
           >
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Cards</p>
             <div className="space-y-3">
-            {generatedImages.map((img) => (
-              <div key={`${img.card}-${img.url}`} className="rounded-xl overflow-hidden border border-gray-200 bg-black">
-                <img
-                  src={img.url}
-                  alt={`Card ${img.card}`}
-                  className="w-full h-auto block"
-                  onError={() => onGeneratedImageError?.(img.url)}
-                />
-                {formatImageAddedTime(img.addedAt) ? (
-                  <p className="text-xs text-gray-400 text-center py-1.5 bg-black/80 border-t border-gray-800">
-                    {formatImageAddedTime(img.addedAt)}
-                  </p>
-                ) : null}
-              </div>
-            ))}
+              {generatedImages.map((img) => (
+                <div key={`${img.card}-${img.url}`} className="overflow-hidden rounded-xl border border-gray-200 bg-black">
+                  <img
+                    src={img.url}
+                    alt={`Card ${img.card}`}
+                    className="block h-auto w-full"
+                    onError={() => onGeneratedImageError?.(img.url)}
+                  />
+                  {formatImageAddedTime(img.addedAt) ? (
+                    <p className="border-t border-gray-800 bg-black/80 py-1.5 text-center text-xs text-gray-400">
+                      {formatImageAddedTime(img.addedAt)}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {!artifact && (!generatedImages || generatedImages.length === 0) && (
+        {hasDesign && (
+          <div className={hasCards ? 'min-h-0 flex-1 overflow-y-auto' : 'min-h-0 flex-1 overflow-y-auto'}>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Images</p>
+            <div className="space-y-3">
+              {generatedDesignImages.map((img) => (
+                <div key={img.url} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+                  <p className="border-b border-gray-100 bg-gray-50 px-3 py-2 text-xs font-medium text-gray-700">
+                    {img.label}
+                  </p>
+                  <img
+                    src={img.url}
+                    alt={img.label}
+                    className="block h-auto w-full"
+                    onError={() => onGeneratedDesignImageError?.(img.url)}
+                  />
+                  {formatImageAddedTime(img.addedAt) ? (
+                    <p className="border-t border-gray-100 py-1.5 text-center text-xs text-gray-400">
+                      {formatImageAddedTime(img.addedAt)}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!artifact && !hasAnyGenerated && (
           <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
             <AOMark className="w-8 h-8 text-gray-200 mb-3" />
             <p className="text-xs text-gray-400 leading-relaxed">
@@ -475,6 +552,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [startingNew, setStartingNew] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generatedImages, setGeneratedImages] = useState([]);
+  const [generatedDesignImages, setGeneratedDesignImages] = useState([]);
   const [splitPercent, setSplitPercent] = useState(50);
   const [dividerDragging, setDividerDragging] = useState(false);
 
@@ -566,8 +644,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }, [artifact]);
 
   useEffect(() => {
-    if (generatedImages.length > 0) setArtifactOpen(true);
-  }, [generatedImages]);
+    if (generatedImages.length > 0 || generatedDesignImages.length > 0) setArtifactOpen(true);
+  }, [generatedImages, generatedDesignImages]);
 
   const mergeThreadRows = useCallback((sessionJson, draftsJson) => {
     const active = sessionJson?.thread || null;
@@ -636,6 +714,28 @@ export default function AutoV2Panel({ onNavigate, className }) {
         return prev;
       });
     }
+    // Design images: always append across messages (journal series accumulates)
+    setGeneratedDesignImages((prev) => {
+      const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
+      const seenUrls = new Set();
+      const allDesign = [];
+      for (const m of allMsgs) {
+        if (m.role !== 'assistant') continue;
+        const imgs = extractDesignImagesFromAssistantContent(String(m.content || ''));
+        for (const img of imgs) {
+          const key = img.url;
+          if (!key || seenUrls.has(key)) continue;
+          seenUrls.add(key);
+          const older = prevByUrl.get(key);
+          allDesign.push({
+            ...img,
+            addedAt: older?.addedAt ?? Date.now(),
+          });
+        }
+      }
+      if (allDesign.length > 0) return allDesign;
+      return prev;
+    });
     // If no images found in any message, leave existing images in place
     // Images only clear when starting a new thread (handled in startNewThread)
   }, []);
@@ -666,6 +766,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setMessages([]);
         setArtifact(null);
         setGeneratedImages([]);
+        setGeneratedDesignImages([]);
       }
     } catch (e) {
       setError(e.message || 'Could not load Auto');
@@ -688,6 +789,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setArtifact(null);
       setArtifactOpen(false);
       setGeneratedImages([]);
+      setGeneratedDesignImages([]);
       setError('');
       try {
         const res = await fetch('/api/ao/auto/thread/resume', {
@@ -723,6 +825,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setArtifactOpen(false);
     setPendingFile(null);
     setGeneratedImages([]);
+    setGeneratedDesignImages([]);
     try {
       const res = await fetch('/api/ao/auto/thread/new', { method: 'POST' });
       const json = await res.json().catch(() => ({}));
@@ -907,6 +1010,15 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
   const handleGeneratedImageError = useCallback((url) => {
     setGeneratedImages((prev) => prev.filter((img) => img.url !== url));
+  }, []);
+
+  const handleGeneratedDesignImageError = useCallback((url) => {
+    setGeneratedDesignImages((prev) => prev.filter((img) => img.url !== url));
+  }, []);
+
+  const handleClearGenerated = useCallback(() => {
+    setGeneratedImages([]);
+    setGeneratedDesignImages([]);
   }, []);
 
   const publishCards = useCallback(async () => {
@@ -1157,12 +1269,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
               <ArtifactPanel
                 artifact={artifact}
                 generatedImages={generatedImages}
+                generatedDesignImages={generatedDesignImages}
                 onApprove={handleApprove}
                 onRevise={handleRevise}
                 onViewAll={handleViewAll}
                 onClose={() => setArtifactOpen(false)}
-                onClearGenerated={() => setGeneratedImages([])}
+                onClearGenerated={handleClearGenerated}
                 onGeneratedImageError={handleGeneratedImageError}
+                onGeneratedDesignImageError={handleGeneratedDesignImageError}
               />
             </div>
           </>
