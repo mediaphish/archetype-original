@@ -53,7 +53,7 @@ jobs:
       - name: Check for pre-rendered changes
         id: changes
         run: |
-          git add dist/
+          git add dist/ public/knowledge.json public/sitemap.xml
           if git diff --staged --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
