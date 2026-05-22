@@ -1,7 +1,7 @@
 ---
 title: "The 7 Conditions: Trust"
 slug: "ali-series-trust-the-condition-that-cannot-be-declared"
-publish_date: "2026-05-28"
+publish_date: "2026-05-26"
 created_at: "2026-05-22"
 updated_at: "2026-05-22"
 summary: "Trust is not a feeling. It is the conclusion a team draws from a pattern they have been watching for months. It cannot be declared, mandated, or assumed. It is built through behavior or it does not exist at all."
