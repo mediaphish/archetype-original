@@ -349,7 +349,7 @@ function ArtifactPanel({
           >
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Cards</p>
             <div className="space-y-3">
-              {generatedImages.map((img) => (
+              {generatedImages.slice().reverse().map((img) => (
                 <div key={`${img.card}-${img.url}`} className="overflow-hidden rounded-xl border border-gray-200 bg-black">
                   <img
                     src={img.url}
@@ -372,7 +372,7 @@ function ArtifactPanel({
           <div className={hasCards ? 'min-h-0 flex-1 overflow-y-auto' : 'min-h-0 flex-1 overflow-y-auto'}>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Images</p>
             <div className="space-y-3">
-              {generatedDesignImages.map((img) => (
+              {generatedDesignImages.slice().reverse().map((img) => (
                 <div key={img.url} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
                   <p className="border-b border-gray-100 bg-gray-50 px-3 py-2 text-xs font-medium text-gray-700">
                     {img.label}
