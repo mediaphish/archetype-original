@@ -84,11 +84,27 @@ function extractDesignImagesFromAssistantContent(content) {
   return results;
 }
 
+function extractJournalPublishFromAssistantContent(content) {
+  const text = String(content || '');
+  const tagMatch = text.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+  if (!tagMatch) return null;
+
+  const attrs = parseImageGeneratedAttributes(tagMatch[1]);
+  const contentMatch = text.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
+  const journalContent = contentMatch ? contentMatch[1].trim() : '';
+
+  if (!attrs.slug || !attrs.title || !journalContent) return null;
+
+  return { attrs, journalContent };
+}
+
 function stripGeneratedImageBlocksFromChat(text) {
   return String(text || '')
     .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '')
     .replace(/\[DALLE_GENERATE[^\]]*\]/gi, '')
     .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '')
+    .replace(/\[PUBLISH_JOURNAL[^\]]*\]/gi, '')
+    .replace(/\[JOURNAL_CONTENT\][\s\S]*?\[\/JOURNAL_CONTENT\]/gi, '')
     .trim();
 }
 
@@ -300,6 +316,7 @@ function ArtifactPanel({
   artifact,
   generatedImages,
   generatedDesignImages,
+  journalPublishBanner,
   onApprove,
   onRevise,
   onViewAll,
@@ -339,6 +356,34 @@ function ArtifactPanel({
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4">
+        {journalPublishBanner?.status === 'loading' && (
+          <div className="shrink-0 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+            Publishing journal entry…
+          </div>
+        )}
+        {journalPublishBanner?.status === 'success' && (
+          <div className="shrink-0 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900">
+            <p className="font-medium">
+              Published: {journalPublishBanner.title}
+            </p>
+            {journalPublishBanner.journalUrl ? (
+              <a
+                href={journalPublishBanner.journalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-block text-green-800 underline hover:text-green-950"
+              >
+                {journalPublishBanner.journalUrl}
+              </a>
+            ) : null}
+          </div>
+        )}
+        {journalPublishBanner?.status === 'error' && (
+          <div className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+            <p className="font-medium">Publish failed</p>
+            <p className="mt-1">{journalPublishBanner.message}</p>
+          </div>
+        )}
         {hasCards && (
           <div
             className={
@@ -553,11 +598,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generatedImages, setGeneratedImages] = useState([]);
   const [generatedDesignImages, setGeneratedDesignImages] = useState([]);
+  const [journalPublishBanner, setJournalPublishBanner] = useState(null);
   const [splitPercent, setSplitPercent] = useState(50);
   const [dividerDragging, setDividerDragging] = useState(false);
 
   const splitContainerRef = useRef(null);
   const userAdjustedSplit = useRef(false);
+  const processedJournalPublishKeys = useRef(new Set());
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -646,6 +693,71 @@ export default function AutoV2Panel({ onNavigate, className }) {
   useEffect(() => {
     if (generatedImages.length > 0 || generatedDesignImages.length > 0) setArtifactOpen(true);
   }, [generatedImages, generatedDesignImages]);
+
+  useEffect(() => {
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!lastAssistant) return;
+
+    const parsed = extractJournalPublishFromAssistantContent(String(lastAssistant.content || ''));
+    if (!parsed) return;
+
+    const { attrs, journalContent } = parsed;
+    const publishKey = `${activeThreadId || 'thread'}:${attrs.slug}:${journalContent.slice(0, 120)}`;
+    if (processedJournalPublishKeys.current.has(publishKey)) return;
+    processedJournalPublishKeys.current.add(publishKey);
+
+    const categoriesRaw = String(attrs.categories || '')
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean);
+    const notify =
+      attrs.notify == null || attrs.notify === ''
+        ? true
+        : !/^(false|0|no)$/i.test(String(attrs.notify).trim());
+
+    setArtifactOpen(true);
+    setJournalPublishBanner({ status: 'loading', title: attrs.title });
+
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/auto/publish-journal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug: attrs.slug,
+            title: attrs.title,
+            content: journalContent,
+            summary: attrs.summary || '',
+            publish_date: attrs.publish_date || '',
+            categories: categoriesRaw,
+            featured_image: attrs.featured_image || '',
+            takeaways: [],
+            notify,
+            notify_delay_ms: 300000,
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+
+        if (!res.ok || !json.ok) {
+          throw new Error(json.error || 'Publish failed');
+        }
+
+        setJournalPublishBanner({
+          status: 'success',
+          title: attrs.title,
+          journalUrl: json.journal_url || '',
+        });
+      } catch (e) {
+        setJournalPublishBanner({
+          status: 'error',
+          title: attrs.title,
+          message: e.message || 'Could not publish journal entry',
+        });
+      }
+    })();
+  }, [messages, activeThreadId]);
 
   const mergeThreadRows = useCallback((sessionJson, draftsJson) => {
     const active = sessionJson?.thread || null;
@@ -826,6 +938,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setPendingFile(null);
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
+    setJournalPublishBanner(null);
+    processedJournalPublishKeys.current = new Set();
     try {
       const res = await fetch('/api/ao/auto/thread/new', { method: 'POST' });
       const json = await res.json().catch(() => ({}));
@@ -1270,6 +1384,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
                 artifact={artifact}
                 generatedImages={generatedImages}
                 generatedDesignImages={generatedDesignImages}
+                journalPublishBanner={journalPublishBanner}
                 onApprove={handleApprove}
                 onRevise={handleRevise}
                 onViewAll={handleViewAll}
