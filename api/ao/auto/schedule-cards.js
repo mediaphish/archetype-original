@@ -181,7 +181,7 @@ export default async function handler(req, res) {
         scheduled_at: when,
         text: textBody,
         image_url: imageUrl || null,
-        first_comment: hasLines && captionText ? captionText : null,
+        caption: captionText || null,
         status: 'scheduled',
         source_kind: 'auto_quote_card',
         intent: {
