@@ -12,6 +12,8 @@ import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../l
 import { runAutoChat } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
+import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
+import { detectSchedulingIntent } from '../../../lib/ao/detectSchedulingIntent.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -40,7 +42,14 @@ export default async function handler(req, res) {
         content: String(m.content || ''),
       }));
 
-    const result = await runAutoChat(history, userMessage);
+    // If the message involves scheduling decisions, fetch live queue data
+    // and inject it into Auto's context so it can answer without asking Bart
+    let scheduleContext = null;
+    if (detectSchedulingIntent(userMessage, prior.messages || [])) {
+      scheduleContext = await getScheduleContext();
+    }
+
+    const result = await runAutoChat(history, userMessage, scheduleContext);
 
     if (!result.ok) {
       return res.status(500).json({ ok: false, error: result.error || 'Auto reply failed' });
