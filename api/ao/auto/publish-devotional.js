@@ -4,15 +4,15 @@
  * Publishes a devotional entry by committing a markdown file to the GitHub repo.
  * Devotionals live at ao-knowledge-hq-kit/journal/devotionals/YYYY-MM-DD-slug.md
  * Vercel deploys on commit. Resend fires automatically at 1:20am CT.
+ * Scripture text is rendered by the site via existing Crossway ESV API — not stored in MD.
  *
  * Body: {
  *   slug: string,
  *   title: string,
- *   date: string,          — YYYY-MM-DD publish date
- *   scripture_reference: string,
+ *   date: string,          — YYYY-MM-DD
+ *   scripture_reference: string,   — e.g. "Proverbs 4:23-27 (ESV)"
  *   content: string,       — Full markdown body without frontmatter
  *   summary: string,
- *   notify: boolean        — default false (Resend handles it on schedule)
  * }
  */
 
@@ -69,10 +69,7 @@ async function commitFile(token, path, content, message, sha) {
   }
 
   const data = await res.json();
-  return {
-    sha: data.content?.sha,
-    commitSha: data.commit?.sha,
-  };
+  return { commitSha: data.commit?.sha };
 }
 
 export default async function handler(req, res) {
@@ -85,10 +82,7 @@ export default async function handler(req, res) {
 
   const token = process.env.GITHUB_PUBLISH_TOKEN;
   if (!token) {
-    return res.status(500).json({
-      ok: false,
-      error: 'GITHUB_PUBLISH_TOKEN is not set.',
-    });
+    return res.status(500).json({ ok: false, error: 'GITHUB_PUBLISH_TOKEN is not set.' });
   }
 
   const { slug, title, date, scripture_reference, content, summary } = req.body || {};
