@@ -98,6 +98,20 @@ function extractJournalPublishFromAssistantContent(content) {
   return { attrs, journalContent };
 }
 
+function extractDevotionalPublishFromAssistantContent(content) {
+  const text = String(content || '');
+  const tagMatch = text.match(/\[PUBLISH_DEVOTIONAL([^\]]*)\]/i);
+  if (!tagMatch) return null;
+
+  const attrs = parseImageGeneratedAttributes(tagMatch[1]);
+  const contentMatch = text.match(/\[DEVOTIONAL_CONTENT\]([\s\S]*?)\[\/DEVOTIONAL_CONTENT\]/i);
+  const devotionalContent = contentMatch ? contentMatch[1].trim() : '';
+
+  if (!attrs.slug || !attrs.title || !devotionalContent) return null;
+
+  return { attrs, devotionalContent };
+}
+
 function stripGeneratedImageBlocksFromChat(text) {
   return String(text || '')
     .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '')
@@ -105,6 +119,8 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '')
     .replace(/\[PUBLISH_JOURNAL[^\]]*\]/gi, '')
     .replace(/\[JOURNAL_CONTENT\][\s\S]*?\[\/JOURNAL_CONTENT\]/gi, '')
+    .replace(/\[PUBLISH_DEVOTIONAL[^\]]*\]/gi, '')
+    .replace(/\[DEVOTIONAL_CONTENT\][\s\S]*?\[\/DEVOTIONAL_CONTENT\]/gi, '')
     .trim();
 }
 
@@ -317,6 +333,7 @@ function ArtifactPanel({
   generatedImages,
   generatedDesignImages,
   journalPublishBanner,
+  devotionalPublishBanner,
   onApprove,
   onRevise,
   onViewAll,
@@ -382,6 +399,34 @@ function ArtifactPanel({
           <div className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
             <p className="font-medium">Publish failed</p>
             <p className="mt-1">{journalPublishBanner.message}</p>
+          </div>
+        )}
+        {devotionalPublishBanner?.status === 'loading' && (
+          <div className="shrink-0 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+            Publishing devotional…
+          </div>
+        )}
+        {devotionalPublishBanner?.status === 'success' && (
+          <div className="shrink-0 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900">
+            <p className="font-medium">
+              Devotional published: {devotionalPublishBanner.title}
+            </p>
+            {devotionalPublishBanner.devotionalUrl ? (
+              <a
+                href={devotionalPublishBanner.devotionalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-block text-green-800 underline hover:text-green-950"
+              >
+                {devotionalPublishBanner.devotionalUrl}
+              </a>
+            ) : null}
+          </div>
+        )}
+        {devotionalPublishBanner?.status === 'error' && (
+          <div className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+            <p className="font-medium">Devotional publish failed</p>
+            <p className="mt-1">{devotionalPublishBanner.message}</p>
           </div>
         )}
         {hasCards && (
@@ -599,12 +644,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [generatedImages, setGeneratedImages] = useState([]);
   const [generatedDesignImages, setGeneratedDesignImages] = useState([]);
   const [journalPublishBanner, setJournalPublishBanner] = useState(null);
+  const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [splitPercent, setSplitPercent] = useState(50);
   const [dividerDragging, setDividerDragging] = useState(false);
 
   const splitContainerRef = useRef(null);
   const userAdjustedSplit = useRef(false);
   const processedJournalPublishKeys = useRef(new Set());
+  const processedDevotionalPublishKeys = useRef(new Set());
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -754,6 +801,58 @@ export default function AutoV2Panel({ onNavigate, className }) {
           status: 'error',
           title: attrs.title,
           message: e.message || 'Could not publish journal entry',
+        });
+      }
+    })();
+  }, [messages, activeThreadId]);
+
+  useEffect(() => {
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!lastAssistant) return;
+
+    const parsed = extractDevotionalPublishFromAssistantContent(String(lastAssistant.content || ''));
+    if (!parsed) return;
+
+    const { attrs, devotionalContent } = parsed;
+    const publishKey = `${activeThreadId || 'thread'}:${attrs.slug}:${devotionalContent.slice(0, 120)}`;
+    if (processedDevotionalPublishKeys.current.has(publishKey)) return;
+    processedDevotionalPublishKeys.current.add(publishKey);
+
+    setArtifactOpen(true);
+    setDevotionalPublishBanner({ status: 'loading', title: attrs.title });
+
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/auto/publish-devotional', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug: attrs.slug,
+            title: attrs.title,
+            date: attrs.date || '',
+            scripture_reference: attrs.scripture_reference || '',
+            content: devotionalContent,
+            summary: attrs.summary || '',
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+
+        if (!res.ok || !json.ok) {
+          throw new Error(json.error || 'Publish failed');
+        }
+
+        setDevotionalPublishBanner({
+          status: 'success',
+          title: attrs.title,
+          devotionalUrl: json.devotional_url || '',
+        });
+      } catch (e) {
+        setDevotionalPublishBanner({
+          status: 'error',
+          title: attrs.title,
+          message: e.message || 'Could not publish devotional',
         });
       }
     })();
@@ -939,7 +1038,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
     setJournalPublishBanner(null);
+    setDevotionalPublishBanner(null);
     processedJournalPublishKeys.current = new Set();
+    processedDevotionalPublishKeys.current = new Set();
     try {
       const res = await fetch('/api/ao/auto/thread/new', { method: 'POST' });
       const json = await res.json().catch(() => ({}));
@@ -1385,6 +1486,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
                 generatedImages={generatedImages}
                 generatedDesignImages={generatedDesignImages}
                 journalPublishBanner={journalPublishBanner}
+                devotionalPublishBanner={devotionalPublishBanner}
                 onApprove={handleApprove}
                 onRevise={handleRevise}
                 onViewAll={handleViewAll}
