@@ -157,6 +157,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-05-29 | When You Need Higher Ground | Psalm 61:1–2 (ESV) | `when-you-need-higher-ground` | `2026-05-29-when-you-need-higher-ground.md` |
 | 2026-05-30 | Delivered From Fear | Psalm 34:4 (ESV) | `delivered-from-fear` | `2026-05-30-delivered-from-fear.md` |
 | 2026-05-31 | Letting Peace Govern | 1 Corinthians 14:33 (ESV) | `letting-peace-govern` | `2026-05-31-letting-peace-govern.md` |
+| 2026-06-01 | Clarity Begins With Asking | Jeremiah 33:3 (ESV) | `clarity-begins-with-asking` | `2026-06-01-clarity-begins-with-asking.md` |
+| 2026-06-02 | Taught by God | Isaiah 48:17–18 (ESV) | `taught-by-god` | `2026-06-02-taught-by-god.md` |
+| 2026-06-03 | The Spirit Guides | John 16:12–13 (ESV) | `the-spirit-guides` | `2026-06-03-the-spirit-guides.md` |
+| 2026-06-04 | Led by the Spirit | Romans 8:14–15 (ESV) | `led-by-the-spirit` | `2026-06-04-led-by-the-spirit.md` |
+| 2026-06-05 | Understanding What Has Been Given | 1 Corinthians 2:12–13 (ESV) | `understanding-what-has-been-given` | `2026-06-05-understanding-what-has-been-given.md` |
+| 2026-06-06 | A Spirit of Wisdom and Revelation | Ephesians 1:17–18 (ESV) | `a-spirit-of-wisdom-and-revelation` | `2026-06-06-a-spirit-of-wisdom-and-revelation.md` |
+| 2026-06-07 | The Word That Gives Light | Psalm 119:130 (ESV) | `the-word-that-gives-light` | `2026-06-07-the-word-that-gives-light.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
