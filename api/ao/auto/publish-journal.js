@@ -61,7 +61,7 @@ summary: >-
   ${summary.replace(/\n/g, '\n  ')}
 categories:
 ${categoriesYaml}
-featured_image: ../images/${featured_image}
+featured_image: ../../public/images/${featured_image}
 takeaways:
 ${takeawaysYaml}
 applications: []
@@ -88,10 +88,10 @@ async function getFileSha(token, path) {
   return data.sha || null;
 }
 
-async function commitFile(token, path, content, message, sha) {
+async function commitFile(token, path, content, message, sha, isRawBase64 = false) {
   const body = {
     message,
-    content: Buffer.from(content, 'utf8').toString('base64'),
+    content: isRawBase64 ? content : Buffer.from(content, 'utf8').toString('base64'),
     branch: BRANCH,
   };
   if (sha) body.sha = sha;
@@ -147,6 +147,7 @@ export default async function handler(req, res) {
     publish_date,
     categories = [],
     featured_image = '',
+    image_url = '',
     takeaways = [],
     notify = true,
     notify_delay_ms = 300000,
@@ -168,13 +169,14 @@ export default async function handler(req, res) {
     .replace(/^-|-$/g, '');
 
   const filePath = `${JOURNAL_PATH}/${safeSlug}.md`;
+  const imageFilename = `${safeSlug}.jpg`;
   const frontmatter = buildFrontmatter({
     title,
     slug: safeSlug,
     publish_date,
     summary,
     categories,
-    featured_image,
+    featured_image: imageFilename,
     takeaways,
     status: 'published',
   });
@@ -182,7 +184,32 @@ export default async function handler(req, res) {
   const fullContent = `${frontmatter}\n\n${content.trim()}\n`;
 
   try {
-    // Check if file already exists (update vs create)
+    // If an image URL from storage is provided, download and commit it to public/images/
+    if (image_url && image_url.startsWith('https://')) {
+      try {
+        const imgRes = await fetch(image_url);
+        if (imgRes.ok) {
+          const imgBuffer = await imgRes.arrayBuffer();
+          const imgBase64 = Buffer.from(imgBuffer).toString('base64');
+          // Always name the image after the slug with .jpg extension
+          const imagePath = `public/images/${imageFilename}`;
+          const existingImageSha = await getFileSha(token, imagePath);
+          await commitFile(
+            token,
+            imagePath,
+            imgBase64,
+            `Add journal header image: ${imageFilename}`,
+            existingImageSha,
+            true
+          );
+          console.log(`[publish-journal] Image committed: ${imagePath}`);
+        }
+      } catch (imgErr) {
+        console.warn('[publish-journal] Image commit failed (non-fatal):', imgErr.message);
+      }
+    }
+
+    // Check if MD file already exists (update vs create)
     const existingSha = await getFileSha(token, filePath);
     const commitMessage = existingSha
       ? `Update journal entry: ${title}`
