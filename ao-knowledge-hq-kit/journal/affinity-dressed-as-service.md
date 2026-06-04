@@ -9,7 +9,7 @@ summary: >-
 categories:
   - servant-leadership
   - leadership
-featured_image: ../images/journal-header-affinity-dressed-as-service.png
+featured_image: ../images/affinity-dressed-as-service.jpg
 takeaways:
   []
 applications: []

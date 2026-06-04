@@ -9,7 +9,7 @@ summary: >-
 categories:
   - servant-leadership
   - leadership
-featured_image: ../images/journal-header-the-approval-economy.png
+featured_image: ../images/the-approval-economy.jpg
 takeaways:
   []
 applications: []

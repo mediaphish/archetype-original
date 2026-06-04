@@ -9,7 +9,7 @@ summary: >-
 categories:
   - servant-leadership
   - leadership
-featured_image: ../../public/images/the-invisible-tax.jpg
+featured_image: ../images/the-invisible-tax.jpg
 takeaways:
   []
 applications: []
