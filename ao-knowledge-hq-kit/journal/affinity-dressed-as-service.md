@@ -2,8 +2,8 @@
 title: Affinity Dressed as Service
 slug: affinity-dressed-as-service
 publish_date: '2026-06-15'
-created_at: '2026-05-28'
-updated_at: '2026-05-28'
+created_at: '2026-06-03'
+updated_at: '2026-06-03'
 summary: >-
   The leader most likely to miss favoritism is not the tyrant. It is the relational leader — the one who genuinely invests in people and believes deeply that their job is to serve. This entry examines how affinity masquerades as servant leadership and what Greenleaf's original test demands of every leader who claims the title.
 categories:
