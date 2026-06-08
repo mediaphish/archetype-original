@@ -164,6 +164,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-06-05 | Understanding What Has Been Given | 1 Corinthians 2:12–13 (ESV) | `understanding-what-has-been-given` | `2026-06-05-understanding-what-has-been-given.md` |
 | 2026-06-06 | A Spirit of Wisdom and Revelation | Ephesians 1:17–18 (ESV) | `a-spirit-of-wisdom-and-revelation` | `2026-06-06-a-spirit-of-wisdom-and-revelation.md` |
 | 2026-06-07 | The Word That Gives Light | Psalm 119:130 (ESV) | `the-word-that-gives-light` | `2026-06-07-the-word-that-gives-light.md` |
+| 2026-06-08 | Eyes Straight Ahead | Proverbs 4:25–27 (ESV) | `eyes-straight-ahead` | `2026-06-08-eyes-straight-ahead.md` |
+| 2026-06-09 | Wisdom as the Foundation | Proverbs 8:12–14 (ESV) | `wisdom-as-the-foundation` | `2026-06-09-wisdom-as-the-foundation.md` |
+| 2026-06-10 | Clarity Through Counsel | Proverbs 11:14 (ESV) | `clarity-through-counsel` | `2026-06-10-clarity-through-counsel.md` |
+| 2026-06-11 | Human Plans, Divine Direction | Proverbs 16:1–3 (ESV) | `human-plans-divine-direction` | `2026-06-11-human-plans-divine-direction.md` |
+| 2026-06-12 | Drawing Out Purpose | Proverbs 20:5 (ESV) | `drawing-out-purpose` | `2026-06-12-drawing-out-purpose.md` |
+| 2026-06-13 | Built on Understanding | Proverbs 24:3–4 (ESV) | `built-on-understanding` | `2026-06-13-built-on-understanding.md` |
+| 2026-06-14 | Understanding Produces Stability | Proverbs 28:2 (ESV) | `understanding-produces-stability` | `2026-06-14-understanding-produces-stability.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 

@@ -168,15 +168,9 @@ export default async function handler(req, res) {
         publishDateCalendarOnly(publish_date ?? postData.date) ||
         calendarTodayPublicationTz(new Date(), publicationTimeZone());
       const claim = await claimDevotionalBroadcast(supabaseAdmin, slug, dedupeDay, "journal_notify");
-      if (claim.duplicate) {
-        return res.status(200).json({
-          ok: true,
-          sent: 0,
-          skipped: "already_sent",
-          post_slug: slug,
-          publish_calendar_date: dedupeDay,
-        });
-      }
+      // If a previous run already claimed the "broadcast slot", treat this as a retry:
+      // per-recipient dedupe will prevent double-sends while allowing missed recipients to get the email.
+      const retryingAfterPriorRun = claim.duplicate === true;
       if (claim.error) {
         return res.status(500).json({
           error:
@@ -194,7 +188,7 @@ export default async function handler(req, res) {
         return res.status(200).json({
           ok: true,
           sent: 0,
-          skipped: "all_recipients_already_sent",
+          skipped: retryingAfterPriorRun ? "already_sent_all_recipients" : "all_recipients_already_sent",
           post_slug: slug,
           publish_calendar_date: dedupeDay,
         });

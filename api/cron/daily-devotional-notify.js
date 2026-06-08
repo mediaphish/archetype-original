@@ -160,11 +160,9 @@ export default async function handler(req, res) {
         publishDateCalendarOnly(publish_date ?? devotional.date) || todayStr;
 
       const claim = await claimDevotionalBroadcast(supabaseAdmin, slug, pubDay, 'daily_cron');
-      if (claim.duplicate) {
-        console.log(`⏭️ Skipping ${slug} — devotional already broadcast for ${pubDay}`);
-        skippedAlreadySent += 1;
-        continue;
-      }
+      // If a previous run already claimed the "broadcast slot", treat this as a retry:
+      // per-recipient dedupe will prevent double-sends while allowing missed recipients to get the email.
+      const retryingAfterPriorRun = claim.duplicate === true;
       if (claim.error) {
         throw new Error(claim.error);
       }
@@ -177,7 +175,7 @@ export default async function handler(req, res) {
       );
       if (recipientsToSend.length === 0) {
         console.log(`⏭️ Skipping ${slug} — all subscribers already received for ${pubDay}`);
-        skippedAlreadySent += 1;
+        if (retryingAfterPriorRun) skippedAlreadySent += 1;
         continue;
       }
 
