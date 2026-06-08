@@ -16,7 +16,7 @@ takeaways:
 applications: []
 related:
   - "ali-series-alignment-when-the-direction-actually-holds"
-  - "ali-series-drift-small-slips-big-culture-cost"
+  - "ali-series-drift-the-condition-that-moves-without-permission"
 original_source: "Archetype Original Journal"
 original_url: ""
 status: published
