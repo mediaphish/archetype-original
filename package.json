@@ -46,7 +46,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.4",
-    "resend": "^3.2.0",
+    "resend": "^6.12.4",
     "seedrandom": "^3.0.5",
     "sharp": "^0.34.5"
   },
