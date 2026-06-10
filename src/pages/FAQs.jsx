@@ -1,6 +1,23 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { markdownToHtml } from '../lib/faqMarkdownToHtml';
 import { FAQ_CATEGORY_CONFIG, normalizeFaqCategory } from '../lib/faqCategories';
+
+function stripMarkdownPlainText(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^[-*]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 const DESKTOP_PER_PAGE = 18;
 const MOBILE_BATCH_SIZE = 12;
@@ -173,6 +190,27 @@ export default function FAQs() {
 
   const hasMoreMobile = !useDesktopPagination && mobileVisibleCount < categoryFilteredFaqs.length;
 
+  const categoryPagesWithFaqs = useMemo(
+    () => FAQ_CATEGORY_CONFIG.filter((category) => (tabCounts[category.key] || 0) > 0),
+    [tabCounts]
+  );
+
+  const faqPageJsonLd = useMemo(() => {
+    if (!faqs.length) return null;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.title,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: stripMarkdownPlainText(faq.body || ''),
+        },
+      })),
+    };
+  }, [faqs]);
+
   const rangeStart =
     categoryFilteredFaqs.length === 0 ? 0 : useDesktopPagination ? (safePage - 1) * DESKTOP_PER_PAGE + 1 : 1;
   const rangeEnd = useDesktopPagination
@@ -295,6 +333,11 @@ export default function FAQs() {
 
   return (
     <div className="bg-[#FAFAF9] text-[#1A1A1A]">
+      {faqPageJsonLd && (
+        <Helmet>
+          <script type="application/ld+json">{JSON.stringify(faqPageJsonLd)}</script>
+        </Helmet>
+      )}
       <section className="bg-white border-b-2 border-[#FAFAF9]">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-8 py-14 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
           <div>
@@ -413,6 +456,29 @@ export default function FAQs() {
           )}
         </div>
       </section>
+
+      {categoryPagesWithFaqs.length > 0 && (
+        <section className="bg-white border-t border-[rgba(26,26,26,0.08)] py-10 sm:py-12">
+          <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72] mb-4">
+              Browse by category
+            </h2>
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 text-[14px]">
+              {categoryPagesWithFaqs.map((category) => (
+                <li key={category.key}>
+                  <a
+                    href={`/faqs/${category.key}`}
+                    className="text-[#DB0812] font-medium hover:text-[#b30610] underline underline-offset-2"
+                  >
+                    {category.label}
+                  </a>
+                  <span className="text-[#A8A9AD] ml-1">({tabCounts[category.key] || 0})</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section className="bg-[#2B2929] py-14 sm:py-20">
         <div className="mx-auto max-w-[860px] px-4 sm:px-8 text-center">

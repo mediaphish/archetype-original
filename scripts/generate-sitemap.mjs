@@ -11,6 +11,8 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { PUBLIC_STATIC_SITEMAP_ROUTES } from './lib/public-static-routes.mjs';
 import { filterPublishedScheduledDocs } from '../lib/publish-eligibility.mjs';
+import { faqCategoryKeysWithContent } from './lib/faq-categories.mjs';
+import { loadPublishedFaqDocs } from './lib/faq-knowledge.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -56,8 +58,32 @@ function journalRoutesFromKnowledge() {
 
 const jpRoutes = journalRoutesFromKnowledge();
 
+function faqCategoryRoutesFromKnowledge() {
+  if (!existsSync(knowledgePath)) {
+    console.warn(
+      'public/knowledge.json not found. FAQ category URLs omitted from sitemap. Run after build-knowledge.'
+    );
+    return [];
+  }
+  try {
+    const faqDocs = loadPublishedFaqDocs();
+    const keys = faqCategoryKeysWithContent(faqDocs);
+    return keys.map((key) => ({
+      path: `/faqs/${key}`,
+      priority: '0.7',
+      changefreq: 'weekly',
+      lastmod: today,
+    }));
+  } catch (e) {
+    console.warn(`FAQ category sitemap entries skipped: ${e.message}`);
+    return [];
+  }
+}
+
+const faqRoutes = faqCategoryRoutesFromKnowledge();
+
 function generateSitemapWithJournal(journalPosts) {
-  const combined = [...staticRoutes, ...journalPosts];
+  const combined = [...staticRoutes, ...journalPosts, ...faqRoutes];
   const seen = new Map();
   for (const r of combined) {
     if (!seen.has(r.path)) seen.set(r.path, r);
@@ -91,4 +117,6 @@ function generateSitemapWithJournal(journalPosts) {
 const sitemap = generateSitemapWithJournal(jpRoutes);
 writeFileSync(sitemapPath, sitemap, 'utf-8');
 
-console.log(`✅ Generated sitemap.xml with ${staticRoutes.length} static routes and ${jpRoutes.length} journal/devotional URLs`);
+console.log(
+  `Generated sitemap.xml with ${staticRoutes.length} static routes, ${jpRoutes.length} journal/devotional URLs, ${faqRoutes.length} FAQ category URLs`
+);
