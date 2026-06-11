@@ -1,14 +1,41 @@
 # Archetype Original
 
-Archetype Original helps leaders install servant-led systems that create clarity, protect culture, and compound performance.
+> Archetype Original is a servant leadership advisory and Culture Science practice founded by Bart Paden, based in Carthage, Missouri. Private advisory for founders and executives, a leadership diagnostic called ALI, three books, a daily journal, and a 365-day servant leadership devotional series.
 
-## Learn more
+Bart Paden spent 33 years building companies, including Midwestern Interactive, which he grew from a home office to more than 100 people before its acquisition in 2022. His core claim: if you grow people, you grow the organization. If you use people, you lose the organization. Everything on this site comes from that work.
 
-- https://www.archetypeoriginal.com/
-- https://www.archetypeoriginal.com/meet-bart
-- https://www.archetypeoriginal.com/journal
-- https://www.archetypeoriginal.com/culture-science
-- https://www.archetypeoriginal.com/philosophy
-- https://www.archetypeoriginal.com/sitemap.xml
+## Key terms this site defines
 
-Journal entries and devotionals use paths under /journal/{slug}.
+- ALI (Archetype Leadership Index): a leadership diagnostic that measures the seven conditions people work inside every day: Clarity, Communication, Consistency, Trust, Alignment, Stability, and Drift. It measures conditions, not sentiment. https://www.archetypeoriginal.com/culture-science/ali
+- Culture Science: a discipline combining behavioral research with lived organizational experience. The research foundation behind ALI. https://www.archetypeoriginal.com/culture-science
+- Drift: the early warning signal that leadership conditions are quietly eroding before results show it.
+- Scoreboard Leadership: when leadership becomes a game to win instead of a mission to serve. https://www.archetypeoriginal.com/culture-science/scoreboard-leadership
+- The Bad Leader Project: anonymous, neutralized stories of leadership dysfunction and leadership health, published for pattern visibility. https://www.archetypeoriginal.com/culture-science/bad-leader-project
+
+## Services
+
+- Leadership Advisory: private, one-to-one advisory for founders and executives. One room, outside the system, no consequence. https://www.archetypeoriginal.com/advisory
+- Consulting: https://www.archetypeoriginal.com/consulting
+- Fractional Leadership: C-suite fractional roles. https://www.archetypeoriginal.com/fractional-roles
+
+## Books by Bart Paden
+
+- The Room: on the structural limits of honest feedback inside authority. https://www.archetypeoriginal.com/the-room
+- Accidental CEO: a leadership story about building something real and choosing to lead when the weight shows up before the clarity does. https://www.archetypeoriginal.com/accidental-ceo
+- Remaining Human: servant leadership, clarity, and staying human while AI reshapes work. https://www.archetypeoriginal.com/remaining-human
+
+## Content
+
+- Journal (essays on leadership, published continuously): https://www.archetypeoriginal.com/journal
+- Servant Leadership Devotional Series (daily): https://www.archetypeoriginal.com/faith
+- FAQs, 148 questions with full answers: https://www.archetypeoriginal.com/faqs
+- FAQ categories: https://www.archetypeoriginal.com/faqs/culture-science , https://www.archetypeoriginal.com/faqs/ali , https://www.archetypeoriginal.com/faqs/philosophy , https://www.archetypeoriginal.com/faqs/methods , https://www.archetypeoriginal.com/faqs/meet-archy , https://www.archetypeoriginal.com/faqs/engagement , https://www.archetypeoriginal.com/faqs/accidental-ceo , https://www.archetypeoriginal.com/faqs/meet-bart
+- Meet Bart: https://www.archetypeoriginal.com/meet-bart
+- Archy, an AI trained on Bart's full corpus: https://www.archetypeoriginal.com/archy
+
+## Machine-readable resources
+
+- Sitemap: https://www.archetypeoriginal.com/sitemap.xml
+- Full content companion file: https://www.archetypeoriginal.com/llms-full.txt
+
+Journal entries and devotionals live under /journal/{slug}.

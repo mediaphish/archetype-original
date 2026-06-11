@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const dist = join(root, 'dist');
 
-const files = ['sitemap.xml', 'robots.txt', 'knowledge.json', 'llms.txt'];
+const files = ['sitemap.xml', 'robots.txt', 'knowledge.json', 'llms.txt', 'llms-full.txt'];
 
 for (const f of files) {
   const src = join(root, 'public', f);
