@@ -4,6 +4,8 @@
  */
 import React, { useEffect, useState } from 'react';
 import SEO from '../components/SEO';
+import SchemaJsonLd from '../components/SchemaJsonLd';
+import { buildBookSchema } from '../lib/schemaBuilders.js';
 
 const STORAGE_KEY = 'ao_the_room_seen';
 
@@ -161,6 +163,20 @@ export default function TheRoom() {
   return (
     <>
       <SEO pageKey="the-room" />
+      <SchemaJsonLd
+        schema={buildBookSchema({
+          name: 'The Room',
+          pageKey: 'the-room',
+          path: '/the-room',
+          imagePath: '/images/advisory/the-room-cover.png',
+          offer: {
+            price: '27',
+            url:
+              import.meta.env.VITE_THE_ROOM_SAMCART_URL ||
+              'https://aobooks.samcart.com/products/the-room',
+          },
+        })}
+      />
       <main className="min-h-screen bg-stone-50 text-stone-900 [text-rendering:geometricPrecision]">
         {/* Hero */}
         <section id="advisory-hero" className="relative overflow-hidden border-b border-stone-200">

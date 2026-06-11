@@ -4,6 +4,8 @@
  */
 import React, { useEffect } from 'react';
 import SEO from '../components/SEO';
+import SchemaJsonLd from '../components/SchemaJsonLd';
+import { buildServiceSchema } from '../lib/schemaBuilders.js';
 
 const SAMCART_THE_ROOM_URL =
   import.meta.env.VITE_THE_ROOM_SAMCART_URL || 'https://aobooks.samcart.com/products/the-room';
@@ -31,6 +33,14 @@ export default function Advisory() {
   return (
     <>
       <SEO pageKey="advisory" />
+      <SchemaJsonLd
+        schema={buildServiceSchema({
+          name: 'Leadership Advisory',
+          serviceType: 'Leadership Advisory',
+          pageKey: 'advisory',
+          path: '/advisory',
+        })}
+      />
       <main className="min-h-screen bg-stone-50 text-stone-900 [text-rendering:geometricPrecision]">
         {/* Section 1 — Hero */}
         <section className="relative overflow-hidden border-b border-stone-200 bg-stone-950">

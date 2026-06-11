@@ -9,26 +9,23 @@
  * }
  */
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import SEO from '../../../components/SEO';
+import SchemaJsonLd from '../../../components/SchemaJsonLd';
+import { buildServiceSchema } from '../../../lib/schemaBuilders.js';
 import AdvisoryPathStrip from '../../../components/AdvisoryPathStrip';
 
 export default function CCO() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Fractional Chief Culture Officer",
-    "description": "A Fractional Chief Culture Officer steps into an organization at the moments when culture, leadership, and direction need clarity."
-  };
-
   return (
     <>
       <SEO pageKey="fractional-cco" />
-      <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(jsonLd)}
-        </script>
-      </Helmet>
+      <SchemaJsonLd
+        schema={buildServiceSchema({
+          name: 'Fractional CCO',
+          serviceType: 'Fractional Chief Culture Officer',
+          pageKey: 'fractional-cco',
+          path: '/fractional-roles/cco',
+        })}
+      />
       
       <div className="min-h-screen bg-[#FAFAF9]">
         {/* Hero Section */}

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import SchemaJsonLd from '../components/SchemaJsonLd';
+import { buildProfilePageSchema } from '../lib/schemaBuilders.js';
 
 /**
  * Meet Bart (/meet-bart) — layout and copy; typography matches sitewide (font-sans / font-serif).
@@ -13,21 +15,13 @@ export default function About() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: 'Bart Paden',
-    url: 'https://www.archetypeoriginal.com/meet-bart',
-    jobTitle: 'Founder',
-    sameAs: [],
-  };
-
   const labelClass =
     'mb-5 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-ao-brown sm:mb-6';
 
   return (
     <>
       <SEO pageKey="about" />
+      <SchemaJsonLd schema={buildProfilePageSchema()} />
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -35,7 +29,6 @@ export default function About() {
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <div className="min-h-screen bg-[#FAFAF9] font-inter text-[15px] leading-[1.75] text-[#1A1A1A] antialiased">

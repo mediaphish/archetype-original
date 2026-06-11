@@ -12,8 +12,9 @@
  * }
  */
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
+import SchemaJsonLd from '../../components/SchemaJsonLd';
+import { buildServiceSchema } from '../../lib/schemaBuilders.js';
 
 function navigateTo(path) {
   return (e) => {
@@ -54,13 +55,6 @@ const HERO_TEXTURE =
   'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 4px)';
 
 export default function Consulting() {
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: 'Consulting',
-    description: 'Real solutions for real organizations.'
-  };
-
   const notItems = [
     'Theory or academic models applied generically',
     'Slide decks with buzzwords and no follow-through',
@@ -133,9 +127,14 @@ export default function Consulting() {
   return (
     <>
       <SEO pageKey="consulting" />
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+      <SchemaJsonLd
+        schema={buildServiceSchema({
+          name: 'Leadership Consulting',
+          serviceType: 'Leadership Consulting',
+          pageKey: 'consulting',
+          path: '/consulting',
+        })}
+      />
 
       <div className="min-h-screen bg-white">
         {/* SECTION 1 — Hero */}

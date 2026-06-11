@@ -1,34 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import seoConfig from '../config/seo.json';
+import { getOrganizationJsonLd, getPersonJsonLd, SITE_BASE } from '../lib/schemaIds.js';
 
-const siteBase = seoConfig.default.siteUrl.replace(/\/$/, '');
-
-const orgJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: seoConfig.default.siteName,
-  url: siteBase,
-  logo: `${siteBase}/og-default.jpg`,
-  sameAs: [
-    'https://www.facebook.com/archetypeoriginal',
-    'https://www.instagram.com/archetypeoriginal',
-    'https://www.linkedin.com/company/archetypeoriginal',
-  ],
-};
-
-const personJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Bart Paden',
-  url: `${siteBase}/meet-bart`,
-  jobTitle: 'Founder',
-  worksFor: {
-    '@type': 'Organization',
-    name: seoConfig.default.siteName,
-    url: siteBase,
-  },
-};
+const siteBase = SITE_BASE;
+const orgJsonLd = getOrganizationJsonLd();
+const personJsonLd = getPersonJsonLd();
 
 /** Canonical URL follows the real browser path when available (fixes nested routes like /journal/x, /culture-science/ali). */
 function resolveCanonical(pageKey) {

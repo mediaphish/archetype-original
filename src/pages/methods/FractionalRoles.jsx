@@ -13,8 +13,9 @@
  * }
  */
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import SEO from '../../components/SEO';
+import SchemaJsonLd from '../../components/SchemaJsonLd';
+import { buildServiceSchema } from '../../lib/schemaBuilders.js';
 
 function navigateTo(path) {
   return (e) => {
@@ -35,13 +36,6 @@ function SectionShell({ bgClassName = '', borderClassName = '', pyClassName, chi
 }
 
 export default function FractionalRoles() {
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: 'Fractional Roles',
-    description: 'Leadership presence for the seasons that require more than guidance.'
-  };
-
   const fitsItems = [
     'When culture feels unsteady and a team needs someone to restore alignment',
     'When a growing company needs leadership clarity before adding full-time roles',
@@ -61,9 +55,14 @@ export default function FractionalRoles() {
   return (
     <>
       <SEO pageKey="fractional-roles" />
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
+      <SchemaJsonLd
+        schema={buildServiceSchema({
+          name: 'Fractional Leadership',
+          serviceType: 'Fractional Leadership',
+          pageKey: 'fractional-roles',
+          path: '/fractional-roles',
+        })}
+      />
 
       <div className="min-h-screen bg-white">
         {/* SECTION 1 — Hero */}

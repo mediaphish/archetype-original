@@ -8,6 +8,8 @@
  */
 import React, { useEffect } from 'react';
 import SEO from '../components/SEO';
+import SchemaJsonLd from '../components/SchemaJsonLd';
+import { buildBookSchema } from '../lib/schemaBuilders.js';
 
 const SAMCART_CHECKOUT_URL =
   import.meta.env.VITE_REMAINING_HUMAN_SAMCART_URL ||
@@ -66,6 +68,21 @@ export default function RemainingHuman() {
   return (
     <>
       <SEO pageKey="remaining-human" />
+      <SchemaJsonLd
+        schema={buildBookSchema({
+          name: 'Remaining Human',
+          pageKey: 'remaining-human',
+          path: '/remaining-human',
+          imagePath: '/images/remaining-human/cover-front.png',
+          bookFormat: 'EBook',
+          offer: {
+            price: '27',
+            url:
+              import.meta.env.VITE_REMAINING_HUMAN_SAMCART_URL ||
+              'https://aobooks.mysamcart.com/archetype-original/',
+          },
+        })}
+      />
       <main className="min-h-screen bg-[#061312] text-[#E7F1EE] [text-rendering:geometricPrecision]">
         {/* 1 — Hook: Hero */}
         <section className="relative overflow-hidden border-b border-[#95DACE]/20">

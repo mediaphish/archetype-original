@@ -3,6 +3,8 @@
  */
 import React from 'react';
 import SEO from '../components/SEO';
+import SchemaJsonLd from '../components/SchemaJsonLd';
+import { buildBooksItemListSchema } from '../lib/schemaBuilders.js';
 import { OptimizedImage } from '../components/OptimizedImage';
 
 function goToPath(event, path) {
@@ -16,6 +18,7 @@ export default function Books() {
   return (
     <>
       <SEO pageKey="books" />
+      <SchemaJsonLd schema={buildBooksItemListSchema()} />
       <div className="min-h-screen bg-[#FAFAF9]">
         <section className="border-b border-[#1A1A1A]/10 bg-white py-14 sm:py-18 md:py-22">
           <div className="container mx-auto max-w-4xl px-4 text-center sm:px-6 md:px-12">

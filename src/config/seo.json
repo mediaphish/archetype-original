@@ -105,6 +105,24 @@
       "description": "Daily devotionals connecting Scripture to the real pressures of leadership. Formation for leaders who want to lead with clarity, restraint, and genuine care for people.",
       "keywords": "servant leadership devotional, leadership and faith, Christian leadership, daily leadership reflection, Bart Paden devotional",
       "image": "/og-default.jpg"
+    },
+    "consulting": {
+      "title": "Leadership Consulting | Archetype Original",
+      "description": "Real solutions for real organizations. Clarity, alignment, and implementation support without generic frameworks or fluff.",
+      "keywords": "leadership consulting, organizational alignment, culture consulting, Bart Paden, Archetype Original",
+      "image": "/images/ao-consulting-hero-01.jpg"
+    },
+    "fractional-roles": {
+      "title": "Fractional Leadership | Archetype Original",
+      "description": "Leadership presence for seasons that require more than guidance. Fractional roles with real involvement inside your organization.",
+      "keywords": "fractional leadership, fractional executive, Bart Paden, Archetype Original",
+      "image": "/og-default.jpg"
+    },
+    "fractional-cco": {
+      "title": "Fractional Chief Culture Officer | Archetype Original",
+      "description": "A Fractional Chief Culture Officer steps into an organization at the moments when culture, leadership, and direction need clarity.",
+      "keywords": "fractional CCO, chief culture officer, culture leadership, Bart Paden, Archetype Original",
+      "image": "/og-default.jpg"
     }
   }
 }

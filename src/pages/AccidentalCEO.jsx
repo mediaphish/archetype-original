@@ -4,6 +4,8 @@
  */
 import React, { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
+import SchemaJsonLd from '../components/SchemaJsonLd';
+import { buildBookSchema } from '../lib/schemaBuilders.js';
 import { OptimizedImage } from '../components/OptimizedImage';
 import { markdownToHtml } from '../lib/faqMarkdownToHtml';
 
@@ -115,6 +117,15 @@ export default function AccidentalCEO() {
   return (
     <>
       <SEO pageKey="accidental-ceo" />
+      <SchemaJsonLd
+        schema={buildBookSchema({
+          name: 'Accidental CEO',
+          pageKey: 'accidental-ceo',
+          path: '/accidental-ceo',
+          imagePath: '/images/accidental-ceo/accidental-ceo-front-back-01.png',
+          bookFormat: 'Paperback',
+        })}
+      />
       <div className="bg-white text-[#1A1A1A]">
         {/* 1. Hero */}
         <section
