@@ -34,7 +34,12 @@ function journalRoutesFromKnowledge() {
   }
   const raw = JSON.parse(readFileSync(knowledgePath, 'utf8'));
   const docs = filterPublishedScheduledDocs(
-    (raw.docs || []).filter((d) => d.type === 'journal-post' || d.type === 'devotional')
+    (raw.docs || []).filter(
+      (d) =>
+        (d.type === 'journal-post' || d.type === 'devotional') &&
+        !d.podcast_slug &&
+        d.source?.kind !== 'podcast'
+    )
   );
 
   const routes = [];
@@ -56,7 +61,39 @@ function journalRoutesFromKnowledge() {
   return routes;
 }
 
+function podcastRoutesFromKnowledge() {
+  if (!existsSync(knowledgePath)) {
+    console.warn(
+      'public/knowledge.json not found — podcast URLs omitted from sitemap. Run after build-knowledge.'
+    );
+    return [];
+  }
+  const raw = JSON.parse(readFileSync(knowledgePath, 'utf8'));
+  const docs = filterPublishedScheduledDocs(
+    (raw.docs || []).filter((d) => d.type === 'podcast-episode')
+  );
+
+  const routes = [];
+  for (const doc of docs) {
+    const slug = doc.slug;
+    if (!slug) continue;
+    const publishDateRaw = doc.publish_date || doc.date || doc.updated_at || doc.created_at || today;
+    let lastmod = today;
+    if (typeof publishDateRaw === 'string') {
+      lastmod = publishDateRaw.split('T')[0].split(' ')[0];
+    }
+    routes.push({
+      path: `/podcast/${slug}`,
+      priority: '0.85',
+      changefreq: 'monthly',
+      lastmod,
+    });
+  }
+  return routes;
+}
+
 const jpRoutes = journalRoutesFromKnowledge();
+const podcastRoutes = podcastRoutesFromKnowledge();
 
 function faqCategoryRoutesFromKnowledge() {
   if (!existsSync(knowledgePath)) {
@@ -82,8 +119,8 @@ function faqCategoryRoutesFromKnowledge() {
 
 const faqRoutes = faqCategoryRoutesFromKnowledge();
 
-function generateSitemapWithJournal(journalPosts) {
-  const combined = [...staticRoutes, ...journalPosts, ...faqRoutes];
+function generateSitemapWithJournal(journalPosts, podcastPosts) {
+  const combined = [...staticRoutes, ...journalPosts, ...podcastPosts, ...faqRoutes];
   const seen = new Map();
   for (const r of combined) {
     if (!seen.has(r.path)) seen.set(r.path, r);
@@ -114,9 +151,9 @@ function generateSitemapWithJournal(journalPosts) {
   return xml;
 }
 
-const sitemap = generateSitemapWithJournal(jpRoutes);
+const sitemap = generateSitemapWithJournal(jpRoutes, podcastRoutes);
 writeFileSync(sitemapPath, sitemap, 'utf-8');
 
 console.log(
-  `Generated sitemap.xml with ${staticRoutes.length} static routes, ${jpRoutes.length} journal/devotional URLs, ${faqRoutes.length} FAQ category URLs`
+  `Generated sitemap.xml with ${staticRoutes.length} static routes, ${jpRoutes.length} journal/devotional URLs, ${podcastRoutes.length} podcast episode URLs, ${faqRoutes.length} FAQ category URLs`
 );

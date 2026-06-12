@@ -163,6 +163,15 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
+                    href="/podcast"
+                    onClick={(e) => handleLinkClick(e, '/podcast')}
+                    className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"
+                  >
+                    Podcast
+                  </a>
+                </li>
+                <li>
+                  <a
                     href="/archy"
                     onClick={(e) => handleLinkClick(e, '/archy')}
                     className="flex min-h-[40px] items-center py-1 text-sm leading-snug text-[#a89e97] transition-colors hover:text-ao-bone sm:min-h-0 sm:py-0.5"

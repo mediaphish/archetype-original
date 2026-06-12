@@ -345,6 +345,17 @@ export default function Header() {
                     )}
                   </div>
 
+                  <a
+                    href="/podcast"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigation('/podcast');
+                    }}
+                    className={navLinkClass('/podcast')}
+                  >
+                    Podcast
+                  </a>
+
                 </div>
               </div>
 
@@ -556,6 +567,21 @@ export default function Header() {
                     </div>
                   )}
                 </div>
+
+                <a
+                  href="/podcast"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/podcast');
+                  }}
+                  className={`min-h-[44px] flex items-center px-6 py-3 text-base font-medium transition-all duration-200 ${
+                    isActive('/podcast')
+                      ? 'text-[#1A1A1A] bg-[#FAFAF9] border-l-4 border-ao-red'
+                      : 'text-[#6B6B6B] hover:text-[#1A1A1A] hover:bg-[#FAFAF9]'
+                  }`}
+                >
+                  Podcast
+                </a>
 
                 {/* Work Together CTA Button - Mobile */}
                 <a

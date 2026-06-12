@@ -71,6 +71,8 @@ export default function FloatingArchyButton() {
         setContext('remaining-human');
       } else if (path === '/faith') {
         setContext('faith');
+      } else if (path === '/podcast' || path.startsWith('/podcast/')) {
+        setContext('podcast');
       } else if (path === '/journal' || path.startsWith('/journal/')) {
         setContext('journal');
       } else if (path === '/consulting') {

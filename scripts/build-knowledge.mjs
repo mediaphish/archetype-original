@@ -15,6 +15,7 @@ import {
 
 const KNOWLEDGE_DIR = 'ao-knowledge-hq-kit/knowledge';
 const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
+const PODCAST_DIR = path.join(JOURNAL_DIR, 'podcast');
 const FAQ_DIR = 'ao-knowledge-hq-kit/faqs';
 const OUTPUT_FILE = 'public/knowledge.json';
 
@@ -203,6 +204,10 @@ async function buildKnowledgeCorpus() {
       
       if (isHidden) {
         console.log(`⏭️  Skipping hidden file: ${fileName}`);
+        return false;
+      }
+
+      if (filePath.includes(`${path.sep}podcast${path.sep}`)) {
         return false;
       }
       
@@ -465,6 +470,142 @@ async function buildKnowledgeCorpus() {
     console.log(`   ⏰ Future posts: ${futurePosts}`);
     console.log(`   ⏭️  Skipped: ${skippedCount}`);
     console.log(`   ❌ Errors: ${errorCount}`);
+  }
+
+  // Process podcast episodes (separate from journal loop)
+  if (fs.existsSync(PODCAST_DIR)) {
+    console.log(`\n🎙️  Processing podcast episodes...`);
+    const podcastFiles = fs
+      .readdirSync(PODCAST_DIR)
+      .filter((name) => name.endsWith('.md') && !name.toLowerCase().includes('template'))
+      .map((name) => path.join(PODCAST_DIR, name));
+
+    let podcastProcessed = 0;
+    let podcastSkipped = 0;
+
+    for (const filePath of podcastFiles) {
+      try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        if (!content.trim()) {
+          podcastSkipped++;
+          continue;
+        }
+
+        const { data: frontmatter, content: body } = matter(content);
+        const statusNorm = String(frontmatter.status ?? '').trim().toLowerCase();
+
+        if (statusNorm === 'draft') {
+          console.log(`📝 Skipping draft podcast episode: ${frontmatter.title || path.basename(filePath)}`);
+          podcastSkipped++;
+          continue;
+        }
+
+        if (statusNorm !== 'published') {
+          console.log(
+            `🔒 Skipping podcast episode (not published): ${frontmatter.title || path.basename(filePath)}`
+          );
+          podcastSkipped++;
+          continue;
+        }
+
+        if (
+          shouldSkipFutureScheduledMarkdown(frontmatter, {
+            isJournalOrDevotional: true,
+          })
+        ) {
+          const pub = publishDateCalendarOnly(frontmatter.publish_date ?? frontmatter.date);
+          const today = calendarTodayPublicationTz();
+          console.log(
+            `⏰ Skipping future podcast episode: "${frontmatter.title || path.basename(filePath)}" (scheduled for ${pub}, today is ${today})`
+          );
+          podcastSkipped++;
+          continue;
+        }
+
+        const slug = frontmatter.slug || path.basename(filePath, '.md');
+        let publishDateValue = frontmatter.publish_date || frontmatter.date;
+        if (publishDateValue && String(publishDateValue).includes('T')) {
+          publishDateValue = String(publishDateValue).split('T')[0];
+        }
+
+        const youtubeId = frontmatter.youtube_id || frontmatter.youtubeId || null;
+        const imagePath = youtubeId ? `/images/podcast/${slug}.jpg` : null;
+
+        const episodeDoc = {
+          title: frontmatter.title || 'Untitled Episode',
+          slug,
+          type: 'podcast-episode',
+          tags: frontmatter.tags || [],
+          categories: frontmatter.categories || [],
+          status: 'published',
+          created_at: frontmatter.created_at || publishDateValue || new Date().toISOString(),
+          updated_at: frontmatter.updated_at || publishDateValue || new Date().toISOString(),
+          publish_date: publishDateValue,
+          date: publishDateValue,
+          summary: frontmatter.summary || '',
+          episode_type: frontmatter.episode_type || frontmatter.episodeType || 'solo',
+          duration: frontmatter.duration || '',
+          youtube_id: youtubeId,
+          spotify_embed_url: frontmatter.spotify_embed_url || frontmatter.spotifyEmbedUrl || '',
+          show_notes: Array.isArray(frontmatter.show_notes)
+            ? frontmatter.show_notes
+            : Array.isArray(frontmatter.showNotes)
+              ? frontmatter.showNotes
+              : [],
+          body: body.trim(),
+          transcript: frontmatter.transcript || '',
+          key_takeaways: Array.isArray(frontmatter.key_takeaways)
+            ? frontmatter.key_takeaways
+            : Array.isArray(frontmatter.keyTakeaways)
+              ? frontmatter.keyTakeaways
+              : [],
+          guest: frontmatter.guest || null,
+          related: frontmatter.related || [],
+          image: imagePath,
+          source: {
+            kind: 'podcast',
+            original_source: 'Archetype Original Podcast',
+          },
+        };
+
+        docs.push(episodeDoc);
+
+        const journalCrossPost = {
+          title: episodeDoc.title,
+          slug: episodeDoc.slug,
+          type: 'journal-post',
+          tags: [...(episodeDoc.tags || []), 'podcast'],
+          categories: [...(episodeDoc.categories || []), 'podcast'],
+          status: 'published',
+          created_at: episodeDoc.created_at,
+          updated_at: episodeDoc.updated_at,
+          publish_date: episodeDoc.publish_date,
+          date: episodeDoc.date,
+          summary: episodeDoc.summary,
+          body: episodeDoc.summary || episodeDoc.body.substring(0, 500),
+          image: imagePath,
+          podcast_slug: slug,
+          episode_type: episodeDoc.episode_type,
+          duration: episodeDoc.duration,
+          youtube_id: youtubeId,
+          related: episodeDoc.related,
+          source: {
+            kind: 'podcast',
+            original_source: 'Archetype Original Podcast',
+          },
+        };
+
+        docs.push(journalCrossPost);
+        podcastProcessed++;
+        console.log(`✅ Processed podcast episode: ${episodeDoc.title}`);
+      } catch (error) {
+        console.error(`❌ Error processing podcast ${path.basename(filePath)}:`, error.message);
+      }
+    }
+
+    console.log(`📊 Podcast Processing Summary:`);
+    console.log(`   ✅ Published: ${podcastProcessed}`);
+    console.log(`   ⏭️  Skipped: ${podcastSkipped}`);
   }
   
   // Process FAQs

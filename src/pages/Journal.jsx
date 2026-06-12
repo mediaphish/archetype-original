@@ -9,6 +9,47 @@ function toLabel(cat) {
   return cat.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 }
 
+function postHref(post) {
+  if (post?.podcast_slug) return `/podcast/${post.podcast_slug}`;
+  return `/journal/${post.slug}`;
+}
+
+function postCtaLabel(post) {
+  return post?.podcast_slug ? 'Listen now →' : 'Read Article →';
+}
+
+function PostThumbnail({ post }) {
+  const [imgError, setImgError] = React.useState(false);
+  const isPodcast = Boolean(post?.podcast_slug);
+  const youtubeId = post?.youtube_id;
+  const aspectClass = isPodcast ? 'aspect-video bg-[#2B2929]' : 'aspect-[4/3] bg-[#E1DED8]';
+  const showYoutube = isPodcast && youtubeId && !imgError;
+  const showImage = post?.image && !imgError && !showYoutube;
+
+  return (
+    <div className={`w-full overflow-hidden ${aspectClass} flex items-center justify-center`}>
+      {showYoutube ? (
+        <img
+          src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
+          alt={post.title}
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          onError={() => setImgError(true)}
+        />
+      ) : showImage ? (
+        <OptimizedImage
+          src={post.image}
+          alt={post.title}
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+        />
+      ) : (
+        <span className="text-[12px] text-[#A8A9AD] tracking-[0.08em] uppercase">
+          {isPodcast ? 'Episode' : 'Post image'}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export default function Journal() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,12 +130,12 @@ export default function Journal() {
         const slug = String(cat || '')
           .trim()
           .toLowerCase();
-        if (!slug || slug === 'devotional') return;
+        if (!slug || slug === 'devotional' || slug === 'podcast') return;
         counts[slug] = (counts[slug] || 0) + 1;
       });
     });
     const derived = Object.entries(counts)
-      .filter(([cat]) => cat !== 'devotional')
+      .filter(([cat]) => cat !== 'devotional' && cat !== 'podcast')
       .sort((a, b) => b[1] - a[1])
       .map(([cat]) => cat);
     return { derivedCategories: derived, categoryCounts: counts };
@@ -178,8 +219,8 @@ export default function Journal() {
     });
   };
 
-  const handlePostClick = (slug) => {
-    window.history.pushState({}, '', `/journal/${slug}`);
+  const handlePostClick = (post) => {
+    window.history.pushState({}, '', postHref(post));
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
@@ -261,24 +302,14 @@ export default function Journal() {
             {featuredPost && (
               <article
                 className="mb-16 lg:mb-20 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 cursor-pointer items-center"
-                onClick={() => handlePostClick(featuredPost.slug)}
+                onClick={() => handlePostClick(featuredPost)}
               >
-                <div className="w-full overflow-hidden bg-[#E1DED8] aspect-[4/3] flex items-center justify-center">
-                  {featuredPost.image ? (
-                    <OptimizedImage
-                      src={featuredPost.image}
-                      alt={featuredPost.title}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  ) : (
-                    <span className="text-[12px] text-[#A8A9AD] tracking-[0.08em] uppercase">Post image</span>
-                  )}
-                </div>
+                <PostThumbnail post={featuredPost} />
 
                 <div className="flex flex-col justify-center">
                   <div className="mb-4">
                     <span className="inline-block px-2.5 py-1 bg-[#1A1A1A] text-white text-[10px] font-semibold uppercase tracking-[0.12em]">
-                      Featured
+                      {featuredPost.podcast_slug ? 'Podcast' : 'Featured'}
                     </span>
                   </div>
                   <time className="text-[13px] text-[#6B6B6B] mb-3 block">
@@ -286,10 +317,10 @@ export default function Journal() {
                   </time>
                   <h2 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] font-normal text-[#1A1A1A] mb-4 sm:mb-5 leading-tight tracking-[-0.01em] text-balance hover:text-[#DB0812] transition-colors">
                     <a
-                      href={`/journal/${featuredPost.slug}`}
+                      href={postHref(featuredPost)}
                       onClick={(e) => {
                         e.preventDefault();
-                        handlePostClick(featuredPost.slug);
+                        handlePostClick(featuredPost);
                       }}
                       className="text-inherit no-underline"
                     >
@@ -300,14 +331,14 @@ export default function Journal() {
                     {featuredPost.summary || featuredPost.body?.substring(0, 200) + '...'}
                   </p>
                   <a
-                    href={`/journal/${featuredPost.slug}`}
+                    href={postHref(featuredPost)}
                     className="text-[15px] font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors inline-flex items-center gap-1.5"
                     onClick={(e) => {
                       e.preventDefault();
-                      handlePostClick(featuredPost.slug);
+                      handlePostClick(featuredPost);
                     }}
                   >
-                    Read Article →
+                    {postCtaLabel(featuredPost)}
                   </a>
                 </div>
               </article>
@@ -319,18 +350,10 @@ export default function Journal() {
                   <article
                     key={post.slug}
                     className="cursor-pointer"
-                    onClick={() => handlePostClick(post.slug)}
+                    onClick={() => handlePostClick(post)}
                   >
-                    <div className="w-full mb-4 overflow-hidden bg-[#E1DED8] aspect-video flex items-center justify-center">
-                      {post.image ? (
-                        <OptimizedImage
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                        />
-                      ) : (
-                        <span className="text-[12px] text-[#A8A9AD] tracking-[0.08em] uppercase">Post image</span>
-                      )}
+                    <div className="w-full mb-4">
+                      <PostThumbnail post={post} />
                     </div>
 
                     <div>
@@ -339,10 +362,10 @@ export default function Journal() {
                       </time>
                       <h3 className="font-serif text-[22px] font-normal text-[#1A1A1A] mb-3 leading-snug tracking-[-0.01em] text-balance hover:text-[#DB0812] transition-colors">
                         <a
-                          href={`/journal/${post.slug}`}
+                          href={postHref(post)}
                           onClick={(e) => {
                             e.preventDefault();
-                            handlePostClick(post.slug);
+                            handlePostClick(post);
                           }}
                           className="text-inherit no-underline"
                         >
@@ -353,14 +376,14 @@ export default function Journal() {
                         {post.summary || post.body?.substring(0, 150) + '...'}
                       </p>
                       <a
-                        href={`/journal/${post.slug}`}
+                        href={postHref(post)}
                         className="text-[14px] font-medium text-[#1A1A1A] hover:text-[#DB0812] transition-colors inline-flex items-center"
                         onClick={(e) => {
                           e.preventDefault();
-                          handlePostClick(post.slug);
+                          handlePostClick(post);
                         }}
                       >
-                        Read Article →
+                        {postCtaLabel(post)}
                       </a>
                     </div>
                   </article>

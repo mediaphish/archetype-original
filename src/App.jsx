@@ -14,6 +14,8 @@ import Footer from "./components/Footer";
 import HomePage from "./components/home/HomePage";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
+import Podcast from "./pages/Podcast";
+import PodcastEpisode from "./pages/PodcastEpisode";
 import DevotionalPost from "./pages/DevotionalPost";
 import Faith from "./pages/Faith";
 import AboutPage from "./pages/About";
@@ -108,6 +110,8 @@ export default function App() {
     if (path === '/faith') return 'faith';
     if (path === '/journal') return 'journal';
     if (path.startsWith('/journal/')) return 'journal-post';
+    if (path === '/podcast') return 'podcast';
+    if (path.startsWith('/podcast/')) return 'podcast-episode';
     if (path === '/meet-bart' || path === '/about') return 'about';
     if (path === '/contact') return 'contact';
     if (path === '/culture-science/anti-projects/bad-leader-project/admin/login') return 'bad-leader-admin-login';
@@ -487,6 +491,10 @@ export default function App() {
         // Check if it's a devotional or journal post
         // We'll determine this in the component based on the post type
         setCurrentPage('journal-post');
+      } else if (path === '/podcast') {
+        setCurrentPage('podcast');
+      } else if (path.startsWith('/podcast/')) {
+        setCurrentPage('podcast-episode');
       } else if (path === '/meet-bart') {
         setCurrentPage('about');
       } else if (path === '/philosophy') {
@@ -614,12 +622,13 @@ export default function App() {
     const path = window.location.pathname;
     const hash = window.location.hash;
     const isJournalPage = path === '/journal' || path.startsWith('/journal/');
+    const isPodcastPage = path === '/podcast' || path.startsWith('/podcast/');
 
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
 
-    if (isJournalPage) {
+    if (isJournalPage || isPodcastPage) {
       const scrollToTop = () => window.scrollTo(0, 0);
       scrollToTop();
       requestAnimationFrame(() => {
@@ -763,6 +772,28 @@ export default function App() {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Faith />
+        <Footer />
+      </main>
+    );
+  }
+
+  // Render Podcast episode page
+  if (currentPage === 'podcast-episode') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <PodcastEpisode />
+        <Footer />
+      </main>
+    );
+  }
+
+  // Render Podcast listing page
+  if (currentPage === 'podcast') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <Podcast />
         <Footer />
       </main>
     );

@@ -20,6 +20,11 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'Apply this to my team', send: 'How would I apply these ideas with my team this week?' },
     { label: 'Go deeper on one theme', send: 'What themes show up across Bart’s writing?' },
   ],
+  podcast: [
+    { label: 'Episode takeaway', send: 'What is the main takeaway from this podcast episode?' },
+    { label: 'Apply to my team', send: 'How would I apply what Bart is talking about with my team?' },
+    { label: 'Related reading', send: 'What journal posts or books connect to this episode?' },
+  ],
   faith: [
     { label: 'Today’s devotional idea', send: 'Help me engage with today’s devotional in a practical way.' },
     { label: 'Prayer & reflection', send: 'Suggest a short reflection prompt based on what I’m reading.' },
