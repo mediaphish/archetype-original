@@ -22,6 +22,7 @@ import {
   buildYoutubeDescription,
   uploadVideoToYoutube,
 } from '../../../lib/ao/youtubeUpload.js';
+import { getGuestById, guestRecordToEpisodeGuest } from '../../../lib/ao/guestIntakeStore.js';
 
 function vercelRequestId(req) {
   return req.headers['x-vercel-id'] || req.headers['x-request-id'] || null;
@@ -123,12 +124,21 @@ export default async function handler(req, res) {
     }
   }
 
+  let guestForFrontmatter = draft.guest || null;
+  const guestId = draft.guest_id || draft.guest?.guest_id || null;
+  if (guestId) {
+    const loadedGuest = await getGuestById(guestId);
+    if (loadedGuest.ok) {
+      guestForFrontmatter = guestRecordToEpisodeGuest(loadedGuest.guest);
+    }
+  }
+
   const frontmatter = buildEpisodeFrontmatter({
     title: draft.title,
     slug: safeSlug,
     publish_date: publishDate,
     summary: draft.summary,
-    episode_type: draft.episode_type || 'solo',
+    episode_type: guestForFrontmatter?.name ? 'guest' : draft.episode_type || 'solo',
     duration,
     youtube_id,
     spotify_embed_url,
@@ -137,7 +147,7 @@ export default async function handler(req, res) {
     show_notes: draft.show_notes || [],
     key_takeaways: draft.key_takeaways || [],
     related: draft.related || [],
-    guest: draft.guest,
+    guest: guestForFrontmatter,
     transcript: draft.transcript || '',
     status: 'published',
   });

@@ -19,6 +19,7 @@ export const PUBLIC_STATIC_SITEMAP_ROUTES = [
   { path: '/culture-science/bad-leader-project', priority: '0.7', changefreq: 'monthly' },
   { path: '/journal', priority: '0.9', changefreq: 'weekly' },
   { path: '/podcast', priority: '0.9', changefreq: 'weekly' },
+  { path: '/podcast/guest-intake', priority: '0.7', changefreq: 'monthly' },
   { path: '/faith', priority: '0.9', changefreq: 'weekly' },
   { path: '/faqs', priority: '0.8', changefreq: 'weekly' },
   { path: '/contact', priority: '0.7', changefreq: 'monthly' },

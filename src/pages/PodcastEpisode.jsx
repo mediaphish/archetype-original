@@ -5,6 +5,7 @@ import ShareLinks from '../components/ShareLinks';
 import JournalSubscription from '../components/JournalSubscription';
 import JournalAdvisoryCTA from '../components/JournalAdvisoryCTA';
 import JournalMarkdownBody from '../components/JournalMarkdownBody';
+import PodcastGuestBlock from '../components/podcast/PodcastGuestBlock';
 import { formatDate } from '../lib/formatPublishDate';
 
 function episodeTypeLabel(type) {
@@ -13,16 +14,6 @@ function episodeTypeLabel(type) {
   if (t === 'guest') return 'Guest episode';
   if (t === 'solo') return 'Solo episode';
   return String(type);
-}
-
-function guestInitials(name) {
-  if (!name) return '';
-  return name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
 }
 
 function TranscriptLine({ line }) {
@@ -417,31 +408,7 @@ export default function PodcastEpisode() {
                   </div>
                 )}
 
-                {episode.guest?.name && (
-                  <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-[#1A1A1A]/10">
-                    <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-6 font-serif">Guest</h3>
-                    <div className="flex items-center gap-4">
-                      {episode.guest.image ? (
-                        <img
-                          src={episode.guest.image}
-                          alt={episode.guest.name}
-                          className="w-16 h-16 rounded-full object-cover flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 rounded-full bg-[#E1DED8] flex items-center justify-center font-serif font-bold text-lg text-[#8B7D72] flex-shrink-0">
-                          {episode.guest.initials || guestInitials(episode.guest.name)}
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-semibold text-lg text-[#1A1A1A]">{episode.guest.name}</p>
-                        {episode.guest.title && <p className="text-[#6B6B6B]">{episode.guest.title}</p>}
-                        {episode.guest.bio && (
-                          <p className="text-sm text-[#6B6B6B] mt-1 leading-relaxed">{episode.guest.bio}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {episode.guest?.name && <PodcastGuestBlock guest={episode.guest} />}
 
                 <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-[#1A1A1A]/10">
                   <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif">

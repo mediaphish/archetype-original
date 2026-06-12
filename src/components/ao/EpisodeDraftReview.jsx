@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function linesToArray(text) {
   return String(text || '')
@@ -28,6 +28,38 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
   const [message, setMessage] = useState('');
   const [liveUrl, setLiveUrl] = useState('');
   const [videoUploadStatus, setVideoUploadStatus] = useState('idle');
+  const [guestSearch, setGuestSearch] = useState('');
+  const [guestResults, setGuestResults] = useState([]);
+  const [guestId, setGuestId] = useState(draft?.guest_id || '');
+  const [selectedGuestLabel, setSelectedGuestLabel] = useState(
+    draft?.guest?.name ? `${draft.guest.name}${draft.guest.company ? ` — ${draft.guest.company}` : ''}` : ''
+  );
+  const [guestSearchStatus, setGuestSearchStatus] = useState('idle');
+
+  useEffect(() => {
+    const q = guestSearch.trim();
+    if (q.length < 2) {
+      setGuestResults([]);
+      setGuestSearchStatus('idle');
+      return undefined;
+    }
+
+    setGuestSearchStatus('searching');
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/ao/auto/guest-search?q=${encodeURIComponent(q)}`);
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Search failed');
+        setGuestResults(json.guests || []);
+        setGuestSearchStatus('idle');
+      } catch {
+        setGuestResults([]);
+        setGuestSearchStatus('error');
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [guestSearch]);
 
   if (!draft?.draft_id) return null;
 
@@ -50,6 +82,7 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
           video_source_url: videoSourceUrl.trim(),
           spotify_embed_url: spotifyUrl.trim(),
           duration: duration.trim(),
+          guest_id: guestId || null,
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -228,6 +261,62 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
           className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono"
         />
       </label>
+
+      <div className="border border-gray-200 rounded-lg p-3 space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Guest from intake</p>
+        <p className="text-[11px] text-gray-500 leading-snug">
+          Search by name or email to attach a submitted guest intake record to this episode.
+        </p>
+        <input
+          type="text"
+          value={guestSearch}
+          onChange={(e) => setGuestSearch(e.target.value)}
+          placeholder="Search guest name or email"
+          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+        />
+        {guestSearchStatus === 'searching' && (
+          <p className="text-xs text-gray-500">Searching...</p>
+        )}
+        {guestResults.length > 0 && (
+          <ul className="max-h-40 overflow-y-auto border border-gray-100 rounded-md divide-y divide-gray-100">
+            {guestResults.map((guest) => (
+              <li key={guest.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGuestId(guest.id);
+                    setSelectedGuestLabel(
+                      `${guest.name}${guest.company ? ` — ${guest.company}` : ''} (${guest.email})`
+                    );
+                    setGuestSearch('');
+                    setGuestResults([]);
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                >
+                  <span className="font-medium text-gray-900">{guest.name}</span>
+                  {guest.company && <span className="text-gray-500"> — {guest.company}</span>}
+                  <span className="block text-xs text-gray-500">{guest.email}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {selectedGuestLabel && (
+          <div className="flex items-center justify-between gap-2 rounded-md bg-gray-50 px-3 py-2 text-sm">
+            <span className="text-gray-800">{selectedGuestLabel}</span>
+            <button
+              type="button"
+              onClick={() => {
+                setGuestId('');
+                setSelectedGuestLabel('');
+              }}
+              className="text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-red-600"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className="border-t border-gray-200 pt-4 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Publish details</p>

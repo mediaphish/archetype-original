@@ -16,6 +16,7 @@ import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
 import Podcast from "./pages/Podcast";
 import PodcastEpisode from "./pages/PodcastEpisode";
+import PodcastGuestIntake from "./pages/PodcastGuestIntake";
 import DevotionalPost from "./pages/DevotionalPost";
 import Faith from "./pages/Faith";
 import AboutPage from "./pages/About";
@@ -493,6 +494,8 @@ export default function App() {
         setCurrentPage('journal-post');
       } else if (path === '/podcast') {
         setCurrentPage('podcast');
+      } else if (path === '/podcast/guest-intake') {
+        setCurrentPage('podcast-guest-intake');
       } else if (path.startsWith('/podcast/')) {
         setCurrentPage('podcast-episode');
       } else if (path === '/meet-bart') {
@@ -772,6 +775,17 @@ export default function App() {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Faith />
+        <Footer />
+      </main>
+    );
+  }
+
+  // Render Podcast guest intake page
+  if (currentPage === 'podcast-guest-intake') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <PodcastGuestIntake />
         <Footer />
       </main>
     );
