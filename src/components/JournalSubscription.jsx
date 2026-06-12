@@ -5,7 +5,11 @@
  */
 import React, { useState } from 'react';
 
-export default function JournalSubscription() {
+export default function JournalSubscription({
+  title = 'Get New Posts by Email',
+  description = 'Subscribe to receive email notifications when new content is published.',
+  podcastMode = false,
+}) {
   const [email, setEmail] = useState('');
   const [subscribeJournalEntries, setSubscribeJournalEntries] = useState(true);
   const [subscribeDevotionals, setSubscribeDevotionals] = useState(false);
@@ -21,8 +25,8 @@ export default function JournalSubscription() {
       return;
     }
 
-    // Require at least one subscription type
-    if (!subscribeJournalEntries && !subscribeDevotionals) {
+    // Require at least one subscription type (podcast page uses journal entries for episode alerts)
+    if (!podcastMode && !subscribeJournalEntries && !subscribeDevotionals) {
       setStatus('error');
       setMessage('Please select at least one subscription type.');
       return;
@@ -37,10 +41,10 @@ export default function JournalSubscription() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           email,
-          subscribe_journal_entries: subscribeJournalEntries,
-          subscribe_devotionals: subscribeDevotionals
+          subscribe_journal_entries: podcastMode ? true : subscribeJournalEntries,
+          subscribe_devotionals: podcastMode ? false : subscribeDevotionals,
         }),
       });
 
@@ -87,59 +91,53 @@ export default function JournalSubscription() {
   };
 
   return (
-    <div className="border border-[#1A1A1A]/10 bg-white p-8 sm:p-10 md:p-12">
-      <div className="max-w-2xl mx-auto text-center">
-        <h3 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4 font-serif tracking-tight">
-          Get New Posts by Email
+    <div className="border border-[#1A1A1A]/10 bg-white px-6 sm:px-12 py-10 sm:py-14 text-center">
+      <div className="max-w-2xl mx-auto">
+        <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-3 tracking-tight">
+          {title}
         </h3>
-        <p className="text-base sm:text-lg leading-relaxed text-[#6B6B6B] mb-6 sm:mb-8 text-pretty">
-          Subscribe to receive email notifications when new content is published.
-        </p>
-        
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
-          {/* Subscription Type Checkboxes */}
-          <div className="flex flex-col gap-3 text-left">
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={subscribeJournalEntries}
-                onChange={(e) => setSubscribeJournalEntries(e.target.checked)}
-                disabled={status === 'loading'}
-                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#DB0812] focus:ring-[#DB0812] focus:ring-2"
-              />
-              <span className="text-base sm:text-lg text-[#1A1A1A]">
-                Servant Leadership Entries
-              </span>
-            </label>
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={subscribeDevotionals}
-                onChange={(e) => setSubscribeDevotionals(e.target.checked)}
-                disabled={status === 'loading'}
-                className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#DB0812] focus:ring-[#DB0812] focus:ring-2"
-              />
-              <span className="text-base sm:text-lg text-[#1A1A1A]">
-                Servant Leadership Devotional
-              </span>
-            </label>
-          </div>
+        <p className="text-[#6B6B6B] mb-6 max-w-md mx-auto text-pretty">{description}</p>
 
-          {/* Email Input and Submit */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+          {!podcastMode && (
+            <div className="flex flex-col gap-3 text-left">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={subscribeJournalEntries}
+                  onChange={(e) => setSubscribeJournalEntries(e.target.checked)}
+                  disabled={status === 'loading'}
+                  className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#DB0812] focus:ring-[#DB0812] focus:ring-2"
+                />
+                <span className="text-base sm:text-lg text-[#1A1A1A]">Servant Leadership Entries</span>
+              </label>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={subscribeDevotionals}
+                  onChange={(e) => setSubscribeDevotionals(e.target.checked)}
+                  disabled={status === 'loading'}
+                  className="mt-1 w-4 h-4 border border-[#1A1A1A]/20 text-[#DB0812] focus:ring-[#DB0812] focus:ring-2"
+                />
+                <span className="text-base sm:text-lg text-[#1A1A1A]">Servant Leadership Devotional</span>
+              </label>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your.email@example.com"
-              className="flex-1 px-4 py-3 border border-[#1A1A1A]/20 text-[#1A1A1A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#DB0812] transition-colors"
+              className="flex-1 px-4 py-3 border border-[#1A1A1A]/15 text-[#1A1A1A] placeholder:text-[#6B6B6B] focus:outline-none focus:border-[#DB0812] transition-colors"
               disabled={status === 'loading'}
               required
             />
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="min-h-[44px] bg-[#1A1A1A] text-white px-6 sm:px-8 py-3 font-medium text-sm sm:text-base hover:bg-[#1A1A1A]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center"
+              className="min-h-[44px] bg-[#1A1A1A] text-white px-6 py-3 text-sm font-medium hover:bg-[#DB0812] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center"
             >
               {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
             </button>

@@ -70,6 +70,19 @@ function EpisodeThumbnail({ youtubeId, title, size = 'md' }) {
   );
 }
 
+function PodcastHeroMark() {
+  return (
+    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#DB0812] flex items-center justify-center p-4">
+      <img
+        src="/brand/ao-podcast-mark.svg"
+        alt=""
+        className="w-full h-full"
+        aria-hidden="true"
+      />
+    </div>
+  );
+}
+
 function PlatformButton({ href, icon, label }) {
   const className =
     'inline-flex items-center gap-2 px-5 py-2.5 border border-[#1A1A1A]/15 text-sm font-medium text-[#1A1A1A] hover:border-[#DB0812] hover:text-[#DB0812] transition-colors';
@@ -331,18 +344,19 @@ export default function Podcast() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-10 py-14 sm:py-20">
           <div className="text-center mb-14 sm:mb-16">
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#DB0812] flex items-center justify-center">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-[5px] border-white flex items-center justify-center">
-                  <div className="w-0 h-0 border-t-[9px] border-t-transparent border-b-[9px] border-b-transparent border-l-[14px] border-l-white ml-1" />
-                </div>
-              </div>
+              <PodcastHeroMark />
             </div>
             <h1 className="font-serif text-[clamp(3rem,7vw,5rem)] font-bold leading-[0.95] tracking-[-0.02em] mb-5">
               The Archetype Original Podcast
             </h1>
-            <p className="text-lg sm:text-[18px] font-light text-[#6B6B6B] max-w-[600px] mx-auto leading-relaxed">
+            <p className="text-lg sm:text-[18px] font-light text-[#6B6B6B] max-w-[600px] mx-auto leading-relaxed mb-4">
               Leadership is not a title. It is a human condition. This show chases it everywhere it
               lives, in the boardroom and the sanctuary, the corner office and the break room.
+            </p>
+            <p className="text-sm text-[#6B6B6B] max-w-[560px] mx-auto leading-relaxed">
+              Two kinds of episodes: solo conversations drawn from 33 years of building companies and
+              growing people, and guest conversations with no boxes, no titles required, just people
+              who have carried weight and have something true to say about it.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <PlatformButton href={SPOTIFY_URL} icon={<SpotifyIcon />} label="Spotify" />
@@ -590,10 +604,14 @@ export default function Podcast() {
               )}
             </>
           )}
+        </div>
 
-          <div className="mt-16 sm:mt-20">
-            <JournalSubscription />
-          </div>
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-10 pb-14 sm:pb-20">
+          <JournalSubscription
+            podcastMode
+            title="Get New Episodes by Email"
+            description="Subscribe to get notified when a new episode of The Archetype Original Podcast drops."
+          />
         </div>
       </div>
     </>

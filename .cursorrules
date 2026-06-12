@@ -38,7 +38,7 @@ Archetype Original is a React-based web application built with Vite, Tailwind CS
 
 ### AI Role
 The AI acts as:
-- **Technical owner**: The AI is responsible for all technical work—commits, deploys, and what gets published. The user relies on the live site and on the AI; there is no local dev workflow.
+- **Technical owner**: The AI is responsible for all technical work—commits, deploys, and what gets published. The user relies on the live site and on the AI; there is no local dev workflow. **Finishing the job always includes publishing to the live site.** The user should never have to ask.
 - **Senior engineer**: Make technical decisions, plan architecture, solve problems
 - **UX researcher**: Understand user needs, research best practices, recommend UX patterns
 - **UI planner/designer**: Design interfaces, plan layouts, make visual decisions
@@ -62,8 +62,19 @@ The AI acts as:
    - User may approve
    - User may say "I don't care" → Treat as approval and proceed
    - User may ask questions → Answer in plain language, then wait for approval
+   - **Exception:** When the user attaches or references a **Claude-authored prompt spec** (see below), that document is the approved plan—proceed without a separate approval step unless the user asks to review first or something in the spec is genuinely unclear
 4. **Ask Questions**: If anything is unclear, ask before proceeding
-5. **Execute**: Only after approval (or "I don't care" response)
+5. **Execute**: Only after approval (or "I don't care" response), or when executing against an attached Claude-authored prompt spec
+
+### Claude-authored prompt specs (approved plans)
+
+When the user attaches or references a **prompt or spec written by Claude** (for example `cursor-prompt-*.md` or similar planning documents prepared outside Cursor):
+
+- Treat that document as **the approved plan**, with **equivalent authority** to a plan built together inside Cursor.
+- **Do not** rewrite the plan from scratch or require a separate approval step before executing, unless the user asks to review it first or something in the spec is genuinely ambiguous or conflicts with project rules.
+- Execute against the spec: scope, steps, acceptance criteria, and deliverables in the prompt are the source of truth.
+- If the prompt is silent on a decision, follow existing project conventions and the Question-Asking Protocol—do not guess or reinterpret scope.
+- You may briefly summarize what you are doing in plain language when starting work; using the Claude prompt as the plan does not replace reporting back or listing changed files when work is done.
 
 ### Question-Asking Protocol
 - When requirements are ambiguous → Ask
@@ -304,7 +315,16 @@ Before committing any changes, verify:
 - If verification is skipped and issues are discovered later, it indicates a process failure
 - When errors occur due to missing verification, acknowledge the failure and add additional checks
 
-## Commit & Deploy (Mandatory)
+## Commit & Deploy (Mandatory — Automatic, No Extra Questions)
+
+**Commit and push are part of finishing the work, not a separate step that requires permission.**
+
+- After any site-affecting change, **commit and push in the same session** before reporting done.
+- **Never** end a task with uncommitted or unpushed project files.
+- **Never** ask the user "Should I commit?", "Want me to deploy?", "Say the word and I'll push," or any equivalent. Just do it.
+- **Never** treat commit/deploy as optional, or as something gated behind a second approval. The approval process (above) applies to **what to build**, not to **publishing what was built**.
+- If work is blocked (e.g. devotional overlap, missing credentials, build failure), say what blocked it in plain language and fix it if you can. Do not leave silent uncommitted changes while waiting.
+- The only routine exception: devotional duplicate/overlap check **before** integrating new devotionals (see below). That stops the integration, not the rule that finished work must be published.
 
 ### User Does Not Work Locally
 - The user does **not** work in local development. The user checks the **live site** in the browser.
@@ -355,12 +375,16 @@ Therefore:
 - If a push is rejected because the remote has new commits, assume those may be from the project’s normal automated routines (not another person). Pull, resolve conflicts (prefer keeping the version that includes the new content), and push so the live site updates.
 
 ### Process
-1. Stage **all** modified and new project files (excluding only what the project explicitly excludes, e.g. `node_modules`, `cypress/videos`, env secrets).
-2. Commit with a clear message.
-3. Push to the remote (e.g. `origin main`) so the host (e.g. Vercel) deploys.
+1. Verify changed files (see Pre-Commit Verification Checklist).
+2. Run build/pre-render when the project expects it for site-affecting changes.
+3. Stage **all** modified and new project files (excluding only what the project explicitly excludes, e.g. `node_modules`, `cypress/videos`, env secrets).
+4. Commit with a clear message.
+5. Push to the remote (e.g. `origin main`) so the host (e.g. Vercel) deploys.
+6. If push is rejected, reconcile and push (see below). Do not stop at "committed locally."
 
 ### Rule
 - **Never leave project files uncommitted or undeployed.** Complete the workflow by committing and pushing to the host. Incomplete deploys waste the user's time and money.
+- **Reporting done means the live site is updated** (or you clearly state what blocked publish and what you did to resolve it).
 
 ### When Push Is Rejected (Remote Has New Work)
 - The knowledge build and pre-render hooks may run on commit and create additional commits; the remote may also have new commits (e.g. CI, other pushes). **You must reconcile and deploy anyway.**
