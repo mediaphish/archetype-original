@@ -5,6 +5,7 @@
  *   draft_id: string,
  *   slug: string,
  *   youtube_id: string,
+ *   video_source_url: string,
  *   spotify_embed_url: string,
  *   duration: string,
  *   publish_approval_token: string
@@ -17,6 +18,10 @@ import { validateJournalPublishApproval, consumeJournalPublishApprovalRow } from
 import { auditPublicationEvent } from '../../../lib/ao/auditPublicationEvent.js';
 import { buildEpisodeFrontmatter, episodeTargetPath } from '../../../lib/ao/buildEpisodeFrontmatter.js';
 import { commitGithubFile, getGithubFileSha } from '../../../lib/ao/githubAutoPublish.js';
+import {
+  buildYoutubeDescription,
+  uploadVideoToYoutube,
+} from '../../../lib/ao/youtubeUpload.js';
 
 function vercelRequestId(req) {
   return req.headers['x-vercel-id'] || req.headers['x-request-id'] || null;
@@ -41,7 +46,8 @@ export default async function handler(req, res) {
   const body = typeof req.body === 'object' && req.body ? req.body : {};
   const draftId = String(body.draft_id || '').trim();
   const slugInput = String(body.slug || '').trim();
-  const youtube_id = String(body.youtube_id || '').trim();
+  const youtube_id_input = String(body.youtube_id || '').trim();
+  const video_source_url_input = String(body.video_source_url || '').trim();
   const spotify_embed_url = String(body.spotify_embed_url || '').trim();
   const duration = String(body.duration || '').trim();
   const approvalToken = String(body.publish_approval_token || '').trim();
@@ -84,6 +90,38 @@ export default async function handler(req, res) {
 
   const draft = loaded.draft;
   const publishDate = draft.recorded_date || new Date().toISOString().split('T')[0];
+  const video_source_url = video_source_url_input || String(draft.video_source_url || '').trim();
+
+  let youtube_id = youtube_id_input || String(draft.youtube_id || '').trim();
+  let youtube_upload = null;
+
+  if (video_source_url && !youtube_id) {
+    try {
+      const description = buildYoutubeDescription({
+        summary: draft.summary,
+        slug: safeSlug,
+        spotifyUrl: spotify_embed_url,
+      });
+      const upload = await uploadVideoToYoutube({
+        videoSourceUrl: video_source_url,
+        title: draft.title,
+        description,
+        tags: draft.tags || [],
+      });
+      if (upload.ok) {
+        youtube_id = upload.youtube_id;
+        youtube_upload = {
+          ok: true,
+          youtube_id: upload.youtube_id,
+          youtube_url: upload.youtube_url,
+        };
+      } else {
+        youtube_upload = { ok: false, error: upload.error || 'YouTube upload failed.' };
+      }
+    } catch (err) {
+      youtube_upload = { ok: false, error: err?.message || 'YouTube upload failed.' };
+    }
+  }
 
   const frontmatter = buildEpisodeFrontmatter({
     title: draft.title,
@@ -125,12 +163,14 @@ export default async function handler(req, res) {
       youtube_id,
       spotify_embed_url,
       duration,
+      video_source_url: video_source_url || null,
       target_path: filePath,
       meta: {
         ...(draft.meta || {}),
         published_via: 'api:ao/auto/episode-publish',
         github_ok: true,
         commit_sha: result.commitSha,
+        youtube_upload,
       },
     });
 
@@ -150,15 +190,21 @@ export default async function handler(req, res) {
       vercel_id: vercelRequestId(req),
     });
 
+    const publishMessage = youtube_upload && !youtube_upload.ok
+      ? `Episode published without YouTube video. Video upload failed: ${youtube_upload.error} You can add a YouTube ID manually and republish, or upload to YouTube yourself. Site URL: ${liveUrl}`
+      : `Episode published. Vercel will deploy in about 60 seconds. URL: ${liveUrl}`;
+
     return res.status(200).json({
       ok: true,
       slug: safeSlug,
       file_path: filePath,
       commit_sha: result.commitSha,
       podcast_url: liveUrl,
+      youtube_id: youtube_id || null,
+      youtube_upload,
       journal_crosspost:
         'Journal feed cross-post is created automatically by build-knowledge when the site deploys. No separate file is committed.',
-      message: `Episode published. Vercel will deploy in about 60 seconds. URL: ${liveUrl}`,
+      message: publishMessage,
     });
   } catch (err) {
     console.error('[episode-publish]', err?.message || err);
