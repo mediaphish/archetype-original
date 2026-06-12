@@ -171,6 +171,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-06-12 | Drawing Out Purpose | Proverbs 20:5 (ESV) | `drawing-out-purpose` | `2026-06-12-drawing-out-purpose.md` |
 | 2026-06-13 | Built on Understanding | Proverbs 24:3–4 (ESV) | `built-on-understanding` | `2026-06-13-built-on-understanding.md` |
 | 2026-06-14 | Understanding Produces Stability | Proverbs 28:2 (ESV) | `understanding-produces-stability` | `2026-06-14-understanding-produces-stability.md` |
+| 2026-06-15 | Asking to Be Taught | Psalm 25:4–5 (ESV) | `asking-to-be-taught` | `2026-06-15-asking-to-be-taught.md` |
+| 2026-06-16 | Led on a Level Path | Psalm 27:11 (ESV) | `led-on-a-level-path` | `2026-06-16-led-on-a-level-path.md` |
+| 2026-06-17 | God Instructs the Way | Psalm 32:8 (ESV) | `god-instructs-the-way` | `2026-06-17-god-instructs-the-way.md` |
+| 2026-06-18 | A Lamp and a Light | Psalm 119:105 (ESV) | `a-lamp-and-a-light` | `2026-06-18-a-lamp-and-a-light.md` |
+| 2026-06-19 | Make Me Know the Way | Psalm 143:8–10 (ESV) | `make-me-know-the-way` | `2026-06-19-make-me-know-the-way.md` |
+| 2026-06-20 | This Is the Way | Isaiah 30:21 (ESV) | `this-is-the-way` | `2026-06-20-this-is-the-way.md` |
+| 2026-06-21 | Write the Vision | Habakkuk 2:2–3 (ESV) | `write-the-vision` | `2026-06-21-write-the-vision.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
