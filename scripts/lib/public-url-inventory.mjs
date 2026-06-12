@@ -28,8 +28,19 @@ export function loadKnowledgeInventory() {
 /** Published journal posts + devotionals — schedule-safe even if knowledge.json was stale. */
 export function getJournalDevotionalSlugDocs() {
   const { docs } = loadKnowledgeInventory();
-  const jd = docs.filter((d) => d.type === 'journal-post' || d.type === 'devotional');
+  const jd = docs.filter(
+    (d) =>
+      (d.type === 'journal-post' || d.type === 'devotional') &&
+      !d.podcast_slug &&
+      d.source?.kind !== 'podcast'
+  );
   return filterPublishedScheduledDocs(jd);
+}
+
+/** Published podcast episodes for sitemap / future static HTML. */
+export function getPodcastEpisodeSlugDocs() {
+  const { docs } = loadKnowledgeInventory();
+  return filterPublishedScheduledDocs(docs.filter((d) => d.type === 'podcast-episode'));
 }
 
 /** Marketing paths from route list (no trailing slash). */
