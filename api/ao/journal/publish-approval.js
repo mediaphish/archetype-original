@@ -29,11 +29,15 @@ export default async function handler(req, res) {
   try {
     const raw = typeof req.body === 'object' && req.body ? req.body : {};
     const slug = slugify(raw.slug || raw.slug_hint || '');
+    const kind = String(raw.kind || raw.content_kind || 'journal').trim().toLowerCase();
     if (!slug) {
       return res.status(400).json({ ok: false, error: 'slug required (letters, numbers, hyphens).' });
     }
 
-    const targetPath = `ao-knowledge-hq-kit/journal/${slug}.md`;
+    const targetPath =
+      kind === 'episode' || kind === 'podcast'
+        ? `ao-knowledge-hq-kit/journal/podcast/${slug}.md`
+        : `ao-knowledge-hq-kit/journal/${slug}.md`;
     const ttlMin = Math.min(
       60,
       Math.max(
@@ -74,7 +78,9 @@ export default async function handler(req, res) {
       expires_at: row?.expires_at || expiresAt,
       ttl_minutes: ttlMin,
       instructions:
-        'Include publish_approval_token with POST /api/ao/corpus/publish and live_on_site: true when pushing this slug. Without that, the file commits as draft (hidden from public Journal until you approve).',
+        kind === 'episode' || kind === 'podcast'
+          ? 'Include publish_approval_token with POST /api/ao/auto/episode-publish when publishing this episode slug.'
+          : 'Include publish_approval_token with POST /api/ao/corpus/publish and live_on_site: true when pushing this slug. Without that, the file commits as draft (hidden from public Journal until you approve).',
     });
   } catch (e) {
     console.error('[ao/journal/publish-approval]', e);

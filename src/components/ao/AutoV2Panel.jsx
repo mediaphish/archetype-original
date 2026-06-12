@@ -15,6 +15,7 @@ import React, {
 } from 'react';
 
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 
 // ─── Artifact parsing ─────────────────────────────────────────────────────────
 
@@ -112,6 +113,19 @@ function extractDevotionalPublishFromAssistantContent(content) {
   return { attrs, devotionalContent };
 }
 
+function extractEpisodeTranscriptBlock(content) {
+  const text = String(content || '');
+  const match = text.match(/\[EPISODE_TRANSCRIPT\]([\s\S]*?)\[\/EPISODE_TRANSCRIPT\]/i);
+  return match ? match[1].trim() : '';
+}
+
+function extractEpisodeProcessSignal(content) {
+  const text = String(content || '');
+  const tagMatch = text.match(/\[EPISODE_PROCESS([^\]]*)\]/i);
+  if (!tagMatch) return null;
+  return parseImageGeneratedAttributes(tagMatch[1]);
+}
+
 function stripGeneratedImageBlocksFromChat(text) {
   return String(text || '')
     .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '')
@@ -121,6 +135,9 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[JOURNAL_CONTENT\][\s\S]*?\[\/JOURNAL_CONTENT\]/gi, '')
     .replace(/\[PUBLISH_DEVOTIONAL[^\]]*\]/gi, '')
     .replace(/\[DEVOTIONAL_CONTENT\][\s\S]*?\[\/DEVOTIONAL_CONTENT\]/gi, '')
+    .replace(/\[EPISODE_PROCESS[^\]]*\]/gi, '')
+    .replace(/\[EPISODE_TRANSCRIPT\][\s\S]*?\[\/EPISODE_TRANSCRIPT\]/gi, '')
+    .replace(/\[EPISODE_DRAFT[^\]]*\]/gi, '')
     .trim();
 }
 
@@ -334,6 +351,10 @@ function ArtifactPanel({
   generatedDesignImages,
   journalPublishBanner,
   devotionalPublishBanner,
+  episodeDraft,
+  episodeProcessBanner,
+  onEpisodeDraftUpdated,
+  onEpisodePublished,
   onApprove,
   onRevise,
   onViewAll,
@@ -493,7 +514,34 @@ function ArtifactPanel({
           </div>
         )}
 
-        {artifact?.type === 'quote_card' && (
+        {devotionalPublishBanner?.status === 'error' && (
+          <div className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+            <p className="font-medium">Devotional publish failed</p>
+            <p className="mt-1">{devotionalPublishBanner.message}</p>
+          </div>
+        )}
+
+        {episodeProcessBanner?.status === 'loading' && (
+          <div className="shrink-0 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+            Processing episode transcript…
+          </div>
+        )}
+        {episodeProcessBanner?.status === 'error' && (
+          <div className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+            <p className="font-medium">Episode processing failed</p>
+            <p className="mt-1">{episodeProcessBanner.message}</p>
+          </div>
+        )}
+
+        {episodeDraft ? (
+          <EpisodeDraftReview
+            draft={episodeDraft}
+            onDraftUpdated={onEpisodeDraftUpdated}
+            onPublished={onEpisodePublished}
+          />
+        ) : null}
+
+        {!episodeDraft && artifact?.type === 'quote_card' && (
           <>
             {(!generatedImages || generatedImages.length === 0) && (
               <QuoteCardPreview content={artifact.content} />
@@ -645,6 +693,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [generatedDesignImages, setGeneratedDesignImages] = useState([]);
   const [journalPublishBanner, setJournalPublishBanner] = useState(null);
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
+  const [episodeDraft, setEpisodeDraft] = useState(null);
+  const [episodeProcessBanner, setEpisodeProcessBanner] = useState(null);
   const [splitPercent, setSplitPercent] = useState(50);
   const [dividerDragging, setDividerDragging] = useState(false);
 
@@ -652,6 +702,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const userAdjustedSplit = useRef(false);
   const processedJournalPublishKeys = useRef(new Set());
   const processedDevotionalPublishKeys = useRef(new Set());
+  const processedEpisodeProcessKeys = useRef(new Set());
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -812,6 +863,69 @@ export default function AutoV2Panel({ onNavigate, className }) {
     const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
     if (!lastAssistant) return;
 
+    const signal = extractEpisodeProcessSignal(String(lastAssistant.content || ''));
+    if (!signal) return;
+
+    const lastUser = [...messages].reverse().find((m) => m.role === 'user');
+    let transcript =
+      extractEpisodeTranscriptBlock(String(lastAssistant.content || '')) ||
+      extractEpisodeTranscriptBlock(String(lastUser?.content || ''));
+
+    if (!transcript && lastUser) {
+      const plain = String(lastUser.content || '').trim();
+      if (plain.length >= 200) transcript = plain;
+    }
+
+    if (!transcript || transcript.length < 200) return;
+
+    const processKey = `${activeThreadId || 'thread'}:${transcript.slice(0, 120)}`;
+    if (processedEpisodeProcessKeys.current.has(processKey)) return;
+    processedEpisodeProcessKeys.current.add(processKey);
+
+    const episode_type = String(signal.episode_type || 'solo').toLowerCase() === 'guest' ? 'guest' : 'solo';
+    const guest =
+      episode_type === 'guest' && signal.guest_name
+        ? {
+            name: signal.guest_name,
+            title: signal.guest_title || '',
+            bio: signal.guest_bio || '',
+          }
+        : null;
+
+    setArtifactOpen(true);
+    setEpisodeProcessBanner({ status: 'loading' });
+
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/auto/episode-process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transcript,
+            episode_type,
+            guest,
+            recorded_date: signal.recorded_date || '',
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Episode processing failed');
+        setEpisodeDraft(json.draft);
+        setEpisodeProcessBanner(null);
+      } catch (e) {
+        setEpisodeProcessBanner({
+          status: 'error',
+          message: e.message || 'Could not process episode transcript',
+        });
+      }
+    })();
+  }, [messages, activeThreadId]);
+
+  useEffect(() => {
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!lastAssistant) return;
+
     const parsed = extractDevotionalPublishFromAssistantContent(String(lastAssistant.content || ''));
     if (!parsed) return;
 
@@ -853,6 +967,69 @@ export default function AutoV2Panel({ onNavigate, className }) {
           status: 'error',
           title: attrs.title,
           message: e.message || 'Could not publish devotional',
+        });
+      }
+    })();
+  }, [messages, activeThreadId]);
+
+  useEffect(() => {
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!lastAssistant) return;
+
+    const signal = extractEpisodeProcessSignal(String(lastAssistant.content || ''));
+    if (!signal) return;
+
+    const lastUser = [...messages].reverse().find((m) => m.role === 'user');
+    let transcript =
+      extractEpisodeTranscriptBlock(String(lastAssistant.content || '')) ||
+      extractEpisodeTranscriptBlock(String(lastUser?.content || ''));
+
+    if (!transcript && lastUser) {
+      const plain = String(lastUser.content || '').trim();
+      if (plain.length >= 200) transcript = plain;
+    }
+
+    if (!transcript || transcript.length < 200) return;
+
+    const processKey = `${activeThreadId || 'thread'}:${transcript.slice(0, 120)}`;
+    if (processedEpisodeProcessKeys.current.has(processKey)) return;
+    processedEpisodeProcessKeys.current.add(processKey);
+
+    const episode_type = String(signal.episode_type || 'solo').toLowerCase() === 'guest' ? 'guest' : 'solo';
+    const guest =
+      episode_type === 'guest' && signal.guest_name
+        ? {
+            name: signal.guest_name,
+            title: signal.guest_title || '',
+            bio: signal.guest_bio || '',
+          }
+        : null;
+
+    setArtifactOpen(true);
+    setEpisodeProcessBanner({ status: 'loading' });
+
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/auto/episode-process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transcript,
+            episode_type,
+            guest,
+            recorded_date: signal.recorded_date || '',
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Episode processing failed');
+        setEpisodeDraft(json.draft);
+        setEpisodeProcessBanner(null);
+      } catch (e) {
+        setEpisodeProcessBanner({
+          status: 'error',
+          message: e.message || 'Could not process episode transcript',
         });
       }
     })();
@@ -1487,6 +1664,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
                 generatedDesignImages={generatedDesignImages}
                 journalPublishBanner={journalPublishBanner}
                 devotionalPublishBanner={devotionalPublishBanner}
+                episodeDraft={episodeDraft}
+                episodeProcessBanner={episodeProcessBanner}
+                onEpisodeDraftUpdated={setEpisodeDraft}
+                onEpisodePublished={() => setEpisodeProcessBanner(null)}
                 onApprove={handleApprove}
                 onRevise={handleRevise}
                 onViewAll={handleViewAll}
