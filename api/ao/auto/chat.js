@@ -14,6 +14,7 @@ import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuot
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { detectSchedulingIntent } from '../../../lib/ao/detectSchedulingIntent.js';
+import { reviewAndCleanVoice } from '../../../lib/ao/voiceReview.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -54,6 +55,12 @@ export default async function handler(req, res) {
     if (!result.ok) {
       return res.status(500).json({ ok: false, error: result.error || 'Auto reply failed' });
     }
+
+    // Run the voice review pass before delivering to Bart.
+    // This catches AI signature patterns (em dashes, banned phrases, hollow constructions)
+    // that Auto missed in its own self-review. Reviewer failure is non-fatal —
+    // voiceReview returns the original reply on error so nothing is blocked.
+    result.reply = await reviewAndCleanVoice(result.reply);
 
     result.reply = await appendQuoteCardImagesToReplyIfNeeded({
       userMessage,
