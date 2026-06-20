@@ -547,6 +547,8 @@ async function buildKnowledgeCorpus() {
           duration: frontmatter.duration || '',
           youtube_id: youtubeId,
           spotify_embed_url: frontmatter.spotify_embed_url || frontmatter.spotifyEmbedUrl || '',
+          spotify_episode_id: frontmatter.spotify_episode_id || frontmatter.spotifyEpisodeId || '',
+          apple_podcasts_url: frontmatter.apple_podcasts_url || frontmatter.applePodcastsUrl || '',
           show_notes: Array.isArray(frontmatter.show_notes)
             ? frontmatter.show_notes
             : Array.isArray(frontmatter.showNotes)
@@ -588,6 +590,8 @@ async function buildKnowledgeCorpus() {
           episode_type: episodeDoc.episode_type,
           duration: episodeDoc.duration,
           youtube_id: youtubeId,
+          spotify_episode_id: episodeDoc.spotify_episode_id,
+          apple_podcasts_url: episodeDoc.apple_podcasts_url,
           related: episodeDoc.related,
           source: {
             kind: 'podcast',

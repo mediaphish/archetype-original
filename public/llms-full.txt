@@ -1297,6 +1297,10 @@ Accountability Is a Design Problem
 https://www.archetypeoriginal.com/journal/accountability-is-a-design-problem
 Post 8 of the Unaccountable series examines why goodwill and culture alone cannot sustain accountability, and why healthy leadership systems must design structural correction into authority itself.
 
+Affinity Dressed as Service
+https://www.archetypeoriginal.com/journal/affinity-dressed-as-service
+The leader most likely to miss favoritism is not the tyrant. It is the relational leader — the one who genuinely invests in people and believes deeply that their job is to serve. This entry examines how affinity masquerades as servant leadership and what Greenleaf's original test demands of every leader who claims the title.
+
 After the Smoke Clears
 https://www.archetypeoriginal.com/journal/after-the-smoke-clears
 A conclusion to the Narcissistic Leadership Tactics series, shifting focus from unhealthy patterns to the posture and practices of healthy, servant leadership.
@@ -1312,6 +1316,14 @@ Reflections from a talk given to first-generation college-bound students on purp
 Clearing the Path
 https://www.archetypeoriginal.com/journal/clearing-the-path
 Servant leadership isn’t about getting people to make your job easier. It’s about making their path clear so they can do the work they were built to do.
+
+Episode 0: The Beginning
+https://www.archetypeoriginal.com/journal/season-01-episode-00
+Hey, I'm Bart Paden. This is my first podcast. Ever.
+Thirty-three years in business, starting in Carthage and Joplin, Missouri, building a software company from the ground up after I got hooked on the internet back in 1993. I sold that company in 2022, and that sale put me through something close to an identity crisis. Who was I if not the guy building that thing?
+What I found when I went looking wasn't new. The decisions I'd made to put people first weren't original. Just rare. I talk through what servant leadership actually means to me, why it's a hard stance and not a soft one, and why the success of that company belonged to the 104 people who showed up for it, not to me.
+I walk through the four books behind everything I've built. Accidental CEO, my story and the methodology that came out of it. Remaining Human, an argument for leading like a person in an age of AI. The Room, built on something that shook me, no leader ever has a fully honest room. And The Leadership Gap, still unpublished, tied to the Archetype Leadership Index I'm building to measure the distance between how leaders see themselves and how their teams actually experience them.
+I close on the thing I believe most. If you grow people, you grow the organization. If you use people, you lose it. Two kinds of episodes are coming, solo and guest, and I want you in this with me. Ask questions. Push back.
 
 Episode 1: Where we begin
 https://www.archetypeoriginal.com/journal/episode-1-where-we-begin
@@ -1602,10 +1614,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 163.
+Published devotional entries: 171.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-06-12T20:47:49.053Z
+Generated at: 2026-06-20T15:42:10.249Z

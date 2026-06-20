@@ -6,6 +6,7 @@ import JournalSubscription from '../components/JournalSubscription';
 import JournalAdvisoryCTA from '../components/JournalAdvisoryCTA';
 import JournalMarkdownBody from '../components/JournalMarkdownBody';
 import PodcastGuestBlock from '../components/podcast/PodcastGuestBlock';
+import PodcastEpisodePlayer from '../components/podcast/PodcastEpisodePlayer';
 import { formatDate } from '../lib/formatPublishDate';
 
 function episodeTypeLabel(type) {
@@ -259,32 +260,7 @@ export default function PodcastEpisode() {
                   {episode.title}
                 </h1>
 
-                {episode.youtube_id && (
-                  <div className="mb-8 sm:mb-10 w-full aspect-video bg-[#2B2929]">
-                    <iframe
-                      title={`${episode.title} video`}
-                      src={`https://www.youtube.com/embed/${episode.youtube_id}`}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                )}
-
-                {episode.spotify_embed_url && (
-                  <div className="mb-8 sm:mb-10">
-                    <iframe
-                      title={`${episode.title} audio`}
-                      src={episode.spotify_embed_url}
-                      width="100%"
-                      height="152"
-                      frameBorder="0"
-                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                      loading="lazy"
-                      className="rounded-sm"
-                    />
-                  </div>
-                )}
+                <PodcastEpisodePlayer episode={episode} />
 
                 {summaryText && (
                   <div className="mb-8 sm:mb-10 p-4 sm:p-6 bg-[#FAFAF9] border-l-[6px] border-[#DB0812]">
