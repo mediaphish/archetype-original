@@ -178,6 +178,15 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-06-19 | Make Me Know the Way | Psalm 143:8–10 (ESV) | `make-me-know-the-way` | `2026-06-19-make-me-know-the-way.md` |
 | 2026-06-20 | This Is the Way | Isaiah 30:21 (ESV) | `this-is-the-way` | `2026-06-20-this-is-the-way.md` |
 | 2026-06-21 | Write the Vision | Habakkuk 2:2–3 (ESV) | `write-the-vision` | `2026-06-21-write-the-vision.md` |
+| 2026-06-22 | Seek First | Matthew 6:31–33 (ESV) | `seek-first` | `2026-06-22-seek-first.md` |
+| 2026-06-23 | Build on What Is Solid | Matthew 7:24–27 (ESV) | `build-on-what-is-solid` | `2026-06-23-build-on-what-is-solid.md` |
+| 2026-06-24 | Count the Cost | Luke 14:28–30 (ESV) | `count-the-cost` | `2026-06-24-count-the-cost.md` |
+| 2026-06-25 | Think Over What I Say | 2 Timothy 2:6–7 (ESV) | `think-over-what-i-say` | `2026-06-25-think-over-what-i-say.md` |
+| 2026-06-26 | Test Everything | 1 Thessalonians 5:19–22 (ESV) | `test-everything` | `2026-06-26-test-everything.md` |
+| 2026-06-27 | Walk Carefully | Ephesians 5:15–17 (ESV) | `walk-carefully` | `2026-06-27-walk-carefully.md` |
+| 2026-06-28 | The Word That Discerns | Hebrews 4:12–13 (ESV) | `the-word-that-discerns` | `2026-06-28-the-word-that-discerns.md` |
+| 2026-06-29 | Plans for a Future | Jeremiah 29:10–11 (ESV) | `plans-for-a-future` | `2026-06-29-plans-for-a-future.md` |
+| 2026-06-30 | Understanding in Everything | 2 Timothy 3:16–17 (ESV) | `understanding-in-everything` | `2026-06-30-understanding-in-everything.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
