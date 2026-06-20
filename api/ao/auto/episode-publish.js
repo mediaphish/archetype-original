@@ -23,9 +23,15 @@ import {
   uploadVideoToYoutube,
 } from '../../../lib/ao/youtubeUpload.js';
 import { getGuestById, guestRecordToEpisodeGuest } from '../../../lib/ao/guestIntakeStore.js';
+import { createEpisodeMarketingBundle } from '../../../lib/ao/buildEpisodeMarketingBundle.js';
 
 function vercelRequestId(req) {
   return req.headers['x-vercel-id'] || req.headers['x-request-id'] || null;
+}
+
+/** Riverside handles YouTube distribution; Auto only uploads when explicitly re-enabled. */
+function isYoutubeUploadEnabled() {
+  return String(process.env.AUTO_YOUTUBE_UPLOAD_ENABLED || '').trim().toLowerCase() === 'true';
 }
 
 export default async function handler(req, res) {
@@ -93,10 +99,11 @@ export default async function handler(req, res) {
   const publishDate = draft.recorded_date || new Date().toISOString().split('T')[0];
   const video_source_url = video_source_url_input || String(draft.video_source_url || '').trim();
 
+  // youtube_id is always supplied manually (from Riverside) unless legacy upload is re-enabled.
   let youtube_id = youtube_id_input || String(draft.youtube_id || '').trim();
   let youtube_upload = null;
 
-  if (video_source_url && !youtube_id) {
+  if (isYoutubeUploadEnabled() && video_source_url && !youtube_id) {
     try {
       const description = buildYoutubeDescription({
         summary: draft.summary,
@@ -200,9 +207,32 @@ export default async function handler(req, res) {
       vercel_id: vercelRequestId(req),
     });
 
+    let marketing_bundle = null;
+    try {
+      const marketing = await createEpisodeMarketingBundle({
+        email: auth.email,
+        title: draft.title,
+        summary: draft.summary,
+        key_takeaways: draft.key_takeaways || [],
+        podcast_url: liveUrl,
+        slug: safeSlug,
+        draft_id: draftId,
+      });
+      if (marketing.ok) {
+        marketing_bundle = {
+          bundle_id: marketing.bundle?.id || null,
+          channels: marketing.channels || [],
+        };
+      }
+    } catch (marketingErr) {
+      console.warn('[episode-publish] marketing bundle:', marketingErr?.message || marketingErr);
+    }
+
     const publishMessage = youtube_upload && !youtube_upload.ok
       ? `Episode published without YouTube video. Video upload failed: ${youtube_upload.error} You can add a YouTube ID manually and republish, or upload to YouTube yourself. Site URL: ${liveUrl}`
-      : `Episode published. Vercel will deploy in about 60 seconds. URL: ${liveUrl}`;
+      : marketing_bundle
+        ? `Episode published. Vercel will deploy in about 60 seconds. URL: ${liveUrl} Social post drafts saved for review (${(marketing_bundle.channels || []).join(', ') || 'channels pending'}).`
+        : `Episode published. Vercel will deploy in about 60 seconds. URL: ${liveUrl}`;
 
     return res.status(200).json({
       ok: true,
@@ -212,6 +242,7 @@ export default async function handler(req, res) {
       podcast_url: liveUrl,
       youtube_id: youtube_id || null,
       youtube_upload,
+      marketing_bundle,
       journal_crosspost:
         'Journal feed cross-post is created automatically by build-knowledge when the site deploys. No separate file is committed.',
       message: publishMessage,
