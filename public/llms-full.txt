@@ -1285,10 +1285,6 @@ This work exists because those moments are real, and common, and most leadership
 
 Journal index
 
-A conversation on trust, with Carie Paden
-https://www.archetypeoriginal.com/journal/a-conversation-on-trust-with-carie-paden
-Bart and Carie talk about what trust actually looks like day to day, not as a value statement but as a practice, and why most leaders mistake the absence of conflict for the presence of trust.
-
 Accountability Comes First
 https://www.archetypeoriginal.com/journal/accountability-comes-first
 An editorial examination of why accountability must precede reconciliation, and how leadership systems often delay responsibility in the name of stability.
@@ -1316,18 +1312,6 @@ Reflections from a talk given to first-generation college-bound students on purp
 Clearing the Path
 https://www.archetypeoriginal.com/journal/clearing-the-path
 Servant leadership isn’t about getting people to make your job easier. It’s about making their path clear so they can do the work they were built to do.
-
-Episode 0: The Beginning
-https://www.archetypeoriginal.com/journal/season-01-episode-00
-Hey, I'm Bart Paden. This is my first podcast. Ever.
-Thirty-three years in business, starting in Carthage and Joplin, Missouri, building a software company from the ground up after I got hooked on the internet back in 1993. I sold that company in 2022, and that sale put me through something close to an identity crisis. Who was I if not the guy building that thing?
-What I found when I went looking wasn't new. The decisions I'd made to put people first weren't original. Just rare. I talk through what servant leadership actually means to me, why it's a hard stance and not a soft one, and why the success of that company belonged to the 104 people who showed up for it, not to me.
-I walk through the four books behind everything I've built. Accidental CEO, my story and the methodology that came out of it. Remaining Human, an argument for leading like a person in an age of AI. The Room, built on something that shook me, no leader ever has a fully honest room. And The Leadership Gap, still unpublished, tied to the Archetype Leadership Index I'm building to measure the distance between how leaders see themselves and how their teams actually experience them.
-I close on the thing I believe most. If you grow people, you grow the organization. If you use people, you lose it. Two kinds of episodes are coming, solo and guest, and I want you in this with me. Ask questions. Push back.
-
-Episode 1: Where we begin
-https://www.archetypeoriginal.com/journal/episode-1-where-we-begin
-Thirty-three years of building, and what it taught me about people, pressure, and what actually lasts. The first episode of the show sets the tone for everything that follows.
 
 How Leaders Lose the Capacity for Accountability
 https://www.archetypeoriginal.com/journal/how-leaders-lose-the-capacity-for-accountability
@@ -1456,6 +1440,10 @@ We are going to spend the next seven posts talking about the conditions that det
 The Approval Economy
 https://www.archetypeoriginal.com/journal/the-approval-economy
 When favoritism takes hold inside a team, something predictable happens. People stop optimizing for results and start optimizing for access. This entry examines how that shift happens, what it does to team culture, and why servant leadership demands a different economy entirely.
+
+The Archetype Original Podcast Season 1 Episode 0
+https://www.archetypeoriginal.com/journal/season-01-episode-00
+Hey, I'm Bart Paden. This is my first podcast. Ever. Thirty-three years in business, a software company sold in 2022, and a realization that the decisions I made to put people first weren't original — just rare. This is the beginning of that conversation out loud.
 
 The Case for Servant Leadership (Part 1)
 https://www.archetypeoriginal.com/journal/the-case-for-servant-leadership-part-1
@@ -1614,10 +1602,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 171.
+Published devotional entries: 173.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-06-20T15:42:10.249Z
+Generated at: 2026-06-22T16:13:22.942Z
