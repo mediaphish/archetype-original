@@ -572,34 +572,6 @@ async function buildKnowledgeCorpus() {
 
         docs.push(episodeDoc);
 
-        const journalCrossPost = {
-          title: episodeDoc.title,
-          slug: episodeDoc.slug,
-          type: 'journal-post',
-          tags: [...(episodeDoc.tags || []), 'podcast'],
-          categories: [...(episodeDoc.categories || []), 'podcast'],
-          status: 'published',
-          created_at: episodeDoc.created_at,
-          updated_at: episodeDoc.updated_at,
-          publish_date: episodeDoc.publish_date,
-          date: episodeDoc.date,
-          summary: episodeDoc.summary,
-          body: episodeDoc.summary || episodeDoc.body.substring(0, 500),
-          image: imagePath,
-          podcast_slug: slug,
-          episode_type: episodeDoc.episode_type,
-          duration: episodeDoc.duration,
-          youtube_id: youtubeId,
-          spotify_episode_id: episodeDoc.spotify_episode_id,
-          apple_podcasts_url: episodeDoc.apple_podcasts_url,
-          related: episodeDoc.related,
-          source: {
-            kind: 'podcast',
-            original_source: 'Archetype Original Podcast',
-          },
-        };
-
-        docs.push(journalCrossPost);
         podcastProcessed++;
         console.log(`✅ Processed podcast episode: ${episodeDoc.title}`);
       } catch (error) {
