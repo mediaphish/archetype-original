@@ -212,31 +212,73 @@ export default async function handler(req, res) {
   const fullContent = `${frontmatter}\n\n${content.trim()}\n`;
 
   try {
-    // If an image URL from storage is provided, download and commit it to public/images/.
-    // Image commit failure is fatal — without the image the entry will render broken.
-    // Surface the error immediately rather than silently continuing.
+    // Image commit — required before MD file is committed.
+    // If image_url is provided and the commit cannot be verified, abort entirely.
+    // We do not publish a broken entry. Image first, MD second.
     if (image_url && image_url.startsWith('https://')) {
-      const imgRes = await fetch(image_url);
-      if (!imgRes.ok) {
+      const imagePath = `public/images/${imageFilename}`;
+
+      // Step 1: Download image from Supabase
+      let imgBase64;
+      try {
+        const imgRes = await fetch(image_url);
+        if (!imgRes.ok) {
+          return res.status(500).json({
+            ok: false,
+            error: `Image download failed (HTTP ${imgRes.status}). Entry not published. Check the image URL and try again.`,
+          });
+        }
+        const imgBuffer = await imgRes.arrayBuffer();
+        const bytes = new Uint8Array(imgBuffer);
+        if (bytes.length < 10000) {
+          return res.status(500).json({
+            ok: false,
+            error: `Image downloaded but appears corrupt or empty (${bytes.length} bytes). Entry not published.`,
+          });
+        }
+        imgBase64 = Buffer.from(imgBuffer).toString('base64');
+        console.log(`[publish-journal] Image downloaded: ${bytes.length} bytes`);
+      } catch (downloadErr) {
         return res.status(500).json({
           ok: false,
-          error: `Image download failed (${imgRes.status}). The entry was not published. Fix the image URL and try again.`,
+          error: `Image download threw an error: ${downloadErr.message}. Entry not published.`,
         });
       }
-      const imgBuffer = await imgRes.arrayBuffer();
-      const imgBase64 = Buffer.from(imgBuffer).toString('base64');
-      const imagePath = `public/images/${imageFilename}`;
-      const existingImageSha = await getFileSha(token, imagePath);
-      await commitFile(
-        token,
-        imagePath,
-        imgBase64,
-        `Add journal header image: ${imageFilename}`,
-        existingImageSha,
-        true
-      );
-      console.log(`[publish-journal] Image committed: ${imagePath}`);
+
+      // Step 2: Commit image to GitHub
+      try {
+        const existingImageSha = await getFileSha(token, imagePath);
+        await commitFile(
+          token,
+          imagePath,
+          imgBase64,
+          `Add journal header image: ${imageFilename}`,
+          existingImageSha,
+          true
+        );
+        console.log(`[publish-journal] Image committed to GitHub: ${imagePath}`);
+      } catch (commitErr) {
+        return res.status(500).json({
+          ok: false,
+          error: `Image commit to GitHub failed: ${commitErr.message}. Entry not published. Try again.`,
+        });
+      }
+
+      // Step 3: Verify the image actually exists in GitHub after commit
+      // Wait 2 seconds for GitHub to process the commit before verifying
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const verifiedSha = await getFileSha(token, imagePath);
+      if (!verifiedSha) {
+        return res.status(500).json({
+          ok: false,
+          error: `Image commit appeared to succeed but the file could not be verified in GitHub. Entry not published. Try again in a moment.`,
+        });
+      }
+      console.log(`[publish-journal] Image verified in GitHub: ${imagePath} (sha: ${verifiedSha})`);
+
     } else if (!image_url) {
+      // No image provided — log but do not block publish
+      // Some entries (updates, text-only) may not need a new image
       console.warn('[publish-journal] No image_url provided — entry will publish without header image');
     }
 
