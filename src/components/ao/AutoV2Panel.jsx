@@ -1812,12 +1812,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom,0px)]"
       aria-label="Auto navigation"
     >
-      <div className="grid grid-cols-4">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', width: '100%' }}>
         <button
           type="button"
           onClick={startNewThread}
           disabled={startingNew || sending || loading}
           className="flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium text-gray-600 disabled:opacity-40"
+          style={{ minWidth: 0 }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M12 5v14M5 12h14" strokeLinecap="round" />
@@ -1830,6 +1831,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
           className={`flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium ${
             mobileTab === 'chat' ? 'text-gray-900' : 'text-gray-500'
           }`}
+          style={{ minWidth: 0 }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinejoin="round" />
@@ -1846,6 +1848,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
           className={`relative flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium ${
             mobileArtifactOpen ? 'text-gray-900' : 'text-gray-500'
           }`}
+          style={{ minWidth: 0 }}
         >
           <span className="relative">
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -1864,6 +1867,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
           className={`flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium ${
             mobileTab === 'chats' ? 'text-gray-900' : 'text-gray-500'
           }`}
+          style={{ minWidth: 0 }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
