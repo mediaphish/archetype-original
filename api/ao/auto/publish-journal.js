@@ -61,7 +61,7 @@ summary: >-
   ${summary.replace(/\n/g, '\n  ')}
 categories:
 ${categoriesYaml}
-featured_image: ../../public/images/${featured_image}
+featured_image: ../images/${featured_image}
 takeaways:
 ${takeawaysYaml}
 applications: []
@@ -212,29 +212,32 @@ export default async function handler(req, res) {
   const fullContent = `${frontmatter}\n\n${content.trim()}\n`;
 
   try {
-    // If an image URL from storage is provided, download and commit it to public/images/
+    // If an image URL from storage is provided, download and commit it to public/images/.
+    // Image commit failure is fatal — without the image the entry will render broken.
+    // Surface the error immediately rather than silently continuing.
     if (image_url && image_url.startsWith('https://')) {
-      try {
-        const imgRes = await fetch(image_url);
-        if (imgRes.ok) {
-          const imgBuffer = await imgRes.arrayBuffer();
-          const imgBase64 = Buffer.from(imgBuffer).toString('base64');
-          // Always name the image after the slug with .jpg extension
-          const imagePath = `public/images/${imageFilename}`;
-          const existingImageSha = await getFileSha(token, imagePath);
-          await commitFile(
-            token,
-            imagePath,
-            imgBase64,
-            `Add journal header image: ${imageFilename}`,
-            existingImageSha,
-            true
-          );
-          console.log(`[publish-journal] Image committed: ${imagePath}`);
-        }
-      } catch (imgErr) {
-        console.warn('[publish-journal] Image commit failed (non-fatal):', imgErr.message);
+      const imgRes = await fetch(image_url);
+      if (!imgRes.ok) {
+        return res.status(500).json({
+          ok: false,
+          error: `Image download failed (${imgRes.status}). The entry was not published. Fix the image URL and try again.`,
+        });
       }
+      const imgBuffer = await imgRes.arrayBuffer();
+      const imgBase64 = Buffer.from(imgBuffer).toString('base64');
+      const imagePath = `public/images/${imageFilename}`;
+      const existingImageSha = await getFileSha(token, imagePath);
+      await commitFile(
+        token,
+        imagePath,
+        imgBase64,
+        `Add journal header image: ${imageFilename}`,
+        existingImageSha,
+        true
+      );
+      console.log(`[publish-journal] Image committed: ${imagePath}`);
+    } else if (!image_url) {
+      console.warn('[publish-journal] No image_url provided — entry will publish without header image');
     }
 
     // Check if MD file already exists (update vs create)
