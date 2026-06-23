@@ -23,9 +23,11 @@ export default async function handler(req, res) {
     : { ok: false, message: 'GITHUB_PUBLISH_TOKEN is not set — journal publishing will fail' };
 
   // 2. OpenAI key for DALL-E
-  checks.openai_key = !!process.env.OPENAI_API_KEY
-    ? { ok: true, message: 'OPENAI_API_KEY is set' }
-    : { ok: false, message: 'OPENAI_API_KEY is not set — image generation will fail' };
+  // The image generation code reads OPEN_API_KEY via /lib/openaiKey.js.
+  // Check the same variable name here so preflight reflects actual capability.
+  checks.openai_key = !!process.env.OPEN_API_KEY
+    ? { ok: true, message: 'OPEN_API_KEY is set' }
+    : { ok: false, message: 'OPEN_API_KEY is not set — image generation will fail' };
 
   // 3. Anthropic key for Auto brain
   checks.anthropic_key = !!process.env.ANTHROPIC_API_KEY

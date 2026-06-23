@@ -131,6 +131,34 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
+  // Run preflight silently. If a critical system is down, return a plain English
+  // error immediately rather than attempting a publish that will fail mid-way.
+  // Bart never sees preflight — it runs invisibly and only surfaces on real failures.
+  try {
+    const { supabaseAdmin: sb } = await import('../../../lib/supabase-admin.js');
+    const preflightFails = [];
+
+    if (!process.env.GITHUB_PUBLISH_TOKEN) {
+      preflightFails.push('GitHub token is not configured. Publishing cannot proceed.');
+    }
+    if (!process.env.OPEN_API_KEY) {
+      preflightFails.push('OpenAI key is not configured. Image generation will fail.');
+    }
+    if (!process.env.RESEND_API_KEY) {
+      preflightFails.push('Resend key is not configured. Subscriber emails will not send.');
+    }
+
+    if (preflightFails.length > 0) {
+      return res.status(500).json({
+        ok: false,
+        error: `Publish blocked — system check failed: ${preflightFails.join(' ')}`,
+      });
+    }
+  } catch (preflightErr) {
+    console.error('[publish-journal] Preflight error:', preflightErr?.message);
+    // Non-fatal — proceed with publish attempt
+  }
+
   const token = process.env.GITHUB_PUBLISH_TOKEN;
   if (!token) {
     return res.status(500).json({
