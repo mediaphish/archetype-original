@@ -20,6 +20,7 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'mediaphish';
@@ -123,6 +124,62 @@ async function commitFile(token, path, content, message, sha, isRawBase64 = fals
   };
 }
 
+/**
+ * Updates the Instagram Business account's website/bio link to the new journal URL.
+ * Fire-and-forget — never blocks publish.
+ * Reads user_access_token and instagram_business_id from ao_meta_tokens.
+ */
+async function updateInstagramBioLink(journalUrl) {
+  try {
+    // Read the stored Meta credentials
+    const { data: tokenRow, error } = await supabaseAdmin
+      .from('ao_meta_tokens')
+      .select('user_access_token, instagram_business_id')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error || !tokenRow) {
+      console.warn('[publish-journal] Instagram bio update skipped — no Meta token found');
+      return;
+    }
+
+    const { user_access_token, instagram_business_id } = tokenRow;
+
+    if (!user_access_token || !instagram_business_id) {
+      console.warn('[publish-journal] Instagram bio update skipped — missing token or IG ID');
+      return;
+    }
+
+    // Update the Instagram account's website field
+    const igRes = await fetch(
+      `https://graph.facebook.com/v25.0/${instagram_business_id}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          website: journalUrl,
+          access_token: user_access_token,
+        }),
+      }
+    );
+
+    const igData = await igRes.json().catch(() => ({}));
+
+    if (!igRes.ok || igData.error) {
+      console.error(
+        '[publish-journal] Instagram bio update failed:',
+        igData.error?.message || `HTTP ${igRes.status}`
+      );
+      return;
+    }
+
+    console.log(`[publish-journal] Instagram bio link updated to: ${journalUrl}`);
+  } catch (err) {
+    console.error('[publish-journal] Instagram bio update threw an error:', err?.message || err);
+  }
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -135,7 +192,6 @@ export default async function handler(req, res) {
   // error immediately rather than attempting a publish that will fail mid-way.
   // Bart never sees preflight — it runs invisibly and only surfaces on real failures.
   try {
-    const { supabaseAdmin: sb } = await import('../../../lib/supabase-admin.js');
     const preflightFails = [];
 
     if (!process.env.GITHUB_PUBLISH_TOKEN) {
@@ -291,6 +347,12 @@ export default async function handler(req, res) {
     const result = await commitFile(token, filePath, fullContent, commitMessage, existingSha);
 
     const journalUrl = `https://www.archetypeoriginal.com/journal/${safeSlug}`;
+
+    // Update Instagram bio link to point to the new journal entry.
+    // Fire-and-forget — never blocks publish response.
+    updateInstagramBioLink(journalUrl).catch((err) => {
+      console.error('[publish-journal] Instagram bio update (outer catch):', err?.message || err);
+    });
 
     // Trigger Resend notification after delay if requested
     // Uses a fire-and-forget setTimeout — the response is returned immediately
