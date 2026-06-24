@@ -70,7 +70,21 @@ async function probeSkippableProtection() {
 
 await probeSkippableProtection();
 
-const paths = getExpectedCrawlPaths();
+// During `vercel build`, VERCEL_URL points at this deployment before new dist/ is live.
+// Journal posts are fully static HTML verified in dist/ by verify-dist-html.mjs.
+// Remote /journal/* requests would hit the prior deployment (SPA shell) and false-fail.
+const skipJournalRemote =
+  process.env.VERCEL === '1' && !process.env.HTML_CHECK_BASE_URL;
+
+let paths = getExpectedCrawlPaths();
+if (skipJournalRemote) {
+  const before = paths.length;
+  paths = paths.filter((p) => !isJournalPostPath(p));
+  console.log(
+    `⏭️  verify-deployment-html: skipping ${before - paths.length} journal URLs during Vercel build (dist/ already verified; set HTML_CHECK_BASE_URL for full post-deploy checks)`
+  );
+}
+
 console.log(`🌐 verify-deployment-html: checking ${paths.length} URLs at ${base} ...`);
 
 const CONCURRENCY = 8;
