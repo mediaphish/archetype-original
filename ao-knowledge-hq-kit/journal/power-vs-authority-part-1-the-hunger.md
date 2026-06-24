@@ -2,8 +2,8 @@
 title: Power vs. Authority: Part 1 — The Hunger
 slug: power-vs-authority-part-1-the-hunger
 publish_date: '2026-06-23'
-created_at: '2026-06-23'
-updated_at: '2026-06-23'
+created_at: '2026-06-24'
+updated_at: '2026-06-24'
 summary: >-
   The pursuit of power and the earning of authority look identical from the outside at first. Both involve influence. Both involve people following a direction. The difference lives underneath, in motive, in method, and in what survives. Part 1 of this series examines the hunger that precedes power, where it comes from, what it costs the person chasing it, and what it leaves behind in the people who were close enough to watch.
 categories:
