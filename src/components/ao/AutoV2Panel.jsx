@@ -1384,42 +1384,30 @@ export default function AutoV2Panel({ onNavigate, className }) {
     const { artifact: a } = parseArtifact(raw);
     setArtifact(a || null);
 
-    const lastBatchImgs = extractGeneratedImagesFromAssistantContent(raw);
-    // Full batch in one assistant reply replaces the gallery; smaller batches merge with existing
-    if (lastBatchImgs.length >= 3) {
-      const seen = new Set();
-      const now = Date.now();
-      const replaced = [];
-      for (const img of lastBatchImgs) {
-        if (!img.url || seen.has(img.url)) continue;
-        seen.add(img.url);
-        replaced.push({ ...img, addedAt: now });
-      }
-      setGeneratedImages(replaced);
-    } else {
-      // Images: scan ALL assistant messages and accumulate unique URLs
-      setGeneratedImages((prev) => {
-        const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
-        const seenUrls = new Set();
-        const allImages = [];
-        for (const m of allMsgs) {
-          if (m.role !== 'assistant') continue;
-          const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
-          for (const img of imgs) {
-            const key = img.url;
-            if (!key || seenUrls.has(key)) continue;
-            seenUrls.add(key);
-            const older = prevByUrl.get(key);
-            allImages.push({
-              ...img,
-              addedAt: older?.addedAt ?? Date.now(),
-            });
-          }
+    // Always accumulate card images across all messages in the thread.
+    // Never replace — the gallery grows as batches arrive.
+    // Cards only clear via the Clear button or when a new thread starts.
+    setGeneratedImages((prev) => {
+      const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
+      const seenUrls = new Set();
+      const allImages = [];
+      for (const m of allMsgs) {
+        if (m.role !== 'assistant') continue;
+        const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
+        for (const img of imgs) {
+          const key = img.url;
+          if (!key || seenUrls.has(key)) continue;
+          seenUrls.add(key);
+          const older = prevByUrl.get(key);
+          allImages.push({
+            ...img,
+            addedAt: older?.addedAt ?? Date.now(),
+          });
         }
-        if (allImages.length > 0) return allImages;
-        return prev;
-      });
-    }
+      }
+      if (allImages.length > 0) return allImages;
+      return prev;
+    });
     // Design images: always append across messages (journal series accumulates)
     setGeneratedDesignImages((prev) => {
       const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
