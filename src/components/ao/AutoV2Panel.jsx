@@ -1031,6 +1031,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const processedJournalPublishKeys = useRef(new Set());
   const processedDevotionalPublishKeys = useRef(new Set());
   const processedEpisodeProcessKeys = useRef(new Set());
+  // Tracks message IDs that existed at the time of the last Clear.
+  // syncArtifactFromMessages ignores messages with these IDs so cleared
+  // cards do not re-appear when new responses arrive.
+  const clearedMessageIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -1384,15 +1388,19 @@ export default function AutoV2Panel({ onNavigate, className }) {
     const { artifact: a } = parseArtifact(raw);
     setArtifact(a || null);
 
-    // Always accumulate card images across all messages in the thread.
-    // Never replace — the gallery grows as batches arrive.
-    // Cards only clear via the Clear button or when a new thread starts.
+    // Accumulate card images across messages, but skip any message that was
+    // present at the time of the last Clear. This allows Clear to work correctly
+    // even though thread history still contains old [IMAGES_GENERATED] blocks.
     setGeneratedImages((prev) => {
       const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
       const seenUrls = new Set();
       const allImages = [];
+      const cleared = clearedMessageIds.current;
       for (const m of allMsgs) {
         if (m.role !== 'assistant') continue;
+        // Skip messages that existed at the time of the last clear
+        const msgId = m.id || `${m.role}:${String(m.content || '').slice(0, 40)}`;
+        if (cleared.size > 0 && cleared.has(msgId)) continue;
         const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
         for (const img of imgs) {
           const key = img.url;
@@ -1489,6 +1497,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setArtifactUnread(false);
       setGeneratedImages([]);
       setGeneratedDesignImages([]);
+      clearedMessageIds.current = new Set();
       setError('');
       try {
         const res = await fetch('/api/ao/auto/thread/resume', {
@@ -1535,6 +1544,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setPendingFile(null);
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
+    clearedMessageIds.current = new Set();
     setJournalPublishBanner(null);
     setDevotionalPublishBanner(null);
     processedJournalPublishKeys.current = new Set();
@@ -1731,9 +1741,16 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }, []);
 
   const handleClearGenerated = useCallback(() => {
+    // Record the IDs of all current messages so syncArtifactFromMessages
+    // knows to ignore [IMAGES_GENERATED] blocks from these messages going forward.
+    // New messages arriving after this clear will not be in the set and will render normally.
+    const currentIds = new Set(
+      (messages || []).map((m) => m.id || `${m.role}:${String(m.content || '').slice(0, 40)}`)
+    );
+    clearedMessageIds.current = currentIds;
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
-  }, []);
+  }, [messages]);
 
   const publishCards = useCallback(async () => {
     if (!generatedImages || generatedImages.length === 0) {
