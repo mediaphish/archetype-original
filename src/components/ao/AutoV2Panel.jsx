@@ -85,6 +85,78 @@ function extractDesignImagesFromAssistantContent(content) {
   return results;
 }
 
+/**
+ * Extracts per-card caption blocks from the artifact content or raw assistant text.
+ * Returns a map of card number -> { channelName: captionText }
+ * Used to pair captions with generated card images in the artifact panel.
+ */
+function extractCardCaptionsFromArtifactContent(content) {
+  if (!content) return {};
+  const text = String(content);
+  const result = {};
+
+  // Find all "Card N of M" blocks
+  const cardBlocks = text.split(/(?=\*{0,2}Card\s+\d+\s+of\s+\d+)/i);
+
+  for (const block of cardBlocks) {
+    const cardNumMatch = block.match(/Card\s+(\d+)\s+of\s+\d+/i);
+    if (!cardNumMatch) continue;
+    const cardNum = parseInt(cardNumMatch[1], 10);
+
+    const channels = {};
+    const channelNames = [
+      'LinkedIn Personal',
+      'LinkedIn Business',
+      'Instagram Business',
+      'Facebook Business',
+      'X',
+      'Facebook Personal',
+      'Instagram Personal',
+    ];
+
+    for (let i = 0; i < channelNames.length; i++) {
+      const name = channelNames[i];
+      const nextName = channelNames[i + 1];
+      const startPattern = new RegExp(
+        `\\*{0,2}${name.replace(/[()]/g, '\\$&')}\\*{0,2}\\s*\\n([\\s\\S]*?)`,
+        'i'
+      );
+      const endPattern = nextName
+        ? new RegExp(`\\*{0,2}${nextName.replace(/[()]/g, '\\$&')}\\*{0,2}`, 'i')
+        : null;
+
+      const startMatch = startPattern.exec(block);
+      if (!startMatch) continue;
+
+      const startIdx = startMatch.index + startMatch[0].length - startMatch[1].length;
+      const remaining = block.slice(startIdx);
+
+      let captionText;
+      if (endPattern) {
+        const endMatch = endPattern.exec(remaining);
+        captionText = endMatch
+          ? remaining.slice(0, endMatch.index).trim()
+          : remaining.trim();
+      } else {
+        captionText = remaining.trim();
+      }
+
+      if (captionText) {
+        channels[name] = captionText
+          .replace(/^---+\s*/m, '')
+          .replace(/\s*---+$/m, '')
+          .trim();
+      }
+    }
+
+    if (Object.keys(channels).length > 0) {
+      result[cardNum] = channels;
+    }
+  }
+
+  return result;
+}
+
 function extractJournalPublishFromAssistantContent(content) {
   const text = String(content || '');
   const tagMatch = text.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
@@ -345,6 +417,122 @@ function DraftArtifact({ content, label }) {
   );
 }
 
+const CHANNEL_LABELS = [
+  'LinkedIn Personal',
+  'LinkedIn Business',
+  'Instagram Business',
+  'Facebook Business',
+  'X',
+];
+
+const MANUAL_CHANNEL_LABELS = [
+  'Facebook Personal',
+  'Instagram Personal',
+];
+
+function CardBatchReview({ generatedImages, captionContent, onImageError }) {
+  const [expandedCard, setExpandedCard] = useState(null);
+  const captionsByCard = useMemo(
+    () => extractCardCaptionsFromArtifactContent(captionContent),
+    [captionContent]
+  );
+
+  const sortedImages = useMemo(
+    () => [...(generatedImages || [])].sort((a, b) => a.card - b.card),
+    [generatedImages]
+  );
+
+  if (sortedImages.length === 0) return null;
+
+  return (
+    <div className="flex flex-col min-h-0 flex-1 overflow-y-auto gap-4">
+      <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">
+        Cards — {sortedImages.length} in batch
+      </p>
+      {sortedImages.map((img) => {
+        const captions = captionsByCard[img.card] || {};
+        const hasAnyCaptions = Object.keys(captions).length > 0;
+        const isExpanded = expandedCard === img.card;
+
+        return (
+          <div
+            key={`${img.card}-${img.url}`}
+            className="rounded-xl border border-gray-200 overflow-hidden bg-white flex-shrink-0"
+          >
+            {/* Card image */}
+            <div className="bg-black">
+              <img
+                src={img.url}
+                alt={`Card ${img.card}`}
+                className="block h-auto w-full"
+                onError={() => onImageError?.(img.url)}
+              />
+            </div>
+
+            {/* Caption toggle */}
+            {hasAnyCaptions && (
+              <div className="border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setExpandedCard(isExpanded ? null : img.card)}
+                  className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  <span>Captions — {Object.keys(captions).filter(k => CHANNEL_LABELS.includes(k)).length} automated + {Object.keys(captions).filter(k => MANUAL_CHANNEL_LABELS.includes(k)).length} manual</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    aria-hidden
+                  >
+                    <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+
+                {isExpanded && (
+                  <div className="px-3 pb-3 space-y-3 border-t border-gray-100">
+                    {/* Automated channels */}
+                    {CHANNEL_LABELS.filter(ch => captions[ch]).map((channel) => (
+                      <div key={channel} className="pt-3">
+                        <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-1">
+                          {channel}
+                        </p>
+                        <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {captions[channel]}
+                        </p>
+                      </div>
+                    ))}
+
+                    {/* Manual channels */}
+                    {MANUAL_CHANNEL_LABELS.filter(ch => captions[ch]).length > 0 && (
+                      <div className="pt-2 border-t border-dashed border-gray-200">
+                        <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-2">
+                          Manual copy — paste yourself
+                        </p>
+                        {MANUAL_CHANNEL_LABELS.filter(ch => captions[ch]).map((channel) => (
+                          <div key={channel} className="pt-2">
+                            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-1">
+                              {channel}
+                            </p>
+                            <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">
+                              {captions[channel]}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function ArtifactPanel({
   artifact,
   generatedImages,
@@ -370,7 +558,9 @@ function ArtifactPanel({
     <div className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
-          {artifact?.label || (hasCards ? 'Generated cards' : hasDesign ? 'Generated images' : 'Artifact')}
+          {hasCards && (artifact?.type === 'captions' || artifact?.type === 'list')
+            ? `Cards + Captions — ${generatedImages.length} in batch`
+            : artifact?.label || (hasCards ? 'Generated cards' : hasDesign ? 'Generated images' : 'Artifact')}
         </span>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
@@ -451,32 +641,44 @@ function ArtifactPanel({
           </div>
         )}
         {hasCards && (
-          <div
-            className={
-              artifact || hasDesign
-                ? 'max-h-[min(50vh,24rem)] shrink-0 overflow-y-auto'
-                : 'min-h-0 flex-1 overflow-y-auto'
-            }
-          >
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Cards</p>
-            <div className="space-y-3">
-              {generatedImages.slice().reverse().map((img) => (
-                <div key={`${img.card}-${img.url}`} className="overflow-hidden rounded-xl border border-gray-200 bg-black">
-                  <img
-                    src={img.url}
-                    alt={`Card ${img.card}`}
-                    className="block h-auto w-full"
-                    onError={() => onGeneratedImageError?.(img.url)}
-                  />
-                  {formatImageAddedTime(img.addedAt) ? (
-                    <p className="border-t border-gray-800 bg-black/80 py-1.5 text-center text-xs text-gray-400">
-                      {formatImageAddedTime(img.addedAt)}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
+          artifact?.type === 'captions' || artifact?.type === 'list' ? (
+            // Paired card + captions view when captions artifact is present
+            <div className="min-h-0 flex-1 overflow-hidden">
+              <CardBatchReview
+                generatedImages={generatedImages}
+                captionContent={artifact.content}
+                onImageError={onGeneratedImageError}
+              />
             </div>
-          </div>
+          ) : (
+            // Standard card gallery when no captions artifact
+            <div
+              className={
+                artifact || hasDesign
+                  ? 'max-h-[min(50vh,24rem)] shrink-0 overflow-y-auto'
+                  : 'min-h-0 flex-1 overflow-y-auto'
+              }
+            >
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Cards</p>
+              <div className="space-y-3">
+                {generatedImages.slice().reverse().map((img) => (
+                  <div key={`${img.card}-${img.url}`} className="overflow-hidden rounded-xl border border-gray-200 bg-black">
+                    <img
+                      src={img.url}
+                      alt={`Card ${img.card}`}
+                      className="block h-auto w-full"
+                      onError={() => onGeneratedImageError?.(img.url)}
+                    />
+                    {formatImageAddedTime(img.addedAt) ? (
+                      <p className="border-t border-gray-800 bg-black/80 py-1.5 text-center text-xs text-gray-400">
+                        {formatImageAddedTime(img.addedAt)}
+                      </p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
         )}
 
         {hasDesign && (
