@@ -601,6 +601,7 @@ function ArtifactPanel({
   onCardIndexChange,
   cardReviewMode,
   onCardReviewModeChange,
+  seedManifestTotal,
 }) {
   const hasCards = generatedImages?.length > 0;
   const hasDesign = generatedDesignImages?.length > 0;
@@ -612,7 +613,7 @@ function ArtifactPanel({
           {hasCards && (artifact?.type === 'captions' || artifact?.type === 'list')
             ? `Cards + Captions — ${generatedImages.length} in batch`
             : hasCards
-            ? `Card ${(currentCardIndex ?? 0) + 1} of ${generatedImages.length}`
+            ? `Card ${(currentCardIndex ?? 0) + 1} of ${seedManifestTotal ?? generatedImages.length}`
             : artifact?.label || (hasDesign ? 'Generated images' : 'Artifact')}
         </span>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -1293,6 +1294,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [generatedDesignImages, setGeneratedDesignImages] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [cardReviewMode, setCardReviewMode] = useState('single'); // 'single' | 'batch'
+  const [seedManifestTotal, setSeedManifestTotal] = useState(null);
   const [journalPublishBanner, setJournalPublishBanner] = useState(null);
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [episodeDraft, setEpisodeDraft] = useState(null);
@@ -1664,6 +1666,16 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const syncArtifactFromMessages = useCallback((msgs) => {
     const allMsgs = msgs || [];
 
+    // Read seed manifest from thread history to establish max card count
+    for (const m of allMsgs) {
+      if (m.role !== 'assistant') continue;
+      const manifestMatch = String(m.content || '').match(/\[SEED_MANIFEST\s+total="(\d+)"\]/i);
+      if (manifestMatch) {
+        setSeedManifestTotal(parseInt(manifestMatch[1], 10));
+        break;
+      }
+    }
+
     // Artifact: read from last assistant message only
     const lastAssistant = [...allMsgs].reverse().find((m) => m.role === 'assistant');
     if (!lastAssistant) {
@@ -1680,8 +1692,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     // even though thread history still contains old [IMAGES_GENERATED] blocks.
     setGeneratedImages((prev) => {
       const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
-      const seenUrls = new Set();
-      const allImages = [];
+      const byCardNumber = new Map();
       const cleared = clearedMessageIds.current;
       for (const m of allMsgs) {
         if (m.role !== 'assistant') continue;
@@ -1690,17 +1701,27 @@ export default function AutoV2Panel({ onNavigate, className }) {
         if (cleared.size > 0 && cleared.has(msgId)) continue;
         const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
         for (const img of imgs) {
-          const key = img.url;
-          if (!key || seenUrls.has(key)) continue;
-          seenUrls.add(key);
-          const older = prevByUrl.get(key);
-          allImages.push({
+          if (!img.url || !img.card) continue;
+          const older = prevByUrl.get(img.url);
+          byCardNumber.set(img.card, {
             ...img,
             addedAt: older?.addedAt ?? Date.now(),
           });
         }
       }
-      if (allImages.length > 0) return allImages;
+      const allImages = Array.from(byCardNumber.values());
+      if (allImages.length > 0) {
+        // Never exceed the seed manifest total if one exists
+        // This prevents phantom cards from inflating the panel count
+        const manifest = seedManifestTotal;
+        if (manifest != null && allImages.length > manifest) {
+          console.warn(`[AutoV2Panel] Panel has ${allImages.length} cards but manifest says ${manifest}. Capping.`);
+          // Keep only cards whose slot numbers are within the manifest
+          const capped = allImages.filter(img => img.card <= manifest);
+          return capped.length > 0 ? capped : prev;
+        }
+        return allImages;
+      }
       return prev;
     });
     // Design images: always append across messages (journal series accumulates)
@@ -1727,7 +1748,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     });
     // If no images found in any message, leave existing images in place
     // Images only clear when starting a new thread (handled in startNewThread)
-  }, []);
+  }, [seedManifestTotal]);
 
   const loadThreadList = useCallback(async () => {
     setError('');
@@ -1786,6 +1807,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setGeneratedDesignImages([]);
       setCurrentCardIndex(0);
       setCardReviewMode('single');
+      setSeedManifestTotal(null);
       clearedMessageIds.current = new Set();
       setError('');
       try {
@@ -1835,6 +1857,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setGeneratedDesignImages([]);
     setCurrentCardIndex(0);
     setCardReviewMode('single');
+    setSeedManifestTotal(null);
     clearedMessageIds.current = new Set();
     setJournalPublishBanner(null);
     setDevotionalPublishBanner(null);
@@ -2042,6 +2065,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
     setCurrentCardIndex(0);
+    setSeedManifestTotal(null);
   }, [messages]);
 
   const publishCards = useCallback(async () => {
@@ -2106,6 +2130,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     onCardIndexChange: setCurrentCardIndex,
     cardReviewMode,
     onCardReviewModeChange: setCardReviewMode,
+    seedManifestTotal,
   };
 
   const mobileBottomNav = isMobile ? (
