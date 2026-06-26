@@ -40,21 +40,38 @@ async function getMetaToken() {
 
 async function fetchFacebookPostMetrics(postId, pageToken) {
   try {
-    const metrics = 'post_impressions,post_clicks,post_reactions_like_total,post_comments,post_shares';
+    // Try the insights endpoint first
+    const metrics = 'post_impressions_unique,post_clicks,post_reactions_like_total,post_comments,post_shares';
     const url = `${GRAPH_BASE}/${postId}/insights?metric=${metrics}&access_token=${pageToken}`;
     const res = await fetch(url);
     const json = await res.json().catch(() => ({}));
-    if (!res.ok || json.error) {
-      console.warn(`[sync-metrics] Facebook insights failed for ${postId}:`, json.error?.message || res.status);
-      return null;
+
+    if (json.error) {
+      // Some post types don't support insights — fall back to basic engagement counts
+      const basicUrl = `${GRAPH_BASE}/${postId}?fields=likes.summary(true),comments.summary(true),shares&access_token=${pageToken}`;
+      const basicRes = await fetch(basicUrl);
+      const basicJson = await basicRes.json().catch(() => ({}));
+      if (basicJson.error) {
+        console.warn(`[sync-metrics] Facebook basic fetch also failed for ${postId}:`, basicJson.error?.message);
+        return null;
+      }
+      return {
+        impressions: 0,
+        clicks: 0,
+        reactions: basicJson.likes?.summary?.total_count || 0,
+        comments: basicJson.comments?.summary?.total_count || 0,
+        shares: basicJson.shares?.count || 0,
+        raw: basicJson,
+      };
     }
+
     const data = json.data || [];
     const byName = {};
     for (const item of data) {
       byName[item.name] = item.values?.[0]?.value ?? 0;
     }
     return {
-      impressions: byName.post_impressions || 0,
+      impressions: byName.post_impressions_unique || byName.post_impressions || 0,
       clicks: byName.post_clicks || 0,
       reactions: byName.post_reactions_like_total || 0,
       comments: byName.post_comments || 0,
@@ -69,25 +86,43 @@ async function fetchFacebookPostMetrics(postId, pageToken) {
 
 async function fetchInstagramMediaMetrics(mediaId, userToken) {
   try {
+    // Instagram media insights — metric names vary by media type
+    // Use the most commonly available metrics
     const metrics = 'impressions,reach,likes,comments,shares,saved';
     const url = `${GRAPH_BASE}/${mediaId}/insights?metric=${metrics}&access_token=${userToken}`;
     const res = await fetch(url);
     const json = await res.json().catch(() => ({}));
-    if (!res.ok || json.error) {
-      console.warn(`[sync-metrics] Instagram insights failed for ${mediaId}:`, json.error?.message || res.status);
-      return null;
+
+    if (json.error) {
+      // Fall back to basic media fields if insights unavailable
+      const basicUrl = `${GRAPH_BASE}/${mediaId}?fields=like_count,comments_count&access_token=${userToken}`;
+      const basicRes = await fetch(basicUrl);
+      const basicJson = await basicRes.json().catch(() => ({}));
+      if (basicJson.error) {
+        console.warn(`[sync-metrics] Instagram basic fetch failed for ${mediaId}:`, basicJson.error?.message);
+        return null;
+      }
+      return {
+        impressions: 0,
+        clicks: 0,
+        reactions: basicJson.like_count || 0,
+        comments: basicJson.comments_count || 0,
+        shares: 0,
+        raw: basicJson,
+      };
     }
+
     const data = json.data || [];
     const byName = {};
     for (const item of data) {
       byName[item.name] = item.values?.[0]?.value ?? item.value ?? 0;
     }
     return {
-      impressions: byName.impressions || 0,
+      impressions: byName.impressions || byName.reach || 0,
       clicks: 0,
       reactions: byName.likes || 0,
       comments: byName.comments || 0,
-      shares: byName.shares || 0,
+      shares: byName.shares || byName.saved || 0,
       raw: json,
     };
   } catch (err) {
