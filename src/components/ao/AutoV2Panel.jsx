@@ -595,6 +595,10 @@ function ArtifactPanel({
   onClearGenerated,
   onGeneratedImageError,
   onGeneratedDesignImageError,
+  currentCardIndex,
+  onCardIndexChange,
+  cardReviewMode,
+  onCardReviewModeChange,
 }) {
   const hasCards = generatedImages?.length > 0;
   const hasDesign = generatedDesignImages?.length > 0;
@@ -605,7 +609,9 @@ function ArtifactPanel({
         <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide truncate pr-2">
           {hasCards && (artifact?.type === 'captions' || artifact?.type === 'list')
             ? `Cards + Captions — ${generatedImages.length} in batch`
-            : artifact?.label || (hasCards ? 'Generated cards' : hasDesign ? 'Generated images' : 'Artifact')}
+            : hasCards
+            ? `Card ${(currentCardIndex ?? 0) + 1} of ${generatedImages.length}`
+            : artifact?.label || (hasDesign ? 'Generated images' : 'Artifact')}
         </span>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
@@ -687,7 +693,6 @@ function ArtifactPanel({
         )}
         {hasCards && (
           artifact?.type === 'captions' || artifact?.type === 'list' ? (
-            // Paired card + captions view when captions artifact is present
             <div className="min-h-0 flex-1 overflow-hidden">
               <CardBatchReview
                 generatedImages={generatedImages}
@@ -696,32 +701,56 @@ function ArtifactPanel({
               />
             </div>
           ) : (
-            // Standard card gallery when no captions artifact
-            <div
-              className={
-                artifact || hasDesign
-                  ? 'max-h-[min(50vh,24rem)] shrink-0 overflow-y-auto'
-                  : 'min-h-0 flex-1 overflow-y-auto'
-              }
-            >
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Cards</p>
-              <div className="space-y-3">
-                {generatedImages.slice().reverse().map((img) => (
-                  <div key={`${img.card}-${img.url}`} className="overflow-hidden rounded-xl border border-gray-200 bg-black">
-                    <img
-                      src={img.url}
-                      alt={`Card ${img.card}`}
-                      className="block h-auto w-full"
-                      onError={() => onGeneratedImageError?.(img.url)}
-                    />
-                    {formatImageAddedTime(img.addedAt) ? (
-                      <p className="border-t border-gray-800 bg-black/80 py-1.5 text-center text-xs text-gray-400">
-                        {formatImageAddedTime(img.addedAt)}
-                      </p>
-                    ) : null}
-                  </div>
-                ))}
+            <div className="min-h-0 flex-1 flex flex-col gap-3 overflow-hidden">
+              {/* Card navigation header */}
+              <div className="flex-shrink-0 flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Card {(currentCardIndex ?? 0) + 1} of {generatedImages.length}
+                </p>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onCardIndexChange?.(Math.max(0, (currentCardIndex ?? 0) - 1))}
+                    disabled={(currentCardIndex ?? 0) === 0}
+                    className="px-2 py-1 text-xs text-gray-500 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="Previous card"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onCardIndexChange?.(Math.min(generatedImages.length - 1, (currentCardIndex ?? 0) + 1))}
+                    disabled={(currentCardIndex ?? 0) >= generatedImages.length - 1}
+                    className="px-2 py-1 text-xs text-gray-500 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="Next card"
+                  >
+                    →
+                  </button>
+                </div>
               </div>
+
+              {/* Current card display */}
+              {(() => {
+                const sortedImgs = [...generatedImages].sort((a, b) => a.card - b.card);
+                const idx = Math.min(currentCardIndex ?? 0, sortedImgs.length - 1);
+                const img = sortedImgs[idx];
+                if (!img) return null;
+                return (
+                  <div className="flex-1 min-h-0 overflow-y-auto">
+                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-black">
+                      <img
+                        src={img.url}
+                        alt={`Card ${img.card}`}
+                        className="block h-auto w-full"
+                        onError={() => onGeneratedImageError?.(img.url)}
+                      />
+                      <p className="border-t border-gray-800 bg-black/80 py-1.5 text-center text-xs text-gray-400">
+                        Card {img.card} {formatImageAddedTime(img.addedAt) ? `· ${formatImageAddedTime(img.addedAt)}` : ''}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           )
         )}
@@ -1260,6 +1289,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generatedImages, setGeneratedImages] = useState([]);
   const [generatedDesignImages, setGeneratedDesignImages] = useState([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [cardReviewMode, setCardReviewMode] = useState('single'); // 'single' | 'batch'
   const [journalPublishBanner, setJournalPublishBanner] = useState(null);
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [episodeDraft, setEpisodeDraft] = useState(null);
@@ -1419,7 +1450,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }, [artifact, signalNewArtifact]);
 
   useEffect(() => {
-    if (generatedImages.length > 0 || generatedDesignImages.length > 0) signalNewArtifact();
+    if (generatedImages.length > 0 || generatedDesignImages.length > 0) {
+      signalNewArtifact();
+      // Auto-advance to the newest card when new images arrive
+      if (generatedImages.length > 0) {
+        const sorted = [...generatedImages].sort((a, b) => a.card - b.card);
+        setCurrentCardIndex(sorted.length - 1);
+      }
+    }
   }, [generatedImages, generatedDesignImages, signalNewArtifact]);
 
   useEffect(() => {
@@ -1744,6 +1782,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setArtifactUnread(false);
       setGeneratedImages([]);
       setGeneratedDesignImages([]);
+      setCurrentCardIndex(0);
+      setCardReviewMode('single');
       clearedMessageIds.current = new Set();
       setError('');
       try {
@@ -1791,6 +1831,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setPendingFile(null);
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
+    setCurrentCardIndex(0);
+    setCardReviewMode('single');
     clearedMessageIds.current = new Set();
     setJournalPublishBanner(null);
     setDevotionalPublishBanner(null);
@@ -1997,6 +2039,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     clearedMessageIds.current = currentIds;
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
+    setCurrentCardIndex(0);
   }, [messages]);
 
   const publishCards = useCallback(async () => {
@@ -2057,6 +2100,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
     onClearGenerated: handleClearGenerated,
     onGeneratedImageError: handleGeneratedImageError,
     onGeneratedDesignImageError: handleGeneratedDesignImageError,
+    currentCardIndex,
+    onCardIndexChange: setCurrentCardIndex,
+    cardReviewMode,
+    onCardReviewModeChange: setCardReviewMode,
   };
 
   const mobileBottomNav = isMobile ? (
