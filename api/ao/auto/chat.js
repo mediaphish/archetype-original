@@ -13,7 +13,6 @@ import { runAutoChat } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
-import { detectSchedulingIntent } from '../../../lib/ao/detectSchedulingIntent.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -42,12 +41,10 @@ export default async function handler(req, res) {
         content: String(m.content || ''),
       }));
 
-    // If the message involves scheduling decisions, fetch live queue data
-    // and inject it into Auto's context so it can answer without asking Bart
-    let scheduleContext = null;
-    if (detectSchedulingIntent(userMessage, prior.messages || [])) {
-      scheduleContext = await getScheduleContext();
-    }
+    // Always inject live queue data into Auto's context.
+    // A CMO always knows the queue state — gating this behind intent detection
+    // caused Auto to ask Bart for queue information it should already have.
+    const scheduleContext = await getScheduleContext();
 
     const result = await runAutoChat(history, userMessage, scheduleContext);
 
