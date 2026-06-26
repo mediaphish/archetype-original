@@ -38,44 +38,39 @@ async function getMetaToken() {
   return data || null;
 }
 
+async function getLinkedInToken() {
+  try {
+    const { data } = await supabaseAdmin
+      .from('ao_linkedin_tokens')
+      .select('access_token, person_urn')
+      .limit(1)
+      .maybeSingle();
+    return data?.access_token || null;
+  } catch (err) {
+    console.warn('[sync-metrics] Failed to load LinkedIn token:', err.message);
+    return null;
+  }
+}
+
 async function fetchFacebookPostMetrics(postId, pageToken) {
   try {
-    // Try the insights endpoint first
-    const metrics = 'post_impressions_unique,post_clicks,post_reactions_like_total,post_comments,post_shares';
-    const url = `${GRAPH_BASE}/${postId}/insights?metric=${metrics}&access_token=${pageToken}`;
+    // Use basic post fields — more reliable than insights across post types
+    // Insights endpoint has changed significantly in v22.0+
+    const url = `${GRAPH_BASE}/${postId}?fields=likes.summary(true),comments.summary(true),shares&access_token=${pageToken}`;
     const res = await fetch(url);
     const json = await res.json().catch(() => ({}));
 
     if (json.error) {
-      // Some post types don't support insights — fall back to basic engagement counts
-      const basicUrl = `${GRAPH_BASE}/${postId}?fields=likes.summary(true),comments.summary(true),shares&access_token=${pageToken}`;
-      const basicRes = await fetch(basicUrl);
-      const basicJson = await basicRes.json().catch(() => ({}));
-      if (basicJson.error) {
-        console.warn(`[sync-metrics] Facebook basic fetch also failed for ${postId}:`, basicJson.error?.message);
-        return null;
-      }
-      return {
-        impressions: 0,
-        clicks: 0,
-        reactions: basicJson.likes?.summary?.total_count || 0,
-        comments: basicJson.comments?.summary?.total_count || 0,
-        shares: basicJson.shares?.count || 0,
-        raw: basicJson,
-      };
+      console.warn(`[sync-metrics] Facebook fetch failed for ${postId}:`, json.error?.message);
+      return null;
     }
 
-    const data = json.data || [];
-    const byName = {};
-    for (const item of data) {
-      byName[item.name] = item.values?.[0]?.value ?? 0;
-    }
     return {
-      impressions: byName.post_impressions_unique || byName.post_impressions || 0,
-      clicks: byName.post_clicks || 0,
-      reactions: byName.post_reactions_like_total || 0,
-      comments: byName.post_comments || 0,
-      shares: byName.post_shares || 0,
+      impressions: 0,
+      clicks: 0,
+      reactions: json.likes?.summary?.total_count || 0,
+      comments: json.comments?.summary?.total_count || 0,
+      shares: json.shares?.count || 0,
       raw: json,
     };
   } catch (err) {
@@ -86,15 +81,14 @@ async function fetchFacebookPostMetrics(postId, pageToken) {
 
 async function fetchInstagramMediaMetrics(mediaId, userToken) {
   try {
-    // Instagram media insights — metric names vary by media type
-    // Use the most commonly available metrics
-    const metrics = 'impressions,reach,likes,comments,shares,saved';
+    // v22.0+ supported metrics — impressions was removed
+    const metrics = 'total_interactions,reach,likes,comments,shares,saved';
     const url = `${GRAPH_BASE}/${mediaId}/insights?metric=${metrics}&access_token=${userToken}`;
     const res = await fetch(url);
     const json = await res.json().catch(() => ({}));
 
     if (json.error) {
-      // Fall back to basic media fields if insights unavailable
+      // Fall back to basic media fields
       const basicUrl = `${GRAPH_BASE}/${mediaId}?fields=like_count,comments_count&access_token=${userToken}`;
       const basicRes = await fetch(basicUrl);
       const basicJson = await basicRes.json().catch(() => ({}));
@@ -118,9 +112,9 @@ async function fetchInstagramMediaMetrics(mediaId, userToken) {
       byName[item.name] = item.values?.[0]?.value ?? item.value ?? 0;
     }
     return {
-      impressions: byName.impressions || byName.reach || 0,
+      impressions: byName.reach || 0,
       clicks: 0,
-      reactions: byName.likes || 0,
+      reactions: byName.likes || byName.total_interactions || 0,
       comments: byName.comments || 0,
       shares: byName.shares || byName.saved || 0,
       raw: json,
@@ -206,7 +200,7 @@ export default async function handler(req, res) {
 
   // Load Meta credentials once
   const metaCreds = await getMetaToken();
-  const linkedinToken = process.env.LINKEDIN_ACCESS_TOKEN;
+  const linkedinToken = await getLinkedInToken();
 
   let synced = 0;
   let failed = 0;
