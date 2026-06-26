@@ -243,6 +243,51 @@ function formatRelativeDate(iso) {
   }
 }
 
+function downloadTranscriptAsMd(messages, threadId) {
+  if (!Array.isArray(messages) || messages.length === 0) return;
+
+  const visibleMessages = messages.filter(
+    (m) => m.role === 'user' || m.role === 'assistant'
+  );
+
+  if (visibleMessages.length === 0) return;
+
+  const dateStr = new Date().toISOString().split('T')[0];
+  const lines = [`# Auto Transcript — ${dateStr}\n`];
+
+  for (const msg of visibleMessages) {
+    const role = msg.role === 'user' ? '**Bart**' : '**Auto**';
+    const raw = String(msg.content || '');
+    // Strip internal tags that are not useful in a transcript
+    const clean = raw
+      .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '[Images generated]')
+      .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '[Image generated]')
+      .replace(/\[DALLE_GENERATE[^\]]*\]/gi, '')
+      .replace(/\[PUBLISH_JOURNAL[^\]]*\]/gi, '[Journal publish signal]')
+      .replace(/\[JOURNAL_CONTENT\][\s\S]*?\[\/JOURNAL_CONTENT\]/gi, '')
+      .replace(/\[PUBLISH_DEVOTIONAL[^\]]*\]/gi, '[Devotional publish signal]')
+      .replace(/\[DEVOTIONAL_CONTENT\][\s\S]*?\[\/DEVOTIONAL_CONTENT\]/gi, '')
+      .replace(/\[EPISODE_PROCESS[^\]]*\]/gi, '')
+      .replace(/\[EPISODE_TRANSCRIPT\][\s\S]*?\[\/EPISODE_TRANSCRIPT\]/gi, '')
+      .trim();
+
+    if (!clean) continue;
+
+    lines.push(`${role}\n\n${clean}\n\n---\n`);
+  }
+
+  const content = lines.join('\n');
+  const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `auto-transcript-${dateStr}${threadId ? `-${threadId.slice(0, 8)}` : ''}.md`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function threadTitle(thread) {
   if (!thread) return 'Conversation';
   if (thread.title && String(thread.title).trim() && thread.title !== 'Auto') {
@@ -2159,6 +2204,16 @@ export default function AutoV2Panel({ onNavigate, className }) {
                 View artifact
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => downloadTranscriptAsMd(messages, activeThreadId)}
+              disabled={visibleChatMessages.length === 0}
+              className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              title="Download conversation as markdown"
+              aria-label="Download transcript"
+            >
+              ↓ Transcript
+            </button>
             <button type="button" onClick={() => onNavigate?.('/ao/library')} className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
               Library
             </button>
