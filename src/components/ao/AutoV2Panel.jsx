@@ -210,6 +210,8 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[EPISODE_PROCESS[^\]]*\]/gi, '')
     .replace(/\[EPISODE_TRANSCRIPT\][\s\S]*?\[\/EPISODE_TRANSCRIPT\]/gi, '')
     .replace(/\[EPISODE_DRAFT[^\]]*\]/gi, '')
+    .replace(/\[CARD[\s\S]*?\[\/CARD\]/gi, '')
+    .replace(/\[LINE[^\]]*\][\s\S]*?\[\/LINE\]/gi, '')
     .trim();
 }
 
