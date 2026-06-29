@@ -585,6 +585,7 @@ function ArtifactPanel({
   generatedImages,
   generatedDesignImages,
   journalPublishBanner,
+  journalPendingPublish,
   devotionalPublishBanner,
   episodeDraft,
   episodeProcessBanner,
@@ -597,6 +598,7 @@ function ArtifactPanel({
   onClearGenerated,
   onGeneratedImageError,
   onGeneratedDesignImageError,
+  onPublishJournal,
   currentCardIndex,
   onCardIndexChange,
   cardReviewMode,
@@ -638,6 +640,21 @@ function ArtifactPanel({
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4">
+        {journalPendingPublish && !journalPublishBanner && (
+          <div className="shrink-0 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <p className="font-medium mb-1">Ready to publish: {journalPendingPublish.attrs?.title}</p>
+            <p className="text-xs text-amber-700 mb-3">
+              Draft prepared. Confirm the header image is approved, then click Publish.
+            </p>
+            <button
+              type="button"
+              onClick={onPublishJournal}
+              className="w-full py-2 px-3 bg-amber-900 text-white text-sm font-medium rounded-lg hover:bg-amber-800 transition-colors"
+            >
+              Publish to archetypeoriginal.com
+            </button>
+          </div>
+        )}
         {journalPublishBanner?.status === 'loading' && (
           <div className="shrink-0 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
             Publishing journal entry…
@@ -1296,6 +1313,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [cardReviewMode, setCardReviewMode] = useState('single'); // 'single' | 'batch'
   const [seedManifestTotal, setSeedManifestTotal] = useState(null);
   const [journalPublishBanner, setJournalPublishBanner] = useState(null);
+  const [journalPendingPublish, setJournalPendingPublish] = useState(null);
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [episodeDraft, setEpisodeDraft] = useState(null);
   const [episodeProcessBanner, setEpisodeProcessBanner] = useState(null);
@@ -1313,10 +1331,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const processedJournalPublishKeys = useRef(new Set());
   const processedDevotionalPublishKeys = useRef(new Set());
   const processedEpisodeProcessKeys = useRef(new Set());
-  // Tracks message IDs that existed at the time of the last Clear.
-  // syncArtifactFromMessages ignores messages with these IDs so cleared
-  // cards do not re-appear when new responses arrive.
-  const clearedMessageIds = useRef(new Set());
+  // Timestamp — images from messages before this time are hidden after Clear.
+  const clearedAt = useRef(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -1487,47 +1503,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
         ? true
         : !/^(false|0|no)$/i.test(String(attrs.notify).trim());
 
+    // Do NOT auto-fire the publish route.
+    // Show a pending state so Bart can review and explicitly click Publish.
+    setJournalPendingPublish({ attrs, journalContent, categoriesRaw, notify });
     signalNewArtifact();
-    setJournalPublishBanner({ status: 'loading', title: attrs.title });
-
-    (async () => {
-      try {
-        const res = await fetch('/api/ao/auto/publish-journal', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            slug: attrs.slug,
-            title: attrs.title,
-            content: journalContent,
-            summary: attrs.summary || '',
-            publish_date: attrs.publish_date || '',
-            categories: categoriesRaw,
-            featured_image: attrs.featured_image || '',
-            takeaways: [],
-            notify,
-            notify_delay_ms: 300000,
-          }),
-        });
-        const json = await res.json().catch(() => ({}));
-
-        if (!res.ok || !json.ok) {
-          throw new Error(json.error || 'Publish failed');
-        }
-
-        setJournalPublishBanner({
-          status: 'success',
-          title: attrs.title,
-          journalUrl: json.journal_url || '',
-        });
-      } catch (e) {
-        setJournalPublishBanner({
-          status: 'error',
-          title: attrs.title,
-          message: e.message || 'Could not publish journal entry',
-        });
-      }
-    })();
-  }, [messages, activeThreadId]);
+  }, [messages, activeThreadId, signalNewArtifact]);
 
   useEffect(() => {
     if (!Array.isArray(messages) || messages.length === 0) return;
@@ -1672,6 +1652,12 @@ export default function AutoV2Panel({ onNavigate, className }) {
       const manifestMatch = String(m.content || '').match(/\[SEED_MANIFEST\s+total="(\d+)"\]/i);
       if (manifestMatch) {
         setSeedManifestTotal(parseInt(manifestMatch[1], 10));
+        // Set cleared timestamp to the manifest message time so images
+        // from before the manifest are hidden
+        const manifestTime = m.created_at
+          ? new Date(m.created_at).getTime()
+          : Date.now();
+        clearedAt.current = manifestTime - 1; // just before manifest
         break;
       }
     }
@@ -1693,12 +1679,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setGeneratedImages((prev) => {
       const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
       const byCardNumber = new Map();
-      const cleared = clearedMessageIds.current;
+      const clearTime = clearedAt.current;
       for (const m of allMsgs) {
         if (m.role !== 'assistant') continue;
-        // Skip messages that existed at the time of the last clear
-        const msgId = m.id || `${m.role}:${String(m.content || '').slice(0, 40)}`;
-        if (cleared.size > 0 && cleared.has(msgId)) continue;
+        // Skip messages that were created before the last Clear
+        // Use created_at if available, otherwise assume message is new
+        const msgTime = m.created_at ? new Date(m.created_at).getTime() : null;
+        if (clearTime && msgTime && msgTime < clearTime) continue;
         const imgs = extractGeneratedImagesFromAssistantContent(String(m.content || ''));
         for (const img of imgs) {
           if (!img.url || !img.card) continue;
@@ -1808,7 +1795,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setCurrentCardIndex(0);
       setCardReviewMode('single');
       setSeedManifestTotal(null);
-      clearedMessageIds.current = new Set();
+      clearedAt.current = null;
       setError('');
       try {
         const res = await fetch('/api/ao/auto/thread/resume', {
@@ -1858,8 +1845,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setCurrentCardIndex(0);
     setCardReviewMode('single');
     setSeedManifestTotal(null);
-    clearedMessageIds.current = new Set();
+    clearedAt.current = null;
     setJournalPublishBanner(null);
+    setJournalPendingPublish(null);
     setDevotionalPublishBanner(null);
     processedJournalPublishKeys.current = new Set();
     processedDevotionalPublishKeys.current = new Set();
@@ -2037,6 +2025,45 @@ export default function AutoV2Panel({ onNavigate, className }) {
     }
   }, [sendMessage, artifact]);
 
+  const handlePublishJournal = useCallback(async () => {
+    if (!journalPendingPublish) return;
+    const { attrs, journalContent, categoriesRaw, notify } = journalPendingPublish;
+    setJournalPublishBanner({ status: 'loading', title: attrs.title });
+    setJournalPendingPublish(null);
+    try {
+      const res = await fetch('/api/ao/auto/publish-journal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug: attrs.slug,
+          title: attrs.title,
+          content: journalContent,
+          summary: attrs.summary || '',
+          publish_date: attrs.publish_date || '',
+          categories: categoriesRaw,
+          featured_image: attrs.featured_image || '',
+          image_url: attrs.image_url || '',
+          takeaways: [],
+          notify,
+          notify_delay_ms: 300000,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Publish failed');
+      setJournalPublishBanner({
+        status: 'success',
+        title: attrs.title,
+        journalUrl: json.journal_url || '',
+      });
+    } catch (e) {
+      setJournalPublishBanner({
+        status: 'error',
+        title: attrs.title,
+        message: e.message || 'Could not publish journal entry',
+      });
+    }
+  }, [journalPendingPublish]);
+
   const handleRevise = useCallback(() => {
     setInput('Revise — ');
     textareaRef.current?.focus();
@@ -2055,18 +2082,12 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }, []);
 
   const handleClearGenerated = useCallback(() => {
-    // Record the IDs of all current messages so syncArtifactFromMessages
-    // knows to ignore [IMAGES_GENERATED] blocks from these messages going forward.
-    // New messages arriving after this clear will not be in the set and will render normally.
-    const currentIds = new Set(
-      (messages || []).map((m) => m.id || `${m.role}:${String(m.content || '').slice(0, 40)}`)
-    );
-    clearedMessageIds.current = currentIds;
+    clearedAt.current = Date.now();
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
     setCurrentCardIndex(0);
     setSeedManifestTotal(null);
-  }, [messages]);
+  }, []);
 
   const publishCards = useCallback(async () => {
     if (!generatedImages || generatedImages.length === 0) {
@@ -2115,6 +2136,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     generatedImages,
     generatedDesignImages,
     journalPublishBanner,
+    journalPendingPublish,
     devotionalPublishBanner,
     episodeDraft,
     episodeProcessBanner,
@@ -2124,6 +2146,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     onRevise: handleRevise,
     onViewAll: handleViewAll,
     onClearGenerated: handleClearGenerated,
+    onPublishJournal: handlePublishJournal,
     onGeneratedImageError: handleGeneratedImageError,
     onGeneratedDesignImageError: handleGeneratedDesignImageError,
     currentCardIndex,
