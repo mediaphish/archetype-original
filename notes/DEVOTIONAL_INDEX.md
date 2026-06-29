@@ -187,6 +187,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-06-28 | The Word That Discerns | Hebrews 4:12–13 (ESV) | `the-word-that-discerns` | `2026-06-28-the-word-that-discerns.md` |
 | 2026-06-29 | Plans for a Future | Jeremiah 29:10–11 (ESV) | `plans-for-a-future` | `2026-06-29-plans-for-a-future.md` |
 | 2026-06-30 | Understanding in Everything | 2 Timothy 3:16–17 (ESV) | `understanding-in-everything` | `2026-06-30-understanding-in-everything.md` |
+| 2026-07-01 | Words Carry Life and Death | Proverbs 18:20–21 (ESV) | `words-carry-life-and-death` | `2026-07-01-words-carry-life-and-death.md` |
+| 2026-07-02 | The Tongue Has Power to Heal | Proverbs 12:18 (ESV) | `the-tongue-has-power-to-heal` | `2026-07-02-the-tongue-has-power-to-heal.md` |
+| 2026-07-03 | A Gentle Tongue Breaks Bone | Proverbs 25:15 (ESV) | `a-gentle-tongue-breaks-bone` | `2026-07-03-a-gentle-tongue-breaks-bone.md` |
+| 2026-07-04 | Freedom and the Tongue | Galatians 5:13–14 (ESV) | `freedom-and-the-tongue` | `2026-07-04-freedom-and-the-tongue.md` |
+| 2026-07-05 | Let No Corrupting Talk Come Out | Ephesians 4:29–30 (ESV) | `let-no-corrupting-talk-come-out` | `2026-07-05-let-no-corrupting-talk-come-out.md` |
+| 2026-07-06 | The Tongue Is a Fire | James 3:5–6 (ESV) | `the-tongue-is-a-fire` | `2026-07-06-the-tongue-is-a-fire.md` |
+| 2026-07-07 | No One Can Tame the Tongue | James 3:7–8 (ESV) | `no-one-can-tame-the-tongue` | `2026-07-07-no-one-can-tame-the-tongue.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
