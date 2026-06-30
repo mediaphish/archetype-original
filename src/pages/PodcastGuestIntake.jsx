@@ -6,14 +6,14 @@ import SEO from '../components/SEO';
 
 const BIO_MAX = 5000;
 
-const PLATFORM_OPTIONS = [
-  { value: 'instagram', label: 'Instagram' },
-  { value: 'linkedin', label: 'LinkedIn' },
-  { value: 'twitter', label: 'X / Twitter' },
-  { value: 'youtube', label: 'YouTube' },
-  { value: 'tiktok', label: 'TikTok' },
-  { value: 'facebook', label: 'Facebook' },
-  { value: 'other', label: 'Other' },
+const SOCIAL_FIELDS = [
+  { key: 'social_instagram', label: 'Instagram', placeholder: 'instagram.com/username' },
+  { key: 'social_linkedin', label: 'LinkedIn', placeholder: 'linkedin.com/in/yourname' },
+  { key: 'social_twitter', label: 'X / Twitter', placeholder: 'x.com/username' },
+  { key: 'social_youtube', label: 'YouTube', placeholder: 'youtube.com/@yourchannel' },
+  { key: 'social_tiktok', label: 'TikTok', placeholder: 'tiktok.com/@username' },
+  { key: 'social_facebook', label: 'Facebook', placeholder: 'facebook.com/yourpage' },
+  { key: 'social_other', label: 'Anything else', placeholder: 'https://' },
 ];
 
 const GUEST_QUESTIONS = [
@@ -62,10 +62,6 @@ const inputClass =
 const textareaClass =
   'w-full resize-y border border-[#1A1A1A]/15 bg-[#FAFAF9] px-4 py-3.5 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:bg-white focus:outline-none';
 
-function emptySocialRow() {
-  return { platform: 'instagram', url: '' };
-}
-
 export default function PodcastGuestIntake() {
   const formLoadedAtRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -85,9 +81,15 @@ export default function PodcastGuestIntake() {
     question_4: '',
     question_5: '',
     release_agreed: false,
+    social_instagram: '',
+    social_linkedin: '',
+    social_twitter: '',
+    social_youtube: '',
+    social_tiktok: '',
+    social_facebook: '',
+    social_other: '',
   });
 
-  const [socialLinks, setSocialLinks] = useState([emptySocialRow()]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -112,21 +114,6 @@ export default function PodcastGuestIntake() {
 
   const handleField = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const updateSocialRow = (index, patch) => {
-    setSocialLinks((prev) => prev.map((row, i) => (i === index ? { ...row, ...patch } : row)));
-  };
-
-  const addSocialRow = () => {
-    setSocialLinks((prev) => [...prev, emptySocialRow()]);
-  };
-
-  const removeSocialRow = (index) => {
-    setSocialLinks((prev) => {
-      if (prev.length <= 1) return [emptySocialRow()];
-      return prev.filter((_, i) => i !== index);
-    });
   };
 
   const uploadImageFile = async (file) => {
@@ -200,6 +187,23 @@ export default function PodcastGuestIntake() {
     }
 
     try {
+      const social_links = [
+        { platform: 'instagram', url: formData.social_instagram },
+        { platform: 'linkedin', url: formData.social_linkedin },
+        { platform: 'twitter', url: formData.social_twitter },
+        { platform: 'youtube', url: formData.social_youtube },
+        { platform: 'tiktok', url: formData.social_tiktok },
+        { platform: 'facebook', url: formData.social_facebook },
+        { platform: 'other', url: formData.social_other },
+      ]
+        .filter((row) => row.url.trim())
+        .map((row) => ({
+          ...row,
+          url: /^https?:\/\//i.test(row.url.trim())
+            ? row.url.trim()
+            : `https://${row.url.trim()}`,
+        }));
+
       const res = await fetch('/api/podcast/guest-intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -208,7 +212,7 @@ export default function PodcastGuestIntake() {
           text_ok: formData.textOk,
           bio_md: formData.bio_md.slice(0, BIO_MAX),
           image_url: imageUrl,
-          social_links: socialLinks.filter((row) => row.url.trim()),
+          social_links,
           form_loaded_at: formLoadedAtRef.current,
           _trap: trapField,
         }),
@@ -457,52 +461,22 @@ export default function PodcastGuestIntake() {
                 <p className="mb-5 font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
                   Add as many as you&apos;d like. We&apos;ll link these from your episode page.
                 </p>
-                <div className="space-y-3">
-                  {socialLinks.map((row, index) => (
-                    <div key={`social-${index}`} className="flex gap-3">
-                      <select
-                        value={row.platform}
-                        onChange={(e) => updateSocialRow(index, { platform: e.target.value })}
-                        className="w-40 shrink-0 cursor-pointer appearance-none border border-[#1A1A1A]/15 bg-[#FAFAF9] px-3 py-3 font-sans text-[14px] text-[#1A1A1A] focus:border-[#1A1A1A] focus:outline-none"
-                      >
-                        {PLATFORM_OPTIONS.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
+                <div className="space-y-5">
+                  {SOCIAL_FIELDS.map((field) => (
+                    <div key={field.key}>
+                      <label className="mb-2 block font-sans text-[13px] font-medium text-[#1A1A1A]">
+                        {field.label}
+                      </label>
                       <input
-                        type="url"
-                        value={row.url}
-                        onChange={(e) => updateSocialRow(index, { url: e.target.value })}
-                        placeholder="https://"
-                        className={`flex-1 ${inputClass}`}
+                        type="text"
+                        value={formData[field.key]}
+                        onChange={(e) => handleField(field.key, e.target.value)}
+                        placeholder={field.placeholder}
+                        className={inputClass}
                       />
-                      <button
-                        type="button"
-                        onClick={() => removeSocialRow(index)}
-                        className="px-3 text-[#A8A9AD] hover:text-[#DB0812]"
-                        aria-label="Remove link"
-                      >
-                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
                     </div>
                   ))}
                 </div>
-                <button
-                  type="button"
-                  onClick={addSocialRow}
-                  className="mt-4 inline-flex items-center gap-1.5 font-sans text-[13px] font-medium text-[#DB0812] hover:text-[#b30610]"
-                >
-                  + Add another link
-                </button>
               </div>
 
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
