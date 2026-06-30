@@ -17,6 +17,7 @@ import JournalPost from "./pages/JournalPost";
 import Podcast from "./pages/Podcast";
 import PodcastEpisode from "./pages/PodcastEpisode";
 import PodcastGuestIntake from "./pages/PodcastGuestIntake";
+import PodcastGuestView from "./pages/PodcastGuestView";
 import DevotionalPost from "./pages/DevotionalPost";
 import Faith from "./pages/Faith";
 import AboutPage from "./pages/About";
@@ -64,6 +65,7 @@ import AOIdeas from "./pages/ao/Ideas";
 import AOSettings from "./pages/ao/Settings";
 import AOScout from "./pages/ao/Scout";
 import AOLinkedInHandoff from "./pages/ao/LinkedInHandoff";
+import PodcastGuestAdmin from "./pages/ao/PodcastGuestAdmin";
 // Operators pages - Lazy loaded for better performance
 const OperatorsLanding = lazy(() => import("./pages/operators/Landing"));
 const OperatorsLogin = lazy(() => import("./pages/operators/Login"));
@@ -112,6 +114,8 @@ export default function App() {
     if (path === '/journal') return 'journal';
     if (path.startsWith('/journal/')) return 'journal-post';
     if (path === '/podcast') return 'podcast';
+    if (/^\/podcast\/guest\/[^/]+$/.test(path)) return 'podcast-guest-view';
+    if (path === '/podcast/guest-intake') return 'podcast-guest-intake';
     if (path.startsWith('/podcast/')) return 'podcast-episode';
     if (path === '/meet-bart' || path === '/about') return 'about';
     if (path === '/contact') return 'contact';
@@ -225,6 +229,7 @@ export default function App() {
       if (path === '/ao/publishing') return 'ao-publishing';
       if (path === '/ao/writing') return 'ao-writing';
       if (path === '/ao/settings') return 'ao-settings';
+      if (/^\/ao\/podcast\/guest\/[^/]+$/.test(path)) return 'ao-podcast-guest';
       return 'ao-command-center';
     }
     return 'home';
@@ -440,6 +445,7 @@ export default function App() {
         else if (path === '/ao/publishing') setCurrentPage('ao-publishing');
         else if (path === '/ao/writing') setCurrentPage('ao-writing');
         else if (path === '/ao/settings') setCurrentPage('ao-settings');
+        else if (/^\/ao\/podcast\/guest\/[^/]+$/.test(path)) setCurrentPage('ao-podcast-guest');
         else {
           window.history.replaceState({}, '', '/ao/analyst');
           setCurrentPage('ao-review');
@@ -494,6 +500,8 @@ export default function App() {
         setCurrentPage('journal-post');
       } else if (path === '/podcast') {
         setCurrentPage('podcast');
+      } else if (/^\/podcast\/guest\/[^/]+$/.test(path)) {
+        setCurrentPage('podcast-guest-view');
       } else if (path === '/podcast/guest-intake') {
         setCurrentPage('podcast-guest-intake');
       } else if (path.startsWith('/podcast/')) {
@@ -791,6 +799,15 @@ export default function App() {
     );
   }
 
+  // Render Podcast guest private show page
+  if (currentPage === 'podcast-guest-view') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <PodcastGuestView />
+      </main>
+    );
+  }
+
   // Render Podcast episode page
   if (currentPage === 'podcast-episode') {
     return (
@@ -1011,6 +1028,9 @@ export default function App() {
   }
   if (currentPage === 'ao-linkedin-handoff') {
     return <AOLinkedInHandoff />;
+  }
+  if (currentPage === 'ao-podcast-guest') {
+    return <PodcastGuestAdmin />;
   }
 
   // Render Operators pages with lazy loading (protected routes)

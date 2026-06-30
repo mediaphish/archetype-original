@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { contactFormRecipient } from '../../lib/contact-form-inbox.js';
 import { evaluateSpamGuards } from '../../lib/contact-spam-guard.js';
 import { insertGuestIntake, normalizeSocialLinks } from '../../lib/ao/guestIntakeStore.js';
+import { sendGuestMagicLinkEmail } from '../../lib/ao/podcastGuestAuth.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -231,6 +232,12 @@ export default async function handler(req, res) {
 
     if (guestResult?.error) {
       console.warn('[guest-intake] Guest confirmation failed:', guestResult.error);
+    }
+
+    try {
+      await sendGuestMagicLinkEmail({ guest: stored.guest, req });
+    } catch (magicErr) {
+      console.warn('[guest-intake] Guest magic link failed:', magicErr?.message || magicErr);
     }
 
     return res.status(200).json({ ok: true, id: stored.guest?.id });
