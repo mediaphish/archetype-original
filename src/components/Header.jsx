@@ -78,7 +78,7 @@ export default function Header() {
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10 xl:px-14">
           <div className="flex flex-col py-1 sm:py-1">
             {/* Secondary Navigation - Top Row */}
-            <div className="hidden md:flex items-center justify-end gap-6 text-[11px] font-normal text-[#6B6B6B] mb-1 border-b border-transparent">
+            <div className="hidden lg:flex items-center justify-end gap-6 text-[11px] font-normal text-[#6B6B6B] mb-1 border-b border-transparent">
               <a 
                 href="/faqs" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/faqs'); }}
@@ -118,20 +118,20 @@ export default function Header() {
               </a>
             </div>
 
-            {/* Primary row: logo | centered nav | CTA (desktop); matches reference proportion */}
-            <div className="relative flex min-h-[44px] items-center justify-between gap-3 md:min-h-[48px] md:gap-6">
+            {/* Primary row: logo | nav | CTA (desktop lg+); hamburger below lg */}
+            <div className="grid min-h-[44px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 lg:min-h-[48px] lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
               {/* Logo - Left Side */}
               <a 
                 href="/" 
                 onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
-                className="relative z-10 flex shrink-0 items-center min-w-0"
+                className="flex shrink-0 items-center min-w-0 justify-self-start"
               >
                 <svg 
                   id="Layer_1" 
                   data-name="Layer 1" 
                   xmlns="http://www.w3.org/2000/svg" 
                   viewBox="0 0 792 148.96"
-                  className="h-8 w-auto sm:h-9 md:h-9"
+                  className="h-8 w-auto sm:h-9 lg:h-9"
                 >
                   <defs>
                     <style>{`.cls-1 { fill: #231f20; }`}</style>
@@ -161,9 +161,9 @@ export default function Header() {
                 </svg>
               </a>
 
-              {/* Desktop Navigation — centered in bar (reference layout) */}
-              <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 md:flex md:justify-center">
-                <div className="pointer-events-auto flex max-w-[calc(100%-18rem)] items-center justify-center gap-2 lg:gap-4 xl:gap-5">
+              {/* Desktop Navigation — center column (lg+ only) */}
+              <div className="hidden min-w-0 items-center justify-center lg:flex">
+                <div className="flex max-w-full flex-wrap items-center justify-center gap-2 xl:gap-4">
                   {/* Leadership Advisory */}
                   <div
                     className="relative"
@@ -359,25 +359,26 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* Primary CTA — anchored right */}
-              <div className="relative z-10 ml-auto hidden shrink-0 md:block">
+              {/* Right cluster: CTA (desktop) + hamburger (below lg) */}
+              <div className="flex shrink-0 items-center justify-end justify-self-end gap-2">
+              <div className="hidden shrink-0 lg:block">
                 <a
                   href="/engagement-inquiry"
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavigation('/engagement-inquiry');
                   }}
-                  className="inline-flex items-center rounded-[3px] bg-ao-red px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:opacity-90 lg:px-5 lg:text-[13px]"
+                  className="inline-flex items-center rounded-[3px] bg-ao-red px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition-all duration-200 hover:opacity-90 xl:px-5 xl:text-[13px]"
                 >
                   Work Together
                 </a>
               </div>
 
-              {/* Mobile menu — same row as logo, top right (not full-width centered row) */}
+              {/* Mobile / tablet menu — below lg */}
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative"
+                className="lg:hidden shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-[#1A1A1A] hover:bg-[#FAFAF9] rounded-sm transition-colors relative"
                 aria-label="Toggle menu"
                 aria-expanded={mobileMenuOpen}
               >
@@ -400,6 +401,7 @@ export default function Header() {
                   />
                 </div>
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -409,7 +411,7 @@ export default function Header() {
       {typeof document !== 'undefined' &&
         createPortal(
           <div
-            className={`md:hidden fixed inset-0 z-[100] transition-opacity duration-300 ${
+            className={`lg:hidden fixed inset-0 z-[100] transition-opacity duration-300 ${
               mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
             }`}
           >

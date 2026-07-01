@@ -1,0 +1,31 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "at": "2026-07-01T14:32:53.621Z",
+  "results": [
+    {
+      "name": "journal subscribe @ 375px",
+      "ok": true,
+      "detail": "subscribe success visible"
+    },
+    {
+      "name": "mobile hamburger opens @ 768px",
+      "ok": true,
+      "detail": "drawer opened"
+    },
+    {
+      "name": "Archy opens @ 375px",
+      "ok": true,
+      "detail": "mobile panel opened"
+    },
+    {
+      "name": "Archy opens @ 1280px",
+      "ok": true,
+      "detail": "desktop panel opened"
+    },
+    {
+      "name": "podcast episode player present @ 375px",
+      "ok": false,
+      "detail": "No podcast player UI found"
+    }
+  ]
+}

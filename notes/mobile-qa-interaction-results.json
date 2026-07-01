@@ -1,0 +1,52 @@
+{
+  "base": "https://www.archetypeoriginal.com",
+  "at": "2026-07-01T14:29:24.914Z",
+  "results": [
+    {
+      "name": "contact form",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "engagement inquiry",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "journal subscribe",
+      "ok": true,
+      "detail": {
+        "ok": true,
+        "message": "Successfully subscribed!",
+        "subscription_id": "adc73fbd-2d6d-443e-9b6b-1c041d170b47",
+        "email_sent": true
+      }
+    },
+    {
+      "name": "bad leader submit",
+      "ok": false,
+      "detail": "HTTP 422: {\"error\":\"This submission does not match what the archive is looking for. If you believe this is an error, contact us directly.\"}"
+    },
+    {
+      "name": "operators interest",
+      "ok": true,
+      "detail": {
+        "ok": true
+      }
+    },
+    {
+      "name": "chat endpoint",
+      "ok": true,
+      "detail": "response received"
+    },
+    {
+      "name": "knowledge endpoint",
+      "ok": true,
+      "detail": "499 docs"
+    }
+  ]
+}

@@ -1,0 +1,1557 @@
+{
+  "base": "https://www.archetypeoriginal.com",
+  "at": "2026-07-01T14:28:21.766Z",
+  "results": [
+    {
+      "path": "/",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "28 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/meet-bart",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/archy",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/consulting",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles/cco",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/operators",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "12 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/ali-eula",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/ali",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/ali/dashboard",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "11 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/scoreboard-leadership",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/bad-leader-project",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/journal",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/guest-intake",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faith",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faqs",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "45 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/engagement-inquiry",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/the-room",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/books",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/advisory",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/what-i-do",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/accidental-ceo",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/remaining-human",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "16 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/privacy-policy",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/terms-and-conditions",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/season-01-episode-00",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "27 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/ali/signup",
+      "viewport": "phone-375",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "11 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "28 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/meet-bart",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/archy",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/consulting",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles/cco",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/operators",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "12 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/ali-eula",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/ali",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/ali/dashboard",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "11 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/scoreboard-leadership",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/bad-leader-project",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/journal",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/guest-intake",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faith",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faqs",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "45 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/engagement-inquiry",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/the-room",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/books",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/advisory",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "38 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/what-i-do",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/accidental-ceo",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/remaining-human",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "16 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/privacy-policy",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/terms-and-conditions",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "39 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/season-01-episode-00",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "27 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/ali/signup",
+      "viewport": "phone-390",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "11 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/meet-bart",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/archy",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/consulting",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles/cco",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/ali-eula",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/ali",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/scoreboard-leadership",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/bad-leader-project",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/journal",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/guest-intake",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faith",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faqs",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "9 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/engagement-inquiry",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/the-room",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/books",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/advisory",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/what-i-do",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/accidental-ceo",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/remaining-human",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/privacy-policy",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/terms-and-conditions",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/season-01-episode-00",
+      "viewport": "tablet-768",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/meet-bart",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/archy",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/consulting",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles/cco",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/ali-eula",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/ali",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/scoreboard-leadership",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/bad-leader-project",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/journal",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/guest-intake",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faith",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faqs",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "7 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/engagement-inquiry",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/the-room",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/books",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/advisory",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/what-i-do",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/accidental-ceo",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/remaining-human",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/privacy-policy",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/terms-and-conditions",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/season-01-episode-00",
+      "viewport": "tablet-1024",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/meet-bart",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/archy",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/consulting",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/fractional-roles/cco",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/ali-eula",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/ali",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/scoreboard-leadership",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/culture-science/bad-leader-project",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/journal",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/guest-intake",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faith",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/faqs",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/contact",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/engagement-inquiry",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/the-room",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/books",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/advisory",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/what-i-do",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/accidental-ceo",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/remaining-human",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/privacy-policy",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/terms-and-conditions",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "6 elements past viewport edge"
+        }
+      ]
+    },
+    {
+      "path": "/podcast/season-01-episode-00",
+      "viewport": "desktop-1280",
+      "issues": [
+        {
+          "severity": "P1",
+          "type": "offscreen-interactive",
+          "detail": "5 elements past viewport edge"
+        }
+      ]
+    }
+  ]
+}
