@@ -218,6 +218,8 @@
     { "src": "/api/ao/podcast/guest-magic-link", "dest": "/api/ao/podcast/guest-magic-link.js" },
     { "src": "/api/ao/podcast/guest-research", "dest": "/api/ao/podcast/guest-research.js" },
     { "src": "/api/ao/podcast/guest-questions", "dest": "/api/ao/podcast/guest-questions.js" },
+    { "src": "/api/ao/podcast/guest-producer-brief", "dest": "/api/ao/podcast/guest-producer-brief.js" },
+    { "src": "/api/ao/podcast/guest-post-recording", "dest": "/api/ao/podcast/guest-post-recording.js" },
     { "src": "/api/ao/db-check", "dest": "/api/ao/db-check.js" },
     { "src": "/api/ao/editorial/rebuild", "dest": "/api/ao/editorial/rebuild.js" },
     { "src": "/api/ao/editorial/settings", "dest": "/api/ao/editorial/settings.js" },

@@ -14,7 +14,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { processEpisodeTranscript } from '../../../lib/ao/processEpisodeTranscript.js';
 import { insertEpisodeDraft } from '../../../lib/ao/episodeDraftStore.js';
-import { getGuestById } from '../../../lib/ao/guestIntakeStore.js';
+import { getGuestById, guestPostRecordingNotes } from '../../../lib/ao/guestIntakeStore.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -37,10 +37,14 @@ export default async function handler(req, res) {
   }
 
   let research_brief = String(body.research_brief || '').trim();
-  if (!research_brief && guestId) {
+  let post_recording = null;
+  if (guestId) {
     const loadedGuest = await getGuestById(guestId);
-    if (loadedGuest.ok && loadedGuest.guest?.research_brief) {
-      research_brief = String(loadedGuest.guest.research_brief).trim();
+    if (loadedGuest.ok && loadedGuest.guest) {
+      if (!research_brief && loadedGuest.guest.research_brief) {
+        research_brief = String(loadedGuest.guest.research_brief).trim();
+      }
+      post_recording = guestPostRecordingNotes(loadedGuest.guest);
     }
   }
 
@@ -52,6 +56,7 @@ export default async function handler(req, res) {
       recorded_date,
       research_brief,
       episode_brief,
+      post_recording,
     });
 
     if (!processed.ok) {

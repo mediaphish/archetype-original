@@ -1,5 +1,6 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { getGuestById, guestToPublicView } from '../../../lib/ao/guestIntakeStore.js';
+import { guestHasScheduleSlot } from '../../../lib/ao/podcastScheduleStore.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -19,5 +20,13 @@ export default async function handler(req, res) {
     return res.status(404).json({ ok: false, error: 'Guest not found' });
   }
 
-  return res.status(200).json({ ok: true, guest: guestToPublicView(loaded.guest) });
+  const has_scheduled_recording = await guestHasScheduleSlot(guestId);
+
+  return res.status(200).json({
+    ok: true,
+    guest: {
+      ...guestToPublicView(loaded.guest),
+      has_scheduled_recording,
+    },
+  });
 }

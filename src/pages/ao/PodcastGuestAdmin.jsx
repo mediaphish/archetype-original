@@ -6,6 +6,8 @@ import AOHeader from '../../components/ao/AOHeader';
 import PodcastGuestSubmissionContent from '../../components/podcast/PodcastGuestSubmissionContent';
 import { getTimezoneOptionGroups } from '../../../lib/ao/podcastTimezones.js';
 import { formatGuestSchedulePrefs } from '../../../lib/ao/podcastScheduleUtils.js';
+import { CONVERSATION_ARCHITECTURE_BEATS } from '../../components/podcast/conversationArchitecture.js';
+import PostRecordingCapture from '../../components/podcast/PostRecordingCapture';
 
 function navigateTo(path) {
   window.history.pushState({}, '', path);
@@ -55,6 +57,7 @@ export default function PodcastGuestAdmin() {
   const [magicStatus, setMagicStatus] = useState({ loading: false, message: '', error: '' });
   const [researchStatus, setResearchStatus] = useState({ loading: false, error: '' });
   const [questionsStatus, setQuestionsStatus] = useState({ loading: false, error: '' });
+  const [producerStatus, setProducerStatus] = useState({ loading: false, error: '' });
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [scheduleForm, setScheduleForm] = useState({ date: '', time: '', timezone: '', notes: '' });
   const [scheduleStatus, setScheduleStatus] = useState({ loading: false, message: '', error: '' });
@@ -114,6 +117,14 @@ export default function PodcastGuestAdmin() {
     }));
   }, [guest]);
 
+  useEffect(() => {
+    if (!guest?.has_scheduled_recording) return;
+    if (window.location.hash === '#post-recording') {
+      const el = document.getElementById('post-recording');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [guest?.has_scheduled_recording, guest?.id]);
+
   const sendMagicLink = async () => {
     setMagicStatus({ loading: true, message: '', error: '' });
     try {
@@ -164,6 +175,24 @@ export default function PodcastGuestAdmin() {
       return;
     }
     setQuestionsStatus({ loading: false, error: '' });
+  };
+
+  const runProducerBrief = async (regenerate = false) => {
+    setProducerStatus({ loading: true, error: '' });
+    try {
+      const res = await fetch('/api/ao/podcast/guest-producer-brief', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guest_id: guestId, regenerate }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Producer brief failed');
+      setGuest(json.guest);
+    } catch (e) {
+      setProducerStatus({ loading: false, error: e.message || 'Producer brief failed' });
+      return;
+    }
+    setProducerStatus({ loading: false, error: '' });
   };
 
   const submitSchedule = async (e) => {
@@ -453,6 +482,88 @@ export default function PodcastGuestAdmin() {
                 </p>
               )}
             </section>
+
+            <section className="rounded-xl border border-gray-200 bg-white p-6 sm:p-8">
+              <div className="mb-4 border-b border-[#E1DED8] bg-[#E1DED8] px-4 py-4">
+                <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                  Conversation architecture
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {CONVERSATION_ARCHITECTURE_BEATS.map((beat) => (
+                    <div key={beat.title} className="flex items-start gap-2.5">
+                      <div className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#DB0812]" aria-hidden />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{beat.title}</p>
+                        <p className="text-xs leading-relaxed text-gray-600">{beat.detail}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-serif text-xl text-gray-900">Producer brief</h2>
+                  {guest.producer_brief_generated_at && (
+                    <p className="mt-1 text-xs text-gray-500">
+                      Generated {formatTimestamp(guest.producer_brief_generated_at)}
+                    </p>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  {!guest.producer_brief ? (
+                    <button
+                      type="button"
+                      onClick={() => runProducerBrief(false)}
+                      disabled={producerStatus.loading || !guest.research_brief}
+                      className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      {producerStatus.loading ? 'Generating…' : 'Generate producer brief'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => runProducerBrief(true)}
+                      disabled={producerStatus.loading}
+                      className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      {producerStatus.loading ? 'Regenerating…' : 'Regenerate'}
+                    </button>
+                  )}
+                </div>
+              </div>
+              {producerStatus.error && (
+                <p className="mt-4 text-sm text-red-600">{producerStatus.error}</p>
+              )}
+              {guest.producer_brief ? (
+                <div className="mt-4 whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-800">
+                  {guest.producer_brief}
+                </div>
+              ) : (
+                <p className="mt-4 text-sm text-gray-500">
+                  {guest.research_brief
+                    ? 'Generate a producer brief for recording day — what to push on, where the material lives, and how to shape the conversation.'
+                    : 'Generate research first, then the producer brief.'}
+                </p>
+              )}
+            </section>
+
+            {guest.has_scheduled_recording && (
+              <section
+                id="post-recording"
+                className="rounded-xl border border-gray-200 bg-white p-6 sm:p-8"
+              >
+                <h2 className="mb-2 font-serif text-xl text-gray-900">Post-recording capture</h2>
+                <p className="mb-4 text-sm text-gray-600">
+                  Fill this in right after the session ends — while it&apos;s still fresh.
+                </p>
+                <PostRecordingCapture
+                  guestId={guestId}
+                  guest={guest}
+                  onSaved={(updated) => setGuest(updated)}
+                />
+              </section>
+            )}
           </div>
         )}
       </main>

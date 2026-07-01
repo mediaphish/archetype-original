@@ -646,6 +646,15 @@ export default function PodcastDashboard() {
                   {slot.guest_id && (
                     <button
                       type="button"
+                      onClick={() => navigateTo(`/ao/podcast/guest/${slot.guest_id}#post-recording`)}
+                      className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                    >
+                      Add post-recording notes
+                    </button>
+                  )}
+                  {slot.guest_id && (
+                    <button
+                      type="button"
                       onClick={() => handleSendConfirmation(slot.id)}
                       disabled={emailStatus?.loading}
                       className="text-sm font-medium text-gray-700 hover:text-gray-900 disabled:opacity-50"
