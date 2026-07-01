@@ -2029,7 +2029,15 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
   const handlePublishJournal = useCallback(async () => {
     if (!journalPendingPublish) return;
-    const { attrs, journalContent, categoriesRaw, notify } = journalPendingPublish;
+    // Warn if no image_url — entry will publish with broken image
+    const { attrs } = journalPendingPublish;
+    if (!attrs.image_url) {
+      const confirmed = window.confirm(
+        'No header image URL found in the publish signal.\n\nThe entry will publish with a broken image.\n\nAre you sure you want to continue? If a header image was generated in this session, cancel and ask Auto to re-send the publish signal with the image_url included.'
+      );
+      if (!confirmed) return;
+    }
+    const { journalContent, categoriesRaw, notify } = journalPendingPublish;
     setJournalPublishBanner({ status: 'loading', title: attrs.title });
     setJournalPendingPublish(null);
     try {
