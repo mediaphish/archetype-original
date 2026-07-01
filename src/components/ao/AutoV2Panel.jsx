@@ -1490,9 +1490,15 @@ export default function AutoV2Panel({ onNavigate, className }) {
     if (!parsed) return;
 
     const { attrs, journalContent } = parsed;
-    const publishKey = `${activeThreadId || 'thread'}:${attrs.slug}:${journalContent.slice(0, 120)}`;
-    if (processedJournalPublishKeys.current.has(publishKey)) return;
-    processedJournalPublishKeys.current.add(publishKey);
+
+    // Do not gate on processedJournalPublishKeys — that prevented the button
+    // from appearing when Auto retried the signal with a corrected image_url.
+    // Instead, always update pending state with the latest signal.
+    // If the entry was already published (journalPublishBanner shows success),
+    // do not show the pending button again for the same slug.
+    if (journalPublishBanner?.status === 'success' && journalPublishBanner?.journalUrl?.includes(attrs.slug)) {
+      return;
+    }
 
     const categoriesRaw = String(attrs.categories || '')
       .split(',')
@@ -1503,11 +1509,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
         ? true
         : !/^(false|0|no)$/i.test(String(attrs.notify).trim());
 
-    // Do NOT auto-fire the publish route.
-    // Show a pending state so Bart can review and explicitly click Publish.
     setJournalPendingPublish({ attrs, journalContent, categoriesRaw, notify });
     signalNewArtifact();
-  }, [messages, activeThreadId, signalNewArtifact]);
+  }, [messages, activeThreadId, signalNewArtifact, journalPublishBanner]);
 
   useEffect(() => {
     if (!Array.isArray(messages) || messages.length === 0) return;
