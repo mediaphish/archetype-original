@@ -104,11 +104,13 @@ Raw JSON: `notes/mobile-qa-audit-results.json`, `notes/mobile-qa-interaction-res
 
 ## Post-deploy verification checklist
 
-After deploy of `Header.jsx` fix:
+**Verified July 1, 2026** after deploy (`index-C__DHFGC.js` on live):
 
-1. [ ] Re-run `node scripts/mobile-qa-header-check.mjs https://www.archetypeoriginal.com` — expect OK at 768px
-2. [ ] Spot-check home, guest-intake, culture-science/ali at 768px in browser
-3. [ ] Confirm hamburger opens at 768px on live (`node scripts/mobile-qa-browser.mjs`)
+1. [x] Live at 768px on `/podcast/guest-intake` — hamburger menu visible, no desktop nav labels overlapping logo
+2. [x] Spot-check: home, guest-intake, culture-science/ali — header uses hamburger below 1024px
+3. [x] Hamburger opens mobile drawer with full nav links
+
+Pre-fix live had "Leadership Advisory" overlapping logo at 768px; post-fix shows **Toggle menu** only in the header bar.
 
 ---
 
