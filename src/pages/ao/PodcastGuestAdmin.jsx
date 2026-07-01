@@ -5,6 +5,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import PodcastGuestSubmissionContent from '../../components/podcast/PodcastGuestSubmissionContent';
 
+function navigateTo(path) {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
 function formatTimestamp(value) {
   if (!value) return '';
   try {
@@ -155,7 +161,7 @@ export default function PodcastGuestAdmin() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AOHeader email={email} />
+      <AOHeader active="podcast" email={email} onNavigate={navigateTo} />
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
         {loading && <p className="text-sm text-gray-500">Loading guest…</p>}
         {error && <p className="text-sm text-red-600">{error}</p>}
