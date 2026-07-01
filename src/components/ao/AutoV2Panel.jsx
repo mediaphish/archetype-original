@@ -642,16 +642,24 @@ function ArtifactPanel({
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4">
         {journalPendingPublish && !journalPublishBanner && (
           <div className="shrink-0 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            <p className="font-medium mb-1">Ready to publish: {journalPendingPublish.attrs?.title}</p>
+            <p className="font-medium mb-1">
+              {journalPendingPublish.captionAttachOnly
+                ? `Schedule captions: ${journalPendingPublish.attrs?.title}`
+                : `Ready to publish: ${journalPendingPublish.attrs?.title}`}
+            </p>
             <p className="text-xs text-amber-700 mb-3">
-              Draft prepared. Confirm the header image is approved, then click Publish.
+              {journalPendingPublish.captionAttachOnly
+                ? 'This entry is already live. Click to schedule social captions to the queue.'
+                : 'Draft and image approved. Click Publish to commit to GitHub.'}
             </p>
             <button
               type="button"
               onClick={onPublishJournal}
               className="w-full py-2 px-3 bg-amber-900 text-white text-sm font-medium rounded-lg hover:bg-amber-800 transition-colors"
             >
-              Publish to archetypeoriginal.com
+              {journalPendingPublish.captionAttachOnly
+                ? 'Schedule social posts'
+                : 'Publish to archetypeoriginal.com'}
             </button>
           </div>
         )}
@@ -1491,14 +1499,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
     const { attrs, journalContent } = parsed;
 
-    // Do not gate on processedJournalPublishKeys — that prevented the button
-    // from appearing when Auto retried the signal with a corrected image_url.
-    // Instead, always update pending state with the latest signal.
-    // If the entry was already published (journalPublishBanner shows success),
-    // do not show the pending button again for the same slug.
-    if (journalPublishBanner?.status === 'success' && journalPublishBanner?.journalUrl?.includes(attrs.slug)) {
-      return;
-    }
+    // If this slug was already published successfully in this session,
+    // treat the new signal as a caption-attach request, not a re-publish.
+    // Show the pending button but mark it as caption-attach mode.
+    const alreadyPublished = journalPublishBanner?.status === 'success' && 
+      journalPublishBanner?.journalUrl?.includes(attrs.slug);
 
     const categoriesRaw = String(attrs.categories || '')
       .split(',')
@@ -1509,7 +1514,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         ? true
         : !/^(false|0|no)$/i.test(String(attrs.notify).trim());
 
-    setJournalPendingPublish({ attrs, journalContent, categoriesRaw, notify });
+    setJournalPendingPublish({ attrs, journalContent, categoriesRaw, notify, captionAttachOnly: alreadyPublished });
     signalNewArtifact();
   }, [messages, activeThreadId, signalNewArtifact, journalPublishBanner]);
 
@@ -2033,17 +2038,56 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
   const handlePublishJournal = useCallback(async () => {
     if (!journalPendingPublish) return;
-    // Warn if no image_url — entry will publish with broken image
-    const { attrs } = journalPendingPublish;
+    const { attrs, journalContent, categoriesRaw, notify, captionAttachOnly } = journalPendingPublish;
+
+    // Caption-attach mode — entry already published, just schedule captions
+    if (captionAttachOnly) {
+      setJournalPublishBanner({ status: 'loading', title: attrs.title });
+      setJournalPendingPublish(null);
+
+      // Parse captions from attrs if present
+      const captions = {};
+      if (attrs.linkedin_personal) captions.linkedin_personal = attrs.linkedin_personal;
+      if (attrs.linkedin_business) captions.linkedin_business = attrs.linkedin_business;
+      if (attrs.instagram_business) captions.instagram_business = attrs.instagram_business;
+      if (attrs.facebook_business) captions.facebook_business = attrs.facebook_business;
+      if (attrs.twitter) captions.twitter = attrs.twitter;
+
+      try {
+        const res = await fetch('/api/ao/auto/attach-captions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: attrs.slug, captions }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Caption attach failed');
+        setJournalPublishBanner({
+          status: 'success',
+          title: attrs.title,
+          journalUrl: json.journal_url || '',
+          message: `${json.total} social posts scheduled.`,
+        });
+      } catch (e) {
+        setJournalPublishBanner({
+          status: 'error',
+          title: attrs.title,
+          message: e.message || 'Could not attach captions',
+        });
+      }
+      return;
+    }
+
+    // Full publish mode
     if (!attrs.image_url) {
       const confirmed = window.confirm(
-        'No header image URL found in the publish signal.\n\nThe entry will publish with a broken image.\n\nAre you sure you want to continue? If a header image was generated in this session, cancel and ask Auto to re-send the publish signal with the image_url included.'
+        'No header image URL found in the publish signal.\n\nThe entry will be blocked by the server without an image.\n\nCancel and ask Auto to re-send the publish signal with the image_url included.'
       );
       if (!confirmed) return;
     }
-    const { journalContent, categoriesRaw, notify } = journalPendingPublish;
+
     setJournalPublishBanner({ status: 'loading', title: attrs.title });
     setJournalPendingPublish(null);
+
     try {
       const res = await fetch('/api/ao/auto/publish-journal', {
         method: 'POST',

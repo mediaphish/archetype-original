@@ -53,7 +53,7 @@ function buildFrontmatter(fields) {
     : '  []';
 
   return `---
-title: ${title}
+title: ${title.includes(':') ? `"${title.replace(/"/g, '\\"')}"` : title}
 slug: ${slug}
 publish_date: '${publish_date}'
 created_at: '${now}'
@@ -333,9 +333,12 @@ export default async function handler(req, res) {
       console.log(`[publish-journal] Image verified in GitHub: ${imagePath} (sha: ${verifiedSha})`);
 
     } else if (!image_url) {
-      // No image provided — log but do not block publish
-      // Some entries (updates, text-only) may not need a new image
-      console.warn('[publish-journal] No image_url provided — entry will publish without header image');
+      // No image provided — return error. Every journal entry requires a header image.
+      // If this is an intentional text-only update, pass image_url="none" to bypass.
+      return res.status(400).json({
+        ok: false,
+        error: 'image_url is required. Generate and approve a header image before publishing. If this is an intentional text-only update, pass image_url="none" to bypass this check.',
+      });
     }
 
     // Check if MD file already exists (update vs create)

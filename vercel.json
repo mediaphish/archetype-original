@@ -342,6 +342,7 @@
     { "src": "/api/providers/facebook/group-post", "dest": "/api/providers/facebook/group-post.js" },
     { "src": "/api/ao/meta-accounts", "dest": "/api/ao/meta-accounts.js" },
     { "src": "/api/ao/auto/metrics-diagnostic", "dest": "/api/ao/auto/metrics-diagnostic.js" },
+    { "src": "/api/ao/auto/attach-captions", "dest": "/api/ao/auto/attach-captions.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
