@@ -3,6 +3,7 @@
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
+import { getTimezoneOptionGroups } from '../../../lib/ao/podcastTimezones.js';
 
 const PAGE_SIZE = 20;
 const INTAKE_URL = `${typeof window !== 'undefined' ? window.location.origin : ''}/podcast/guest-intake`;
@@ -100,6 +101,7 @@ export default function PodcastDashboard() {
   const [slotForm, setSlotForm] = useState({
     date: '',
     time: '',
+    timezone: '',
     guest_id: '',
     guest_label: '',
     episode_title: '',
@@ -108,6 +110,10 @@ export default function PodcastDashboard() {
   const [slotGuestQuery, setSlotGuestQuery] = useState('');
   const [slotGuestHits, setSlotGuestHits] = useState([]);
   const [slotSaving, setSlotSaving] = useState(false);
+  const [expandedSlotId, setExpandedSlotId] = useState(null);
+  const [emailSlotStatus, setEmailSlotStatus] = useState({});
+
+  const timezoneGroups = getTimezoneOptionGroups();
 
   useEffect(() => {
     let cancelled = false;
@@ -238,6 +244,7 @@ export default function PodcastDashboard() {
         body: JSON.stringify({
           date: slotForm.date,
           time: slotForm.time,
+          timezone: slotForm.timezone || null,
           guest_id: slotForm.guest_id || null,
           episode_title: slotForm.episode_title,
           notes: slotForm.notes,
@@ -246,7 +253,15 @@ export default function PodcastDashboard() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not save slot');
       setShowSlotForm(false);
-      setSlotForm({ date: '', time: '', guest_id: '', guest_label: '', episode_title: '', notes: '' });
+      setSlotForm({
+        date: '',
+        time: '',
+        timezone: '',
+        guest_id: '',
+        guest_label: '',
+        episode_title: '',
+        notes: '',
+      });
       setSlotGuestQuery('');
       await loadSlots();
     } catch (e) {
@@ -265,6 +280,29 @@ export default function PodcastDashboard() {
       await loadSlots();
     } catch (e) {
       setSlotsError(e.message || 'Could not delete slot');
+    }
+  };
+
+  const handleSendConfirmation = async (slotId) => {
+    setEmailSlotStatus((prev) => ({ ...prev, [slotId]: { loading: true, message: '', error: '' } }));
+    setSlotsError('');
+    try {
+      const res = await fetch(`/api/ao/podcast/schedule/${encodeURIComponent(slotId)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send_confirmation' }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not send email');
+      setEmailSlotStatus((prev) => ({
+        ...prev,
+        [slotId]: { loading: false, message: 'Confirmation email sent.', error: '' },
+      }));
+    } catch (e) {
+      setEmailSlotStatus((prev) => ({
+        ...prev,
+        [slotId]: { loading: false, message: '', error: e.message || 'Could not send email' },
+      }));
     }
   };
 
@@ -460,6 +498,30 @@ export default function PodcastDashboard() {
                 </div>
               </div>
               <div>
+                <label className="mb-1 block text-xs font-medium text-gray-600">Timezone</label>
+                <select
+                  value={slotForm.timezone}
+                  onChange={(e) => setSlotForm((f) => ({ ...f, timezone: e.target.value }))}
+                  className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                >
+                  <option value="">Select timezone…</option>
+                  <optgroup label="Common US timezones">
+                    {timezoneGroups.us.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="All timezones">
+                    {timezoneGroups.rest.map((tz) => (
+                      <option key={tz} value={tz}>
+                        {tz}
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
+              </div>
+              <div>
                 <label className="mb-1 block text-xs font-medium text-gray-600">Guest (optional)</label>
                 <input
                   type="text"
@@ -483,6 +545,7 @@ export default function PodcastDashboard() {
                               ...f,
                               guest_id: g.id,
                               guest_label: `${g.name}${g.company ? ` — ${g.company}` : ''}`,
+                              timezone: f.timezone || g.schedule_timezone || '',
                             }));
                             setSlotGuestQuery('');
                             setSlotGuestHits([]);
@@ -534,24 +597,81 @@ export default function PodcastDashboard() {
           )}
 
           <ul className="divide-y divide-gray-100">
-            {slots.map((slot) => (
-              <li key={slot.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
-                <div>
+            {slots.map((slot) => {
+              const prefs = slot.guest_schedule_prefs;
+              const expanded = expandedSlotId === slot.id;
+              const emailStatus = emailSlotStatus[slot.id];
+              return (
+              <li key={slot.id} className="py-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
                   <p className="font-medium text-gray-900">{formatDateTime(slot.scheduled_at)}</p>
                   <p className="text-sm text-gray-600">
                     {[slot.guest_name, slot.episode_title].filter(Boolean).join(' · ') || 'No guest or title'}
                   </p>
+                  {slot.timezone && (
+                    <p className="text-xs text-gray-500">Timezone: {slot.timezone}</p>
+                  )}
                   {slot.notes && <p className="mt-1 text-sm text-gray-500">{slot.notes}</p>}
+                  {slot.guest_id && prefs && (
+                    <button
+                      type="button"
+                      onClick={() => setExpandedSlotId(expanded ? null : slot.id)}
+                      className="mt-2 text-xs font-medium text-blue-600 hover:text-blue-800"
+                    >
+                      {expanded ? 'Hide guest preferences' : 'Show guest preferences'}
+                    </button>
+                  )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => handleDeleteSlot(slot.id)}
-                  className="text-sm text-red-600 hover:text-red-800"
-                >
-                  Delete
-                </button>
+                <div className="flex flex-wrap items-center gap-3">
+                  {slot.guest_id && (
+                    <button
+                      type="button"
+                      onClick={() => handleSendConfirmation(slot.id)}
+                      disabled={emailStatus?.loading}
+                      className="text-sm font-medium text-gray-700 hover:text-gray-900 disabled:opacity-50"
+                    >
+                      {emailStatus?.loading ? 'Sending…' : 'Send confirmation email'}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteSlot(slot.id)}
+                    className="text-sm text-red-600 hover:text-red-800"
+                  >
+                    Delete
+                  </button>
+                </div>
+                </div>
+                {expanded && prefs && (
+                  <dl className="mt-3 grid gap-2 rounded-lg border border-gray-100 bg-gray-50 p-3 text-xs sm:grid-cols-2">
+                    <div>
+                      <dt className="font-medium text-gray-500">Preferred days</dt>
+                      <dd className="text-gray-800">{prefs.preferred_days}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-gray-500">Preferred time</dt>
+                      <dd className="text-gray-800">{prefs.preferred_time}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-gray-500">Dates to avoid</dt>
+                      <dd className="text-gray-800">{prefs.avoid_dates}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-gray-500">Guest timezone</dt>
+                      <dd className="text-gray-800">{prefs.timezone}</dd>
+                    </div>
+                  </dl>
+                )}
+                {emailStatus?.message && (
+                  <p className="mt-2 text-xs text-green-700">{emailStatus.message}</p>
+                )}
+                {emailStatus?.error && (
+                  <p className="mt-2 text-xs text-red-600">{emailStatus.error}</p>
+                )}
               </li>
-            ))}
+            );
+            })}
           </ul>
         </section>
       </main>

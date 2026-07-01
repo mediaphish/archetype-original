@@ -4,6 +4,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import PodcastGuestSubmissionContent from '../../components/podcast/PodcastGuestSubmissionContent';
+import { getTimezoneOptionGroups } from '../../../lib/ao/podcastTimezones.js';
+import { formatGuestSchedulePrefs } from '../../../lib/ao/podcastScheduleUtils.js';
 
 function navigateTo(path) {
   window.history.pushState({}, '', path);
@@ -53,6 +55,11 @@ export default function PodcastGuestAdmin() {
   const [magicStatus, setMagicStatus] = useState({ loading: false, message: '', error: '' });
   const [researchStatus, setResearchStatus] = useState({ loading: false, error: '' });
   const [questionsStatus, setQuestionsStatus] = useState({ loading: false, error: '' });
+  const [showScheduleForm, setShowScheduleForm] = useState(false);
+  const [scheduleForm, setScheduleForm] = useState({ date: '', time: '', timezone: '', notes: '' });
+  const [scheduleStatus, setScheduleStatus] = useState({ loading: false, message: '', error: '' });
+
+  const timezoneGroups = getTimezoneOptionGroups();
 
   useEffect(() => {
     let cancelled = false;
@@ -98,6 +105,14 @@ export default function PodcastGuestAdmin() {
     if (!authChecked || !guestId) return;
     loadGuest();
   }, [authChecked, guestId, loadGuest]);
+
+  useEffect(() => {
+    if (!guest) return;
+    setScheduleForm((prev) => ({
+      ...prev,
+      timezone: prev.timezone || guest.schedule_timezone || '',
+    }));
+  }, [guest]);
 
   const sendMagicLink = async () => {
     setMagicStatus({ loading: true, message: '', error: '' });
@@ -151,6 +166,47 @@ export default function PodcastGuestAdmin() {
     setQuestionsStatus({ loading: false, error: '' });
   };
 
+  const submitSchedule = async (e) => {
+    e.preventDefault();
+    setScheduleStatus({ loading: true, message: '', error: '' });
+    try {
+      const res = await fetch('/api/ao/podcast/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: scheduleForm.date,
+          time: scheduleForm.time,
+          timezone: scheduleForm.timezone,
+          guest_id: guestId,
+          episode_title: guest?.name ? `Recording with ${guest.name}` : null,
+          notes: scheduleForm.notes,
+          send_confirmation_email: true,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not schedule recording');
+
+      let message = 'Recording scheduled.';
+      if (json.email_sent) {
+        message = 'Recording scheduled and confirmation email sent to guest.';
+      } else if (json.email_error) {
+        message = 'Recording scheduled, but the confirmation email could not be sent.';
+      }
+
+      setScheduleStatus({ loading: false, message, error: '' });
+      setShowScheduleForm(false);
+      setScheduleForm((prev) => ({ ...prev, date: '', time: '', notes: '' }));
+    } catch (e) {
+      setScheduleStatus({
+        loading: false,
+        message: '',
+        error: e.message || 'Could not schedule recording',
+      });
+    }
+  };
+
+  const schedulePrefs = guest ? formatGuestSchedulePrefs(guest) : null;
+
   if (!authChecked) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -183,6 +239,122 @@ export default function PodcastGuestAdmin() {
               {magicStatus.message && <p className="mb-4 text-sm text-green-700">{magicStatus.message}</p>}
               {magicStatus.error && <p className="mb-4 text-sm text-red-600">{magicStatus.error}</p>}
               <PodcastGuestSubmissionContent guest={guest} showAdminFields />
+            </section>
+
+            <section className="rounded-xl border border-gray-200 bg-white p-6 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="font-serif text-xl text-gray-900">Scheduling</h2>
+                <button
+                  type="button"
+                  onClick={() => setShowScheduleForm((v) => !v)}
+                  className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                >
+                  {showScheduleForm ? 'Cancel' : 'Schedule recording'}
+                </button>
+              </div>
+
+              {schedulePrefs ? (
+                <dl className="mb-4 grid gap-3 text-sm sm:grid-cols-2">
+                  <div>
+                    <dt className="font-medium text-gray-500">Preferred days</dt>
+                    <dd className="text-gray-900">{schedulePrefs.preferred_days}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-medium text-gray-500">Preferred time</dt>
+                    <dd className="text-gray-900">{schedulePrefs.preferred_time}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-medium text-gray-500">Dates to avoid</dt>
+                    <dd className="text-gray-900">{schedulePrefs.avoid_dates}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-medium text-gray-500">Timezone</dt>
+                    <dd className="text-gray-900">{schedulePrefs.timezone}</dd>
+                  </div>
+                </dl>
+              ) : (
+                <p className="mb-4 text-sm text-gray-500">
+                  No scheduling preferences from intake yet.
+                </p>
+              )}
+
+              {scheduleStatus.message && (
+                <p className="mb-4 text-sm text-green-700">{scheduleStatus.message}</p>
+              )}
+              {scheduleStatus.error && (
+                <p className="mb-4 text-sm text-red-600">{scheduleStatus.error}</p>
+              )}
+
+              {showScheduleForm && (
+                <form onSubmit={submitSchedule} className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-4">
+                  <p className="text-sm text-gray-700">
+                    Scheduling for <strong>{guest.name}</strong>
+                  </p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-600">Date</label>
+                      <input
+                        type="date"
+                        required
+                        value={scheduleForm.date}
+                        onChange={(e) => setScheduleForm((f) => ({ ...f, date: e.target.value }))}
+                        className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-600">Time</label>
+                      <input
+                        type="time"
+                        required
+                        value={scheduleForm.time}
+                        onChange={(e) => setScheduleForm((f) => ({ ...f, time: e.target.value }))}
+                        className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-600">Timezone</label>
+                    <select
+                      required
+                      value={scheduleForm.timezone}
+                      onChange={(e) => setScheduleForm((f) => ({ ...f, timezone: e.target.value }))}
+                      className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                    >
+                      <option value="">Select timezone…</option>
+                      <optgroup label="Common US timezones">
+                        {timezoneGroups.us.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="All timezones">
+                        {timezoneGroups.rest.map((tz) => (
+                          <option key={tz} value={tz}>
+                            {tz}
+                          </option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-gray-600">Notes (optional)</label>
+                    <textarea
+                      rows={2}
+                      value={scheduleForm.notes}
+                      onChange={(e) => setScheduleForm((f) => ({ ...f, notes: e.target.value }))}
+                      className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={scheduleStatus.loading}
+                    className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                  >
+                    {scheduleStatus.loading ? 'Saving…' : 'Confirm and email guest'}
+                  </button>
+                </form>
+              )}
             </section>
 
             <section className="rounded-xl border border-gray-200 bg-white p-6 sm:p-8">

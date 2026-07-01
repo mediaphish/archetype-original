@@ -3,8 +3,18 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import SEO from '../components/SEO';
+import { detectBrowserTimezone, getTimezoneOptionGroups } from '../../lib/ao/podcastTimezones.js';
 
 const BIO_MAX = 5000;
+
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+const TIME_OF_DAY_OPTIONS = [
+  'Morning (before noon)',
+  'Afternoon (noon–5pm)',
+  'Evening (after 5pm)',
+  'Flexible',
+];
 
 const SOCIAL_FIELDS = [
   { key: 'social_instagram', label: 'Instagram', placeholder: 'instagram.com/username' },
@@ -88,6 +98,10 @@ export default function PodcastGuestIntake() {
     social_tiktok: '',
     social_facebook: '',
     social_other: '',
+    schedule_preferred_days: [],
+    schedule_preferred_time: '',
+    schedule_avoid_dates: '',
+    schedule_timezone: '',
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -107,6 +121,15 @@ export default function PodcastGuestIntake() {
   }, []);
 
   useEffect(() => {
+    const tz = detectBrowserTimezone();
+    if (tz) {
+      setFormData((prev) =>
+        prev.schedule_timezone ? prev : { ...prev, schedule_timezone: tz }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
     };
@@ -115,6 +138,16 @@ export default function PodcastGuestIntake() {
   const handleField = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  const toggleScheduleDay = (day) => {
+    setFormData((prev) => {
+      const days = prev.schedule_preferred_days;
+      const next = days.includes(day) ? days.filter((d) => d !== day) : [...days, day];
+      return { ...prev, schedule_preferred_days: next };
+    });
+  };
+
+  const timezoneGroups = getTimezoneOptionGroups();
 
   const uploadImageFile = async (file) => {
     if (!file) return;
@@ -513,6 +546,104 @@ export default function PodcastGuestIntake() {
                   />
                 </div>
               ))}
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <h3 className="mb-2 font-serif text-[18px] font-normal text-[#1A1A1A]">
+                  Finding a time to record
+                </h3>
+                <p className="mb-6 font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
+                  Recording sessions run about 60-90 minutes on Riverside. Suggest a few windows that work for
+                  you and Bart will confirm one.
+                </p>
+
+                <div className="space-y-6">
+                  <div>
+                    <span className="mb-3 block font-sans text-[13px] font-medium text-[#1A1A1A]">
+                      Preferred days of the week
+                    </span>
+                    <div className="flex flex-col gap-2">
+                      {WEEKDAYS.map((day) => (
+                        <label
+                          key={day}
+                          className="flex cursor-pointer items-start gap-3 border border-[#1A1A1A]/10 bg-[#FAFAF9] px-4 py-3 transition-all hover:border-[#1A1A1A]/25 hover:bg-white"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.schedule_preferred_days.includes(day)}
+                            onChange={() => toggleScheduleDay(day)}
+                            className="mt-0.5 h-4 w-4 border-[#1A1A1A]/20 text-[#DB0812] focus:ring-0"
+                          />
+                          <span className="font-sans text-[14px] leading-[1.5] text-[#1A1A1A]">{day}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="mb-3 block font-sans text-[13px] font-medium text-[#1A1A1A]">
+                      Preferred time of day
+                    </span>
+                    <div className="flex flex-col gap-2">
+                      {TIME_OF_DAY_OPTIONS.map((option) => (
+                        <label
+                          key={option}
+                          className="flex cursor-pointer items-start gap-3 border border-[#1A1A1A]/10 bg-[#FAFAF9] px-4 py-3.5 transition-all hover:border-[#1A1A1A]/25 hover:bg-white"
+                        >
+                          <input
+                            type="radio"
+                            name="schedule_preferred_time"
+                            value={option}
+                            checked={formData.schedule_preferred_time === option}
+                            onChange={(e) => handleField('schedule_preferred_time', e.target.value)}
+                            className="mt-0.5 h-4 w-4 border-[#1A1A1A]/20 text-[#DB0812] focus:ring-0"
+                          />
+                          <span className="font-sans text-[14px] leading-[1.5] text-[#1A1A1A]">{option}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block font-sans text-[13px] font-medium text-[#1A1A1A]">
+                      Any dates to avoid in the next 60 days
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.schedule_avoid_dates}
+                      onChange={(e) => handleField('schedule_avoid_dates', e.target.value)}
+                      placeholder="e.g. June 28 – July 5, July 20"
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block font-sans text-[13px] font-medium text-[#1A1A1A]">
+                      Timezone
+                    </label>
+                    <select
+                      value={formData.schedule_timezone}
+                      onChange={(e) => handleField('schedule_timezone', e.target.value)}
+                      className={inputClass}
+                    >
+                      <option value="">Select timezone…</option>
+                      <optgroup label="Common US timezones">
+                        {timezoneGroups.us.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="All timezones">
+                        {timezoneGroups.rest.map((tz) => (
+                          <option key={tz} value={tz}>
+                            {tz}
+                          </option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
               <div className="border border-[#1A1A1A]/08 bg-[#E1DED8] p-8">
                 <h3 className="mb-4 font-serif text-[18px] font-normal text-[#1A1A1A]">Release</h3>

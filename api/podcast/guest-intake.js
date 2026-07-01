@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { contactFormRecipient } from '../../lib/contact-form-inbox.js';
 import { evaluateSpamGuards } from '../../lib/contact-spam-guard.js';
-import { insertGuestIntake, normalizeSocialLinks } from '../../lib/ao/guestIntakeStore.js';
+import { insertGuestIntake, normalizeSocialLinks, normalizeSchedulePreferredDays } from '../../lib/ao/guestIntakeStore.js';
 import { sendGuestMagicLinkEmail } from '../../lib/ao/podcastGuestAuth.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -46,6 +46,25 @@ function fieldBlock(label, value) {
   return `<p><strong>${escapeHtml(label)}</strong><br/>${nl2br(value)}</p>`;
 }
 
+function schedulePrefsBlock(payload) {
+  const days = Array.isArray(payload.schedule_preferred_days)
+    ? payload.schedule_preferred_days.filter(Boolean)
+    : [];
+  const parts = [];
+  if (days.length) parts.push(`<p><strong>Preferred days:</strong> ${escapeHtml(days.join(', '))}</p>`);
+  if (payload.schedule_preferred_time) {
+    parts.push(`<p><strong>Preferred time of day:</strong> ${escapeHtml(payload.schedule_preferred_time)}</p>`);
+  }
+  if (payload.schedule_avoid_dates) {
+    parts.push(`<p><strong>Dates to avoid:</strong> ${nl2br(payload.schedule_avoid_dates)}</p>`);
+  }
+  if (payload.schedule_timezone) {
+    parts.push(`<p><strong>Timezone:</strong> ${escapeHtml(payload.schedule_timezone)}</p>`);
+  }
+  if (!parts.length) return '';
+  return `<h3 style="margin:20px 0 8px 0;font-size:15px;">Scheduling preferences</h3>${parts.join('')}`;
+}
+
 function buildSubmissionHtml(payload, guestId) {
   const socialLinks = normalizeSocialLinks(payload.social_links);
   let html = `
@@ -87,6 +106,8 @@ function buildSubmissionHtml(payload, guestId) {
   answers.forEach((answer, i) => {
     html += fieldBlock(QUESTIONS[i], answer);
   });
+
+  html += schedulePrefsBlock(payload);
 
   html += `
       <hr style="border:none;border-top:1px solid #e5e7eb; margin:16px 0;" />
@@ -133,6 +154,8 @@ function buildGuestConfirmationHtml(payload) {
   answers.forEach((answer, i) => {
     html += fieldBlock(QUESTIONS[i], answer);
   });
+
+  html += schedulePrefsBlock(payload);
 
   html += `
       <hr style="border:none;border-top:1px solid #e5e7eb; margin:16px 0;" />
@@ -193,6 +216,10 @@ export default async function handler(req, res) {
       question_3: String(body.question_3 || '').trim(),
       question_4: String(body.question_4 || '').trim(),
       question_5: String(body.question_5 || '').trim(),
+      schedule_preferred_days: normalizeSchedulePreferredDays(body.schedule_preferred_days),
+      schedule_preferred_time: String(body.schedule_preferred_time || '').trim() || null,
+      schedule_avoid_dates: String(body.schedule_avoid_dates || '').trim() || null,
+      schedule_timezone: String(body.schedule_timezone || '').trim() || null,
     };
 
     const stored = await insertGuestIntake(payload);
