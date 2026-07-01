@@ -225,6 +225,7 @@ export default function PodcastGuestAdmin() {
       setScheduleStatus({ loading: false, message, error: '' });
       setShowScheduleForm(false);
       setScheduleForm((prev) => ({ ...prev, date: '', time: '', notes: '' }));
+      setGuest((g) => (g ? { ...g, has_scheduled_recording: true } : g));
     } catch (e) {
       setScheduleStatus({
         loading: false,
