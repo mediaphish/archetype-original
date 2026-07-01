@@ -1556,6 +1556,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
             transcript,
             episode_type,
             guest,
+            guest_id: signal.guest_id || '',
+            episode_brief: signal.episode_brief || '',
             recorded_date: signal.recorded_date || '',
           }),
         });

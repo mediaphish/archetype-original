@@ -16,6 +16,7 @@ import {
 const KNOWLEDGE_DIR = 'ao-knowledge-hq-kit/knowledge';
 const JOURNAL_DIR = 'ao-knowledge-hq-kit/journal';
 const PODCAST_DIR = path.join(JOURNAL_DIR, 'podcast');
+const GUESTS_DIR = 'ao-knowledge-hq-kit/guests';
 const FAQ_DIR = 'ao-knowledge-hq-kit/faqs';
 const OUTPUT_FILE = 'public/knowledge.json';
 
@@ -132,10 +133,30 @@ function processMarkdownFile(filePath) {
   }
 }
 
+function parseJsonArrayField(value) {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
 // Main build function
 async function buildKnowledgeCorpus() {
   console.log('🔍 Scanning for knowledge files...');
   console.log(`📅 Publication calendar: ${publicationTimeZone()} (override with PUBLICATION_TIME_ZONE)`);
+
+  try {
+    const { syncPodcastGuestCorpusFiles } = await import('./lib/syncPodcastGuestCorpus.mjs');
+    await syncPodcastGuestCorpusFiles();
+  } catch (guestSyncErr) {
+    console.warn('⚠️  Podcast guest corpus sync skipped:', guestSyncErr?.message || guestSyncErr);
+  }
   
   if (!fs.existsSync(KNOWLEDGE_DIR)) {
     console.error(`❌ Knowledge directory not found: ${KNOWLEDGE_DIR}`);
@@ -563,6 +584,8 @@ async function buildKnowledgeCorpus() {
               : [],
           guest: frontmatter.guest || null,
           related: frontmatter.related || [],
+          corpus_connections: parseJsonArrayField(frontmatter.corpus_connections),
+          thematic_threads: parseJsonArrayField(frontmatter.thematic_threads),
           image: imagePath,
           source: {
             kind: 'podcast',
@@ -582,6 +605,49 @@ async function buildKnowledgeCorpus() {
     console.log(`📊 Podcast Processing Summary:`);
     console.log(`   ✅ Published: ${podcastProcessed}`);
     console.log(`   ⏭️  Skipped: ${podcastSkipped}`);
+  }
+
+  // Process podcast guest corpus files
+  if (fs.existsSync(GUESTS_DIR)) {
+    console.log(`\n🎤 Processing podcast guest corpus...`);
+    const guestFiles = fs
+      .readdirSync(GUESTS_DIR)
+      .filter((name) => name.endsWith('.md'))
+      .map((name) => path.join(GUESTS_DIR, name));
+
+    let guestProcessed = 0;
+    for (const filePath of guestFiles) {
+      try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        if (!content.trim()) continue;
+        const { data: frontmatter, content: body } = matter(content);
+        const statusNorm = String(frontmatter.status ?? '').trim().toLowerCase();
+        if (statusNorm !== 'published') continue;
+
+        const slug = frontmatter.slug || path.basename(filePath, '.md');
+        docs.push({
+          title: frontmatter.title || frontmatter.name || 'Podcast guest',
+          slug,
+          type: 'podcast-guest',
+          tags: frontmatter.tags || ['podcast', 'guest'],
+          categories: frontmatter.categories || [],
+          status: 'published',
+          created_at: frontmatter.created_at || new Date().toISOString(),
+          updated_at: frontmatter.updated_at || new Date().toISOString(),
+          summary: frontmatter.summary || '',
+          name: frontmatter.name || '',
+          company: frontmatter.company || '',
+          episode_slug: frontmatter.episode_slug || '',
+          body: body.trim(),
+          source: { kind: 'podcast-guest' },
+        });
+        guestProcessed += 1;
+        console.log(`✅ Processed podcast guest: ${frontmatter.name || slug}`);
+      } catch (error) {
+        console.error(`❌ Error processing guest ${path.basename(filePath)}:`, error.message);
+      }
+    }
+    console.log(`   ✅ Guest corpus docs: ${guestProcessed}`);
   }
   
   // Process FAQs

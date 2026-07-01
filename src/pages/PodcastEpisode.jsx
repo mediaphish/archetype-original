@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import seoConfig from '../config/seo.json';
 import ShareLinks from '../components/ShareLinks';
@@ -8,6 +8,7 @@ import JournalMarkdownBody from '../components/JournalMarkdownBody';
 import PodcastGuestBlock from '../components/podcast/PodcastGuestBlock';
 import PodcastEpisodePlayer from '../components/podcast/PodcastEpisodePlayer';
 import { formatDate } from '../lib/formatPublishDate';
+import { resolveCorpusConnectionHref, timestampToSeconds } from '../../lib/corpusConnectionUrl.js';
 
 function episodeTypeLabel(type) {
   if (!type) return '';
@@ -43,7 +44,7 @@ export default function PodcastEpisode() {
   const [activeTab, setActiveTab] = useState('summary');
   const [transcriptSearch, setTranscriptSearch] = useState('');
   const [allJournalPosts, setAllJournalPosts] = useState([]);
-  const [allPodcastEpisodes, setAllPodcastEpisodes] = useState([]);
+  const playerRef = useRef(null);
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -75,7 +76,6 @@ export default function PodcastEpisode() {
     ])
       .then(([podcastData, journalData]) => {
         const podcastDocs = podcastData.docs || [];
-        setAllPodcastEpisodes(podcastDocs);
         setAllJournalPosts(journalData.docs || []);
 
         const found = podcastDocs.find((ep) => ep.slug === slug);
@@ -129,6 +129,14 @@ export default function PodcastEpisode() {
     return [];
   }, [episode]);
 
+  const corpusConnections = useMemo(() => {
+    const list = Array.isArray(episode?.corpus_connections) ? episode.corpus_connections : [];
+    return list.filter((conn) => {
+      const strength = String(conn?.strength || '').toLowerCase();
+      return strength === 'direct' || strength === 'thematic';
+    });
+  }, [episode?.corpus_connections]);
+
   const cleanSummary = (raw) => {
     if (!raw) return '';
     let text = String(raw);
@@ -181,31 +189,13 @@ export default function PodcastEpisode() {
     ? `https://img.youtube.com/vi/${episode.youtube_id}/maxresdefault.jpg`
     : `${siteUrl}/og-default.jpg`;
 
-  const resolveRelatedLink = (relatedSlug) => {
-    const podcastMatch = allPodcastEpisodes.find((ep) => ep.slug === relatedSlug);
-    if (podcastMatch) {
-      return {
-        title: podcastMatch.title,
-        href: `/podcast/${relatedSlug}`,
-        kind: 'podcast',
-      };
-    }
-    const journalMatch = allJournalPosts.find((p) => p.slug === relatedSlug);
-    if (journalMatch) {
-      return {
-        title: journalMatch.title,
-        href: `/journal/${relatedSlug}`,
-        kind: 'journal',
-      };
-    }
-    return {
-      title: relatedSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
-      href: `/journal/${relatedSlug}`,
-      kind: 'unknown',
-    };
-  };
-
   const summaryText = cleanSummary(episode.summary);
+
+  const handleTimestampSeek = (timestamp) => {
+    const seconds = timestampToSeconds(timestamp);
+    if (seconds == null) return;
+    playerRef.current?.seekTo(seconds);
+  };
 
   return (
     <>
@@ -260,7 +250,7 @@ export default function PodcastEpisode() {
                   {episode.title}
                 </h1>
 
-                <PodcastEpisodePlayer episode={episode} />
+                <PodcastEpisodePlayer ref={playerRef} episode={episode} />
 
                 {summaryText && (
                   <div className="mb-8 sm:mb-10 p-4 sm:p-6 bg-[#FAFAF9] border-l-[6px] border-[#DB0812]">
@@ -455,26 +445,49 @@ export default function PodcastEpisode() {
                       </div>
                     )}
 
-                    {episode.related && episode.related.length > 0 && (
+                    {corpusConnections.length > 0 && (
                       <div>
                         <h4 className="text-base sm:text-lg font-semibold text-[#1A1A1A] mb-3 sm:mb-4">
-                          Related content
+                          From the AO corpus
                         </h4>
-                        <ul className="space-y-2">
-                          {episode.related.map((relatedSlug, index) => {
-                            const link = resolveRelatedLink(relatedSlug);
+                        <ul className="space-y-5">
+                          {corpusConnections.map((conn, index) => {
+                            const href = resolveCorpusConnectionHref(conn);
                             return (
-                              <li key={index}>
-                                <a
-                                  href={link.href}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    navigateTo(link.href);
-                                  }}
-                                  className="text-[#DB0812] hover:text-[#b30610] underline text-base sm:text-lg"
-                                >
-                                  {link.kind === 'podcast' ? `Podcast: ${link.title}` : link.title}
-                                </a>
+                              <li
+                                key={`${conn.slug}-${index}`}
+                                className="border border-[#1A1A1A]/10 bg-[#FAFAF9] p-4 sm:p-5"
+                              >
+                                {href ? (
+                                  <a
+                                    href={href}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      navigateTo(href);
+                                    }}
+                                    className="text-base sm:text-lg font-semibold text-[#DB0812] hover:text-[#b30610]"
+                                  >
+                                    {conn.title}
+                                  </a>
+                                ) : (
+                                  <p className="text-base sm:text-lg font-semibold text-[#1A1A1A]">
+                                    {conn.title}
+                                  </p>
+                                )}
+                                {conn.connection && (
+                                  <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#6B6B6B]">
+                                    {conn.connection}
+                                  </p>
+                                )}
+                                {conn.timestamp && episode.youtube_id && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleTimestampSeek(conn.timestamp)}
+                                    className="mt-3 text-sm font-medium text-[#DB0812] hover:text-[#b30610]"
+                                  >
+                                    Jump to {conn.timestamp} in video
+                                  </button>
+                                )}
                               </li>
                             );
                           })}

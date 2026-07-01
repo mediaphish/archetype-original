@@ -5,13 +5,16 @@
  *   transcript: string,
  *   episode_type: "solo" | "guest",
  *   guest: { name, title, bio } | null,
- *   recorded_date: string (ISO date)
+ *   guest_id: string | null,
+ *   recorded_date: string (ISO date),
+ *   episode_brief: string | null
  * }
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { processEpisodeTranscript } from '../../../lib/ao/processEpisodeTranscript.js';
 import { insertEpisodeDraft } from '../../../lib/ao/episodeDraftStore.js';
+import { getGuestById } from '../../../lib/ao/guestIntakeStore.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -25,10 +28,20 @@ export default async function handler(req, res) {
   const transcript = String(body.transcript || '').trim();
   const episode_type = body.episode_type === 'guest' ? 'guest' : 'solo';
   const guest = body.guest && typeof body.guest === 'object' ? body.guest : null;
+  const guestId = String(body.guest_id || body.guest?.guest_id || '').trim() || null;
   const recorded_date = body.recorded_date ? String(body.recorded_date).split('T')[0] : null;
+  const episode_brief = String(body.episode_brief || '').trim();
 
   if (!transcript) {
     return res.status(400).json({ ok: false, error: 'transcript is required' });
+  }
+
+  let research_brief = String(body.research_brief || '').trim();
+  if (!research_brief && guestId) {
+    const loadedGuest = await getGuestById(guestId);
+    if (loadedGuest.ok && loadedGuest.guest?.research_brief) {
+      research_brief = String(loadedGuest.guest.research_brief).trim();
+    }
   }
 
   try {
@@ -37,6 +50,8 @@ export default async function handler(req, res) {
       episode_type,
       guest,
       recorded_date,
+      research_brief,
+      episode_brief,
     });
 
     if (!processed.ok) {
@@ -48,6 +63,7 @@ export default async function handler(req, res) {
       recorded_date,
       transcript,
       guest,
+      guest_id: guestId,
       ...processed.processed,
       meta: { source: 'episode-process' },
     });

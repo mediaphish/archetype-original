@@ -111,7 +111,25 @@ export default function PodcastDashboard() {
   const [slotGuestHits, setSlotGuestHits] = useState([]);
   const [slotSaving, setSlotSaving] = useState(false);
   const [expandedSlotId, setExpandedSlotId] = useState(null);
-  const [emailSlotStatus, setEmailSlotStatus] = useState({});
+  const [threads, setThreads] = useState([]);
+  const [threadsLoading, setThreadsLoading] = useState(true);
+  const [threadsError, setThreadsError] = useState('');
+
+  const loadThreads = useCallback(async () => {
+    setThreadsLoading(true);
+    setThreadsError('');
+    try {
+      const res = await fetch('/api/ao/podcast/content-threads');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not load content threads');
+      setThreads(json.threads || []);
+    } catch (e) {
+      setThreadsError(e.message || 'Could not load content threads');
+      setThreads([]);
+    } finally {
+      setThreadsLoading(false);
+    }
+  }, []);
 
   const timezoneGroups = getTimezoneOptionGroups();
 
@@ -195,7 +213,8 @@ export default function PodcastDashboard() {
     if (!authChecked) return;
     loadEpisodes();
     loadSlots();
-  }, [authChecked, loadEpisodes, loadSlots]);
+    loadThreads();
+  }, [authChecked, loadEpisodes, loadSlots, loadThreads]);
 
   useEffect(() => {
     if (!authChecked) return;
@@ -672,6 +691,40 @@ export default function PodcastDashboard() {
               </li>
             );
             })}
+          </ul>
+        </section>
+
+        {/* Panel 4: Content threads */}
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+          <h2 className="mb-2 font-serif text-lg text-gray-900">Content threads</h2>
+          <p className="mb-4 text-sm text-gray-600">
+            Themes Archy surfaced from processed episodes — ideas for future episodes, journal posts, or ALI entries.
+          </p>
+
+          {threadsLoading && <p className="text-sm text-gray-500">Loading threads…</p>}
+          {threadsError && <p className="text-sm text-red-600">{threadsError}</p>}
+          {!threadsLoading && !threadsError && threads.length === 0 && (
+            <p className="text-sm text-gray-500">No thematic threads yet. Process an episode in Auto to generate them.</p>
+          )}
+
+          <ul className="divide-y divide-gray-100">
+            {threads.map((item, index) => (
+              <li key={`${item.episode_id}-${item.thread}-${index}`} className="py-5">
+                <p className="font-medium text-gray-900">{item.thread}</p>
+                <p className="mt-2 text-sm leading-relaxed text-gray-700">{item.description}</p>
+                {item.suggested_follow_up && (
+                  <p className="mt-3 text-sm text-gray-600">
+                    <span className="font-medium text-gray-500">Suggested follow-up: </span>
+                    {item.suggested_follow_up}
+                  </p>
+                )}
+                <p className="mt-3 text-xs text-gray-500">
+                  From {item.episode_title}
+                  {item.episode_slug ? ` · /podcast/${item.episode_slug}` : ''}
+                  {item.episode_status ? ` · ${item.episode_status}` : ''}
+                </p>
+              </li>
+            ))}
           </ul>
         </section>
       </main>

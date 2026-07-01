@@ -154,6 +154,8 @@ export default async function handler(req, res) {
     show_notes: draft.show_notes || [],
     key_takeaways: draft.key_takeaways || [],
     related: draft.related || [],
+    corpus_connections: draft.corpus_connections || [],
+    thematic_threads: draft.thematic_threads || [],
     guest: guestForFrontmatter,
     transcript: draft.transcript || '',
     status: 'published',

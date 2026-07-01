@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 function SpotifyIcon() {
   return (
@@ -29,6 +29,29 @@ const PLATFORM_ICONS = {
   apple: ApplePodcastsIcon,
   youtube: YouTubeIcon,
 };
+
+let ytApiPromise = null;
+
+function loadYouTubeIframeApi() {
+  if (typeof window === 'undefined') return Promise.resolve();
+  if (window.YT?.Player) return Promise.resolve();
+  if (ytApiPromise) return ytApiPromise;
+  ytApiPromise = new Promise((resolve) => {
+    const previous = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof previous === 'function') previous();
+      resolve();
+    };
+    if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    } else if (window.YT?.Player) {
+      resolve();
+    }
+  });
+  return ytApiPromise;
+}
 
 function linkButtonClassName(prominent) {
   const size = prominent ? 'w-12 h-12' : 'w-9 h-9';
@@ -69,10 +92,51 @@ export function getEpisodePlatformLinks(episode) {
   return links;
 }
 
-export default function PodcastEpisodePlayer({ episode }) {
+const PodcastEpisodePlayer = forwardRef(function PodcastEpisodePlayer({ episode }, ref) {
   const youtubeId = String(episode?.youtube_id || '').trim();
   const links = getEpisodePlatformLinks(episode);
   const prominentLinks = !youtubeId && links.length > 0;
+  const containerRef = useRef(null);
+  const playerRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    seekTo(seconds) {
+      const sec = Number(seconds);
+      if (!Number.isFinite(sec) || sec < 0) return;
+      if (playerRef.current?.seekTo) {
+        playerRef.current.seekTo(sec, true);
+        return;
+      }
+      if (youtubeId) {
+        window.open(`https://www.youtube.com/watch?v=${youtubeId}&t=${Math.floor(sec)}s`, '_blank', 'noopener,noreferrer');
+      }
+    },
+  }));
+
+  useEffect(() => {
+    if (!youtubeId || !containerRef.current) return undefined;
+    let cancelled = false;
+
+    loadYouTubeIframeApi().then(() => {
+      if (cancelled || !containerRef.current || !window.YT?.Player) return;
+      playerRef.current = new window.YT.Player(containerRef.current, {
+        videoId: youtubeId,
+        width: '100%',
+        height: '100%',
+        playerVars: { rel: 0, modestbranding: 1 },
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      try {
+        playerRef.current?.destroy?.();
+      } catch {
+        // ignore destroy errors
+      }
+      playerRef.current = null;
+    };
+  }, [youtubeId]);
 
   if (!youtubeId && !links.length) return null;
 
@@ -80,13 +144,7 @@ export default function PodcastEpisodePlayer({ episode }) {
     <div className={prominentLinks ? 'mb-8 sm:mb-10' : 'mb-8 sm:mb-10'}>
       {youtubeId ? (
         <div className="mb-5 w-full aspect-video bg-[#2B2929]">
-          <iframe
-            title={`${episode.title} video`}
-            src={`https://www.youtube.com/embed/${youtubeId}`}
-            className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+          <div ref={containerRef} className="h-full w-full" />
         </div>
       ) : (
         <div className="mb-5 w-full bg-[#2B2929] px-6 py-10 sm:py-12 text-center">
@@ -119,4 +177,6 @@ export default function PodcastEpisodePlayer({ episode }) {
       )}
     </div>
   );
-}
+});
+
+export default PodcastEpisodePlayer;

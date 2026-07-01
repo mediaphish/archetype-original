@@ -325,6 +325,50 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
         </label>
       </div>
 
+      {(Array.isArray(draft.corpus_connections) && draft.corpus_connections.length > 0) ||
+      (Array.isArray(draft.thematic_threads) && draft.thematic_threads.length > 0) ? (
+        <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Corpus intelligence</p>
+
+          {Array.isArray(draft.corpus_connections) && draft.corpus_connections.length > 0 && (
+            <div>
+              <p className="mb-2 text-sm font-medium text-gray-900">Corpus connections (all strengths)</p>
+              <ul className="space-y-3 text-sm text-gray-700">
+                {draft.corpus_connections.map((conn, i) => (
+                  <li key={`conn-${i}`} className="rounded border border-gray-200 bg-white p-3">
+                    <p className="font-medium text-gray-900">
+                      {conn.title}{' '}
+                      <span className="text-xs font-normal text-gray-500">({conn.strength || 'thematic'})</span>
+                    </p>
+                    {conn.connection && <p className="mt-1">{conn.connection}</p>}
+                    {conn.timestamp && (
+                      <p className="mt-1 text-xs text-gray-500">Timestamp: {conn.timestamp}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {Array.isArray(draft.thematic_threads) && draft.thematic_threads.length > 0 && (
+            <div>
+              <p className="mb-2 text-sm font-medium text-gray-900">Thematic threads</p>
+              <ul className="space-y-3 text-sm text-gray-700">
+                {draft.thematic_threads.map((thread, i) => (
+                  <li key={`thread-${i}`} className="rounded border border-gray-200 bg-white p-3">
+                    <p className="font-medium text-gray-900">{thread.thread}</p>
+                    {thread.description && <p className="mt-1">{thread.description}</p>}
+                    {thread.suggested_follow_up && (
+                      <p className="mt-2 text-xs text-gray-600">Follow-up: {thread.suggested_follow_up}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ) : null}
+
       {message && (
         <p
           className={`text-sm ${status === 'error' ? 'text-red-600' : status === 'published' ? 'text-green-700' : 'text-gray-600'}`}
