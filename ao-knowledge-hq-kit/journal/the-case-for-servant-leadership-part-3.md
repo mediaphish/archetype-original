@@ -35,7 +35,7 @@ If the data explains what works, fear explains why so few leaders can actually l
 Fear is subtle. It rarely shows up as panic or paralysis. It hides inside urgency, performance, and control. It whispers, “If you don’t fix this, it all falls apart.” It’s efficient, persuasive, and convincing enough to make you believe it’s leadership. But fear is not leadership. It’s survival disguised as responsibility.
 
 Science backs this up. When the brain detects threat, real or perceived, the amygdala takes over. Cortisol and adrenaline flood the system. The prefrontal cortex, which governs creativity, empathy, and reason, temporarily shuts down. That’s great for running from danger, terrible for leading people. It makes us reactive, defensive, and transactional.
-Research from the NeuroLeadership Institute shows that leaders under chronic stress become less self-aware, less empathetic, and more controlling. UCLA’s studies on emotional contagion found that employees mirror the emotional tone of their leader within minutes. If the leader operates out of fear, the culture starts to as well. Fear scales faster than trust.
+Chronic stress narrows a leader’s window. Self-awareness drops. Empathy thins. Control tightens. Emotional states spread fast between a leader and the people around them. Employees mirror the tone their leader carries within minutes. If the leader operates out of fear, the culture starts to as well. Fear scales faster than trust.
 
 I know this firsthand.
 
@@ -56,7 +56,7 @@ And like every form of fear-based leadership, it worked, until it didn’t. It k
 The lesson wasn’t about failure. It was about recognition. Servant leadership isn’t just a philosophy for when things are stable. It’s the antidote when everything is not. The act of serving others, protecting, empowering, and trusting them, is the only way to quiet fear’s voice in a leader’s head.
 
 Fear leads us to grip tighter. Service forces us to open our hands.
-The irony is that the people around us can usually feel our fear long before we admit it. Emotional contagion is real. Harvard Business Review found that a single anxious leader can raise stress levels across a team by up to 30% in one day. But the reverse is also true. Calm, servant-hearted leaders lower cortisol, increase trust, and invite creativity back into the room.
+The irony is that the people around us can usually feel our fear long before we admit it. Emotional contagion is real. A single anxious leader can raise stress across a team before the day is over. But the reverse is also true. Calm, servant-hearted leaders lower cortisol, increase trust, and invite creativity back into the room.
 
 I didn’t learn that lesson from a book. I learned it in the storm.
 
@@ -66,11 +66,3 @@ If fear has been steering your leadership lately, it doesn’t mean you’ve fai
 
 Because the truth is simple: fear breaks things.
  Service builds them.
-
-### Data Reference Block
-
-1. NeuroLeadership Institute (2020). Leadership Under Threat: How Stress Alters Empathy and Decision-Making. Chronic stress decreases self-awareness and empathy; increases controlling behavior.  
-2. UCLA Center for Neurobehavioral Studies (2019). Emotional Contagion in Teams. Employee emotional states mirror leader tone within minutes of exposure.  
-3. Harvard Business Review (2021). How Leaders Transmit Stress, and How to Stop It. A single anxious leader can raise team stress levels ≈ 30 % in one day.  
-4. Forbes (2022). Executive Decision-Making and Fear Study. Over 60 % of executives admit fear influences at least one major decision each quarter.  
-5. Harvard Business Review (2018). The Contagion of Leadership Emotions. Calm, service-oriented leaders lower team cortisol and increase trust within hours.

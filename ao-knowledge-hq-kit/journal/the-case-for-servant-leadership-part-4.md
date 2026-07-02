@@ -72,17 +72,10 @@ Empowerment doesn’t mean chaos, it means equipping others to succeed without c
 
 The data backed it up at every turn.
 The research didn't just validate the work, it explained it.
- Gallup found that most engagement variance traces directly to leadership clarity. MIT Sloan showed that defined frameworks outperform ad-hoc teams in innovation and stability. McKinsey revealed that role clarity triples adaptability during crisis. And Stanford proved that empowered teams double initiative and creativity when control gives way to trust.
+In three decades of building teams, the pattern held. When leaders give clarity, engagement follows. When frameworks are defined instead of improvised, teams innovate with more stability. When roles are clear, people adapt faster under pressure. When control gives way to trust, initiative and creativity multiply.
 
 All of it aligned with what I had seen firsthand. Leadership isn't abstract or emotional, it's logical. It's structure, applied through people, confirmed by results.
 
 That's what I help leaders and organizations build through Archetype Original, systems that align people, protect culture, and create strength that lasts.
 
 Because leadership, like life, requires reflection, not to relive the past, but to understand it. And when you understand it, you can lead better the next time.
-
-### Data Reference Block
-
-1. Gallup (2023). State of the Global Workplace Report.  70 % of engagement variance tied to leadership clarity.  
-2. MIT Sloan Management Review (2022). Codified Leadership and Innovation Study.  Defined frameworks = 23 % higher innovation.  
-3. McKinsey & Company (2021). Leading Through Crisis: Adaptability Factors.  Clarity triples adaptability during disruption.  
-4. Stanford Graduate School of Business (2020). Empowering Management Structures.  Empowered teams = 2× initiative and creativity.

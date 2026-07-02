@@ -101,7 +101,7 @@ It takes its cues from the person in charge.
 When a leader raises their voice, the team’s stress hormones spike.  
 When the leader stays composed, oxytocin rises, the chemical that fuels trust and collaboration.
 
-Jones’s 2024 study of research labs found that the most productive teams weren’t the smartest; they were the safest. The calmer the leader, the more creative the group.  
+The most productive teams I have watched were not always the smartest. They were the safest. The calmer the leader, the more creative the group.  
 Frazier’s 2017 meta-analysis backed it up: psychological safety consistently predicted better engagement, higher performance, and faster knowledge sharing across industries.  
 The pattern’s universal. Fear slows the brain. Trust frees it.
 

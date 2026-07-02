@@ -129,11 +129,11 @@ That gap between what the leader is experiencing and what the organization is ac
 
 ## What the Research Says About How It Ends
 
-A 2023 study published in the Leadership Quarterly examined the long-term career trajectories of leaders scoring high in personalized power motivation. The findings are worth sitting with.
+McClelland's work on personalized power motivation already pointed toward how this arc ends. Keltner documented what power does to perception once someone holds it. Baumeister traced how reward systems pull ambitious people toward external markers instead of the qualities that earned them. Thirty-three years of watching this pattern in real organizations fills in the rest.
 
-Leaders high in personalized power motivation showed higher initial career advancement rates. They got further faster. The behaviors associated with power pursuit produced measurable career acceleration in the early and middle stages. Strategic relationship management, strong self-presentation, willingness to compete aggressively for visible opportunities all moved the needle on advancement in the short and medium term.
+Leaders oriented toward personalized power often advance faster early. The behaviors that chase position produce measurable career acceleration in the short and medium term. Strategic relationship management, strong self-presentation, willingness to compete aggressively for visible opportunities. All of it moves the needle on advancement.
 
-They also showed, consistently, lower long-term career satisfaction. More isolation in senior roles. Higher rates of late-career professional crisis, the kind where a person who has spent decades climbing reaches the position they were chasing and discovers that having it does not produce what they needed it to produce. The hunger was real. The satisfaction the arrival was supposed to deliver was not.
+They also tend to arrive at lower long-term satisfaction. More isolation in senior roles. More late-career professional crisis. The kind where a person who spent decades climbing reaches the position they were chasing and discovers that having it does not produce what they needed it to produce. The hunger was real. The satisfaction the arrival was supposed to deliver was not.
 
 This is not a morality tale. It is a finding. The pursuit of power, as a primary career orientation, tends to produce the external markers it is chasing and to hollow out the internal experience of the person chasing them. The leader who spent 20 years optimizing for position arrives at the position and finds that the strategies that got them there have made them exactly the kind of person who cannot fully enjoy or effectively use what they built.
 

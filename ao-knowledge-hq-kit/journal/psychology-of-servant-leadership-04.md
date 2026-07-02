@@ -91,9 +91,8 @@ They clear the noise, guard the focus, and keep their teams inside that narrow b
 
 ### Trust as an Accelerator
 
-In 2025, Putra’s research found that innovative, high-output teams weren’t necessarily faster or smarter than their peers, they simply trusted faster.  
-Trust compressed decision cycles.  
-When people didn’t have to second-guess motives or politics, they moved ideas from concept to execution at double speed.
+In high-performing teams, trust compresses decision cycles.
+When people do not have to second-guess motives or politics, they move ideas from concept to execution faster.
 
 That’s what servant leadership does: it builds trust equity.  
 Every time a leader follows through, listens first, or protects a voice that disagrees, they deposit trust into the system.  
@@ -107,9 +106,7 @@ You don’t have to convince anyone, they already believe you mean what you say.
 In high-pressure environments, the loudest voice usually wins.  
 But the calmest voice usually leads.
 
-A 2024 study out of *Nature*’s *Humanities & Social Sciences Communications* examined research teams working under constant funding pressure.  
-The highest-producing labs weren’t the most intense, they were the most emotionally stable.  
-Their leaders modeled calm, and that composure literally synchronized brainwaves across the group, reducing stress responses and improving coordination.
+In high-pressure environments, the highest-producing teams are rarely the most intense. They are the most emotionally stable. Their leaders model calm, and that composure spreads through the group. Stress responses ease. Coordination improves.
 
 Calm isn’t passivity.  
 It’s power under control, the same principle as a warrior who draws the sword only when necessary.
