@@ -1322,6 +1322,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [seedManifestTotal, setSeedManifestTotal] = useState(null);
   const [journalPublishBanner, setJournalPublishBanner] = useState(null);
   const [journalPendingPublish, setJournalPendingPublish] = useState(null);
+  const [manualPublishOpen, setManualPublishOpen] = useState(false);
+  const [manualPublishSlug, setManualPublishSlug] = useState('');
+  const [manualPublishStatus, setManualPublishStatus] = useState('idle'); // idle | loading | success | error
+  const [manualPublishMessage, setManualPublishMessage] = useState('');
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [episodeDraft, setEpisodeDraft] = useState(null);
   const [episodeProcessBanner, setEpisodeProcessBanner] = useState(null);
@@ -2152,6 +2156,67 @@ export default function AutoV2Panel({ onNavigate, className }) {
     }
   }, [journalPendingPublish]);
 
+  const handleManualPublish = useCallback(async () => {
+    const slug = manualPublishSlug.trim();
+    if (!slug) return;
+
+    setManualPublishStatus('loading');
+    setManualPublishMessage('');
+
+    try {
+      // Pull the most recent [PUBLISH_JOURNAL] signal from thread history
+      // so we can get the image_url, title, and content Auto already prepared
+      const allMessages = Array.isArray(messages) ? messages : [];
+      let attrs = {};
+      let journalContent = '';
+
+      for (const m of [...allMessages].reverse()) {
+        if (m.role !== 'assistant') continue;
+        const text = String(m.content || '');
+        const tagMatch = text.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+        const contentMatch = text.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
+        if (tagMatch) {
+          const pattern = /(\w+)="([^"]*)"/g;
+          let mm;
+          while ((mm = pattern.exec(tagMatch[1])) !== null) {
+            attrs[mm[1]] = mm[2];
+          }
+        }
+        if (contentMatch) {
+          journalContent = contentMatch[1].trim();
+        }
+        if (attrs.slug || journalContent) break;
+      }
+
+      const res = await fetch('/api/ao/auto/publish-journal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug: attrs.slug || slug,
+          title: attrs.title || slug,
+          content: journalContent || '',
+          summary: attrs.summary || '',
+          publish_date: attrs.publish_date || new Date().toISOString().split('T')[0],
+          categories: attrs.categories ? String(attrs.categories).split(',').map(c => c.trim()).filter(Boolean) : [],
+          image_url: attrs.image_url || '',
+          notify: true,
+          notify_delay_ms: 300000,
+        }),
+      });
+
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Publish failed');
+
+      setManualPublishStatus('success');
+      setManualPublishMessage(json.journal_url || 'Published.');
+      setManualPublishOpen(false);
+      setJournalPublishBanner({ status: 'success', title: attrs.title || slug, journalUrl: json.journal_url || '' });
+    } catch (e) {
+      setManualPublishStatus('error');
+      setManualPublishMessage(e.message || 'Publish failed');
+    }
+  }, [manualPublishSlug, messages]);
+
   const handleRevise = useCallback(() => {
     setInput('Revise — ');
     textareaRef.current?.focus();
@@ -2404,6 +2469,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
             </button>
             <button
               type="button"
+              onClick={() => setManualPublishOpen(true)}
+              className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Publish Journal
+            </button>
+            <button
+              type="button"
               onClick={publishCards}
               disabled={!generatedImages || generatedImages.length === 0}
               className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
@@ -2600,6 +2672,47 @@ export default function AutoV2Panel({ onNavigate, className }) {
           </div>
         </div>
       ) : null}
+
+      {manualPublishOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-gray-900">Publish Journal Entry</h2>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              This pulls the journal content, image URL, and metadata from Auto&apos;s last signal in this thread and commits it directly to GitHub. No Auto cooperation required.
+            </p>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Slug (confirm)</label>
+              <input
+                type="text"
+                value={manualPublishSlug}
+                onChange={e => setManualPublishSlug(e.target.value)}
+                placeholder="power-vs-authority-part-2-the-build"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+              />
+            </div>
+            {manualPublishStatus === 'error' && (
+              <p className="text-xs text-red-600">{manualPublishMessage}</p>
+            )}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleManualPublish}
+                disabled={!manualPublishSlug.trim() || manualPublishStatus === 'loading'}
+                className="flex-1 py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-colors"
+              >
+                {manualPublishStatus === 'loading' ? 'Publishing...' : 'Publish to archetypeoriginal.com'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setManualPublishOpen(false); setManualPublishStatus('idle'); setManualPublishMessage(''); }}
+                className="py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
