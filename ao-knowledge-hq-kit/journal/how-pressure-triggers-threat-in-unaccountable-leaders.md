@@ -91,7 +91,7 @@ The leader no longer merely avoids accountability because it feels uncomfortable
 They understand that transparency would expose things they don’t want examined. They understand that presence would invite questions they don’t want to answer. They understand that correction would require surrendering leverage they intend to keep. And rather than being confused about the harm this causes, they calculate it.
 
 This progression is consistent with power research by Dacher Keltner, whose work shows that sustained power reduces empathy and increases instrumental, outcome-driven thinking toward others.  
-<https://greatergood.berkeley.edu/article/item/how_power_affects_the_brain>
+<https://ggsc.berkeley.edu/who_we_are/news/news_item/what_power_does_to_your_brain_and_body>
 
 This is where domination enters the picture, not as rage or volatility, but as calm intent. These leaders are not emotionally dysregulated. They are often composed, confident, even professional. But their nervous system has learned a clear lesson: maintaining control preserves safety, authority, and outcome.
 
@@ -142,7 +142,7 @@ They anticipate reactions instead of surfacing reality.
 They absorb confusion rather than escalate it.
 
 This pattern is well documented in psychological safety research. Amy Edmondson, a Harvard Business School professor who has spent decades studying how teams learn and speak up under authority, found that when people associate questions or challenge with interpersonal or professional risk, disengagement is not immediate. Instead, behavior changes incrementally. People become careful. Then quiet. Then compliant. Organizations often misread this silence as alignment, when it is actually self-protection.  
-<https://hbr.org/2018/11/what-is-psychological-safety>
+<https://hbr.org/2023/02/what-is-psychological-safety>
 
 As this adaptation deepens, people begin carrying weight they didn’t create and cannot fix. Managers inherit consequences without authority. Teams feel responsible without being empowered, expected to comply without being informed, and asked to execute decisions they had no voice in shaping.
 
