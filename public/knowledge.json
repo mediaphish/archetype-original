@@ -8285,10 +8285,10 @@
       "slug": "who-is-this-for",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
       "created_at": "2026-07-02T19:53:09.127Z",
@@ -8611,14 +8611,14 @@
       "body": "Tone determines psychological safety.\n\nLeaders set the emotional temperature of the organization whether they intend to or not. A consistently tense leader creates a tense organization. A leader who is calm under pressure creates the space for others to think clearly.\n\nThis is why emotional regulation is a leadership skill, not a personality preference. The tone you carry into the room is the tone the room inherits."
     },
     {
-      "title": "What makes Archetype Original different from other leadership philosophies?",
-      "slug": "philosophy-what-makes-different",
+      "title": "Why does self-awareness often break down at higher levels of leadership?",
+      "slug": "self-awareness-breakdown",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
       "created_at": "2026-07-02T19:53:09.125Z",
@@ -8630,17 +8630,17 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Most leadership philosophies focus on what leaders should say or decide. This one focuses on what leaders consistently transmit.\n\nTone, behavior, consistency, and what is tolerated day after day shape culture far more than stated values or vision statements. Most leaders know what they intend to communicate. Fewer understand what they're actually transmitting.\n\nThis philosophy pays attention to that gap, because that's where cultures either stabilize or quietly fracture."
+      "body": "Because power reduces corrective feedback.\n\nThe higher you go, the fewer people are willing to tell you when you're wrong. Direct reports filter. Peers defer. Even well-intentioned teams start managing up rather than communicating honestly.\n\nWithout intentional systems for honest feedback, leaders lose accurate mirrors. They start operating on an increasingly distorted picture of their own impact. That's not a character flaw. It's a structural problem. Which is exactly why external perspective and diagnostic tools matter more at senior levels, not less."
     },
     {
-      "title": "Who is this philosophy not for?",
-      "slug": "philosophy-who-this-is-not-for",
+      "title": "How does the leader's shadow create fear without words?",
+      "slug": "shadow-and-fear",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
       "created_at": "2026-07-02T19:53:09.125Z",
@@ -8652,7 +8652,73 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "It's not for leaders looking for shortcuts, scripts, or image management.\n\nIf the goal is to appear strong without doing the work of self-regulation and responsibility, this approach will feel frustrating. It will ask you to slow down when you want to push. It will ask you to look at things you'd rather not look at.\n\nArchetype Original is designed for leaders willing to lead with intention rather than impulse. That's a specific kind of person. Not everyone is ready for it."
+      "body": "Leaders rarely create fear intentionally. They create it through inconsistency.\n\nWhen people can't predict how you'll respond, they stop taking risks. They stop being honest. They start managing you instead of doing the work. That's not a morale problem. That's a leadership signal.\n\nThe shadow doesn't need words. It's already speaking through your reactions."
+    },
+    {
+      "title": "How early does the leader's shadow form?",
+      "slug": "leader-shadow-early",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:53:24.156Z",
+      "updated_at": "2026-07-02T19:53:24.156Z",
+      "summary": "Immediately.\n\nPeople calibrate expectations based on early reactions, tone, and what gets tolerated. Long before formal systems are in place, the shadow is already shaping how people show up.\n\nThis i...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Immediately.\n\nPeople calibrate expectations based on early reactions, tone, and what gets tolerated. Long before formal systems are in place, the shadow is already shaping how people show up.\n\nThis is why the first weeks and months in a leadership role matter so much. The norms that form early are the hardest to change later."
+    },
+    {
+      "title": "Why does the leader's shadow matter more than intent?",
+      "slug": "shadow-vs-intent",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:53:24.156Z",
+      "updated_at": "2026-07-02T19:53:24.156Z",
+      "summary": "Because intent is private and shadow is experienced.\n\nYou know what you meant. Nobody else does. What people experience is your tone, your reactions, what you tolerate, and how consistently your beha...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Because intent is private and shadow is experienced.\n\nYou know what you meant. Nobody else does. What people experience is your tone, your reactions, what you tolerate, and how consistently your behavior matches what you say.\n\nCulture responds to what leaders project, not what they internally intend. Closing that gap is the actual work of leadership."
+    },
+    {
+      "title": "What is the difference between signals and symptoms?",
+      "slug": "signals-vs-symptoms",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:53:24.156Z",
+      "updated_at": "2026-07-02T19:53:24.156Z",
+      "summary": "Signals are early indicators. Symptoms are late-stage consequences.\n\nTurnover is a symptom. The trust erosion that drove it was a signal, visible months earlier if you knew where to look. Conflict is...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Signals are early indicators. Symptoms are late-stage consequences.\n\nTurnover is a symptom. The trust erosion that drove it was a signal, visible months earlier if you knew where to look. Conflict is a symptom. The communication breakdown underneath it was a signal.\n\nCulture Science trains leaders to respond to signals because by the time symptoms appear, the cost is already significant. Waiting for symptoms is the most expensive way to manage an organization."
     },
     {
       "title": "Why does this philosophy focus so much on behavior?",
@@ -9627,10 +9693,10 @@
       "slug": "meetings-vs-conversations",
       "type": "faq",
       "tags": [
-        "culture-science"
+        "meet-archy"
       ],
       "categories": [
-        "culture-science"
+        "meet-archy"
       ],
       "status": "published",
       "created_at": "2026-07-02T19:53:09.122Z",
