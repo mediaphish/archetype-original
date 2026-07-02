@@ -1902,6 +1902,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
       mime === 'text/plain' ||
       mime === 'text/markdown' ||
       /\.(txt|md)$/i.test(fileSnap?.name || '');
+    const isImage = mime.startsWith('image/');
+
     if (fileSnap?.file && isText) {
       try {
         const raw = await fileSnap.file.text();
@@ -1912,6 +1914,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
       } catch (_) {
         body = body || `[Attached file: ${fileSnap.name}]`;
       }
+    } else if (fileSnap?.file && isImage) {
+      // For images, we keep the body text as-is and let the caller
+      // extract the base64 data separately for the attachments array.
+      // Just ensure there is some body text so the message is not empty.
+      body = body || 'I uploaded an image.';
     } else if (fileSnap) {
       body = body || `[Attached file: ${fileSnap.name}]`;
     }
@@ -1954,12 +1961,35 @@ export default function AutoV2Panel({ onNavigate, className }) {
       if (textareaRef.current) textareaRef.current.style.height = '22px';
 
       try {
+        // Build attachments array for image uploads
+        // Images are sent as base64 content blocks for the Anthropic vision API
+        const attachments = [];
+        if (fileSnap?.type?.startsWith('image/') && fileSnap?.dataUrl) {
+          try {
+            // dataUrl format: "data:image/png;base64,<data>"
+            const [header, b64data] = fileSnap.dataUrl.split(',');
+            const mediaTypeMatch = header.match(/data:([^;]+)/);
+            const mediaType = mediaTypeMatch?.[1] || fileSnap.type;
+            if (b64data && mediaType) {
+              attachments.push({
+                type: 'image',
+                mediaType,
+                data: b64data,
+              });
+            }
+          } catch (_) {
+            // If extraction fails, send without image — better than crashing
+            console.warn('[AutoV2Panel] Could not extract image base64 from dataUrl');
+          }
+        }
+
         const res = await fetch('/api/ao/auto/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             thread_id: activeThreadId || null,
             message: outgoing,
+            attachments: attachments.length > 0 ? attachments : undefined,
           }),
         });
         const json = await res.json().catch(() => ({}));
