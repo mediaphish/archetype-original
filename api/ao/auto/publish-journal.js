@@ -21,6 +21,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'mediaphish';
@@ -180,6 +181,70 @@ async function updateInstagramBioLink(journalUrl) {
   }
 }
 
+const JOURNAL_LAUNCH_CHANNEL_MAP = [
+  { key: 'linkedin_personal',  platform: 'linkedin',  account_id: 'personal', label: 'linkedin_personal' },
+  { key: 'linkedin_business',  platform: 'linkedin',  account_id: 'personal', label: 'linkedin_business' },
+  { key: 'instagram_business', platform: 'instagram', account_id: 'meta',     label: 'instagram_business' },
+  { key: 'facebook_business',  platform: 'facebook',  account_id: 'meta',     label: 'facebook_business' },
+  { key: 'twitter',            platform: 'twitter',   account_id: 'personal', label: 'x' },
+];
+
+/**
+ * Parse [SOCIAL_CAPTIONS] block from the journal content body if present.
+ * Returns an array of { platform, account_id, label, text, scheduled_at } objects.
+ * Returns empty array if no captions block found.
+ */
+async function parseSocialCaptions(body, slug, journalUrl) {
+  const captionsMatch = body.match(/\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i);
+  if (!captionsMatch) return [];
+
+  const captionsBlock = captionsMatch[1];
+  const rows = [];
+
+  for (const ch of JOURNAL_LAUNCH_CHANNEL_MAP) {
+    const captionMatch = captionsBlock.match(
+      new RegExp(`\\[CAPTION\\s+platform="${ch.key}"[^\\]]*\\]([\\s\\S]*?)\\[/CAPTION\\]`, 'i')
+    );
+    if (!captionMatch) continue;
+
+    const scheduledTimeMatch = captionsBlock.match(
+      new RegExp(`\\[CAPTION\\s+platform="${ch.key}"\\s+scheduled_time="([^"]+)"`, 'i')
+    );
+
+    let text = captionMatch[1].trim();
+
+    // Instagram: strip URLs from body, ensure Link in bio
+    if (ch.platform === 'instagram') {
+      text = text.replace(/https?:\/\/[^\s]+/g, '').trim();
+      if (!text.includes('Link in bio')) {
+        text = `${text}\n\nLink in bio.`;
+      }
+    }
+
+    const scheduledAt = scheduledTimeMatch
+      ? scheduledTimeMatch[1]
+      : await toScheduledAt(new Date(), ch.platform);
+
+    rows.push({
+      platform: ch.platform,
+      account_id: ch.account_id,
+      scheduled_at: scheduledAt,
+      text,
+      caption: text,
+      status: 'scheduled',
+      source_kind: 'journal_launch',
+      intent: {
+        auto_hub: true,
+        channel_label: ch.label,
+        journal_slug: slug,
+        journal_url: journalUrl,
+      },
+    });
+  }
+
+  return rows;
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -265,7 +330,7 @@ export default async function handler(req, res) {
     status: 'published',
   });
 
-  const fullContent = `${frontmatter}\n\n${content.trim()}\n`;
+  const fullContent = `${frontmatter}\n\n${content.replace(/\[SOCIAL_CAPTIONS\][\s\S]*?\[\/SOCIAL_CAPTIONS\]/gi, '').trim()}\n`;
 
   try {
     // Image commit — required before MD file is committed.
@@ -385,6 +450,30 @@ export default async function handler(req, res) {
       }, notify_delay_ms);
     }
 
+    // Schedule social captions if present in the content body
+    let captionsScheduled = 0;
+    let captionsError = null;
+    try {
+      const captionRows = await parseSocialCaptions(content, safeSlug, journalUrl);
+      if (captionRows.length > 0) {
+        const { data: captionData, error: captionInsertError } = await supabaseAdmin
+          .from('ao_scheduled_posts')
+          .insert(captionRows)
+          .select('id, platform, scheduled_at');
+
+        if (captionInsertError) {
+          console.error('[publish-journal] Caption scheduling failed:', captionInsertError.message);
+          captionsError = captionInsertError.message;
+        } else {
+          captionsScheduled = (captionData || []).length;
+          console.log(`[publish-journal] ${captionsScheduled} social posts scheduled for ${safeSlug}`);
+        }
+      }
+    } catch (captionErr) {
+      console.error('[publish-journal] Caption scheduling threw:', captionErr?.message || captionErr);
+      captionsError = captionErr?.message || 'Caption scheduling error';
+    }
+
     return res.status(200).json({
       ok: true,
       slug: safeSlug,
@@ -393,6 +482,8 @@ export default async function handler(req, res) {
       journal_url: journalUrl,
       notify_scheduled: notify,
       notify_delay_ms: notify ? notify_delay_ms : 0,
+      captions_scheduled: captionsScheduled,
+      captions_error: captionsError || null,
       message: existingSha
         ? `Entry updated. Vercel will deploy in ~60 seconds. URL: ${journalUrl}`
         : `Entry published. Vercel will deploy in ~60 seconds. URL: ${journalUrl}`,

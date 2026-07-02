@@ -165,10 +165,12 @@ function extractJournalPublishFromAssistantContent(content) {
   const attrs = parseImageGeneratedAttributes(tagMatch[1]);
   const contentMatch = text.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
   const journalContent = contentMatch ? contentMatch[1].trim() : '';
+  const socialCaptionsMatch = text.match(/\[SOCIAL_CAPTIONS\][\s\S]*?\[\/SOCIAL_CAPTIONS\]/i);
+  const socialCaptionsBlock = socialCaptionsMatch ? socialCaptionsMatch[0] : '';
 
   if (!attrs.slug || !attrs.title || !journalContent) return null;
 
-  return { attrs, journalContent };
+  return { attrs, journalContent, socialCaptionsBlock };
 }
 
 function extractDevotionalPublishFromAssistantContent(content) {
@@ -1503,7 +1505,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     const parsed = extractJournalPublishFromAssistantContent(String(lastAssistant.content || ''));
     if (!parsed) return;
 
-    const { attrs, journalContent } = parsed;
+    const { attrs, journalContent, socialCaptionsBlock } = parsed;
 
     // If this slug was already published successfully in this session,
     // treat the new signal as a caption-attach request, not a re-publish.
@@ -1520,7 +1522,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         ? true
         : !/^(false|0|no)$/i.test(String(attrs.notify).trim());
 
-    setJournalPendingPublish({ attrs, journalContent, categoriesRaw, notify, captionAttachOnly: alreadyPublished });
+    setJournalPendingPublish({ attrs, journalContent, socialCaptionsBlock, categoriesRaw, notify, captionAttachOnly: alreadyPublished });
     signalNewArtifact();
   }, [messages, activeThreadId, signalNewArtifact, journalPublishBanner]);
 
@@ -2074,7 +2076,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
   const handlePublishJournal = useCallback(async () => {
     if (!journalPendingPublish) return;
-    const { attrs, journalContent, categoriesRaw, notify, captionAttachOnly } = journalPendingPublish;
+    const { attrs, journalContent, socialCaptionsBlock, categoriesRaw, notify, captionAttachOnly } = journalPendingPublish;
 
     // Caption-attach mode — entry already published, just schedule captions
     if (captionAttachOnly) {
@@ -2131,7 +2133,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         body: JSON.stringify({
           slug: attrs.slug,
           title: attrs.title,
-          content: journalContent,
+          content: socialCaptionsBlock ? `${journalContent}\n\n${socialCaptionsBlock}` : journalContent,
           summary: attrs.summary || '',
           publish_date: attrs.publish_date || '',
           categories: categoriesRaw,
