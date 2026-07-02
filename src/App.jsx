@@ -62,6 +62,7 @@ import AOPublishing from "./pages/ao/Publishing";
 import AOWriting from "./pages/ao/Writing";
 import AOImport from "./pages/ao/Import";
 import AOIdeas from "./pages/ao/Ideas";
+import AOLibrary from "./pages/ao/Library";
 import AOSettings from "./pages/ao/Settings";
 import AOScout from "./pages/ao/Scout";
 import AOLinkedInHandoff from "./pages/ao/LinkedInHandoff";
@@ -219,7 +220,7 @@ export default function App() {
       if (path === '/ao/import') return 'ao-import';
       if (path === '/ao/library/review-queue') return 'ao-review-queue';
       if (path === '/ao/library/drafts') return 'ao-auto-drafts';
-      if (path === '/ao/library') return 'ao-ideas';
+      if (path === '/ao/library') return 'ao-library';
       if (path === '/ao/ideas') return 'ao-ideas';
       if (path === '/ao/scout') return 'ao-scout';
       if (path === '/ao/analyst') return 'ao-review';
@@ -437,7 +438,7 @@ export default function App() {
         else if (path === '/ao/import') setCurrentPage('ao-import');
         else if (path === '/ao/library/review-queue') setCurrentPage('ao-review-queue');
         else if (path === '/ao/library/drafts') setCurrentPage('ao-auto-drafts');
-        else if (path === '/ao/library') setCurrentPage('ao-ideas');
+        else if (path === '/ao/library') setCurrentPage('ao-library');
         else if (path === '/ao/ideas') {
           window.history.replaceState({}, '', '/ao/library');
           setCurrentPage('ao-ideas');
@@ -1004,6 +1005,9 @@ export default function App() {
   }
   if (currentPage === 'ao-import') {
     return <AOImport />;
+  }
+  if (currentPage === 'ao-library') {
+    return <AOLibrary />;
   }
   if (currentPage === 'ao-ideas') {
     return <AOIdeas />;
