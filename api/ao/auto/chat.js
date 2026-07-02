@@ -92,6 +92,7 @@ export default async function handler(req, res) {
     result.reply = await appendDesignImageToReplyIfNeeded({
       userMessage,
       reply: result.reply,
+      email: auth.email,
     });
 
     await addAutoMessage({

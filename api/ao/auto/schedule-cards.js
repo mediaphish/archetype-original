@@ -106,7 +106,7 @@ export default async function handler(req, res) {
       rows.push({
         platform: ch.platform,
         account_id: ch.account_id,
-        scheduled_at: toScheduledAt(currentDate, ch.platform),
+        scheduled_at: await toScheduledAt(currentDate, ch.platform),
         text: textBody,
         image_url: imageUrl || null,
         caption: String(caption || '').trim() || null,

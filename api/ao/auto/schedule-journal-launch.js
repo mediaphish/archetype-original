@@ -86,7 +86,7 @@ export default async function handler(req, res) {
     rows.push({
       platform: ch.platform,
       account_id: ch.account_id,
-      scheduled_at: toScheduledAt(launchDate, ch.platform),
+      scheduled_at: await toScheduledAt(launchDate, ch.platform),
       text,
       caption: text,
       status: 'scheduled',
