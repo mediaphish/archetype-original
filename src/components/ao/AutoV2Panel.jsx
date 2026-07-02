@@ -1118,9 +1118,9 @@ function ThreadSidebar({
     return (
       <div
         key={thread.id}
-        className={`group relative flex items-stretch border-l-2 transition-colors ${
+        className={`group relative flex items-stretch overflow-visible border-l-2 transition-colors ${
           isActive ? 'bg-white border-l-gray-900' : 'border-l-transparent hover:bg-white'
-        }`}
+        } ${openMenuId === thread.id ? 'z-50' : ''}`}
       >
         <button
           type="button"
@@ -1163,7 +1163,7 @@ function ThreadSidebar({
         </button>
 
         {!isRenaming && (
-          <div className="absolute right-1 top-1/2 -translate-y-1/2" ref={openMenuId === thread.id ? menuRef : null}>
+          <div className="absolute right-1 top-1/2 -translate-y-1/2 z-50" ref={openMenuId === thread.id ? menuRef : null}>
             <button
               type="button"
               aria-label="Chat options"
@@ -1176,7 +1176,7 @@ function ThreadSidebar({
               <DotsVerticalIcon />
             </button>
             {openMenuId === thread.id && (
-              <div className="absolute right-0 top-full z-20 mt-1 w-36 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+              <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
                 <button
                   type="button"
                   className="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
