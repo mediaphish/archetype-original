@@ -54,7 +54,7 @@ That adjustment is the invisible tax.
 
 It shows up as reduced discretionary effort from out-group members. Why go the extra distance when the extra distance does not change your standing? It shows up as information hoarding. Why surface a problem or a good idea when someone else will get credit for it? It shows up as disengagement that looks like competence. The employee who does exactly what is asked, nothing more, and is quietly planning their exit.
 
-The 2020 Harvard Business Review report on favoritism found that 75% of workers say they have witnessed it in their workplace. Twenty-three percent said it directly caused them to leave a job. Those are not edge cases. That is a structural drain running inside most organizations, funded by a leadership behavior the leader is not aware of and the team cannot afford to name out loud.
+Seventy-five percent of workers say they have witnessed favoritism in their workplace. That is not an edge case. That is a structural drain running inside most organizations, funded by a leadership behavior the leader is not aware of and the team cannot afford to name out loud.
 
 ---
 
