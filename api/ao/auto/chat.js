@@ -13,6 +13,7 @@ import { runAutoChat } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
+import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -75,6 +76,11 @@ export default async function handler(req, res) {
     if (!result.ok) {
       return res.status(500).json({ ok: false, error: result.error || 'Auto reply failed' });
     }
+
+    // Enforce response rules in code before any further processing.
+    // These rules were previously in the system prompt as suggestions to the model.
+    // Here they are guaranteed regardless of model behavior.
+    result.reply = enforceResponseRules(result.reply);
 
     result.reply = await appendQuoteCardImagesToReplyIfNeeded({
       userMessage,
