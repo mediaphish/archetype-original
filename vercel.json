@@ -343,6 +343,7 @@
     { "src": "/api/ao/meta-accounts", "dest": "/api/ao/meta-accounts.js" },
     { "src": "/api/ao/auto/metrics-diagnostic", "dest": "/api/ao/auto/metrics-diagnostic.js" },
     { "src": "/api/ao/auto/attach-captions", "dest": "/api/ao/auto/attach-captions.js" },
+    { "src": "/api/ao/auto/schedule-journal-launch", "dest": "/api/ao/auto/schedule-journal-launch.js" },
     { "src": "/api/ao/auto/content-draft", "dest": "/api/ao/auto/content-draft.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }

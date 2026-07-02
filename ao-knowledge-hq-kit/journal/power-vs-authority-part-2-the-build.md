@@ -1,9 +1,9 @@
 ---
-title: Power vs. Authority: Part 2 — The Build
+title: "Power vs. Authority: Part 2 — The Build"
 slug: power-vs-authority-part-2-the-build
-publish_date: '2026-06-29'
-created_at: '2026-06-29'
-updated_at: '2026-06-29'
+publish_date: '2026-07-06'
+created_at: '2026-07-06'
+updated_at: '2026-07-06'
 summary: >-
   Earning authority is not a program. It is a direction held under pressure, repeatedly, over enough time that the people around you stop waiting for the exception. Part 2 examines what the build actually requires, what it costs, and why authority is built slowly and lost fast.
 categories:

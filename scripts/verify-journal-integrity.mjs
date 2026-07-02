@@ -2,11 +2,13 @@
 /**
  * Build-time integrity check for top-level journal markdown entries.
  * Catches missing images and broken frontmatter before deploy.
+ * Future-scheduled posts are allowed to be incomplete until their publish date.
  */
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
+import { shouldSkipFutureScheduledMarkdown } from '../lib/publish-eligibility.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const JOURNAL_DIR = path.join(ROOT, 'ao-knowledge-hq-kit/journal');
@@ -96,6 +98,14 @@ function verifyFile(filePath) {
     ({ data: frontmatter } = matter(raw));
   } catch (err) {
     failures.push({ file: rel, check: 'frontmatter', reason: `YAML parse error: ${err.message}` });
+    return failures;
+  }
+
+  const isFutureScheduled = shouldSkipFutureScheduledMarkdown(frontmatter, {
+    isJournalOrDevotional: true,
+  });
+
+  if (isFutureScheduled) {
     return failures;
   }
 

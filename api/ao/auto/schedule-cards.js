@@ -17,14 +17,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { getAutoThreadState } from '../../../lib/ao/autoHub.js';
-
-// Peak times per platform (UTC)
-const PLATFORM_TIMES = {
-  linkedin: '15:00:00',
-  instagram: '16:00:00',
-  facebook: '18:00:00',
-  twitter: '14:00:00',
-};
+import { findNextQueueDate, addWeekdays, toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 
 // All 5 approved channels — X now included
 const APPROVED_CHANNELS = [
@@ -35,52 +28,9 @@ const APPROVED_CHANNELS = [
   { platform: 'twitter',   account_id: 'personal', label: 'x' },
 ];
 
-function isWeekend(date) {
-  const d = new Date(date);
-  return d.getDay() === 0 || d.getDay() === 6;
-}
-
-function nextWeekday(date) {
-  const d = new Date(date);
-  while (isWeekend(d)) d.setDate(d.getDate() + 1);
-  return d;
-}
-
-function addWeekdays(date, n) {
-  const d = new Date(date);
-  let added = 0;
-  while (added < n) {
-    d.setDate(d.getDate() + 1);
-    if (!isWeekend(d)) added++;
-  }
-  return d;
-}
-
-function toScheduledAt(date, platform) {
-  const ymd = new Date(date).toISOString().split('T')[0];
-  const time = PLATFORM_TIMES[platform] || '15:00:00';
-  return new Date(`${ymd}T${time}+00:00`).toISOString();
-}
-
-/** Find the last scheduled date in the queue, then return 3 weekdays after it. */
-async function findNextAvailableDate() {
-  const { data } = await supabaseAdmin
-    .from('ao_scheduled_posts')
-    .select('scheduled_at')
-    .eq('status', 'scheduled')
-    .order('scheduled_at', { ascending: false })
-    .limit(1);
-
-  if (data && data.length > 0) {
-    const lastDate = new Date(data[0].scheduled_at);
-    return addWeekdays(lastDate, 3);
-  }
-
-  // Queue is empty — start from tomorrow (or next weekday)
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return nextWeekday(tomorrow);
-}
+// Date logic now lives in lib/ao/unifiedScheduler.js, shared with every
+// other content type (journal launches, ideas). This file no longer
+// duplicates its own weekday/gap logic.
 
 function extractCaptionsFromThread(messages) {
   const captionsMap = {};
@@ -136,8 +86,8 @@ export default async function handler(req, res) {
   const captionsMap = extractCaptionsFromThread(threadMessages);
   const sortedCards = [...cards].sort((a, b) => (Number(a.card_index) || 0) - (Number(b.card_index) || 0));
 
-  // Find the next available date from the live queue
-  let currentDate = await findNextAvailableDate();
+  // Find the next available date from the live queue (shared across all content types)
+  let currentDate = await findNextQueueDate(3);
 
   const rows = [];
 

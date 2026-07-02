@@ -2084,24 +2084,24 @@ export default function AutoV2Panel({ onNavigate, className }) {
       if (attrs.twitter) captions.twitter = attrs.twitter;
 
       try {
-        const res = await fetch('/api/ao/auto/attach-captions', {
+        const res = await fetch('/api/ao/auto/schedule-journal-launch', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug: attrs.slug, captions }),
+          body: JSON.stringify({ slug: attrs.slug, title: attrs.title, captions }),
         });
         const json = await res.json().catch(() => ({}));
-        if (!res.ok || !json.ok) throw new Error(json.error || 'Caption attach failed');
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Caption scheduling failed');
         setJournalPublishBanner({
           status: 'success',
           title: attrs.title,
           journalUrl: json.journal_url || '',
-          message: `${json.total} social posts scheduled.`,
+          message: `${json.total} social posts scheduled for ${json.launch_date ? new Date(json.launch_date).toLocaleDateString('en-US', { timeZone: 'America/Chicago', weekday: 'long', month: 'long', day: 'numeric' }) : 'the next open slot'}.`,
         });
       } catch (e) {
         setJournalPublishBanner({
           status: 'error',
           title: attrs.title,
-          message: e.message || 'Could not attach captions',
+          message: e.message || 'Could not schedule captions',
         });
       }
       return;

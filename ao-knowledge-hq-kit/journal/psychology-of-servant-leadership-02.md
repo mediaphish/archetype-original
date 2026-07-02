@@ -54,9 +54,8 @@ When people feel threatened, the brain reroutes energy away from reasoning and c
 Fight. Flight. Freeze.  
 It’s survival mode, useful in a jungle, useless in a meeting.
 
-Kim and Lee’s 2020 study showed it clearly: safety didn’t make teams productive by itself. It made them willing to learn, and that’s what produced results.  
-Another 2023 study by Patil and colleagues found the same pattern: teams that felt safe shared information faster, trusted one another more, and performed better.  
-So safety isn’t a perk. It’s the runway where performance takes off.
+Safety by itself doesn't make teams productive. What it does is make them willing to learn, and that's what produces results. Patil and colleagues' 2023 study in the Open Psychology Journal found the same pattern: teams that felt safe shared information faster, trusted one another more, and performed better.  
+So safety isn't a perk. It's the runway where performance takes off.
 
 ---
 
@@ -76,8 +75,7 @@ When people can anticipate your reaction, they spend their brainpower on solutio
 
 ### Trust and Voice: The Real Engines of Innovation
 
-Putra’s 2025 research wasn’t just another academic exercise.  
-It pulled data from across industries, engineering firms, tech startups, hospitals, creative agencies, and found one consistent thread: the most innovative teams almost always had a servant-minded leader at the top.
+Across every industry I have studied or worked in, engineering firms, tech startups, hospitals, creative agencies, the pattern repeats: the most innovative teams almost always had a servant-minded leader at the top.
 
 Not a “hands-off” leader. Not a “visionary genius.”  
 A servant leader.
@@ -85,7 +83,7 @@ A servant leader.
 Because innovation doesn’t come from command. It comes from permission, the freedom to challenge, to test, to say, “What if?” without fear of punishment.
 
 Servant-minded leaders create that environment instinctively. They remove the hidden cost of fear, replacing it with psychological permission to take risks.  
-That’s what Putra called a climate of trust and voice, and it’s the same pattern you see in every creative system that actually lasts.
+That is a climate of trust and voice, and it is the same pattern you see in every creative system that actually lasts.
 
 Trust gives people the confidence to start.  
 Voice gives them the courage to keep going.  
