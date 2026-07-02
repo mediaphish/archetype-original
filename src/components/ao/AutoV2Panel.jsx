@@ -1324,6 +1324,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [journalPendingPublish, setJournalPendingPublish] = useState(null);
   const [manualPublishOpen, setManualPublishOpen] = useState(false);
   const [manualPublishSlug, setManualPublishSlug] = useState('');
+  const [manualPublishData, setManualPublishData] = useState(null);
+  const [manualPublishFetching, setManualPublishFetching] = useState(false);
   const [manualPublishStatus, setManualPublishStatus] = useState('idle'); // idle | loading | success | error
   const [manualPublishMessage, setManualPublishMessage] = useState('');
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
@@ -2160,45 +2162,43 @@ export default function AutoV2Panel({ onNavigate, className }) {
     const slug = manualPublishSlug.trim();
     if (!slug) return;
 
+    // Step 1: prefetch from disk if we don't have data yet
+    if (!manualPublishData) {
+      setManualPublishFetching(true);
+      setManualPublishStatus('idle');
+      setManualPublishMessage('');
+      try {
+        const prefetchRes = await fetch(`/api/ao/auto/journal-prefetch?slug=${encodeURIComponent(slug)}`);
+        const prefetchJson = await prefetchRes.json().catch(() => ({}));
+        if (!prefetchRes.ok || !prefetchJson.ok) throw new Error(prefetchJson.error || 'Could not load journal file');
+        setManualPublishData(prefetchJson);
+        setManualPublishFetching(false);
+        // Don't publish yet — let the user see the pre-filled data and confirm
+        return;
+      } catch (e) {
+        setManualPublishFetching(false);
+        setManualPublishStatus('error');
+        setManualPublishMessage(e.message || 'Could not load journal file');
+        return;
+      }
+    }
+
+    // Step 2: publish with the prefetched data
     setManualPublishStatus('loading');
     setManualPublishMessage('');
 
     try {
-      // Pull the most recent [PUBLISH_JOURNAL] signal from thread history
-      // so we can get the image_url, title, and content Auto already prepared
-      const allMessages = Array.isArray(messages) ? messages : [];
-      let attrs = {};
-      let journalContent = '';
-
-      for (const m of [...allMessages].reverse()) {
-        if (m.role !== 'assistant') continue;
-        const text = String(m.content || '');
-        const tagMatch = text.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
-        const contentMatch = text.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
-        if (tagMatch) {
-          const pattern = /(\w+)="([^"]*)"/g;
-          let mm;
-          while ((mm = pattern.exec(tagMatch[1])) !== null) {
-            attrs[mm[1]] = mm[2];
-          }
-        }
-        if (contentMatch) {
-          journalContent = contentMatch[1].trim();
-        }
-        if (attrs.slug || journalContent) break;
-      }
-
       const res = await fetch('/api/ao/auto/publish-journal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          slug: attrs.slug || slug,
-          title: attrs.title || slug,
-          content: journalContent || '',
-          summary: attrs.summary || '',
-          publish_date: attrs.publish_date || new Date().toISOString().split('T')[0],
-          categories: attrs.categories ? String(attrs.categories).split(',').map(c => c.trim()).filter(Boolean) : [],
-          image_url: attrs.image_url || '',
+          slug: manualPublishData.slug,
+          title: manualPublishData.title,
+          content: manualPublishData.content,
+          summary: manualPublishData.summary,
+          publish_date: manualPublishData.publish_date,
+          categories: manualPublishData.categories || [],
+          image_url: manualPublishData.image_url || '',
           notify: true,
           notify_delay_ms: 300000,
         }),
@@ -2210,12 +2210,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setManualPublishStatus('success');
       setManualPublishMessage(json.journal_url || 'Published.');
       setManualPublishOpen(false);
-      setJournalPublishBanner({ status: 'success', title: attrs.title || slug, journalUrl: json.journal_url || '' });
+      setManualPublishData(null);
+      setJournalPublishBanner({ status: 'success', title: manualPublishData.title, journalUrl: json.journal_url || '' });
     } catch (e) {
       setManualPublishStatus('error');
       setManualPublishMessage(e.message || 'Publish failed');
     }
-  }, [manualPublishSlug, messages]);
+  }, [manualPublishSlug, manualPublishData]);
 
   const handleRevise = useCallback(() => {
     setInput('Revise — ');
@@ -2677,39 +2678,85 @@ export default function AutoV2Panel({ onNavigate, className }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 space-y-4">
             <h2 className="text-sm font-semibold text-gray-900">Publish Journal Entry</h2>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              This pulls the journal content, image URL, and metadata from Auto&apos;s last signal in this thread and commits it directly to GitHub. No Auto cooperation required.
-            </p>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Slug (confirm)</label>
-              <input
-                type="text"
-                value={manualPublishSlug}
-                onChange={e => setManualPublishSlug(e.target.value)}
-                placeholder="power-vs-authority-part-2-the-build"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-            {manualPublishStatus === 'error' && (
-              <p className="text-xs text-red-600">{manualPublishMessage}</p>
+
+            {!manualPublishData ? (
+              <>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  Enter the slug of the journal entry to publish. The content will be loaded directly from the file on disk.
+                </p>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Slug</label>
+                  <input
+                    type="text"
+                    value={manualPublishSlug}
+                    onChange={e => setManualPublishSlug(e.target.value)}
+                    placeholder="power-vs-authority-part-2-the-build"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                    autoFocus
+                  />
+                </div>
+                {manualPublishStatus === 'error' && (
+                  <p className="text-xs text-red-600">{manualPublishMessage}</p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleManualPublish}
+                    disabled={!manualPublishSlug.trim() || manualPublishFetching}
+                    className="flex-1 py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-colors"
+                  >
+                    {manualPublishFetching ? 'Loading...' : 'Load entry'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setManualPublishOpen(false); setManualPublishStatus('idle'); setManualPublishMessage(''); setManualPublishData(null); setManualPublishSlug(''); }}
+                    className="py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="space-y-2 text-xs text-gray-700">
+                  <div><span className="font-medium text-gray-500">Title:</span> {manualPublishData.title}</div>
+                  <div><span className="font-medium text-gray-500">Slug:</span> {manualPublishData.slug}</div>
+                  <div><span className="font-medium text-gray-500">Publish date:</span> {manualPublishData.publish_date}</div>
+                  <div><span className="font-medium text-gray-500">Content:</span> {manualPublishData.content ? `${manualPublishData.content.slice(0, 80)}…` : 'None found'}</div>
+                  {!manualPublishData.image_url && (
+                    <div>
+                      <label className="block font-medium text-gray-500 mb-1">Image URL (required)</label>
+                      <input
+                        type="text"
+                        placeholder="https://..."
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs"
+                        onChange={e => setManualPublishData(prev => ({ ...prev, image_url: e.target.value }))}
+                      />
+                    </div>
+                  )}
+                </div>
+                {manualPublishStatus === 'error' && (
+                  <p className="text-xs text-red-600">{manualPublishMessage}</p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleManualPublish}
+                    disabled={manualPublishStatus === 'loading'}
+                    className="flex-1 py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-colors"
+                  >
+                    {manualPublishStatus === 'loading' ? 'Publishing...' : 'Publish to archetypeoriginal.com'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setManualPublishData(null); setManualPublishStatus('idle'); setManualPublishMessage(''); }}
+                    className="py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    Back
+                  </button>
+                </div>
+              </>
             )}
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleManualPublish}
-                disabled={!manualPublishSlug.trim() || manualPublishStatus === 'loading'}
-                className="flex-1 py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-colors"
-              >
-                {manualPublishStatus === 'loading' ? 'Publishing...' : 'Publish to archetypeoriginal.com'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setManualPublishOpen(false); setManualPublishStatus('idle'); setManualPublishMessage(''); }}
-                className="py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
           </div>
         </div>
       )}

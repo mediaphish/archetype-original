@@ -344,6 +344,7 @@
     { "src": "/api/ao/auto/metrics-diagnostic", "dest": "/api/ao/auto/metrics-diagnostic.js" },
     { "src": "/api/ao/auto/attach-captions", "dest": "/api/ao/auto/attach-captions.js" },
     { "src": "/api/ao/auto/schedule-journal-launch", "dest": "/api/ao/auto/schedule-journal-launch.js" },
+    { "src": "/api/ao/auto/journal-prefetch", "dest": "/api/ao/auto/journal-prefetch.js" },
     { "src": "/api/ao/auto/content-draft", "dest": "/api/ao/auto/content-draft.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
