@@ -8809,14 +8809,14 @@
       "body": "Because intent is private and shadow is experienced.\n\nYou know what you meant. Nobody else does. What people experience is your tone, your reactions, what you tolerate, and how consistently your behavior matches what you say.\n\nCulture responds to what leaders project, not what they internally intend. Closing that gap is the actual work of leadership."
     },
     {
-      "title": "Do results matter in this philosophy?",
-      "slug": "philosophy-do-results-matter",
+      "title": "How early does the leader's shadow form?",
+      "slug": "leader-shadow-early",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
       "created_at": "2026-07-02T20:03:16.262Z",
@@ -8828,17 +8828,17 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes. Results matter.\n\nBut they're not the only thing that matters, and they're not the right sole measure of leadership quality.\n\nEvery result has a hidden cost or benefit attached to it: trust, fatigue, clarity, stability, or fear. This work is concerned with how results are produced, because that determines whether success compounds over time or eventually collapses under its own weight.\n\nShort-term wins that damage culture always cost more than they appear to."
+      "body": "Immediately.\n\nPeople calibrate expectations based on early reactions, tone, and what gets tolerated. Long before formal systems are in place, the shadow is already shaping how people show up.\n\nThis is why the first weeks and months in a leadership role matter so much. The norms that form early are the hardest to change later."
     },
     {
-      "title": "Is Archetype Original faith-based?",
-      "slug": "philosophy-faith-based",
+      "title": "Why does the leader's shadow matter more than intent?",
+      "slug": "shadow-vs-intent",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
       "created_at": "2026-07-02T20:03:16.262Z",
@@ -8850,17 +8850,17 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Archetype Original is values-driven, not doctrine-driven.\n\nYou'll feel moral gravity in the work: responsibility, dignity, restraint, truth. My faith informs how I see leadership and why I care about it the way I do. But the work itself is designed to be useful to leaders regardless of their belief system.\n\nThe framework is grounded in lived leadership realities. It doesn't require any particular theological agreement to apply."
+      "body": "Because intent is private and shadow is experienced.\n\nYou know what you meant. Nobody else does. What people experience is your tone, your reactions, what you tolerate, and how consistently your behavior matches what you say.\n\nCulture responds to what leaders project, not what they internally intend. Closing that gap is the actual work of leadership."
     },
     {
-      "title": "Does Archetype Original expect leaders to be perfect?",
-      "slug": "philosophy-perfection",
+      "title": "What is the difference between signals and symptoms?",
+      "slug": "signals-vs-symptoms",
       "type": "faq",
       "tags": [
-        "philosophy"
+        "culture-science"
       ],
       "categories": [
-        "philosophy"
+        "culture-science"
       ],
       "status": "published",
       "created_at": "2026-07-02T20:03:16.262Z",
@@ -8872,11 +8872,55 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "No. Perfection is not the standard here.\n\nPattern correction is.\n\nLeaders will make mistakes. The question is whether they notice, acknowledge, and adjust, or whether they rationalize and repeat. That pattern of correction, done consistently and openly, is what builds the trust that perfection never could."
+      "body": "Signals are early indicators. Symptoms are late-stage consequences.\n\nTurnover is a symptom. The trust erosion that drove it was a signal, visible months earlier if you knew where to look. Conflict is a symptom. The communication breakdown underneath it was a signal.\n\nCulture Science trains leaders to respond to signals because by the time symptoms appear, the cost is already significant. Waiting for symptoms is the most expensive way to manage an organization."
     },
     {
-      "title": "How is this different from performance-driven leadership?",
-      "slug": "philosophy-performance-vs-this",
+      "title": "Why does Culture Science treat silence as data?",
+      "slug": "silence-as-data",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.671Z",
+      "updated_at": "2026-07-02T19:55:23.671Z",
+      "summary": "Because silence is rarely neutrality.\n\nWhen teams stop speaking up, it usually signals one of three things: learned futility, fear of consequences, or exhaustion from being unheard. None of those are...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Because silence is rarely neutrality.\n\nWhen teams stop speaking up, it usually signals one of three things: learned futility, fear of consequences, or exhaustion from being unheard. None of those are fine.\n\nLeaders who interpret silence as agreement are making a costly assumption. Culture Science trains leaders to investigate silence before drawing conclusions from it."
+    },
+    {
+      "title": "Why does stress amplify leadership patterns?",
+      "slug": "stress-amplifies-patterns",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.671Z",
+      "updated_at": "2026-07-02T19:55:23.671Z",
+      "summary": "Stress doesn't create behavior. It reveals it.\n\nUnder calm conditions, leaders can manage their habits. Under pressure, the deeply ingrained patterns surface. The leader who tends toward control beco...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Stress doesn't create behavior. It reveals it.\n\nUnder calm conditions, leaders can manage their habits. Under pressure, the deeply ingrained patterns surface. The leader who tends toward control becomes more controlling. The one who avoids conflict avoids it more. The one who leads with fear intensifies it.\n\nThis is why development that only happens in low-pressure environments doesn't hold when it matters most."
+    },
+    {
+      "title": "Why is clarity such a central theme?",
+      "slug": "philosophy-why-clarity",
       "type": "faq",
       "tags": [
         "philosophy"
@@ -8894,7 +8938,139 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Performance-driven leadership isn't wrong. It's incomplete.\n\nWhen performance becomes the only lens, leaders tend to export pressure instead of carrying it. They push harder when results slip. They interpret people problems as execution problems. And the culture quietly erodes while the numbers still look acceptable.\n\nThis work sits alongside performance, not against it. It asks what kind of environment produces the performance you want, and whether you're actually building that environment or just demanding outcomes from one that can't support them."
+      "body": "Because ambiguity is expensive.\n\nWhen people aren't sure what matters, they fill in the gaps themselves. Each person fills them differently. The organization starts moving in slightly different directions, and the friction compounds.\n\nClarity isn't just about communication. It's about creating an environment where people can make good decisions without constant management. That's what makes it a leadership capability, not just a communication skill."
+    },
+    {
+      "title": "Why does this philosophy talk so much about pressure?",
+      "slug": "philosophy-why-pressure",
+      "type": "faq",
+      "tags": [
+        "philosophy"
+      ],
+      "categories": [
+        "philosophy"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.670Z",
+      "updated_at": "2026-07-02T19:55:23.670Z",
+      "summary": "Because pressure reveals truth.\n\nIn calm conditions, almost any leader can look good. Decisions are easier. People are more forgiving. The stakes are lower. Under pressure, the real patterns surface....",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Because pressure reveals truth.\n\nIn calm conditions, almost any leader can look good. Decisions are easier. People are more forgiving. The stakes are lower. Under pressure, the real patterns surface. Values get tested instead of discussed. Habits take over.\n\nThe leadership that matters is the leadership that holds up when things get hard. That's what this work prepares people for."
+    },
+    {
+      "title": "Why put so much emphasis on responsibility?",
+      "slug": "philosophy-why-responsibility",
+      "type": "faq",
+      "tags": [
+        "philosophy"
+      ],
+      "categories": [
+        "philosophy"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.670Z",
+      "updated_at": "2026-07-02T19:55:23.670Z",
+      "summary": "Because leadership always has consequences.\n\nLeaders don't just make decisions for themselves. Every decision ripples outward into how people experience work, whether they feel safe, whether they can...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Because leadership always has consequences.\n\nLeaders don't just make decisions for themselves. Every decision ripples outward into how people experience work, whether they feel safe, whether they can be honest, whether they believe their effort matters.\n\nResponsibility is the thing that connects authority to consequence. Without it, leadership becomes just another form of power over people rather than service to them."
+    },
+    {
+      "title": "Why servant leadership?",
+      "slug": "philosophy-why-servant-leadership",
+      "type": "faq",
+      "tags": [
+        "philosophy"
+      ],
+      "categories": [
+        "philosophy"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.670Z",
+      "updated_at": "2026-07-02T19:55:23.670Z",
+      "summary": "Because leadership is not primarily about authority. It's about responsibility.\n\nServant leadership is the practice of carrying what others cannot carry yet: pressure, complexity, and consequence. Wh...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Because leadership is not primarily about authority. It's about responsibility.\n\nServant leadership is the practice of carrying what others cannot carry yet: pressure, complexity, and consequence. When leaders absorb pressure instead of passing it down, teams gain clarity and stability. They can do their best work because they're not spending energy managing the emotional volatility coming from above.\n\nThis approach doesn't reduce standards. It makes them sustainable. And it produces the kind of culture where performance and trust build together instead of trading against each other."
+    },
+    {
+      "title": "What is pressure transmission in leadership?",
+      "slug": "pressure-transmission",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.670Z",
+      "updated_at": "2026-07-02T19:55:23.670Z",
+      "summary": "Pressure transmission is what happens when leaders pass stress downward instead of carrying it.\n\nThe deadline pressure comes from above. The leader absorbs it and immediately passes it to the team. T...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Pressure transmission is what happens when leaders pass stress downward instead of carrying it.\n\nThe deadline pressure comes from above. The leader absorbs it and immediately passes it to the team. The team absorbs it and starts making decisions driven by anxiety rather than clarity. Quality drops. Trust erodes. Burnout follows.\n\nCulture Science treats pressure as a leadership responsibility. The leader's job is to be a buffer, not a conduit."
+    },
+    {
+      "title": "Why does cultural repair take time even after change begins?",
+      "slug": "repair-requires-time",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.670Z",
+      "updated_at": "2026-07-02T19:55:23.670Z",
+      "summary": "Because teams wait for patterns to prove real before they believe them.\n\nThey've usually seen attempts at change before. Announcements. New initiatives. Temporarily different behavior that gradually...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Because teams wait for patterns to prove real before they believe them.\n\nThey've usually seen attempts at change before. Announcements. New initiatives. Temporarily different behavior that gradually returned to the familiar pattern. They're not being cynical. They're being accurate about their experience.\n\nNew behavior has to displace old expectations, and that takes repetition over time. There's no shortcut. The leader who understands this leads differently than the one who expects change to happen faster than trust can rebuild."
+    },
+    {
+      "title": "Why don't replacement cycles fix broken cultures?",
+      "slug": "replacement-cycles",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.670Z",
+      "updated_at": "2026-07-02T19:55:23.670Z",
+      "summary": "Because the conditions that broke the last person are still in place.\n\nOrganizations that cycle through people without changing leadership behavior or cultural conditions just keep producing the same...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Because the conditions that broke the last person are still in place.\n\nOrganizations that cycle through people without changing leadership behavior or cultural conditions just keep producing the same outcomes with different faces. The new person gets optimistic early and burned out later. The pattern repeats.\n\nCulture Science focuses on system repair. Replace the conditions, and you change what's possible for the people inside them."
     },
     {
       "title": "Is Archetype Original a form of soft leadership?",
@@ -9953,14 +10129,14 @@
       "body": "Archy is not a substitute for leadership responsibility.\n\nHe's not here to make your decisions, validate avoidance, give you a script to hide behind, or reduce leadership to formulas you can apply without thinking.\n\nIf you're looking for certainty without ownership, Archy will frustrate you. That's by design. The work doesn't offer shortcuts. Neither does he."
     },
     {
-      "title": "Can I hire Bart to work directly with me as a leader?",
-      "slug": "engagement-hire-bart-one-on-one",
+      "title": "How does leadership identity change under pressure?",
+      "slug": "identity-shifts-under-pressure",
       "type": "faq",
       "tags": [
-        "engagement"
+        "culture-science"
       ],
       "categories": [
-        "engagement"
+        "culture-science"
       ],
       "status": "published",
       "created_at": "2026-07-02T20:03:16.257Z",
@@ -9972,7 +10148,73 @@
         "kind": "faq",
         "original_source": "site-content"
       },
-      "body": "Yes. And honestly, this is where the work tends to go deepest.\n\nWhat I do one-on-one isn't coaching in the traditional sense. There's no script, no framework I'm walking you through, no pressure to show up as a polished version of yourself. That's not useful to either of us.\n\nWhat I'm actually doing is helping you see patterns. In your decisions, your reactions, your leadership under pressure. And understanding how those patterns are shaping the people around you, often in ways you haven't named yet.\n\nThis work is especially useful for leaders who feel the weight of what they're carrying but don't have a place to think about it honestly. Most leaders don't. The room where that's possible is harder to find than it should be."
+      "body": "Pressure compresses identity.\n\nUnder enough stress, leaders default to whatever pattern is most deeply ingrained, often control, speed, or self-protection. The values they've articulated recede. The habits take over.\n\nThis is why leadership development that only happens in calm conditions doesn't hold. The work has to include pressure, or it's not preparing anyone for the actual job."
+    },
+    {
+      "title": "What is the difference between leadership image and responsibility?",
+      "slug": "image-vs-responsibility",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.663Z",
+      "updated_at": "2026-07-02T19:55:23.663Z",
+      "summary": "Image is about how leadership looks. Responsibility is about what leadership produces.\n\nA leader managing image is asking: how do I appear? A leader accepting responsibility is asking: what am I crea...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "Image is about how leadership looks. Responsibility is about what leadership produces.\n\nA leader managing image is asking: how do I appear? A leader accepting responsibility is asking: what am I creating?\n\nCulture Science focuses on consequence, not perception. What happens to people inside the environment you lead? That question has an answer whether you look at it or not."
+    },
+    {
+      "title": "What is the leader's shadow?",
+      "slug": "leader-shadow",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.663Z",
+      "updated_at": "2026-07-02T19:55:23.663Z",
+      "summary": "The leader's shadow is the unspoken influence of your behavior, reactions, and habits on the people around you.\n\nYou don't have to say anything. The shadow is always present. People read your tone in...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "The leader's shadow is the unspoken influence of your behavior, reactions, and habits on the people around you.\n\nYou don't have to say anything. The shadow is always present. People read your tone in the hallway. They notice what you tolerate. They calibrate their own behavior to match what seems safe or valued.\n\nMost leaders underestimate how much their shadow shapes the room, because they're focused on what they said rather than what everyone else felt."
+    },
+    {
+      "title": "What happens when leaders stop being human under pressure?",
+      "slug": "leaders-stop-being-human",
+      "type": "faq",
+      "tags": [
+        "culture-science"
+      ],
+      "categories": [
+        "culture-science"
+      ],
+      "status": "published",
+      "created_at": "2026-07-02T19:55:23.663Z",
+      "updated_at": "2026-07-02T19:55:23.663Z",
+      "summary": "They create distance. And teams respond by creating more of it.\n\nWhen leaders suppress their own limits, pretend certainty they don't have, and disconnect from what they're actually experiencing, peo...",
+      "featured": false,
+      "featured_on": [],
+      "source": {
+        "kind": "faq",
+        "original_source": "site-content"
+      },
+      "body": "They create distance. And teams respond by creating more of it.\n\nWhen leaders suppress their own limits, pretend certainty they don't have, and disconnect from what they're actually experiencing, people around them feel it. They stop being honest. They stop asking real questions. They start performing compliance rather than engaging.\n\nThe irony is that leaders who try to appear invulnerable under pressure often create more instability, not less."
     },
     {
       "title": "Can I hire Bart to speak to my team?",
