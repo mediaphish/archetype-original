@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
-  const { message, thread_id } = req.body || {};
+  const { message, thread_id, attachments } = req.body || {};
 
   if (!String(message || '').trim()) {
     return res.status(400).json({ ok: false, error: 'message required' });
@@ -41,12 +41,36 @@ export default async function handler(req, res) {
         content: String(m.content || ''),
       }));
 
+    // Build the current user message content — include image attachments if present.
+    // The Anthropic API accepts multi-part content arrays with image blocks.
+    // This allows Auto to see uploaded images rather than treating them as invisible.
+    let currentMessageContent;
+    if (Array.isArray(attachments) && attachments.length > 0) {
+      const contentParts = [];
+      for (const att of attachments) {
+        if (att.type === 'image' && att.data && att.mediaType) {
+          contentParts.push({
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: att.mediaType,
+              data: att.data,
+            },
+          });
+        }
+      }
+      contentParts.push({ type: 'text', text: userMessage });
+      currentMessageContent = contentParts;
+    } else {
+      currentMessageContent = userMessage;
+    }
+
     // Always inject live queue data into Auto's context.
     // A CMO always knows the queue state — gating this behind intent detection
     // caused Auto to ask Bart for queue information it should already have.
     const scheduleContext = await getScheduleContext();
 
-    const result = await runAutoChat(history, userMessage, scheduleContext);
+    const result = await runAutoChat(history, currentMessageContent, scheduleContext, userMessage);
 
     if (!result.ok) {
       return res.status(500).json({ ok: false, error: result.error || 'Auto reply failed' });
