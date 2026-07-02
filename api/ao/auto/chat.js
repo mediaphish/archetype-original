@@ -14,6 +14,61 @@ import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuot
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
+import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+
+/**
+ * Detect if Bart approved a journal draft, devotional draft, or caption set
+ * in this exchange, and save it to ao_content_drafts automatically.
+ * Auto has been claiming to save drafts but was never actually writing to the table.
+ * This wires the save at the server level so it happens regardless of Auto's behavior.
+ */
+async function trySaveDraftFromExchange(userMessage, assistantReply, email) {
+  if (!email || !assistantReply) return;
+
+  const userLower = String(userMessage || '').toLowerCase();
+  const isApproval = /\b(approved?|looks good|go ahead|publish it|that.s it|perfect|yes)\b/i.test(userLower);
+  if (!isApproval) return;
+
+  // Check if the assistant reply or recent context contains journal content
+  const journalMatch = assistantReply.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
+  const publishMatch = assistantReply.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+
+  if (journalMatch && publishMatch) {
+    const attrs = {};
+    const attrPattern = /(\w+)="([^"]*)"/g;
+    let m;
+    while ((m = attrPattern.exec(publishMatch[1])) !== null) {
+      attrs[m[1]] = m[2];
+    }
+
+    if (attrs.slug && attrs.title) {
+      try {
+        await supabaseAdmin
+          .from('ao_content_drafts')
+          .upsert({
+            created_by_email: email.toLowerCase().trim(),
+            kind: 'journal',
+            series_slug: attrs.slug.replace(/-part-\d+.*$/, '') || attrs.slug,
+            part_number: parseInt((attrs.slug.match(/-part-(\d+)/i) || [])[1] || '1', 10),
+            title: attrs.title,
+            slug: attrs.slug,
+            content: journalMatch[1].trim(),
+            summary: attrs.summary || '',
+            image_url: attrs.image_url || null,
+            status: 'approved',
+            approved_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'created_by_email,series_slug,part_number,kind',
+            ignoreDuplicates: false,
+          });
+        console.log(`[chat.js] Draft saved: ${attrs.slug}`);
+      } catch (err) {
+        console.error('[chat.js] Draft save failed:', err?.message || err);
+      }
+    }
+  }
+}
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -109,6 +164,12 @@ export default async function handler(req, res) {
       mode: 'plan',
       content: result.reply,
       meta: { auto_v2: true },
+    });
+
+    // Save draft to ao_content_drafts if this exchange contains an approved journal draft.
+    // This runs server-side regardless of Auto's behavior — Auto cannot save drafts itself.
+    trySaveDraftFromExchange(userMessage, result.reply, auth.email).catch((err) => {
+      console.error('[chat.js] trySaveDraftFromExchange error:', err?.message || err);
     });
 
     const finalState = await getAutoThreadState(auth.email, thread.id);

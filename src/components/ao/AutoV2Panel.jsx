@@ -1545,6 +1545,17 @@ export default function AutoV2Panel({ onNavigate, className }) {
       if (plain.length >= 200) transcript = plain;
     }
 
+    // Only fire if the user's current message contains a transcript or explicitly
+    // asks to process an episode. Do not fire based on old signals in thread history.
+    const currentUserMessage = String(lastUser?.content || '').trim();
+    const isEpisodeRequest =
+      /\[EPISODE_TRANSCRIPT\]/i.test(currentUserMessage) ||
+      /process.{0,20}episode/i.test(currentUserMessage) ||
+      /episode.{0,20}transcript/i.test(currentUserMessage) ||
+      currentUserMessage.length > 500; // Pasted transcript
+
+    if (!isEpisodeRequest) return;
+
     if (!transcript || transcript.length < 200) return;
 
     const processKey = `${activeThreadId || 'thread'}:${transcript.slice(0, 120)}`;
@@ -2472,7 +2483,39 @@ export default function AutoV2Panel({ onNavigate, className }) {
             </button>
             <button
               type="button"
-              onClick={() => setManualPublishOpen(true)}
+              onClick={() => {
+                // Try to pre-fill slug from thread title or last PUBLISH_JOURNAL signal
+                const threadTitle = activeThreadId
+                  ? (threads.find(t => t.id === activeThreadId)?.title || '')
+                  : '';
+
+                // Check last 20 messages for a PUBLISH_JOURNAL signal
+                const allMsgs = Array.isArray(messages) ? messages : [];
+                let detectedSlug = '';
+
+                for (const m of [...allMsgs].reverse()) {
+                  if (m.role !== 'assistant') continue;
+                  const text = String(m.content || '');
+                  const slugMatch = text.match(/\[PUBLISH_JOURNAL[^\]]*\bslug="([^"]+)"/i);
+                  if (slugMatch) {
+                    detectedSlug = slugMatch[1];
+                    break;
+                  }
+                }
+
+                // Fall back to thread title converted to slug format
+                if (!detectedSlug && threadTitle && threadTitle !== 'Auto') {
+                  detectedSlug = threadTitle
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+                }
+
+                if (detectedSlug) setManualPublishSlug(detectedSlug);
+                setManualPublishOpen(true);
+              }}
               className="text-xs font-medium text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Publish Journal
