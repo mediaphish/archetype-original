@@ -1330,6 +1330,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [manualPublishFetching, setManualPublishFetching] = useState(false);
   const [manualPublishStatus, setManualPublishStatus] = useState('idle'); // idle | loading | success | error
   const [manualPublishMessage, setManualPublishMessage] = useState('');
+  const [linkedinTokenWarning, setLinkedinTokenWarning] = useState(null);
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [episodeDraft, setEpisodeDraft] = useState(null);
   const [episodeProcessBanner, setEpisodeProcessBanner] = useState(null);
@@ -1779,6 +1780,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
       if (!sessionRes.ok || !sessionJson.ok) {
         throw new Error(sessionJson.error || 'Could not load Auto');
+      }
+
+      if (sessionJson.linkedin_token_status?.status === 'expired' ||
+          sessionJson.linkedin_token_status?.status === 'expiring_soon') {
+        setLinkedinTokenWarning(sessionJson.linkedin_token_status);
+      } else {
+        setLinkedinTokenWarning(null);
       }
 
       const { mainRows, archivedRows } = mergeThreadRows(sessionJson, draftsJson);
@@ -2433,6 +2441,27 @@ export default function AutoV2Panel({ onNavigate, className }) {
           }`}
           style={!isMobile && artifactOpen ? { width: `${splitPercent}%`, flexShrink: 0 } : undefined}
         >
+        {linkedinTokenWarning && (
+          <div className={`flex-shrink-0 flex items-center justify-between gap-3 px-4 py-2 text-xs ${
+            linkedinTokenWarning.status === 'expired'
+              ? 'bg-red-50 border-b border-red-200 text-red-800'
+              : 'bg-amber-50 border-b border-amber-200 text-amber-800'
+          }`}>
+            <span>
+              {linkedinTokenWarning.status === 'expired'
+                ? 'LinkedIn token expired — all LinkedIn posts are failing. Reconnect now.'
+                : `LinkedIn token expires in ${linkedinTokenWarning.daysRemaining} days — reconnect before posts start failing.`}
+            </span>
+            <a
+              href="/ao/analyst#settings"
+              className={`font-medium underline flex-shrink-0 ${
+                linkedinTokenWarning.status === 'expired' ? 'text-red-700' : 'text-amber-700'
+              }`}
+            >
+              Reconnect
+            </a>
+          </div>
+        )}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
           <div className="flex items-center gap-3">
             {!isMobile && (
