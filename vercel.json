@@ -346,6 +346,7 @@
     { "src": "/api/ao/auto/schedule-journal-launch", "dest": "/api/ao/auto/schedule-journal-launch.js" },
     { "src": "/api/ao/auto/journal-prefetch", "dest": "/api/ao/auto/journal-prefetch.js" },
     { "src": "/api/ao/auto/library", "dest": "/api/ao/auto/library.js" },
+    { "src": "/api/ao/auto/series-context", "dest": "/api/ao/auto/series-context.js" },
     { "src": "/api/ao/auto/content-draft", "dest": "/api/ao/auto/content-draft.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }

@@ -474,6 +474,22 @@ export default async function handler(req, res) {
       captionsError = captionErr?.message || 'Caption scheduling error';
     }
 
+    // Trigger immediate editorial memory rebuild so the new post is available
+    // to Auto in the next session without waiting for the weekly cron.
+    // Fire-and-forget — never blocks the publish response.
+    (async () => {
+      try {
+        const ownerEmail = String(process.env.AO_OWNER_EMAIL || '').toLowerCase().trim();
+        if (ownerEmail) {
+          const { rebuildEditorialMemory } = await import('../../../lib/ao/editorialMemory.js');
+          const result = await rebuildEditorialMemory({ email: ownerEmail });
+          console.log(`[publish-journal] Editorial memory rebuilt after publish: ${result.corpusInserted} corpus docs, ${result.socialInserted} social posts`);
+        }
+      } catch (rebuildErr) {
+        console.error('[publish-journal] Editorial memory rebuild failed (non-blocking):', rebuildErr?.message || rebuildErr);
+      }
+    })();
+
     return res.status(200).json({
       ok: true,
       slug: safeSlug,
