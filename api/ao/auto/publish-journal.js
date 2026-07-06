@@ -194,7 +194,7 @@ const JOURNAL_LAUNCH_CHANNEL_MAP = [
  * Returns an array of { platform, account_id, label, text, scheduled_at } objects.
  * Returns empty array if no captions block found.
  */
-async function parseSocialCaptions(body, slug, journalUrl) {
+async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
   const captionsMatch = body.match(/\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i);
   if (!captionsMatch) return [];
 
@@ -231,6 +231,7 @@ async function parseSocialCaptions(body, slug, journalUrl) {
       scheduled_at: scheduledAt,
       text,
       caption: text,
+      image_url: imageUrl || null,
       status: 'scheduled',
       source_kind: 'journal_launch',
       intent: {
@@ -454,7 +455,7 @@ export default async function handler(req, res) {
     let captionsScheduled = 0;
     let captionsError = null;
     try {
-      const captionRows = await parseSocialCaptions(content, safeSlug, journalUrl);
+      const captionRows = await parseSocialCaptions(content, safeSlug, journalUrl, image_url || '');
       if (captionRows.length > 0) {
         const { data: captionData, error: captionInsertError } = await supabaseAdmin
           .from('ao_scheduled_posts')
