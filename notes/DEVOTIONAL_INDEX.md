@@ -194,6 +194,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-07-05 | Let No Corrupting Talk Come Out | Ephesians 4:29–30 (ESV) | `let-no-corrupting-talk-come-out` | `2026-07-05-let-no-corrupting-talk-come-out.md` |
 | 2026-07-06 | The Tongue Is a Fire | James 3:5–6 (ESV) | `the-tongue-is-a-fire` | `2026-07-06-the-tongue-is-a-fire.md` |
 | 2026-07-07 | No One Can Tame the Tongue | James 3:7–8 (ESV) | `no-one-can-tame-the-tongue` | `2026-07-07-no-one-can-tame-the-tongue.md` |
+| 2026-07-08 | Guard Your Mouth | Proverbs 13:3 (ESV) | `guard-your-mouth` | `2026-07-08-guard-your-mouth.md` |
+| 2026-07-09 | Even a Fool Is Counted Wise | Proverbs 17:27–28 (ESV) | `even-a-fool-is-counted-wise` | `2026-07-09-even-a-fool-is-counted-wise.md` |
+| 2026-07-10 | A Word Fitly Spoken | Proverbs 25:11 (ESV) | `a-word-fitly-spoken` | `2026-07-10-a-word-fitly-spoken.md` |
+| 2026-07-11 | A Time to Keep Silence | Ecclesiastes 3:7 (ESV) | `a-time-to-keep-silence` | `2026-07-11-a-time-to-keep-silence.md` |
+| 2026-07-12 | Whoever Restrains His Words | Proverbs 10:19 (ESV) | `whoever-restrains-his-words` | `2026-07-12-whoever-restrains-his-words.md` |
+| 2026-07-13 | The Heart of the Wise Weighs | Proverbs 15:28 (ESV) | `the-heart-of-the-wise-weighs` | `2026-07-13-the-heart-of-the-wise-weighs.md` |
+| 2026-07-14 | The Discerning Heart Speaks Well | Proverbs 16:21 (ESV) | `the-discerning-heart-speaks-well` | `2026-07-14-the-discerning-heart-speaks-well.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
