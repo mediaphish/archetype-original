@@ -1342,7 +1342,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [error, setError] = useState('');
   const [artifact, setArtifact] = useState(null);
   const [artifactOpen, setArtifactOpen] = useState(false);
-  const [pendingFile, setPendingFile] = useState(null);
+  const [pendingFiles, setPendingFiles] = useState([]);
   const [startingNew, setStartingNew] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generatedImages, setGeneratedImages] = useState([]);
@@ -1899,7 +1899,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setArtifactOpen(false);
     setMobileArtifactOpen(false);
     setArtifactUnread(false);
-    setPendingFile(null);
+    setPendingFiles([]);
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
     setCurrentCardIndex(0);
@@ -1929,79 +1929,96 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }, [startingNew, sending, loading, loadThreadList, syncArtifactFromMessages]);
 
   const handleFileSelect = useCallback((e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setPendingFile({
-        file,
-        name: file.name,
-        dataUrl: ev.target.result,
-        type: file.type,
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const readers = files.map((file) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          resolve({
+            file,
+            name: file.name,
+            dataUrl: ev.target.result,
+            type: file.type,
+          });
+        };
+        reader.readAsDataURL(file);
       });
-    };
-    reader.readAsDataURL(file);
+    });
+
+    Promise.all(readers).then((results) => {
+      setPendingFiles((prev) => [...prev, ...results]);
+    });
+
     e.target.value = '';
   }, []);
 
-  async function buildOutgoingMessage(text, fileSnap) {
+  async function buildOutgoingMessage(text, fileSnaps) {
     let body = String(text || '').trim();
-    const mime = String(fileSnap?.type || '').toLowerCase();
-    const isText =
-      mime === 'text/plain' ||
-      mime === 'text/markdown' ||
-      /\.(txt|md)$/i.test(fileSnap?.name || '');
-    const isImage = mime.startsWith('image/');
+    const snaps = Array.isArray(fileSnaps) ? fileSnaps : (fileSnaps ? [fileSnaps] : []);
 
-    if (fileSnap?.file && isText) {
-      try {
-        const raw = await fileSnap.file.text();
-        const clipped = raw.length > 12000 ? `${raw.slice(0, 12000)}\n…` : raw;
-        body = body
-          ? `${body}\n\n--- Attached file: ${fileSnap.name} ---\n${clipped}`
-          : `[Attached file: ${fileSnap.name}]\n\n${clipped}`;
-      } catch (_) {
+    for (const fileSnap of snaps) {
+      const mime = String(fileSnap?.type || '').toLowerCase();
+      const isText =
+        mime === 'text/plain' ||
+        mime === 'text/markdown' ||
+        /\.(txt|md)$/i.test(fileSnap?.name || '');
+
+      if (fileSnap?.file && isText) {
+        try {
+          const raw = await fileSnap.file.text();
+          const clipped = raw.length > 12000 ? `${raw.slice(0, 12000)}\n…` : raw;
+          body = body
+            ? `${body}\n\n--- Attached file: ${fileSnap.name} ---\n${clipped}`
+            : `[Attached file: ${fileSnap.name}]\n\n${clipped}`;
+        } catch (_) {
+          body = body || `[Attached file: ${fileSnap.name}]`;
+        }
+      } else if (!fileSnap?.type?.startsWith('image/') && fileSnap) {
         body = body || `[Attached file: ${fileSnap.name}]`;
       }
-    } else if (fileSnap?.file && isImage) {
-      // For images, we keep the body text as-is and let the caller
-      // extract the base64 data separately for the attachments array.
-      // Just ensure there is some body text so the message is not empty.
-      body = body || 'I uploaded an image.';
-    } else if (fileSnap) {
-      body = body || `[Attached file: ${fileSnap.name}]`;
     }
-    return body;
+
+    if (!body && snaps.some(s => s?.type?.startsWith('image/'))) {
+      body = snaps.length === 1 ? 'I uploaded an image.' : `I uploaded ${snaps.length} images.`;
+    }
+
+    return body || '';
   }
 
   const sendMessage = useCallback(
     async (messageText) => {
       const textInput = messageText !== undefined ? String(messageText) : input;
-      const fileSnap = pendingFile;
+      const fileSnaps = pendingFiles;
 
-      if ((!textInput.trim() && !fileSnap) || sending) return;
+      if ((!textInput.trim() && pendingFiles.length === 0) || sending) return;
 
       let outgoing = '';
       try {
-        outgoing = await buildOutgoingMessage(textInput, fileSnap);
+        outgoing = await buildOutgoingMessage(textInput, fileSnaps);
       } catch (_) {
-        outgoing = textInput.trim() || (fileSnap ? `[Attached file: ${fileSnap.name}]` : '');
+        outgoing = textInput.trim() || (fileSnaps.length > 0 ? `[Attached: ${fileSnaps.map((f) => f.name).join(', ')}]` : '');
       }
 
       if (!String(outgoing).trim()) return;
 
       const displayText =
         textInput.trim() ||
-        (fileSnap ? `[Attached: ${fileSnap.name}]` : outgoing.slice(0, 200));
+        (fileSnaps.length === 1
+          ? `[Attached: ${fileSnaps[0].name}]`
+          : fileSnaps.length > 1
+            ? `[Attached: ${fileSnaps.length} files]`
+            : outgoing.slice(0, 200));
 
       const optimisticMsg = {
         role: 'user',
         content: displayText,
         id: `opt-${Date.now()}`,
-        meta: fileSnap?.type?.startsWith('image/') ? { image_url: fileSnap.dataUrl } : null,
+        meta: fileSnaps[0]?.type?.startsWith('image/') ? { image_url: fileSnaps[0].dataUrl } : null,
       };
 
-      setPendingFile(null);
+      setPendingFiles([]);
       setInput('');
       setMessages((prev) => [...prev, optimisticMsg]);
       setSending(true);
@@ -2013,22 +2030,22 @@ export default function AutoV2Panel({ onNavigate, className }) {
         // Build attachments array for image uploads
         // Images are sent as base64 content blocks for the Anthropic vision API
         const attachments = [];
-        if (fileSnap?.type?.startsWith('image/') && fileSnap?.dataUrl) {
-          try {
-            // dataUrl format: "data:image/png;base64,<data>"
-            const [header, b64data] = fileSnap.dataUrl.split(',');
-            const mediaTypeMatch = header.match(/data:([^;]+)/);
-            const mediaType = mediaTypeMatch?.[1] || fileSnap.type;
-            if (b64data && mediaType) {
-              attachments.push({
-                type: 'image',
-                mediaType,
-                data: b64data,
-              });
+        for (const fileSnap of fileSnaps) {
+          if (fileSnap?.type?.startsWith('image/') && fileSnap?.dataUrl) {
+            try {
+              const [header, b64data] = fileSnap.dataUrl.split(',');
+              const mediaTypeMatch = header.match(/data:([^;]+)/);
+              const mediaType = mediaTypeMatch?.[1] || fileSnap.type;
+              if (b64data && mediaType) {
+                attachments.push({
+                  type: 'image',
+                  mediaType,
+                  data: b64data,
+                });
+              }
+            } catch (_) {
+              console.warn('[AutoV2Panel] Could not extract image base64 from dataUrl');
             }
-          } catch (_) {
-            // If extraction fails, send without image — better than crashing
-            console.warn('[AutoV2Panel] Could not extract image base64 from dataUrl');
           }
         }
 
@@ -2076,7 +2093,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setSending(false);
       }
     },
-    [input, sending, activeThreadId, pendingFile, loadThreadList, syncArtifactFromMessages]
+    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages]
   );
 
   const handleKeyDown = useCallback(
@@ -2543,17 +2560,24 @@ export default function AutoV2Panel({ onNavigate, className }) {
           <div ref={messagesEndRef} />
         </div>
 
-        {pendingFile && (
-          <div className="px-4 pb-2 flex items-center gap-2">
-            <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 text-xs text-blue-700 max-w-xs">
-              {pendingFile.type?.startsWith('image/') && (
-                <img src={pendingFile.dataUrl} alt="" className="w-8 h-8 object-cover rounded" />
-              )}
-              <span className="truncate">{pendingFile.name}</span>
-              <button type="button" onClick={() => setPendingFile(null)} className="ml-auto text-blue-400 hover:text-blue-600 flex-shrink-0" aria-label="Remove attachment">
-                <CloseIcon />
-              </button>
-            </div>
+        {pendingFiles.length > 0 && (
+          <div className="px-4 pb-2 flex flex-wrap items-center gap-2">
+            {pendingFiles.map((pf, idx) => (
+              <div key={`${pf.name}-${idx}`} className="flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 text-xs text-blue-700 max-w-xs">
+                {pf.type?.startsWith('image/') && (
+                  <img src={pf.dataUrl} alt="" className="w-8 h-8 object-cover rounded" />
+                )}
+                <span className="truncate">{pf.name}</span>
+                <button
+                  type="button"
+                  onClick={() => setPendingFiles((prev) => prev.filter((_, i) => i !== idx))}
+                  className="ml-auto text-blue-400 hover:text-blue-600 flex-shrink-0"
+                  aria-label="Remove attachment"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+            ))}
           </div>
         )}
 
@@ -2574,6 +2598,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
               ref={fileInputRef}
               type="file"
               accept="image/*,.pdf,.txt,.md,.csv"
+              multiple
               className="hidden"
               onChange={handleFileSelect}
             />
@@ -2598,7 +2623,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
             <button
               type="button"
               onClick={() => sendMessage()}
-              disabled={(!input.trim() && !pendingFile) || sending || startingNew}
+              disabled={(!input.trim() && pendingFiles.length === 0) || sending || startingNew}
               className="flex-shrink-0 w-8 h-8 bg-gray-900 text-white rounded-lg flex items-center justify-center hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               aria-label="Send message"
             >
