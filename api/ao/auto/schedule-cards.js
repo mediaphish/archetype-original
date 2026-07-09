@@ -3,11 +3,11 @@
  *
  * Writes approved Auto quote cards to ao_scheduled_posts.
  *
- * Channels: LinkedIn Personal, LinkedIn Business, Instagram Business,
- * Facebook Business, X — 5 rows per card.
+ * Channels: LinkedIn Personal, Instagram Business,
+ * Facebook Business, X — 4 rows per card.
  *
  * Scheduling rules:
- * - Each card set shares one calendar date (all 5 platform rows same day)
+ * - Each card set shares one calendar date (all 4 platform rows same day)
  * - Cards spaced 3 weekdays apart from each other
  * - Reads existing queue to find next available slot (gap-aware)
  * - Never schedules on Saturday or Sunday
@@ -18,10 +18,15 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { findNextQueueDate, addWeekdays, toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 
-// All 5 approved channels — X now included
+// LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
+// Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").
+// App is pending LinkedIn review as of July 2026.
+// Do not re-enable until: (1) LinkedIn approves the app, (2) cursor-prompt-linkedin-business-enable.md is executed.
+// When re-enabled: account_id must be set to 'page', token path must use ao_linkedin_tokens.page_urn.
+// Auto still generates LinkedIn Business captions in chat for manual paste. Only the queue row is excluded.
+// All 4 approved automated channels — X included
 const APPROVED_CHANNELS = [
   { platform: 'linkedin',  account_id: 'personal', label: 'linkedin_personal' },
-  { platform: 'linkedin',  account_id: 'personal', label: 'linkedin_business' },
   { platform: 'instagram', account_id: 'meta',     label: 'instagram_business' },
   { platform: 'facebook',  account_id: 'meta',     label: 'facebook_business' },
   { platform: 'twitter',   account_id: 'personal', label: 'x' },

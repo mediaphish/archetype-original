@@ -181,9 +181,14 @@ async function updateInstagramBioLink(journalUrl) {
   }
 }
 
+// LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
+// Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").
+// App is pending LinkedIn review as of July 2026.
+// Do not re-enable until: (1) LinkedIn approves the app, (2) cursor-prompt-linkedin-business-enable.md is executed.
+// When re-enabled: account_id must be set to 'page', token path must use ao_linkedin_tokens.page_urn.
+// Auto still generates LinkedIn Business captions in chat for manual paste. Only the queue row is excluded.
 const JOURNAL_LAUNCH_CHANNEL_MAP = [
   { key: 'linkedin_personal',  platform: 'linkedin',  account_id: 'personal', label: 'linkedin_personal' },
-  { key: 'linkedin_business',  platform: 'linkedin',  account_id: 'personal', label: 'linkedin_business' },
   { key: 'instagram_business', platform: 'instagram', account_id: 'meta',     label: 'instagram_business' },
   { key: 'facebook_business',  platform: 'facebook',  account_id: 'meta',     label: 'facebook_business' },
   { key: 'twitter',            platform: 'twitter',   account_id: 'personal', label: 'x' },
