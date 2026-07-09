@@ -1936,11 +1936,17 @@ export default function AutoV2Panel({ onNavigate, className }) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (ev) => {
+          const dataUrl = ev.target.result || '';
+          // Derive actual MIME type from the dataUrl header, not from file.type.
+          // file.type can be wrong on macOS (e.g. reports image/jpeg for PNG files).
+          // The dataUrl header set by FileReader is always accurate.
+          const headerMatch = dataUrl.match(/^data:([^;]+);/);
+          const actualType = headerMatch ? headerMatch[1] : file.type;
           resolve({
             file,
             name: file.name,
-            dataUrl: ev.target.result,
-            type: file.type,
+            dataUrl,
+            type: actualType,
           });
         };
         reader.readAsDataURL(file);
@@ -2031,20 +2037,25 @@ export default function AutoV2Panel({ onNavigate, className }) {
         // Images are sent as base64 content blocks for the Anthropic vision API
         const attachments = [];
         for (const fileSnap of fileSnaps) {
-          if (fileSnap?.type?.startsWith('image/') && fileSnap?.dataUrl) {
+          if (fileSnap?.dataUrl && String(fileSnap.type || '').startsWith('image/')) {
             try {
-              const [header, b64data] = fileSnap.dataUrl.split(',');
-              const mediaTypeMatch = header.match(/data:([^;]+)/);
-              const mediaType = mediaTypeMatch?.[1] || fileSnap.type;
-              if (b64data && mediaType) {
-                attachments.push({
-                  type: 'image',
-                  mediaType,
-                  data: b64data,
-                });
-              }
-            } catch (_) {
-              console.warn('[AutoV2Panel] Could not extract image base64 from dataUrl');
+              const commaIdx = fileSnap.dataUrl.indexOf(',');
+              if (commaIdx === -1) throw new Error('Invalid dataUrl format');
+              const header = fileSnap.dataUrl.slice(0, commaIdx);
+              const b64data = fileSnap.dataUrl.slice(commaIdx + 1);
+              // Always derive mediaType from the dataUrl header — never trust fileSnap.type
+              // because file.type can be wrong on macOS for PNG files
+              const mediaTypeMatch = header.match(/^data:([^;]+);/);
+              if (!mediaTypeMatch) throw new Error('Could not parse mediaType from dataUrl header');
+              const mediaType = mediaTypeMatch[1];
+              if (!b64data) throw new Error('Empty base64 data');
+              attachments.push({
+                type: 'image',
+                mediaType,
+                data: b64data,
+              });
+            } catch (err) {
+              console.warn('[AutoV2Panel] Could not extract image base64:', err?.message || err);
             }
           }
         }
