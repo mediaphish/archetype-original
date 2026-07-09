@@ -8,7 +8,7 @@ season: 1
 episode: 1
 duration: "31:46"
 youtube_id: "0UUOAbQvKew"
-spotify_episode_id: ""
+spotify_episode_id: "0dnAQBojABISjxpjYUbd64"
 apple_podcasts_url: "https://podcasts.apple.com/us/podcast/the-archetype-original-podcast/id1896944121"
 categories:
   - servant-leadership
