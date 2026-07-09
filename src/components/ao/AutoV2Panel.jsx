@@ -157,6 +157,34 @@ function extractCardCaptionsFromArtifactContent(content) {
   return result;
 }
 
+/**
+ * Extract LinkedIn Personal caption text for a specific card from thread history.
+ * Used when scheduling cards so caption travels with the publish request.
+ */
+function extractCaptionForCard(cardNumber, messages) {
+  const assistantMessages = (Array.isArray(messages) ? messages : [])
+    .filter((m) => m.role === 'assistant');
+
+  for (const m of [...assistantMessages].reverse()) {
+    const text = String(m.content || '');
+    const hasCard =
+      new RegExp(`Card\\s+${cardNumber}\\s+of`, 'i').test(text) ||
+      new RegExp(`\\*\\*Card\\s+${cardNumber}\\b`, 'i').test(text);
+    if (!hasCard) continue;
+
+    const captions = extractCardCaptionsFromArtifactContent(text);
+    const linkedIn = captions[cardNumber]?.['LinkedIn Personal'] || '';
+    if (linkedIn) {
+      return linkedIn
+        .replace(/\*\*/g, '')
+        .replace(/^#+\s*/gm, '')
+        .trim();
+    }
+  }
+
+  return '';
+}
+
 function extractJournalPublishFromAssistantContent(content) {
   const text = String(content || '');
   const tagMatch = text.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
@@ -2270,10 +2298,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
       return;
     }
 
-    const cards = generatedImages.map((img) => ({
-      card_index: img.card,
-      image_url: img.url,
-    }));
+    const cards = generatedImages.map((img) => {
+      const caption = extractCaptionForCard(img.card, messages);
+      return {
+        card_index: img.card,
+        image_url: img.url,
+        caption: caption || '',
+      };
+    });
 
     setError('');
     try {
@@ -2293,7 +2325,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     } catch (e) {
       setError(e.message || 'Publishing failed');
     }
-  }, [generatedImages, activeThreadId, sendMessage]);
+  }, [generatedImages, activeThreadId, messages, sendMessage]);
 
   if (loading && !activeThreadId && visibleChatMessages.length === 0) {
     return (

@@ -93,9 +93,8 @@ async function tryGenerateSessionBrief(threadId, messages, email, userMessage) {
 
   const wrapSignals = /\b(we're done|wrap this up|that'?s? it for (today|now|tonight)|good night|talk tomorrow|see you|bye|done for now|logging off|heading out)\b/i;
   const isWrapSignal = wrapSignals.test(String(userMessage || ''));
-  const isLongThread = messages.length >= 20;
 
-  if (!isWrapSignal && !isLongThread) return;
+  if (!isWrapSignal) return;
 
   try {
     // Check if we already saved a brief for this thread recently

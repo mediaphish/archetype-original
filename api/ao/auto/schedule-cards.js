@@ -16,7 +16,6 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { getAutoThreadState } from '../../../lib/ao/autoHub.js';
 import { findNextQueueDate, addWeekdays, toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 
 // All 5 approved channels — X now included
@@ -32,35 +31,6 @@ const APPROVED_CHANNELS = [
 // other content type (journal launches, ideas). This file no longer
 // duplicates its own weekday/gap logic.
 
-function extractCaptionsFromThread(messages) {
-  const captionsMap = {};
-  for (const m of [...(messages || [])].reverse()) {
-    if (m.role !== 'assistant') continue;
-    const content = String(m.content || '');
-    const match = content.match(
-      /\[ARTIFACT\s+type=["']captions["'][^\]]*\]([\s\S]*?)\[\/ARTIFACT\]/i
-    );
-    if (!match) continue;
-    const blocks = match[1].split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
-    for (const block of blocks) {
-      const num = block.match(/Card\s+(\d+)/i);
-      const line1 = block.match(/Power\s+says:\s*(.+)/i);
-      const line2 = block.match(/Servant\s+leadership\s+says:\s*(.+)/i);
-      const caption = block.match(/Caption:\s*([\s\S]+?)(?=\n\s*\*?\*?Card\s|\n\s*$|$)/i);
-      if (num) {
-        const n = parseInt(num[1], 10);
-        captionsMap[n] = {
-          line1: line1 ? `Power says: ${line1[1].trim()}` : '',
-          line2: line2 ? `Servant leadership says: ${line2[1].trim()}` : '',
-          caption: caption ? caption[1].trim() : '',
-        };
-      }
-    }
-    break;
-  }
-  return captionsMap;
-}
-
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -75,15 +45,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'cards array is required' });
   }
 
-  let threadMessages = [];
-  if (thread_id) {
-    try {
-      const state = await getAutoThreadState(auth.email, thread_id);
-      threadMessages = state?.messages || [];
-    } catch (_) {}
-  }
-
-  const captionsMap = extractCaptionsFromThread(threadMessages);
   const sortedCards = [...cards].sort((a, b) => (Number(a.card_index) || 0) - (Number(b.card_index) || 0));
 
   // Find the next available date from the live queue (shared across all content types)
@@ -93,10 +54,12 @@ export default async function handler(req, res) {
 
   for (const card of sortedCards) {
     const cardNum = Number(card.card_index) || 1;
-    const threadData = captionsMap[cardNum] || {};
-    const line1 = card.line1 || threadData.line1 || '';
-    const line2 = card.line2 || threadData.line2 || '';
-    const caption = card.caption || threadData.caption || '';
+    const line1 = card.line1 || '';
+    const line2 = card.line2 || '';
+    const caption = card.caption || '';
+    if (!caption) {
+      console.warn(`[schedule-cards] Card ${cardNum} has no caption — scheduling with empty caption`);
+    }
     const imageUrl = String(card.image_url || '').trim();
     const cardText = [line1, line2].filter(Boolean).join('\n').trim();
     const textBody = cardText || caption || `Quote card ${cardNum}`;
@@ -109,7 +72,7 @@ export default async function handler(req, res) {
         scheduled_at: await toScheduledAt(currentDate, ch.platform),
         text: textBody,
         image_url: imageUrl || null,
-        caption: String(caption || '').trim() || null,
+        caption: card.caption || '',
         status: 'scheduled',
         source_kind: 'auto_quote_card',
         intent: {
