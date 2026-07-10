@@ -246,7 +246,12 @@ export default async function handler(req, res) {
     // Enforce response rules in code before any further processing.
     // These rules were previously in the system prompt as suggestions to the model.
     // Here they are guaranteed regardless of model behavior.
-    result.reply = enforceResponseRules(result.reply);
+    // Pass recent thread history so the signal isolation rule can check whether
+    // [JOURNAL_CONTENT] or [DEVOTIONAL_CONTENT] appeared in a prior message.
+    // This allows Auto to fire the publish signal in a dedicated response after
+    // content was approved in a prior message — the correct workflow.
+    const recentHistory = (prior.messages || []).slice(-6);
+    result.reply = enforceResponseRules(result.reply, recentHistory);
 
     // Voice rewrite pass — runs after structural enforcement, before image append.
     // Finds AI signature violations (em dashes, banned words, banned phrases) and
