@@ -16,6 +16,7 @@ import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
 import { reviewAndCleanVoice } from '../../../lib/ao/voiceReview.js';
 import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
+import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 /**
@@ -296,6 +297,13 @@ export default async function handler(req, res) {
     if (result.reply.includes('[EPISODE_PROCESS')) {
       processEpisodeSignal(result.reply, auth.email).catch((err) => {
         console.error('[chat.js] processEpisodeSignal error:', err?.message || err);
+      });
+    }
+
+    // Process episode research signal — saves research brief and questions back to guest record
+    if (result.reply.includes('[EPISODE_RESEARCH_COMPLETE')) {
+      processEpisodeResearchSignal(result.reply, auth.email).catch((err) => {
+        console.error('[chat.js] processEpisodeResearchSignal error:', err?.message || err);
       });
     }
 

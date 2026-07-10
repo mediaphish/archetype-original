@@ -239,6 +239,10 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[DEVOTIONAL_CONTENT\][\s\S]*?\[\/DEVOTIONAL_CONTENT\]/gi, '')
     .replace(/\[EPISODE_PROCESS[^\]]*\]/gi, '')
     .replace(/\[EPISODE_TRANSCRIPT\][\s\S]*?\[\/EPISODE_TRANSCRIPT\]/gi, '')
+    .replace(/\[EPISODE_RESEARCH_COMPLETE[\s\S]*?\[\/EPISODE_RESEARCH_COMPLETE\]/gi, '')
+    .replace(/\[RESEARCH_CONTEXT\][\s\S]*?\[\/RESEARCH_CONTEXT\]/gi, '')
+    .replace(/\[NAVIGATE_TO[^\]]*\]/gi, '')
+    .replace(/\[GUEST_ID:[^\]]*\]/gi, '')
     .replace(/\[EPISODE_DRAFT[^\]]*\]/gi, '')
     .replace(/\[CARD[\s\S]*?\[\/CARD\]/gi, '')
     .replace(/\[LINE[^\]]*\][\s\S]*?\[\/LINE\]/gi, '')
@@ -2297,6 +2301,25 @@ export default function AutoV2Panel({ onNavigate, className }) {
           syncArtifactFromMessages(synthetic);
         }
 
+        // Handle navigation signal — used after episode research is complete
+        const navMatch = String(
+          json.assistant_message ||
+            (json.messages || []).find((m) => m.role === 'assistant')?.content ||
+            ''
+        ).match(/\[NAVIGATE_TO path="([^"]+)"\]/i);
+        if (navMatch && navMatch[1]) {
+          const navPath = navMatch[1].trim();
+          setTimeout(() => {
+            if (onNavigate) {
+              onNavigate(navPath);
+            } else {
+              window.history.pushState({}, '', navPath);
+              window.dispatchEvent(new PopStateEvent('popstate'));
+              window.scrollTo({ top: 0, behavior: 'instant' });
+            }
+          }, 2500);
+        }
+
         if (json.thread?.id) setActiveThreadId(json.thread.id);
 
         await loadThreadList();
@@ -2307,7 +2330,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setSending(false);
       }
     },
-    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages]
+    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, onNavigate]
   );
 
   const handleKeyDown = useCallback(

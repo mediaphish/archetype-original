@@ -34,7 +34,9 @@ function buildGuestEpisodeSeedMessage(guest) {
 
 **Research brief:** ${researchBrief ? 'Available — loaded into context' : 'Not yet generated'}
 
-Ready to build this episode. Upload the Riverside transcript when you're ready and I'll produce the full episode package.`;
+Ready to build this episode. Upload the Riverside transcript when you're ready and I'll produce the full episode package.
+
+[GUEST_ID: ${guest.id}]`;
 }
 
 export default async function handler(req, res) {
