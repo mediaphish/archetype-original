@@ -494,6 +494,140 @@ function DraftArtifact({ content, label }) {
   );
 }
 
+function GuestRecordPanel({ guest }) {
+  if (!guest) return null;
+
+  const sections = [
+    { label: 'Company', value: guest.company },
+    { label: 'Title', value: guest.role },
+    { label: 'Website', value: guest.website_url },
+    { label: 'LinkedIn', value: guest.linkedin_url },
+  ].filter((s) => s.value);
+
+  const postRecordingItems = [
+    { label: 'What surprised you', value: guest.post_recording_surprise },
+    { label: 'What landed', value: guest.post_recording_landed },
+    { label: 'Follow-up needed', value: guest.post_recording_follow_up },
+  ].filter((s) => s.value && s.value !== 'Not captured yet');
+
+  return (
+    <div className="flex flex-col flex-1 min-h-0 overflow-y-auto gap-6 p-1">
+      {/* Header */}
+      <div className="flex items-start gap-3">
+        {guest.image_url ? (
+          <img
+            src={guest.image_url}
+            alt={guest.name}
+            className="h-14 w-14 shrink-0 rounded-full object-cover bg-gray-100"
+          />
+        ) : (
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#E1DED8] font-serif text-lg font-bold text-[#8B7D72]">
+            {String(guest.name || '').trim().split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toUpperCase() || '?'}
+          </div>
+        )}
+        <div className="min-w-0">
+          <p className="font-serif text-base font-medium text-gray-900 leading-tight">{guest.name}</p>
+          {guest.company && <p className="text-xs text-gray-500 mt-0.5">{guest.company}</p>}
+          {sections.map((s) => (
+            <p key={s.label} className="text-xs text-gray-400 mt-0.5">
+              <span className="font-medium text-gray-500">{s.label}:</span>{' '}
+              {s.label === 'Website' || s.label === 'LinkedIn' ? (
+                <a href={s.value} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate">
+                  {s.value}
+                </a>
+              ) : (
+                s.value
+              )}
+            </p>
+          ))}
+        </div>
+      </div>
+
+      {/* Bio */}
+      {guest.bio && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-2">Bio</p>
+          <p className="text-xs leading-relaxed text-gray-700 whitespace-pre-wrap">{guest.bio}</p>
+        </div>
+      )}
+
+      {/* Intake answers */}
+      {[
+        { key: 'question_1', label: "What people get wrong about them" },
+        { key: 'question_2', label: "Where they are now vs 5 years ago" },
+        { key: 'question_3', label: "A story they think about more than people guess" },
+        { key: 'question_4', label: "What they're into right now" },
+        { key: 'question_5', label: "What else they want us to know" },
+      ].filter((q) => guest[q.key]).map((q) => (
+        <div key={q.key}>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-1">{q.label}</p>
+          <p className="text-xs leading-relaxed text-gray-700 whitespace-pre-wrap">{guest[q.key]}</p>
+        </div>
+      ))}
+
+      {/* Research brief */}
+      {guest.research_brief && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-2">Research brief</p>
+          <p className="text-xs leading-relaxed text-gray-700 whitespace-pre-wrap">{guest.research_brief}</p>
+        </div>
+      )}
+
+      {/* Suggested questions */}
+      {guest.suggested_questions && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-2">Suggested questions</p>
+          {guest.suggested_questions.person_specific?.length > 0 && (
+            <div className="mb-3">
+              <p className="text-[10px] font-medium text-gray-500 mb-1">Person-specific</p>
+              <ol className="space-y-2">
+                {guest.suggested_questions.person_specific.map((item, i) => (
+                  <li key={i} className="text-xs text-gray-700 leading-relaxed">
+                    <span className="font-medium">{i + 1}.</span> {item.question}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+          {guest.suggested_questions.ao_theology?.length > 0 && (
+            <div>
+              <p className="text-[10px] font-medium text-gray-500 mb-1">AO connections</p>
+              <ol className="space-y-2">
+                {guest.suggested_questions.ao_theology.map((item, i) => (
+                  <li key={i} className="text-xs text-gray-700 leading-relaxed">
+                    <span className="font-medium">{i + 1}.</span> {item.question}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Post-recording notes */}
+      {postRecordingItems.length > 0 && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-2">Post-recording notes</p>
+          {postRecordingItems.map((item) => (
+            <div key={item.label} className="mb-2">
+              <p className="text-[10px] font-medium text-gray-500">{item.label}</p>
+              <p className="text-xs text-gray-700 leading-relaxed">{item.value}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Bart's notes */}
+      {guest.bart_notes && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-2">Bart's notes</p>
+          <p className="text-xs leading-relaxed text-gray-700 whitespace-pre-wrap">{guest.bart_notes}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const CHANNEL_LABELS = [
   'LinkedIn Personal',
   'LinkedIn Business',
@@ -634,6 +768,8 @@ function ArtifactPanel({
   cardReviewMode,
   onCardReviewModeChange,
   seedManifestTotal,
+  guestRecord,
+  guestRecordLoading,
 }) {
   const hasCards = generatedImages?.length > 0;
   const hasDesign = generatedDesignImages?.length > 0;
@@ -646,6 +782,8 @@ function ArtifactPanel({
             ? `Cards + Captions — ${generatedImages.length} in batch`
             : hasCards
             ? `Card ${(currentCardIndex ?? 0) + 1} of ${seedManifestTotal ?? generatedImages.length}`
+            : guestRecord
+            ? `${guestRecord.name} — Guest record`
             : artifact?.label || (hasDesign ? 'Generated images' : 'Artifact')}
         </span>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -840,12 +978,21 @@ function ArtifactPanel({
         )}
 
         {!artifact && !hasAnyGenerated && (
-          <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
-            <AOMark className="w-8 h-8 text-gray-200 mb-3" />
-            <p className="text-xs text-gray-400 leading-relaxed">
-              Quote cards, drafts, and content will appear here as you work.
-            </p>
-          </div>
+          guestRecord ? (
+            <GuestRecordPanel guest={guestRecord} />
+          ) : guestRecordLoading ? (
+            <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
+              <AOMark className="w-8 h-8 text-gray-200 mb-3 animate-pulse" />
+              <p className="text-xs text-gray-400 leading-relaxed">Loading guest record…</p>
+            </div>
+          ) : (
+            <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
+              <AOMark className="w-8 h-8 text-gray-200 mb-3" />
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Quote cards, drafts, and content will appear here as you work.
+              </p>
+            </div>
+          )
         )}
 
         {devotionalPublishBanner?.status === 'error' && (
@@ -1363,6 +1510,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [mobileArtifactOpen, setMobileArtifactOpen] = useState(false);
   const [mobileArtifactDrawerShown, setMobileArtifactDrawerShown] = useState(false);
   const [artifactUnread, setArtifactUnread] = useState(false);
+  const [guestRecord, setGuestRecord] = useState(null);
+  const [guestRecordLoading, setGuestRecordLoading] = useState(false);
 
   const splitContainerRef = useRef(null);
   const isMobileRef = useRef(false);
@@ -1447,6 +1596,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     () =>
       !!(
         artifact ||
+        guestRecord ||
         generatedImages.length > 0 ||
         generatedDesignImages.length > 0 ||
         journalPublishBanner ||
@@ -1456,6 +1606,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       ),
     [
       artifact,
+      guestRecord,
       generatedImages,
       generatedDesignImages,
       journalPublishBanner,
@@ -1842,6 +1993,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setArtifactOpen(false);
       setMobileArtifactOpen(false);
       setArtifactUnread(false);
+      setGuestRecord(null);
       setGeneratedImages([]);
       setGeneratedDesignImages([]);
       setCurrentCardIndex(0);
@@ -1882,6 +2034,44 @@ export default function AutoV2Panel({ onNavigate, className }) {
       const seedThreadId = params.get('thread');
       if (seedThreadId) {
         await loadThread({ id: seedThreadId });
+
+        // After loading the seeded thread, check if it's a guest episode thread
+        // by reading the first assistant message for the seed pattern
+        try {
+          const stateRes = await fetch(`/api/ao/auto/session?thread_id=${encodeURIComponent(seedThreadId)}`);
+          const stateJson = await stateRes.json().catch(() => ({}));
+          if (stateRes.ok && stateJson.ok && Array.isArray(stateJson.messages)) {
+            const firstAssistant = stateJson.messages.find((m) => m.role === 'assistant');
+            const content = String(firstAssistant?.content || '');
+            if (content.startsWith('Guest episode context loaded.')) {
+              const nameMatch = content.match(/\*\*Guest:\*\*\s*(.+)/);
+              if (nameMatch) {
+                const guestName = nameMatch[1].trim();
+                setGuestRecordLoading(true);
+                const guestRes = await fetch(`/api/ao/podcast/guest?name=${encodeURIComponent(guestName)}`);
+                const guestJson = await guestRes.json().catch(() => ({}));
+                if (guestRes.ok && guestJson.ok && guestJson.guest) {
+                  const g = guestJson.guest;
+                  const linkedin = Array.isArray(g.social_links)
+                    ? g.social_links.find((l) => l.platform === 'linkedin')?.url
+                    : '';
+                  setGuestRecord({
+                    ...g,
+                    bio: g.bio || g.bio_md || '',
+                    website_url: g.website_url || g.website || '',
+                    linkedin_url: g.linkedin_url || linkedin || '',
+                  });
+                  setArtifactOpen(true);
+                  setMobileArtifactOpen(true);
+                }
+                setGuestRecordLoading(false);
+              }
+            }
+          }
+        } catch (_) {
+          setGuestRecordLoading(false);
+        }
+
         // Clean the URL so refreshing doesn't re-load the same thread param
         const cleanUrl = window.location.pathname;
         window.history.replaceState({}, '', cleanUrl);
@@ -1911,6 +2101,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setArtifactOpen(false);
     setMobileArtifactOpen(false);
     setArtifactUnread(false);
+    setGuestRecord(null);
     setPendingFiles([]);
     setGeneratedImages([]);
     setGeneratedDesignImages([]);
@@ -2335,6 +2526,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
     cardReviewMode,
     onCardReviewModeChange: setCardReviewMode,
     seedManifestTotal,
+    guestRecord,
+    guestRecordLoading,
   };
 
   const mobileBottomNav = isMobile ? (
