@@ -14,6 +14,7 @@ import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuot
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
+import { reviewAndCleanVoice } from '../../../lib/ao/voiceReview.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 /**
@@ -244,6 +245,16 @@ export default async function handler(req, res) {
     // These rules were previously in the system prompt as suggestions to the model.
     // Here they are guaranteed regardless of model behavior.
     result.reply = enforceResponseRules(result.reply);
+
+    // Voice rewrite pass — runs after structural enforcement, before image append.
+    // Finds AI signature violations (em dashes, banned words, banned phrases) and
+    // rewrites them automatically. Bart never sees a warning. He gets clean output.
+    // Never blocks the response — falls back to original on any error.
+    try {
+      result.reply = await reviewAndCleanVoice(result.reply);
+    } catch (voiceErr) {
+      console.error('[chat.js] Voice review failed — using original reply:', voiceErr?.message || voiceErr);
+    }
 
     result.reply = await appendQuoteCardImagesToReplyIfNeeded({
       userMessage,
