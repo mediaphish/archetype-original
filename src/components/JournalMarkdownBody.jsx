@@ -70,7 +70,7 @@ const normalizeForComparison = (str) => {
     .trim();
 };
 
-const titleNormalized = normalizeForComparison(post.title);
+const titleNormalized = normalizeForComparison(post.title || '');
 
 // Split into lines for line-by-line processing
 const lines = bodyText.split('\n');
@@ -129,7 +129,7 @@ let inBlockquote = false;
 let inList = false;
 
 // Reuse the same normalization function for consistency
-const titleNormalizedForParsing = normalizeForComparison(post.title);
+const titleNormalizedForParsing = normalizeForComparison(post.title || '');
 
 const flushParagraph = () => {
   if (currentParagraph.length > 0) {
