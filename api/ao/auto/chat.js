@@ -15,6 +15,7 @@ import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignIm
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
 import { reviewAndCleanVoice } from '../../../lib/ao/voiceReview.js';
+import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 /**
@@ -290,6 +291,13 @@ export default async function handler(req, res) {
     trySaveDraftFromExchange(userMessage, result.reply, auth.email).catch((err) => {
       console.error('[chat.js] trySaveDraftFromExchange error:', err?.message || err);
     });
+
+    // Process episode signal if present — commits corpus markdown and updates episode draft
+    if (result.reply.includes('[EPISODE_PROCESS')) {
+      processEpisodeSignal(result.reply, auth.email).catch((err) => {
+        console.error('[chat.js] processEpisodeSignal error:', err?.message || err);
+      });
+    }
 
     // Generate session brief if this is a wrap signal or long thread
     // Uses claude-haiku for speed — never blocks the response

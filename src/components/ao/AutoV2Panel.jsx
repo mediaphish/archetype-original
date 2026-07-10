@@ -1833,14 +1833,6 @@ export default function AutoV2Panel({ onNavigate, className }) {
     }
   }, [mergeThreadRows, syncArtifactFromMessages]);
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await loadThreadList();
-      setLoading(false);
-    })();
-  }, [loadThreadList]);
-
   const loadThread = useCallback(
     async (thread) => {
       const threadId = thread?.id;
@@ -1878,6 +1870,26 @@ export default function AutoV2Panel({ onNavigate, className }) {
     },
     [activeThreadId, loadThreadList, syncArtifactFromMessages]
   );
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      await loadThreadList();
+
+      // If a thread_id is in the URL, load that thread automatically.
+      // Used when navigating from the Podcast Dashboard via "Build episode."
+      const params = new URLSearchParams(window.location.search);
+      const seedThreadId = params.get('thread');
+      if (seedThreadId) {
+        await loadThread({ id: seedThreadId });
+        // Clean the URL so refreshing doesn't re-load the same thread param
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, '', cleanUrl);
+      }
+
+      setLoading(false);
+    })();
+  }, [loadThreadList, loadThread]);
 
   const handleSelectThread = useCallback(
     async (thread) => {
