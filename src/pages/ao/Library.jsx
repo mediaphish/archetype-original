@@ -57,6 +57,7 @@ export default function Library() {
   const [loading, setLoading] = useState(true);
   const [entries, setEntries] = useState([]);
   const [drafts, setDrafts] = useState([]);
+  const [reshareQueue, setReshareQueue] = useState([]);
   const [error, setError] = useState('');
 
   const handleNavigate = useCallback((path) => {
@@ -98,9 +99,11 @@ export default function Library() {
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not load library');
       setEntries(Array.isArray(json.entries) ? json.entries : []);
       setDrafts(Array.isArray(json.drafts) ? json.drafts : []);
+      setReshareQueue(Array.isArray(json.reshare_queue) ? json.reshare_queue : []);
     } catch (e) {
       setEntries([]);
       setDrafts([]);
+      setReshareQueue([]);
       setError(e.message || 'Could not load library');
     } finally {
       setLoading(false);
@@ -193,6 +196,60 @@ export default function Library() {
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+            </section>
+
+            <section className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900">Reshare Queue</h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  One journal entry per week, rotated automatically. Next up first.
+                </p>
+              </div>
+
+              {reshareQueue.length === 0 ? (
+                <p className="px-5 py-8 text-sm text-gray-500">Reshare queue not loaded yet.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
+                        <th className="px-5 py-3 font-medium">Title</th>
+                        <th className="px-5 py-3 font-medium">Last reshared</th>
+                        <th className="px-5 py-3 font-medium">Times</th>
+                        <th className="px-5 py-3 font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {reshareQueue.map((item) => (
+                        <tr key={item.slug}>
+                          <td className="px-5 py-3">
+                            <a
+                              href={`https://www.archetypeoriginal.com/journal/${item.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-medium text-gray-900 hover:text-blue-700 underline-offset-2 hover:underline"
+                            >
+                              {item.title || item.slug}
+                            </a>
+                            <p className="text-xs text-gray-500 mt-0.5">{item.slug}</p>
+                          </td>
+                          <td className="px-5 py-3 text-gray-600 whitespace-nowrap">
+                            {item.last_reshared_at ? fmtDate(item.last_reshared_at) : 'Never'}
+                          </td>
+                          <td className="px-5 py-3 text-gray-600">{item.reshare_count ?? 0}</td>
+                          <td className="px-5 py-3">
+                            {item.paused ? (
+                              <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 text-gray-700">Paused</span>
+                            ) : (
+                              <span className="text-xs font-medium px-2 py-0.5 rounded bg-green-100 text-green-800">Active</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </section>

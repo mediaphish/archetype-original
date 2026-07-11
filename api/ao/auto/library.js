@@ -18,16 +18,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get all journal and journal_launch social posts, grouped by slug
     const { data: posts, error: postsError } = await supabaseAdmin
       .from('ao_scheduled_posts')
       .select('id, platform, scheduled_at, status, text, caption, image_url, error_message, intent, source_kind')
-      .in('source_kind', ['journal_launch', 'ao_journal_social'])
+      .in('source_kind', ['journal_launch', 'ao_journal_social', 'ao_journal_reshare'])
       .order('scheduled_at', { ascending: false })
       .limit(200);
 
     if (postsError) {
       return res.status(500).json({ ok: false, error: postsError.message });
+    }
+
+    const { data: reshareQueue, error: reshareError } = await supabaseAdmin
+      .from('ao_reshare_queue')
+      .select('slug, title, last_reshared_at, reshare_count, paused')
+      .order('last_reshared_at', { ascending: true, nullsFirst: true })
+      .limit(10);
+
+    if (reshareError) {
+      console.warn('[library] reshare queue unavailable:', reshareError.message);
     }
 
     // Group by journal slug
@@ -57,6 +66,7 @@ export default async function handler(req, res) {
       ok: true,
       entries: Object.values(bySlug),
       drafts: drafts || [],
+      reshare_queue: reshareQueue || [],
     });
   } catch (err) {
     console.error('[library]', err?.message || err);
