@@ -58,6 +58,144 @@ function normalizeInstagramCaption(text) {
   return t;
 }
 
+/**
+ * Uses the Anthropic API with web_search to select the best journal entry
+ * to reshare given current ecosystem context and external leadership landscape.
+ *
+ * Returns the slug of the selected entry, or null if selection fails.
+ * Falls back to rotation-based selection (oldest last_reshared_at) on any failure.
+ */
+async function selectReshareEntryIntelligently(availableEntries) {
+  if (!availableEntries || availableEntries.length === 0) return null;
+
+  const entryManifest = availableEntries
+    .slice(0, 40)
+    .map((e, i) => `${i + 1}. slug: ${e.slug} | title: ${e.title || e.slug} | last reshared: ${e.last_reshared_at ? new Date(e.last_reshared_at).toISOString().split('T')[0] : 'never'}`)
+    .join('\n');
+
+  let recentPostsSummary = '';
+  try {
+    const { data: recentPosts } = await supabaseAdmin
+      .from('ao_scheduled_posts')
+      .select('caption, platform, scheduled_at, source_kind, intent')
+      .in('status', ['scheduled', 'posted'])
+      .order('scheduled_at', { ascending: false })
+      .limit(20);
+
+    if (recentPosts && recentPosts.length > 0) {
+      const recentLines = recentPosts.slice(0, 10).map((p) => {
+        const slug = p.intent?.slug || 'unknown';
+        const date = p.scheduled_at ? new Date(p.scheduled_at).toISOString().split('T')[0] : 'unknown';
+        const caption = String(p.caption || '').slice(0, 80).trim();
+        return `- [${date}] ${slug}: ${caption}...`;
+      });
+      recentPostsSummary = `Recent posts in queue:\n${recentLines.join('\n')}`;
+    }
+  } catch (err) {
+    console.warn('[reshare-journal] Could not load recent posts for selection context:', err?.message);
+  }
+
+  let performanceSummary = '';
+  try {
+    const { data: topPosts } = await supabaseAdmin
+      .from('ao_scheduled_post_metrics')
+      .select('platform, reactions, comments, ao_scheduled_posts!inner(caption, intent)')
+      .not('reactions', 'is', null)
+      .gt('reactions', 0)
+      .order('reactions', { ascending: false })
+      .limit(5);
+
+    if (topPosts && topPosts.length > 0) {
+      const perfLines = topPosts.map((p) => {
+        const slug = p.ao_scheduled_posts?.intent?.slug || 'unknown';
+        const caption = String(p.ao_scheduled_posts?.caption || '').slice(0, 60).trim();
+        return `- ${slug}: ${p.reactions} reactions on ${p.platform} — "${caption}..."`;
+      });
+      performanceSummary = `Top performing posts by engagement:\n${perfLines.join('\n')}`;
+    }
+  } catch (err) {
+    console.warn('[reshare-journal] Could not load performance data for selection context:', err?.message);
+  }
+
+  const systemPrompt = `You are the AI CMO for Archetype Original, an advisory practice built around servant leadership for founders and executives. You are selecting which existing journal entry to reshare on social media this week.
+
+Your selection must be based on two factors:
+
+1. INTERNAL FIT: What fits the current content ecosystem? What topics have been running recently? What is performing well? What has been absent? The entry should feel intentional relative to what has already gone out.
+
+2. EXTERNAL FIT: What is happening in the leadership conversation right now? What news, trends, or cultural moments make one of these entries suddenly more relevant? A post about manufactured crisis hits different when there is a real leadership failure in the news.
+
+You have access to web_search. Use it to find 2-3 current leadership news stories, trends, or conversations. Then match the best available entry to that external moment.
+
+Selection rules:
+- Never select an entry that was reshared in the past 30 days (check last_reshared_at dates)
+- Prefer entries that have never been reshared over entries that have been reshared multiple times
+- Prefer entries that connect to current external events
+- Prefer entries that fill a gap in recent ecosystem content rather than repeat a theme already in the queue
+- Choose one entry. Return its slug and a one-sentence explanation of why it fits this moment.
+
+Respond with ONLY a JSON object in this exact format:
+{
+  "slug": "the-selected-slug",
+  "reason": "One sentence explaining why this entry fits this week."
+}
+
+No preamble. No explanation. No markdown. Only the JSON object.`;
+
+  const userPrompt = `Today's date: ${new Date().toISOString().split('T')[0]}
+
+Available journal entries to reshare:
+${entryManifest}
+
+${recentPostsSummary}
+
+${performanceSummary}
+
+Search for current leadership news and trends, then select the best entry from the list above. Return only the JSON object.`;
+
+  try {
+    const response = await client.messages.create({
+      model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+      tools: [
+        {
+          type: 'web_search_20250305',
+          name: 'web_search',
+          max_uses: 3,
+        },
+      ],
+    });
+
+    const textBlock = response.content?.find((b) => b.type === 'text');
+    if (!textBlock?.text) {
+      console.warn('[reshare-journal] Intelligent selection returned no text block — falling back to rotation');
+      return null;
+    }
+
+    const clean = textBlock.text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    if (!parsed?.slug) {
+      console.warn('[reshare-journal] Intelligent selection returned invalid JSON — falling back to rotation');
+      return null;
+    }
+
+    const match = availableEntries.find((e) => e.slug === parsed.slug);
+    if (!match) {
+      console.warn(`[reshare-journal] Intelligent selection returned unknown slug "${parsed.slug}" — falling back to rotation`);
+      return null;
+    }
+
+    console.log(`[reshare-journal] Intelligent selection: ${parsed.slug} — ${parsed.reason}`);
+    return { slug: parsed.slug, reason: parsed.reason };
+  } catch (err) {
+    console.error('[reshare-journal] Intelligent selection failed:', err?.message || err);
+    return null;
+  }
+}
+
 async function generateReshareCaption(slug, title, body, journalUrl) {
   const excerpt = body.length > 3000 ? `${body.slice(0, 3000)}\n...` : body;
 
@@ -128,6 +266,7 @@ export default async function handler(req, res) {
   const forcedSlug = req.body?.slug || req.query?.slug || null;
 
   let entry;
+  let selectionReason = '';
 
   if (forcedSlug) {
     const { data, error } = await supabaseAdmin
@@ -142,18 +281,43 @@ export default async function handler(req, res) {
     }
     entry = data;
   } else {
-    const { data, error } = await supabaseAdmin
+    const { data: allEntries, error: allError } = await supabaseAdmin
       .from('ao_reshare_queue')
       .select('*')
       .eq('paused', false)
-      .order('last_reshared_at', { ascending: true, nullsFirst: true })
-      .limit(1)
-      .single();
+      .order('last_reshared_at', { ascending: true, nullsFirst: true });
 
-    if (error || !data) {
+    if (allError || !allEntries || allEntries.length === 0) {
       return res.status(200).json({ ok: true, message: 'No entries available to reshare' });
     }
-    entry = data;
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const eligible = allEntries.filter(
+      (e) => !e.last_reshared_at || new Date(e.last_reshared_at) < thirtyDaysAgo
+    );
+
+    if (eligible.length === 0) {
+      return res.status(200).json({
+        ok: true,
+        message: 'All entries were reshared within the past 30 days — nothing to reshare this week',
+      });
+    }
+
+    const intelligentSelection = await selectReshareEntryIntelligently(eligible);
+
+    if (intelligentSelection?.slug) {
+      entry = allEntries.find((e) => e.slug === intelligentSelection.slug);
+      selectionReason = intelligentSelection.reason;
+    } else {
+      console.log('[reshare-journal] Falling back to rotation-based selection');
+      entry = eligible[0];
+      selectionReason = 'Selected by rotation (oldest last reshared date)';
+    }
+  }
+
+  if (!entry) {
+    return res.status(500).json({ ok: false, error: 'Could not resolve entry to reshare' });
   }
 
   const journal = readJournalFile(entry.slug);
@@ -246,6 +410,7 @@ export default async function handler(req, res) {
     scheduled: inserted || [],
     total: (inserted || []).length,
     captions,
+    selection_reason: selectionReason || 'Selected by rotation',
     message: `${(inserted || []).length} reshare posts scheduled for ${entry.slug}`,
   });
 }
