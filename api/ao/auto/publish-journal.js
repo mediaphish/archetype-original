@@ -198,6 +198,10 @@ const JOURNAL_LAUNCH_CHANNEL_MAP = [
  * Parse [SOCIAL_CAPTIONS] block from the journal content body if present.
  * Returns an array of { platform, account_id, label, text, scheduled_at } objects.
  * Returns empty array if no captions block found.
+ *
+ * Parsing strategy: for each channel, find its opening [CAPTION platform="..."] tag,
+ * then extract text until the next [CAPTION tag or [/SOCIAL_CAPTIONS] — NOT until [/CAPTION].
+ * This prevents one channel's caption from bleeding into the next channel's tag text.
  */
 async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
   const captionsMatch = body.match(/\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i);
@@ -207,16 +211,35 @@ async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
   const rows = [];
 
   for (const ch of JOURNAL_LAUNCH_CHANNEL_MAP) {
-    const captionMatch = captionsBlock.match(
-      new RegExp(`\\[CAPTION\\s+platform="${ch.key}"[^\\]]*\\]([\\s\\S]*?)\\[/CAPTION\\]`, 'i')
+    // Find the opening tag for this channel
+    const openTagPattern = new RegExp(
+      `\\[CAPTION\\s+platform="${ch.key}"([^\\]]*)\\]`,
+      'i'
     );
-    if (!captionMatch) continue;
+    const openMatch = captionsBlock.match(openTagPattern);
+    if (!openMatch) continue;
 
-    const scheduledTimeMatch = captionsBlock.match(
-      new RegExp(`\\[CAPTION\\s+platform="${ch.key}"\\s+scheduled_time="([^"]+)"`, 'i')
-    );
+    // Extract the scheduled_time attribute from the opening tag if present
+    const scheduledTimeMatch = openMatch[1]?.match(/scheduled_time="([^"]+)"/i);
 
-    let text = captionMatch[1].trim();
+    // Find where this channel's content starts (after the opening tag)
+    const openTagEnd = captionsBlock.indexOf(openMatch[0]) + openMatch[0].length;
+    const remaining = captionsBlock.slice(openTagEnd);
+
+    // Find where this channel's content ends:
+    // Either at the next [CAPTION tag, or at [/CAPTION], or at [/SOCIAL_CAPTIONS]
+    // Take the earliest of these boundaries.
+    const nextCaptionIdx = remaining.search(/\[CAPTION\s+platform=/i);
+    const closingTagIdx = remaining.search(/\[\/CAPTION\]/i);
+    const socialClosingIdx = remaining.search(/\[\/SOCIAL_CAPTIONS\]/i);
+
+    const boundaries = [nextCaptionIdx, closingTagIdx, socialClosingIdx]
+      .filter((idx) => idx >= 0);
+
+    const endIdx = boundaries.length > 0 ? Math.min(...boundaries) : remaining.length;
+    let text = remaining.slice(0, endIdx).trim();
+
+    if (!text) continue;
 
     // Instagram: strip URLs from body, ensure Link in bio
     if (ch.platform === 'instagram') {

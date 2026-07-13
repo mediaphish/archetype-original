@@ -234,6 +234,9 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[DALLE_GENERATE[^\]]*\]/gi, '')
     .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '')
     .replace(/\[PUBLISH_JOURNAL[^\]]*\]/gi, '')
+    .replace(/\[UPDATE_SCHEDULED_CAPTIONS[\s\S]*?\[\/UPDATE_SCHEDULED_CAPTIONS\]/gi, '')
+    .replace(/\[UPDATE_SCHEDULED_CAPTIONS[^\]]*\]/gi, '')
+    .replace(/\[\/UPDATE_SCHEDULED_CAPTIONS\]/gi, '')
     .replace(/\[JOURNAL_CONTENT\][\s\S]*?\[\/JOURNAL_CONTENT\]/gi, '')
     .replace(/\[PUBLISH_DEVOTIONAL[^\]]*\]/gi, '')
     .replace(/\[DEVOTIONAL_CONTENT\][\s\S]*?\[\/DEVOTIONAL_CONTENT\]/gi, '')
@@ -1703,6 +1706,72 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setJournalPendingPublish({ attrs, journalContent, socialCaptionsBlock, categoriesRaw, notify, captionAttachOnly: alreadyPublished });
     signalNewArtifact();
   }, [messages, activeThreadId, signalNewArtifact, journalPublishBanner]);
+
+  // Detect [UPDATE_SCHEDULED_CAPTIONS] signal and call the update route
+  useEffect(() => {
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!lastAssistant) return;
+
+    const text = String(lastAssistant.content || '');
+    const signalMatch = text.match(/\[UPDATE_SCHEDULED_CAPTIONS([^\]]*)\]/i);
+    if (!signalMatch) return;
+
+    // Extract slug from signal attributes
+    const slugMatch = signalMatch[1]?.match(/slug="([^"]+)"/i);
+    if (!slugMatch) return;
+    const slug = slugMatch[1];
+
+    // Extract caption blocks
+    const captionsBlockMatch = text.match(/\[UPDATE_SCHEDULED_CAPTIONS[^\]]*\]([\s\S]*?)\[\/UPDATE_SCHEDULED_CAPTIONS\]/i);
+    if (!captionsBlockMatch) return;
+
+    const captionsBlock = captionsBlockMatch[1];
+    const captions = {};
+    const platformKeys = ['linkedin_personal', 'instagram_business', 'facebook_business', 'twitter'];
+
+    for (const key of platformKeys) {
+      const openTagPattern = new RegExp(`\\[CAPTION\\s+platform="${key}"([^\\]]*)\\]`, 'i');
+      const openMatch = captionsBlock.match(openTagPattern);
+      if (!openMatch) continue;
+
+      const openTagEnd = captionsBlock.indexOf(openMatch[0]) + openMatch[0].length;
+      const remaining = captionsBlock.slice(openTagEnd);
+      const nextCaptionIdx = remaining.search(/\[CAPTION\s+platform=/i);
+      const closingTagIdx = remaining.search(/\[\/CAPTION\]/i);
+      const boundaries = [nextCaptionIdx, closingTagIdx].filter((idx) => idx >= 0);
+      const endIdx = boundaries.length > 0 ? Math.min(...boundaries) : remaining.length;
+      const capText = remaining.slice(0, endIdx).trim();
+      if (capText) captions[key] = capText;
+    }
+
+    if (Object.keys(captions).length === 0) return;
+
+    // Deduplicate — only fire once per signal per thread
+    const updateKey = `update:${slug}:${Object.keys(captions).sort().join(',')}`;
+    if (processedJournalPublishKeys.current.has(updateKey)) return;
+    processedJournalPublishKeys.current.add(updateKey);
+
+    // Call the update route
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/auto/update-scheduled-captions', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug, captions }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          console.error('[AutoV2Panel] Caption update failed:', json?.message || json?.error);
+        } else {
+          console.log('[AutoV2Panel] Captions updated:', json.message);
+        }
+      } catch (err) {
+        console.error('[AutoV2Panel] Caption update threw:', err?.message || err);
+      }
+    })();
+  }, [messages, activeThreadId]);
 
   useEffect(() => {
     if (!Array.isArray(messages) || messages.length === 0) return;

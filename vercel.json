@@ -245,6 +245,7 @@
     { "src": "/api/ao/auto/schedule-cards", "dest": "/api/ao/auto/schedule-cards.js" },
     { "src": "/api/ao/auto/schedule-status", "dest": "/api/ao/auto/schedule-status.js" },
     { "src": "/api/ao/auto/publish-journal", "dest": "/api/ao/auto/publish-journal.js" },
+    { "src": "/api/ao/auto/update-scheduled-captions", "dest": "/api/ao/auto/update-scheduled-captions.js" },
     { "src": "/api/ao/auto/publish-devotional", "dest": "/api/ao/auto/publish-devotional.js" },
     { "src": "/api/ao/auto/episode-process", "dest": "/api/ao/auto/episode-process.js" },
     { "src": "/api/ao/auto/episode-publish", "dest": "/api/ao/auto/episode-publish.js" },
