@@ -61,6 +61,11 @@ export default function Settings() {
   const [beatPrioritiesText, setBeatPrioritiesText] = useState('');
   const [editorialSettingsUpdatedAt, setEditorialSettingsUpdatedAt] = useState(null);
 
+  // Corpus vector seeding
+  const [corpusSeedLoading, setCorpusSeedLoading] = useState(false);
+  const [corpusSeedError, setCorpusSeedError] = useState('');
+  const [corpusSeedResult, setCorpusSeedResult] = useState(null); // { processed, succeeded, failed, total, final_count, message }
+
   const [brandLoading, setBrandLoading] = useState(true);
   const [brandAssets, setBrandAssets] = useState([]);
   const [brandError, setBrandError] = useState('');
@@ -289,6 +294,26 @@ export default function Settings() {
       setEditorialLoading(false);
     }
   }, [authChecked, refreshEditorial]);
+
+  const handleSeedCorpus = useCallback(async () => {
+    if (corpusSeedLoading) return;
+    setCorpusSeedLoading(true);
+    setCorpusSeedError('');
+    setCorpusSeedResult(null);
+    try {
+      const res = await fetch('/api/ao/auto/seed-corpus', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setCorpusSeedError(json.error || 'Seeding failed');
+        return;
+      }
+      setCorpusSeedResult(json);
+    } catch (e) {
+      setCorpusSeedError(e.message || 'Could not reach the server');
+    } finally {
+      setCorpusSeedLoading(false);
+    }
+  }, [corpusSeedLoading]);
 
   const refreshBrandAssets = useCallback(async () => {
     if (!authChecked) return;
@@ -577,6 +602,63 @@ export default function Settings() {
                 Tip: if this shows empty, run “System setup check” above to see which one-time database files are missing.
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ─── Corpus library ─────────────────────────────────────────── */}
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 mb-6">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">Corpus library</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                The corpus library powers Auto&apos;s semantic search across all your published writing.
+                Run this once to fill the library with all existing documents. After that, new posts embed automatically on publish.
+              </p>
+            </div>
+          </div>
+
+          {corpusSeedResult && (
+            <div className={`mb-4 rounded-xl border px-4 py-3 text-sm ${
+              corpusSeedResult.failed === 0
+                ? 'border-green-200 bg-green-50 text-green-900'
+                : 'border-amber-200 bg-amber-50 text-amber-900'
+            }`}>
+              <p className="font-medium">{corpusSeedResult.message}</p>
+              <p className="mt-1 text-xs opacity-75">
+                {corpusSeedResult.final_count} documents now in the corpus library.
+                {corpusSeedResult.failed > 0 && ' Run again to retry failed documents.'}
+              </p>
+            </div>
+          )}
+
+          {corpusSeedError && (
+            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+              {corpusSeedError}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSeedCorpus}
+              disabled={corpusSeedLoading}
+              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {corpusSeedLoading ? (
+                <>
+                  <svg className="h-4 w-4 animate-spin text-gray-500" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Filling corpus library…
+                </>
+              ) : (
+                'Fill corpus library'
+              )}
+            </button>
+            <p className="text-xs text-gray-400">
+              Takes 1–2 minutes for a full corpus. Safe to run multiple times.
+            </p>
           </div>
         </section>
 

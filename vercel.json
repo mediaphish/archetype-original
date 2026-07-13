@@ -81,6 +81,7 @@
     { "src": "api/ao/auto/confirm-live.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 120, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
     { "src": "api/ao/auto/chat.js", "use": "@vercel/node", "config": { "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
     { "src": "api/ao/auto/reshare-journal.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 60, "includeFiles": ["lib/**", "ao-knowledge-hq-kit/journal/**"] } },
+    { "src": "api/ao/auto/seed-corpus.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json"] } },
     { "src": "api/**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } }
   ],
   "routes": [
@@ -348,6 +349,7 @@
     { "src": "/api/ao/auto/schedule-journal-launch", "dest": "/api/ao/auto/schedule-journal-launch.js" },
     { "src": "/api/ao/auto/journal-prefetch", "dest": "/api/ao/auto/journal-prefetch.js" },
     { "src": "/api/ao/auto/library", "dest": "/api/ao/auto/library.js" },
+    { "src": "/api/ao/auto/seed-corpus", "dest": "/api/ao/auto/seed-corpus.js" },
     { "src": "/api/ao/auto/reshare-journal", "dest": "/api/ao/auto/reshare-journal.js" },
     { "src": "/api/ao/auto/series-context", "dest": "/api/ao/auto/series-context.js" },
     { "src": "/api/ao/auto/session-brief", "dest": "/api/ao/auto/session-brief.js" },
