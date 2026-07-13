@@ -39,7 +39,8 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
 
   const userLower = String(userMessage || '').toLowerCase();
   const isApproval = /\b(approved?|looks good|go ahead|publish it|that.?s it|perfect|yes|confirmed?|do it|fire it|send it)\b/i.test(userLower);
-  if (!isApproval) return;
+  const isRemoval = /\b(cut (that|this|it)|take (that|this) out|remove the|we'?re? not using that|don'?t include|leave (that|this) out|without the|no biographical|drop the|we cut|that'?s? cut|not in (the|this))\b/i.test(userLower);
+  if (!isApproval && !isRemoval) return;
 
   // Helper: parse attributes from a signal tag string
   function parseAttrs(str) {
@@ -72,6 +73,47 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
     searchTexts.push(...recentAssistant);
   }
   const fullSearchText = searchTexts.join('\n\n');
+
+  // --- REMOVAL CONSTRAINTS ---
+  // When Bart removes content from a draft, save it as a constraint that applies
+  // to all downstream content in this and future sessions for the same piece.
+  // Runs independently of approval — "cut this" is not an approval word.
+  if (isRemoval) {
+    const existingSlug = (() => {
+      const recentPublish = fullSearchText.match(/\[PUBLISH_JOURNAL[^\]]*slug="([^"]+)"/i);
+      return recentPublish ? recentPublish[1] : null;
+    })();
+
+    if (existingSlug || fullSearchText.includes('[JOURNAL_CONTENT]')) {
+      const constraintSlug = existingSlug || 'active-draft';
+      const partKey = Number(String(Date.now()).slice(-8));
+      try {
+        await supabaseAdmin
+          .from('ao_content_drafts')
+          .upsert({
+            created_by_email: email.toLowerCase().trim(),
+            kind: 'content_constraint',
+            series_slug: deriveSeriesSlug(constraintSlug) || constraintSlug,
+            part_number: partKey,
+            title: `Content constraint — ${constraintSlug}`,
+            slug: `constraint-${constraintSlug}-${Date.now()}`,
+            content: `REMOVAL CONSTRAINT logged ${new Date().toISOString()}:\n\nBart said: "${userMessage}"\n\nThis constraint applies to all captions, social posts, summaries, and derived content for this piece. Do not include any element that matches this removal instruction.`,
+            summary: String(userMessage).slice(0, 200),
+            status: 'approved',
+            approved_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'created_by_email,series_slug,part_number,kind',
+            ignoreDuplicates: false,
+          });
+        console.log(`[chat.js] Content removal constraint saved for: ${constraintSlug}`);
+      } catch (err) {
+        console.error('[chat.js] Content constraint save failed:', err?.message || err);
+      }
+    }
+  }
+
+  if (!isApproval) return;
 
   // --- JOURNAL DRAFT ---
   const journalContentMatch = fullSearchText.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
