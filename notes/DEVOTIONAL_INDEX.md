@@ -201,6 +201,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-07-12 | Whoever Restrains His Words | Proverbs 10:19 (ESV) | `whoever-restrains-his-words` | `2026-07-12-whoever-restrains-his-words.md` |
 | 2026-07-13 | The Heart of the Wise Weighs | Proverbs 15:28 (ESV) | `the-heart-of-the-wise-weighs` | `2026-07-13-the-heart-of-the-wise-weighs.md` |
 | 2026-07-14 | The Discerning Heart Speaks Well | Proverbs 16:21 (ESV) | `the-discerning-heart-speaks-well` | `2026-07-14-the-discerning-heart-speaks-well.md` |
+| 2026-07-15 | Speaking the Truth in Love | Zechariah 8:16 (ESV) | `speaking-the-truth-in-love` | `2026-07-15-speaking-the-truth-in-love.md` |
+| 2026-07-16 | Let Your Yes Be Yes | Matthew 5:36–37 (ESV) | `let-your-yes-be-yes` | `2026-07-16-let-your-yes-be-yes.md` |
+| 2026-07-17 | Put Away Falsehood | Ephesians 4:25 (ESV) | `put-away-falsehood` | `2026-07-17-put-away-falsehood.md` |
+| 2026-07-18 | Faithful Rebuke | Proverbs 28:23 (ESV) | `faithful-rebuke` | `2026-07-18-faithful-rebuke.md` |
+| 2026-07-19 | Iron Sharpens Iron | Proverbs 27:17 (ESV) | `iron-sharpens-iron` | `2026-07-19-iron-sharpens-iron.md` |
+| 2026-07-20 | Correcting With Gentleness | 2 Timothy 2:24–25 (ESV) | `correcting-with-gentleness` | `2026-07-20-correcting-with-gentleness.md` |
+| 2026-07-21 | He Who Answers Before Listening | Proverbs 18:13 (ESV) | `he-who-answers-before-listening` | `2026-07-21-he-who-answers-before-listening.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
