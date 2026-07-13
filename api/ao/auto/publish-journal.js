@@ -496,6 +496,26 @@ export default async function handler(req, res) {
       }
     })();
 
+    // Embed the new journal entry into the vector corpus immediately after publish.
+    // This makes the document available for semantic search in the next Auto session
+    // without waiting for a manual re-seed. Fire-and-forget — never blocks publish.
+    (async () => {
+      try {
+        const { embedAndStoreDocument } = await import('../../../lib/ao/corpusEmbeddings.js');
+        await embedAndStoreDocument({
+          slug: safeSlug,
+          title,
+          type: 'journal-post',
+          categories: categories || [],
+          summary,
+          body: content,
+        });
+        console.log(`[publish-journal] Vector embedding stored for: ${safeSlug}`);
+      } catch (embedErr) {
+        console.error('[publish-journal] Vector embedding failed (non-blocking):', embedErr?.message || embedErr);
+      }
+    })();
+
     return res.status(200).json({
       ok: true,
       slug: safeSlug,
