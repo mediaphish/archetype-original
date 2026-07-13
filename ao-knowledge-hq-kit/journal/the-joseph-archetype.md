@@ -148,7 +148,7 @@ The Judas Archetype ends with a warning: do you recognize this pattern in yourse
 
 The Joseph Archetype ends with a different question. Not a warning. A reckoning.
 
-You have had a pit. Every leader has had a pit. Maybe it was a partner who took what was built and walked. Maybe it was a team member who smiled in the meeting and went around you on the way out. Maybe it was a board, an investor, a mentor, someone close enough that the betrayal had real weight.
+You have had a pit. Every leader has had a pit. Maybe it was someone you built something with who left and took the narrative with them. Maybe it was a team member who smiled in the meeting and went around you on the way out. Maybe it was a board, an investor, a mentor, someone close enough that the betrayal had real weight.
 
 The question is not whether the pit happened. The question is who you became on the other side of it.
 
