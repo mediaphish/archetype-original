@@ -20,42 +20,91 @@ import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeRese
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 /**
- * Detect if Bart approved a journal draft, devotional draft, or caption set
- * in this exchange, and save it to ao_content_drafts automatically.
- * Auto has been claiming to save drafts but was never actually writing to the table.
- * This wires the save at the server level so it happens regardless of Auto's behavior.
+ * Detects approved content in the current exchange and saves it to ao_content_drafts.
+ * Runs server-side after every response — Auto cannot reliably save drafts itself.
+ *
+ * Detects four content types:
+ * 1. Journal draft — [JOURNAL_CONTENT] block with or without [PUBLISH_JOURNAL] signal
+ * 2. Devotional draft — [DEVOTIONAL_CONTENT] block
+ * 3. Caption set — [SOCIAL_CAPTIONS] block with multiple [CAPTION] blocks
+ * 4. Standalone prose — substantial assistant prose approved without a signal block
+ *
+ * When the approval message arrives without content in the same response,
+ * looks back at recentHistory to find the content in the prior assistant message.
+ *
+ * Never throws. Never blocks the response. Logs failures silently.
  */
-async function trySaveDraftFromExchange(userMessage, assistantReply, email) {
+async function trySaveDraftFromExchange(userMessage, assistantReply, email, recentHistory = []) {
   if (!email || !assistantReply) return;
 
   const userLower = String(userMessage || '').toLowerCase();
-  const isApproval = /\b(approved?|looks good|go ahead|publish it|that.s it|perfect|yes)\b/i.test(userLower);
+  const isApproval = /\b(approved?|looks good|go ahead|publish it|that.?s it|perfect|yes|confirmed?|do it|fire it|send it)\b/i.test(userLower);
   if (!isApproval) return;
 
-  // Check if the assistant reply or recent context contains journal content
-  const journalMatch = assistantReply.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
-  const publishMatch = assistantReply.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
-
-  if (journalMatch && publishMatch) {
+  // Helper: parse attributes from a signal tag string
+  function parseAttrs(str) {
     const attrs = {};
-    const attrPattern = /(\w+)="([^"]*)"/g;
+    const pattern = /(\w+)="([^"]*)"/g;
     let m;
-    while ((m = attrPattern.exec(publishMatch[1])) !== null) {
-      attrs[m[1]] = m[2];
+    while ((m = pattern.exec(str)) !== null) attrs[m[1]] = m[2];
+    return attrs;
+  }
+
+  // Helper: extract part number from slug
+  function extractPartNumber(slug) {
+    const match = (slug || '').match(/-part-(\d+)/i);
+    return match ? parseInt(match[1], 10) : 1;
+  }
+
+  // Helper: derive series slug from a full slug (strip part suffix)
+  function deriveSeriesSlug(slug) {
+    return (slug || '').replace(/-part-\d+.*$/i, '') || slug;
+  }
+
+  // Search current reply and recent history for content blocks
+  // Content may be in the prior assistant message when approval is in the current user message
+  const searchTexts = [assistantReply];
+  if (recentHistory && recentHistory.length > 0) {
+    const recentAssistant = recentHistory
+      .filter(m => m.role === 'assistant')
+      .slice(-3)
+      .map(m => String(m.content || ''));
+    searchTexts.push(...recentAssistant);
+  }
+  const fullSearchText = searchTexts.join('\n\n');
+
+  // --- JOURNAL DRAFT ---
+  const journalContentMatch = fullSearchText.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
+  if (journalContentMatch) {
+    const publishMatch = fullSearchText.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+
+    // Try to extract slug and title from the publish signal or from the content frontmatter
+    let slug = attrs.slug || '';
+    let title = attrs.title || '';
+
+    if (!slug) {
+      // Try to find slug in frontmatter of the content block
+      const slugMatch = journalContentMatch[1].match(/^slug:\s*(.+)$/m);
+      if (slugMatch) slug = slugMatch[1].trim().replace(/^["']|["']$/g, '');
+    }
+    if (!title) {
+      const titleMatch = journalContentMatch[1].match(/^title:\s*(.+)$/m);
+      if (titleMatch) title = titleMatch[1].trim().replace(/^["']|["']$/g, '');
     }
 
-    if (attrs.slug && attrs.title) {
+    if (slug || title) {
       try {
         await supabaseAdmin
           .from('ao_content_drafts')
           .upsert({
             created_by_email: email.toLowerCase().trim(),
             kind: 'journal',
-            series_slug: attrs.slug.replace(/-part-\d+.*$/, '') || attrs.slug,
-            part_number: parseInt((attrs.slug.match(/-part-(\d+)/i) || [])[1] || '1', 10),
-            title: attrs.title,
-            slug: attrs.slug,
-            content: journalMatch[1].trim(),
+            series_slug: deriveSeriesSlug(slug) || 'standalone',
+            part_number: extractPartNumber(slug),
+            title: title || slug,
+            slug: slug || null,
+            content: journalContentMatch[1].trim(),
             summary: attrs.summary || '',
             image_url: attrs.image_url || null,
             status: 'approved',
@@ -65,10 +114,81 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email) {
             onConflict: 'created_by_email,series_slug,part_number,kind',
             ignoreDuplicates: false,
           });
-        console.log(`[chat.js] Draft saved: ${attrs.slug}`);
+        console.log(`[chat.js] Journal draft saved: ${slug || title}`);
       } catch (err) {
-        console.error('[chat.js] Draft save failed:', err?.message || err);
+        console.error('[chat.js] Journal draft save failed:', err?.message || err);
       }
+    }
+    return; // Journal save handled — do not attempt other content types
+  }
+
+  // --- DEVOTIONAL DRAFT ---
+  const devotionalMatch = fullSearchText.match(/\[DEVOTIONAL_CONTENT\]([\s\S]*?)\[\/DEVOTIONAL_CONTENT\]/i);
+  if (devotionalMatch) {
+    const publishMatch = fullSearchText.match(/\[PUBLISH_DEVOTIONAL([^\]]*)\]/i);
+    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+
+    const slug = attrs.slug || `devotional-${attrs.date || new Date().toISOString().split('T')[0]}`;
+    const title = attrs.title || `Devotional — ${attrs.date || new Date().toISOString().split('T')[0]}`;
+
+    try {
+      await supabaseAdmin
+        .from('ao_content_drafts')
+        .upsert({
+          created_by_email: email.toLowerCase().trim(),
+          kind: 'devotional',
+          series_slug: attrs.date ? attrs.date.slice(0, 7) : new Date().toISOString().slice(0, 7),
+          part_number: parseInt((attrs.date || '').replace(/-/g, '').slice(-2) || '1', 10),
+          title,
+          slug,
+          content: devotionalMatch[1].trim(),
+          summary: attrs.summary || '',
+          image_url: null,
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'created_by_email,series_slug,part_number,kind',
+          ignoreDuplicates: false,
+        });
+      console.log(`[chat.js] Devotional draft saved: ${slug}`);
+    } catch (err) {
+      console.error('[chat.js] Devotional draft save failed:', err?.message || err);
+    }
+    return;
+  }
+
+  // --- CAPTION SET ---
+  const captionsMatch = fullSearchText.match(/\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i);
+  if (captionsMatch) {
+    // Extract the slug context from nearby publish signal or thread context
+    const publishMatch = fullSearchText.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+    const slug = attrs.slug || 'captions-' + new Date().toISOString().split('T')[0];
+
+    try {
+      await supabaseAdmin
+        .from('ao_content_drafts')
+        .upsert({
+          created_by_email: email.toLowerCase().trim(),
+          kind: 'captions',
+          series_slug: deriveSeriesSlug(attrs.slug) || 'standalone',
+          part_number: extractPartNumber(attrs.slug),
+          title: `Captions — ${attrs.title || slug}`,
+          slug,
+          content: captionsMatch[1].trim(),
+          summary: '',
+          image_url: null,
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'created_by_email,series_slug,part_number,kind',
+          ignoreDuplicates: false,
+        });
+      console.log(`[chat.js] Caption set saved: ${slug}`);
+    } catch (err) {
+      console.error('[chat.js] Caption set save failed:', err?.message || err);
     }
   }
 }
@@ -294,7 +414,7 @@ export default async function handler(req, res) {
 
     // Save draft to ao_content_drafts if this exchange contains an approved journal draft.
     // This runs server-side regardless of Auto's behavior — Auto cannot save drafts itself.
-    trySaveDraftFromExchange(userMessage, result.reply, auth.email).catch((err) => {
+    trySaveDraftFromExchange(userMessage, result.reply, auth.email, recentHistory).catch((err) => {
       console.error('[chat.js] trySaveDraftFromExchange error:', err?.message || err);
     });
 
