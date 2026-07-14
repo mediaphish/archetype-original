@@ -64,7 +64,7 @@ This is where the Joseph Archetype lives. Not in the reunion. Not in the palace.
 
 His unwavering moral integrity in the face of temptation kept his principles intact. But the word principles makes it sound cleaner than it was. Principles are easy to maintain when the environment rewards them. Joseph maintained his in an environment that punished them. Twice. First the pit. Then the prison. The same integrity that should have protected him was the reason he was there.
 
-That pattern does not stop most leaders from closing. It should not have stopped Joseph. But it did not.
+Most leaders close after one betrayal. Joseph absorbed two and kept his posture.
 
 ---
 
