@@ -78,10 +78,22 @@ export default async function handler(req, res) {
   const launchDate = dateFromYmd(publishYmd) || (await findNextQueueDate(0));
   const launchYmd = launchDate.toISOString().split('T')[0];
 
+  // Validate that at least one caption was provided
+  const providedCaptions = CHANNEL_MAP.filter(
+    (ch) => captions[ch.key] && String(captions[ch.key]).trim()
+  );
+  if (providedCaptions.length === 0) {
+    return res.status(400).json({
+      ok: false,
+      error:
+        'No captions provided. At least one platform caption is required to schedule journal launch posts.',
+    });
+  }
+
   const rows = [];
   for (const ch of CHANNEL_MAP) {
     const caption = captions[ch.key];
-    if (!caption) continue;
+    if (!caption || !String(caption).trim()) continue;
 
     let text = String(caption).trim();
     if (ch.platform === 'instagram') {

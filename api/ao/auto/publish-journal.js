@@ -271,6 +271,17 @@ async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
     });
   }
 
+  // Validate that every row has a non-empty caption before returning.
+  // A scheduled post with no caption will post blank — never allow this.
+  const blankRows = rows.filter((r) => !r.caption || String(r.caption).trim() === '');
+  if (blankRows.length > 0) {
+    const platforms = blankRows.map((r) => r.platform).join(', ');
+    console.error(`[publish-journal] parseSocialCaptions produced blank captions for: ${platforms}`);
+    throw new Error(
+      `Caption generation failed for platforms: ${platforms}. The [SOCIAL_CAPTIONS] block may be malformed or missing caption text for these channels. Fix the captions in Auto and re-fire the publish signal.`
+    );
+  }
+
   return rows;
 }
 

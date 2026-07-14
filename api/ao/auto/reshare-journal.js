@@ -439,6 +439,21 @@ export default async function handler(req, res) {
   const rows = [];
   const now = new Date().toISOString();
 
+  // Validate that captions were generated for all channels before inserting any rows.
+  // A reshare post with no caption posts blank — never allow this.
+  const missingChannels = RESHARE_CHANNELS.filter(
+    (ch) => !captions[ch.key] || !String(captions[ch.key]).trim()
+  );
+  if (missingChannels.length > 0) {
+    console.error(
+      `[reshare-journal] Missing captions for channels: ${missingChannels.map((c) => c.key).join(', ')}`
+    );
+    return res.status(500).json({
+      ok: false,
+      error: `Caption generation failed for channels: ${missingChannels.map((c) => c.key).join(', ')}. Reshare aborted. No rows inserted.`,
+    });
+  }
+
   for (const ch of RESHARE_CHANNELS) {
     const rawCaption = captions[ch.key];
     if (!rawCaption) continue;

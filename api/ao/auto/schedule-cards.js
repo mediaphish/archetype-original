@@ -61,9 +61,14 @@ export default async function handler(req, res) {
     const cardNum = Number(card.card_index) || 1;
     const line1 = card.line1 || '';
     const line2 = card.line2 || '';
-    const caption = card.caption || '';
+    const caption = String(card.caption || '').trim();
     if (!caption) {
-      console.warn(`[schedule-cards] Card ${cardNum} has no caption — scheduling with empty caption`);
+      console.error(`[schedule-cards] Card ${cardNum} has no caption — cannot schedule. Caption is required.`);
+      return res.status(400).json({
+        ok: false,
+        error: `Card ${cardNum} has no caption. Every card must have a caption before scheduling. Generate captions in Auto and approve them before hitting Publish.`,
+        card_index: cardNum,
+      });
     }
     const imageUrl = String(card.image_url || '').trim();
     const cardText = [line1, line2].filter(Boolean).join('\n').trim();
@@ -77,7 +82,7 @@ export default async function handler(req, res) {
         scheduled_at: await toScheduledAt(currentDate, ch.platform),
         text: textBody,
         image_url: imageUrl || null,
-        caption: card.caption || '',
+        caption,
         status: 'scheduled',
         source_kind: 'auto_quote_card',
         intent: {
