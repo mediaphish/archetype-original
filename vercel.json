@@ -82,6 +82,8 @@
     { "src": "api/ao/auto/chat.js", "use": "@vercel/node", "config": { "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
     { "src": "api/ao/auto/thread/new.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 120, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
     { "src": "api/ao/auto/reshare-journal.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 60, "includeFiles": ["lib/**", "ao-knowledge-hq-kit/journal/**"] } },
+    { "src": "api/ao/auto/reshare-review.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 30, "includeFiles": ["lib/**"] } },
+    { "src": "api/ao/auto/reshare-settings.js", "use": "@vercel/node", "config": { "memory": 128, "maxDuration": 10, "includeFiles": ["lib/**"] } },
     { "src": "api/ao/auto/seed-corpus.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json"] } },
     { "src": "api/ao/auto/derive-content.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 60, "includeFiles": ["lib/**", "ao-knowledge-hq-kit/journal/**"] } },
     { "src": "api/**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } }
@@ -355,6 +357,8 @@
     { "src": "/api/ao/auto/library", "dest": "/api/ao/auto/library.js" },
     { "src": "/api/ao/auto/seed-corpus", "dest": "/api/ao/auto/seed-corpus.js" },
     { "src": "/api/ao/auto/reshare-journal", "dest": "/api/ao/auto/reshare-journal.js" },
+    { "src": "/api/ao/auto/reshare-review", "dest": "/api/ao/auto/reshare-review.js" },
+    { "src": "/api/ao/auto/reshare-settings", "dest": "/api/ao/auto/reshare-settings.js" },
     { "src": "/api/ao/auto/series-context", "dest": "/api/ao/auto/series-context.js" },
     { "src": "/api/ao/auto/session-brief", "dest": "/api/ao/auto/session-brief.js" },
     { "src": "/api/ao/auto/content-draft", "dest": "/api/ao/auto/content-draft.js" },

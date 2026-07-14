@@ -17,7 +17,7 @@ import matter from 'gray-matter';
 import Anthropic from '@anthropic-ai/sdk';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { toScheduledAt, findNextQueueDate } from '../../../lib/ao/unifiedScheduler.js';
+import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -342,9 +342,103 @@ export default async function handler(req, res) {
     return res.status(500).json({ ok: false, error: 'Caption generation failed', detail: err.message });
   }
 
-  const scheduleDate = await findNextQueueDate(2);
+  // Check auto_approve setting
+  let autoApprove = false;
+  try {
+    const { data: settings } = await supabaseAdmin
+      .from('ao_reshare_settings')
+      .select('auto_approve')
+      .eq('owner_email', 'bart@archetypeoriginal.com')
+      .single();
+    autoApprove = !!settings?.auto_approve;
+  } catch (_) {
+    // Default to review mode if settings cannot be loaded
+  }
 
+  let scheduleDay = null;
+  if (autoApprove) {
+    // Auto-approve mode: find the best day this week and schedule immediately
+    try {
+      const today = new Date();
+      let bestDayOffset = 1;
+
+      const { data: metrics } = await supabaseAdmin
+        .from('ao_scheduled_post_metrics')
+        .select('posted_at_utc, engagement_score')
+        .not('posted_at_utc', 'is', null)
+        .not('engagement_score', 'is', null)
+        .gt('engagement_score', 0)
+        .order('posted_at_utc', { ascending: false })
+        .limit(60);
+
+      if (metrics && metrics.length >= 5) {
+        const dayScores = {};
+        for (const m of metrics) {
+          const d = new Date(m.posted_at_utc);
+          const dow = d.getDay();
+          if (dow === 0 || dow === 6) continue;
+          if (!dayScores[dow]) dayScores[dow] = { total: 0, count: 0 };
+          dayScores[dow].total += Number(m.engagement_score);
+          dayScores[dow].count += 1;
+        }
+        let bestDow = null;
+        let bestAvg = -1;
+        for (const [dow, { total, count }] of Object.entries(dayScores)) {
+          const avg = total / count;
+          if (avg > bestAvg) {
+            bestAvg = avg;
+            bestDow = parseInt(dow, 10);
+          }
+        }
+        if (bestDow !== null) {
+          for (let offset = 1; offset <= 7; offset++) {
+            const candidate = new Date(today);
+            candidate.setDate(today.getDate() + offset);
+            if (candidate.getDay() === bestDow) {
+              bestDayOffset = offset;
+              break;
+            }
+          }
+        }
+      }
+
+      // Find a day this week with no reshare already scheduled
+      for (let attempt = 0; attempt < 7; attempt++) {
+        const candidate = new Date(today);
+        candidate.setDate(today.getDate() + bestDayOffset + attempt);
+        const ymd = candidate.toISOString().split('T')[0];
+        const dow = candidate.getDay();
+        if (dow === 0 || dow === 6) continue;
+        const { data: existing } = await supabaseAdmin
+          .from('ao_scheduled_posts')
+          .select('id')
+          .eq('source_kind', 'ao_journal_reshare')
+          .in('status', ['scheduled', 'pending_review'])
+          .gte('scheduled_at', `${ymd}T00:00:00Z`)
+          .lt('scheduled_at', `${ymd}T23:59:59Z`)
+          .limit(1);
+        if (!existing || existing.length === 0) {
+          scheduleDay = candidate;
+          break;
+        }
+      }
+      if (!scheduleDay) {
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        scheduleDay = tomorrow;
+      }
+    } catch (err) {
+      console.warn('[reshare-journal] Day selection failed:', err?.message);
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      scheduleDay = tomorrow;
+    }
+  }
+
+  // Build rows
   const rows = [];
+  const now = new Date().toISOString();
+
   for (const ch of RESHARE_CHANNELS) {
     const rawCaption = captions[ch.key];
     if (!rawCaption) continue;
@@ -354,14 +448,17 @@ export default async function handler(req, res) {
       text = normalizeInstagramCaption(text);
     }
 
+    const scheduledAt =
+      autoApprove && scheduleDay ? await toScheduledAt(scheduleDay, ch.platform) : now; // placeholder — replaced on approve
+
     rows.push({
       platform: ch.platform,
       account_id: ch.account_id,
-      scheduled_at: await toScheduledAt(scheduleDate, ch.platform),
+      scheduled_at: scheduledAt,
       text,
       caption: text,
       image_url: imageUrl || null,
-      status: 'scheduled',
+      status: autoApprove ? 'scheduled' : 'pending_review',
       source_kind: 'ao_journal_reshare',
       intent: {
         auto_hub: true,
@@ -371,6 +468,7 @@ export default async function handler(req, res) {
         title,
         journal_url: journalUrl,
         reshare: true,
+        selection_reason: selectionReason,
         created_by_email: 'bart@archetypeoriginal.com',
       },
     });
@@ -390,27 +488,43 @@ export default async function handler(req, res) {
     return res.status(500).json({ ok: false, error: insertError.message });
   }
 
+  const insertedIds = (inserted || []).map((r) => r.id);
+
+  // Update ao_reshare_queue
   await supabaseAdmin
     .from('ao_reshare_queue')
     .update({
       last_reshared_at: new Date().toISOString(),
       reshare_count: (entry.reshare_count || 0) + 1,
+      selection_reason: selectionReason,
+      pending_review_ids: autoApprove ? [] : insertedIds,
       updated_at: new Date().toISOString(),
     })
     .eq('slug', entry.slug);
 
-  console.log(`[reshare-journal] Reshared ${entry.slug} — ${rows.length} posts scheduled for ${scheduleDate.toISOString().split('T')[0]}`);
+  const scheduleInfo =
+    autoApprove && scheduleDay
+      ? `Scheduled for ${scheduleDay.toISOString().split('T')[0]}.`
+      : 'Pending your review in Settings.';
+
+  console.log(
+    `[reshare-journal] ${autoApprove ? 'Auto-approved' : 'Pending review'}: ${entry.slug} — ${rows.length} posts. ${scheduleInfo}`
+  );
 
   return res.status(200).json({
     ok: true,
     slug: entry.slug,
     title,
     journal_url: journalUrl,
-    schedule_date: scheduleDate.toISOString().split('T')[0],
-    scheduled: inserted || [],
+    status: autoApprove ? 'scheduled' : 'pending_review',
+    schedule_date: autoApprove && scheduleDay ? scheduleDay.toISOString().split('T')[0] : null,
+    pending_review: !autoApprove,
+    posts: inserted || [],
     total: (inserted || []).length,
     captions,
     selection_reason: selectionReason || 'Selected by rotation',
-    message: `${(inserted || []).length} reshare posts scheduled for ${entry.slug}`,
+    message: autoApprove
+      ? `${(inserted || []).length} reshare posts scheduled for ${scheduleDay?.toISOString().split('T')[0]}.`
+      : `${(inserted || []).length} reshare posts are pending your review in Settings.`,
   });
 }

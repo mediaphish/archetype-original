@@ -66,6 +66,18 @@ export default function Settings() {
   const [corpusSeedError, setCorpusSeedError] = useState('');
   const [corpusSeedResult, setCorpusSeedResult] = useState(null); // { processed, succeeded, failed, total, final_count, message }
 
+  // Reshare engine
+  const [reshareLoading, setReshareLoading] = useState(false);
+  const [reshareError, setReshareError] = useState('');
+  const [reshareResult, setReshareResult] = useState(null);
+  const [reshareAutoApprove, setReshareAutoApprove] = useState(false);
+  const [reshareAutoApproveLoading, setReshareAutoApproveLoading] = useState(false);
+  const [reshareSettingsLoading, setReshareSettingsLoading] = useState(true);
+  const [pendingReshares, setPendingReshares] = useState([]);
+  const [pendingResharesLoading, setPendingResharesLoading] = useState(true);
+  const [reshareActionLoading, setReshareActionLoading] = useState({});
+  const [reshareActionResult, setReshareActionResult] = useState({});
+
   const [brandLoading, setBrandLoading] = useState(true);
   const [brandAssets, setBrandAssets] = useState([]);
   const [brandError, setBrandError] = useState('');
@@ -250,6 +262,29 @@ export default function Settings() {
     refreshEditorial();
   }, [authChecked, refreshEditorial]);
 
+  useEffect(() => {
+    if (!authChecked) return;
+    let cancelled = false;
+    (async () => {
+      // Load reshare settings
+      try {
+        const res = await fetch('/api/ao/auto/reshare-settings');
+        const json = await res.json().catch(() => ({}));
+        if (!cancelled && json.ok) setReshareAutoApprove(!!json.auto_approve);
+      } catch (_) {}
+      if (!cancelled) setReshareSettingsLoading(false);
+
+      // Load pending reshares
+      try {
+        const res = await fetch('/api/ao/auto/reshare-review');
+        const json = await res.json().catch(() => ({}));
+        if (!cancelled && json.ok) setPendingReshares(json.pending || []);
+      } catch (_) {}
+      if (!cancelled) setPendingResharesLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, [authChecked]);
+
   const saveBeatPriorities = useCallback(async () => {
     if (!authChecked) return;
     setEditorialLoading(true);
@@ -314,6 +349,77 @@ export default function Settings() {
       setCorpusSeedLoading(false);
     }
   }, [corpusSeedLoading]);
+
+  const handleTriggerReshare = useCallback(async () => {
+    if (reshareLoading) return;
+    setReshareLoading(true);
+    setReshareError('');
+    setReshareResult(null);
+    try {
+      const res = await fetch('/api/ao/auto/reshare-journal', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setReshareError(json.error || 'Reshare failed');
+        return;
+      }
+      setReshareResult(json);
+      // Refresh pending reshares
+      const reviewRes = await fetch('/api/ao/auto/reshare-review');
+      const reviewJson = await reviewRes.json().catch(() => ({}));
+      if (reviewJson.ok) setPendingReshares(reviewJson.pending || []);
+    } catch (e) {
+      setReshareError(e.message || 'Could not reach the server');
+    } finally {
+      setReshareLoading(false);
+    }
+  }, [reshareLoading]);
+
+  const handleReshareAutoApproveToggle = useCallback(async (value) => {
+    setReshareAutoApproveLoading(true);
+    try {
+      const res = await fetch('/api/ao/auto/reshare-settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ auto_approve: value }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) setReshareAutoApprove(value);
+    } catch (_) {}
+    setReshareAutoApproveLoading(false);
+  }, []);
+
+  const handleReshareAction = useCallback(async (slug, action) => {
+    setReshareActionLoading((prev) => ({ ...prev, [slug]: action }));
+    setReshareActionResult((prev) => ({ ...prev, [slug]: null }));
+    try {
+      const res = await fetch('/api/ao/auto/reshare-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, slug }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        setReshareActionResult((prev) => ({
+          ...prev,
+          [slug]: { ok: false, message: json.error || `${action} failed` },
+        }));
+        return;
+      }
+      setReshareActionResult((prev) => ({
+        ...prev,
+        [slug]: { ok: true, message: json.message },
+      }));
+      // Remove from pending list
+      setPendingReshares((prev) => prev.filter((r) => r.slug !== slug));
+    } catch (e) {
+      setReshareActionResult((prev) => ({
+        ...prev,
+        [slug]: { ok: false, message: e.message || `${action} failed` },
+      }));
+    } finally {
+      setReshareActionLoading((prev) => ({ ...prev, [slug]: null }));
+    }
+  }, []);
 
   const refreshBrandAssets = useCallback(async () => {
     if (!authChecked) return;
@@ -660,6 +766,159 @@ export default function Settings() {
               Takes 1–2 minutes for a full corpus. Safe to run multiple times.
             </p>
           </div>
+        </section>
+
+        {/* ─── Reshare engine ─────────────────────────────────────────── */}
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 mb-6">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">Content reshare engine</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Resurfaces one existing journal entry per week across all automated channels with fresh captions.
+                The engine selects based on your content ecosystem and current leadership conversations.
+                Review and approve before posts go live, or turn on auto-approve once you trust it.
+              </p>
+            </div>
+          </div>
+
+          {/* Auto-approve toggle */}
+          <div className="mb-5 flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 bg-gray-50">
+            <div>
+              <p className="text-sm font-medium text-gray-900">Auto-approve reshares</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                When on, reshares schedule automatically without review. Turn on once the engine has proven it makes good decisions.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleReshareAutoApproveToggle(!reshareAutoApprove)}
+              disabled={reshareAutoApproveLoading || reshareSettingsLoading}
+              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
+                reshareAutoApprove ? 'bg-gray-900' : 'bg-gray-200'
+              }`}
+              aria-pressed={reshareAutoApprove}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  reshareAutoApprove ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Manual trigger */}
+          {reshareResult && (
+            <div className={`mb-4 rounded-xl border px-4 py-3 text-sm ${
+              reshareResult.pending_review
+                ? 'border-amber-200 bg-amber-50 text-amber-900'
+                : 'border-green-200 bg-green-50 text-green-900'
+            }`}>
+              <p className="font-medium">{reshareResult.message}</p>
+              {reshareResult.pending_review && (
+                <p className="mt-1 text-xs opacity-75">Scroll down to review and approve the selected entry.</p>
+              )}
+              {!reshareResult.pending_review && reshareResult.schedule_date && (
+                <p className="mt-1 text-xs opacity-75">
+                  Selected: <span className="font-medium">{reshareResult.title}</span> — {reshareResult.selection_reason}
+                </p>
+              )}
+            </div>
+          )}
+
+          {reshareError && (
+            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+              {reshareError}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleTriggerReshare}
+              disabled={reshareLoading}
+              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {reshareLoading ? (
+                <>
+                  <svg className="h-4 w-4 animate-spin text-gray-500" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Running reshare selection…
+                </>
+              ) : (
+                'Trigger reshare now'
+              )}
+            </button>
+            <p className="text-xs text-gray-400">
+              Runs the intelligent selection and generates fresh captions for one entry.
+            </p>
+          </div>
+
+          {/* Pending reshares review */}
+          {pendingResharesLoading ? (
+            <p className="mt-5 text-sm text-gray-400">Loading pending reshares…</p>
+          ) : pendingReshares.length > 0 ? (
+            <div className="mt-6">
+              <p className="text-sm font-semibold text-gray-900 mb-3">Pending review ({pendingReshares.length})</p>
+              <div className="space-y-4">
+                {pendingReshares.map((reshare) => (
+                  <div key={reshare.slug} className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+                    <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                      <p className="text-sm font-semibold text-gray-900">{reshare.title}</p>
+                      {reshare.selection_reason && (
+                        <p className="text-xs text-gray-500 mt-1">{reshare.selection_reason}</p>
+                      )}
+                      <a
+                        href={reshare.journal_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-600 hover:underline mt-1 inline-block"
+                      >
+                        {reshare.journal_url}
+                      </a>
+                    </div>
+                    <div className="px-4 py-3 space-y-3">
+                      {reshare.posts.map((post) => (
+                        <div key={post.id}>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">{post.platform}</p>
+                          <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{post.caption}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-4 py-3 border-t border-gray-100 flex items-center gap-3">
+                      {reshareActionResult[reshare.slug] ? (
+                        <p className={`text-xs font-medium ${reshareActionResult[reshare.slug].ok ? 'text-green-700' : 'text-red-700'}`}>
+                          {reshareActionResult[reshare.slug].message}
+                        </p>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleReshareAction(reshare.slug, 'approve')}
+                            disabled={!!reshareActionLoading[reshare.slug]}
+                            className="px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-700 disabled:opacity-50"
+                          >
+                            {reshareActionLoading[reshare.slug] === 'approve' ? 'Approving…' : 'Approve — schedule this week'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleReshareAction(reshare.slug, 'discard')}
+                            disabled={!!reshareActionLoading[reshare.slug]}
+                            className="px-4 py-2 border border-gray-200 bg-white text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                          >
+                            {reshareActionLoading[reshare.slug] === 'discard' ? 'Discarding…' : 'Discard'}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="mt-5 text-sm text-gray-400">No reshares pending review.</p>
+          )}
         </section>
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
