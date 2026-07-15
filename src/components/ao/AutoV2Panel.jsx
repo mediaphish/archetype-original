@@ -2361,45 +2361,105 @@ export default function AutoV2Panel({ onNavigate, className }) {
         }
 
         const controller = new AbortController();
-        const timeoutMs = isMobile ? 120000 : 90000;
-        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+        // No client timeout — streaming keeps the connection alive.
+        // The server sends tokens as they arrive; the connection only closes when done.
 
-        let res;
+        const res = await fetch('/api/ao/auto/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            thread_id: activeThreadId || null,
+            message: outgoing,
+            attachments: attachments.length > 0 ? attachments : undefined,
+          }),
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => ({}));
+          throw new Error(errJson.error || 'Could not reach Auto');
+        }
+
+        // Read the SSE stream
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let streamingAssistantContent = '';
+        let json = null;
+
+        // Show streaming content in the chat as it arrives
+        // Insert a streaming message placeholder
+        const streamingMsgId = `streaming-${Date.now()}`;
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: '',
+            id: streamingMsgId,
+            meta: { streaming: true },
+          },
+        ]);
+
         try {
-          res = await fetch('/api/ao/auto/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              thread_id: activeThreadId || null,
-              message: outgoing,
-              attachments: attachments.length > 0 ? attachments : undefined,
-            }),
-            signal: controller.signal,
-          });
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const parsed = JSON.parse(line.slice(6));
+
+                  if (parsed.token !== undefined) {
+                    // Text token — append to streaming display
+                    streamingAssistantContent += parsed.token;
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === streamingMsgId
+                          ? { ...m, content: streamingAssistantContent }
+                          : m
+                      )
+                    );
+                  } else if (parsed.ok !== undefined) {
+                    // Done event or error event with full state
+                    json = parsed;
+                  }
+                } catch (_) {
+                  // Malformed SSE line — ignore
+                }
+              }
+            }
+          }
         } finally {
-          clearTimeout(timeoutId);
-        }
-        const json = await res.json().catch(() => ({}));
-
-        if (!res.ok || !json.ok) {
-          throw new Error(json.error || 'Could not reach Auto');
+          reader.releaseLock();
         }
 
+        if (!json || !json.ok) {
+          throw new Error(json?.error || 'Auto could not complete the response');
+        }
+
+        // Replace streaming placeholder with final authoritative messages from server
         if (Array.isArray(json.messages) && json.messages.length > 0) {
           setMessages(json.messages);
           syncArtifactFromMessages(json.messages);
         } else {
           setMessages((prev) => {
-            const withoutOpt = prev.filter((m) => m.id !== optimisticMsg.id);
+            const withoutOptAndStreaming = prev.filter(
+              (m) => m.id !== optimisticMsg.id && m.id !== streamingMsgId
+            );
             return [
-              ...withoutOpt,
+              ...withoutOptAndStreaming,
               { role: 'user', content: displayText },
-              { role: 'assistant', content: json.assistant_message || '' },
+              { role: 'assistant', content: json.assistant_message || streamingAssistantContent || '' },
             ];
           });
           const synthetic = [
             { role: 'user', content: displayText },
-            { role: 'assistant', content: json.assistant_message || '' },
+            { role: 'assistant', content: json.assistant_message || streamingAssistantContent || '' },
           ];
           syncArtifactFromMessages(synthetic);
         }

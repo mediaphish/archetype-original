@@ -9,12 +9,11 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
-import { runAutoChat } from '../../../lib/ao/autoV2.js';
+import { runAutoChat, runAutoChatStream } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
-import { reviewAndCleanVoice } from '../../../lib/ao/voiceReview.js';
 import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
@@ -351,10 +350,31 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
+  // Set streaming headers immediately — before any async work.
+  // This keeps the connection alive past Vercel's 60-second function timeout
+  // by sending tokens incrementally as the model generates them.
+  // The client reads the stream and assembles the full reply.
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders();
+
+  // Helper to send an SSE event
+  const sendEvent = (event, data) => {
+    try {
+      res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    } catch (_) {
+      // Client disconnected — ignore
+    }
+  };
+
   const { message, thread_id, attachments } = req.body || {};
 
   if (!String(message || '').trim()) {
-    return res.status(400).json({ ok: false, error: 'message required' });
+    sendEvent('error', { ok: false, error: 'message required' });
+    res.end();
+    return;
   }
 
   const userMessage = String(message).trim();
@@ -417,10 +437,34 @@ export default async function handler(req, res) {
     // caused Auto to ask Bart for queue information it should already have.
     const scheduleContext = await getScheduleContext();
 
-    const result = await runAutoChat(history, currentMessageContent, scheduleContext, userMessage);
+    // Stream the model response token by token
+    let fullReply = '';
+    let streamError = null;
 
-    if (!result.ok) {
-      return res.status(500).json({ ok: false, error: result.error || 'Auto reply failed' });
+    try {
+      const streamResult = await runAutoChatStream(
+        history,
+        currentMessageContent,
+        scheduleContext,
+        userMessage,
+        (token) => {
+          // Send each token to the client as it arrives
+          fullReply += token;
+          sendEvent('token', { token });
+        }
+      );
+
+      if (!streamResult.ok) {
+        streamError = streamResult.error || 'Auto reply failed';
+      }
+    } catch (streamErr) {
+      streamError = streamErr?.message || 'Stream error';
+    }
+
+    if (streamError) {
+      sendEvent('error', { ok: false, error: streamError });
+      res.end();
+      return;
     }
 
     // Enforce response rules in code before any further processing.
@@ -431,28 +475,18 @@ export default async function handler(req, res) {
     // This allows Auto to fire the publish signal in a dedicated response after
     // content was approved in a prior message — the correct workflow.
     const recentHistory = priorMessages.slice(-6);
-    result.reply = enforceResponseRules(result.reply, recentHistory);
+    fullReply = enforceResponseRules(fullReply, recentHistory);
 
-    // Voice rewrite pass — runs after structural enforcement, before image append.
-    // Finds AI signature violations (em dashes, banned words, banned phrases) and
-    // rewrites them automatically. Bart never sees a warning. He gets clean output.
-    // Never blocks the response — falls back to original on any error.
-    try {
-      result.reply = await reviewAndCleanVoice(result.reply);
-    } catch (voiceErr) {
-      console.error('[chat.js] Voice review failed — using original reply:', voiceErr?.message || voiceErr);
-    }
-
-    result.reply = await appendQuoteCardImagesToReplyIfNeeded({
+    fullReply = await appendQuoteCardImagesToReplyIfNeeded({
       userMessage,
       priorMessages,
-      reply: result.reply,
+      reply: fullReply,
       threadId: thread.id,
     });
 
-    result.reply = await appendDesignImageToReplyIfNeeded({
+    fullReply = await appendDesignImageToReplyIfNeeded({
       userMessage,
-      reply: result.reply,
+      reply: fullReply,
       email: auth.email,
     });
 
@@ -462,26 +496,26 @@ export default async function handler(req, res) {
       threadId: thread.id,
       role: 'assistant',
       mode: 'plan',
-      content: result.reply,
+      content: fullReply,
       meta: { auto_v2: true },
     });
 
     // Save draft to ao_content_drafts if this exchange contains an approved journal draft.
     // This runs server-side regardless of Auto's behavior — Auto cannot save drafts itself.
-    trySaveDraftFromExchange(userMessage, result.reply, auth.email, recentHistory).catch((err) => {
+    trySaveDraftFromExchange(userMessage, fullReply, auth.email, recentHistory).catch((err) => {
       console.error('[chat.js] trySaveDraftFromExchange error:', err?.message || err);
     });
 
     // Process episode signal if present — commits corpus markdown and updates episode draft
-    if (result.reply.includes('[EPISODE_PROCESS')) {
-      processEpisodeSignal(result.reply, auth.email).catch((err) => {
+    if (fullReply.includes('[EPISODE_PROCESS')) {
+      processEpisodeSignal(fullReply, auth.email).catch((err) => {
         console.error('[chat.js] processEpisodeSignal error:', err?.message || err);
       });
     }
 
     // Process episode research signal — saves research brief and questions back to guest record
-    if (result.reply.includes('[EPISODE_RESEARCH_COMPLETE')) {
-      processEpisodeResearchSignal(result.reply, auth.email).catch((err) => {
+    if (fullReply.includes('[EPISODE_RESEARCH_COMPLETE')) {
+      processEpisodeResearchSignal(fullReply, auth.email).catch((err) => {
         console.error('[chat.js] processEpisodeResearchSignal error:', err?.message || err);
       });
     }
@@ -494,23 +528,31 @@ export default async function handler(req, res) {
 
     const finalState = await getAutoThreadState(auth.email, thread.id);
 
-    return res.status(200).json({
+    // Send the complete processed reply and thread state as the final SSE event
+    sendEvent('done', {
       ok: true,
       thread: finalState.thread,
       messages: finalState.messages,
       attachments: finalState.attachments,
-      assistant_message: result.reply,
+      assistant_message: fullReply,
       receipts: [],
       bundle_id: null,
       idea_id: null,
       action_log_id: null,
     });
+    res.end();
+    return;
   } catch (err) {
     console.error('[Auto V2 chat]', err?.message || err);
-    return res.status(500).json({
-      ok: false,
-      error: err?.message || 'Server error',
-      persisted_user_message: userMessage,
-    });
+    try {
+      sendEvent('error', {
+        ok: false,
+        error: err?.message || 'Server error',
+        persisted_user_message: userMessage,
+      });
+      res.end();
+    } catch (_) {
+      // Headers already sent or client disconnected
+    }
   }
 }

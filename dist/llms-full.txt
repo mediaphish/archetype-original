@@ -1313,6 +1313,10 @@ Clearing the Path
 https://www.archetypeoriginal.com/journal/clearing-the-path
 Servant leadership isn’t about getting people to make your job easier. It’s about making their path clear so they can do the work they were built to do.
 
+DARVO: When the Guilty Become the Victim
+https://www.archetypeoriginal.com/journal/darvo-when-the-guilty-become-the-victim
+DARVO is a pattern used by offenders to deny behavior, attack the challenger, and reverse victim and offender roles. This entry examines how it works, why servant leaders are the specific target, the systems that make it sustainable, and what institutional courage actually requires.
+
 How Leaders Lose the Capacity for Accountability
 https://www.archetypeoriginal.com/journal/how-leaders-lose-the-capacity-for-accountability
 A science-backed editorial examining how unchecked power reshapes perception, erodes accountability, and enables leaders to move from negligence to intentional harm without ever announcing the shift.
@@ -1372,6 +1376,14 @@ A reflection on the difference between hearing and listening in leadership, seei
 Power vs. Authority: Part 1 — The Hunger
 https://www.archetypeoriginal.com/journal/power-vs-authority-part-1-the-hunger
 The pursuit of power and the earning of authority look identical from the outside at first. Both involve influence. Both involve people following a direction. The difference lives underneath, in motive, in method, and in what survives. Part 1 of this series examines the hunger that precedes power, where it comes from, what it costs the person chasing it, and what it leaves behind in the people who were close enough to watch.
+
+Power vs. Authority: Part 2 — The Build
+https://www.archetypeoriginal.com/journal/power-vs-authority-part-2-the-build
+Most writing on earning authority makes it sound like a program. The build is not a program. It is a direction held under pressure, repeatedly, over enough time that the people around you stop waiting for the exception.
+
+Power vs. Authority: Part 3 — The Test
+https://www.archetypeoriginal.com/journal/power-vs-authority-part-3-the-test
+What separates power from authority when something goes wrong. Crisis and pressure are the only real diagnostic. Power relies on the org chart when it needs people most. Authority calls and people show up.
 
 Psychology of Servant Leadership, Part 1: The Servant Mindset
 https://www.archetypeoriginal.com/journal/psychology-of-servant-leadership-part-1
@@ -1493,6 +1505,10 @@ The Isolation Strategy
 https://www.archetypeoriginal.com/journal/the-isolation-strategy
 Narcissistic leaders engineer distance to avoid accountability and truth. Servant leaders move toward their teams, building trust through presence, proximity, and transparency.
 
+The Joseph Archetype
+https://www.archetypeoriginal.com/journal/the-joseph-archetype
+The Joseph Archetype is the story of a leader who absorbed betrayal, stayed faithful in obscurity, and arrived at power without bitterness in the hand that held it. The second entry in The Archetype Series.
+
 The Judas Archetype
 https://www.archetypeoriginal.com/journal/the-judas-archetype
 The Judas Archetype is not a story about a monster. It is a story about a pattern. One that does not begin with betrayal. It ends there. And the path between the beginning and the end looks, for most of its length, like ordinary leadership behavior.
@@ -1610,10 +1626,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 183.
+Published devotional entries: 196.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-07-02T20:30:34.376Z
+Generated at: 2026-07-15T20:42:13.600Z
