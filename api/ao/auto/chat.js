@@ -362,8 +362,26 @@ export default async function handler(req, res) {
   try {
     const thread = await ensureAutoThread(auth.email, thread_id || '');
 
+    // Persist user message immediately — before any model call.
+    // If runAutoChat times out or fails, the message is already in the database
+    // and appears in the thread on reload. The user should never lose what they
+    // typed because Auto failed.
+    const persistedUserMessage = await addAutoMessage({
+      threadId: thread.id,
+      role: 'user',
+      mode: 'plan',
+      content: userMessage,
+      meta: { auto_v2: true },
+    });
+
     const prior = await getAutoThreadState(auth.email, thread.id);
-    const history = (prior.messages || [])
+    // Exclude the message we just persisted so it is not sent to the model twice
+    // (runAutoChat appends the current message itself) and so the downstream
+    // prior-message consumers see the same history they did before.
+    const priorMessages = (prior.messages || []).filter(
+      (m) => m.id !== persistedUserMessage?.id
+    );
+    const history = priorMessages
       .filter((m) => m.role === 'user' || m.role === 'assistant')
       .map((m) => ({
         role: m.role,
@@ -412,7 +430,7 @@ export default async function handler(req, res) {
     // [JOURNAL_CONTENT] or [DEVOTIONAL_CONTENT] appeared in a prior message.
     // This allows Auto to fire the publish signal in a dedicated response after
     // content was approved in a prior message — the correct workflow.
-    const recentHistory = (prior.messages || []).slice(-6);
+    const recentHistory = priorMessages.slice(-6);
     result.reply = enforceResponseRules(result.reply, recentHistory);
 
     // Voice rewrite pass — runs after structural enforcement, before image append.
@@ -427,7 +445,7 @@ export default async function handler(req, res) {
 
     result.reply = await appendQuoteCardImagesToReplyIfNeeded({
       userMessage,
-      priorMessages: prior.messages,
+      priorMessages,
       reply: result.reply,
       threadId: thread.id,
     });
@@ -438,14 +456,8 @@ export default async function handler(req, res) {
       email: auth.email,
     });
 
-    await addAutoMessage({
-      threadId: thread.id,
-      role: 'user',
-      mode: 'plan',
-      content: userMessage,
-      meta: { auto_v2: true },
-    });
-
+    // User message was already persisted at the top of the handler (before the
+    // model call). Only the assistant reply is written here.
     await addAutoMessage({
       threadId: thread.id,
       role: 'assistant',
@@ -476,7 +488,7 @@ export default async function handler(req, res) {
 
     // Generate session brief if this is a wrap signal or long thread
     // Uses claude-haiku for speed — never blocks the response
-    tryGenerateSessionBrief(thread.id, prior.messages, auth.email, userMessage).catch((err) => {
+    tryGenerateSessionBrief(thread.id, priorMessages, auth.email, userMessage).catch((err) => {
       console.error('[chat.js] tryGenerateSessionBrief error:', err?.message || err);
     });
 
@@ -498,6 +510,7 @@ export default async function handler(req, res) {
     return res.status(500).json({
       ok: false,
       error: err?.message || 'Server error',
+      persisted_user_message: userMessage,
     });
   }
 }

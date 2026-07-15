@@ -447,7 +447,9 @@ function MessageBubble({ message }) {
         className={`
           max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap
           ${isUser
-            ? 'bg-gray-900 text-white rounded-tr-sm'
+            ? message.meta?.failed
+              ? 'bg-red-900 text-white rounded-tr-sm opacity-70'
+              : 'bg-gray-900 text-white rounded-tr-sm'
             : 'bg-gray-50 text-gray-900 border border-gray-200 rounded-tl-sm'
           }
         `}
@@ -2393,8 +2395,20 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
         await loadThreadList();
       } catch (e) {
-        setError(e.message || 'Something went wrong');
-        setMessages((prev) => prev.filter((m) => m.id !== optimisticMsg.id));
+        // Do not remove the optimistic message or clear the input.
+        // The user's message may already be in the database (persisted before the
+        // model call). Show an error with a Retry button. Never make the user retype.
+        const errorText =
+          e.message || 'Auto could not be reached. Your message was saved. Tap Retry to try again.';
+        setError(errorText);
+        // Mark the optimistic message as failed so the UI can show it differently.
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === optimisticMsg.id ? { ...m, meta: { ...m.meta, failed: true } } : m
+          )
+        );
+        // Restore the input text so the user can retry without retyping.
+        setInput(outgoing);
       } finally {
         setSending(false);
       }
@@ -2857,11 +2871,26 @@ export default function AutoV2Panel({ onNavigate, className }) {
           {sending && <TypingIndicator />}
 
           {error && (
-            <div className="flex items-start gap-3 px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-700">
-              <span className="font-medium">Error:</span> {error}
-              <button type="button" onClick={() => setError('')} className="ml-auto text-red-400 hover:text-red-600 flex-shrink-0" aria-label="Dismiss">
-                <CloseIcon />
-              </button>
+            <div className="flex flex-col gap-2 px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-700">
+              <div className="flex items-start gap-3">
+                <span className="font-medium">Error:</span> {error}
+                <button type="button" onClick={() => setError('')} className="ml-auto text-red-400 hover:text-red-600 flex-shrink-0" aria-label="Dismiss">
+                  <CloseIcon />
+                </button>
+              </div>
+              {input.trim() && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError('');
+                    setMessages((prev) => prev.filter((m) => !m.meta?.failed));
+                    sendMessage(input);
+                  }}
+                  className="self-start px-3 py-1.5 bg-red-700 text-white text-xs font-semibold rounded-lg hover:bg-red-800 transition-colors"
+                >
+                  Retry
+                </button>
+              )}
             </div>
           )}
 
