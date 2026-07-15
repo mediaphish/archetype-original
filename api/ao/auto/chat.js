@@ -432,10 +432,14 @@ export default async function handler(req, res) {
       currentMessageContent = userMessage;
     }
 
-    // Always inject live queue data into Auto's context.
-    // A CMO always knows the queue state — gating this behind intent detection
-    // caused Auto to ask Bart for queue information it should already have.
-    const scheduleContext = await getScheduleContext();
+    // Load schedule context only when the request involves scheduling or publishing.
+    // Queue data adds significant token weight — loading it on every revision request
+    // for a journal entry is architectural waste.
+    const { classifyRequest } = await import('../../../lib/ao/requestClassifier.js');
+    const contextProfile = classifyRequest(userMessage, history.slice(-6));
+    const scheduleContext = contextProfile.needsSchedule
+      ? await getScheduleContext()
+      : null;
 
     // Stream the model response token by token
     let fullReply = '';
