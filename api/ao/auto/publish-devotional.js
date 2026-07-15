@@ -128,6 +128,26 @@ summary: "${summary.replace(/"/g, '\\"')}"
 
     const devotionalUrl = `https://www.archetypeoriginal.com/faith/${safeSlug}`;
 
+    // Embed the new devotional into the vector corpus immediately after publish.
+    // Makes it available for semantic search in the next Auto session without
+    // waiting for a manual re-seed. Fire-and-forget — never blocks publish.
+    (async () => {
+      try {
+        const { embedAndStoreDocument } = await import('../../../lib/ao/corpusEmbeddings.js');
+        await embedAndStoreDocument({
+          slug: safeSlug,
+          title,
+          type: 'devotional',
+          categories: ['servant-leadership', 'devotional', 'faith'],
+          summary,
+          body: content,
+        });
+        console.log(`[publish-devotional] Vector embedding stored for: ${safeSlug}`);
+      } catch (embedErr) {
+        console.error('[publish-devotional] Vector embedding failed (non-blocking):', embedErr?.message || embedErr);
+      }
+    })();
+
     return res.status(200).json({
       ok: true,
       slug: safeSlug,
