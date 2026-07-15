@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import AOHeader from '../../components/ao/AOHeader';
 import AutoV2Panel from '../../components/ao/AutoV2Panel';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
@@ -52,6 +53,14 @@ export default function Review() {
 
   return (
     <div className="h-[100dvh] max-h-[100dvh] flex flex-col overflow-hidden bg-gray-50 overscroll-none">
+      {/* Lock the viewport for the Auto workspace only. react-helmet-async
+          reverts this when navigating away, so the public site keeps pinch-zoom. */}
+      <Helmet>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+        />
+      </Helmet>
       <div className="shrink-0">
         <AOHeader active="analyst" email={email} onNavigate={handleNavigate} />
       </div>

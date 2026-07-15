@@ -1515,6 +1515,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [splitPercent, setSplitPercent] = useState(50);
   const [dividerDragging, setDividerDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState('chat');
   const [mobileArtifactOpen, setMobileArtifactOpen] = useState(false);
   const [mobileArtifactDrawerShown, setMobileArtifactDrawerShown] = useState(false);
@@ -1636,6 +1637,27 @@ export default function AutoV2Panel({ onNavigate, className }) {
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
   }, []);
+
+  useEffect(() => {
+    if (!isMobile) return undefined;
+
+    // On iOS Chrome, the visual viewport shrinks when the keyboard opens.
+    // When viewport height drops below 75% of screen height, keyboard is open.
+    const threshold = window.screen.height * 0.75;
+
+    const handleResize = () => {
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      setKeyboardOpen(viewportHeight < threshold);
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+      return () => window.visualViewport.removeEventListener('resize', handleResize);
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobile]);
 
   useEffect(() => {
     if (!mobileArtifactOpen) {
@@ -2338,15 +2360,25 @@ export default function AutoV2Panel({ onNavigate, className }) {
           }
         }
 
-        const res = await fetch('/api/ao/auto/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            thread_id: activeThreadId || null,
-            message: outgoing,
-            attachments: attachments.length > 0 ? attachments : undefined,
-          }),
-        });
+        const controller = new AbortController();
+        const timeoutMs = isMobile ? 120000 : 90000;
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+        let res;
+        try {
+          res = await fetch('/api/ao/auto/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              thread_id: activeThreadId || null,
+              message: outgoing,
+              attachments: attachments.length > 0 ? attachments : undefined,
+            }),
+            signal: controller.signal,
+          });
+        } finally {
+          clearTimeout(timeoutId);
+        }
         const json = await res.json().catch(() => ({}));
 
         if (!res.ok || !json.ok) {
@@ -2413,17 +2445,24 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setSending(false);
       }
     },
-    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, onNavigate]
+    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, onNavigate, isMobile]
   );
 
   const handleKeyDown = useCallback(
     (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+      if (e.key === 'Enter') {
+        if (isMobile) {
+          // On mobile, Enter always inserts a newline.
+          // The send button is the only submit trigger.
+          return;
+        }
+        if (!e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
       }
     },
-    [sendMessage]
+    [sendMessage, isMobile]
   );
 
   const handleApprove = useCallback(() => {
@@ -2636,18 +2675,18 @@ export default function AutoV2Panel({ onNavigate, className }) {
     guestRecordLoading,
   };
 
-  const mobileBottomNav = isMobile ? (
+  const mobileBottomNav = isMobile && !keyboardOpen ? (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white pb-[env(safe-area-inset-bottom,0px)]"
+      className="fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200"
+      style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 12px)' }}
       aria-label="Auto navigation"
     >
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', width: '100%' }}>
+      <div className="grid grid-cols-4 w-full">
         <button
           type="button"
           onClick={startNewThread}
           disabled={startingNew || sending || loading}
-          className="flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium text-gray-600 disabled:opacity-40"
-          style={{ minWidth: 0 }}
+          className="flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium text-gray-600 disabled:opacity-40 min-h-[52px]"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M12 5v14M5 12h14" strokeLinecap="round" />
@@ -2657,10 +2696,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
         <button
           type="button"
           onClick={() => setMobileTab('chat')}
-          className={`flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium ${
+          className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium min-h-[52px] ${
             mobileTab === 'chat' ? 'text-gray-900' : 'text-gray-500'
           }`}
-          style={{ minWidth: 0 }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinejoin="round" />
@@ -2674,10 +2712,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
             setMobileArtifactOpen(true);
             setArtifactUnread(false);
           }}
-          className={`relative flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium ${
+          className={`relative flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium min-h-[52px] ${
             mobileArtifactOpen ? 'text-gray-900' : 'text-gray-500'
           }`}
-          style={{ minWidth: 0 }}
         >
           <span className="relative">
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -2685,7 +2722,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
               <path d="M7 7h10M7 12h10M7 17h6" strokeLinecap="round" />
             </svg>
             {artifactUnread && hasArtifactContent ? (
-              <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500" aria-hidden />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500" aria-hidden />
             ) : null}
           </span>
           Artifact
@@ -2693,10 +2730,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
         <button
           type="button"
           onClick={() => setMobileTab('chats')}
-          className={`flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium ${
+          className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium min-h-[52px] ${
             mobileTab === 'chats' ? 'text-gray-900' : 'text-gray-500'
           }`}
-          style={{ minWidth: 0 }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
@@ -2708,7 +2744,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
   ) : null;
 
   return (
-    <div className={`flex h-full overflow-hidden bg-white ${className || ''}`}>
+    <div
+      className={`flex h-full overflow-hidden bg-white ${className || ''}`}
+      style={{ maxWidth: '100vw' }}
+    >
 
       {!isMobile && sidebarOpen && (
         <ThreadSidebar
@@ -2730,14 +2769,16 @@ export default function AutoV2Panel({ onNavigate, className }) {
           onSelectThread={handleSelectThread}
           onNewThread={startNewThread}
           onRefresh={loadThreadList}
-          className="flex-1 w-full min-h-0 pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))]"
+          className={`flex-1 w-full min-h-0 overflow-y-auto ${
+            isMobile && !keyboardOpen ? 'pb-[calc(64px+env(safe-area-inset-bottom,0px))]' : ''
+          }`}
           showHeader={false}
         />
       ) : (
       <div
         ref={splitContainerRef}
         className={`flex flex-1 min-h-0 min-w-0 flex-row overflow-hidden ${
-          isMobile ? 'pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))]' : ''
+          isMobile && !keyboardOpen ? 'pb-[calc(64px+env(safe-area-inset-bottom,0px))]' : ''
         }`}
       >
         <div
@@ -2967,7 +3008,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
               <SendIcon />
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-2 text-center">Shift + Enter for new line</p>
+          {!isMobile && (
+            <p className="text-xs text-gray-400 mt-2 text-center">Shift + Enter for new line</p>
+          )}
         </div>
         </div>
 
