@@ -550,6 +550,26 @@ export default async function handler(req, res) {
       }
     })();
 
+    // Mark the matching draft as published so it drops out of the Library
+    // Drafts tab. Fire-and-forget — never blocks the publish response.
+    (async () => {
+      try {
+        const { error: draftUpdateError } = await supabaseAdmin
+          .from('ao_content_drafts')
+          .update({ status: 'published' })
+          .eq('slug', safeSlug)
+          .neq('status', 'published');
+
+        if (draftUpdateError) {
+          console.error('[publish-journal] Draft status update failed:', draftUpdateError.message);
+        } else {
+          console.log(`[publish-journal] Draft marked published for: ${safeSlug}`);
+        }
+      } catch (draftErr) {
+        console.error('[publish-journal] Draft status update threw (non-blocking):', draftErr?.message || draftErr);
+      }
+    })();
+
     return res.status(200).json({
       ok: true,
       slug: safeSlug,

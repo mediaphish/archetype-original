@@ -17,6 +17,7 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'mediaphish';
@@ -145,6 +146,26 @@ summary: "${summary.replace(/"/g, '\\"')}"
         console.log(`[publish-devotional] Vector embedding stored for: ${safeSlug}`);
       } catch (embedErr) {
         console.error('[publish-devotional] Vector embedding failed (non-blocking):', embedErr?.message || embedErr);
+      }
+    })();
+
+    // Mark the matching draft as published so it drops out of the Library
+    // Drafts tab. Fire-and-forget — never blocks the publish response.
+    (async () => {
+      try {
+        const { error: draftUpdateError } = await supabaseAdmin
+          .from('ao_content_drafts')
+          .update({ status: 'published' })
+          .eq('slug', safeSlug)
+          .neq('status', 'published');
+
+        if (draftUpdateError) {
+          console.error('[publish-devotional] Draft status update failed:', draftUpdateError.message);
+        } else {
+          console.log(`[publish-devotional] Draft marked published for: ${safeSlug}`);
+        }
+      } catch (draftErr) {
+        console.error('[publish-devotional] Draft status update threw (non-blocking):', draftErr?.message || draftErr);
       }
     })();
 
