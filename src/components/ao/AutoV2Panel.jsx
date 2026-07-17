@@ -228,6 +228,12 @@ function extractEpisodeProcessSignal(content) {
   return parseImageGeneratedAttributes(tagMatch[1]);
 }
 
+function extractNavigateToSignal(content) {
+  const text = String(content || '');
+  const match = text.match(/\[NAVIGATE_TO\s+path="([^"]+)"\]/i);
+  return match ? match[1] : null;
+}
+
 function stripGeneratedImageBlocksFromChat(text) {
   return String(text || '')
     .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '')
@@ -1529,6 +1535,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const processedJournalPublishKeys = useRef(new Set());
   const processedDevotionalPublishKeys = useRef(new Set());
   const processedEpisodeProcessKeys = useRef(new Set());
+  const processedNavigateKeys = useRef(new Set());
   // Timestamp — images from messages before this time are hidden after Clear.
   const clearedAt = useRef(null);
   const messagesEndRef = useRef(null);
@@ -1872,6 +1879,29 @@ export default function AutoV2Panel({ onNavigate, className }) {
       }
     })();
   }, [messages, activeThreadId, signalNewArtifact]);
+
+  useEffect(() => {
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!lastAssistant) return;
+
+    const path = extractNavigateToSignal(String(lastAssistant.content || ''));
+    if (!path) return;
+
+    const navKey = `${activeThreadId || 'thread'}:${lastAssistant.id || lastAssistant.content?.slice(0, 40)}`;
+    if (processedNavigateKeys.current.has(navKey)) return;
+    processedNavigateKeys.current.add(navKey);
+
+    // Give the user a moment to read Auto's final message before navigating away.
+    const timer = setTimeout(() => {
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [messages, activeThreadId]);
 
   useEffect(() => {
     if (!Array.isArray(messages) || messages.length === 0) return;
@@ -2464,25 +2494,6 @@ export default function AutoV2Panel({ onNavigate, className }) {
           syncArtifactFromMessages(synthetic);
         }
 
-        // Handle navigation signal — used after episode research is complete
-        const navMatch = String(
-          json.assistant_message ||
-            (json.messages || []).find((m) => m.role === 'assistant')?.content ||
-            ''
-        ).match(/\[NAVIGATE_TO path="([^"]+)"\]/i);
-        if (navMatch && navMatch[1]) {
-          const navPath = navMatch[1].trim();
-          setTimeout(() => {
-            if (onNavigate) {
-              onNavigate(navPath);
-            } else {
-              window.history.pushState({}, '', navPath);
-              window.dispatchEvent(new PopStateEvent('popstate'));
-              window.scrollTo({ top: 0, behavior: 'instant' });
-            }
-          }, 2500);
-        }
-
         if (json.thread?.id) setActiveThreadId(json.thread.id);
 
         await loadThreadList();
@@ -2505,7 +2516,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setSending(false);
       }
     },
-    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, onNavigate, isMobile]
+    [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, isMobile]
   );
 
   const handleKeyDown = useCallback(

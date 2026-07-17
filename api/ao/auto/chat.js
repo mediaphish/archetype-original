@@ -506,26 +506,52 @@ export default async function handler(req, res) {
 
     // Save draft to ao_content_drafts if this exchange contains an approved journal draft.
     // This runs server-side regardless of Auto's behavior — Auto cannot save drafts itself.
-    trySaveDraftFromExchange(userMessage, fullReply, auth.email, recentHistory).catch((err) => {
+    //
+    // IMPORTANT: this and the signal processors below are awaited, not fire-and-forget.
+    // On Vercel, once the response ends the function execution can be frozen or torn
+    // down before a dangling unawaited promise completes. Each of these does real work
+    // (database writes, in some cases additional Anthropic API calls) that takes real
+    // time. Firing them without awaiting caused writes to silently disappear —
+    // specifically, research briefs generated live in conversation were never saved
+    // because the response closed before the write finished. Every signal processor
+    // that performs a write must complete before res.end() is called.
+    try {
+      await trySaveDraftFromExchange(userMessage, fullReply, auth.email, recentHistory);
+    } catch (err) {
       console.error('[chat.js] trySaveDraftFromExchange error:', err?.message || err);
-    });
+    }
 
     // Process episode signal if present — commits corpus markdown and updates episode draft
     if (fullReply.includes('[EPISODE_PROCESS')) {
-      processEpisodeSignal(fullReply, auth.email).catch((err) => {
+      try {
+        await processEpisodeSignal(fullReply, auth.email);
+      } catch (err) {
         console.error('[chat.js] processEpisodeSignal error:', err?.message || err);
-      });
+      }
     }
 
-    // Process episode research signal — saves research brief and questions back to guest record
+    // Process episode research signal — saves research brief and questions back to guest record.
+    // This one is especially time-sensitive to get right: it makes two sequential
+    // Anthropic calls before writing to Supabase, so it takes the longest of any
+    // signal processor in this file. It must fully complete before the response ends.
     if (fullReply.includes('[EPISODE_RESEARCH_COMPLETE')) {
-      processEpisodeResearchSignal(fullReply, auth.email).catch((err) => {
+      try {
+        const researchResult = await processEpisodeResearchSignal(fullReply, auth.email);
+        if (!researchResult.ok) {
+          console.error('[chat.js] processEpisodeResearchSignal did not succeed:', researchResult.error);
+        } else {
+          console.log('[chat.js] Research signal processed and saved for guest:', researchResult.guest_id);
+        }
+      } catch (err) {
         console.error('[chat.js] processEpisodeResearchSignal error:', err?.message || err);
-      });
+      }
     }
 
-    // Generate session brief if this is a wrap signal or long thread
-    // Uses claude-haiku for speed — never blocks the response
+    // Generate session brief if this is a wrap signal or long thread.
+    // This one can stay fire-and-forget deliberately — it is not something the user
+    // is watching for confirmation of in the same turn, and losing an occasional
+    // session brief is a much lower-cost failure than losing research content
+    // generated live in conversation. Uses claude-haiku for speed.
     tryGenerateSessionBrief(thread.id, priorMessages, auth.email, userMessage).catch((err) => {
       console.error('[chat.js] tryGenerateSessionBrief error:', err?.message || err);
     });
