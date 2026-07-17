@@ -234,6 +234,40 @@ export default function PodcastGuestSubmissionContent({ guest, showPrivateNotice
         })}
       </section>
 
+      {guest.suggested_questions && (
+        <section className="space-y-6">
+          <div>
+            <h2 className="font-serif text-xl text-[#1A1A1A]">Possible questions</h2>
+            <p className="mt-1 font-sans text-[13px] text-[#6B6B6B]">
+              A preview of what might come up. The conversation will be a real one — this is just so you can walk in
+              prepared.
+            </p>
+          </div>
+
+          {Array.isArray(guest.suggested_questions.person_specific) &&
+            guest.suggested_questions.person_specific.length > 0 && (
+              <div className="space-y-3">
+                {guest.suggested_questions.person_specific.map((q, i) => (
+                  <div key={`ps-${i}`} className="border border-[#1A1A1A]/08 bg-white p-5">
+                    <p className="font-sans text-[14px] leading-relaxed text-[#1A1A1A]">{q.question}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          {Array.isArray(guest.suggested_questions.ao_theology) &&
+            guest.suggested_questions.ao_theology.length > 0 && (
+              <div className="space-y-3">
+                {guest.suggested_questions.ao_theology.map((q, i) => (
+                  <div key={`at-${i}`} className="border border-[#1A1A1A]/08 bg-white p-5">
+                    <p className="font-sans text-[14px] leading-relaxed text-[#1A1A1A]">{q.question}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+        </section>
+      )}
+
       {showPrivateNotice && (
         <p className="border-t border-[#1A1A1A]/10 pt-6 font-sans text-[13px] text-[#6B6B6B]">
           This page is private. Only you and Bart can see it.

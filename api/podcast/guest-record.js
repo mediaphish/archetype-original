@@ -1,5 +1,5 @@
 import { requireGuestSession } from '../../lib/ao/podcastGuestAuth.js';
-import { getGuestById, guestToPublicView } from '../../lib/ao/guestIntakeStore.js';
+import { getGuestById, guestToGuestSafeView } from '../../lib/ao/guestIntakeStore.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
   return res.status(200).json({
     ok: true,
-    guest: guestToPublicView(loaded.guest),
+    guest: guestToGuestSafeView(loaded.guest),
     authenticated: true,
   });
 }
