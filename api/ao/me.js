@@ -14,6 +14,6 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
-  return res.status(200).json({ ok: true, email: auth.email });
+  return res.status(200).json({ ok: true, email: auth.email, role: auth.role || 'owner' });
 }
 

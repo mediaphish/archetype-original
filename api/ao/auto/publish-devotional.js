@@ -16,7 +16,7 @@
  * }
  */
 
-import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 const GITHUB_API = 'https://api.github.com';
@@ -74,7 +74,7 @@ async function commitFile(token, path, content, message, sha) {
 }
 
 export default async function handler(req, res) {
-  const auth = requireAoSession(req, res);
+  const auth = requireOwnerSession(req, res);
   if (!auth) return;
 
   if (req.method !== 'POST') {

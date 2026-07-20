@@ -7,7 +7,7 @@
  * Rollback: rename this file to `chat-v2.js` and restore `chat-v1-backup.js` as `chat.js`.
  */
 
-import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
 import { runAutoChat, runAutoChatStream } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
@@ -343,7 +343,7 @@ Write the brief now. Format it with the 5 section headers above. Keep it under 4
 }
 
 export default async function handler(req, res) {
-  const auth = requireAoSession(req, res);
+  const auth = requireOwnerSession(req, res);
   if (!auth) return;
 
   if (req.method !== 'POST') {

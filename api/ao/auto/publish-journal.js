@@ -19,7 +19,7 @@
  * }
  */
 
-import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 
@@ -286,7 +286,7 @@ async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
 }
 
 export default async function handler(req, res) {
-  const auth = requireAoSession(req, res);
+  const auth = requireOwnerSession(req, res);
   if (!auth) return;
 
   if (req.method !== 'POST') {

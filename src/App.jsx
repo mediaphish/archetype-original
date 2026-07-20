@@ -53,6 +53,8 @@ import SuperAdminDeletions from "./pages/ali/SuperAdminDeletions";
 import SuperAdminAuditLog from "./pages/ali/SuperAdminAuditLog";
 // AO Automation Dashboard
 import AOLogin from "./pages/ao/Login";
+import ReviewerLogin from "./pages/ReviewerLogin";
+import ReviewerDashboard from "./pages/ReviewerDashboard";
 import AOCommandCenter from "./pages/ao/CommandCenter";
 import AOInsights from "./pages/ao/Insights";
 import AOReview from "./pages/ao/Review";
@@ -214,6 +216,8 @@ export default function App() {
       return 'ao-command-center';
     }
     if (path === '/ao/login') return 'ao-login';
+    if (path === '/ao/reviewer-login') return 'ao-reviewer-login';
+    if (path === '/ao/reviewer') return 'ao-reviewer';
     if (path === '/ao/auth/linkedin/handoff') return 'ao-linkedin-handoff';
     if (path.startsWith('/ao/')) {
       if (path === '/ao/command-center') return 'ao-command-center';
@@ -420,6 +424,14 @@ export default function App() {
       }
       if (path === '/ao/login') {
         setCurrentPage('ao-login');
+        return;
+      }
+      if (path === '/ao/reviewer-login') {
+        setCurrentPage('ao-reviewer-login');
+        return;
+      }
+      if (path === '/ao/reviewer') {
+        setCurrentPage('ao-reviewer');
         return;
       }
       if (path.startsWith('/ao/')) {
@@ -996,6 +1008,12 @@ export default function App() {
 
   if (currentPage === 'ao-login') {
     return <AOLogin />;
+  }
+  if (currentPage === 'ao-reviewer-login') {
+    return <ReviewerLogin />;
+  }
+  if (currentPage === 'ao-reviewer') {
+    return <ReviewerDashboard />;
   }
   if (currentPage === 'ao-command-center') {
     return <AOCommandCenter />;
