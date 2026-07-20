@@ -1,9 +1,8 @@
 /**
  * GET /api/ao/reviewer/analytics
  *
- * Returns performance data for posts published through the reviewer flow,
- * or falls back to the most recent LinkedIn posts if none exist yet. This
- * demonstrates the Page analytics use case in the same session as posting.
+ * Returns performance data for posts published through the reviewer flow
+ * across LinkedIn, Facebook, Instagram, and X.
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
@@ -24,8 +23,8 @@ export default async function handler(req, res) {
   try {
     const { data: posts, error } = await supabaseAdmin
       .from('ao_scheduled_posts')
-      .select('id, caption, text, status, posted_at, external_id')
-      .eq('platform', 'linkedin')
+      .select('id, platform, caption, text, status, posted_at, external_id')
+      .in('platform', ['linkedin', 'facebook', 'instagram', 'twitter'])
       .eq('status', 'posted')
       .order('posted_at', { ascending: false })
       .limit(10);
@@ -53,6 +52,7 @@ export default async function handler(req, res) {
       const m = metricsByPostId[p.id] || {};
       return {
         id: p.id,
+        platform: p.platform,
         caption: p.caption || p.text || '',
         status: p.status,
         posted_at: p.posted_at,

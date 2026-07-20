@@ -1,15 +1,18 @@
 /**
  * POST /api/ao/reviewer/publish-now
  *
- * Publishes a reviewer-uploaded post to LinkedIn immediately, using the same
- * postToLinkedIn function the real scheduling system uses. This is the
- * moment in the demo where the reviewer sees the Community Management API
- * actually fire and the post land on the organization page.
+ * Publishes a reviewer-uploaded post immediately, using the same platform
+ * adapter functions the real scheduling system uses. Supports LinkedIn,
+ * Facebook, Instagram, and X — matching what the LinkedIn API application
+ * describes as the tool's actual distribution.
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { postToLinkedIn } from '../../../lib/social/linkedin.js';
+import { postToFacebook } from '../../../lib/social/facebook.js';
+import { postToInstagram } from '../../../lib/social/instagram.js';
+import { postToTwitter } from '../../../lib/social/twitter.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -45,15 +48,25 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'Post has no caption to publish.' });
     }
 
-    // postToLinkedIn(options, accountId) — accountId is the second argument.
-    const result = await postToLinkedIn({ text }, 'page_1');
+    let result;
+    if (post.platform === 'linkedin') {
+      result = await postToLinkedIn({ text }, post.account_id || 'page_1');
+    } else if (post.platform === 'facebook') {
+      result = await postToFacebook({ text, imageUrl: post.image_url }, post.account_id || 'meta');
+    } else if (post.platform === 'instagram') {
+      result = await postToInstagram({ text, imageUrl: post.image_url }, post.account_id || 'meta');
+    } else if (post.platform === 'twitter') {
+      result = await postToTwitter({ text, imageUrl: post.image_url }, post.account_id || 'personal');
+    } else {
+      return res.status(400).json({ ok: false, error: `Unsupported platform: ${post.platform}` });
+    }
 
     if (!result.success) {
       await supabaseAdmin
         .from('ao_scheduled_posts')
         .update({ status: 'failed', error_message: result.error })
         .eq('id', post_id);
-      return res.status(500).json({ ok: false, error: result.error });
+      return res.status(500).json({ ok: false, error: result.error, platform: post.platform });
     }
 
     await supabaseAdmin
@@ -67,7 +80,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       ok: true,
-      post_url: null,
+      platform: post.platform,
       post_id: result.postId || null,
     });
   } catch (err) {
