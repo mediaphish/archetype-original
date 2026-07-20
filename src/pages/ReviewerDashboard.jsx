@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import ReviewerNav from '../components/ao/ReviewerNav';
 
 export default function ReviewerDashboard() {
   const [content, setContent] = useState('');
@@ -83,8 +84,9 @@ export default function ReviewerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-10">
-      <div className="mx-auto max-w-2xl space-y-8">
+    <div className="min-h-screen bg-gray-50">
+      <ReviewerNav active="publishing" />
+      <div className="mx-auto max-w-2xl space-y-8 px-4 pb-10">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Content publishing</h1>
           <p className="text-sm text-gray-500 mt-1">Upload content, schedule it, and publish to the company LinkedIn page.</p>

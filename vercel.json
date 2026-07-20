@@ -219,6 +219,8 @@
     { "src": "/api/ao/reviewer/upload-content", "dest": "/api/ao/reviewer/upload-content.js" },
     { "src": "/api/ao/reviewer/publish-now", "dest": "/api/ao/reviewer/publish-now.js" },
     { "src": "/api/ao/reviewer/analytics", "dest": "/api/ao/reviewer/analytics.js" },
+    { "src": "/api/ao/reviewer/library", "dest": "/api/ao/reviewer/library.js" },
+    { "src": "/api/ao/reviewer/settings", "dest": "/api/ao/reviewer/settings.js" },
     { "src": "/api/ao/me", "dest": "/api/ao/me.js" },
     { "src": "/api/ao/podcast/guest", "dest": "/api/ao/podcast/guest.js" },
     { "src": "/api/ao/podcast/guests", "dest": "/api/ao/podcast/guests.js" },

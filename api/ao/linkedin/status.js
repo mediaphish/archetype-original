@@ -5,7 +5,7 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 
 const LINKEDIN_USERINFO_URL = 'https://api.linkedin.com/v2/userinfo';
 
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
-  const auth = requireAoSession(req, res);
+  const auth = requireOwnerSession(req, res);
   if (!auth) return;
 
   try {
