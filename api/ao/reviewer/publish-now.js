@@ -13,6 +13,7 @@ import { postToLinkedIn } from '../../../lib/social/linkedin.js';
 import { postToFacebook } from '../../../lib/social/facebook.js';
 import { postToInstagram } from '../../../lib/social/instagram.js';
 import { postToTwitter } from '../../../lib/social/twitter.js';
+import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -66,6 +67,17 @@ export default async function handler(req, res) {
         .from('ao_scheduled_posts')
         .update({ status: 'failed', error_message: result.error })
         .eq('id', post_id);
+
+      await logReviewerEvent({
+        eventType: 'publish_failed',
+        route: '/api/ao/reviewer/publish-now',
+        method: 'POST',
+        requestSummary: { post_id, platform: post.platform },
+        resultOk: false,
+        resultSummary: { error: result.error },
+        req,
+      });
+
       return res.status(500).json({ ok: false, error: result.error, platform: post.platform });
     }
 
@@ -77,6 +89,16 @@ export default async function handler(req, res) {
         external_id: result.postId || null,
       })
       .eq('id', post_id);
+
+    await logReviewerEvent({
+      eventType: 'content_published',
+      route: '/api/ao/reviewer/publish-now',
+      method: 'POST',
+      requestSummary: { post_id, platform: post.platform },
+      resultOk: true,
+      resultSummary: { external_post_id: result.postId || null },
+      req,
+    });
 
     return res.status(200).json({
       ok: true,

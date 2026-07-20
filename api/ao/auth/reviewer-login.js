@@ -10,6 +10,7 @@
  */
 
 import { setAoSessionCookie } from '../../../lib/ao/requireAoSession.js';
+import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
 
 const REVIEWER_IDENTITY = 'reviewer@internal';
 
@@ -27,6 +28,13 @@ export default async function handler(req, res) {
   const { password } = req.body || {};
 
   if (String(password || '') !== reviewerPassword) {
+    await logReviewerEvent({
+      eventType: 'login_failed',
+      route: '/api/ao/auth/reviewer-login',
+      method: 'POST',
+      resultOk: false,
+      req,
+    });
     return res.status(401).json({ ok: false, error: 'Incorrect password.' });
   }
 
@@ -34,6 +42,14 @@ export default async function handler(req, res) {
   if (!cookieOk) {
     return res.status(503).json({ ok: false, error: 'Session signing is not configured.' });
   }
+
+  await logReviewerEvent({
+    eventType: 'login_success',
+    route: '/api/ao/auth/reviewer-login',
+    method: 'POST',
+    resultOk: true,
+    req,
+  });
 
   return res.status(200).json({ ok: true });
 }

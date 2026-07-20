@@ -114,6 +114,17 @@ export default async function handler(req, res) {
     return;
   }
 
+  if (session.role === 'reviewer') {
+    const { logReviewerEvent } = await import('../../../lib/ao/reviewerAuditLog.js');
+    await logReviewerEvent({
+      eventType: 'production_action_triggered',
+      route: '/api/auth/x/start',
+      method: req.method,
+      resultOk: null,
+      req,
+    });
+  }
+
   const clientId = getClientId();
   if (!clientId) {
     redirect(res, `/ao/settings?provider=x&status=error&message=Server+config+error`);

@@ -24,6 +24,21 @@ function StatusBadge({ status }) {
   );
 }
 
+const PLATFORM_LABELS = {
+  linkedin: 'LinkedIn',
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  twitter: 'X',
+};
+
+function PlatformBadge({ platform }) {
+  return (
+    <span className="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+      {PLATFORM_LABELS[platform] || platform}
+    </span>
+  );
+}
+
 export default function ReviewerLibrary() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,7 +73,7 @@ export default function ReviewerLibrary() {
       <div className="mx-auto max-w-3xl space-y-8 px-4 pb-10">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Library</h1>
-          <p className="text-sm text-gray-500 mt-1">LinkedIn content and scheduling history.</p>
+          <p className="text-sm text-gray-500 mt-1">Content and scheduling history across LinkedIn, Facebook, Instagram, and X.</p>
         </div>
 
         {error && <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">{error}</div>}
@@ -69,17 +84,18 @@ export default function ReviewerLibrary() {
           <>
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-200">
-                <h2 className="text-sm font-semibold text-gray-900">LinkedIn posts</h2>
-                <p className="text-xs text-gray-500 mt-0.5">Recent scheduled and published posts.</p>
+                <h2 className="text-sm font-semibold text-gray-900">Posts</h2>
+                <p className="text-xs text-gray-500 mt-0.5">Recent scheduled and published posts across all connected platforms.</p>
               </div>
               {posts.length === 0 ? (
-                <p className="px-5 py-6 text-sm text-gray-500">No LinkedIn posts yet.</p>
+                <p className="px-5 py-6 text-sm text-gray-500">No posts yet.</p>
               ) : (
                 <div className="divide-y divide-gray-100">
                   {posts.map((post) => (
                     <div key={post.id} className="px-5 py-4">
                       <p className="text-sm text-gray-800 line-clamp-2">{post.caption}</p>
                       <div className="flex items-center gap-3 mt-2">
+                        <PlatformBadge platform={post.platform} />
                         <StatusBadge status={post.status} />
                         <span className="text-xs text-gray-500">{fmtDate(post.scheduled_at)}</span>
                       </div>

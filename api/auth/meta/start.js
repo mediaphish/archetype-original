@@ -116,6 +116,17 @@ export default async function handler(req, res) {
     return;
   }
 
+  if (session.role === 'reviewer') {
+    const { logReviewerEvent } = await import('../../../lib/ao/reviewerAuditLog.js');
+    await logReviewerEvent({
+      eventType: 'production_action_triggered',
+      route: '/api/auth/meta/start',
+      method: req.method,
+      resultOk: null,
+      req,
+    });
+  }
+
   const appId = (process.env.META_APP_ID || '').trim();
   if (!appId) {
     redirect(res, `/ao/settings?provider=meta&status=error&message=Server+config+error`);

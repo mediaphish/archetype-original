@@ -7,6 +7,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -61,6 +62,14 @@ export default async function handler(req, res) {
         engagement_comments: m.comments ?? 0,
         engagement_shares: m.shares ?? 0,
       };
+    });
+
+    await logReviewerEvent({
+      eventType: 'page_viewed',
+      route: '/api/ao/reviewer/analytics',
+      method: 'GET',
+      resultOk: true,
+      req,
     });
 
     return res.status(200).json({ ok: true, posts: enriched });

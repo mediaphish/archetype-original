@@ -21,6 +21,17 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
+  if (auth.role === 'reviewer') {
+    const { logReviewerEvent } = await import('../../../lib/ao/reviewerAuditLog.js');
+    await logReviewerEvent({
+      eventType: 'production_action_triggered',
+      route: '/api/providers/x/test-post',
+      method: req.method,
+      resultOk: null,
+      req,
+    });
+  }
+
   try {
     const result = await postToTwitter({ text: `AO Automation test post (X) — ${nowStamp()}` }, 'personal');
     if (result.success) return res.status(200).json({ ok: true, postId: result.postId });

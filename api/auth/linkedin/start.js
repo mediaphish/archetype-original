@@ -63,6 +63,17 @@ export default async function handler(req, res) {
     return;
   }
 
+  if (session.role === 'reviewer') {
+    const { logReviewerEvent } = await import('../../../lib/ao/reviewerAuditLog.js');
+    await logReviewerEvent({
+      eventType: 'production_action_triggered',
+      route: '/api/auth/linkedin/start',
+      method: req.method,
+      resultOk: null,
+      req,
+    });
+  }
+
   const clientId = process.env.LINKEDIN_CLIENT_ID;
   const redirectUri = process.env.LINKEDIN_REDIRECT_URI;
 

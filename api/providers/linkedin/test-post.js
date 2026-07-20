@@ -113,6 +113,17 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
+  if (auth.role === 'reviewer') {
+    const { logReviewerEvent } = await import('../../../lib/ao/reviewerAuditLog.js');
+    await logReviewerEvent({
+      eventType: 'production_action_triggered',
+      route: '/api/providers/linkedin/test-post',
+      method: req.method,
+      resultOk: null,
+      req,
+    });
+  }
+
   try {
     const { data: row, error: fetchError } = await supabaseAdmin
       .from('ao_linkedin_tokens')

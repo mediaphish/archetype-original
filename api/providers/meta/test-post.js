@@ -25,6 +25,18 @@ export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
 
+  if (auth.role === 'reviewer') {
+    const { logReviewerEvent } = await import('../../../lib/ao/reviewerAuditLog.js');
+    await logReviewerEvent({
+      eventType: 'production_action_triggered',
+      route: '/api/providers/meta/test-post',
+      method: req.method,
+      requestSummary: { platform: String(req.body?.platform || '').toLowerCase().trim() || null },
+      resultOk: null,
+      req,
+    });
+  }
+
   const platform = String(req.body?.platform || '').toLowerCase().trim();
   if (platform !== 'facebook' && platform !== 'instagram') {
     return res.status(400).json({ ok: false, error: 'platform must be facebook or instagram' });

@@ -9,6 +9,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
 
 const VALID_PLATFORMS = ['linkedin', 'facebook', 'instagram', 'twitter'];
 
@@ -27,6 +28,14 @@ export default async function handler(req, res) {
   const { content, image_url, platforms, scheduled_at } = req.body || {};
 
   if (!String(content || '').trim()) {
+    await logReviewerEvent({
+      eventType: 'content_upload_rejected',
+      route: '/api/ao/reviewer/upload-content',
+      method: 'POST',
+      requestSummary: { reason: 'content_required' },
+      resultOk: false,
+      req,
+    });
     return res.status(400).json({ ok: false, error: 'content is required' });
   }
 
@@ -35,12 +44,28 @@ export default async function handler(req, res) {
     : [];
 
   if (selectedPlatforms.length === 0) {
+    await logReviewerEvent({
+      eventType: 'content_upload_rejected',
+      route: '/api/ao/reviewer/upload-content',
+      method: 'POST',
+      requestSummary: { reason: 'platforms_required' },
+      resultOk: false,
+      req,
+    });
     return res.status(400).json({ ok: false, error: 'Select at least one platform.' });
   }
 
   const imageUrl = String(image_url || '').trim() || null;
 
   if (selectedPlatforms.includes('instagram') && !imageUrl) {
+    await logReviewerEvent({
+      eventType: 'content_upload_rejected',
+      route: '/api/ao/reviewer/upload-content',
+      method: 'POST',
+      requestSummary: { reason: 'instagram_requires_image', platforms: selectedPlatforms },
+      resultOk: false,
+      req,
+    });
     return res.status(400).json({ ok: false, error: 'Instagram requires an image URL.' });
   }
 
@@ -78,9 +103,24 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: error.message });
     }
 
+    await logReviewerEvent({
+      eventType: 'content_uploaded',
+      route: '/api/ao/reviewer/upload-content',
+      method: 'POST',
+      requestSummary: {
+        platforms: selectedPlatforms,
+        content_length: caption.length,
+        has_image: !!imageUrl,
+      },
+      resultOk: true,
+      resultSummary: { post_ids: (data || []).map((p) => p.id) },
+      req,
+    });
+
     return res.status(200).json({ ok: true, posts: data });
   } catch (err) {
     console.error('[reviewer/upload-content]', err?.message || err);
     return res.status(500).json({ ok: false, error: err?.message || 'Server error' });
   }
 }
+

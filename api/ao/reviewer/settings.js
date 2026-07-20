@@ -13,6 +13,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { getMetaConnection } from '../../../lib/social/metaConnection.js';
 import { getXAccessToken } from '../../../lib/social/xConnection.js';
+import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
 
 const LINKEDIN_USERINFO_URL = 'https://api.linkedin.com/v2/userinfo';
 const GRAPH_BASE = 'https://graph.facebook.com/v25.0';
@@ -86,6 +87,14 @@ export default async function handler(req, res) {
   }
 
   const [linkedin, meta, x] = await Promise.all([checkLinkedIn(), checkMeta(), checkX()]);
+
+  await logReviewerEvent({
+    eventType: 'page_viewed',
+    route: '/api/ao/reviewer/settings',
+    method: 'GET',
+    resultOk: true,
+    req,
+  });
 
   return res.status(200).json({
     ok: true,
