@@ -73,7 +73,7 @@ function PlatformCard({ title, description, connected, reconnectHref, testHref, 
   );
 }
 
-function LinkedInTestButton() {
+function LinkedInPersonalTestButton() {
   const [testLoading, setTestLoading] = useState(false);
   const [testResult, setTestResult] = useState(null);
 
@@ -101,7 +101,7 @@ function LinkedInTestButton() {
       >
         {testLoading ? 'Posting…' : 'Post LinkedIn Test (personal)'}
       </button>
-      {testResult === 'success' && <p className="mt-2 text-xs text-green-700">Test post published to personal account.</p>}
+      {testResult === 'success' && <p className="mt-2 text-xs text-green-700">Test post published.</p>}
       {testResult === 'error' && <p className="mt-2 text-xs text-red-700">Test post failed.</p>}
     </div>
   );
@@ -146,39 +146,40 @@ export default function ReviewerSettings() {
           <p className="text-sm text-gray-500">Checking connections…</p>
         ) : (
           <>
+            {/* LinkedIn — personal posting app. Already approved. Already working. */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h2 className="text-sm font-semibold text-gray-900 mb-1">LinkedIn</h2>
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">LinkedIn (personal posting)</h2>
               <p className="text-xs text-gray-500 mb-4">
-                Personal account connection, used for personal posts and organization page publishing.
+                Existing developer application. Already approved by LinkedIn. Publishes to a personal profile.
               </p>
-
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-xs font-medium text-gray-600 w-40">Personal account</span>
-                  <StatusPill connected={status?.linkedin?.connected} />
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-xs font-medium text-gray-600 w-40">Organization page</span>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-amber-50 text-amber-900 border-amber-200">
-                    Pending LinkedIn approval
-                  </span>
-                </div>
-              </div>
-
-              <p className="mt-3 text-xs text-gray-500">
-                Organization page publishing requires Community Management API access, which is the subject of this review.
-                It is not yet functional and will not work until access is granted.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-3 mt-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <StatusPill connected={status?.linkedin?.connected} />
                 <a
                   href="/api/auth/linkedin/start"
                   className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
                 >
                   Reconnect
                 </a>
-                <LinkedInTestButton />
+                <LinkedInPersonalTestButton />
               </div>
+            </div>
+
+            {/* LinkedIn — Community Management API app. Subject of this review. Not yet approved. */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">LinkedIn (organization page — Community Management API)</h2>
+              <p className="text-xs text-gray-500 mb-4">
+                Separate developer application, submitted for this review. Not the same app or connection as personal posting above.
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-amber-50 text-amber-900 border-amber-200">
+                  Pending LinkedIn approval
+                </span>
+              </div>
+              <p className="mt-3 text-xs text-gray-500">
+                This application has not been granted Community Management API access yet. Organization page publishing
+                is not functional and has not been attempted against this scope. It will only be enabled once access is
+                granted.
+              </p>
             </div>
             <PlatformCard
               title="Facebook"
