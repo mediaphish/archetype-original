@@ -73,6 +73,40 @@ function PlatformCard({ title, description, connected, reconnectHref, testHref, 
   );
 }
 
+function LinkedInTestButton() {
+  const [testLoading, setTestLoading] = useState(false);
+  const [testResult, setTestResult] = useState(null);
+
+  const handleTest = async () => {
+    setTestLoading(true);
+    setTestResult(null);
+    try {
+      const res = await fetch('/api/providers/linkedin/test-post', { method: 'POST' });
+      const json = await res.json().catch(() => ({}));
+      setTestResult(res.ok && json.ok !== false && json.success !== false ? 'success' : 'error');
+    } catch {
+      setTestResult('error');
+    } finally {
+      setTestLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={handleTest}
+        disabled={testLoading}
+        className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+      >
+        {testLoading ? 'Posting…' : 'Post LinkedIn Test (personal)'}
+      </button>
+      {testResult === 'success' && <p className="mt-2 text-xs text-green-700">Test post published to personal account.</p>}
+      {testResult === 'error' && <p className="mt-2 text-xs text-red-700">Test post failed.</p>}
+    </div>
+  );
+}
+
 export default function ReviewerSettings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -112,14 +146,40 @@ export default function ReviewerSettings() {
           <p className="text-sm text-gray-500">Checking connections…</p>
         ) : (
           <>
-            <PlatformCard
-              title="LinkedIn"
-              description="Personal account connection, used for both personal posts and organization page publishing."
-              connected={status?.linkedin?.connected}
-              reconnectHref="/api/auth/linkedin/start"
-              testHref="/api/providers/linkedin/test-post"
-              testLabel="Post LinkedIn Test"
-            />
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-sm font-semibold text-gray-900 mb-1">LinkedIn</h2>
+              <p className="text-xs text-gray-500 mb-4">
+                Personal account connection, used for personal posts and organization page publishing.
+              </p>
+
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-xs font-medium text-gray-600 w-40">Personal account</span>
+                  <StatusPill connected={status?.linkedin?.connected} />
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-xs font-medium text-gray-600 w-40">Organization page</span>
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-amber-50 text-amber-900 border-amber-200">
+                    Pending LinkedIn approval
+                  </span>
+                </div>
+              </div>
+
+              <p className="mt-3 text-xs text-gray-500">
+                Organization page publishing requires Community Management API access, which is the subject of this review.
+                It is not yet functional and will not work until access is granted.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3 mt-4">
+                <a
+                  href="/api/auth/linkedin/start"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  Reconnect
+                </a>
+                <LinkedInTestButton />
+              </div>
+            </div>
             <PlatformCard
               title="Facebook"
               description="Facebook Page publishing."
