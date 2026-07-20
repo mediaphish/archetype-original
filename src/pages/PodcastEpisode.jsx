@@ -374,7 +374,15 @@ export default function PodcastEpisode() {
                   </div>
                 )}
 
-                {episode.guest?.name && <PodcastGuestBlock guest={episode.guest} />}
+                {Array.isArray(episode.guests) && episode.guests.length > 0 ? (
+                  <div className="space-y-6">
+                    {episode.guests.map((g, i) => (
+                      <PodcastGuestBlock key={g.name || i} guest={g} />
+                    ))}
+                  </div>
+                ) : (
+                  episode.guest?.name && <PodcastGuestBlock guest={episode.guest} />
+                )}
 
                 <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-[#1A1A1A]/10">
                   <h3 className="text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-6 sm:mb-8 font-serif">

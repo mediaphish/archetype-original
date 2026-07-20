@@ -583,6 +583,7 @@ async function buildKnowledgeCorpus() {
               ? frontmatter.keyTakeaways
               : [],
           guest: frontmatter.guest || null,
+          guests: frontmatter.guests || null,
           related: frontmatter.related || [],
           corpus_connections: parseJsonArrayField(frontmatter.corpus_connections),
           thematic_threads: parseJsonArrayField(frontmatter.thematic_threads),
