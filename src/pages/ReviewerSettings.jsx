@@ -114,7 +114,7 @@ export default function ReviewerSettings() {
           <>
             <PlatformCard
               title="LinkedIn"
-              description="Company page publishing."
+              description="Personal account connection, used for both personal posts and organization page publishing."
               connected={status?.linkedin?.connected}
               reconnectHref="/api/auth/linkedin/start"
               testHref="/api/providers/linkedin/test-post"
