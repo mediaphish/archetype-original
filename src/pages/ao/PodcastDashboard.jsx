@@ -116,6 +116,7 @@ export default function PodcastDashboard() {
   const [threadsError, setThreadsError] = useState('');
   const [buildingEpisodeId, setBuildingEpisodeId] = useState(null);
   const [buildEpisodeError, setBuildEpisodeError] = useState('');
+  const [selectedGuestIds, setSelectedGuestIds] = useState([]);
 
   const loadThreads = useCallback(async () => {
     setThreadsLoading(true);
@@ -323,6 +324,26 @@ export default function PodcastDashboard() {
     }
   };
 
+  const handleBuildMultiGuestEpisode = async (guestIds) => {
+    setBuildingEpisodeId('multi');
+    setBuildEpisodeError('');
+    try {
+      const res = await fetch('/api/ao/podcast/episode-seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guest_ids: guestIds }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Could not start episode');
+      setSelectedGuestIds([]);
+      navigateTo(`/ao/analyst?thread=${json.thread_id}`);
+    } catch (e) {
+      setBuildEpisodeError(e.message || 'Could not start episode');
+    } finally {
+      setBuildingEpisodeId(null);
+    }
+  };
+
   const handleSendConfirmation = async (slotId) => {
     setEmailSlotStatus((prev) => ({ ...prev, [slotId]: { loading: true, message: '', error: '' } }));
     setSlotsError('');
@@ -406,6 +427,16 @@ export default function PodcastDashboard() {
           <ul className="divide-y divide-gray-100">
             {guests.map((guest) => (
               <li key={guest.id} className="flex flex-wrap items-center gap-4 py-4">
+                <input
+                  type="checkbox"
+                  checked={selectedGuestIds.includes(guest.id)}
+                  onChange={(e) => {
+                    setSelectedGuestIds((prev) =>
+                      e.target.checked ? [...prev, guest.id] : prev.filter((id) => id !== guest.id)
+                    );
+                  }}
+                  className="h-4 w-4 shrink-0 rounded border-gray-300"
+                />
                 <GuestAvatar guest={guest} />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-gray-900">{guest.name}</p>
@@ -443,6 +474,31 @@ export default function PodcastDashboard() {
               </li>
             ))}
           </ul>
+
+          {selectedGuestIds.length >= 2 && (
+            <div className="mt-4 flex items-center justify-between rounded-lg border border-gray-900 bg-gray-50 px-4 py-3">
+              <p className="text-sm text-gray-800">
+                {selectedGuestIds.length} guests selected
+              </p>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedGuestIds([])}
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleBuildMultiGuestEpisode(selectedGuestIds)}
+                  disabled={buildingEpisodeId === 'multi'}
+                  className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                >
+                  {buildingEpisodeId === 'multi' ? 'Opening…' : 'Build episode together'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {!isSearching && guestTotal > PAGE_SIZE && (
             <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
