@@ -86,6 +86,7 @@
     { "src": "api/ao/auto/reshare-settings.js", "use": "@vercel/node", "config": { "memory": 128, "maxDuration": 10, "includeFiles": ["lib/**"] } },
     { "src": "api/ao/auto/seed-corpus.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json"] } },
     { "src": "api/ao/auto/derive-content.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 60, "includeFiles": ["lib/**", "ao-knowledge-hq-kit/journal/**"] } },
+    { "src": "api/ao/podcast/episode-seed.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 180, "includeFiles": ["lib/**"] } },
     { "src": "api/**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } }
   ],
   "routes": [

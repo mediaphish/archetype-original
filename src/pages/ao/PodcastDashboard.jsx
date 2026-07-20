@@ -433,7 +433,11 @@ export default function PodcastDashboard() {
                     disabled={buildingEpisodeId === guest.id}
                     className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                   >
-                    {buildingEpisodeId === guest.id ? 'Opening…' : 'Build episode'}
+                    {buildingEpisodeId === guest.id
+                      ? 'Opening…'
+                      : guest.episode_thread_id
+                      ? 'Continue episode'
+                      : 'Build episode'}
                   </button>
                 </div>
               </li>
