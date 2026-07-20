@@ -11,7 +11,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
 
-const VALID_PLATFORMS = ['linkedin', 'facebook', 'instagram', 'twitter'];
+const VALID_PLATFORMS = ['linkedin_personal', 'linkedin_business', 'facebook', 'instagram', 'twitter'];
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -73,16 +73,42 @@ export default async function handler(req, res) {
   const scheduledAt = scheduled_at || new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
   try {
+    // LinkedIn Business is rejected here, not just disabled client-side — it must
+    // never be possible to schedule a post against it via a direct API call.
+    // Organization page publishing requires Community Management API access,
+    // which has not been granted yet.
+    if (selectedPlatforms.includes('linkedin_business')) {
+      await logReviewerEvent({
+        eventType: 'content_upload_rejected',
+        route: '/api/ao/reviewer/upload-content',
+        method: 'POST',
+        requestSummary: { reason: 'linkedin_business_not_available', platforms: selectedPlatforms },
+        resultOk: false,
+        req,
+      });
+      return res.status(400).json({
+        ok: false,
+        error: 'LinkedIn Business publishing is pending LinkedIn approval and is not available yet.',
+      });
+    }
+
     const rows = selectedPlatforms.map((platform) => {
+      // 'personal' is the connection that is actually approved and working right
+      // now. LinkedIn Business ('page_1') requires the Community Management API
+      // access this review is for and is blocked above before reaching this point.
       const accountId =
-        platform === 'linkedin' ? 'page_1' :
+        platform === 'linkedin_personal' ? 'personal' :
         platform === 'facebook' ? 'meta' :
         platform === 'instagram' ? 'meta' :
         platform === 'twitter' ? 'personal' :
         'default';
 
+      // Store as 'linkedin' in the platform column (matching the real schema and
+      // adapter functions) but track the display distinction via intent.
+      const storedPlatform = platform === 'linkedin_personal' ? 'linkedin' : platform;
+
       return {
-        platform,
+        platform: storedPlatform,
         account_id: accountId,
         text: caption,
         caption,
@@ -90,7 +116,7 @@ export default async function handler(req, res) {
         scheduled_at: scheduledAt,
         status: 'scheduled',
         source_kind: 'reviewer_upload',
-        intent: { source: 'reviewer_dashboard' },
+        intent: { source: 'reviewer_dashboard', display_platform: platform },
       };
     });
 

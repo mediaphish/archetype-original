@@ -2,20 +2,25 @@ import React, { useCallback, useEffect, useState } from 'react';
 import ReviewerNav from '../components/ao/ReviewerNav';
 
 const PLATFORMS = [
-  { id: 'linkedin', label: 'LinkedIn' },
-  { id: 'facebook', label: 'Facebook' },
-  { id: 'instagram', label: 'Instagram' },
-  { id: 'twitter', label: 'X' },
+  { id: 'linkedin_personal', label: 'LinkedIn Personal', disabled: false },
+  { id: 'linkedin_business', label: 'LinkedIn Business', disabled: true },
+  { id: 'facebook', label: 'Facebook', disabled: false },
+  { id: 'instagram', label: 'Instagram', disabled: false },
+  { id: 'twitter', label: 'X', disabled: false },
 ];
 
 function platformLabel(id) {
+  // Posts from the backend are stored with platform: 'linkedin' for personal
+  // LinkedIn posts (matching the real schema). Display it as LinkedIn Personal
+  // since that's the only LinkedIn option that can actually be selected.
+  if (id === 'linkedin') return 'LinkedIn Personal';
   return PLATFORMS.find((p) => p.id === id)?.label || id;
 }
 
 export default function ReviewerDashboard() {
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [selectedPlatforms, setSelectedPlatforms] = useState(['linkedin']);
+  const [selectedPlatforms, setSelectedPlatforms] = useState(['linkedin_personal']);
   const [posting, setPosting] = useState(false);
   const [uploadedPosts, setUploadedPosts] = useState([]);
   const [publishingId, setPublishingId] = useState(null);
@@ -46,6 +51,8 @@ export default function ReviewerDashboard() {
   }, [loadAnalytics]);
 
   const togglePlatform = (id) => {
+    const platform = PLATFORMS.find((p) => p.id === id);
+    if (platform?.disabled) return;
     setSelectedPlatforms((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
@@ -118,8 +125,9 @@ export default function ReviewerDashboard() {
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Content publishing</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Upload content, choose platforms, and publish. This tool distributes to LinkedIn, Facebook,
-            Instagram, and X.
+            Upload content, choose platforms, and publish. This tool distributes to LinkedIn Personal, LinkedIn
+            Business, Facebook, Instagram, and X. LinkedIn Business publishing is pending LinkedIn's approval of
+            this application.
           </p>
         </div>
 
@@ -152,13 +160,18 @@ export default function ReviewerDashboard() {
                     key={p.id}
                     type="button"
                     onClick={() => togglePlatform(p.id)}
+                    disabled={p.disabled}
+                    title={p.disabled ? 'Pending LinkedIn approval' : undefined}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                      selectedPlatforms.includes(p.id)
+                      p.disabled
+                        ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                        : selectedPlatforms.includes(p.id)
                         ? 'bg-gray-900 text-white border-gray-900'
                         : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
                     }`}
                   >
                     {p.label}
+                    {p.disabled ? ' (pending)' : ''}
                   </button>
                 ))}
               </div>

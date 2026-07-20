@@ -25,7 +25,7 @@ function StatusBadge({ status }) {
 }
 
 const PLATFORM_LABELS = {
-  linkedin: 'LinkedIn',
+  linkedin: 'LinkedIn Personal',
   facebook: 'Facebook',
   instagram: 'Instagram',
   twitter: 'X',
