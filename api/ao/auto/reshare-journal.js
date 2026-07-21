@@ -31,6 +31,87 @@ const RESHARE_CHANNELS = [
   { key: 'twitter', platform: 'twitter', account_id: 'personal' },
 ];
 
+const BART_PHOTOS = {
+  confrontational: [
+    { file: 'Bart-32.jpg' },
+    { file: 'Bart-44.jpg' },
+    { file: 'Bart-141.jpg' },
+    { file: 'Bart-97.jpg' },
+  ],
+  working: [
+    { file: 'Bart-1.jpg' },
+    { file: 'Bart-4.jpg' },
+    { file: 'Bart-8.jpg' },
+  ],
+  reflective: [
+    { file: 'Bart-52.jpg' },
+    { file: 'Bart-78.jpg' },
+    { file: 'Bart-87.jpg' },
+  ],
+};
+
+const SITE_BASE_URL = process.env.SITE_BASE_URL || 'https://www.archetypeoriginal.com';
+
+function selectPhotoForArticle(mood) {
+  const pool = BART_PHOTOS[mood] || BART_PHOTOS.confrontational;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  return {
+    file: pick.file,
+    url: `${SITE_BASE_URL}/images/${pick.file}`,
+  };
+}
+
+async function extractPullQuote(title, body, anthropicClient, model) {
+  const excerpt = body.length > 4000 ? body.slice(0, 4000) : body;
+  try {
+    const response = await anthropicClient.messages.create({
+      model,
+      max_tokens: 200,
+      messages: [{
+        role: 'user',
+        content: `From this article, extract the single most shareable pull quote. Must be a real line from the text, word for word. No paraphrasing. Find the most counterintuitive, direct, or scroll-stopping line. Under 150 characters preferred.
+
+Return ONLY the quote. No quotation marks. No attribution. No preamble.
+
+Title: ${title}
+
+Article:
+${excerpt}`,
+      }],
+    });
+    const quote = response.content?.[0]?.text?.trim() || '';
+    if (!quote || quote.length < 10 || quote.length > 220) return null;
+    return quote;
+  } catch (err) {
+    console.warn('[reshare-journal] Pull quote extraction failed:', err?.message);
+    return null;
+  }
+}
+
+async function detectArticleMood(title, body, anthropicClient, model) {
+  try {
+    const response = await anthropicClient.messages.create({
+      model,
+      max_tokens: 20,
+      messages: [{
+        role: 'user',
+        content: `Classify this leadership article's dominant tone.
+Return ONLY one word: confrontational, working, or reflective.
+confrontational = challenges, calls out bad behavior, strong stance
+working = practical, strategic, process-oriented
+reflective = personal, philosophical, story-based
+
+Title: ${title}
+Opening: ${body.slice(0, 1000)}`,
+      }],
+    });
+    const mood = response.content?.[0]?.text?.trim().toLowerCase() || '';
+    return ['confrontational', 'working', 'reflective'].includes(mood) ? mood : 'confrontational';
+  } catch {
+    return 'confrontational';
+  }
+}
+
 function isValidCronRequest(req) {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) return false;
@@ -359,6 +440,52 @@ export default async function handler(req, res) {
   const journalUrl = `https://www.archetypeoriginal.com/journal/${entry.slug}`;
   const imageUrl = extractJournalImageUrl(journal.frontmatter);
 
+  // Pull quote extraction
+  let pullQuote = null;
+  try {
+    pullQuote = await extractPullQuote(title, journal.body, client, process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6');
+    if (pullQuote) console.log(`[reshare-journal] Pull quote extracted: "${pullQuote.slice(0, 80)}"`);
+  } catch (err) {
+    console.warn('[reshare-journal] Pull quote failed:', err?.message);
+  }
+
+  // Photo mood selection
+  const mood = await detectArticleMood(title, journal.body, client, process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6');
+  const selectedPhoto = selectPhotoForArticle(mood);
+  console.log(`[reshare-journal] Mood: ${mood} — Photo: ${selectedPhoto.file}`);
+
+  // Image generation
+  let reshareImageUrl = null;
+  if (pullQuote) {
+    try {
+      const selfBase = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3000';
+      const imgRes = await fetch(`${selfBase}/api/ao/auto/generate-reshare-image`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.CRON_SECRET}`,
+        },
+        body: JSON.stringify({
+          slug: entry.slug,
+          pull_quote: pullQuote,
+          photo: selectedPhoto.file,
+          photo_url: selectedPhoto.url,
+        }),
+      });
+      const imgJson = await imgRes.json().catch(() => ({}));
+      if (imgRes.ok && imgJson.ok) {
+        reshareImageUrl = imgJson.image_url;
+        console.log(`[reshare-journal] Image generated: ${reshareImageUrl}`);
+      } else {
+        console.warn('[reshare-journal] Image generation failed:', imgJson.error);
+      }
+    } catch (err) {
+      console.warn('[reshare-journal] Image request failed:', err?.message);
+    }
+  }
+
   // Fetch corpus context — semantic search on the article's title and opening
   // paragraph to find the most thematically related writing in Bart's corpus.
   let corpusContext = [];
@@ -538,7 +665,7 @@ export default async function handler(req, res) {
       scheduled_at: scheduledAt,
       text,
       caption: text,
-      image_url: imageUrl || null,
+      image_url: reshareImageUrl || imageUrl || null,
       status: autoApprove ? 'scheduled' : 'pending_review',
       source_kind: 'ao_journal_reshare',
       intent: {
@@ -551,6 +678,9 @@ export default async function handler(req, res) {
         reshare: true,
         selection_reason: selectionReason,
         created_by_email: 'bart@archetypeoriginal.com',
+        pull_quote: pullQuote || null,
+        photo: selectedPhoto.file,
+        photo_mood: mood,
       },
     });
   }
@@ -603,6 +733,10 @@ export default async function handler(req, res) {
     posts: inserted || [],
     total: (inserted || []).length,
     captions,
+    pull_quote: pullQuote || null,
+    image_url: reshareImageUrl || null,
+    photo: selectedPhoto.file,
+    photo_mood: mood,
     selection_reason: selectionReason || 'Selected by rotation',
     message: autoApprove
       ? `${(inserted || []).length} reshare posts scheduled for ${scheduleDay?.toISOString().split('T')[0]}.`

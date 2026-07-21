@@ -494,6 +494,64 @@ export default async function handler(req, res) {
       email: auth.email,
     });
 
+    // Handle [TRIGGER_RESHARE] — run the reshare engine and inject the result
+    // into the reply as a [RESHARE_RESULT] block, same append pattern as
+    // [DALLE_GENERATE] → [IMAGE_GENERATED].
+    if (/\[TRIGGER_RESHARE\]/i.test(fullReply)) {
+      try {
+        const selfBase = process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : 'http://localhost:3000';
+        const reshareRes = await fetch(`${selfBase}/api/ao/auto/reshare-journal`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.CRON_SECRET}`,
+          },
+          body: JSON.stringify({}),
+        });
+        const reshareJson = await reshareRes.json().catch(() => ({}));
+
+        // Strip the trigger tags from the reply regardless of outcome
+        fullReply = fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim();
+
+        if (reshareRes.ok && reshareJson.ok && reshareJson.captions) {
+          const c = reshareJson.captions;
+          const resultBlock = `[RESHARE_RESULT]
+slug: ${reshareJson.slug || ''}
+title: ${reshareJson.title || ''}
+journal_url: ${reshareJson.journal_url || ''}
+selection_reason: ${reshareJson.selection_reason || ''}
+pull_quote: ${reshareJson.pull_quote || ''}
+image_url: ${reshareJson.image_url || ''}
+photo: ${reshareJson.photo || ''}
+status: ${reshareJson.status || ''}
+
+LINKEDIN:
+${c.linkedin_personal || ''}
+
+INSTAGRAM:
+${c.instagram_business || ''}
+
+FACEBOOK:
+${c.facebook_business || ''}
+
+X:
+${c.twitter || ''}
+[/RESHARE_RESULT]`;
+          fullReply = `${fullReply}\n\n${resultBlock}`;
+          console.log(`[chat.js] TRIGGER_RESHARE succeeded: ${reshareJson.slug} (${reshareJson.status})`);
+        } else {
+          const detail = reshareJson.error || reshareJson.message || `HTTP ${reshareRes.status}`;
+          fullReply = `${fullReply}\n\n[Reshare engine did not complete: ${detail}]`;
+          console.error('[chat.js] TRIGGER_RESHARE failed:', detail);
+        }
+      } catch (err) {
+        fullReply = `${fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim()}\n\n[Reshare engine did not complete: ${err?.message || 'unknown error'}]`;
+        console.error('[chat.js] TRIGGER_RESHARE handler error:', err?.message || err);
+      }
+    }
+
     // User message was already persisted at the top of the handler (before the
     // model call). Only the assistant reply is written here.
     await addAutoMessage({
