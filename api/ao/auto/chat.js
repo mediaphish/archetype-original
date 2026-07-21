@@ -540,7 +540,13 @@ export default async function handler(req, res) {
         if (!researchResult.ok) {
           console.error('[chat.js] processEpisodeResearchSignal did not succeed:', researchResult.error);
         } else {
-          console.log('[chat.js] Research signal processed and saved for guest:', researchResult.guest_id);
+          const savedFor = researchResult.guest_ids
+            ? researchResult.guest_ids.join(', ')
+            : researchResult.guest_id || 'unknown';
+          console.log('[chat.js] Research signal(s) processed and saved for guest(s):', savedFor);
+          if (researchResult.partial) {
+            console.warn('[chat.js] Some research signals failed:', researchResult.failures);
+          }
         }
       } catch (err) {
         console.error('[chat.js] processEpisodeResearchSignal error:', err?.message || err);
