@@ -108,8 +108,8 @@ ${sections.join('\n\n---\n\n')}
 
 ---
 
-Ready to build this episode. Upload the Riverside transcript when you're ready
-and I'll produce the full episode package for all ${guests.length} guests together.`;
+Ready to research. Ask me anything about ${names}, or share what you already
+know about them and I'll build from there.`;
 }
 
 async function ensureGuestPrep(guest) {
