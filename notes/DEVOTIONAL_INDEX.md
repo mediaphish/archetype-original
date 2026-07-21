@@ -208,6 +208,16 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-07-19 | Iron Sharpens Iron | Proverbs 27:17 (ESV) | `iron-sharpens-iron` | `2026-07-19-iron-sharpens-iron.md` |
 | 2026-07-20 | Correcting With Gentleness | 2 Timothy 2:24–25 (ESV) | `correcting-with-gentleness` | `2026-07-20-correcting-with-gentleness.md` |
 | 2026-07-21 | He Who Answers Before Listening | Proverbs 18:13 (ESV) | `he-who-answers-before-listening` | `2026-07-21-he-who-answers-before-listening.md` |
+| 2026-07-22 | A Gentle Tongue Is a Tree of Life | Proverbs 15:4 (ESV) | `a-gentle-tongue-is-a-tree-of-life` | `2026-07-22-a-gentle-tongue-is-a-tree-of-life.md` |
+| 2026-07-23 | Pleasant Words Are Like Honey | Proverbs 16:24 (ESV) | `pleasant-words-are-like-honey` | `2026-07-23-pleasant-words-are-like-honey.md` |
+| 2026-07-24 | Gracious Words Pour From the Wise | Proverbs 16:23–24 (ESV) | `gracious-words-pour-from-the-wise` | `2026-07-24-gracious-words-pour-from-the-wise.md` |
+| 2026-07-25 | Like a Dog Seizing Ears | Proverbs 26:17 (ESV) | `like-a-dog-seizing-ears` | `2026-07-25-like-a-dog-seizing-ears.md` |
+| 2026-07-26 | A Fool Gives Full Vent | Proverbs 29:11 (ESV) | `a-fool-gives-full-vent` | `2026-07-26-a-fool-gives-full-vent.md` |
+| 2026-07-27 | Do Not Speak Rashly | Proverbs 29:20 (ESV) | `do-not-speak-rashly` | `2026-07-27-do-not-speak-rashly.md` |
+| 2026-07-28 | Bless and Do Not Curse | Romans 12:14–15 (ESV) | `bless-and-do-not-curse` | `2026-07-28-bless-and-do-not-curse.md` |
+| 2026-07-29 | Do Not Repay Evil for Evil | 1 Peter 3:9–10 (ESV) | `do-not-repay-evil-for-evil` | `2026-07-29-do-not-repay-evil-for-evil.md` |
+| 2026-07-30 | How Forceful Are Honest Words | Job 6:24–25 (ESV) | `how-forceful-are-honest-words` | `2026-07-30-how-forceful-are-honest-words.md` |
+| 2026-07-31 | Whoever Loves Life, Keep Your Tongue | Psalm 34:12–13 (ESV) | `whoever-loves-life-keep-your-tongue` | `2026-07-31-whoever-loves-life-keep-your-tongue.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
