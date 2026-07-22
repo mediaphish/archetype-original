@@ -286,13 +286,26 @@ async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
       ? scheduledTimeMatch[1]
       : await toScheduledAt(new Date(), ch.platform);
 
+    const trimmedImage =
+      typeof imageUrl === 'string' ? imageUrl.trim() : '';
+    let safeImageUrl = null;
+    if (trimmedImage.startsWith('https://') || trimmedImage.startsWith('http://')) {
+      safeImageUrl = trimmedImage;
+    } else if (trimmedImage.startsWith('/images/')) {
+      const siteBase = (
+        process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com'
+      ).replace(/\/$/, '');
+      safeImageUrl = `${siteBase}${trimmedImage}`;
+    }
+    // Anything else ("none", empty, relative junk) → null — never store placeholders.
+
     rows.push({
       platform: ch.platform,
       account_id: ch.account_id,
       scheduled_at: scheduledAt,
       text,
       caption: text,
-      image_url: imageUrl || null,
+      image_url: safeImageUrl,
       status: 'scheduled',
       source_kind: 'journal_launch',
       intent: {
@@ -572,7 +585,34 @@ export default async function handler(req, res) {
     let captionsScheduled = 0;
     let captionsError = null;
     try {
-      const captionRows = await parseSocialCaptions(content, safeSlug, journalUrl, image_url || '');
+      // Meta (Instagram/Facebook) requires an absolute http(s) image URL.
+      // Never store the literal "none", a relative "/images/..." path, or any other
+      // non-URL placeholder — those fail validation and leave IG/FB posts failed
+      // while LinkedIn/X still post (exactly what happened for the-data-caught-up).
+      const siteBase = (
+        process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com'
+      ).replace(/\/$/, '');
+      let socialImageUrl = null;
+      if (typeof image_url === 'string') {
+        const trimmed = image_url.trim();
+        if (trimmed.startsWith('https://') || trimmed.startsWith('http://')) {
+          socialImageUrl = trimmed;
+        } else if (trimmed.startsWith('/images/')) {
+          socialImageUrl = `${siteBase}${trimmed}`;
+        }
+      }
+      // image_url="none" (or any other non-URL): use the featured image we already
+      // resolved for the journal file — always a real, committed public/images file.
+      if (!socialImageUrl && resolvedFeaturedImage) {
+        socialImageUrl = `${siteBase}/images/${resolvedFeaturedImage}`;
+      }
+
+      const captionRows = await parseSocialCaptions(
+        content,
+        safeSlug,
+        journalUrl,
+        socialImageUrl || ''
+      );
       if (captionRows.length > 0) {
         const { data: captionData, error: captionInsertError } = await supabaseAdmin
           .from('ao_scheduled_posts')
