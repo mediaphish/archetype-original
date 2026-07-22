@@ -39,6 +39,16 @@ function findMainCssHref() {
   return `/assets/${files[files.length - 1]}`;
 }
 
+/** Find hashed main entry JS from Vite output — this is what boots the React app. */
+function findMainJsHref() {
+  const assetsDir = join(DIST, 'assets');
+  if (!existsSync(assetsDir)) return null;
+  const files = readdirSync(assetsDir).filter((f) => /^index-.*\.js$/i.test(f));
+  if (files.length === 0) return null;
+  files.sort();
+  return `/assets/${files[files.length - 1]}`;
+}
+
 function articleJsonLd(doc, canonicalUrl, siteUrl) {
   const isBlogPosting = doc.type === 'journal-post';
   const schema = {
@@ -102,7 +112,7 @@ time.pub { margin-top: 1rem; display: block; font-size: 0.875rem; color: #6B6B6B
 .footer-note a:hover { color: #1A1A1A; }
 `;
 
-function wrapPage({ doc, htmlBody, canonicalUrl, siteUrl, cssHref }) {
+function wrapPage({ doc, htmlBody, canonicalUrl, siteUrl, cssHref, jsHref }) {
   const title = `${escapeHtml(doc.title)} | ${seoConfig.default.siteName}`;
   const desc = escapeHtml((doc.summary || doc.email_summary || '').slice(0, 320));
   const kw = escapeHtml((doc.tags && doc.tags.join(', ')) || seoConfig.default.keywords);
@@ -116,6 +126,10 @@ function wrapPage({ doc, htmlBody, canonicalUrl, siteUrl, cssHref }) {
 
   const cssLink = cssHref
     ? `<link rel="stylesheet" crossorigin href="${escapeHtml(cssHref)}">`
+    : '';
+
+  const jsScript = jsHref
+    ? `<script type="module" crossorigin src="${escapeHtml(jsHref)}"></script>`
     : '';
 
   return `<!DOCTYPE html>
@@ -138,32 +152,35 @@ function wrapPage({ doc, htmlBody, canonicalUrl, siteUrl, cssHref }) {
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${escapeHtml(ogImage)}" />
   ${cssLink}
+  ${jsScript}
   <style>${STATIC_ARTICLE_CSS}</style>
   <script type="application/ld+json">${jsonLd}</script>
 </head>
 <body class="shell">
-  <header class="hdr">
-    <div class="hdr-inner">
-      <a href="/" class="logo">${escapeHtml(seoConfig.default.siteName)}</a>
-      <nav class="nav" aria-label="Primary">
-        <a href="/journal">Journal</a>
-        <a href="/meet-bart">Meet Bart</a>
-        <a href="/contact">Contact</a>
-      </nav>
-    </div>
-  </header>
-  <main class="inner">
-    <p class="kicker">${badge}</p>
-    <article>
-      <h1 class="title">${escapeHtml(doc.title)}</h1>
-      ${doc.publish_date ? `<time class="pub" datetime="${escapeHtml(String(doc.publish_date).slice(0, 10))}">${escapeHtml(String(doc.publish_date).slice(0, 10))}</time>` : ''}
-      ${doc.scripture_reference ? `<p class="scripture">${escapeHtml(doc.scripture_reference)}</p>` : ''}
-      <div class="static-article">${htmlBody}</div>
-    </article>
-    <p class="footer-note">
-      Part of Archetype Original — <a href="/journal">Journal</a>.
-    </p>
-  </main>
+  <div id="root">
+    <header class="hdr">
+      <div class="hdr-inner">
+        <a href="/" class="logo">${escapeHtml(seoConfig.default.siteName)}</a>
+        <nav class="nav" aria-label="Primary">
+          <a href="/journal">Journal</a>
+          <a href="/meet-bart">Meet Bart</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main class="inner">
+      <p class="kicker">${badge}</p>
+      <article>
+        <h1 class="title">${escapeHtml(doc.title)}</h1>
+        ${doc.publish_date ? `<time class="pub" datetime="${escapeHtml(String(doc.publish_date).slice(0, 10))}">${escapeHtml(String(doc.publish_date).slice(0, 10))}</time>` : ''}
+        ${doc.scripture_reference ? `<p class="scripture">${escapeHtml(doc.scripture_reference)}</p>` : ''}
+        <div class="static-article">${htmlBody}</div>
+      </article>
+      <p class="footer-note">
+        Part of Archetype Original — <a href="/journal">Journal</a>.
+      </p>
+    </main>
+  </div>
 </body>
 </html>`;
 }
@@ -186,6 +203,12 @@ async function main() {
     console.warn('⚠️  No index-*.css in dist/assets — pages use inline article CSS only.');
   }
 
+  const jsHref = findMainJsHref();
+  if (!jsHref) {
+    console.error('❌ No index-*.js in dist/assets — journal pages will NOT boot the app for direct/shared links. This must not ship silently broken.');
+    process.exit(1);
+  }
+
   const docs = getJournalDevotionalSlugDocs();
   let ok = 0;
 
@@ -201,6 +224,7 @@ async function main() {
       canonicalUrl,
       siteUrl,
       cssHref,
+      jsHref,
     });
 
     const outDir = join(DIST, 'journal', slug);

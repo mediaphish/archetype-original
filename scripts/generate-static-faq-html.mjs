@@ -43,6 +43,16 @@ function findMainCssHref() {
   return `/assets/${files[files.length - 1]}`;
 }
 
+/** Find hashed main entry JS from Vite output — this is what boots the React app. */
+function findMainJsHref() {
+  const assetsDir = join(DIST, 'assets');
+  if (!existsSync(assetsDir)) return null;
+  const files = readdirSync(assetsDir).filter((f) => /^index-.*\.js$/i.test(f));
+  if (files.length === 0) return null;
+  files.sort();
+  return `/assets/${files[files.length - 1]}`;
+}
+
 const STATIC_FAQ_CSS = `
 body.shell { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background: #FAFAF9; color: #1A1A1A; -webkit-font-smoothing: antialiased; }
 .hdr { border-bottom: 1px solid rgba(26,26,26,0.1); background: #fff; }
@@ -147,6 +157,7 @@ function wrapPage({
   canonicalUrl,
   siteUrl,
   cssHref,
+  jsHref,
   categoryKeys,
 }) {
   const pageTitle = `${categoryLabel} FAQs | ${seoConfig.default.siteName}`;
@@ -159,6 +170,9 @@ function wrapPage({
   const ogImage = `${siteUrl}/og-default.jpg`;
   const kw = escapeHtml(seoConfig.default.keywords);
   const cssLink = cssHref ? `<link rel="stylesheet" crossorigin href="${escapeHtml(cssHref)}">` : '';
+  const jsScript = jsHref
+    ? `<script type="module" crossorigin src="${escapeHtml(jsHref)}"></script>`
+    : '';
 
   const faqJsonLd = faqPageJsonLd(faqs, answerHtmlBySlug);
   const breadJsonLd = breadcrumbJsonLd(categoryKey, categoryLabel, siteUrl);
@@ -183,34 +197,37 @@ function wrapPage({
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${escapeHtml(ogImage)}" />
   ${cssLink}
+  ${jsScript}
   <style>${STATIC_FAQ_CSS}</style>
   <script type="application/ld+json">${faqJsonLd}</script>
   <script type="application/ld+json">${breadJsonLd}</script>
 </head>
 <body class="shell">
-  <header class="hdr">
-    <div class="hdr-inner">
-      <a href="/" class="logo">${escapeHtml(seoConfig.default.siteName)}</a>
-      <nav class="nav" aria-label="Primary">
-        <a href="/faqs">FAQs</a>
-        <a href="/journal">Journal</a>
-        <a href="/meet-bart">Meet Bart</a>
-        <a href="/contact">Contact</a>
-      </nav>
-    </div>
-  </header>
-  <main class="inner">
-    <p class="kicker">Frequently Asked Questions</p>
-    <h1 class="title">${escapeHtml(categoryLabel)}</h1>
-    <p class="lead">${faqs.length} question${faqs.length === 1 ? '' : 's'} in this category.</p>
-    ${renderCategoryNav(categoryKey, categoryKeys)}
-    <div class="faq-list">
-      ${faqBlocksHtml}
-    </div>
-    <p class="footer-note">
-      <a href="/faqs">All FAQs</a> · <a href="/">Home</a>
-    </p>
-  </main>
+  <div id="root">
+    <header class="hdr">
+      <div class="hdr-inner">
+        <a href="/" class="logo">${escapeHtml(seoConfig.default.siteName)}</a>
+        <nav class="nav" aria-label="Primary">
+          <a href="/faqs">FAQs</a>
+          <a href="/journal">Journal</a>
+          <a href="/meet-bart">Meet Bart</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main class="inner">
+      <p class="kicker">Frequently Asked Questions</p>
+      <h1 class="title">${escapeHtml(categoryLabel)}</h1>
+      <p class="lead">${faqs.length} question${faqs.length === 1 ? '' : 's'} in this category.</p>
+      ${renderCategoryNav(categoryKey, categoryKeys)}
+      <div class="faq-list">
+        ${faqBlocksHtml}
+      </div>
+      <p class="footer-note">
+        <a href="/faqs">All FAQs</a> · <a href="/">Home</a>
+      </p>
+    </main>
+  </div>
 </body>
 </html>`;
 }
@@ -231,6 +248,12 @@ async function main() {
   const cssHref = findMainCssHref();
   if (!cssHref) {
     console.warn('No index-*.css in dist/assets. Pages use inline FAQ CSS only.');
+  }
+
+  const jsHref = findMainJsHref();
+  if (!jsHref) {
+    console.error('No index-*.js in dist/assets — FAQ pages will NOT boot the app for direct/shared links. This must not ship silently broken.');
+    process.exit(1);
   }
 
   const groups = groupFaqsByPrimaryCategory(faqDocs);
@@ -270,6 +293,7 @@ async function main() {
       canonicalUrl,
       siteUrl,
       cssHref,
+      jsHref,
       categoryKeys,
     });
 
