@@ -13,7 +13,7 @@ import { runAutoChat, runAutoChatStream } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
-import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
+import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
@@ -593,7 +593,11 @@ Return markdown only: a # title line, then the full post body.`,
 
     // Branded header image for an active companion/journal draft.
     // id is optional — image is built from tagged [JOURNAL_CONTENT] / [OPPORTUNITY_DRAFT] in the thread.
-    const opportunityImageMatch = fullReply.match(/\[OPPORTUNITY_GENERATE_IMAGE([^\]]*)\]/i);
+    // Accept both OPPORTUNITY_GENERATE_IMAGE (canonical) and OPPORTUNITY_IMAGE (near-miss Auto
+    // has already produced in production). Do NOT match OPPORTUNITY_IMAGE_RESULT (server confirmation).
+    const opportunityImageTagRe = /\[OPPORTUNITY_(?:GENERATE_IMAGE|IMAGE(?!_RESULT))([^\]]*)\]/i;
+    const opportunityImageStripRe = /\[\/?OPPORTUNITY_(?:GENERATE_IMAGE|IMAGE(?!_RESULT))[^\]]*\]/gi;
+    const opportunityImageMatch = fullReply.match(opportunityImageTagRe);
     if (opportunityImageMatch) {
       const attrBlob = opportunityImageMatch[1] || '';
       const idMatch = attrBlob.match(/\bid="([^"]*)"/i);
@@ -601,7 +605,7 @@ Return markdown only: a # title line, then the full post body.`,
       const opportunityId = (idMatch?.[1] || '').trim();
       const pullQuoteAttr = pullQuoteMatch?.[1] || '';
       try {
-        fullReply = fullReply.replace(/\[\/?OPPORTUNITY_GENERATE_IMAGE[^\]]*\]/gi, '').trim();
+        fullReply = fullReply.replace(opportunityImageStripRe, '').trim();
 
         // Opportunity row is optional context only — never required to generate the image.
         let opportunity = null;
@@ -672,13 +676,13 @@ Return markdown only: a # title line, then the full post body.`,
               reshareMeta.opportunity_image_url = imageResult.image_url;
             }
             const idLine = opportunityId ? ` id="${opportunityId}"` : '';
-            fullReply = `${fullReply}\n\n[OPPORTUNITY_IMAGE${idLine}]\nPull quote: "${imageResult.pull_quote}"\nMood: ${imageResult.mood || 'n/a'}\nImage: ${imageResult.image_url}\n[/OPPORTUNITY_IMAGE]\n\nHere's the branded header image (real photo + pull quote + logo — same treatment as reshare). Approve it, ask for a different photo/quote, or say what to change. Captions come only after this image is approved — derived from the finished post, not before.`.trim();
+            fullReply = `${fullReply}\n\n[OPPORTUNITY_IMAGE_RESULT${idLine}]\nPull quote: "${imageResult.pull_quote}"\nMood: ${imageResult.mood || 'n/a'}\nImage: ${imageResult.image_url}\n[/OPPORTUNITY_IMAGE_RESULT]\n\nHere's the branded header image (real photo + pull quote + logo — same treatment as reshare). Approve it, ask for a different photo/quote, or say what to change. Captions come only after this image is approved — derived from the finished post, not before.`.trim();
           }
         }
       } catch (err) {
         const rawMessage = err?.message || err || 'unknown error';
         const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
-        fullReply = `${fullReply.replace(/\[\/?OPPORTUNITY_GENERATE_IMAGE[^\]]*\]/gi, '').trim()}\n\n[Could not generate opportunity image: ${safeMessage}]`.trim();
+        fullReply = `${fullReply.replace(opportunityImageStripRe, '').trim()}\n\n[Could not generate opportunity image: ${safeMessage}]`.trim();
         console.error('[chat.js] OPPORTUNITY_GENERATE_IMAGE handler error:', err?.message || err);
       }
     }
@@ -809,6 +813,24 @@ Return markdown only: a # title line, then the full post body.`,
         const safeMessage = err?.message || String(err);
         fullReply = `${fullReply.replace(/\[\/?CORPUS_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim()}\n\n[Could not fetch full text: ${safeMessage}]`.trim();
         console.error('[chat.js] CORPUS_FETCH_FULL_TEXT handler error:', err?.message || err);
+      }
+    }
+
+    // Defensive backstop: if any all-caps bracket signal still looks unknown after
+    // every handler has run, log loudly. Do not strip — leave visible for Bart.
+    // Known content/result tags (JOURNAL_CONTENT, CARD, OPPORTUNITY_IMAGE_RESULT, etc.)
+    // are in KNOWN_REAL_SIGNALS and will not warn.
+    {
+      const leftoverTagRe = /\[([A-Z_]{3,})(?:\s[^\]]*)?\]/g;
+      let leftoverMatch;
+      while ((leftoverMatch = leftoverTagRe.exec(fullReply)) !== null) {
+        const tagName = leftoverMatch[1];
+        if (!KNOWN_REAL_SIGNALS.has(tagName)) {
+          console.warn(
+            '[chat.js] Unrecognized signal tag survived to reply:',
+            leftoverMatch[0]
+          );
+        }
       }
     }
 
