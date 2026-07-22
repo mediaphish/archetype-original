@@ -390,6 +390,9 @@ export default async function handler(req, res) {
     });
 
     // Reshare trigger — runs the reshare cycle IN-PROCESS (no HTTP self-fetch, ever).
+    // Image URL is attached as message meta (reshare_image_url) so the chat panel
+    // can render it inline — not as a raw URL line in the text body.
+    let reshareMeta = {};
     if (/\[TRIGGER_RESHARE\]/i.test(fullReply)) {
       try {
         const reshareResult = await runReshareCycle();
@@ -400,7 +403,14 @@ export default async function handler(req, res) {
             .map(([platform, text]) => `**${platform}:**\n${text}`)
             .join('\n\n');
           fullReply =
-            `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}${reshareResult.image_url ? `Image: ${reshareResult.image_url}\n` : ''}\n${captionBlock}\n\nThis is pending review — say the word and I'll schedule it, ask for a caption rewrite, ask for a different photo, or say discard and I'll drop it. No trip to Settings needed unless you want one.\n[/RESHARE_RESULT]`.trim();
+            `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}\n${captionBlock}\n\nThis is pending review — say the word and I'll schedule it, ask for a caption rewrite, ask for a different photo, or say discard and I'll drop it. No trip to Settings needed unless you want one.\n[/RESHARE_RESULT]`.trim();
+
+          if (reshareResult.image_url && String(reshareResult.image_url).startsWith('https://')) {
+            reshareMeta.reshare_image_url = reshareResult.image_url;
+          }
+          if (reshareResult.photo) {
+            reshareMeta.photo_used = reshareResult.photo;
+          }
         } else if (reshareResult.ok && reshareResult.message) {
           fullReply = `${fullReply}\n\n${reshareResult.message}`.trim();
         } else {
@@ -498,7 +508,7 @@ export default async function handler(req, res) {
       role: 'assistant',
       mode: 'plan',
       content: fullReply,
-      meta: { auto_v2: true },
+      meta: { auto_v2: true, ...reshareMeta },
     });
 
     // Save draft to ao_content_drafts if this exchange contains an approved journal draft.

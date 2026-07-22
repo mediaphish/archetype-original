@@ -435,8 +435,12 @@ function MessageBubble({ message }) {
   const withoutImages = stripGeneratedImageBlocksFromChat(raw);
   const { cleanText } = parseArtifact(withoutImages);
   const text = cleanText || withoutImages;
+  const reshareImageUrl =
+    message.meta?.reshare_image_url && String(message.meta.reshare_image_url).startsWith('https://')
+      ? message.meta.reshare_image_url
+      : null;
 
-  if (!text && !message.meta?.image_url) return null;
+  if (!text && !message.meta?.image_url && !reshareImageUrl) return null;
 
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -468,6 +472,20 @@ function MessageBubble({ message }) {
           />
         )}
         {text}
+        {reshareImageUrl ? (
+          <a
+            href={reshareImageUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block mt-3"
+          >
+            <img
+              src={reshareImageUrl}
+              alt="Reshare image preview"
+              className="rounded-lg w-full h-auto block border border-gray-200"
+            />
+          </a>
+        ) : null}
       </div>
     </div>
   );

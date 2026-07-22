@@ -826,6 +826,17 @@ export default function AutoHubPanel({ onNavigate, className }) {
               >
                 {m.content}
               </div>
+              {isAssistant && m.meta?.reshare_image_url && String(m.meta.reshare_image_url).startsWith('https://') ? (
+                <div className="mt-2 max-w-lg mx-auto text-left">
+                  <a href={m.meta.reshare_image_url} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={m.meta.reshare_image_url}
+                      alt="Reshare image preview"
+                      className="w-full h-auto block border border-gray-200 rounded-lg"
+                    />
+                  </a>
+                </div>
+              ) : null}
               {isAssistant && cardBlocks.length ? (
                 <div className="mt-2 space-y-3 max-w-lg mx-auto text-left">
                   {cardBlocks.map((block, bi) => {
