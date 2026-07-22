@@ -124,14 +124,9 @@ function isValidCronRequest(req) {
 function readJournalFile(slug) {
   const filePath = path.join(process.cwd(), 'ao-knowledge-hq-kit/journal', `${slug}.md`);
   if (!fs.existsSync(filePath)) return null;
-  try {
-    const raw = fs.readFileSync(filePath, 'utf8');
-    const { data, content } = matter(raw);
-    return { frontmatter: data, body: content };
-  } catch (err) {
-    console.error(`[reshare-journal] Failed to read/parse journal file for slug "${slug}":`, err?.message || err);
-    return null;
-  }
+  const raw = fs.readFileSync(filePath, 'utf8');
+  const { data, content } = matter(raw);
+  return { frontmatter: data, body: content };
 }
 
 function extractJournalImageUrl(frontmatter) {
@@ -364,20 +359,6 @@ Write four reshare captions. Lead with the most provocative or counterintuitive 
 }
 
 export default async function handler(req, res) {
-  try {
-    await handleReshareRequest(req, res);
-  } catch (err) {
-    console.error('[reshare-journal] Unhandled exception in handler:', err?.message || err, err?.stack);
-    if (!res.headersSent) {
-      res.status(500).json({
-        ok: false,
-        error: err?.message || 'Reshare engine failed with an unhandled error',
-      });
-    }
-  }
-}
-
-async function handleReshareRequest(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
@@ -675,15 +656,8 @@ async function handleReshareRequest(req, res) {
       text = normalizeInstagramCaption(text);
     }
 
-    let scheduledAt = now; // placeholder — replaced on approve
-    if (autoApprove && scheduleDay) {
-      try {
-        scheduledAt = await toScheduledAt(scheduleDay, ch.platform);
-      } catch (err) {
-        console.error(`[reshare-journal] toScheduledAt failed for platform "${ch.platform}", falling back to now:`, err?.message || err);
-        scheduledAt = now;
-      }
-    }
+    const scheduledAt =
+      autoApprove && scheduleDay ? await toScheduledAt(scheduleDay, ch.platform) : now; // placeholder — replaced on approve
 
     rows.push({
       platform: ch.platform,

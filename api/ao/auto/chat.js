@@ -542,15 +542,12 @@ ${c.twitter || ''}
           fullReply = `${fullReply}\n\n${resultBlock}`;
           console.log(`[chat.js] TRIGGER_RESHARE succeeded: ${reshareJson.slug} (${reshareJson.status})`);
         } else {
-          const rawDetail = reshareJson.error || reshareJson.message || `HTTP ${reshareRes.status}`;
-          const detail = typeof rawDetail === 'string' ? rawDetail : JSON.stringify(rawDetail);
+          const detail = reshareJson.error || reshareJson.message || `HTTP ${reshareRes.status}`;
           fullReply = `${fullReply}\n\n[Reshare engine did not complete: ${detail}]`;
           console.error('[chat.js] TRIGGER_RESHARE failed:', detail);
         }
       } catch (err) {
-        const rawMessage = err?.message || err || 'unknown error';
-        const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
-        fullReply = `${fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim()}\n\n[Reshare engine did not complete: ${safeMessage}]`;
+        fullReply = `${fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim()}\n\n[Reshare engine did not complete: ${err?.message || 'unknown error'}]`;
         console.error('[chat.js] TRIGGER_RESHARE handler error:', err?.message || err);
       }
     }
