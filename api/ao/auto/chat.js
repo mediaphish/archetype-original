@@ -17,7 +17,6 @@ import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
 import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { friendlyAnthropicError } from '../../../lib/ao/anthropicWithRetry.js';
 
 /**
  * Detects approved content in the current exchange and saves it to ao_content_drafts.
@@ -544,12 +543,13 @@ ${c.twitter || ''}
           console.log(`[chat.js] TRIGGER_RESHARE succeeded: ${reshareJson.slug} (${reshareJson.status})`);
         } else {
           const rawDetail = reshareJson.error || reshareJson.message || `HTTP ${reshareRes.status}`;
-          const detail = friendlyAnthropicError(rawDetail, `HTTP ${reshareRes.status}`);
+          const detail = typeof rawDetail === 'string' ? rawDetail : JSON.stringify(rawDetail);
           fullReply = `${fullReply}\n\n[Reshare engine did not complete: ${detail}]`;
           console.error('[chat.js] TRIGGER_RESHARE failed:', detail);
         }
       } catch (err) {
-        const safeMessage = friendlyAnthropicError(err, 'unknown error');
+        const rawMessage = err?.message || err || 'unknown error';
+        const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
         fullReply = `${fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim()}\n\n[Reshare engine did not complete: ${safeMessage}]`;
         console.error('[chat.js] TRIGGER_RESHARE handler error:', err?.message || err);
       }
