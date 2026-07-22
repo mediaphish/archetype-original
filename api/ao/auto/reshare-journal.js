@@ -280,7 +280,7 @@ async function editPhotoWithDallE({ photoPath, prompt, size }) {
   }
 }
 
-async function generateReshareImage(title, pullQuote, mood) {
+async function generateReshareImage(title, pullQuote, mood, attribution) {
   if (!pullQuote) return null;
   const selectedPhoto = selectPhotoForArticle(mood);
   const photoPath = path.join(process.cwd(), 'public/images', selectedPhoto.file);
@@ -310,7 +310,12 @@ async function generateReshareImage(title, pullQuote, mood) {
   }
 
   const { generateReshareCardImage } = await import('../../../lib/ao/generateReshareCardImage.js');
-  const composited = await generateReshareCardImage({ photoBuffer, pullQuote, mood });
+  const composited = await generateReshareCardImage({
+    photoBuffer,
+    pullQuote,
+    mood,
+    attribution: attribution || null,
+  });
   if (!composited?.ok || !composited.buffer) {
     console.error('[reshare-journal] generateReshareCardImage failed:', composited?.error);
     return null;
@@ -343,7 +348,7 @@ async function generateReshareImage(title, pullQuote, mood) {
  * Branded landscape image for opportunity companion posts — same pipeline as reshare
  * (photo edit → canvas composite with real pull quote + AO logo). Exported for chat.js.
  */
-export async function generateBrandedOpportunityImage({ title, body, pullQuote }) {
+export async function generateBrandedOpportunityImage({ title, body, pullQuote, attribution }) {
   const quote =
     String(pullQuote || '').trim() ||
     (await extractPullQuote(title || 'Companion post', body || '')) ||
@@ -352,7 +357,12 @@ export async function generateBrandedOpportunityImage({ title, body, pullQuote }
     return { ok: false, error: 'Could not determine a pull quote for the branded image' };
   }
   const mood = await detectArticleMood(title || 'Companion post', body || '');
-  const generated = await generateReshareImage(title || 'Companion post', quote, mood);
+  const generated = await generateReshareImage(
+    title || 'Companion post',
+    quote,
+    mood,
+    attribution || null
+  );
   if (!generated?.image_url) {
     return { ok: false, error: 'Branded image generation failed' };
   }
@@ -867,7 +877,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     getCorpusContext(entry.slug, title),
   ]);
 
-  const generatedImage = await generateReshareImage(title, pullQuote, mood);
+  const generatedImage = await generateReshareImage(title, pullQuote, mood, signalSourceName);
   const imageUrl = generatedImage?.image_url || extractJournalImageUrl(journal.frontmatter);
 
   let captions;

@@ -659,6 +659,9 @@ Return markdown only: a # title line, then the full post body.`,
             title: postTitle,
             body: postBody,
             pullQuote: pullQuoteAttr || '',
+            attribution: opportunity?.title
+              ? String(opportunity.title).replace(/\s+connects to your corpus$/i, '').trim()
+              : null,
           });
 
           if (!imageResult.ok) {
