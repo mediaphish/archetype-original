@@ -196,43 +196,18 @@ Search for current leadership news and trends, then select the best entry from t
   }
 }
 
-async function generateReshareCaption(slug, title, body, journalUrl, corpusContext, captionPatterns) {
+async function generateReshareCaption(slug, title, body, journalUrl) {
   const excerpt = body.length > 3000 ? `${body.slice(0, 3000)}\n...` : body;
 
-  const corpusSection = corpusContext && corpusContext.length > 0
-    ? `\n\nRELATED WRITING FROM BART'S CORPUS (for voice and thematic continuity):\n${corpusContext
-        .slice(0, 4)
-        .map((doc) => `--- ${doc.title} ---\n${String(doc.body_preview || doc.summary || '').slice(0, 600)}`)
-        .join('\n\n')}`
-    : '';
+  const systemPrompt = `You are Auto, Bart Paden's AI CMO. Your job is to write fresh social media captions that reshare one of Bart's existing journal posts to a new audience.
 
-  const patternSection = captionPatterns && captionPatterns.length > 0
-    ? `\n\nTOP PERFORMING CAPTION PATTERNS (study these for what resonates with this audience):\n${captionPatterns
-        .slice(0, 5)
-        .map((p) => `[${p.platform} — ${p.reactions || 0} reactions]\n${String(p.caption || '').slice(0, 200)}`)
-        .join('\n\n')}`
-    : '';
-
-  const systemPrompt = `You are Auto, Bart Paden's AI CMO. You are writing fresh social media captions to resurface one of Bart's existing journal posts for SEO and reach.
-
-CONTEXT ON WHAT YOU ARE DOING:
-This is not a new post. This is a strategic resurface. The article already exists. Your job is to find the angle that makes it feel urgent and worth reading TODAY. Think like a CMO who has studied this body of work and knows exactly which idea from this article will land hardest given what is happening in the leadership conversation right now.
-
-BART'S VOICE — NON-NEGOTIABLE:
+Bart's voice rules — non-negotiable:
 - No em dashes. Ever. Rewrite the sentence instead.
-- No AI signature phrases: "it's worth noting", "at its core", "furthermore", "moreover", "this highlights", "not only X but also Y", "in many ways", "navigate"
+- No AI signature phrases: "it's worth noting", "at its core", "furthermore", "moreover", "this highlights", "not only X but also Y"
 - Short sentences. Direct. No stacked subordinate clauses.
 - No hedging. No throat-clearing. No summaries that restate instead of land.
 - First person where appropriate. Bart is the author.
-- Pick ONE idea, ONE question, ONE provocation. Do not cover the whole article.
-- The related corpus writing shows you how Bart thinks and what he has already said on adjacent topics. Use it to find the angle he has NOT led with before on this theme.
-- Study the top performing caption patterns. They show you what this audience responds to. Match that energy.
-
-RESHARE FRAMING RULES:
-- Write as if this is new content being published today, not a repost.
-- Never say "resharing", "throwback", "previously", or "I wrote this a while ago."
-- The goal is reach and SEO. The caption should make someone who has never seen this article want to read it immediately.
-- Surface the most provocative or counterintuitive idea in the article.
+- Write as if this is new content, not a repost. Surface a fresh angle, a provocative line from the article, or a question the content answers.
 
 Write four captions. Return them as a JSON object with exactly these keys:
 {
@@ -243,10 +218,10 @@ Write four captions. Return them as a JSON object with exactly these keys:
 }
 
 Rules per platform:
-- linkedin_personal: 900-1200 characters. Conversational. Lead with a strong first line that stops the scroll. Include the URL on its own line at the end. 3-5 hashtags.
-- instagram_business: 180-220 characters of caption text. No URL (replaced with Link in bio). 5-7 hashtags. First line must stop the scroll.
+- linkedin_personal: 900-1200 characters. Conversational. Can be longer-form. Include the URL on its own line at the end. 3-5 hashtags.
+- instagram_business: 180-220 characters of text. No URL (will be replaced with Link in bio). 5-7 hashtags.
 - facebook_business: 300-500 characters. Include the URL. 3-4 hashtags.
-- twitter: Under 240 characters total including URL. No hashtags. One sharp idea only.
+- twitter: Under 240 characters total including URL. No hashtags.
 
 Return ONLY the JSON object. No preamble. No explanation. No markdown code fences.`;
 
@@ -254,9 +229,9 @@ Return ONLY the JSON object. No preamble. No explanation. No markdown code fence
 Journal URL: ${journalUrl}
 
 Article content:
-${excerpt}${corpusSection}${patternSection}
+${excerpt}
 
-Write four reshare captions. Lead with the most provocative or counterintuitive idea. Make it feel urgent today.`;
+Write four reshare captions for this article. Surface a fresh angle. Do not summarize the whole piece. Pick one idea, one question, one provocation that makes someone want to read it.`;
 
   const response = await client.messages.create({
     model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
@@ -359,50 +334,9 @@ export default async function handler(req, res) {
   const journalUrl = `https://www.archetypeoriginal.com/journal/${entry.slug}`;
   const imageUrl = extractJournalImageUrl(journal.frontmatter);
 
-  // Fetch corpus context — semantic search on the article's title and opening
-  // paragraph to find the most thematically related writing in Bart's corpus.
-  let corpusContext = [];
-  try {
-    const { searchCorpus } = await import('../../../lib/ao/corpusEmbeddings.js');
-    const queryText = `${title}\n\n${journal.body.slice(0, 800)}`;
-    const results = await searchCorpus(queryText, {
-      threshold: 0.35,
-      maxResults: 6,
-    });
-    // Exclude the article being reshared itself
-    corpusContext = results.filter((r) => r.slug !== entry.slug);
-    console.log(`[reshare-journal] Corpus context: ${corpusContext.length} related documents found`);
-  } catch (err) {
-    console.warn('[reshare-journal] Corpus search failed, proceeding without context:', err?.message);
-  }
-
-  // Fetch top-performing caption patterns from metrics
-  let captionPatterns = [];
-  try {
-    const { data: topMetrics } = await supabaseAdmin
-      .from('ao_scheduled_post_metrics')
-      .select('platform, reactions, comments, ao_scheduled_posts!inner(caption, platform)')
-      .not('reactions', 'is', null)
-      .gt('reactions', 0)
-      .order('reactions', { ascending: false })
-      .limit(10);
-
-    if (topMetrics && topMetrics.length > 0) {
-      captionPatterns = topMetrics.map((m) => ({
-        platform: m.platform,
-        reactions: m.reactions,
-        comments: m.comments,
-        caption: m.ao_scheduled_posts?.caption || '',
-      }));
-      console.log(`[reshare-journal] Caption patterns: ${captionPatterns.length} top performers loaded`);
-    }
-  } catch (err) {
-    console.warn('[reshare-journal] Could not load caption patterns:', err?.message);
-  }
-
   let captions;
   try {
-    captions = await generateReshareCaption(entry.slug, title, journal.body, journalUrl, corpusContext, captionPatterns);
+    captions = await generateReshareCaption(entry.slug, title, journal.body, journalUrl);
   } catch (err) {
     console.error('[reshare-journal] Caption generation failed:', err.message);
     return res.status(500).json({ ok: false, error: 'Caption generation failed', detail: err.message });

@@ -553,56 +553,6 @@ export default async function handler(req, res) {
       }
     }
 
-    // Handle [RESHARE_EDIT] signals — update a pending reshare caption by platform
-    const reshareEditPattern = /\[RESHARE_EDIT\s+platform="([^"]+)"\s+slug="([^"]+)"\]([\s\S]*?)\[\/RESHARE_EDIT\]/gi;
-    let reshareEditMatch;
-    while ((reshareEditMatch = reshareEditPattern.exec(fullReply)) !== null) {
-      const platform = reshareEditMatch[1]?.trim();
-      const slug = reshareEditMatch[2]?.trim();
-      const newCaption = reshareEditMatch[3]?.trim();
-
-      if (!platform || !slug || !newCaption) continue;
-
-      // Normalize platform key to match what is stored in ao_scheduled_posts
-      const platformMap = {
-        linkedin_personal: 'linkedin',
-        instagram_business: 'instagram',
-        facebook_business: 'facebook',
-        twitter: 'twitter',
-      };
-      const dbPlatform = platformMap[platform] || platform;
-
-      try {
-        // Find the pending reshare row for this slug and platform
-        const { data: pendingRows } = await supabaseAdmin
-          .from('ao_scheduled_posts')
-          .select('id, platform, account_id, intent')
-          .eq('status', 'pending_review')
-          .eq('source_kind', 'ao_journal_reshare')
-          .eq('platform', dbPlatform)
-          .filter('intent->>slug', 'eq', slug)
-          .limit(1);
-
-        if (pendingRows && pendingRows.length > 0) {
-          const row = pendingRows[0];
-          await supabaseAdmin
-            .from('ao_scheduled_posts')
-            .update({
-              caption: newCaption,
-              text: newCaption,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', row.id);
-
-          console.log(`[chat.js] Reshare caption updated for ${slug} on ${platform}`);
-        } else {
-          console.warn(`[chat.js] No pending reshare found for slug="${slug}" platform="${dbPlatform}"`);
-        }
-      } catch (err) {
-        console.error('[chat.js] RESHARE_EDIT signal handler error:', err?.message || err);
-      }
-    }
-
     // Generate session brief if this is a wrap signal or long thread.
     // This one can stay fire-and-forget deliberately — it is not something the user
     // is watching for confirmation of in the same turn, and losing an occasional
