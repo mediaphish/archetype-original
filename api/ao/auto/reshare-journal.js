@@ -397,10 +397,19 @@ Selection rules:
 - Prefer entries that fill a gap in recent ecosystem content rather than repeat a theme already in the queue
 - Choose one entry. Return its slug and a one-sentence explanation of why it fits this moment.
 
+Also assess whether the external research surfaced something significant enough to be its own opportunity — a named report, a real statistic, a real event — versus routine background context. Set signal_strength accordingly:
+
+- "none" — nothing external drove the pick beyond general topical relevance; this is the normal, common case.
+- "notable" — there's a real, nameable external hook (an industry report, a specific event, a clear trend) but it's not overwhelming.
+- "strong" — the kind of alignment where a real report or statistic directly validates or connects to the corpus in a way that deserves more than a single caption line. Use this rarely — it should be uncommon, not the default.
+
 Respond with ONLY a JSON object in this exact format:
 {
   "slug": "the-selected-slug",
-  "reason": "One sentence explaining why this entry fits this week."
+  "reason": "One sentence explaining why this entry fits this week.",
+  "signal_strength": "none" | "notable" | "strong",
+  "signal_summary": "1-3 sentences describing the specific external finding (name the report/source/stat if there is one), or empty string if signal_strength is 'none'",
+  "signal_source_name": "The name of the report/article/event, or null if none"
 }
 
 No preamble. No explanation. No markdown. Only the JSON object.`;
@@ -458,7 +467,26 @@ Search for current leadership news and trends, then select the best entry from t
     }
 
     console.log(`[reshare-journal] Intelligent selection: ${parsed.slug} — ${parsed.reason}`);
-    return { slug: parsed.slug, reason: parsed.reason };
+
+    const strengthRaw = String(parsed.signal_strength || 'none').toLowerCase().trim();
+    const signal_strength =
+      strengthRaw === 'strong' || strengthRaw === 'notable' ? strengthRaw : 'none';
+    const signal_summary =
+      signal_strength === 'none' ? '' : String(parsed.signal_summary || '').trim();
+    const signal_source_name =
+      signal_strength === 'none'
+        ? null
+        : parsed.signal_source_name
+          ? String(parsed.signal_source_name).trim()
+          : null;
+
+    return {
+      slug: parsed.slug,
+      reason: parsed.reason,
+      signal_strength,
+      signal_summary,
+      signal_source_name,
+    };
   } catch (err) {
     console.error('[reshare-journal] Intelligent selection failed:', err?.message || err);
     return null;
@@ -633,6 +661,9 @@ async function resolveScheduleDayIfAutoApprove() {
 async function performReshareCycle({ forcedSlug = null, forcePendingReview = false } = {}) {
   let entry;
   let selectionReason = '';
+  let signalStrength = 'none';
+  let signalSummary = '';
+  let signalSourceName = null;
 
   if (forcedSlug) {
     const { data, error } = await supabaseAdmin
@@ -676,6 +707,45 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     if (intelligentSelection?.slug) {
       entry = allEntries.find((e) => e.slug === intelligentSelection.slug);
       selectionReason = intelligentSelection.reason;
+      signalStrength = intelligentSelection.signal_strength || 'none';
+      signalSummary = intelligentSelection.signal_summary || '';
+      signalSourceName = intelligentSelection.signal_source_name || null;
+
+      if (signalStrength === 'strong') {
+        try {
+          const nowIso = new Date().toISOString();
+          const { error: oppError } = await supabaseAdmin.from('ao_opportunities').insert({
+            title: `${signalSourceName || 'External signal'} connects to your corpus`,
+            opportunity_brief: signalSummary || null,
+            why_it_matters: selectionReason || null,
+            recommended_next_stage: 'publisher',
+            ao_lane: 'reshare',
+            topic_tags: null,
+            source_quote_id: null,
+            source_idea_id: null,
+            status: 'new',
+            created_by_email: 'bart@archetypeoriginal.com',
+            created_at: nowIso,
+            updated_at: nowIso,
+          });
+
+          if (oppError) {
+            console.warn(
+              '[reshare-journal] Could not log strong signal as opportunity (table may not exist yet — run database/ao_opportunities.sql in Supabase):',
+              oppError.message
+            );
+          } else {
+            console.log(
+              `[reshare-journal] Logged strong external signal as opportunity: ${signalSourceName || 'unnamed'}`
+            );
+          }
+        } catch (oppErr) {
+          console.warn(
+            '[reshare-journal] Opportunity insert threw (continuing reshare anyway):',
+            oppErr?.message || oppErr
+          );
+        }
+      }
     } else {
       console.log('[reshare-journal] Falling back to rotation-based selection');
       entry = eligible[0];
@@ -851,6 +921,9 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     photo_url: generatedImage?.photo_url || null,
     image_url: imageUrl || null,
     selection_reason: selectionReason || 'Selected by rotation',
+    signal_strength: signalStrength,
+    signal_summary: signalSummary || null,
+    signal_source_name: signalSourceName,
     message: autoApprove
       ? `${(inserted || []).length} reshare posts scheduled for ${scheduleDay?.toISOString().split('T')[0]}.`
       : `${(inserted || []).length} reshare posts are pending your review in Settings.`,

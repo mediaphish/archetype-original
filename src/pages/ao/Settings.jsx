@@ -77,6 +77,10 @@ export default function Settings() {
   const [pendingResharesLoading, setPendingResharesLoading] = useState(true);
   const [reshareActionLoading, setReshareActionLoading] = useState({});
   const [reshareActionResult, setReshareActionResult] = useState({});
+  const [opportunities, setOpportunities] = useState([]);
+  const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
+  const [opportunitiesError, setOpportunitiesError] = useState('');
+  const [opportunitiesSetupNeeded, setOpportunitiesSetupNeeded] = useState(false);
 
   const [brandLoading, setBrandLoading] = useState(true);
   const [brandAssets, setBrandAssets] = useState([]);
@@ -281,6 +285,34 @@ export default function Settings() {
         if (!cancelled && json.ok) setPendingReshares(json.pending || []);
       } catch (_) {}
       if (!cancelled) setPendingResharesLoading(false);
+
+      // Load new opportunities (read-only visibility)
+      try {
+        const res = await fetch('/api/ao/opportunities?status=new&limit=20');
+        const json = await res.json().catch(() => ({}));
+        if (!cancelled) {
+          if (json.ok) {
+            setOpportunities(Array.isArray(json.opportunities) ? json.opportunities : []);
+            setOpportunitiesSetupNeeded(false);
+            setOpportunitiesError('');
+          } else {
+            const errMsg = String(json.error || '');
+            if (/not set up yet|ao_opportunities/i.test(errMsg)) {
+              setOpportunitiesSetupNeeded(true);
+              setOpportunitiesError('');
+            } else {
+              setOpportunitiesError(errMsg || 'Could not load opportunities');
+            }
+            setOpportunities([]);
+          }
+        }
+      } catch (_) {
+        if (!cancelled) {
+          setOpportunities([]);
+          setOpportunitiesError('Could not load opportunities');
+        }
+      }
+      if (!cancelled) setOpportunitiesLoading(false);
     })();
     return () => { cancelled = true; };
   }, [authChecked]);
@@ -918,6 +950,52 @@ export default function Settings() {
             </div>
           ) : (
             <p className="mt-5 text-sm text-gray-400">No reshares pending review.</p>
+          )}
+        </section>
+
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Opportunities</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Strong external signal caught during reshare research (named reports, real stats, clear events) lands here so it is not lost inside a single caption.
+          </p>
+
+          {opportunitiesLoading ? (
+            <p className="text-sm text-gray-400">Loading opportunities…</p>
+          ) : opportunitiesSetupNeeded ? (
+            <p className="text-sm text-gray-500">
+              Opportunities are not set up yet — run <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">database/ao_opportunities.sql</code> in Supabase.
+            </p>
+          ) : opportunitiesError ? (
+            <div className="p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">{opportunitiesError}</div>
+          ) : opportunities.length > 0 ? (
+            <div className="space-y-4">
+              {opportunities.map((opp) => (
+                <div key={opp.id} className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                    <p className="text-sm font-semibold text-gray-900">{opp.title || 'Untitled opportunity'}</p>
+                    {opp.created_at ? (
+                      <p className="text-xs text-gray-400 mt-1">{new Date(opp.created_at).toLocaleString()}</p>
+                    ) : null}
+                  </div>
+                  <div className="px-4 py-3 space-y-2">
+                    {opp.opportunity_brief ? (
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">Brief</p>
+                        <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{opp.opportunity_brief}</p>
+                      </div>
+                    ) : null}
+                    {opp.why_it_matters ? (
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">Why it matters</p>
+                        <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{opp.why_it_matters}</p>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">No new opportunities yet.</p>
           )}
         </section>
 

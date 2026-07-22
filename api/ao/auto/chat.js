@@ -402,8 +402,12 @@ export default async function handler(req, res) {
           const captionBlock = Object.entries(reshareResult.captions)
             .map(([platform, text]) => `**${platform}:**\n${text}`)
             .join('\n\n');
+          const opportunityBlock =
+            reshareResult.signal_strength === 'strong'
+              ? `⚡ OPPORTUNITY: ${reshareResult.signal_source_name || 'External signal'}\n${reshareResult.signal_summary || ''}\n\nThis is bigger than one caption line. I've logged it as an opportunity. Want me to work this into more of this week's captions, or leave it as-is in LinkedIn Personal for now? (A dedicated new piece connecting this to your corpus isn't wired up yet — that's a next step, not something I can do today.)\n\n`
+              : '';
           fullReply =
-            `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}\n${captionBlock}\n\nThis is pending review — say the word and I'll schedule it, ask for a caption rewrite, ask for a different photo, or say discard and I'll drop it. No trip to Settings needed unless you want one.\n[/RESHARE_RESULT]`.trim();
+            `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}\n${opportunityBlock}${captionBlock}\n\nThis is pending review — say the word and I'll schedule it, ask for a caption rewrite, ask for a different photo, or say discard and I'll drop it. No trip to Settings needed unless you want one.\n[/RESHARE_RESULT]`.trim();
 
           if (reshareResult.image_url && String(reshareResult.image_url).startsWith('https://')) {
             reshareMeta.reshare_image_url = reshareResult.image_url;
