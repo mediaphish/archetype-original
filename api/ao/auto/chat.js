@@ -237,114 +237,6 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   }
 }
 
-/**
- * Generate and save a session brief when the thread is wrapping up.
- * Detects wrap signals from Bart ("we're done", "wrap this up", "that's it for today",
- * "good night", "talk tomorrow") or fires automatically when a thread reaches 20+ messages.
- *
- * The brief captures:
- * - What was being worked on (series, post type, topic)
- * - What decisions were made (approved drafts, rejected angles)
- * - What was published or scheduled
- * - What is next (the explicit next step or open thread)
- * - Any open flags or concerns raised
- *
- * Saves to ao_content_drafts with kind='session_brief' so it loads
- * into the next session automatically via loadApprovedDraftsContext.
- *
- * This function calls Anthropic directly with a small focused prompt
- * so the brief is Auto's own synthesis, not a dump of raw messages.
- */
-async function tryGenerateSessionBrief(threadId, messages, email, userMessage) {
-  if (!email || !threadId || !messages || messages.length < 6) return;
-
-  const wrapSignals = /\b(we're done|wrap this up|that'?s? it for (today|now|tonight)|good night|talk tomorrow|see you|bye|done for now|logging off|heading out)\b/i;
-  const isWrapSignal = wrapSignals.test(String(userMessage || ''));
-
-  if (!isWrapSignal) return;
-
-  try {
-    // Check if we already saved a brief for this thread recently
-    const { data: existing } = await supabaseAdmin
-      .from('ao_content_drafts')
-      .select('id, updated_at')
-      .eq('created_by_email', email.toLowerCase().trim())
-      .eq('kind', 'session_brief')
-      .eq('series_slug', threadId)
-      .order('updated_at', { ascending: false })
-      .limit(1);
-
-    // Don't regenerate if we saved one in the last 30 minutes
-    if (existing && existing.length > 0) {
-      const lastSaved = new Date(existing[0].updated_at);
-      const minutesAgo = (Date.now() - lastSaved.getTime()) / (1000 * 60);
-      if (minutesAgo < 30) return;
-    }
-
-    // Build a concise message history for the brief generator
-    // Only use the last 30 messages to keep it focused
-    const recentMessages = messages.slice(-30);
-    const historyText = recentMessages
-      .map(m => `${m.role === 'user' ? 'Bart' : 'Auto'}: ${String(m.content || '').slice(0, 500)}`)
-      .join('\n\n');
-
-    const Anthropic = (await import('@anthropic-ai/sdk')).default;
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1000,
-      messages: [{
-        role: 'user',
-        content: `You are summarizing a working session between Bart Paden and his AI CMO (Auto) at Archetype Original.
-
-Read this conversation and write a session brief in Bart's voice that captures:
-
-1. WORKING ON: What content was being worked on (be specific — series name, part number, topic, post type)
-2. DECISIONS MADE: What was approved, what was rejected, what angles were chosen
-3. PUBLISHED OR SCHEDULED: Anything that went live or got scheduled, with slugs/dates if mentioned
-4. WHAT IS NEXT: The exact next step — specific enough that a new session can pick up without asking
-5. OPEN FLAGS: Any unresolved issues, pending approvals, or things Bart flagged as concerns
-
-Write in plain, direct language. No filler. No AI phrasing. Short sentences. This brief will be the first thing Auto reads in the next session.
-
-CONVERSATION:
-${historyText}
-
-Write the brief now. Format it with the 5 section headers above. Keep it under 400 words total.`
-      }]
-    });
-
-    const briefText = response.content?.[0]?.text || '';
-    if (!briefText || briefText.length < 50) return;
-
-    // Save as a session brief
-    await supabaseAdmin
-      .from('ao_content_drafts')
-      .upsert({
-        created_by_email: email.toLowerCase().trim(),
-        kind: 'session_brief',
-        series_slug: threadId,
-        part_number: 1,
-        title: `Session Brief — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`,
-        slug: `session-brief-${threadId.slice(0, 8)}`,
-        content: briefText,
-        summary: briefText.slice(0, 200),
-        status: 'approved',
-        approved_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        metadata: { thread_id: threadId, message_count: messages.length }
-      }, {
-        onConflict: 'created_by_email,series_slug,part_number,kind',
-        ignoreDuplicates: false,
-      });
-
-    console.log(`[chat.js] Session brief saved for thread ${threadId}`);
-  } catch (err) {
-    console.error('[chat.js] Session brief generation failed:', err?.message || err);
-  }
-}
-
 export default async function handler(req, res) {
   const auth = requireOwnerSession(req, res);
   if (!auth) return;
@@ -657,15 +549,6 @@ export default async function handler(req, res) {
         console.error('[chat.js] processEpisodeResearchSignal error:', err?.message || err);
       }
     }
-
-    // Generate session brief if this is a wrap signal or long thread.
-    // This one can stay fire-and-forget deliberately — it is not something the user
-    // is watching for confirmation of in the same turn, and losing an occasional
-    // session brief is a much lower-cost failure than losing research content
-    // generated live in conversation. Uses claude-haiku for speed.
-    tryGenerateSessionBrief(thread.id, priorMessages, auth.email, userMessage).catch((err) => {
-      console.error('[chat.js] tryGenerateSessionBrief error:', err?.message || err);
-    });
 
     const finalState = await getAutoThreadState(auth.email, thread.id);
 
