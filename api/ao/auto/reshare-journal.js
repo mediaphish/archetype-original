@@ -339,6 +339,33 @@ async function generateReshareImage(title, pullQuote, mood) {
   };
 }
 
+/**
+ * Branded landscape image for opportunity companion posts — same pipeline as reshare
+ * (photo edit → canvas composite with real pull quote + AO logo). Exported for chat.js.
+ */
+export async function generateBrandedOpportunityImage({ title, body, pullQuote }) {
+  const quote =
+    String(pullQuote || '').trim() ||
+    (await extractPullQuote(title || 'Companion post', body || '')) ||
+    '';
+  if (!quote) {
+    return { ok: false, error: 'Could not determine a pull quote for the branded image' };
+  }
+  const mood = await detectArticleMood(title || 'Companion post', body || '');
+  const generated = await generateReshareImage(title || 'Companion post', quote, mood);
+  if (!generated?.image_url) {
+    return { ok: false, error: 'Branded image generation failed' };
+  }
+  return {
+    ok: true,
+    image_url: generated.image_url,
+    pull_quote: quote,
+    mood,
+    photo: generated.photo || null,
+    photo_url: generated.photo_url || null,
+  };
+}
+
 async function getCorpusContext(currentSlug, title) {
   void title;
   let relatedWriting = '';
@@ -721,6 +748,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
   let signalStrength = 'none';
   let signalSummary = '';
   let signalSourceName = null;
+  let opportunityId = null;
 
   if (forcedSlug) {
     const { data, error } = await supabaseAdmin
@@ -771,20 +799,28 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
       if (signalStrength === 'strong') {
         try {
           const nowIso = new Date().toISOString();
-          const { error: oppError } = await supabaseAdmin.from('ao_opportunities').insert({
-            title: `${signalSourceName || 'External signal'} connects to your corpus`,
-            opportunity_brief: signalSummary || null,
-            why_it_matters: selectionReason || null,
-            recommended_next_stage: 'publisher',
-            ao_lane: 'reshare',
-            topic_tags: null,
-            source_quote_id: null,
-            source_idea_id: null,
-            status: 'new',
-            created_by_email: 'bart@archetypeoriginal.com',
-            created_at: nowIso,
-            updated_at: nowIso,
-          });
+          const { data: oppRow, error: oppError } = await supabaseAdmin
+            .from('ao_opportunities')
+            .insert({
+              title: `${signalSourceName || 'External signal'} connects to your corpus`,
+              opportunity_brief: signalSummary || null,
+              why_it_matters: selectionReason || null,
+              recommended_next_stage: 'publisher',
+              ao_lane: 'reshare',
+              topic_tags: intelligentSelection.slug
+                ? [String(intelligentSelection.slug)]
+                : entry?.slug
+                  ? [String(entry.slug)]
+                  : null,
+              source_quote_id: null,
+              source_idea_id: null,
+              status: 'new',
+              created_by_email: 'bart@archetypeoriginal.com',
+              created_at: nowIso,
+              updated_at: nowIso,
+            })
+            .select('id')
+            .single();
 
           if (oppError) {
             console.warn(
@@ -792,8 +828,9 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
               oppError.message
             );
           } else {
+            opportunityId = oppRow?.id || null;
             console.log(
-              `[reshare-journal] Logged strong external signal as opportunity: ${signalSourceName || 'unnamed'}`
+              `[reshare-journal] Logged strong external signal as opportunity: ${signalSourceName || 'unnamed'} (${opportunityId})`
             );
           }
         } catch (oppErr) {
@@ -981,6 +1018,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     signal_strength: signalStrength,
     signal_summary: signalSummary || null,
     signal_source_name: signalSourceName,
+    opportunity_id: opportunityId,
     message: autoApprove
       ? `${(inserted || []).length} reshare posts scheduled for ${scheduleDay?.toISOString().split('T')[0]}.`
       : `${(inserted || []).length} reshare posts are pending your review in Settings.`,

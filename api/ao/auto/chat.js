@@ -17,9 +17,11 @@ import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
 import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { runReshareCycle } from './reshare-journal.js';
+import { runReshareCycle, generateBrandedOpportunityImage } from './reshare-journal.js';
 import { approveOrDiscardReshare } from './reshare-review.js';
 import Anthropic from '@anthropic-ai/sdk';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * Detects approved content in the current exchange and saves it to ao_content_drafts.
@@ -404,7 +406,7 @@ export default async function handler(req, res) {
             .join('\n\n');
           const opportunityBlock =
             reshareResult.signal_strength === 'strong'
-              ? `⚡ OPPORTUNITY: ${reshareResult.signal_source_name || 'External signal'}\n${reshareResult.signal_summary || ''}\n\nThis is bigger than one caption line. I've logged it as an opportunity. Want me to work this into more of this week's captions, or leave it as-is in LinkedIn Personal for now? (A dedicated new piece connecting this to your corpus isn't wired up yet — that's a next step, not something I can do today.)\n\n`
+              ? `⚡ OPPORTUNITY: ${reshareResult.signal_source_name || 'External signal'}${reshareResult.opportunity_id ? `\nid: ${reshareResult.opportunity_id}` : ''}\n${reshareResult.signal_summary || ''}\n\nThis is bigger than one caption line. I've logged it as an opportunity. A few ways to handle it: expand this week's captions to lean into it more, leave it as-is in LinkedIn Personal, or — if this really connects to something specific you've already written — I can write a full companion post connecting the two directly. Want me to draft that?\n\n`
               : '';
           fullReply =
             `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}\n${opportunityBlock}${captionBlock}\n\nThis is pending review — say the word and I'll schedule it, ask for a caption rewrite, ask for a different photo, or say discard and I'll drop it. No trip to Settings needed unless you want one.\n[/RESHARE_RESULT]`.trim();
@@ -502,6 +504,173 @@ export default async function handler(req, res) {
         const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
         fullReply = `${fullReply.replace(/\[\/?RESHARE_(APPROVE|DISCARD)[^\]]*\]/gi, '').trim()}\n\n[Could not ${action} that reshare: ${safeMessage}]`.trim();
         console.error('[chat.js] RESHARE_APPROVE/DISCARD handler error:', err?.message || err);
+      }
+    }
+
+    // Opportunity companion post — draft the full journal body first (no captions yet).
+    const opportunityWriteMatch = fullReply.match(/\[OPPORTUNITY_WRITE_POST\s+id="([^"]+)"\]/i);
+    if (opportunityWriteMatch) {
+      const opportunityId = opportunityWriteMatch[1];
+      try {
+        fullReply = fullReply.replace(/\[\/?OPPORTUNITY_WRITE_POST[^\]]*\]/gi, '').trim();
+
+        const { data: opportunity, error: oppFetchError } = await supabaseAdmin
+          .from('ao_opportunities')
+          .select('*')
+          .eq('id', opportunityId)
+          .maybeSingle();
+
+        if (oppFetchError || !opportunity) {
+          fullReply = `${fullReply}\n\n[Could not load that opportunity: ${oppFetchError?.message || 'not found'}]`.trim();
+        } else {
+          const relatedSlug = Array.isArray(opportunity.topic_tags) ? opportunity.topic_tags[0] : null;
+          let relatedBody = '';
+          let relatedTitle = relatedSlug || 'related corpus piece';
+          if (relatedSlug) {
+            const journalPath = path.join(process.cwd(), 'ao-knowledge-hq-kit/journal', `${relatedSlug}.md`);
+            if (fs.existsSync(journalPath)) {
+              const raw = fs.readFileSync(journalPath, 'utf8');
+              const titleMatch = raw.match(/^title:\s*(.+)$/m);
+              if (titleMatch) relatedTitle = titleMatch[1].trim().replace(/^["']|["']$/g, '');
+              const bodyStart = raw.indexOf('\n---', 3);
+              relatedBody = bodyStart >= 0 ? raw.slice(bodyStart + 4).trim().slice(0, 4500) : raw.slice(0, 4500);
+            }
+          }
+
+          const draftClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+          const draftResponse = await draftClient.messages.create({
+            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+            max_tokens: 4000,
+            system: `You are Auto, Bart Paden's AI CMO writing a companion journal entry for Archetype Original.
+
+Voice rules — non-negotiable:
+- No em dashes. Ever. Rewrite the sentence instead.
+- No AI signature phrases: "it's worth noting", "at its core", "furthermore", "moreover", "this highlights", "not only X but also Y", "in many ways", "navigate"
+- Short sentences. Direct. First person where it fits Bart's voice.
+- Connect a SPECIFIC existing corpus piece to a SPECIFIC external signal. Do not write a generic "reports validate what I've said" essay.
+- Full journal-entry length and depth. Include a clear title as the first line (# Title).
+- Do NOT include social captions. Do NOT include [CARD] blocks. Post body only.`,
+            messages: [
+              {
+                role: 'user',
+                content: `Write the companion journal post.
+
+External signal:
+${opportunity.signal_source_name || opportunity.title || 'External signal'}
+${opportunity.opportunity_brief || ''}
+
+Why it matters / reshare selection reason:
+${opportunity.why_it_matters || ''}
+
+Related corpus piece: ${relatedTitle}${relatedSlug ? ` (slug: ${relatedSlug})` : ''}
+${relatedBody ? `\nRelated piece excerpt:\n${relatedBody}` : ''}
+
+Return markdown only: a # title line, then the full post body.`,
+              },
+            ],
+          });
+
+          const draftedPost = (draftResponse.content?.[0]?.text || '').trim();
+
+          await supabaseAdmin
+            .from('ao_opportunities')
+            .update({ status: 'studio', updated_at: new Date().toISOString() })
+            .eq('id', opportunityId);
+
+          if (draftedPost) {
+            fullReply = `${fullReply}\n\n[OPPORTUNITY_DRAFT id="${opportunityId}"]\n${draftedPost}\n[/OPPORTUNITY_DRAFT]\n\nHere's the full companion post — writing only, no captions yet. Approve it, edit it, or tell me what to change. Once the writing is locked, I'll build the branded header image (same photo + pull-quote + logo treatment as reshare), then captions from the finished post.`.trim();
+          } else {
+            fullReply = `${fullReply}\n\n[Could not draft the companion post — empty model response. Opportunity marked in studio; try again.]`.trim();
+          }
+        }
+      } catch (err) {
+        const rawMessage = err?.message || err || 'unknown error';
+        const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
+        fullReply = `${fullReply.replace(/\[\/?OPPORTUNITY_WRITE_POST[^\]]*\]/gi, '').trim()}\n\n[Could not draft companion post: ${safeMessage}]`.trim();
+        console.error('[chat.js] OPPORTUNITY_WRITE_POST handler error:', err?.message || err);
+      }
+    }
+
+    // Opportunity branded header image — only after the companion post body is approved.
+    const opportunityImageMatch = fullReply.match(
+      /\[OPPORTUNITY_GENERATE_IMAGE\s+id="([^"]+)"(?:\s+pull_quote="([^"]*)")?\]/i
+    );
+    if (opportunityImageMatch) {
+      const [, opportunityId, pullQuoteAttr] = opportunityImageMatch;
+      try {
+        fullReply = fullReply.replace(/\[\/?OPPORTUNITY_GENERATE_IMAGE[^\]]*\]/gi, '').trim();
+
+        const { data: opportunity } = await supabaseAdmin
+          .from('ao_opportunities')
+          .select('*')
+          .eq('id', opportunityId)
+          .maybeSingle();
+
+        // Prefer post body from this reply's OPPORTUNITY_DRAFT / JOURNAL_CONTENT, else prior assistant text.
+        let postBody = '';
+        let postTitle = opportunity?.title || 'Companion post';
+        const draftInReply = fullReply.match(/\[OPPORTUNITY_DRAFT[^\]]*\]([\s\S]*?)\[\/OPPORTUNITY_DRAFT\]/i);
+        const journalInReply = fullReply.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
+        if (draftInReply) postBody = draftInReply[1].trim();
+        else if (journalInReply) postBody = journalInReply[1].trim();
+
+        if (!postBody && Array.isArray(priorMessages)) {
+          for (let i = priorMessages.length - 1; i >= 0; i--) {
+            const c = String(priorMessages[i]?.content || '');
+            const m =
+              c.match(/\[OPPORTUNITY_DRAFT[^\]]*\]([\s\S]*?)\[\/OPPORTUNITY_DRAFT\]/i) ||
+              c.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
+            if (m) {
+              postBody = m[1].trim();
+              break;
+            }
+          }
+        }
+
+        const titleMatch = postBody.match(/^#\s+(.+)$/m);
+        if (titleMatch) postTitle = titleMatch[1].trim();
+
+        const imageResult = await generateBrandedOpportunityImage({
+          title: postTitle,
+          body: postBody,
+          pullQuote: pullQuoteAttr || '',
+        });
+
+        if (!imageResult.ok) {
+          fullReply = `${fullReply}\n\n[Could not generate branded opportunity image: ${imageResult.error}]`.trim();
+        } else {
+          if (imageResult.image_url && String(imageResult.image_url).startsWith('https://')) {
+            reshareMeta.reshare_image_url = imageResult.image_url;
+            reshareMeta.opportunity_image_url = imageResult.image_url;
+          }
+          fullReply = `${fullReply}\n\n[OPPORTUNITY_IMAGE id="${opportunityId}"]\nPull quote: "${imageResult.pull_quote}"\nMood: ${imageResult.mood || 'n/a'}\nImage: ${imageResult.image_url}\n[/OPPORTUNITY_IMAGE]\n\nHere's the branded header image (real photo + pull quote + logo — same treatment as reshare). Approve it, ask for a different photo/quote, or say what to change. Captions come only after this image is approved — derived from the finished post, not before.`.trim();
+        }
+      } catch (err) {
+        const rawMessage = err?.message || err || 'unknown error';
+        const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
+        fullReply = `${fullReply.replace(/\[\/?OPPORTUNITY_GENERATE_IMAGE[^\]]*\]/gi, '').trim()}\n\n[Could not generate opportunity image: ${safeMessage}]`.trim();
+        console.error('[chat.js] OPPORTUNITY_GENERATE_IMAGE handler error:', err?.message || err);
+      }
+    }
+
+    // Opportunity fully approved (post + image + captions path complete) → publisher.
+    const opportunityCompleteMatch = fullReply.match(/\[OPPORTUNITY_COMPLETE\s+id="([^"]+)"\]/i);
+    if (opportunityCompleteMatch) {
+      const opportunityId = opportunityCompleteMatch[1];
+      try {
+        fullReply = fullReply.replace(/\[\/?OPPORTUNITY_COMPLETE[^\]]*\]/gi, '').trim();
+        const { error: completeError } = await supabaseAdmin
+          .from('ao_opportunities')
+          .update({ status: 'publisher', updated_at: new Date().toISOString() })
+          .eq('id', opportunityId);
+        if (completeError) {
+          fullReply = `${fullReply}\n\n[Could not mark opportunity complete: ${completeError.message}]`.trim();
+        } else {
+          fullReply = `${fullReply}\n\nOpportunity marked ready for publish.`.trim();
+        }
+      } catch (err) {
+        fullReply = `${fullReply.replace(/\[\/?OPPORTUNITY_COMPLETE[^\]]*\]/gi, '').trim()}\n\n[Could not complete opportunity: ${err?.message || 'unknown error'}]`.trim();
+        console.error('[chat.js] OPPORTUNITY_COMPLETE handler error:', err?.message || err);
       }
     }
 
