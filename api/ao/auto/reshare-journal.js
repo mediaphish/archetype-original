@@ -223,24 +223,7 @@ async function editPhotoWithDallE({ photoPath, prompt, size }) {
       return null;
     }
     const buffer = Buffer.from(b64, 'base64');
-
-    const timestamp = Date.now();
-    const sizeSlug = size.replace('x', '-');
-    const filename = `reshare-${sizeSlug}-${timestamp}.png`;
-    const storagePath = `ao-design-images/${filename}`;
-
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from('ao-auto-attachments')
-      .upload(storagePath, buffer, { contentType: 'image/png', upsert: false });
-
-    if (uploadError) {
-      console.error('[reshare-journal] editPhotoWithDallE upload error:', uploadError.message);
-      return null;
-    }
-
-    const { data: urlData } = supabaseAdmin.storage.from('ao-auto-attachments').getPublicUrl(storagePath);
-    if (!urlData?.publicUrl) return null;
-    return { image_url: urlData.publicUrl };
+    return { buffer };
   } catch (err) {
     console.error('[reshare-journal] editPhotoWithDallE failed:', err?.message || err);
     return null;
@@ -264,13 +247,36 @@ async function generateReshareImage(title, pullQuote, mood) {
         ? 'clean, structured, practical'
         : 'quiet, warm, personal';
 
-  const prompt = `Turn this photo into a branded social media graphic for Archetype Original, a leadership advisory practice. Keep the person in the photo exactly as they appear — do not alter their likeness. Add this pull quote as bold, clean typography, in white with the key phrase in red: "${pullQuote}". Background should be dark, using Archetype Original's brand colors #DB0812 (red) and #2B2929 (dark charcoal). Include the Archetype Original logo mark in a corner. Overall style: ${stylePrompt}. No stock-photo clichés, no cheesy corporate imagery, no altered face or body.`;
+  const prompt = `Adjust only the background and lighting of this photo to feel ${stylePrompt}, using a dark charcoal tone consistent with a professional leadership brand. Do not add any text, words, letters, logos, wordmarks, or graphic overlays of any kind — the image must contain nothing but the photo itself with adjusted background and lighting. Do not alter the subject's face, body, proportions, expression, clothing, or identity in any way — preserve their exact likeness. No stock-photo clichés, no cheesy corporate imagery.`;
 
-  const landscape = await editPhotoWithDallE({ photoPath, prompt, size: '1536x1024' });
-  if (!landscape) return null;
+  const edited = await editPhotoWithDallE({ photoPath, prompt, size: '1536x1024' });
+  if (!edited?.buffer) return null;
+
+  const { generateReshareCardImage } = await import('../../../lib/ao/generateReshareCardImage.js');
+  const composited = await generateReshareCardImage({ photoBuffer: edited.buffer, pullQuote, mood });
+  if (!composited?.ok || !composited.buffer) {
+    console.error('[reshare-journal] generateReshareCardImage failed:', composited?.error);
+    return null;
+  }
+
+  const timestamp = Date.now();
+  const filename = `reshare-1536-1024-${timestamp}.png`;
+  const storagePath = `ao-design-images/${filename}`;
+
+  const { error: uploadError } = await supabaseAdmin.storage
+    .from('ao-auto-attachments')
+    .upload(storagePath, composited.buffer, { contentType: 'image/png', upsert: false });
+
+  if (uploadError) {
+    console.error('[reshare-journal] Final composited image upload error:', uploadError.message);
+    return null;
+  }
+
+  const { data: urlData } = supabaseAdmin.storage.from('ao-auto-attachments').getPublicUrl(storagePath);
+  if (!urlData?.publicUrl) return null;
 
   return {
-    image_url: landscape.image_url,
+    image_url: urlData.publicUrl,
     photo: selectedPhoto.file,
     photo_url: selectedPhoto.url,
   };
