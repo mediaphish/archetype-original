@@ -17,6 +17,8 @@ import { enforceResponseRules } from '../../../lib/ao/enforceResponseRules.js';
 import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { runReshareCycle } from './reshare-journal.js';
+import Anthropic from '@anthropic-ai/sdk';
 
 /**
  * Detects approved content in the current exchange and saves it to ao_content_drafts.
@@ -493,6 +495,85 @@ export default async function handler(req, res) {
       reply: fullReply,
       email: auth.email,
     });
+
+    // Reshare trigger — runs the reshare cycle IN-PROCESS (no HTTP self-fetch, ever).
+    if (/\[TRIGGER_RESHARE\]/i.test(fullReply)) {
+      try {
+        const reshareResult = await runReshareCycle();
+        fullReply = fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim();
+
+        if (reshareResult.ok && reshareResult.captions) {
+          const captionBlock = Object.entries(reshareResult.captions)
+            .map(([platform, text]) => `**${platform}:**\n${text}`)
+            .join('\n\n');
+          fullReply =
+            `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}${reshareResult.image_url ? `Image: ${reshareResult.image_url}\n` : ''}\n${captionBlock}\n\nThis is pending your review in Settings — nothing is scheduled yet. You can ask me to rewrite any caption right here in chat, or ask for a different photo if this one doesn't fit.\n[/RESHARE_RESULT]`.trim();
+        } else if (reshareResult.ok && reshareResult.message) {
+          fullReply = `${fullReply}\n\n${reshareResult.message}`.trim();
+        } else {
+          const rawDetail = reshareResult.error || reshareResult.detail || 'Unknown error';
+          const detail = typeof rawDetail === 'string' ? rawDetail : JSON.stringify(rawDetail);
+          fullReply = `${fullReply}\n\n[Reshare engine did not complete: ${detail}]`.trim();
+          console.error('[chat.js] TRIGGER_RESHARE failed:', detail);
+        }
+      } catch (err) {
+        const rawMessage = err?.message || err || 'unknown error';
+        const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
+        fullReply = `${fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim()}\n\n[Reshare engine did not complete: ${safeMessage}]`.trim();
+        console.error('[chat.js] TRIGGER_RESHARE handler error:', err?.message || err);
+      }
+    }
+
+    // Reshare caption edit — updates a still-pending reshare row directly, in-process.
+    const reshareEditMatch = fullReply.match(
+      /\[RESHARE_EDIT\s+platform="([^"]+)"\s+instruction="([^"]+)"\]/i
+    );
+    if (reshareEditMatch) {
+      const [, platformKey, instruction] = reshareEditMatch;
+      try {
+        const { data: pendingRow } = await supabaseAdmin
+          .from('ao_scheduled_posts')
+          .select('id, caption')
+          .eq('source_kind', 'ao_journal_reshare')
+          .eq('status', 'pending_review')
+          .contains('intent', { channel_label: platformKey })
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        fullReply = fullReply.replace(/\[\/?RESHARE_EDIT[^\]]*\]/gi, '').trim();
+
+        if (!pendingRow) {
+          fullReply =
+            `${fullReply}\n\n[No pending reshare caption found for ${platformKey} — it may have already been approved. Edit it directly in Settings instead.]`.trim();
+        } else {
+          const editClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+          const editResponse = await editClient.messages.create({
+            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+            max_tokens: 1000,
+            system:
+              "You revise one social media caption per the requested instruction. Keep Bart's voice rules: no em dashes, no AI signature phrases, short declarative sentences. Return ONLY the revised caption text, nothing else.",
+            messages: [
+              {
+                role: 'user',
+                content: `Current caption:\n${pendingRow.caption}\n\nInstruction: ${instruction}`,
+              },
+            ],
+          });
+          const revisedCaption = (editResponse.content?.[0]?.text || '').trim();
+          if (revisedCaption) {
+            await supabaseAdmin
+              .from('ao_scheduled_posts')
+              .update({ caption: revisedCaption, text: revisedCaption })
+              .eq('id', pendingRow.id);
+            fullReply = `${fullReply}\n\nUpdated the ${platformKey} caption:\n\n${revisedCaption}`.trim();
+          }
+        }
+      } catch (err) {
+        console.error('[chat.js] RESHARE_EDIT handler error:', err?.message || err);
+        fullReply = `${fullReply.replace(/\[\/?RESHARE_EDIT[^\]]*\]/gi, '').trim()}\n\n[Could not update that caption: ${err?.message || 'unknown error'}]`.trim();
+      }
+    }
 
     // User message was already persisted at the top of the handler (before the
     // model call). Only the assistant reply is written here.
