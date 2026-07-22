@@ -701,6 +701,114 @@ Return markdown only: a # title line, then the full post body.`,
       }
     }
 
+    // Real, complete, untruncated full-text fetch by slug or title — no similarity gating,
+    // no preview truncation. This is the actual fix for a repeated, confirmed failure: every
+    // prior corpus system (vector DB, Library browser) only ever returned truncated previews
+    // while being described as "full text." This reads the real file, in full, every time.
+    const corpusFetchMatch = fullReply.match(/\[CORPUS_FETCH_FULL_TEXT([^\]]*)\]/i);
+    if (corpusFetchMatch) {
+      const attrBlob = corpusFetchMatch[1] || '';
+      const slugMatch = attrBlob.match(/\bslug="([^"]*)"/i);
+      const titleMatch = attrBlob.match(/\btitle="([^"]*)"/i);
+      const requestedSlug = (slugMatch?.[1] || '').trim();
+      const requestedTitle = (titleMatch?.[1] || '').trim();
+
+      try {
+        fullReply = fullReply.replace(/\[\/?CORPUS_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
+
+        let resolvedSlug = requestedSlug;
+        let knowledgeDocs = null;
+
+        const loadKnowledgeDocs = () => {
+          if (knowledgeDocs) return knowledgeDocs;
+          try {
+            const knowledgeRaw = fs.readFileSync(path.join(process.cwd(), 'public/knowledge.json'), 'utf8');
+            knowledgeDocs = JSON.parse(knowledgeRaw)?.docs || [];
+          } catch (_) {
+            knowledgeDocs = [];
+          }
+          return knowledgeDocs;
+        };
+
+        const candidatePathsForSlug = (slug) => {
+          if (!slug) return [];
+          const root = process.cwd();
+          return [
+            path.join(root, 'ao-knowledge-hq-kit/journal', `${slug}.md`),
+            path.join(root, 'ao-knowledge-hq-kit/journal/devotionals', `${slug}.md`),
+            path.join(root, 'ao-knowledge-hq-kit/faqs', `${slug}.md`),
+          ];
+        };
+
+        const findMarkdownPath = (slug) => {
+          for (const p of candidatePathsForSlug(slug)) {
+            if (fs.existsSync(p)) return p;
+          }
+          // Chapters and other kit docs: shallow search under ao-knowledge-hq-kit/
+          const kitRoot = path.join(process.cwd(), 'ao-knowledge-hq-kit');
+          const stack = [kitRoot];
+          while (stack.length) {
+            const dir = stack.pop();
+            let entries = [];
+            try {
+              entries = fs.readdirSync(dir, { withFileTypes: true });
+            } catch (_) {
+              continue;
+            }
+            for (const ent of entries) {
+              const full = path.join(dir, ent.name);
+              if (ent.isDirectory()) {
+                if (ent.name === 'node_modules' || ent.name === '.git') continue;
+                stack.push(full);
+              } else if (ent.isFile() && ent.name === `${slug}.md`) {
+                return full;
+              }
+            }
+          }
+          return null;
+        };
+
+        let filePath = resolvedSlug ? findMarkdownPath(resolvedSlug) : null;
+
+        // Fall back to title match against knowledge.json if no slug was given or the slug doesn't resolve.
+        if (!filePath && requestedTitle) {
+          const match = loadKnowledgeDocs().find(
+            (d) => String(d.title || '').trim().toLowerCase() === requestedTitle.toLowerCase()
+          );
+          if (match?.slug) {
+            resolvedSlug = match.slug;
+            filePath = findMarkdownPath(resolvedSlug);
+          }
+        }
+
+        if (filePath) {
+          const raw = fs.readFileSync(filePath, 'utf8');
+          const fmEnd = raw.indexOf('\n---', 3);
+          const fullBody = fmEnd >= 0 ? raw.slice(fmEnd + 4).trim() : raw.trim();
+          const titleLine = (raw.match(/^title:\s*(.+)$/m) || [])[1] || resolvedSlug;
+          fullReply = `${fullReply}\n\n[CORPUS_FULL_TEXT slug="${resolvedSlug}"]\nTitle: ${titleLine}\n\n${fullBody}\n[/CORPUS_FULL_TEXT]`.trim();
+        } else {
+          // Last resort: full body already stored in knowledge.json (same bytes as source for journal posts).
+          const docs = loadKnowledgeDocs();
+          const match =
+            (resolvedSlug && docs.find((d) => d.slug === resolvedSlug)) ||
+            (requestedTitle &&
+              docs.find((d) => String(d.title || '').trim().toLowerCase() === requestedTitle.toLowerCase())) ||
+            null;
+          if (match?.body && String(match.body).trim()) {
+            resolvedSlug = match.slug || resolvedSlug || 'unknown';
+            fullReply = `${fullReply}\n\n[CORPUS_FULL_TEXT slug="${resolvedSlug}"]\nTitle: ${match.title || resolvedSlug}\n\n${String(match.body).trim()}\n[/CORPUS_FULL_TEXT]`.trim();
+          } else {
+            fullReply = `${fullReply}\n\n[CORPUS_FETCH_FAILED slug="${requestedSlug || 'unknown'}"]\nCould not find a document matching slug "${requestedSlug}" or title "${requestedTitle}". Confirm the exact slug from the FULL CORPUS INDEX and try again.\n[/CORPUS_FETCH_FAILED]`.trim();
+          }
+        }
+      } catch (err) {
+        const safeMessage = err?.message || String(err);
+        fullReply = `${fullReply.replace(/\[\/?CORPUS_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim()}\n\n[Could not fetch full text: ${safeMessage}]`.trim();
+        console.error('[chat.js] CORPUS_FETCH_FULL_TEXT handler error:', err?.message || err);
+      }
+    }
+
     // User message was already persisted at the top of the handler (before the
     // model call). Only the assistant reply is written here.
     await addAutoMessage({
