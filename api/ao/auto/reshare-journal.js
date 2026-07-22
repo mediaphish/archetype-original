@@ -199,10 +199,18 @@ async function editPhotoWithDallE({ photoPath, prompt, size }) {
     const imageBuffer = fs.readFileSync(photoPath);
     const form = new FormData();
     form.append('model', 'gpt-image-1');
-    form.append('image', new Blob([imageBuffer], { type: 'image/jpeg' }), path.basename(photoPath));
+    // Pass a real Uint8Array copy so multipart encoding never sees a pooled Buffer view.
+    form.append(
+      'image',
+      new Blob([new Uint8Array(imageBuffer)], { type: 'image/jpeg' }),
+      path.basename(photoPath)
+    );
     form.append('prompt', prompt);
     form.append('size', size);
     form.append('quality', 'high');
+    // Force raster PNG — napi-rs loadImage rejects unknown/non-raster payloads with
+    // the misleading "Invalid SVG image" error.
+    form.append('output_format', 'png');
 
     const openaiRes = await fetch('https://api.openai.com/v1/images/edits', {
       method: 'POST',
@@ -217,12 +225,54 @@ async function editPhotoWithDallE({ photoPath, prompt, size }) {
     }
 
     const data = await openaiRes.json();
-    const b64 = data?.data?.[0]?.b64_json;
-    if (!b64) {
-      console.error('[reshare-journal] OpenAI image edit returned no b64_json');
+    let b64 = data?.data?.[0]?.b64_json;
+    const tempUrl = data?.data?.[0]?.url;
+
+    // Strip accidental data-URL prefix if the API ever returns one inside b64_json.
+    if (typeof b64 === 'string') {
+      const dataUrlMatch = b64.match(/^data:image\/[a-zA-Z0-9.+-]+;base64,(.+)$/s);
+      if (dataUrlMatch) b64 = dataUrlMatch[1];
+    }
+
+    let buffer = null;
+    if (b64) {
+      buffer = Buffer.from(b64, 'base64');
+    } else if (tempUrl) {
+      const imgRes = await fetch(tempUrl);
+      if (!imgRes.ok) {
+        console.error('[reshare-journal] OpenAI image URL download failed:', imgRes.status);
+        return null;
+      }
+      buffer = Buffer.from(await imgRes.arrayBuffer());
+    } else {
+      console.error('[reshare-journal] OpenAI image edit returned no b64_json or url');
       return null;
     }
-    const buffer = Buffer.from(b64, 'base64');
+
+    const magicHex = buffer.subarray(0, 8).toString('hex');
+    const isPng = magicHex.startsWith('89504e47');
+    const isJpeg = magicHex.startsWith('ffd8ff');
+    const isWebp =
+      buffer.length >= 12 &&
+      buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
+      buffer.subarray(8, 12).toString('ascii') === 'WEBP';
+
+    console.log(
+      '[reshare-journal] editPhotoWithDallE decoded buffer length:',
+      buffer.length,
+      'magic:',
+      magicHex,
+      'format:',
+      isPng ? 'png' : isJpeg ? 'jpeg' : isWebp ? 'webp' : 'unknown'
+    );
+
+    if (!isPng && !isJpeg && !isWebp) {
+      console.error(
+        '[reshare-journal] editPhotoWithDallE returned non-raster bytes (napi-rs would throw Invalid SVG image). Rejecting.'
+      );
+      return null;
+    }
+
     return { buffer };
   } catch (err) {
     console.error('[reshare-journal] editPhotoWithDallE failed:', err?.message || err);
@@ -250,10 +300,17 @@ async function generateReshareImage(title, pullQuote, mood) {
   const prompt = `Adjust only the background and lighting of this photo to feel ${stylePrompt}, using a dark charcoal tone consistent with a professional leadership brand. Do not add any text, words, letters, logos, wordmarks, or graphic overlays of any kind — the image must contain nothing but the photo itself with adjusted background and lighting. Do not alter the subject's face, body, proportions, expression, clothing, or identity in any way — preserve their exact likeness. No stock-photo clichés, no cheesy corporate imagery.`;
 
   const edited = await editPhotoWithDallE({ photoPath, prompt, size: '1536x1024' });
-  if (!edited?.buffer) return null;
+  // If the model edit produced unusable bytes (or failed), fall back to the real photo
+  // so compositing still produces an on-brand graphic instead of aborting the reshare.
+  const photoBuffer = edited?.buffer || fs.readFileSync(photoPath);
+  if (!edited?.buffer) {
+    console.warn(
+      '[reshare-journal] Using original photo for compositing — DALL-E edit missing or returned non-raster bytes'
+    );
+  }
 
   const { generateReshareCardImage } = await import('../../../lib/ao/generateReshareCardImage.js');
-  const composited = await generateReshareCardImage({ photoBuffer: edited.buffer, pullQuote, mood });
+  const composited = await generateReshareCardImage({ photoBuffer, pullQuote, mood });
   if (!composited?.ok || !composited.buffer) {
     console.error('[reshare-journal] generateReshareCardImage failed:', composited?.error);
     return null;
