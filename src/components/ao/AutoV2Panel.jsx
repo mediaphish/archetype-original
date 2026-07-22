@@ -241,13 +241,19 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[DALLE_GENERATE[^\]]*\]/gi, '')
     .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '')
     .replace(/\[PUBLISH_JOURNAL[^\]]*\]/gi, '')
-    .replace(/\[UPDATE_SCHEDULED_CAPTIONS[\s\S]*?\[\/UPDATE_SCHEDULED_CAPTIONS\]/gi, '')
+    // Caption-update signal: strip markers only — Bart still needs to read the captions.
     .replace(/\[UPDATE_SCHEDULED_CAPTIONS[^\]]*\]/gi, '')
     .replace(/\[\/UPDATE_SCHEDULED_CAPTIONS\]/gi, '')
-    .replace(/\[JOURNAL_CONTENT\][\s\S]*?\[\/JOURNAL_CONTENT\]/gi, '')
+    // Draft bodies: strip bracket tags only. Never delete the content between them —
+    // that is the journal/devotional text Bart must see and approve in-chat.
+    .replace(/\[JOURNAL_CONTENT\]/gi, '')
+    .replace(/\[\/JOURNAL_CONTENT\]/gi, '')
     .replace(/\[PUBLISH_DEVOTIONAL[^\]]*\]/gi, '')
-    .replace(/\[DEVOTIONAL_CONTENT\][\s\S]*?\[\/DEVOTIONAL_CONTENT\]/gi, '')
+    .replace(/\[DEVOTIONAL_CONTENT\]/gi, '')
+    .replace(/\[\/DEVOTIONAL_CONTENT\]/gi, '')
     .replace(/\[EPISODE_PROCESS[^\]]*\]/gi, '')
+    // Episode transcript is surfaced in the episode draft panel from raw message.content —
+    // keep it out of the chat bubble to avoid a huge duplicate dump.
     .replace(/\[EPISODE_TRANSCRIPT\][\s\S]*?\[\/EPISODE_TRANSCRIPT\]/gi, '')
     .replace(/\[EPISODE_RESEARCH_COMPLETE[\s\S]*?\[\/EPISODE_RESEARCH_COMPLETE\]/gi, '')
     .replace(/\[RESEARCH_CONTEXT\][\s\S]*?\[\/RESEARCH_CONTEXT\]/gi, '')
@@ -310,9 +316,11 @@ function downloadTranscriptAsMd(messages, threadId) {
       .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '[Image generated]')
       .replace(/\[DALLE_GENERATE[^\]]*\]/gi, '')
       .replace(/\[PUBLISH_JOURNAL[^\]]*\]/gi, '[Journal publish signal]')
-      .replace(/\[JOURNAL_CONTENT\][\s\S]*?\[\/JOURNAL_CONTENT\]/gi, '')
+      .replace(/\[JOURNAL_CONTENT\]/gi, '')
+      .replace(/\[\/JOURNAL_CONTENT\]/gi, '')
       .replace(/\[PUBLISH_DEVOTIONAL[^\]]*\]/gi, '[Devotional publish signal]')
-      .replace(/\[DEVOTIONAL_CONTENT\][\s\S]*?\[\/DEVOTIONAL_CONTENT\]/gi, '')
+      .replace(/\[DEVOTIONAL_CONTENT\]/gi, '')
+      .replace(/\[\/DEVOTIONAL_CONTENT\]/gi, '')
       .replace(/\[EPISODE_PROCESS[^\]]*\]/gi, '')
       .replace(/\[EPISODE_TRANSCRIPT\][\s\S]*?\[\/EPISODE_TRANSCRIPT\]/gi, '')
       .trim();
