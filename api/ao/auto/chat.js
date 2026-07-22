@@ -578,7 +578,7 @@ Return markdown only: a # title line, then the full post body.`,
             .eq('id', opportunityId);
 
           if (draftedPost) {
-            fullReply = `${fullReply}\n\n[OPPORTUNITY_DRAFT id="${opportunityId}"]\n${draftedPost}\n[/OPPORTUNITY_DRAFT]\n\nHere's the full companion post — writing only, no captions yet. Approve it, edit it, or tell me what to change. Once the writing is locked, I'll build the branded header image (same photo + pull-quote + logo treatment as reshare), then captions from the finished post.`.trim();
+            fullReply = `${fullReply}\n\n[JOURNAL_CONTENT]\n${draftedPost}\n[/JOURNAL_CONTENT]\n\nHere's the full companion post (opportunity id: ${opportunityId}) — writing only, no captions yet. Approve it, edit it, or tell me what to change. Once the writing is locked, I'll build the branded header image (same photo + pull-quote + logo treatment as reshare), then captions from the finished post.`.trim();
           } else {
             fullReply = `${fullReply}\n\n[Could not draft the companion post — empty model response. Opportunity marked in studio; try again.]`.trim();
           }
@@ -591,35 +591,47 @@ Return markdown only: a # title line, then the full post body.`,
       }
     }
 
-    // Opportunity branded header image — only after the companion post body is approved.
-    const opportunityImageMatch = fullReply.match(
-      /\[OPPORTUNITY_GENERATE_IMAGE\s+id="([^"]+)"(?:\s+pull_quote="([^"]*)")?\]/i
-    );
+    // Branded header image for an active companion/journal draft.
+    // id is optional — image is built from tagged [JOURNAL_CONTENT] / [OPPORTUNITY_DRAFT] in the thread.
+    const opportunityImageMatch = fullReply.match(/\[OPPORTUNITY_GENERATE_IMAGE([^\]]*)\]/i);
     if (opportunityImageMatch) {
-      const [, opportunityId, pullQuoteAttr] = opportunityImageMatch;
+      const attrBlob = opportunityImageMatch[1] || '';
+      const idMatch = attrBlob.match(/\bid="([^"]*)"/i);
+      const pullQuoteMatch = attrBlob.match(/\bpull_quote="([^"]*)"/i);
+      const opportunityId = (idMatch?.[1] || '').trim();
+      const pullQuoteAttr = pullQuoteMatch?.[1] || '';
       try {
         fullReply = fullReply.replace(/\[\/?OPPORTUNITY_GENERATE_IMAGE[^\]]*\]/gi, '').trim();
 
-        const { data: opportunity } = await supabaseAdmin
-          .from('ao_opportunities')
-          .select('*')
-          .eq('id', opportunityId)
-          .maybeSingle();
+        // Opportunity row is optional context only — never required to generate the image.
+        let opportunity = null;
+        const looksLikeUuid =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            opportunityId
+          );
+        if (looksLikeUuid) {
+          const { data: oppRow } = await supabaseAdmin
+            .from('ao_opportunities')
+            .select('*')
+            .eq('id', opportunityId)
+            .maybeSingle();
+          opportunity = oppRow || null;
+        }
 
-        // Prefer post body from this reply's OPPORTUNITY_DRAFT / JOURNAL_CONTENT, else prior assistant text.
+        // Prefer post body from this reply's JOURNAL_CONTENT / OPPORTUNITY_DRAFT, else prior assistant text.
         let postBody = '';
         let postTitle = opportunity?.title || 'Companion post';
-        const draftInReply = fullReply.match(/\[OPPORTUNITY_DRAFT[^\]]*\]([\s\S]*?)\[\/OPPORTUNITY_DRAFT\]/i);
         const journalInReply = fullReply.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
-        if (draftInReply) postBody = draftInReply[1].trim();
-        else if (journalInReply) postBody = journalInReply[1].trim();
+        const draftInReply = fullReply.match(/\[OPPORTUNITY_DRAFT[^\]]*\]([\s\S]*?)\[\/OPPORTUNITY_DRAFT\]/i);
+        if (journalInReply) postBody = journalInReply[1].trim();
+        else if (draftInReply) postBody = draftInReply[1].trim();
 
         if (!postBody && Array.isArray(priorMessages)) {
           for (let i = priorMessages.length - 1; i >= 0; i--) {
             const c = String(priorMessages[i]?.content || '');
             const m =
-              c.match(/\[OPPORTUNITY_DRAFT[^\]]*\]([\s\S]*?)\[\/OPPORTUNITY_DRAFT\]/i) ||
-              c.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
+              c.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i) ||
+              c.match(/\[OPPORTUNITY_DRAFT[^\]]*\]([\s\S]*?)\[\/OPPORTUNITY_DRAFT\]/i);
             if (m) {
               postBody = m[1].trim();
               break;
@@ -627,23 +639,38 @@ Return markdown only: a # title line, then the full post body.`,
           }
         }
 
-        const titleMatch = postBody.match(/^#\s+(.+)$/m);
-        if (titleMatch) postTitle = titleMatch[1].trim();
+        // Strip accidental nested wrappers so pull-quote extraction sees real prose.
+        if (postBody) {
+          postBody = postBody
+            .replace(/\[JOURNAL_CONTENT\]/gi, '')
+            .replace(/\[\/JOURNAL_CONTENT\]/gi, '')
+            .replace(/\[OPPORTUNITY_DRAFT[^\]]*\]/gi, '')
+            .replace(/\[\/OPPORTUNITY_DRAFT\]/gi, '')
+            .trim();
+        }
 
-        const imageResult = await generateBrandedOpportunityImage({
-          title: postTitle,
-          body: postBody,
-          pullQuote: pullQuoteAttr || '',
-        });
-
-        if (!imageResult.ok) {
-          fullReply = `${fullReply}\n\n[Could not generate branded opportunity image: ${imageResult.error}]`.trim();
+        if (!postBody) {
+          fullReply = `${fullReply}\n\n[Could not generate branded opportunity image: no tagged post found in this thread. Re-present the draft wrapped in [JOURNAL_CONTENT]...[/JOURNAL_CONTENT], then ask for the image again. Do not re-run reshare.]`.trim();
         } else {
-          if (imageResult.image_url && String(imageResult.image_url).startsWith('https://')) {
-            reshareMeta.reshare_image_url = imageResult.image_url;
-            reshareMeta.opportunity_image_url = imageResult.image_url;
+          const titleMatch = postBody.match(/^#\s+(.+)$/m) || postBody.match(/^##\s+(.+)$/m);
+          if (titleMatch) postTitle = titleMatch[1].trim();
+
+          const imageResult = await generateBrandedOpportunityImage({
+            title: postTitle,
+            body: postBody,
+            pullQuote: pullQuoteAttr || '',
+          });
+
+          if (!imageResult.ok) {
+            fullReply = `${fullReply}\n\n[Could not generate branded opportunity image: ${imageResult.error}]`.trim();
+          } else {
+            if (imageResult.image_url && String(imageResult.image_url).startsWith('https://')) {
+              reshareMeta.reshare_image_url = imageResult.image_url;
+              reshareMeta.opportunity_image_url = imageResult.image_url;
+            }
+            const idLine = opportunityId ? ` id="${opportunityId}"` : '';
+            fullReply = `${fullReply}\n\n[OPPORTUNITY_IMAGE${idLine}]\nPull quote: "${imageResult.pull_quote}"\nMood: ${imageResult.mood || 'n/a'}\nImage: ${imageResult.image_url}\n[/OPPORTUNITY_IMAGE]\n\nHere's the branded header image (real photo + pull quote + logo — same treatment as reshare). Approve it, ask for a different photo/quote, or say what to change. Captions come only after this image is approved — derived from the finished post, not before.`.trim();
           }
-          fullReply = `${fullReply}\n\n[OPPORTUNITY_IMAGE id="${opportunityId}"]\nPull quote: "${imageResult.pull_quote}"\nMood: ${imageResult.mood || 'n/a'}\nImage: ${imageResult.image_url}\n[/OPPORTUNITY_IMAGE]\n\nHere's the branded header image (real photo + pull quote + logo — same treatment as reshare). Approve it, ask for a different photo/quote, or say what to change. Captions come only after this image is approved — derived from the finished post, not before.`.trim();
         }
       } catch (err) {
         const rawMessage = err?.message || err || 'unknown error';
