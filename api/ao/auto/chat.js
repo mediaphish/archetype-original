@@ -18,6 +18,7 @@ import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { runReshareCycle } from './reshare-journal.js';
+import { approveOrDiscardReshare } from './reshare-review.js';
 import Anthropic from '@anthropic-ai/sdk';
 
 /**
@@ -507,7 +508,7 @@ export default async function handler(req, res) {
             .map(([platform, text]) => `**${platform}:**\n${text}`)
             .join('\n\n');
           fullReply =
-            `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}${reshareResult.image_url ? `Image: ${reshareResult.image_url}\n` : ''}\n${captionBlock}\n\nThis is pending your review in Settings — nothing is scheduled yet. You can ask me to rewrite any caption right here in chat, or ask for a different photo if this one doesn't fit.\n[/RESHARE_RESULT]`.trim();
+            `${fullReply}\n\n[RESHARE_RESULT]\nSelected: ${reshareResult.title} (${reshareResult.journal_url})\nReason: ${reshareResult.selection_reason}\n${reshareResult.pull_quote ? `Pull quote: "${reshareResult.pull_quote}"\n` : ''}${reshareResult.photo ? `Photo used: ${reshareResult.photo}\n` : ''}${reshareResult.image_url ? `Image: ${reshareResult.image_url}\n` : ''}\n${captionBlock}\n\nThis is pending review — say the word and I'll schedule it, ask for a caption rewrite, ask for a different photo, or say discard and I'll drop it. No trip to Settings needed unless you want one.\n[/RESHARE_RESULT]`.trim();
         } else if (reshareResult.ok && reshareResult.message) {
           fullReply = `${fullReply}\n\n${reshareResult.message}`.trim();
         } else {
@@ -572,6 +573,29 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error('[chat.js] RESHARE_EDIT handler error:', err?.message || err);
         fullReply = `${fullReply.replace(/\[\/?RESHARE_EDIT[^\]]*\]/gi, '').trim()}\n\n[Could not update that caption: ${err?.message || 'unknown error'}]`.trim();
+      }
+    }
+
+    // Reshare approve/discard — same logic as the Settings page buttons, called in-process.
+    const reshareDecisionMatch = fullReply.match(/\[RESHARE_(APPROVE|DISCARD)\s+slug="([^"]+)"\]/i);
+    if (reshareDecisionMatch) {
+      const [, actionRaw, slug] = reshareDecisionMatch;
+      const action = actionRaw.toLowerCase();
+      try {
+        const result = await approveOrDiscardReshare(action, slug);
+        fullReply = fullReply.replace(/\[\/?RESHARE_(APPROVE|DISCARD)[^\]]*\]/gi, '').trim();
+
+        if (result.ok) {
+          fullReply = `${fullReply}\n\n${result.message}`.trim();
+        } else {
+          fullReply = `${fullReply}\n\n[Could not ${action} that reshare: ${result.error}]`.trim();
+          console.error(`[chat.js] RESHARE_${actionRaw} failed:`, result.error);
+        }
+      } catch (err) {
+        const rawMessage = err?.message || err || 'unknown error';
+        const safeMessage = typeof rawMessage === 'string' ? rawMessage : JSON.stringify(rawMessage);
+        fullReply = `${fullReply.replace(/\[\/?RESHARE_(APPROVE|DISCARD)[^\]]*\]/gi, '').trim()}\n\n[Could not ${action} that reshare: ${safeMessage}]`.trim();
+        console.error('[chat.js] RESHARE_APPROVE/DISCARD handler error:', err?.message || err);
       }
     }
 

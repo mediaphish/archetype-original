@@ -100,6 +100,129 @@ async function findBestReshareDay() {
   return tomorrow;
 }
 
+/**
+ * Approves or discards a pending reshare for a given slug — the exact same logic the Settings
+ * page's Approve/Discard buttons use, exposed as a plain function so the Auto chat trigger can
+ * call it in-process (no HTTP self-fetch, ever — same rule as the rest of the reshare rebuild).
+ *
+ * @param {'approve'|'discard'} action
+ * @param {string} slug
+ * @returns {Promise<{ok: boolean, [key: string]: any}>}
+ */
+export async function approveOrDiscardReshare(action, slug) {
+  if (action !== 'approve' && action !== 'discard') {
+    return { ok: false, error: 'action must be approve or discard' };
+  }
+
+  const safeSlug = String(slug || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  if (!safeSlug) {
+    return { ok: false, error: 'A valid slug is required' };
+  }
+
+  try {
+    const { data: pendingRows, error: fetchError } = await supabaseAdmin
+      .from('ao_scheduled_posts')
+      .select('id, platform, caption, image_url, intent')
+      .eq('status', 'pending_review')
+      .eq('source_kind', 'ao_journal_reshare')
+      .filter('intent->>slug', 'eq', safeSlug);
+
+    if (fetchError) {
+      return { ok: false, error: fetchError.message };
+    }
+
+    if (!pendingRows || pendingRows.length === 0) {
+      return { ok: false, error: `No pending reshare found for slug: ${safeSlug}` };
+    }
+
+    const ids = pendingRows.map((r) => r.id);
+
+    if (action === 'discard') {
+      const { error: deleteError } = await supabaseAdmin
+        .from('ao_scheduled_posts')
+        .delete()
+        .in('id', ids);
+
+      if (deleteError) {
+        return { ok: false, error: deleteError.message };
+      }
+
+      const { data: queueEntry } = await supabaseAdmin
+        .from('ao_reshare_queue')
+        .select('reshare_count')
+        .eq('slug', safeSlug)
+        .single();
+
+      await supabaseAdmin
+        .from('ao_reshare_queue')
+        .update({
+          reshare_count: Math.max(0, (queueEntry?.reshare_count || 1) - 1),
+          last_reshared_at: null,
+          pending_review_ids: [],
+          updated_at: new Date().toISOString(),
+        })
+        .eq('slug', safeSlug);
+
+      return {
+        ok: true,
+        action: 'discard',
+        slug: safeSlug,
+        deleted: ids.length,
+        message: `Reshare discarded. ${ids.length} pending posts removed.`,
+      };
+    }
+
+    // action === 'approve'
+    const scheduleDay = await findBestReshareDay();
+
+    const updates = [];
+    for (const row of pendingRows) {
+      const scheduledAt = await toScheduledAt(scheduleDay, row.platform);
+      updates.push(
+        supabaseAdmin
+          .from('ao_scheduled_posts')
+          .update({
+            status: 'scheduled',
+            scheduled_at: scheduledAt,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', row.id)
+      );
+    }
+
+    await Promise.all(updates);
+
+    await supabaseAdmin
+      .from('ao_reshare_queue')
+      .update({
+        pending_review_ids: [],
+        updated_at: new Date().toISOString(),
+      })
+      .eq('slug', safeSlug);
+
+    const scheduleDate = scheduleDay.toISOString().split('T')[0];
+    console.log(`[reshare-review] Approved reshare for ${safeSlug} — scheduled for ${scheduleDate}`);
+
+    return {
+      ok: true,
+      action: 'approve',
+      slug: safeSlug,
+      schedule_date: scheduleDate,
+      approved: ids.length,
+      message: `${ids.length} posts scheduled for ${scheduleDate}.`,
+    };
+  } catch (err) {
+    console.error('[reshare-review] approveOrDiscardReshare unhandled exception:', err?.message || err, err?.stack);
+    return { ok: false, error: err?.message || 'Approve/discard failed with an unhandled error' };
+  }
+}
+
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
   if (!auth) return;
@@ -155,108 +278,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'action must be approve or discard' });
     }
 
-    const safeSlug = String(slug)
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9-]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+    const result = await approveOrDiscardReshare(action, slug);
 
-    const { data: pendingRows, error: fetchError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
-      .select('id, platform, caption, image_url, intent')
-      .eq('status', 'pending_review')
-      .eq('source_kind', 'ao_journal_reshare')
-      .filter('intent->>slug', 'eq', safeSlug);
-
-    if (fetchError) {
-      return res.status(500).json({ ok: false, error: fetchError.message });
+    if (!result.ok) {
+      const status = /no pending reshare found/i.test(result.error || '') ? 404 : 500;
+      return res.status(status).json(result);
     }
 
-    if (!pendingRows || pendingRows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: `No pending reshare found for slug: ${safeSlug}`,
-      });
-    }
-
-    const ids = pendingRows.map((r) => r.id);
-
-    if (action === 'discard') {
-      const { error: deleteError } = await supabaseAdmin
-        .from('ao_scheduled_posts')
-        .delete()
-        .in('id', ids);
-
-      if (deleteError) {
-        return res.status(500).json({ ok: false, error: deleteError.message });
-      }
-
-      const { data: queueEntry } = await supabaseAdmin
-        .from('ao_reshare_queue')
-        .select('reshare_count')
-        .eq('slug', safeSlug)
-        .single();
-
-      await supabaseAdmin
-        .from('ao_reshare_queue')
-        .update({
-          reshare_count: Math.max(0, (queueEntry?.reshare_count || 1) - 1),
-          last_reshared_at: null,
-          pending_review_ids: [],
-          updated_at: new Date().toISOString(),
-        })
-        .eq('slug', safeSlug);
-
-      return res.status(200).json({
-        ok: true,
-        action: 'discard',
-        slug: safeSlug,
-        deleted: ids.length,
-        message: `Reshare discarded. ${ids.length} pending posts removed.`,
-      });
-    }
-
-    if (action === 'approve') {
-      const scheduleDay = await findBestReshareDay();
-
-      const updates = [];
-      for (const row of pendingRows) {
-        const scheduledAt = await toScheduledAt(scheduleDay, row.platform);
-        updates.push(
-          supabaseAdmin
-            .from('ao_scheduled_posts')
-            .update({
-              status: 'scheduled',
-              scheduled_at: scheduledAt,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', row.id)
-        );
-      }
-
-      await Promise.all(updates);
-
-      await supabaseAdmin
-        .from('ao_reshare_queue')
-        .update({
-          pending_review_ids: [],
-          updated_at: new Date().toISOString(),
-        })
-        .eq('slug', safeSlug);
-
-      const scheduleDate = scheduleDay.toISOString().split('T')[0];
-      console.log(`[reshare-review] Approved reshare for ${safeSlug} — scheduled for ${scheduleDate}`);
-
-      return res.status(200).json({
-        ok: true,
-        action: 'approve',
-        slug: safeSlug,
-        schedule_date: scheduleDate,
-        approved: ids.length,
-        message: `${ids.length} posts scheduled for ${scheduleDate}.`,
-      });
-    }
+    return res.status(200).json(result);
   }
 
   return res.status(405).json({ ok: false, error: 'Method not allowed' });
