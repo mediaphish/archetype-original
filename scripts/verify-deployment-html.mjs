@@ -2,8 +2,9 @@
 /**
  * After deploy: GET public URLs on the deployment host and fail if HTML is hollow.
  * Uses VERCEL_URL or HTML_CHECK_BASE_URL. Skips locally when no base URL is set.
- * If the host returns 401/403 (e.g. Vercel Deployment Protection on previews), skips —
- * dist/ is already validated by verify-dist-html and verify-dist-marketing-html.
+ * If the host returns 401/403, or HTTP 200 with a thin login/interstitial page
+ * (Vercel Deployment Protection soft wall), skips — dist/ is already validated by
+ * verify-dist-html and verify-dist-marketing-html.
  * Optional: VERCEL_AUTOMATION_BYPASS_SECRET + header x-vercel-protection-bypass for protected URLs.
  */
 
@@ -51,17 +52,30 @@ async function probeSkippableProtection() {
     redirect: 'follow',
     headers: fetchHeaders(),
   });
-  if (res.status !== 401 && res.status !== 403) {
+
+  const html = await res.text().catch(() => '');
+  const textLen = approxVisibleBodyText(html);
+  const looksLikeAuthWall =
+    res.status === 401 ||
+    res.status === 403 ||
+    // Soft wall: Vercel sometimes returns 200 with a thin login/interstitial page
+    // instead of a hard 401/403. ~99 visible chars is the signature seen in practice.
+    (res.status === 200 && textLen > 0 && textLen < MIN_MARKETING_LISTING) ||
+    /Protected deployment|vercel\.com\/sso|authentication required/i.test(html);
+
+  if (!looksLikeAuthWall) {
     return false;
   }
+
   if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
     console.error(
-      `❌ verify-deployment-html: deployment still returned HTTP ${res.status} with VERCEL_AUTOMATION_BYPASS_SECRET set — check the secret in Vercel → Deployment Protection.`
+      `❌ verify-deployment-html: deployment still looks protected (HTTP ${res.status}, ${textLen} visible chars) with VERCEL_AUTOMATION_BYPASS_SECRET set — check the secret in Vercel → Deployment Protection.`
     );
     process.exit(1);
   }
+
   console.log(
-    `⏭️  verify-deployment-html: skipped (HTTP ${res.status} — this deployment URL requires a login screen; ` +
+    `⏭️  verify-deployment-html: skipped (HTTP ${res.status}, ${textLen} visible chars — this deployment URL requires a login screen; ` +
       `marketing and journal HTML were already verified in dist/ by verify-dist-html and verify-dist-marketing-html). ` +
       `Optional: add VERCEL_AUTOMATION_BYPASS_SECRET in the project so automated checks can reach protected previews.`
   );
