@@ -134,35 +134,45 @@ export default async function handler(req, res) {
 
     const journalUrl = `https://www.archetypeoriginal.com/journal/${safeSlug}`;
 
-    (async () => {
-      try {
-        const titleMatch = updatedContent.match(/^title:\s*["']?(.+?)["']?\s*$/m);
-        const summaryMatch = updatedContent.match(/^summary:\s*>-?\s*\n([\s\S]*?)(?=\n\w|\n---)/m);
-        const title = titleMatch ? titleMatch[1].trim() : safeSlug;
-        const summary = summaryMatch ? summaryMatch[1].replace(/\n\s+/g, ' ').trim() : '';
+    // Re-embed BEFORE responding — fire-and-forget was cut off on Vercel teardown
+    // (same bug as publish-journal). Failed embed must not fail the edit response.
+    let embedOk = false;
+    let embedError = null;
+    try {
+      const titleMatch = updatedContent.match(/^title:\s*["']?(.+?)["']?\s*$/m);
+      const summaryMatch = updatedContent.match(/^summary:\s*>-?\s*\n([\s\S]*?)(?=\n\w|\n---)/m);
+      const title = titleMatch ? titleMatch[1].trim() : safeSlug;
+      const summary = summaryMatch ? summaryMatch[1].replace(/\n\s+/g, ' ').trim() : '';
 
-        const bodyMatch = updatedContent.match(/^---[\s\S]*?---\s*([\s\S]*)$/m);
-        const body = bodyMatch ? bodyMatch[1].trim() : updatedContent;
+      const bodyMatch = updatedContent.match(/^---[\s\S]*?---\s*([\s\S]*)$/m);
+      const body = bodyMatch ? bodyMatch[1].trim() : updatedContent;
 
-        await embedAndStoreDocument({
-          slug: safeSlug,
-          title,
-          type: 'journal-post',
-          categories: [],
-          summary,
-          body,
-        });
+      embedOk = await embedAndStoreDocument({
+        slug: safeSlug,
+        title,
+        type: 'journal-post',
+        categories: [],
+        summary,
+        body,
+      });
+      if (embedOk) {
         console.log(`[edit-published] Vector embedding updated for: ${safeSlug}`);
-      } catch (embedErr) {
-        console.error('[edit-published] Re-embedding failed (non-blocking):', embedErr?.message);
+      } else {
+        embedError = 'embedAndStoreDocument returned false';
+        console.error(`[edit-published] Vector embedding returned false for: ${safeSlug}`);
       }
-    })();
+    } catch (embedErr) {
+      embedError = embedErr?.message || String(embedErr);
+      console.error('[edit-published] Re-embedding failed:', embedError);
+    }
 
     return res.status(200).json({
       ok: true,
       slug: safeSlug,
       commit_sha: result.commitSha,
       journal_url: journalUrl,
+      embedded_in_corpus: embedOk,
+      corpus_embed_error: embedError,
       message: `Edit committed. Vercel will deploy in ~60 seconds. The change is live at ${journalUrl}`,
     });
   } catch (err) {

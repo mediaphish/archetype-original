@@ -532,77 +532,99 @@ export default async function handler(req, res) {
       captionsError = captionErr?.message || 'Caption scheduling error';
     }
 
-    // Trigger immediate editorial memory rebuild so the new post is available
-    // to Auto in the next session without waiting for the weekly cron.
-    // Fire-and-forget — never blocks the publish response.
-    (async () => {
-      try {
-        const ownerEmail = String(process.env.AO_OWNER_EMAIL || '').toLowerCase().trim();
-        if (ownerEmail) {
-          const { rebuildEditorialMemory } = await import('../../../lib/ao/editorialMemory.js');
-          const result = await rebuildEditorialMemory({ email: ownerEmail });
-          console.log(`[publish-journal] Editorial memory rebuilt after publish: ${result.corpusInserted} corpus docs, ${result.socialInserted} social posts`);
-        }
-      } catch (rebuildErr) {
-        console.error('[publish-journal] Editorial memory rebuild failed (non-blocking):', rebuildErr?.message || rebuildErr);
-      }
-    })();
-
-    // Embed the new journal entry into the vector corpus immediately after publish.
-    // This makes the document available for semantic search in the next Auto session
-    // without waiting for a manual re-seed. Fire-and-forget — never blocks publish.
-    (async () => {
-      try {
-        const { embedAndStoreDocument } = await import('../../../lib/ao/corpusEmbeddings.js');
-        await embedAndStoreDocument({
-          slug: safeSlug,
-          title,
-          type: 'journal-post',
-          categories: categories || [],
-          summary,
-          body: content,
-        });
+    // Embed into the vector corpus BEFORE responding.
+    // Same class of bug as chat.js fire-and-forget: on Vercel, once the response
+    // is sent the function can be frozen/torn down and an un-awaited embed never
+    // finishes — published files then silently missing from Auto's library.
+    // A failed embed must NOT fail the publish (GitHub commit already succeeded).
+    let embedOk = false;
+    let embedError = null;
+    try {
+      const { embedAndStoreDocument } = await import('../../../lib/ao/corpusEmbeddings.js');
+      embedOk = await embedAndStoreDocument({
+        slug: safeSlug,
+        title,
+        type: 'journal-post',
+        categories: categories || [],
+        summary,
+        body: content,
+      });
+      if (embedOk) {
         console.log(`[publish-journal] Vector embedding stored for: ${safeSlug}`);
-      } catch (embedErr) {
-        console.error('[publish-journal] Vector embedding failed (non-blocking):', embedErr?.message || embedErr);
+      } else {
+        embedError = 'embedAndStoreDocument returned false';
+        console.error(`[publish-journal] Vector embedding returned false for: ${safeSlug}`);
       }
-    })();
+    } catch (embedErr) {
+      embedError = embedErr?.message || String(embedErr);
+      console.error('[publish-journal] Vector embedding failed:', embedError);
+    }
+
+    // Rebuild editorial memory before responding so Auto's next turn sees this
+    // post without waiting on the weekly cron. Same Vercel teardown risk as embed.
+    // Failure is surfaced but never blocks the publish response.
+    let editorialMemoryOk = false;
+    let editorialMemoryError = null;
+    try {
+      const ownerEmail = String(process.env.AO_OWNER_EMAIL || '').toLowerCase().trim();
+      if (ownerEmail) {
+        const { rebuildEditorialMemory } = await import('../../../lib/ao/editorialMemory.js');
+        const memResult = await rebuildEditorialMemory({ email: ownerEmail });
+        editorialMemoryOk = true;
+        console.log(
+          `[publish-journal] Editorial memory rebuilt after publish: ${memResult.corpusInserted} corpus docs, ${memResult.socialInserted} social posts`
+        );
+      } else {
+        editorialMemoryError = 'AO_OWNER_EMAIL not set — skipped rebuild';
+        console.warn(`[publish-journal] ${editorialMemoryError}`);
+      }
+    } catch (rebuildErr) {
+      editorialMemoryError = rebuildErr?.message || String(rebuildErr);
+      console.error('[publish-journal] Editorial memory rebuild failed:', editorialMemoryError);
+    }
 
     // Mark the matching draft as published so it drops out of Auto's
-    // "approved drafts pending publish" context. Match on series_slug +
-    // part_number (the draft's real identity); fall back to slug only when
-    // series identity isn't available. Fire-and-forget — never blocks the response.
-    (async () => {
-      try {
-        let query = supabaseAdmin
-          .from('ao_content_drafts')
-          .update({ status: 'published', updated_at: new Date().toISOString() })
-          .eq('kind', 'journal')
-          .neq('status', 'published');
+    // "approved drafts pending publish" context. Awaited for the same reason —
+    // fire-and-forget was getting cut off and drafts stayed stuck as pending.
+    let draftMarkedPublished = false;
+    let draftMarkError = null;
+    try {
+      let query = supabaseAdmin
+        .from('ao_content_drafts')
+        .update({ status: 'published', updated_at: new Date().toISOString() })
+        .eq('kind', 'journal')
+        .neq('status', 'published');
 
-        if (seriesSlug && partNumber) {
-          query = query.eq('series_slug', seriesSlug).eq('part_number', partNumber);
-        } else {
-          query = query.eq('slug', safeSlug);
-        }
-
-        const { data: updatedRows, error: draftUpdateError } = await query.select('id');
-
-        if (draftUpdateError) {
-          console.error('[publish-journal] Failed to mark draft as published:', draftUpdateError.message);
-        } else if (!updatedRows || updatedRows.length === 0) {
-          console.warn(
-            `[publish-journal] Post-publish draft-status update matched 0 rows for slug="${safeSlug}" series_slug="${seriesSlug || 'n/a'}" part_number="${partNumber || 'n/a'}" — draft may show as stuck pending in Auto's context.`
-          );
-        } else {
-          console.log(
-            `[publish-journal] Draft marked published (${updatedRows.length} row(s)) for slug="${safeSlug}" series_slug="${seriesSlug}" part_number="${partNumber}"`
-          );
-        }
-      } catch (err) {
-        console.error('[publish-journal] Unexpected error marking draft published:', err?.message || err);
+      if (seriesSlug && partNumber) {
+        query = query.eq('series_slug', seriesSlug).eq('part_number', partNumber);
+      } else {
+        query = query.eq('slug', safeSlug);
       }
-    })();
+
+      const { data: updatedRows, error: draftUpdateError } = await query.select('id');
+
+      if (draftUpdateError) {
+        draftMarkError = draftUpdateError.message;
+        console.error('[publish-journal] Failed to mark draft as published:', draftUpdateError.message);
+      } else if (!updatedRows || updatedRows.length === 0) {
+        draftMarkError = `matched 0 rows for slug="${safeSlug}" series_slug="${seriesSlug || 'n/a'}" part_number="${partNumber || 'n/a'}"`;
+        console.warn(
+          `[publish-journal] Post-publish draft-status update ${draftMarkError} — draft may show as stuck pending in Auto's context.`
+        );
+      } else {
+        draftMarkedPublished = true;
+        console.log(
+          `[publish-journal] Draft marked published (${updatedRows.length} row(s)) for slug="${safeSlug}" series_slug="${seriesSlug}" part_number="${partNumber}"`
+        );
+      }
+    } catch (err) {
+      draftMarkError = err?.message || String(err);
+      console.error('[publish-journal] Unexpected error marking draft published:', draftMarkError);
+    }
+
+    // Instagram bio + delayed Resend notify stay fire-and-forget intentionally:
+    // they are external side effects with their own retries/delays and are not
+    // required for Auto's corpus awareness. Do not await them here.
 
     return res.status(200).json({
       ok: true,
@@ -614,6 +636,12 @@ export default async function handler(req, res) {
       notify_delay_ms: notify ? notify_delay_ms : 0,
       captions_scheduled: captionsScheduled,
       captions_error: captionsError || null,
+      embedded_in_corpus: embedOk,
+      corpus_embed_error: embedError,
+      editorial_memory_rebuilt: editorialMemoryOk,
+      editorial_memory_error: editorialMemoryError,
+      draft_marked_published: draftMarkedPublished,
+      draft_mark_error: draftMarkError,
       message: existingSha
         ? `Entry updated. Vercel will deploy in ~60 seconds. URL: ${journalUrl}`
         : `Entry published. Vercel will deploy in ~60 seconds. URL: ${journalUrl}`,

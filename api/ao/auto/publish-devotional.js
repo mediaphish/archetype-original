@@ -129,45 +129,56 @@ summary: "${summary.replace(/"/g, '\\"')}"
 
     const devotionalUrl = `https://www.archetypeoriginal.com/faith/${safeSlug}`;
 
-    // Embed the new devotional into the vector corpus immediately after publish.
-    // Makes it available for semantic search in the next Auto session without
-    // waiting for a manual re-seed. Fire-and-forget — never blocks publish.
-    (async () => {
-      try {
-        const { embedAndStoreDocument } = await import('../../../lib/ao/corpusEmbeddings.js');
-        await embedAndStoreDocument({
-          slug: safeSlug,
-          title,
-          type: 'devotional',
-          categories: ['servant-leadership', 'devotional', 'faith'],
-          summary,
-          body: content,
-        });
+    // Embed BEFORE responding — fire-and-forget was getting cut off on Vercel
+    // teardown (same bug as publish-journal). Failed embed must not fail publish.
+    let embedOk = false;
+    let embedError = null;
+    try {
+      const { embedAndStoreDocument } = await import('../../../lib/ao/corpusEmbeddings.js');
+      embedOk = await embedAndStoreDocument({
+        slug: safeSlug,
+        title,
+        type: 'devotional',
+        categories: ['servant-leadership', 'devotional', 'faith'],
+        summary,
+        body: content,
+      });
+      if (embedOk) {
         console.log(`[publish-devotional] Vector embedding stored for: ${safeSlug}`);
-      } catch (embedErr) {
-        console.error('[publish-devotional] Vector embedding failed (non-blocking):', embedErr?.message || embedErr);
+      } else {
+        embedError = 'embedAndStoreDocument returned false';
+        console.error(`[publish-devotional] Vector embedding returned false for: ${safeSlug}`);
       }
-    })();
+    } catch (embedErr) {
+      embedError = embedErr?.message || String(embedErr);
+      console.error('[publish-devotional] Vector embedding failed:', embedError);
+    }
 
-    // Mark the matching draft as published so it drops out of the Library
-    // Drafts tab. Fire-and-forget — never blocks the publish response.
-    (async () => {
-      try {
-        const { error: draftUpdateError } = await supabaseAdmin
-          .from('ao_content_drafts')
-          .update({ status: 'published' })
-          .eq('slug', safeSlug)
-          .neq('status', 'published');
+    // Await draft status update — same Vercel teardown risk as embed.
+    let draftMarkedPublished = false;
+    let draftMarkError = null;
+    try {
+      const { data: updatedRows, error: draftUpdateError } = await supabaseAdmin
+        .from('ao_content_drafts')
+        .update({ status: 'published' })
+        .eq('slug', safeSlug)
+        .neq('status', 'published')
+        .select('id');
 
-        if (draftUpdateError) {
-          console.error('[publish-devotional] Draft status update failed:', draftUpdateError.message);
-        } else {
-          console.log(`[publish-devotional] Draft marked published for: ${safeSlug}`);
-        }
-      } catch (draftErr) {
-        console.error('[publish-devotional] Draft status update threw (non-blocking):', draftErr?.message || draftErr);
+      if (draftUpdateError) {
+        draftMarkError = draftUpdateError.message;
+        console.error('[publish-devotional] Draft status update failed:', draftUpdateError.message);
+      } else if (!updatedRows || updatedRows.length === 0) {
+        draftMarkError = `matched 0 rows for slug="${safeSlug}"`;
+        console.warn(`[publish-devotional] Draft status update ${draftMarkError}`);
+      } else {
+        draftMarkedPublished = true;
+        console.log(`[publish-devotional] Draft marked published for: ${safeSlug}`);
       }
-    })();
+    } catch (draftErr) {
+      draftMarkError = draftErr?.message || String(draftErr);
+      console.error('[publish-devotional] Draft status update threw:', draftMarkError);
+    }
 
     return res.status(200).json({
       ok: true,
@@ -175,6 +186,10 @@ summary: "${summary.replace(/"/g, '\\"')}"
       file_path: filePath,
       devotional_url: devotionalUrl,
       publish_date: date,
+      embedded_in_corpus: embedOk,
+      corpus_embed_error: embedError,
+      draft_marked_published: draftMarkedPublished,
+      draft_mark_error: draftMarkError,
       message: `Devotional committed. Vercel will deploy in ~60 seconds. URL: ${devotionalUrl}`,
     });
   } catch (err) {
