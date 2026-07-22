@@ -85,6 +85,7 @@
     { "src": "api/ao/auto/reshare-review.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 30, "includeFiles": ["lib/**"] } },
     { "src": "api/ao/auto/reshare-settings.js", "use": "@vercel/node", "config": { "memory": 128, "maxDuration": 10, "includeFiles": ["lib/**"] } },
     { "src": "api/ao/auto/seed-corpus.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json"] } },
+    { "src": "api/cron/ao/backfill-corpus-embeddings.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json"] } },
     { "src": "api/ao/auto/derive-content.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 60, "includeFiles": ["lib/**", "ao-knowledge-hq-kit/journal/**"] } },
     { "src": "api/ao/podcast/episode-seed.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 180, "includeFiles": ["lib/**"] } },
     { "src": "api/**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } }
@@ -142,6 +143,7 @@
     { "src": "/api/cron/ao/brief-prep", "dest": "/api/cron/ao/brief-prep.js" },
     { "src": "/api/cron/ao/corpus-pull-seed", "dest": "/api/cron/ao/corpus-pull-seed.js" },
     { "src": "/api/cron/ao/weekly-pull-quotes", "dest": "/api/cron/ao/weekly-pull-quotes.js" },
+    { "src": "/api/cron/ao/backfill-corpus-embeddings", "dest": "/api/cron/ao/backfill-corpus-embeddings.js" },
     { "src": "/api/ao/publishing/schedule-weekly-pull-bundle", "dest": "/api/ao/publishing/schedule-weekly-pull-bundle.js" },
     { "src": "/api/ao/weekly-pull-bundle-now", "dest": "/api/ao/weekly-pull-bundle-now.js" },
     { "src": "/api/cron/ao/editorial-rebuild", "dest": "/api/cron/ao/editorial-rebuild.js" },
@@ -419,6 +421,10 @@
     {
       "path": "/api/cron/ao/weekly-pull-quotes",
       "schedule": "0 14 * * 1"
+    },
+    {
+      "path": "/api/cron/ao/backfill-corpus-embeddings",
+      "schedule": "10 16 * * *"
     },
     {
       "path": "/api/cron/ao/editorial-rebuild",
