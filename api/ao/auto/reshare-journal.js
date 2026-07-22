@@ -22,7 +22,6 @@ import {
   anthropicMessagesCreateWithRetry,
   friendlyAnthropicError,
 } from '../../../lib/ao/anthropicWithRetry.js';
-import { vercelProtectionBypassHeaders } from '../../../lib/ao/vercelProtectionBypass.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -506,7 +505,6 @@ async function handleReshareRequest(req, res) {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${process.env.CRON_SECRET}`,
-          ...vercelProtectionBypassHeaders(),
         },
         body: JSON.stringify({
           slug: entry.slug,
