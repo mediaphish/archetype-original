@@ -1485,6 +1485,10 @@ The Cult of Confusion
 https://www.archetypeoriginal.com/journal/cult-of-confusion
 Narcissistic leaders use ambiguity, contradiction, and withheld information to maintain control. Servant leaders use clarity, consistency, and shared truth to build trust.
 
+The Data Caught Up
+https://www.archetypeoriginal.com/journal/the-data-caught-up
+New research confirms what Holding the Line already argued: unenforced standards don't stay neutral, they quietly become the culture.
+
 The Distraction Play
 https://www.archetypeoriginal.com/journal/the-distraction-play
 Narcissistic leaders keep teams busy with noise to avoid accountability. Servant leaders resist constant pivots and focus attention on what truly matters.
@@ -1540,6 +1544,10 @@ Narcissistic leaders rely on high performers to mask their weaknesses, using the
 The Pursuit of Power Corrupts
 https://www.archetypeoriginal.com/journal/the-pursuit-of-power-corrupts
 A reflection on how the pursuit of power can erode trust and culture, contrasting power-hungry leadership with servant-hearted leadership that carries people, not control.
+
+The Saul Archetype
+https://www.archetypeoriginal.com/journal/the-saul-archetype
+Saul was chosen, transformed, and given every advantage a leader could ask for. His fall came from what he chose to protect once he had power, not from how he started. The third entry in The Archetype Series traces the decisions that took him from anointed to unrecognizable.
 
 The Scarcity Switch
 https://www.archetypeoriginal.com/journal/the-scarcity-switch
@@ -1626,10 +1634,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 196.
+Published devotional entries: 203.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-07-15T20:48:01.484Z
+Generated at: 2026-07-22T21:30:13.150Z

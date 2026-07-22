@@ -23,11 +23,17 @@ import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 
+import fs from 'fs';
+import path from 'path';
+
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'mediaphish';
 const REPO_NAME = 'archetype-original';
 const JOURNAL_PATH = 'ao-knowledge-hq-kit/journal';
 const BRANCH = 'main';
+
+/** Always-present fallback used when publishing with image_url="none". */
+export const DEFAULT_JOURNAL_HEADER_IMAGE = 'ao-default-header.jpg';
 
 function buildFrontmatter(fields) {
   const {
@@ -53,6 +59,10 @@ function buildFrontmatter(fields) {
     ? takeaways.map((t) => `  - "${t.replace(/"/g, '\\"')}"`).join('\n')
     : '  []';
 
+  const featuredImageLine = featured_image
+    ? `featured_image: ../images/${featured_image}`
+    : 'featured_image:';
+
   return `---
 title: ${title.includes(':') ? `"${title.replace(/"/g, '\\"')}"` : title}
 slug: ${slug}
@@ -63,7 +73,7 @@ summary: >-
   ${summary.replace(/\n/g, '\n  ')}
 categories:
 ${categoriesYaml}
-featured_image: ../images/${featured_image}
+${featuredImageLine}
 takeaways:
 ${takeawaysYaml}
 applications: []
@@ -71,6 +81,29 @@ related: []
 original_source: AO Auto
 status: ${status}
 ---`;
+}
+
+/**
+ * Resolve which featured_image filename to write, given the request's image_url.
+ * Exported for direct verification of the image_url="none" / invalid paths.
+ *
+ * @returns {{ ok: true, featuredImageFilename: string, mode: 'https'|'none' } | { ok: false, error: string }}
+ */
+export function resolveJournalFeaturedImage({ image_url, safeSlug }) {
+  const slugImage = `${safeSlug}.jpg`;
+  const isExplicitNoImage = image_url === 'none';
+
+  if (image_url && String(image_url).startsWith('https://')) {
+    return { ok: true, featuredImageFilename: slugImage, mode: 'https' };
+  }
+  if (isExplicitNoImage) {
+    return { ok: true, featuredImageFilename: DEFAULT_JOURNAL_HEADER_IMAGE, mode: 'none' };
+  }
+  return {
+    ok: false,
+    error:
+      'image_url is required. Generate and approve a header image before publishing. If this is an intentional text-only update, pass image_url="none" to bypass this check.',
+  };
 }
 
 async function getFileSha(token, path) {
@@ -377,24 +410,23 @@ export default async function handler(req, res) {
 
   const filePath = `${JOURNAL_PATH}/${safeSlug}.md`;
   const imageFilename = `${safeSlug}.jpg`;
-  const frontmatter = buildFrontmatter({
-    title,
-    slug: safeSlug,
-    publish_date,
-    summary,
-    categories,
-    featured_image: imageFilename,
-    takeaways,
-    status: 'published',
-  });
 
-  const fullContent = `${frontmatter}\n\n${content.replace(/\[SOCIAL_CAPTIONS\][\s\S]*?\[\/SOCIAL_CAPTIONS\]/gi, '').trim()}\n`;
+  const imageResolution = resolveJournalFeaturedImage({ image_url, safeSlug });
+  if (!imageResolution.ok) {
+    return res.status(400).json({
+      ok: false,
+      error: imageResolution.error,
+    });
+  }
+
+  const resolvedFeaturedImage = imageResolution.featuredImageFilename;
+  let imageCommittedThisRequest = false;
 
   try {
-    // Image commit — required before MD file is committed.
-    // If image_url is provided and the commit cannot be verified, abort entirely.
+    // Image commit — required before MD file is committed (unless explicit none → fallback).
+    // If image_url is https and the commit cannot be verified, abort entirely.
     // We do not publish a broken entry. Image first, MD second.
-    if (image_url && image_url.startsWith('https://')) {
+    if (imageResolution.mode === 'https') {
       const imagePath = `public/images/${imageFilename}`;
 
       // Step 1: Download image from Supabase
@@ -454,13 +486,41 @@ export default async function handler(req, res) {
         });
       }
       console.log(`[publish-journal] Image verified in GitHub: ${imagePath} (sha: ${verifiedSha})`);
+      imageCommittedThisRequest = true;
+    } else if (imageResolution.mode === 'none') {
+      // Explicit intentional bypass — frontmatter must point at the permanent fallback
+      // that already exists in the repo, never at ${safeSlug}.jpg (which was never created).
+      console.log(
+        `[publish-journal] image_url="none" — using permanent fallback featured_image: ${resolvedFeaturedImage}`
+      );
+    }
 
-    } else if (!image_url) {
-      // No image provided — return error. Every journal entry requires a header image.
-      // If this is an intentional text-only update, pass image_url="none" to bypass.
-      return res.status(400).json({
+    const frontmatter = buildFrontmatter({
+      title,
+      slug: safeSlug,
+      publish_date,
+      summary,
+      categories,
+      featured_image: resolvedFeaturedImage,
+      takeaways,
+      status: 'published',
+    });
+
+    const fullContent = `${frontmatter}\n\n${content.replace(/\[SOCIAL_CAPTIONS\][\s\S]*?\[\/SOCIAL_CAPTIONS\]/gi, '').trim()}\n`;
+
+    // Second-layer safety: never commit markdown that references a missing image file.
+    const featuredImageRepoPath = `public/images/${resolvedFeaturedImage}`;
+    const featuredImageLocalPath = path.join(process.cwd(), 'public/images', resolvedFeaturedImage);
+    const localFeaturedExists = fs.existsSync(featuredImageLocalPath);
+    let remoteFeaturedExists = imageCommittedThisRequest;
+    if (!remoteFeaturedExists) {
+      const existingFeaturedSha = await getFileSha(token, featuredImageRepoPath);
+      remoteFeaturedExists = Boolean(existingFeaturedSha);
+    }
+    if (!localFeaturedExists && !remoteFeaturedExists) {
+      return res.status(500).json({
         ok: false,
-        error: 'image_url is required. Generate and approve a header image before publishing. If this is an intentional text-only update, pass image_url="none" to bypass this check.',
+        error: `Refusing to publish: featured_image "${resolvedFeaturedImage}" does not exist locally or in GitHub. Entry not published.`,
       });
     }
 
