@@ -18,6 +18,10 @@ import Anthropic from '@anthropic-ai/sdk';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
+import {
+  anthropicMessagesCreateWithRetry,
+  friendlyAnthropicError,
+} from '../../../lib/ao/anthropicWithRetry.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -64,12 +68,14 @@ function selectPhotoForArticle(mood) {
 async function extractPullQuote(title, body, anthropicClient, model) {
   const excerpt = body.length > 4000 ? body.slice(0, 4000) : body;
   try {
-    const response = await anthropicClient.messages.create({
-      model,
-      max_tokens: 200,
-      messages: [{
-        role: 'user',
-        content: `From this article, extract the single most shareable pull quote. Must be a real line from the text, word for word. No paraphrasing. Find the most counterintuitive, direct, or scroll-stopping line. Under 150 characters preferred.
+    const response = await anthropicMessagesCreateWithRetry(
+      anthropicClient,
+      {
+        model,
+        max_tokens: 200,
+        messages: [{
+          role: 'user',
+          content: `From this article, extract the single most shareable pull quote. Must be a real line from the text, word for word. No paraphrasing. Find the most counterintuitive, direct, or scroll-stopping line. Under 150 characters preferred.
 
 Return ONLY the quote. No quotation marks. No attribution. No preamble.
 
@@ -77,8 +83,10 @@ Title: ${title}
 
 Article:
 ${excerpt}`,
-      }],
-    });
+        }],
+      },
+      { label: 'extractPullQuote' }
+    );
     const quote = response.content?.[0]?.text?.trim() || '';
     if (!quote || quote.length < 10 || quote.length > 220) return null;
     return quote;
@@ -90,12 +98,14 @@ ${excerpt}`,
 
 async function detectArticleMood(title, body, anthropicClient, model) {
   try {
-    const response = await anthropicClient.messages.create({
-      model,
-      max_tokens: 20,
-      messages: [{
-        role: 'user',
-        content: `Classify this leadership article's dominant tone.
+    const response = await anthropicMessagesCreateWithRetry(
+      anthropicClient,
+      {
+        model,
+        max_tokens: 20,
+        messages: [{
+          role: 'user',
+          content: `Classify this leadership article's dominant tone.
 Return ONLY one word: confrontational, working, or reflective.
 confrontational = challenges, calls out bad behavior, strong stance
 working = practical, strategic, process-oriented
@@ -103,8 +113,10 @@ reflective = personal, philosophical, story-based
 
 Title: ${title}
 Opening: ${body.slice(0, 1000)}`,
-      }],
-    });
+        }],
+      },
+      { label: 'detectArticleMood' }
+    );
     const mood = response.content?.[0]?.text?.trim().toLowerCase() || '';
     return ['confrontational', 'working', 'reflective'].includes(mood) ? mood : 'confrontational';
   } catch {
@@ -240,19 +252,23 @@ ${performanceSummary}
 Search for current leadership news and trends, then select the best entry from the list above. Return only the JSON object.`;
 
   try {
-    const response = await client.messages.create({
-      model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-      tools: [
-        {
-          type: 'web_search_20250305',
-          name: 'web_search',
-          max_uses: 3,
-        },
-      ],
-    });
+    const response = await anthropicMessagesCreateWithRetry(
+      client,
+      {
+        model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }],
+        tools: [
+          {
+            type: 'web_search_20250305',
+            name: 'web_search',
+            max_uses: 3,
+          },
+        ],
+      },
+      { label: 'selectReshareEntryIntelligently' }
+    );
 
     const textBlock = response.content?.find((b) => b.type === 'text');
     if (!textBlock?.text) {
@@ -344,12 +360,16 @@ ${excerpt}${corpusSection}${patternSection}
 
 Write four reshare captions. Lead with the most provocative or counterintuitive idea. Make it feel urgent today.`;
 
-  const response = await client.messages.create({
-    model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-    max_tokens: 2000,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
-  });
+  const response = await anthropicMessagesCreateWithRetry(
+    client,
+    {
+      model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+      max_tokens: 2000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+    },
+    { label: 'generateReshareCaption' }
+  );
 
   const text = response.content?.[0]?.text || '';
   const clean = text.replace(/```json|```/g, '').trim();
@@ -371,7 +391,7 @@ export default async function handler(req, res) {
     if (!res.headersSent) {
       res.status(500).json({
         ok: false,
-        error: err?.message || 'Reshare engine failed with an unhandled error',
+        error: friendlyAnthropicError(err, 'Reshare engine failed with an unhandled error'),
       });
     }
   }
@@ -550,8 +570,9 @@ async function handleReshareRequest(req, res) {
   try {
     captions = await generateReshareCaption(entry.slug, title, journal.body, journalUrl, corpusContext, captionPatterns);
   } catch (err) {
-    console.error('[reshare-journal] Caption generation failed:', err.message);
-    return res.status(500).json({ ok: false, error: 'Caption generation failed', detail: err.message });
+    const friendly = friendlyAnthropicError(err, 'Caption generation failed');
+    console.error('[reshare-journal] Caption generation failed:', err?.message || err);
+    return res.status(500).json({ ok: false, error: friendly, detail: err?.message || null });
   }
 
   // Check auto_approve setting
