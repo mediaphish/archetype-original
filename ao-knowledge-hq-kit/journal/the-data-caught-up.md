@@ -14,7 +14,8 @@ featured_image: ../images/the-data-caught-up.jpg
 takeaways:
   []
 applications: []
-related: []
+related:
+  - toxic-empathy-2-holding-the-line
 original_source: AO Auto
 status: published
 ---
@@ -23,7 +24,7 @@ Two studies landed this summer that didn't tell me anything new. They just put a
 
 iHire's 2026 Toxic Workplace Trends Report found that 79% of workers who experienced a toxic job blamed unethical, unaccountable, or unsupportive leadership. Not workload. Not personality clashes. Leadership, for the second year running. A separate Harris Poll found that six in ten U.S. workers say their current boss is toxic right now.
 
-I wrote a piece a while back called Holding the Line on why unenforced expectations don't stay neutral. The argument was simple. When a leader sets a standard and never enforces it, the team doesn't keep acting like the standard is real. They watch what actually gets tolerated, and they quietly recalibrate around that instead.
+I wrote a piece a while back called [Holding the Line](/journal/toxic-empathy-2-holding-the-line) on why unenforced expectations don't stay neutral. The argument was simple. When a leader sets a standard and never enforces it, the team doesn't keep acting like the standard is real. They watch what actually gets tolerated, and they quietly recalibrate around that instead.
 
 The data just caught up to the mechanism.
 
