@@ -16,6 +16,7 @@ import React, {
 
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
+import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 
 // ─── Artifact parsing ─────────────────────────────────────────────────────────
 
@@ -1539,13 +1540,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [splitPercent, setSplitPercent] = useState(50);
   const [dividerDragging, setDividerDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState('chat');
   const [mobileArtifactOpen, setMobileArtifactOpen] = useState(false);
   const [mobileArtifactDrawerShown, setMobileArtifactDrawerShown] = useState(false);
   const [artifactUnread, setArtifactUnread] = useState(false);
   const [guestRecord, setGuestRecord] = useState(null);
   const [guestRecordLoading, setGuestRecordLoading] = useState(false);
+  const keyboardInset = useKeyboardInset({ enabled: isMobile });
+  const keyboardOpen = keyboardInset > 24;
 
   const splitContainerRef = useRef(null);
   const isMobileRef = useRef(false);
@@ -1662,27 +1664,6 @@ export default function AutoV2Panel({ onNavigate, className }) {
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
   }, []);
-
-  useEffect(() => {
-    if (!isMobile) return undefined;
-
-    // On iOS Chrome, the visual viewport shrinks when the keyboard opens.
-    // When viewport height drops below 75% of screen height, keyboard is open.
-    const threshold = window.screen.height * 0.75;
-
-    const handleResize = () => {
-      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
-      setKeyboardOpen(viewportHeight < threshold);
-    };
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
-      return () => window.visualViewport.removeEventListener('resize', handleResize);
-    }
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isMobile]);
 
   useEffect(() => {
     if (!mobileArtifactOpen) {
@@ -3050,7 +3031,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
           </div>
         )}
 
-        <div className="flex-shrink-0 px-4 pb-4 pt-2 border-t border-gray-100 bg-white">
+        <div
+          className="flex-shrink-0 px-4 pb-4 pt-2 border-t border-gray-100 bg-white"
+          style={
+            keyboardInset > 0
+              ? { paddingBottom: `max(1rem, ${keyboardInset}px)` }
+              : undefined
+          }
+        >
           <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 focus-within:border-gray-400 focus-within:bg-white transition-colors">
 
             <button

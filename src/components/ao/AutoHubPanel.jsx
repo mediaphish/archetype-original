@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 
 function safeText(v, maxLen = 0) {
   const s = String(v || '').trim();
@@ -76,6 +77,7 @@ export default function AutoHubPanel({ onNavigate, className }) {
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const keyboardInset = useKeyboardInset({ enabled: true });
   const composerDraftKey = (threadId) => `ao-auto-composer:${threadId || 'none'}`;
   /** Only show the bundle card for this thread’s active bundle — not the latest global Library item. */
   const latestBundle = useMemo(() => {
@@ -448,6 +450,7 @@ export default function AutoHubPanel({ onNavigate, className }) {
   const composer = (
     <div
       className="fixed z-40 border-t border-gray-200 bg-white shadow-[0_-8px_28px_rgba(0,0,0,0.08)] left-0 right-0 max-md:bottom-[calc(3.65rem+env(safe-area-inset-bottom,0px))] bottom-0"
+      style={keyboardInset > 0 ? { bottom: `${keyboardInset}px` } : undefined}
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
