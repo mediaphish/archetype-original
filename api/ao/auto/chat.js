@@ -18,6 +18,7 @@ import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { friendlyAnthropicError } from '../../../lib/ao/anthropicWithRetry.js';
+import { vercelProtectionBypassHeaders } from '../../../lib/ao/vercelProtectionBypass.js';
 
 /**
  * Detects approved content in the current exchange and saves it to ao_content_drafts.
@@ -508,6 +509,7 @@ export default async function handler(req, res) {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${process.env.CRON_SECRET}`,
+            ...vercelProtectionBypassHeaders(),
           },
           body: JSON.stringify({}),
         });
