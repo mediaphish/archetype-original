@@ -340,6 +340,8 @@ export default async function handler(req, res) {
     takeaways = [],
     notify = true,
     notify_delay_ms = 300000,
+    series_slug: seriesSlugBody = null,
+    part_number: partNumberBody = null,
   } = req.body || {};
 
   if (!slug || !title || !content || !summary || !publish_date) {
@@ -356,6 +358,22 @@ export default async function handler(req, res) {
     .replace(/[^a-z0-9-]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
+
+  // Draft identity is series_slug + part_number (not slug). Prefer explicit body
+  // values; otherwise derive the same way chat.js does when saving drafts.
+  const derivedSeriesSlug = safeSlug.replace(/-part-\d+.*$/i, '') || safeSlug;
+  const derivedPartMatch = safeSlug.match(/-part-(\d+)/i);
+  const seriesSlug =
+    seriesSlugBody != null && String(seriesSlugBody).trim()
+      ? String(seriesSlugBody).trim().toLowerCase()
+      : derivedSeriesSlug;
+  const partNumberRaw =
+    partNumberBody != null && String(partNumberBody).trim() !== ''
+      ? Number.parseInt(String(partNumberBody), 10)
+      : derivedPartMatch
+        ? Number.parseInt(derivedPartMatch[1], 10)
+        : 1;
+  const partNumber = Number.isFinite(partNumberRaw) && partNumberRaw > 0 ? partNumberRaw : 1;
 
   const filePath = `${JOURNAL_PATH}/${safeSlug}.md`;
   const imageFilename = `${safeSlug}.jpg`;
@@ -550,23 +568,39 @@ export default async function handler(req, res) {
       }
     })();
 
-    // Mark the matching draft as published so it drops out of the Library
-    // Drafts tab. Fire-and-forget — never blocks the publish response.
+    // Mark the matching draft as published so it drops out of Auto's
+    // "approved drafts pending publish" context. Match on series_slug +
+    // part_number (the draft's real identity); fall back to slug only when
+    // series identity isn't available. Fire-and-forget — never blocks the response.
     (async () => {
       try {
-        const { error: draftUpdateError } = await supabaseAdmin
+        let query = supabaseAdmin
           .from('ao_content_drafts')
-          .update({ status: 'published' })
-          .eq('slug', safeSlug)
+          .update({ status: 'published', updated_at: new Date().toISOString() })
+          .eq('kind', 'journal')
           .neq('status', 'published');
 
-        if (draftUpdateError) {
-          console.error('[publish-journal] Draft status update failed:', draftUpdateError.message);
+        if (seriesSlug && partNumber) {
+          query = query.eq('series_slug', seriesSlug).eq('part_number', partNumber);
         } else {
-          console.log(`[publish-journal] Draft marked published for: ${safeSlug}`);
+          query = query.eq('slug', safeSlug);
         }
-      } catch (draftErr) {
-        console.error('[publish-journal] Draft status update threw (non-blocking):', draftErr?.message || draftErr);
+
+        const { data: updatedRows, error: draftUpdateError } = await query.select('id');
+
+        if (draftUpdateError) {
+          console.error('[publish-journal] Failed to mark draft as published:', draftUpdateError.message);
+        } else if (!updatedRows || updatedRows.length === 0) {
+          console.warn(
+            `[publish-journal] Post-publish draft-status update matched 0 rows for slug="${safeSlug}" series_slug="${seriesSlug || 'n/a'}" part_number="${partNumber || 'n/a'}" — draft may show as stuck pending in Auto's context.`
+          );
+        } else {
+          console.log(
+            `[publish-journal] Draft marked published (${updatedRows.length} row(s)) for slug="${safeSlug}" series_slug="${seriesSlug}" part_number="${partNumber}"`
+          );
+        }
+      } catch (err) {
+        console.error('[publish-journal] Unexpected error marking draft published:', err?.message || err);
       }
     })();
 

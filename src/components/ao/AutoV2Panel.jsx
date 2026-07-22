@@ -2648,6 +2648,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
           takeaways: [],
           notify,
           notify_delay_ms: 300000,
+          series_slug: attrs.series_slug || undefined,
+          part_number: attrs.part_number || undefined,
         }),
       });
       const json = await res.json().catch(() => ({}));
