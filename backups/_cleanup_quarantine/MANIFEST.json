@@ -2101,7 +2101,7 @@
       "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
       "was_tracked_in_git": true,
       "committed": true,
-      "status": "quarantined"
+      "status": "restored"
     },
     {
       "original_path": "scripts/generate-faq-review-html.mjs",
@@ -2173,7 +2173,7 @@
       "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
       "was_tracked_in_git": true,
       "committed": true,
-      "status": "quarantined"
+      "status": "restored"
     },
     {
       "original_path": "scripts/operators-apply-interest-schema.mjs",

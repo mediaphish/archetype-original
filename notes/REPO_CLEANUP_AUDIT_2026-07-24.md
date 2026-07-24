@@ -115,14 +115,14 @@ These are **not automatically dead** (many are manual/ops tools). Candidates for
 | `scripts/ali-volume-survey-runner.mjs` | ALI volume testing | **medium** |
 | `scripts/auto-publish-devotionals-local.mjs` | Local-only publish helper | **medium** |
 | `scripts/check-subscription*.mjs` | Manual diagnostics | **medium** |
-| `scripts/fetch-knowledge.mjs` | Manual | **medium** |
+| `scripts/fetch-knowledge.mjs` | **KEEP** — called by `.github/workflows/sync-knowledge.yml` (not only “manual”) | **keep** |
 | `scripts/fix-journal-image-paths.mjs` | One-off repair | **high** (one-off) |
 | `scripts/generate-devotional-index.mjs` | May be superseded by `build-knowledge` | **medium** |
 | `scripts/generate-faq-review-html.mjs` | Review helper | **medium** |
 | `scripts/list-journal-entries.mjs` | Overlaps `manage-journal` | **medium** |
 | `scripts/migrate-journal-explicit-published.mjs` | Migration; keep until all journals clean | **medium** (keep for now) |
 | `scripts/mobile-qa-*.mjs` (4 files) | QA tooling | **medium** |
-| `scripts/notify-todays-devotionals-from-corpus.mjs` | Ops | **medium** |
+| `scripts/notify-todays-devotionals-from-corpus.mjs` | **KEEP** — called by `update-journal.yml` and `send-devotional-email.yml` | **keep** |
 | `scripts/operators-*.mjs` (3 files) | Operators seed/probe | **medium** |
 | `scripts/print-public-inventory-summary.mjs` | Inventory | **medium** |
 | `scripts/repair-queue-schedule.mjs` | One-off repair | **high** (one-off) |
@@ -131,6 +131,12 @@ These are **not automatically dead** (many are manual/ops tools). Candidates for
 | `scripts/test-longform-truncation.mjs`, `test-retry-emails.mjs` | Ad-hoc tests | **medium** |
 
 **Active scripts (do not treat as dead):** anything named in `package.json` (`build-knowledge`, verify/prerender chain, `audit:corpus`, regression tests, etc.).
+
+**Mandatory dead-code check for future quarantine batches:** also scan
+`.github/workflows/*.yml` for direct filename references (`node scripts/…`, action
+inputs, `run:` lines). Absence from `package.json` alone is **not** proof a script
+is unused — `fetch-knowledge.mjs` and `notify-todays-devotionals-from-corpus.mjs`
+were wrongly quarantined in commit `d894c2764` for that reason and had to be restored.
 
 ### API routes
 

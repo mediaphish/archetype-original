@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T22:19:55.895Z
+Generated: 2026-07-24T22:54:30.745Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -1953,7 +1953,7 @@ Nothing is permanently deleted until you explicitly say so after living with the
 
 ### `scripts/fetch-knowledge.mjs`
 
-- **Status:** quarantined
+- **Status:** restored
 - **Date:** 2026-07-24
 - **Reason:** Manual knowledge fetch; live path uses build-knowledge
 - **Confidence:** high
@@ -2019,7 +2019,7 @@ Nothing is permanently deleted until you explicitly say so after living with the
 
 ### `scripts/notify-todays-devotionals-from-corpus.mjs`
 
-- **Status:** quarantined
+- **Status:** restored
 - **Date:** 2026-07-24
 - **Reason:** Manual/ops notification helper; not in package.json
 - **Confidence:** high
