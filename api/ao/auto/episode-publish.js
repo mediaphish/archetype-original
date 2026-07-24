@@ -22,7 +22,7 @@ import {
   buildYoutubeDescription,
   uploadVideoToYoutube,
 } from '../../../lib/ao/youtubeUpload.js';
-import { getGuestById, guestRecordToEpisodeGuest } from '../../../lib/ao/guestIntakeStore.js';
+import { getGuestById, getGuestsByIds, guestRecordToEpisodeGuest } from '../../../lib/ao/guestIntakeStore.js';
 import { createEpisodeMarketingBundle } from '../../../lib/ao/buildEpisodeMarketingBundle.js';
 
 function vercelRequestId(req) {
@@ -32,6 +32,11 @@ function vercelRequestId(req) {
 /** Riverside handles YouTube distribution; Auto only uploads when explicitly re-enabled. */
 function isYoutubeUploadEnabled() {
   return String(process.env.AUTO_YOUTUBE_UPLOAD_ENABLED || '').trim().toLowerCase() === 'true';
+}
+
+function normalizeIdList(value) {
+  if (!Array.isArray(value)) return [];
+  return Array.from(new Set(value.map((id) => String(id || '').trim()).filter(Boolean)));
 }
 
 export default async function handler(req, res) {
@@ -132,20 +137,42 @@ export default async function handler(req, res) {
   }
 
   let guestForFrontmatter = draft.guest || null;
-  const guestId = draft.guest_id || draft.guest?.guest_id || null;
-  if (guestId) {
-    const loadedGuest = await getGuestById(guestId);
+  let guestsForFrontmatter = [];
+  let publishedGuestIds = normalizeIdList(draft.guest_ids);
+
+  if (publishedGuestIds.length === 0) {
+    const singularId = draft.guest_id || draft.guest?.guest_id || null;
+    if (singularId) publishedGuestIds = [String(singularId)];
+  }
+
+  if (publishedGuestIds.length > 1) {
+    const lookup = await getGuestsByIds(publishedGuestIds);
+    if (lookup.ok && lookup.guests?.length) {
+      const byId = new Map(lookup.guests.map((g) => [g.id, g]));
+      guestsForFrontmatter = publishedGuestIds
+        .map((id) => byId.get(id))
+        .filter(Boolean)
+        .map((g) => guestRecordToEpisodeGuest(g));
+      guestForFrontmatter = guestsForFrontmatter[0] || null;
+    }
+  } else if (publishedGuestIds.length === 1) {
+    const loadedGuest = await getGuestById(publishedGuestIds[0]);
     if (loadedGuest.ok) {
       guestForFrontmatter = guestRecordToEpisodeGuest(loadedGuest.guest);
+      guestsForFrontmatter = guestForFrontmatter ? [guestForFrontmatter] : [];
     }
+  } else if (guestForFrontmatter?.name) {
+    guestsForFrontmatter = [guestForFrontmatter];
   }
+
+  const hasGuestCredit = guestsForFrontmatter.length > 0 || Boolean(guestForFrontmatter?.name);
 
   const frontmatter = buildEpisodeFrontmatter({
     title: draft.title,
     slug: safeSlug,
     publish_date: publishDate,
     summary: draft.summary,
-    episode_type: guestForFrontmatter?.name ? 'guest' : draft.episode_type || 'solo',
+    episode_type: hasGuestCredit ? 'guest' : draft.episode_type || 'solo',
     duration,
     youtube_id,
     spotify_embed_url,
@@ -157,6 +184,7 @@ export default async function handler(req, res) {
     corpus_connections: draft.corpus_connections || [],
     thematic_threads: draft.thematic_threads || [],
     guest: guestForFrontmatter,
+    guests: guestsForFrontmatter.length > 1 ? guestsForFrontmatter : [],
     transcript: draft.transcript || '',
     status: 'published',
   });
@@ -184,6 +212,10 @@ export default async function handler(req, res) {
       duration,
       video_source_url: video_source_url || null,
       target_path: filePath,
+      guest: guestForFrontmatter,
+      guest_id: publishedGuestIds[0] || draft.guest_id || null,
+      guests: guestsForFrontmatter.length > 1 ? guestsForFrontmatter : null,
+      guest_ids: publishedGuestIds.length > 0 ? publishedGuestIds : null,
       meta: {
         ...(draft.meta || {}),
         published_via: 'api:ao/auto/episode-publish',

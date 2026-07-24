@@ -11,6 +11,43 @@ function arrayToLines(arr) {
   return (Array.isArray(arr) ? arr : []).join('\n');
 }
 
+function guestLabel(guest) {
+  if (!guest) return '';
+  const name = guest.name || 'Guest';
+  const company = guest.company || guest.title || '';
+  const email = guest.email || '';
+  return `${name}${company ? ` — ${company}` : ''}${email ? ` (${email})` : ''}`;
+}
+
+function initialSelectedGuests(draft) {
+  if (Array.isArray(draft?.guest_ids) && draft.guest_ids.length > 0) {
+    const guestsById = new Map(
+      (Array.isArray(draft.guests) ? draft.guests : [])
+        .filter((g) => g && (g.guest_id || g.id))
+        .map((g) => [g.guest_id || g.id, g])
+    );
+    return draft.guest_ids.map((id) => {
+      const g = guestsById.get(id);
+      return {
+        id,
+        label: g ? guestLabel(g) : id,
+        guest: g || { guest_id: id },
+      };
+    });
+  }
+  if (draft?.guest_id || draft?.guest?.guest_id || draft?.guest?.name) {
+    const id = draft.guest_id || draft.guest?.guest_id || '';
+    return [
+      {
+        id: id || `name:${draft.guest?.name || 'guest'}`,
+        label: guestLabel(draft.guest) || String(id),
+        guest: draft.guest || { guest_id: id },
+      },
+    ];
+  }
+  return [];
+}
+
 export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished }) {
   const [title, setTitle] = useState(draft?.title || '');
   const [summary, setSummary] = useState(draft?.summary || '');
@@ -28,11 +65,12 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
   const [liveUrl, setLiveUrl] = useState('');
   const [guestSearch, setGuestSearch] = useState('');
   const [guestResults, setGuestResults] = useState([]);
-  const [guestId, setGuestId] = useState(draft?.guest_id || '');
-  const [selectedGuestLabel, setSelectedGuestLabel] = useState(
-    draft?.guest?.name ? `${draft.guest.name}${draft.guest.company ? ` — ${draft.guest.company}` : ''}` : ''
-  );
+  const [selectedGuests, setSelectedGuests] = useState(() => initialSelectedGuests(draft));
   const [guestSearchStatus, setGuestSearchStatus] = useState('idle');
+
+  useEffect(() => {
+    setSelectedGuests(initialSelectedGuests(draft));
+  }, [draft?.draft_id, draft?.guest_id, Array.isArray(draft?.guest_ids) ? draft.guest_ids.join(',') : '']);
 
   useEffect(() => {
     const q = guestSearch.trim();
@@ -61,10 +99,45 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
 
   if (!draft?.draft_id) return null;
 
+  const selectedIds = selectedGuests.map((g) => g.id).filter((id) => id && !String(id).startsWith('name:'));
+  const primaryGuest = selectedGuests[0]?.guest || null;
+  const primaryGuestId = selectedIds[0] || null;
+
+  const addGuestSelection = (guest) => {
+    if (!guest?.id) return;
+    setSelectedGuests((prev) => {
+      if (prev.some((g) => g.id === guest.id)) return prev;
+      return [
+        ...prev,
+        {
+          id: guest.id,
+          label: guestLabel(guest),
+          guest: {
+            guest_id: guest.id,
+            name: guest.name,
+            company: guest.company || '',
+            bio: guest.bio_md || guest.bio || '',
+            image: guest.image_url || guest.image || '',
+            website: guest.website || '',
+            social_links: guest.social_links || [],
+            email: guest.email || '',
+          },
+        },
+      ];
+    });
+    setGuestSearch('');
+    setGuestResults([]);
+  };
+
+  const removeGuestSelection = (id) => {
+    setSelectedGuests((prev) => prev.filter((g) => g.id !== id));
+  };
+
   const saveDraft = async () => {
     setStatus('saving');
     setMessage('');
     try {
+      const multi = selectedIds.length > 1;
       const res = await fetch(`/api/ao/auto/episode-drafts/${draft.draft_id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -79,7 +152,10 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
           youtube_id: youtubeId.trim(),
           spotify_embed_url: spotifyUrl.trim(),
           duration: duration.trim(),
-          guest_id: guestId || null,
+          guest_id: primaryGuestId,
+          guest: primaryGuest,
+          guest_ids: selectedIds.length > 0 ? selectedIds : null,
+          guests: multi ? selectedGuests.map((g) => g.guest).filter(Boolean) : null,
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -223,9 +299,9 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
       </label>
 
       <div className="border border-gray-200 rounded-lg p-3 space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Guest from intake</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Guests from intake</p>
         <p className="text-[11px] text-gray-500 leading-snug">
-          Search by name or email to attach a submitted guest intake record to this episode.
+          Search by name or email to attach one or more submitted guest intake records to this episode.
         </p>
         <input
           type="text"
@@ -239,42 +315,47 @@ export default function EpisodeDraftReview({ draft, onDraftUpdated, onPublished 
         )}
         {guestResults.length > 0 && (
           <ul className="max-h-40 overflow-y-auto border border-gray-100 rounded-md divide-y divide-gray-100">
-            {guestResults.map((guest) => (
-              <li key={guest.id}>
+            {guestResults.map((guest) => {
+              const already = selectedGuests.some((g) => g.id === guest.id);
+              return (
+                <li key={guest.id}>
+                  <button
+                    type="button"
+                    disabled={already}
+                    onClick={() => addGuestSelection(guest)}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    <span className="font-medium text-gray-900">{guest.name}</span>
+                    {guest.company && <span className="text-gray-500"> — {guest.company}</span>}
+                    <span className="block text-xs text-gray-500">
+                      {guest.email}
+                      {already ? ' · already attached' : ''}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {selectedGuests.length > 0 && (
+          <ul className="flex flex-wrap gap-2 pt-1">
+            {selectedGuests.map((g) => (
+              <li
+                key={g.id}
+                className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+              >
+                <span>{g.label}</span>
                 <button
                   type="button"
-                  onClick={() => {
-                    setGuestId(guest.id);
-                    setSelectedGuestLabel(
-                      `${guest.name}${guest.company ? ` — ${guest.company}` : ''} (${guest.email})`
-                    );
-                    setGuestSearch('');
-                    setGuestResults([]);
-                  }}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50"
+                  onClick={() => removeGuestSelection(g.id)}
+                  className="text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-red-600"
+                  aria-label={`Remove ${g.label}`}
                 >
-                  <span className="font-medium text-gray-900">{guest.name}</span>
-                  {guest.company && <span className="text-gray-500"> — {guest.company}</span>}
-                  <span className="block text-xs text-gray-500">{guest.email}</span>
+                  Remove
                 </button>
               </li>
             ))}
           </ul>
-        )}
-        {selectedGuestLabel && (
-          <div className="flex items-center justify-between gap-2 rounded-md bg-gray-50 px-3 py-2 text-sm">
-            <span className="text-gray-800">{selectedGuestLabel}</span>
-            <button
-              type="button"
-              onClick={() => {
-                setGuestId('');
-                setSelectedGuestLabel('');
-              }}
-              className="text-xs font-semibold uppercase tracking-wide text-gray-500 hover:text-red-600"
-            >
-              Clear
-            </button>
-          </div>
         )}
       </div>
 

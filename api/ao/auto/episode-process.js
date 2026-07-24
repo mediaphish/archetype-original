@@ -6,6 +6,8 @@
  *   episode_type: "solo" | "guest",
  *   guest: { name, title, bio } | null,
  *   guest_id: string | null,
+ *   guests: array | null,          // optional; ignored when guest_ids present (resolved from DB)
+ *   guest_ids: string[] | null,    // preferred for multi-guest — resolved server-side
  *   recorded_date: string (ISO date),
  *   episode_brief: string | null
  * }
@@ -14,7 +16,17 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { processEpisodeTranscript } from '../../../lib/ao/processEpisodeTranscript.js';
 import { insertEpisodeDraft } from '../../../lib/ao/episodeDraftStore.js';
-import { getGuestById, guestPostRecordingNotes } from '../../../lib/ao/guestIntakeStore.js';
+import {
+  getGuestById,
+  getGuestsByIds,
+  guestPostRecordingNotes,
+  guestRecordToEpisodeGuest,
+} from '../../../lib/ao/guestIntakeStore.js';
+
+function normalizeIdList(value) {
+  if (!Array.isArray(value)) return [];
+  return Array.from(new Set(value.map((id) => String(id || '').trim()).filter(Boolean)));
+}
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -26,11 +38,34 @@ export default async function handler(req, res) {
 
   const body = typeof req.body === 'object' && req.body ? req.body : {};
   const transcript = String(body.transcript || '').trim();
-  const episode_type = body.episode_type === 'guest' ? 'guest' : 'solo';
-  const guest = body.guest && typeof body.guest === 'object' ? body.guest : null;
-  const guestId = String(body.guest_id || body.guest?.guest_id || '').trim() || null;
+  let episode_type = body.episode_type === 'guest' ? 'guest' : 'solo';
+  let guest = body.guest && typeof body.guest === 'object' ? body.guest : null;
+  let guestId = String(body.guest_id || body.guest?.guest_id || '').trim() || null;
   const recorded_date = body.recorded_date ? String(body.recorded_date).split('T')[0] : null;
   const episode_brief = String(body.episode_brief || '').trim();
+
+  const guestIds = normalizeIdList(body.guest_ids);
+  let resolvedGuests = null;
+  let resolvedGuestIds = null;
+
+  if (guestIds.length > 1) {
+    const lookup = await getGuestsByIds(guestIds);
+    if (!lookup.ok) {
+      return res.status(500).json({ ok: false, error: lookup.error || 'Could not load guests' });
+    }
+    const byId = new Map((lookup.guests || []).map((g) => [g.id, g]));
+    const ordered = guestIds.map((id) => byId.get(id)).filter(Boolean);
+    if (ordered.length === 0) {
+      return res.status(400).json({ ok: false, error: 'None of the guest_ids were found' });
+    }
+    resolvedGuests = ordered.map((g) => guestRecordToEpisodeGuest(g));
+    resolvedGuestIds = ordered.map((g) => g.id);
+    guest = resolvedGuests[0];
+    guestId = resolvedGuestIds[0];
+    episode_type = 'guest';
+  } else if (guestIds.length === 1) {
+    guestId = guestIds[0];
+  }
 
   if (!transcript) {
     return res.status(400).json({ ok: false, error: 'transcript is required' });
@@ -45,6 +80,9 @@ export default async function handler(req, res) {
         research_brief = String(loadedGuest.guest.research_brief).trim();
       }
       post_recording = guestPostRecordingNotes(loadedGuest.guest);
+      if (!guest || !guest.name) {
+        guest = guestRecordToEpisodeGuest(loadedGuest.guest);
+      }
     }
   }
 
@@ -69,8 +107,13 @@ export default async function handler(req, res) {
       transcript,
       guest,
       guest_id: guestId,
+      guests: resolvedGuests,
+      guest_ids: resolvedGuestIds,
       ...processed.processed,
-      meta: { source: 'episode-process' },
+      meta: {
+        source: 'episode-process',
+        ...(resolvedGuestIds?.length > 1 ? { multi_guest: true } : {}),
+      },
     });
 
     if (!saved.ok) {

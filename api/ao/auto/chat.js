@@ -16,7 +16,6 @@ import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignIm
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
-import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { runReshareCycle, generateBrandedOpportunityImage } from './reshare-journal.js';
@@ -889,14 +888,10 @@ Return markdown only: a # title line, then the full post body.`,
       console.error('[chat.js] trySaveDraftFromExchange error:', err?.message || err);
     }
 
-    // Process episode signal if present — commits corpus markdown and updates episode draft
-    if (fullReply.includes('[EPISODE_PROCESS')) {
-      try {
-        await processEpisodeSignal(fullReply, auth.email);
-      } catch (err) {
-        console.error('[chat.js] processEpisodeSignal error:', err?.message || err);
-      }
-    }
+    // Episode publish/process is client-driven via AutoV2Panel → episode-process →
+    // EpisodeDraftReview → episode-publish (GitHub commit). Do not also run
+    // processEpisodeSignal here — that path only writes local disk and races the
+    // real deploy pipeline. Research signal below still runs server-side.
 
     // Process episode research signal — saves research brief and questions back to guest record.
     // This one is especially time-sensitive to get right: it makes two sequential

@@ -117,6 +117,7 @@ export default function PodcastDashboard() {
   const [buildingEpisodeId, setBuildingEpisodeId] = useState(null);
   const [buildEpisodeError, setBuildEpisodeError] = useState('');
   const [selectedGuestIds, setSelectedGuestIds] = useState([]);
+  const [emailSlotStatus, setEmailSlotStatus] = useState({});
 
   const loadThreads = useCallback(async () => {
     setThreadsLoading(true);

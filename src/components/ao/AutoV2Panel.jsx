@@ -229,6 +229,20 @@ function extractEpisodeProcessSignal(content) {
   return parseImageGeneratedAttributes(tagMatch[1]);
 }
 
+function extractEpisodeGuestsIds(content) {
+  const text = String(content || '');
+  const match = text.match(/\[EPISODE_GUESTS\]([\s\S]*?)\[\/EPISODE_GUESTS\]/i);
+  if (!match) return null;
+  try {
+    const parsed = JSON.parse(match[1].trim());
+    if (!Array.isArray(parsed)) return null;
+    const ids = parsed.map((id) => String(id || '').trim()).filter(Boolean);
+    return ids.length > 0 ? ids : null;
+  } catch {
+    return null;
+  }
+}
+
 function extractNavigateToSignal(content) {
   const text = String(content || '');
   const match = text.match(/\[NAVIGATE_TO\s+path="([^"]+)"\]/i);
@@ -252,6 +266,7 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[DEVOTIONAL_CONTENT\]/gi, '')
     .replace(/\[\/DEVOTIONAL_CONTENT\]/gi, '')
     .replace(/\[EPISODE_PROCESS[^\]]*\]/gi, '')
+    .replace(/\[EPISODE_GUESTS\][\s\S]*?\[\/EPISODE_GUESTS\]/gi, '')
     // Episode transcript is surfaced in the episode draft panel from raw message.content —
     // keep it out of the chat bubble to avoid a huge duplicate dump.
     .replace(/\[EPISODE_TRANSCRIPT\][\s\S]*?\[\/EPISODE_TRANSCRIPT\]/gi, '')
@@ -1848,8 +1863,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
     processedEpisodeProcessKeys.current.add(processKey);
 
     const episode_type = String(signal.episode_type || 'solo').toLowerCase() === 'guest' ? 'guest' : 'solo';
+    const guestIdsFromBlock = extractEpisodeGuestsIds(String(lastAssistant.content || ''));
     const guest =
-      episode_type === 'guest' && signal.guest_name
+      !guestIdsFromBlock &&
+      episode_type === 'guest' &&
+      signal.guest_name
         ? {
             name: signal.guest_name,
             title: signal.guest_title || '',
@@ -1862,17 +1880,23 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
     (async () => {
       try {
+        const payload = {
+          transcript,
+          episode_type: guestIdsFromBlock?.length > 1 ? 'guest' : episode_type,
+          episode_brief: signal.episode_brief || '',
+          recorded_date: signal.recorded_date || '',
+        };
+        if (guestIdsFromBlock?.length) {
+          payload.guest_ids = guestIdsFromBlock;
+        } else {
+          payload.guest = guest;
+          payload.guest_id = signal.guest_id || '';
+        }
+
         const res = await fetch('/api/ao/auto/episode-process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            transcript,
-            episode_type,
-            guest,
-            guest_id: signal.guest_id || '',
-            episode_brief: signal.episode_brief || '',
-            recorded_date: signal.recorded_date || '',
-          }),
+          body: JSON.stringify(payload),
         });
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json.ok) throw new Error(json.error || 'Episode processing failed');
