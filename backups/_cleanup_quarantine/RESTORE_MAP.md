@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T18:07:46.049Z
+Generated: 2026-07-24T18:19:37.339Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -583,4 +583,303 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/10_theology_stewardship.md`
 - **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/10_theology_stewardship.md`
+
+## Batch: `2026-07-24-unused-homepage-components`
+
+### `src/components/AboutTeaser.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/AboutTeaser.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/AboutTeaser.jsx`
+
+### `src/components/ClosingConfidence.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/ClosingConfidence.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/ClosingConfidence.jsx`
+
+### `src/components/FeaturedFAQs.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/FeaturedFAQs.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/FeaturedFAQs.jsx`
+
+### `src/components/JournalHighlights.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Root-level JournalHighlights duplicate/unused; not imported by live pages
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/JournalHighlights.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/JournalHighlights.jsx`
+
+### `src/components/Methods.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/Methods.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/Methods.jsx`
+
+### `src/components/MethodsTeaser.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/MethodsTeaser.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/MethodsTeaser.jsx`
+
+### `src/components/Philosophy.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/Philosophy.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/Philosophy.jsx`
+
+### `src/components/PhilosophySection.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/PhilosophySection.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/PhilosophySection.jsx`
+
+### `src/components/PhilosophyTeaser.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/PhilosophyTeaser.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/PhilosophyTeaser.jsx`
+
+### `src/components/Playbooks.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/Playbooks.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/Playbooks.jsx`
+
+### `src/components/ProofBoxPsychology.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/ProofBoxPsychology.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/ProofBoxPsychology.jsx`
+
+### `src/components/QuickPaths.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/QuickPaths.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/QuickPaths.jsx`
+
+### `src/components/SocialShare.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/SocialShare.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/SocialShare.jsx`
+
+### `src/components/Speaking.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/Speaking.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/Speaking.jsx`
+
+### `src/components/ValueStatement.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy shared marketing component with no live importers after HomePage rewrite
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/ValueStatement.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/ValueStatement.jsx`
+
+### `src/components/home/AntiProjects.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/AntiProjects.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/AntiProjects.jsx`
+
+### `src/components/home/ArchetypeFitness.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/ArchetypeFitness.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/ArchetypeFitness.jsx`
+
+### `src/components/home/FinalCTA.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/FinalCTA.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/FinalCTA.jsx`
+
+### `src/components/home/HomeHero.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/HomeHero.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/HomeHero.jsx`
+
+### `src/components/home/JournalHighlights.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/JournalHighlights.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/JournalHighlights.jsx`
+
+### `src/components/home/LeadershipLegacy.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/LeadershipLegacy.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/LeadershipLegacy.jsx`
+
+### `src/components/home/MeetArchy.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/MeetArchy.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/MeetArchy.jsx`
+
+### `src/components/home/MeetBart.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/MeetBart.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/MeetBart.jsx`
+
+### `src/components/home/PillarCard.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/PillarCard.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/PillarCard.jsx`
+
+### `src/components/home/PsychologyBehind.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/PsychologyBehind.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/PsychologyBehind.jsx`
+
+### `src/components/home/WhatImBuilding.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/WhatImBuilding.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/WhatImBuilding.jsx`
+
+### `src/components/home/WhyArchetypeOriginal.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused homepage building-block; live HomePage.jsx is self-contained and does not import this
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/WhyArchetypeOriginal.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/home/WhyArchetypeOriginal.jsx`
 
