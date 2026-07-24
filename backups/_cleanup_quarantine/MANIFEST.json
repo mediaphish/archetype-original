@@ -938,6 +938,66 @@
       "was_tracked_in_git": true,
       "committed": true,
       "status": "quarantined"
+    },
+    {
+      "original_path": "lib/ao/postMetricsStub.js",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/postMetricsStub.js",
+      "batch": "2026-07-24-unused-lib-and-kit-scaffolding",
+      "date_quarantined": "2026-07-24",
+      "reason": "Deprecated re-export; live code imports lib/ao/postMetrics.js directly. Nothing imports the stub.",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "lib/ao/detectSchedulingIntent.js",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/detectSchedulingIntent.js",
+      "batch": "2026-07-24-unused-lib-and-kit-scaffolding",
+      "date_quarantined": "2026-07-24",
+      "reason": "No importers found anywhere in src/api/lib/scripts",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "lib/ao/requireOwnerEmail.js",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/requireOwnerEmail.js",
+      "batch": "2026-07-24-unused-lib-and-kit-scaffolding",
+      "date_quarantined": "2026-07-24",
+      "reason": "No importers found; auth uses requireAoSession/requireOwnerSession",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "lib/ao/voiceReview.js",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/voiceReview.js",
+      "batch": "2026-07-24-unused-lib-and-kit-scaffolding",
+      "date_quarantined": "2026-07-24",
+      "reason": "No importers found; superseded by voiceGuardrails enforcement",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "ao-knowledge-hq-kit/PATCH_instructions/package.json.additions.json",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/ao-knowledge-hq-kit/PATCH_instructions/package.json.additions.json",
+      "batch": "2026-07-24-unused-lib-and-kit-scaffolding",
+      "date_quarantined": "2026-07-24",
+      "reason": "Kit scaffolding patch; not runtime, not referenced by build",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
     }
   ]
 }

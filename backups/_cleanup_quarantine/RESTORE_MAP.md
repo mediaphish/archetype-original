@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T18:19:37.339Z
+Generated: 2026-07-24T18:22:47.013Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -882,4 +882,61 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-homepage-components/src/components/home/WhyArchetypeOriginal.jsx`
 - **How to restore:** `npm run cleanup:restore -- --file src/components/home/WhyArchetypeOriginal.jsx`
+
+## Batch: `2026-07-24-unused-lib-and-kit-scaffolding`
+
+### `lib/ao/postMetricsStub.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Deprecated re-export; live code imports lib/ao/postMetrics.js directly. Nothing imports the stub.
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/postMetricsStub.js`
+- **How to restore:** `npm run cleanup:restore -- --file lib/ao/postMetricsStub.js`
+
+### `lib/ao/detectSchedulingIntent.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** No importers found anywhere in src/api/lib/scripts
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/detectSchedulingIntent.js`
+- **How to restore:** `npm run cleanup:restore -- --file lib/ao/detectSchedulingIntent.js`
+
+### `lib/ao/requireOwnerEmail.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** No importers found; auth uses requireAoSession/requireOwnerSession
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/requireOwnerEmail.js`
+- **How to restore:** `npm run cleanup:restore -- --file lib/ao/requireOwnerEmail.js`
+
+### `lib/ao/voiceReview.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** No importers found; superseded by voiceGuardrails enforcement
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/lib/ao/voiceReview.js`
+- **How to restore:** `npm run cleanup:restore -- --file lib/ao/voiceReview.js`
+
+### `ao-knowledge-hq-kit/PATCH_instructions/package.json.additions.json`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Kit scaffolding patch; not runtime, not referenced by build
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/ao-knowledge-hq-kit/PATCH_instructions/package.json.additions.json`
+- **How to restore:** `npm run cleanup:restore -- --file ao-knowledge-hq-kit/PATCH_instructions/package.json.additions.json`
 
