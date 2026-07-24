@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T21:41:45.582Z
+Generated: 2026-07-24T21:47:12.079Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -1517,4 +1517,380 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/auto-v2-CURSOR_PROMPT.md`
 - **How to restore:** `npm run cleanup:restore -- --file notes/auto-v2-CURSOR_PROMPT.md`
+
+## Batch: `2026-07-24-unused-image-near-dupes-and-layers`
+
+### `public/images/leadership-shoes-melted-feet.jpg`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Near-duplicate image; live journal/knowledge uses the replacement filename; zero exact refs
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/leadership-shoes-melted-feet.jpg`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/leadership-shoes-melted-feet.jpg`
+
+### `public/images/when-leaders-refuse-to-change.jpg`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Near-duplicate image; live journal/knowledge uses the replacement filename; zero exact refs
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/when-leaders-refuse-to-change.jpg`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/when-leaders-refuse-to-change.jpg`
+
+### `public/images/where-we-begin-instagram.jpg`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Near-duplicate image; live journal/knowledge uses the replacement filename; zero exact refs
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/where-we-begin-instagram.jpg`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/where-we-begin-instagram.jpg`
+
+### `public/images/ao-mark-white.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused white AO mark asset; no code/knowledge references
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/ao-mark-white.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/ao-mark-white.png`
+
+### `public/images/bart-character-001b.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Character asset unused by live routes/knowledge; only mentioned in old audit notes if at all
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/bart-character-001b.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/bart-character-001b.png`
+
+### `public/images/archy-character-008.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Character asset unused by live routes/knowledge; only mentioned in old audit notes if at all
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/archy-character-008.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/archy-character-008.png`
+
+### `public/images/ali-dash-03.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused ALI dashboard screenshot asset; no code/knowledge references
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/ali-dash-03.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/ali-dash-03.png`
+
+### `public/images/ali-dash-04.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused ALI dashboard screenshot asset; no code/knowledge references
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/ali-dash-04.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/ali-dash-04.png`
+
+### `public/images/about-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/about-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/about-layer-1.png`
+
+### `public/images/about-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/about-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/about-layer-2.png`
+
+### `public/images/about-layer-3.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/about-layer-3.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/about-layer-3.png`
+
+### `public/images/consulting-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/consulting-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/consulting-layer-1.png`
+
+### `public/images/consulting-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/consulting-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/consulting-layer-2.png`
+
+### `public/images/consulting-layer-3.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/consulting-layer-3.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/consulting-layer-3.png`
+
+### `public/images/hero-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/hero-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/hero-layer-1.png`
+
+### `public/images/hero-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/hero-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/hero-layer-2.png`
+
+### `public/images/home-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/home-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/home-layer-1.png`
+
+### `public/images/home-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/home-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/home-layer-2.png`
+
+### `public/images/home-layer-3.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/home-layer-3.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/home-layer-3.png`
+
+### `public/images/home-layer-4.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/home-layer-4.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/home-layer-4.png`
+
+### `public/images/mentor-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/mentor-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/mentor-layer-1.png`
+
+### `public/images/mentor-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/mentor-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/mentor-layer-2.png`
+
+### `public/images/mentor-layer-3.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/mentor-layer-3.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/mentor-layer-3.png`
+
+### `public/images/methods-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/methods-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/methods-layer-1.png`
+
+### `public/images/methods-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/methods-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/methods-layer-2.png`
+
+### `public/images/methods-layer-3.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/methods-layer-3.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/methods-layer-3.png`
+
+### `public/images/philosophy-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/philosophy-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/philosophy-layer-1.png`
+
+### `public/images/philosophy-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/philosophy-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/philosophy-layer-2.png`
+
+### `public/images/philosophy-layer-3.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/philosophy-layer-3.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/philosophy-layer-3.png`
+
+### `public/images/science-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/science-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/science-layer-1.png`
+
+### `public/images/science-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/science-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/science-layer-2.png`
+
+### `public/images/science-layer-3.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/science-layer-3.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/science-layer-3.png`
+
+### `public/images/scoreboard-layer-1.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/scoreboard-layer-1.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/scoreboard-layer-1.png`
+
+### `public/images/scoreboard-layer-2.png`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy page-layer export; no code/knowledge references found
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/scoreboard-layer-2.png`
+- **How to restore:** `npm run cleanup:restore -- --file public/images/scoreboard-layer-2.png`
 
