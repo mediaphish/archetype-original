@@ -1,10 +1,11 @@
 /**
  * Auto V2 — Chat route (Anthropic brain)
  *
- * Response shape matches what `AutoHubPanel.jsx` expects (same as V1):
+ * Response shape matches what AutoV2Panel (and the quarantined V1 AutoHubPanel) expect:
  * { ok, thread, messages, attachments, assistant_message, receipts, bundle_id, idea_id, action_log_id }
  *
- * Rollback: rename this file to `chat-v2.js` and restore `chat-v1-backup.js` as `chat.js`.
+ * Rollback: restore chat-v1-backup.js from backups/_cleanup_quarantine/ (batch
+ * 2026-07-24-auto-v1-and-broken-journal), rename this file aside, and put the backup in place as chat.js.
  */
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';

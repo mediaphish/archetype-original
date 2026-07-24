@@ -62,6 +62,66 @@
       "was_tracked_in_git": true,
       "committed": true,
       "status": "quarantined"
+    },
+    {
+      "original_path": "ao-knowledge-hq-kit/journal/we-live-in-a-not-my-fault-era.md.md",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-auto-v1-and-broken-journal/ao-knowledge-hq-kit/journal/we-live-in-a-not-my-fault-era.md.md",
+      "batch": "2026-07-24-auto-v1-and-broken-journal",
+      "date_quarantined": "2026-07-24",
+      "reason": "Malformed double-extension journal file; build-knowledge already skips *.md.md; appears to contain RTF markers",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "api/ao/auto/chat-v1-backup.js",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-auto-v1-and-broken-journal/api/ao/auto/chat-v1-backup.js",
+      "batch": "2026-07-24-auto-v1-and-broken-journal",
+      "date_quarantined": "2026-07-24",
+      "reason": "Superseded Auto V1 chat handler backup; live handler is chat.js (Auto V2)",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "src/components/ao/AutoHubPanel-v1-backup.jsx",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-auto-v1-and-broken-journal/src/components/ao/AutoHubPanel-v1-backup.jsx",
+      "batch": "2026-07-24-auto-v1-and-broken-journal",
+      "date_quarantined": "2026-07-24",
+      "reason": "Backup of old Auto UI; live Review uses AutoV2Panel",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "src/pages/ao/Review-v1-backup.jsx",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-auto-v1-and-broken-journal/src/pages/ao/Review-v1-backup.jsx",
+      "batch": "2026-07-24-auto-v1-and-broken-journal",
+      "date_quarantined": "2026-07-24",
+      "reason": "Backup Review page; live Review.jsx uses AutoV2Panel and is what App.jsx routes",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "src/components/ao/AutoHubPanel.jsx",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-auto-v1-and-broken-journal/src/components/ao/AutoHubPanel.jsx",
+      "batch": "2026-07-24-auto-v1-and-broken-journal",
+      "date_quarantined": "2026-07-24",
+      "reason": "Only imported by Review-v1-backup.jsx; live Review uses AutoV2Panel — effectively dead with V2",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
     }
   ]
 }
