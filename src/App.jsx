@@ -7,7 +7,6 @@ import {
 } from "./lib/magicLinkBrowserSession";
 import SEO from "./components/SEO";
 import Header from "./components/Header";
-import Hero from "./components/Hero";
 import ChatApp from "./app/ChatApp";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
@@ -98,7 +97,6 @@ import BadLeaderAdminLogin from "./pages/cultureScience/BadLeaderAdminLogin";
 import BadLeaderAdmin from "./pages/cultureScience/BadLeaderAdmin";
 import IndustryReports from "./pages/cultureScience/IndustryReports";
 import Ethics from "./pages/cultureScience/Ethics";
-import Research from "./pages/cultureScience/Research";
 import ArchyPage from "./pages/archy/Archy";
 import FAQsPage from "./pages/FAQs";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
@@ -1298,8 +1296,6 @@ export default function App() {
     );
   }
 
-  // Render Mentoring pages
-
   // Render Culture Science pages
   if (currentPage === 'culture-science') {
     return (
@@ -1360,16 +1356,6 @@ export default function App() {
       </main>
     );
   }
-  if (currentPage === 'culture-science-research') {
-    return (
-      <main className="bg-warm-offWhite text-warm-charcoal">
-        <Header />
-        <Research />
-        <Footer />
-      </main>
-    );
-  }
-
   // Render Archy pages
   if (currentPage === 'archy') {
     return (

@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T17:38:25.422Z
+Generated: 2026-07-24T18:07:46.049Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -130,4 +130,457 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-auto-v1-and-broken-journal/src/components/ao/AutoHubPanel.jsx`
 - **How to restore:** `npm run cleanup:restore -- --file src/components/ao/AutoHubPanel.jsx`
+
+## Batch: `2026-07-24-dead-pages-and-placeholders`
+
+### `src/pages/mentoring/Consulting.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/Consulting.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/Consulting.jsx`
+
+### `src/pages/mentoring/Fractional.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/Fractional.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/Fractional.jsx`
+
+### `src/pages/mentoring/Mentoring.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/Mentoring.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/Mentoring.jsx`
+
+### `src/pages/mentoring/Mentoring1on1.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/Mentoring1on1.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/Mentoring1on1.jsx`
+
+### `src/pages/mentoring/Speaking.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/Speaking.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/Speaking.jsx`
+
+### `src/pages/mentoring/TeamCulture.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/TeamCulture.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/TeamCulture.jsx`
+
+### `src/pages/mentoring/Testimonials.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/Testimonials.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/Testimonials.jsx`
+
+### `src/pages/mentoring/Workshops.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Placeholder Mentoring pages; App no longer routes a Mentoring section
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/mentoring/Workshops.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/mentoring/Workshops.jsx`
+
+### `src/pages/archy/Ask.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Archy placeholder subpage; App forces all /archy/* to main Archy page
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/archy/Ask.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/archy/Ask.jsx`
+
+### `src/pages/archy/Corpus.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Archy placeholder subpage; App forces all /archy/* to main Archy page
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/archy/Corpus.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/archy/Corpus.jsx`
+
+### `src/pages/archy/HowItWorks.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Archy placeholder subpage; App forces all /archy/* to main Archy page
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/archy/HowItWorks.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/archy/HowItWorks.jsx`
+
+### `src/pages/ALI.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy ALI page; superseded by cultureScience/ali SaaS routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/ALI.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/ALI.jsx`
+
+### `src/pages/ALIApply.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy ALI apply page; superseded by cultureScience routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/ALIApply.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/ALIApply.jsx`
+
+### `src/pages/ALIThanks.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Legacy ALI thanks page; superseded by cultureScience routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/ALIThanks.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/ALIThanks.jsx`
+
+### `src/pages/Admin.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused Admin page; not routed; contained placeholder secret pattern
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/Admin.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/Admin.jsx`
+
+### `src/pages/FractionalLeadership.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Old shell; App uses newer fractional-roles paths
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/FractionalLeadership.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/FractionalLeadership.jsx`
+
+### `src/pages/MentoringConsulting.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Old shell; not routed
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/MentoringConsulting.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/MentoringConsulting.jsx`
+
+### `src/pages/Methods.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Old methods shell; App uses newer methods/advisory paths
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/Methods.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/Methods.jsx`
+
+### `src/pages/Playbooks.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Old shell; not routed
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/Playbooks.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/Playbooks.jsx`
+
+### `src/pages/SpeakingWorkshops.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Old shell; not routed
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/SpeakingWorkshops.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/SpeakingWorkshops.jsx`
+
+### `src/pages/cultureScience/ALIDashboard.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Not imported; SaaS dashboard is pages/ali/*
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/cultureScience/ALIDashboard.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/cultureScience/ALIDashboard.jsx`
+
+### `src/pages/methods/Mentorship.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Unused; /methods redirects to /advisory
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/methods/Mentorship.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/methods/Mentorship.jsx`
+
+### `src/pages/research.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Not imported
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/research.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/research.jsx`
+
+### `src/pages/cultureScience/Research.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** /culture-science/research redirects to /culture-science; render path unreachable
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/pages/cultureScience/Research.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/pages/cultureScience/Research.jsx`
+
+### `src/components/Hero.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Imported in App.jsx but never rendered (dead import + component)
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/components/Hero.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/components/Hero.jsx`
+
+### `src/app/app/ChatApp.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Nested duplicate Archy chat tree; live app uses src/app/ChatApp.jsx
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/app/app/ChatApp.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/app/app/ChatApp.jsx`
+
+### `src/app/app/components/DarkHoursBanner.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Nested duplicate Archy chat tree; live app uses src/app/ChatApp.jsx
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/app/app/components/DarkHoursBanner.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/app/app/components/DarkHoursBanner.jsx`
+
+### `src/app/app/components/EscalationButton.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Nested duplicate Archy chat tree; live app uses src/app/ChatApp.jsx
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/app/app/components/EscalationButton.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/app/app/components/EscalationButton.jsx`
+
+### `src/app/app/components/MessageBubble.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Nested duplicate Archy chat tree; live app uses src/app/ChatApp.jsx
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/app/app/components/MessageBubble.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/app/app/components/MessageBubble.jsx`
+
+### `src/app/app/components/QuickPrompts.jsx`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Nested duplicate Archy chat tree; live app uses src/app/ChatApp.jsx
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/app/app/components/QuickPrompts.jsx`
+- **How to restore:** `npm run cleanup:restore -- --file src/app/app/components/QuickPrompts.jsx`
+
+### `src/app/app/utils/darkHours.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Nested duplicate Archy chat tree; live app uses src/app/ChatApp.jsx
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/src/app/app/utils/darkHours.js`
+- **How to restore:** `npm run cleanup:restore -- --file src/app/app/utils/darkHours.js`
+
+### `sl-psychology-research/01_intrinsic_motivation_deci_ryan.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/01_intrinsic_motivation_deci_ryan.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/01_intrinsic_motivation_deci_ryan.md`
+
+### `sl-psychology-research/02_psychological_safety_edmondson.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/02_psychological_safety_edmondson.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/02_psychological_safety_edmondson.md`
+
+### `sl-psychology-research/03_transactional_vs_transformational.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/03_transactional_vs_transformational.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/03_transactional_vs_transformational.md`
+
+### `sl-psychology-research/04_fear_of_evaluation.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/04_fear_of_evaluation.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/04_fear_of_evaluation.md`
+
+### `sl-psychology-research/05_group_identity_purpose.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/05_group_identity_purpose.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/05_group_identity_purpose.md`
+
+### `sl-psychology-research/06_stewardship_vs_agency.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/06_stewardship_vs_agency.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/06_stewardship_vs_agency.md`
+
+### `sl-psychology-research/07_trust_as_currency.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/07_trust_as_currency.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/07_trust_as_currency.md`
+
+### `sl-psychology-research/08_game_theory_zero_sum.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/08_game_theory_zero_sum.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/08_game_theory_zero_sum.md`
+
+### `sl-psychology-research/09_burnout_performanceism.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/09_burnout_performanceism.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/09_burnout_performanceism.md`
+
+### `sl-psychology-research/10_theology_stewardship.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Standalone research notes; not wired into knowledge build or site routes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-dead-pages-and-placeholders/sl-psychology-research/10_theology_stewardship.md`
+- **How to restore:** `npm run cleanup:restore -- --file sl-psychology-research/10_theology_stewardship.md`
 
