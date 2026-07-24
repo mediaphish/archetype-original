@@ -18,6 +18,10 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { getOpenAiKey } from '../../../lib/openaiKey.js';
+import {
+  enforceVoiceGuardrails,
+  enforceVoiceGuardrailsDeep,
+} from '../../../lib/ao/voiceGuardrails.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -562,6 +566,22 @@ Search for current leadership news and trends, then select the best entry from t
 
     console.log(`[reshare-journal] Intelligent selection: ${parsed.slug} — ${parsed.reason}`);
 
+    // reason / signal_summary can surface in Auto chat — clean voice, keep slug/IDs untouched.
+    if (parsed.reason) {
+      const r = await enforceVoiceGuardrails(String(parsed.reason), {
+        anthropicClient: client,
+        contextLabel: 'reshare-selection-reason',
+      });
+      parsed.reason = r.text;
+    }
+    if (parsed.signal_summary) {
+      const r = await enforceVoiceGuardrails(String(parsed.signal_summary), {
+        anthropicClient: client,
+        contextLabel: 'reshare-signal-summary',
+      });
+      parsed.signal_summary = r.text;
+    }
+
     const strengthRaw = String(parsed.signal_strength || 'none').toLowerCase().trim();
     const signal_strength =
       strengthRaw === 'strong' || strengthRaw === 'notable' ? strengthRaw : 'none';
@@ -596,7 +616,7 @@ async function generateReshareCaption(slug, title, body, journalUrl, pullQuote, 
 
 Bart's voice rules — non-negotiable:
 - No em dashes. Ever. Rewrite the sentence instead.
-- No AI signature phrases: "it's worth noting", "at its core", "furthermore", "moreover", "this highlights", "not only X but also Y", "in many ways", "navigate"
+- No AI signature phrases. (Full enforced list lives in lib/ao/voiceGuardrails.js — this prompt line is a first-pass nudge only, not the source of truth.)
 - Short sentences. Direct. No stacked subordinate clauses.
 - No hedging. No throat-clearing. No summaries that restate instead of land.
 - First person where appropriate. Bart is the author.
@@ -646,7 +666,16 @@ Write four reshare captions for this article. Surface a fresh angle. Do not summ
   const clean = text.replace(/```json|```/g, '').trim();
 
   try {
-    return JSON.parse(clean);
+    const captions = JSON.parse(clean);
+    // Reader-facing captions — enforce voice before they are scheduled/shown.
+    // Skipped elsewhere in this file: extractPullQuote (verbatim article text),
+    // detectArticleMood (internal classification), selectReshareEntryIntelligently
+    // (slug/signal JSON; reason cleaned separately below when present).
+    const guarded = await enforceVoiceGuardrailsDeep(captions, {
+      anthropicClient: client,
+      contextLabel: 'reshare-captions',
+    });
+    return guarded.value;
   } catch (e) {
     console.error('[reshare-journal] Failed to parse caption JSON:', e.message);
     console.error('[reshare-journal] Raw response:', text);

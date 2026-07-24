@@ -15,6 +15,7 @@ import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuot
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
+import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeSignal } from '../../../lib/ao/processEpisodeSignal.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
@@ -379,6 +380,22 @@ export default async function handler(req, res) {
     const recentHistory = priorMessages.slice(-6);
     fullReply = enforceResponseRules(fullReply, recentHistory);
 
+    // Voice / anti-AI-signature guardrails — same post-stream timing as enforceResponseRules.
+    // A violation may flicker in the live token stream; it must not survive into the saved thread.
+    {
+      const voiceClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const voiceResult = await enforceVoiceGuardrails(fullReply, {
+        anthropicClient: voiceClient,
+        contextLabel: 'chat-reply',
+      });
+      if (voiceResult.corrected) {
+        console.log(
+          `[chat.js] Voice guardrails corrected chat-reply (${voiceResult.forced ? 'forced-strip' : 'self-correct'}; ${voiceResult.violations.length} hit(s))`
+        );
+      }
+      fullReply = voiceResult.text;
+    }
+
     fullReply = await appendQuoteCardImagesToReplyIfNeeded({
       userMessage,
       priorMessages,
@@ -470,7 +487,12 @@ export default async function handler(req, res) {
               },
             ],
           });
-          const revisedCaption = (editResponse.content?.[0]?.text || '').trim();
+          const revisedCaptionRaw = (editResponse.content?.[0]?.text || '').trim();
+          const voiceResult = await enforceVoiceGuardrails(revisedCaptionRaw, {
+            anthropicClient: editClient,
+            contextLabel: 'reshare-edit-caption',
+          });
+          const revisedCaption = voiceResult.text;
           if (revisedCaption) {
             await supabaseAdmin
               .from('ao_scheduled_posts')
@@ -546,7 +568,7 @@ export default async function handler(req, res) {
 
 Voice rules — non-negotiable:
 - No em dashes. Ever. Rewrite the sentence instead.
-- No AI signature phrases: "it's worth noting", "at its core", "furthermore", "moreover", "this highlights", "not only X but also Y", "in many ways", "navigate"
+- No AI signature phrases. (Full enforced list lives in lib/ao/voiceGuardrails.js — this prompt line is a first-pass nudge only, not the source of truth.)
 - Short sentences. Direct. First person where it fits Bart's voice.
 - Connect a SPECIFIC existing corpus piece to a SPECIFIC external signal. Do not write a generic "reports validate what I've said" essay.
 - Full journal-entry length and depth. Include a clear title as the first line (# Title).
@@ -571,7 +593,12 @@ Return markdown only: a # title line, then the full post body.`,
             ],
           });
 
-          const draftedPost = (draftResponse.content?.[0]?.text || '').trim();
+          const draftedPostRaw = (draftResponse.content?.[0]?.text || '').trim();
+          const draftVoice = await enforceVoiceGuardrails(draftedPostRaw, {
+            anthropicClient: draftClient,
+            contextLabel: 'opportunity-companion-draft',
+          });
+          const draftedPost = draftVoice.text;
 
           await supabaseAdmin
             .from('ao_opportunities')

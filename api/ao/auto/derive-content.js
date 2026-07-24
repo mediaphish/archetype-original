@@ -22,6 +22,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import Anthropic from '@anthropic-ai/sdk';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { enforceVoiceGuardrailsDeep } from '../../../lib/ao/voiceGuardrails.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -66,7 +67,7 @@ export default async function handler(req, res) {
 Bart Paden's voice rules — apply to all derived content:
 - Short sentences. Direct. No hedging.
 - Never em dashes (— or --)
-- No AI filler phrases
+- No AI filler phrases. (Full enforced list lives in lib/ao/voiceGuardrails.js — this prompt line is a first-pass nudge only, not the source of truth.)
 - First person where appropriate
 - Earned, grounded, a little blunt
 
@@ -141,6 +142,13 @@ Generate the content derivation plan for this post. Identify 3-5 LinkedIn chunks
         raw: text.slice(0, 500),
       });
     }
+
+    // Reader-facing derived copy (LinkedIn chunks, captions, quote seeds, etc.)
+    const guarded = await enforceVoiceGuardrailsDeep(plan, {
+      anthropicClient: client,
+      contextLabel: 'derive-content-plan',
+    });
+    plan = guarded.value;
 
     return res.status(200).json({
       ok: true,
