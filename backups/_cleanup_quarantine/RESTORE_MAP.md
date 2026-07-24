@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T18:22:47.013Z
+Generated: 2026-07-24T18:37:44.042Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -939,4 +939,105 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-lib-and-kit-scaffolding/ao-knowledge-hq-kit/PATCH_instructions/package.json.additions.json`
 - **How to restore:** `npm run cleanup:restore -- --file ao-knowledge-hq-kit/PATCH_instructions/package.json.additions.json`
+
+## Batch: `2026-07-24-unused-helpers-oneoffs-ali-sql`
+
+### `lib/supabase.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Anon client unused; all live code uses lib/supabase-admin.js
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/lib/supabase.js`
+- **How to restore:** `npm run cleanup:restore -- --file lib/supabase.js`
+
+### `lib/operators/sanitize.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** No importers found in operators API or elsewhere
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/lib/operators/sanitize.js`
+- **How to restore:** `npm run cleanup:restore -- --file lib/operators/sanitize.js`
+
+### `scripts/send-duplicate-apology.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** One-off apology email trigger; not in package.json; finished ops use
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/scripts/send-duplicate-apology.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/send-duplicate-apology.mjs`
+
+### `scripts/fix-journal-image-paths.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** One-off journal image path repair; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/scripts/fix-journal-image-paths.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/fix-journal-image-paths.mjs`
+
+### `scripts/repair-queue-schedule.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** One-off queue schedule repair; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/scripts/repair-queue-schedule.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/repair-queue-schedule.mjs`
+
+### `database/ali-phase1-schema.sql`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Overlapping ALI phase-1 schema variant; superseded/historical; not runtime
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-schema.sql`
+- **How to restore:** `npm run cleanup:restore -- --file database/ali-phase1-schema.sql`
+
+### `database/ali-phase1-schema-simple.sql`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Overlapping ALI phase-1 schema variant; superseded/historical; not runtime
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-schema-simple.sql`
+- **How to restore:** `npm run cleanup:restore -- --file database/ali-phase1-schema-simple.sql`
+
+### `database/ali-phase1-schema-complete.sql`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Overlapping ALI phase-1 schema variant; historical; only referenced from old notes
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-schema-complete.sql`
+- **How to restore:** `npm run cleanup:restore -- --file database/ali-phase1-schema-complete.sql`
+
+### `database/ali-phase1-migration-fix.sql`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** ALI phase-1 migration fix variant; historical; not runtime
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-migration-fix.sql`
+- **How to restore:** `npm run cleanup:restore -- --file database/ali-phase1-migration-fix.sql`
 

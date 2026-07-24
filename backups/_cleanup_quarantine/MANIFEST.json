@@ -998,6 +998,114 @@
       "was_tracked_in_git": true,
       "committed": true,
       "status": "quarantined"
+    },
+    {
+      "original_path": "lib/supabase.js",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/lib/supabase.js",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "Anon client unused; all live code uses lib/supabase-admin.js",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "lib/operators/sanitize.js",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/lib/operators/sanitize.js",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "No importers found in operators API or elsewhere",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "scripts/send-duplicate-apology.mjs",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/scripts/send-duplicate-apology.mjs",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "One-off apology email trigger; not in package.json; finished ops use",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "scripts/fix-journal-image-paths.mjs",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/scripts/fix-journal-image-paths.mjs",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "One-off journal image path repair; not in package.json",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "scripts/repair-queue-schedule.mjs",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/scripts/repair-queue-schedule.mjs",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "One-off queue schedule repair; not in package.json",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "database/ali-phase1-schema.sql",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-schema.sql",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "Overlapping ALI phase-1 schema variant; superseded/historical; not runtime",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "database/ali-phase1-schema-simple.sql",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-schema-simple.sql",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "Overlapping ALI phase-1 schema variant; superseded/historical; not runtime",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "database/ali-phase1-schema-complete.sql",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-schema-complete.sql",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "Overlapping ALI phase-1 schema variant; historical; only referenced from old notes",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "database/ali-phase1-migration-fix.sql",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-migration-fix.sql",
+      "batch": "2026-07-24-unused-helpers-oneoffs-ali-sql",
+      "date_quarantined": "2026-07-24",
+      "reason": "ALI phase-1 migration fix variant; historical; not runtime",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
     }
   ]
 }
