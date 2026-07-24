@@ -1,0 +1,67 @@
+{
+  "entries": [
+    {
+      "original_path": "project_map.txt",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-zero-risk-junk/project_map.txt",
+      "batch": "2026-07-24-zero-risk-junk",
+      "date_quarantined": "2026-07-24",
+      "reason": "~2.5MB untracked filesystem dump, not used by build or site",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": false,
+      "committed": false,
+      "status": "quarantined",
+      "recovery_note": "Untracked file, quarantined to local disk only. No git history exists for this file — if this machine's local quarantine copy is ever lost, this file cannot be recovered."
+    },
+    {
+      "original_path": "public/videos/ao-posting-platform-linkedin-review.mov",
+      "quarantine_path": null,
+      "batch": "2026-07-24-zero-risk-junk",
+      "date_quarantined": "2026-07-24",
+      "reason": "71MB video, no code references found (re-confirmed independently, not just trusting prior audit)",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": false,
+      "status": "removed_via_git_rm",
+      "recovery_note": "Not quarantined as a physical copy (71MB, avoiding doubling repo size). Recover via: git rev-list -n 1 HEAD -- public/videos/ao-posting-platform-linkedin-review.mov (finds the last commit that still contained the file), then git checkout <that-sha> -- public/videos/ao-posting-platform-linkedin-review.mov (no ^ — checking out the commit itself, not its parent, since the parent may predate the file or be the wrong snapshot)"
+    },
+    {
+      "original_path": "dist/videos/ao-posting-platform-linkedin-review.mov",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-zero-risk-junk/dist/videos/ao-posting-platform-linkedin-review.mov",
+      "batch": "2026-07-24-zero-risk-junk",
+      "date_quarantined": "2026-07-24",
+      "reason": "Untracked duplicate of the public/videos copy; quarantined after public/ removal",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": false,
+      "committed": false,
+      "status": "quarantined",
+      "recovery_note": "Untracked file, quarantined to local disk only. No git history exists for this file — if this machine's local quarantine copy is ever lost, this file cannot be recovered. If it reappears under dist/ after a future build, that signals the public/ copy was not fully removed."
+    },
+    {
+      "original_path": "ao-knowledge-hq-kit/journal/AO-Journal-Posts.zip",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-zero-risk-junk/ao-knowledge-hq-kit/journal/AO-Journal-Posts.zip",
+      "batch": "2026-07-24-zero-risk-junk",
+      "date_quarantined": "2026-07-24",
+      "reason": "Tracked zip; journal posts already exist as extracted .md files",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    },
+    {
+      "original_path": "ao-knowledge-hq-kit/knowledge/accidental-ceo/Accidental_CEO.zip",
+      "quarantine_path": "backups/_cleanup_quarantine/2026-07-24-zero-risk-junk/ao-knowledge-hq-kit/knowledge/accidental-ceo/Accidental_CEO.zip",
+      "batch": "2026-07-24-zero-risk-junk",
+      "date_quarantined": "2026-07-24",
+      "reason": "Tracked zip; Accidental CEO chapters already exist as extracted files",
+      "confidence": "high",
+      "source_audit": "notes/REPO_CLEANUP_AUDIT_2026-07-24.md",
+      "was_tracked_in_git": true,
+      "committed": true,
+      "status": "quarantined"
+    }
+  ]
+}

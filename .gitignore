@@ -18,6 +18,10 @@ dist-ssr
 dist/assets/*.js.map
 dist/.DS_Store
 
+# Cleanup quarantine: keep tracked zip moves in git; never commit formerly-untracked junk
+backups/_cleanup_quarantine/**/project_map.txt
+backups/_cleanup_quarantine/**/dist/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

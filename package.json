@@ -14,6 +14,8 @@
     "preview": "vite preview",
     "build-knowledge": "node scripts/build-knowledge.mjs",
     "audit:corpus": "node scripts/audit-corpus-completeness.mjs",
+    "cleanup:restore": "node scripts/cleanup-restore.mjs",
+    "cleanup:map": "node scripts/cleanup-map.mjs",
     "verify:vercel-config": "node scripts/verify-vercel-config.mjs",
     "verify-publish-eligibility": "node scripts/verify-publish-eligibility.mjs",
     "update-journal": "node scripts/manage-journal.mjs update",
