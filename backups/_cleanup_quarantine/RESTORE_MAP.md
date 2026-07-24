@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T21:47:12.079Z
+Generated: 2026-07-24T22:19:55.895Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -1893,4 +1893,182 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-image-near-dupes-and-layers/public/images/scoreboard-layer-2.png`
 - **How to restore:** `npm run cleanup:restore -- --file public/images/scoreboard-layer-2.png`
+
+## Batch: `2026-07-24-unused-ops-qa-scripts`
+
+### `scripts/ali-volume-survey-runner.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** ALI volume testing helper; not in package.json; no runtime callers
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/ali-volume-survey-runner.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/ali-volume-survey-runner.mjs`
+
+### `scripts/auto-publish-devotionals-local.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Local-only devotionals publish helper; not in package.json; no runtime callers
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/auto-publish-devotionals-local.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/auto-publish-devotionals-local.mjs`
+
+### `scripts/check-subscription.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Manual subscription diagnostic; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/check-subscription.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/check-subscription.mjs`
+
+### `scripts/check-subscription-direct.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Manual subscription diagnostic; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/check-subscription-direct.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/check-subscription-direct.mjs`
+
+### `scripts/disable-prerender-on-commit.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Local git-hook helper; not part of live build
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/disable-prerender-on-commit.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/disable-prerender-on-commit.mjs`
+
+### `scripts/fetch-knowledge.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Manual knowledge fetch; live path uses build-knowledge
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/fetch-knowledge.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/fetch-knowledge.mjs`
+
+### `scripts/generate-faq-review-html.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** FAQ review HTML generator; review artifacts already quarantined
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/generate-faq-review-html.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/generate-faq-review-html.mjs`
+
+### `scripts/mobile-qa-audit.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Mobile QA tooling; result dumps already quarantined
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/mobile-qa-audit.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/mobile-qa-audit.mjs`
+
+### `scripts/mobile-qa-browser.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Mobile QA tooling; result dumps already quarantined
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/mobile-qa-browser.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/mobile-qa-browser.mjs`
+
+### `scripts/mobile-qa-header-check.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Mobile QA tooling; result dumps already quarantined
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/mobile-qa-header-check.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/mobile-qa-header-check.mjs`
+
+### `scripts/mobile-qa-interactions.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Mobile QA tooling; result dumps already quarantined
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/mobile-qa-interactions.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/mobile-qa-interactions.mjs`
+
+### `scripts/notify-todays-devotionals-from-corpus.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Manual/ops notification helper; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/notify-todays-devotionals-from-corpus.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/notify-todays-devotionals-from-corpus.mjs`
+
+### `scripts/operators-apply-interest-schema.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Operators one-off schema helper; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/operators-apply-interest-schema.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/operators-apply-interest-schema.mjs`
+
+### `scripts/operators-probe-interest-table.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Operators probe helper; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/operators-probe-interest-table.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/operators-probe-interest-table.mjs`
+
+### `scripts/operators-seed-simulation.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Operators seed simulation; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/operators-seed-simulation.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/operators-seed-simulation.mjs`
+
+### `scripts/print-public-inventory-summary.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Inventory dump helper; not in package.json
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-ops-qa-scripts/scripts/print-public-inventory-summary.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/print-public-inventory-summary.mjs`
 
