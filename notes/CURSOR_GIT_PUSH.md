@@ -21,3 +21,26 @@ The repo is set up to use a **GitHub token** from the environment when one is pr
    - Save
 
 After that, when the AI runs `git push` in this repo, it will use that token and the push will succeed. Your keychain and normal Terminal usage are unchanged.
+
+## Publishing must use one identical command (avoids repeat approval prompts)
+
+Approval prompts match on the exact command text. Bundling commit, pull, conflict
+resolution, push, and status check into one block makes every publish a brand-new
+command (the commit message differs each time), so a previously granted approval
+never matches and Bart gets asked again on every single publish.
+
+Run prep as separate steps, then publish with exactly this, unchanged, every time:
+
+```
+git push origin main
+```
+
+Rules for agents:
+
+- Never inline a commit message, heredoc, pull, merge, or conditional logic in the
+  same command as the push.
+- Do the commit in its own step. Do `git pull origin main --no-rebase` and any
+  conflict resolution in their own step. Then push with the bare command above.
+- Do not add flags, redirects, `&&` chains, `tail`, or `cd` to the push command.
+  Any variation creates a new command that must be approved again.
+- Deploy status checks are a separate command afterward, never part of the push.
