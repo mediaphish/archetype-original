@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T21:18:56.450Z
+Generated: 2026-07-24T21:41:45.582Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -1240,4 +1240,281 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/tests/test-roi-announcements.js`
 - **How to restore:** `npm run cleanup:restore -- --file tests/test-roi-announcements.js`
+
+## Batch: `2026-07-24-notes-chatgpt-v0-ali-history`
+
+### `notes/ABOUT_PAGE_CONTENT_FOR_CHATGPT.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ABOUT_PAGE_CONTENT_FOR_CHATGPT.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ABOUT_PAGE_CONTENT_FOR_CHATGPT.md`
+
+### `notes/ALI_CHATGPT_REVIEW_FILES.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_CHATGPT_REVIEW_FILES.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_CHATGPT_REVIEW_FILES.md`
+
+### `notes/CHATGPT_CORPUS_FILE_STRUCTURE_PROMPT.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/CHATGPT_CORPUS_FILE_STRUCTURE_PROMPT.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/CHATGPT_CORPUS_FILE_STRUCTURE_PROMPT.md`
+
+### `notes/CHATGPT_PROMPT_ALI_REMAINING_SPECS.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/CHATGPT_PROMPT_ALI_REMAINING_SPECS.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/CHATGPT_PROMPT_ALI_REMAINING_SPECS.md`
+
+### `notes/CHATGPT_PROMPT_ALI_SCORE_CALCULATIONS.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/CHATGPT_PROMPT_ALI_SCORE_CALCULATIONS.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/CHATGPT_PROMPT_ALI_SCORE_CALCULATIONS.md`
+
+### `notes/HOMEPAGE_CONTENT_FOR_CHATGPT.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/HOMEPAGE_CONTENT_FOR_CHATGPT.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/HOMEPAGE_CONTENT_FOR_CHATGPT.md`
+
+### `notes/METHODS_PAGE_CONTENT_FOR_CHATGPT.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/METHODS_PAGE_CONTENT_FOR_CHATGPT.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/METHODS_PAGE_CONTENT_FOR_CHATGPT.md`
+
+### `notes/PHILOSOPHY_PAGE_CONTENT_FOR_CHATGPT.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** External ChatGPT prompt/content dump; historical planning only; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/PHILOSOPHY_PAGE_CONTENT_FOR_CHATGPT.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/PHILOSOPHY_PAGE_CONTENT_FOR_CHATGPT.md`
+
+### `notes/V0_DESIGN_REVIEW.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical V0 design/prompt dump; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/V0_DESIGN_REVIEW.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/V0_DESIGN_REVIEW.md`
+
+### `notes/V0_FIXES_PROMPT.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical V0 design/prompt dump; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/V0_FIXES_PROMPT.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/V0_FIXES_PROMPT.md`
+
+### `notes/V0_FOLLOWUP_DATA_STRUCTURE_FIXES.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical V0 design/prompt dump; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/V0_FOLLOWUP_DATA_STRUCTURE_FIXES.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/V0_FOLLOWUP_DATA_STRUCTURE_FIXES.md`
+
+### `notes/V0_HANDOFF_CORRECTIONS.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical V0 design/prompt dump; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/V0_HANDOFF_CORRECTIONS.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/V0_HANDOFF_CORRECTIONS.md`
+
+### `notes/V0_PROMPT_ALI_COMPLETE_UI.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical V0 design/prompt dump; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/V0_PROMPT_ALI_COMPLETE_UI.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/V0_PROMPT_ALI_COMPLETE_UI.md`
+
+### `notes/V0_RESPONSE_REVIEW.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical V0 design/prompt dump; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/V0_RESPONSE_REVIEW.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/V0_RESPONSE_REVIEW.md`
+
+### `notes/ALI_1M_RESPONSES_PLAN.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_1M_RESPONSES_PLAN.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_1M_RESPONSES_PLAN.md`
+
+### `notes/ALI_BACKEND_INTEGRATION_COMPLETE.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_BACKEND_INTEGRATION_COMPLETE.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_BACKEND_INTEGRATION_COMPLETE.md`
+
+### `notes/ALI_BACKEND_INTEGRATION_STATUS.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_BACKEND_INTEGRATION_STATUS.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_BACKEND_INTEGRATION_STATUS.md`
+
+### `notes/ALI_DASHBOARD_REPORTS_DIFFERENTIATION_PLAN.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_DASHBOARD_REPORTS_DIFFERENTIATION_PLAN.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_DASHBOARD_REPORTS_DIFFERENTIATION_PLAN.md`
+
+### `notes/ALI_IMPLEMENTATION_PLAN.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_IMPLEMENTATION_PLAN.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_IMPLEMENTATION_PLAN.md`
+
+### `notes/ALI_IMPLEMENTATION_STATUS.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_IMPLEMENTATION_STATUS.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_IMPLEMENTATION_STATUS.md`
+
+### `notes/ALI_PHASE1_IMPLEMENTATION.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_PHASE1_IMPLEMENTATION.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_PHASE1_IMPLEMENTATION.md`
+
+### `notes/ALI_SCORING_IMPLEMENTATION_NOTES.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical ALI planning/status note; superseded by live product; not served
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/ALI_SCORING_IMPLEMENTATION_NOTES.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ALI_SCORING_IMPLEMENTATION_NOTES.md`
+
+### `notes/AUTO_V2_CURSOR_INSTRUCTIONS.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical Auto V2 cutover prompt/docs; not runtime
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/AUTO_V2_CURSOR_INSTRUCTIONS.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/AUTO_V2_CURSOR_INSTRUCTIONS.md`
+
+### `notes/AUTO_V2_WHAT_WE_SHIPPED.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical Auto V2 cutover prompt/docs; not runtime
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/AUTO_V2_WHAT_WE_SHIPPED.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/AUTO_V2_WHAT_WE_SHIPPED.md`
+
+### `notes/auto-v2-CURSOR_PROMPT.md`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Historical Auto V2 cutover prompt/docs; not runtime
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-chatgpt-v0-ali-history/notes/auto-v2-CURSOR_PROMPT.md`
+- **How to restore:** `npm run cleanup:restore -- --file notes/auto-v2-CURSOR_PROMPT.md`
 
