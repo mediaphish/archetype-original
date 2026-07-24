@@ -1,6 +1,6 @@
 # Cleanup Quarantine — Restore Map
 
-Generated: 2026-07-24T18:37:44.042Z
+Generated: 2026-07-24T21:18:56.450Z
 
 This map shows every file moved aside during cleanup, where it went, and how to bring it back.
 Nothing is permanently deleted until you explicitly say so after living with the change.
@@ -1040,4 +1040,204 @@ Nothing is permanently deleted until you explicitly say so after living with the
 - **Quarantine copy committed:** true
 - **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-unused-helpers-oneoffs-ali-sql/database/ali-phase1-migration-fix.sql`
 - **How to restore:** `npm run cleanup:restore -- --file database/ali-phase1-migration-fix.sql`
+
+## Batch: `2026-07-24-notes-artifacts-kit-scaffolding-oneoffs`
+
+### `ao-knowledge-hq-kit/scripts/build-index.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Kit-local index builder; live site uses scripts/build-knowledge.mjs
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/ao-knowledge-hq-kit/scripts/build-index.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file ao-knowledge-hq-kit/scripts/build-index.mjs`
+
+### `ao-knowledge-hq-kit/.github/workflows/build-knowledge.yml`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Nested kit workflow; real workflows live in /.github/workflows/
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/ao-knowledge-hq-kit/.github/workflows/build-knowledge.yml`
+- **How to restore:** `npm run cleanup:restore -- --file ao-knowledge-hq-kit/.github/workflows/build-knowledge.yml`
+
+### `notes/com.archetypeoriginal.devotionals.autopublish.plist`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Local macOS launchd plist; not part of the website
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/com.archetypeoriginal.devotionals.autopublish.plist`
+- **How to restore:** `npm run cleanup:restore -- --file notes/com.archetypeoriginal.devotionals.autopublish.plist`
+
+### `notes/faq-full-export-for-review.txt`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** FAQ review export artifact; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/faq-full-export-for-review.txt`
+- **How to restore:** `npm run cleanup:restore -- --file notes/faq-full-export-for-review.txt`
+
+### `notes/faq-review-culture-science-audit.html`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** FAQ review HTML artifact; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/faq-review-culture-science-audit.html`
+- **How to restore:** `npm run cleanup:restore -- --file notes/faq-review-culture-science-audit.html`
+
+### `notes/faq-review-viewer.html`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** FAQ review HTML artifact; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/faq-review-viewer.html`
+- **How to restore:** `npm run cleanup:restore -- --file notes/faq-review-viewer.html`
+
+### `notes/culture-science-corpus-export.txt`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Corpus export dump; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/culture-science-corpus-export.txt`
+- **How to restore:** `npm run cleanup:restore -- --file notes/culture-science-corpus-export.txt`
+
+### `notes/journal-summary.txt`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Journal listing dump; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/journal-summary.txt`
+- **How to restore:** `npm run cleanup:restore -- --file notes/journal-summary.txt`
+
+### `notes/mobile-qa-audit-results.json`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Mobile QA result dump; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/mobile-qa-audit-results.json`
+- **How to restore:** `npm run cleanup:restore -- --file notes/mobile-qa-audit-results.json`
+
+### `notes/mobile-qa-browser-results.json`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Mobile QA result dump; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/mobile-qa-browser-results.json`
+- **How to restore:** `npm run cleanup:restore -- --file notes/mobile-qa-browser-results.json`
+
+### `notes/mobile-qa-interaction-results.json`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Mobile QA result dump; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/mobile-qa-interaction-results.json`
+- **How to restore:** `npm run cleanup:restore -- --file notes/mobile-qa-interaction-results.json`
+
+### `notes/ali-instrument-v2-curation.csv`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** ALI instrument curation CSV artifact; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/ali-instrument-v2-curation.csv`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ali-instrument-v2-curation.csv`
+
+### `notes/ali-instrument-v2-curation.approved.csv`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** ALI instrument curation CSV artifact; not served
+- **Confidence:** high
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/notes/ali-instrument-v2-curation.approved.csv`
+- **How to restore:** `npm run cleanup:restore -- --file notes/ali-instrument-v2-curation.approved.csv`
+
+### `scripts/list-journal-entries.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Manual inventory helper; not in package.json; overlaps manage-journal
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/scripts/list-journal-entries.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/list-journal-entries.mjs`
+
+### `scripts/strip-em-dashes-journal.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** One-off content cleanup script; not in package.json
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/scripts/strip-em-dashes-journal.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/strip-em-dashes-journal.mjs`
+
+### `scripts/test-longform-truncation.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Ad-hoc test script; not in package.json
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/scripts/test-longform-truncation.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/test-longform-truncation.mjs`
+
+### `scripts/test-retry-emails.mjs`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Ad-hoc test script; not in package.json
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/scripts/test-retry-emails.mjs`
+- **How to restore:** `npm run cleanup:restore -- --file scripts/test-retry-emails.mjs`
+
+### `tests/test-roi-announcements.js`
+
+- **Status:** quarantined
+- **Date:** 2026-07-24
+- **Reason:** Ad-hoc test file; not part of active Jest suite naming
+- **Confidence:** medium
+- **Was tracked in git:** true
+- **Quarantine copy committed:** true
+- **Quarantine path:** `backups/_cleanup_quarantine/2026-07-24-notes-artifacts-kit-scaffolding-oneoffs/tests/test-roi-announcements.js`
+- **How to restore:** `npm run cleanup:restore -- --file tests/test-roi-announcements.js`
 
