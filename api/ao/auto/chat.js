@@ -22,6 +22,7 @@ import {
   buildBriefNavigationPath,
   extractGuestIdsFromMessages,
   isBriefPageRequest,
+  isGuestPrepReady,
 } from '../../../lib/ao/briefPageRouting.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { runReshareCycle, generateBrandedOpportunityImage } from './reshare-journal.js';
@@ -414,19 +415,7 @@ export default async function handler(req, res) {
         const lookup = await getGuestsByIds(guestIds);
         const guestsById = new Map((lookup.guests || []).map((guest) => [guest.id, guest]));
         const everyGuestReady =
-          lookup.ok &&
-          guestIds.every((id) => {
-            const guest = guestsById.get(id);
-            const researchReady = Boolean(String(guest?.research_brief || '').trim());
-            const questions = guest?.suggested_questions;
-            const questionsReady =
-              Array.isArray(questions)
-                ? questions.length > 0
-                : Boolean(questions && typeof questions === 'object'
-                    ? Object.keys(questions).length > 0
-                    : String(questions || '').trim());
-            return researchReady && questionsReady;
-          });
+          lookup.ok && guestIds.every((id) => isGuestPrepReady(guestsById.get(id)));
 
         if (everyGuestReady) {
           const navigationPath = buildBriefNavigationPath(guestIds);
