@@ -70,6 +70,7 @@ import AOSettings from "./pages/ao/Settings";
 import AOScout from "./pages/ao/Scout";
 import AOLinkedInHandoff from "./pages/ao/LinkedInHandoff";
 import PodcastGuestAdmin from "./pages/ao/PodcastGuestAdmin";
+import PodcastGuestAdminCombined from "./pages/ao/PodcastGuestAdminCombined";
 import PodcastDashboard from "./pages/ao/PodcastDashboard";
 // Operators pages - Lazy loaded for better performance
 const OperatorsLanding = lazy(() => import("./pages/operators/Landing"));
@@ -238,6 +239,7 @@ export default function App() {
       if (path === '/ao/writing') return 'ao-writing';
       if (path === '/ao/settings') return 'ao-settings';
       if (path === '/ao/podcast') return 'ao-podcast';
+      if (/^\/ao\/podcast\/guest-combined\/[^/]+$/.test(path)) return 'ao-podcast-guest-combined';
       if (/^\/ao\/podcast\/guest\/[^/]+$/.test(path)) return 'ao-podcast-guest';
       return 'ao-command-center';
     }
@@ -471,6 +473,7 @@ export default function App() {
         else if (path === '/ao/writing') setCurrentPage('ao-writing');
         else if (path === '/ao/settings') setCurrentPage('ao-settings');
         else if (path === '/ao/podcast') setCurrentPage('ao-podcast');
+        else if (/^\/ao\/podcast\/guest-combined\/[^/]+$/.test(path)) setCurrentPage('ao-podcast-guest-combined');
         else if (/^\/ao\/podcast\/guest\/[^/]+$/.test(path)) setCurrentPage('ao-podcast-guest');
         else {
           window.history.replaceState({}, '', '/ao/analyst');
@@ -1072,6 +1075,9 @@ export default function App() {
   }
   if (currentPage === 'ao-podcast-guest') {
     return <PodcastGuestAdmin />;
+  }
+  if (currentPage === 'ao-podcast-guest-combined') {
+    return <PodcastGuestAdminCombined />;
   }
   if (currentPage === 'ao-podcast') {
     return <PodcastDashboard />;

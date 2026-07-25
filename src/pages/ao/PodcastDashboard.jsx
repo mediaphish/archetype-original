@@ -491,6 +491,15 @@ export default function PodcastDashboard() {
                 </button>
                 <button
                   type="button"
+                  onClick={() =>
+                    navigateTo(`/ao/podcast/guest-combined/${selectedGuestIds.join(',')}`)
+                  }
+                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  View combined prep
+                </button>
+                <button
+                  type="button"
                   onClick={() => handleBuildMultiGuestEpisode(selectedGuestIds)}
                   disabled={buildingEpisodeId === 'multi'}
                   className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"

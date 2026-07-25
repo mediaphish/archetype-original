@@ -40,6 +40,7 @@ export default async function handler(req, res) {
     ok: true,
     guest: {
       ...guestToPublicView(loaded.guest),
+      episode_thread_id: loaded.guest.episode_thread_id || null,
       has_scheduled_recording,
     },
   });
