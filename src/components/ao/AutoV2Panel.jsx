@@ -17,6 +17,7 @@ import React, {
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
+import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 
 // ─── Artifact parsing ─────────────────────────────────────────────────────────
 
@@ -249,8 +250,14 @@ function extractNavigateToSignal(content) {
   return match ? match[1] : null;
 }
 
+function stripBareKnownSignalMentions(text) {
+  return String(text || '').replace(/\[\/?([A-Z_]+)\]/g, (match, tagName) =>
+    KNOWN_REAL_SIGNALS.has(tagName) ? '' : match
+  );
+}
+
 function stripGeneratedImageBlocksFromChat(text) {
-  return String(text || '')
+  const stripped = String(text || '')
     .replace(/\[IMAGES_GENERATED\][\s\S]*?\[\/IMAGES_GENERATED\]/g, '')
     .replace(/\[DALLE_GENERATE[^\]]*\]/gi, '')
     .replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '')
@@ -276,8 +283,12 @@ function stripGeneratedImageBlocksFromChat(text) {
     .replace(/\[GUEST_ID:[^\]]*\]/gi, '')
     .replace(/\[EPISODE_DRAFT[^\]]*\]/gi, '')
     .replace(/\[CARD[\s\S]*?\[\/CARD\]/gi, '')
-    .replace(/\[LINE[^\]]*\][\s\S]*?\[\/LINE\]/gi, '')
-    .trim();
+    .replace(/\[LINE[^\]]*\][\s\S]*?\[\/LINE\]/gi, '');
+
+  // Well-formed blocks/signals are already handled above. Remove only exact,
+  // attribute-less mentions of known real signal names that remain, such as a
+  // conversational "[EPISODE_RESEARCH_COMPLETE]". Preserve all other brackets.
+  return stripBareKnownSignalMentions(stripped).trim();
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

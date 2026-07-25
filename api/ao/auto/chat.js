@@ -17,6 +17,12 @@ import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
+import { getGuestsByIds } from '../../../lib/ao/guestIntakeStore.js';
+import {
+  buildBriefNavigationPath,
+  extractGuestIdsFromMessages,
+  isBriefPageRequest,
+} from '../../../lib/ao/briefPageRouting.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { runReshareCycle, generateBrandedOpportunityImage } from './reshare-journal.js';
 import { approveOrDiscardReshare } from './reshare-review.js';
@@ -393,6 +399,46 @@ export default async function handler(req, res) {
         );
       }
       fullReply = voiceResult.text;
+    }
+
+    // Deterministic brief-page navigation. The model often explains that the
+    // page exists but forgets the exact [NAVIGATE_TO] tag the client requires.
+    // Run after voice correction so no later model rewrite can drop the signal.
+    // Resolve only IDs seeded into this thread; never guess by guest name.
+    if (
+      isBriefPageRequest(userMessage) &&
+      !/\[NAVIGATE_TO\s+path="[^"]+"\]/i.test(fullReply)
+    ) {
+      const guestIds = extractGuestIdsFromMessages(priorMessages);
+      if (guestIds.length > 0) {
+        const lookup = await getGuestsByIds(guestIds);
+        const guestsById = new Map((lookup.guests || []).map((guest) => [guest.id, guest]));
+        const everyGuestReady =
+          lookup.ok &&
+          guestIds.every((id) => {
+            const guest = guestsById.get(id);
+            const researchReady = Boolean(String(guest?.research_brief || '').trim());
+            const questions = guest?.suggested_questions;
+            const questionsReady =
+              Array.isArray(questions)
+                ? questions.length > 0
+                : Boolean(questions && typeof questions === 'object'
+                    ? Object.keys(questions).length > 0
+                    : String(questions || '').trim());
+            return researchReady && questionsReady;
+          });
+
+        if (everyGuestReady) {
+          const navigationPath = buildBriefNavigationPath(guestIds);
+          if (navigationPath) {
+            fullReply =
+              `${fullReply.trim()}\n\n[NAVIGATE_TO path="${navigationPath}"]`.trim();
+            console.log(
+              `[chat.js] Injected missing brief-page navigation signal: ${navigationPath}`
+            );
+          }
+        }
+      }
     }
 
     fullReply = await appendQuoteCardImagesToReplyIfNeeded({
