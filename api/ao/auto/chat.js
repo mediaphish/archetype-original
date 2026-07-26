@@ -504,15 +504,23 @@ export default async function handler(req, res) {
     // Stream the model response token by token.
     // Soft-timeout at 270s so we can still send a real error event before
     // Vercel's 300s hard kill (which would leave the client in silence).
+    // Combined budget covers the first stream AND any corpus-fetch synthesis call.
+    const SOFT_TIMEOUT_MS = 270_000;
+    const streamStartedAt = Date.now();
     let fullReply = '';
     let streamError = null;
+    let streamResult = null;
 
     function timeoutAfter(ms, message) {
       return new Promise((_, reject) => setTimeout(() => reject(new Error(message)), ms));
     }
 
+    function remainingSoftBudgetMs() {
+      return Math.max(0, SOFT_TIMEOUT_MS - (Date.now() - streamStartedAt));
+    }
+
     try {
-      const streamResult = await Promise.race([
+      streamResult = await Promise.race([
         runAutoChatStream(
           history,
           currentMessageContent,
@@ -525,7 +533,7 @@ export default async function handler(req, res) {
           }
         ),
         timeoutAfter(
-          270_000,
+          SOFT_TIMEOUT_MS,
           'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.'
         ),
       ]);
@@ -938,27 +946,22 @@ Return markdown only: a # title line, then the full post body.`,
     }
 
     // Real, complete, untruncated full-text fetch by slug or title — no similarity gating,
-    // no preview truncation. This is the actual fix for a repeated, confirmed failure: every
-    // prior corpus system (vector DB, Library browser) only ever returned truncated previews
-    // while being described as "full text." This reads the real file, in full, every time.
-    const corpusFetchMatch = fullReply.match(/\[CORPUS_FETCH_FULL_TEXT([^\]]*)\]/i);
-    if (corpusFetchMatch) {
-      const attrBlob = corpusFetchMatch[1] || '';
-      const slugMatch = attrBlob.match(/\bslug="([^"]*)"/i);
-      const titleMatch = attrBlob.match(/\btitle="([^"]*)"/i);
-      const requestedSlug = (slugMatch?.[1] || '').trim();
-      const requestedTitle = (titleMatch?.[1] || '').trim();
-
+    // no preview truncation. Resolves ALL CORPUS_FETCH_FULL_TEXT signals in this turn
+    // (not just the first). Fetched bodies are injected into a synthesis call — never
+    // dumped raw into the visible/stored reply.
+    const corpusFetchMatches = [...fullReply.matchAll(/\[CORPUS_FETCH_FULL_TEXT([^\]]*)\]/gi)];
+    if (corpusFetchMatches.length > 0) {
       try {
         fullReply = fullReply.replace(/\[\/?CORPUS_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
 
-        let resolvedSlug = requestedSlug;
         let knowledgeDocs = null;
-
         const loadKnowledgeDocs = () => {
           if (knowledgeDocs) return knowledgeDocs;
           try {
-            const knowledgeRaw = fs.readFileSync(path.join(process.cwd(), 'public/knowledge.json'), 'utf8');
+            const knowledgeRaw = fs.readFileSync(
+              path.join(process.cwd(), 'public/knowledge.json'),
+              'utf8'
+            );
             knowledgeDocs = JSON.parse(knowledgeRaw)?.docs || [];
           } catch (_) {
             knowledgeDocs = [];
@@ -980,7 +983,6 @@ Return markdown only: a # title line, then the full post body.`,
           for (const p of candidatePathsForSlug(slug)) {
             if (fs.existsSync(p)) return p;
           }
-          // Chapters and other kit docs: shallow search under ao-knowledge-hq-kit/
           const kitRoot = path.join(process.cwd(), 'ao-knowledge-hq-kit');
           const stack = [kitRoot];
           while (stack.length) {
@@ -1004,39 +1006,187 @@ Return markdown only: a # title line, then the full post body.`,
           return null;
         };
 
-        let filePath = resolvedSlug ? findMarkdownPath(resolvedSlug) : null;
+        const parseFrontmatterMeta = (raw) => {
+          const titleLine = ((raw.match(/^title:\s*(.+)$/m) || [])[1] || '')
+            .trim()
+            .replace(/^['"]|['"]$/g, '');
+          const publishDateLine = (
+            (raw.match(/^publish_date:\s*'?([^'\n]+)'?$/m) || [])[1] || 'unknown'
+          ).trim();
+          let summaryLine = '';
+          const folded = raw.match(/^summary:\s*>-?\s*\n((?:[ \t].*\n?)*)/m);
+          if (folded) {
+            summaryLine = folded[1]
+              .split('\n')
+              .map((l) => l.trim())
+              .filter(Boolean)
+              .join(' ')
+              .trim();
+          } else {
+            summaryLine = ((raw.match(/^summary:\s*(.+)$/m) || [])[1] || '')
+              .trim()
+              .replace(/^['"]|['"]$/g, '');
+          }
+          return { titleLine, publishDateLine, summaryLine };
+        };
 
-        // Fall back to title match against knowledge.json if no slug was given or the slug doesn't resolve.
-        if (!filePath && requestedTitle) {
-          const match = loadKnowledgeDocs().find(
-            (d) => String(d.title || '').trim().toLowerCase() === requestedTitle.toLowerCase()
-          );
-          if (match?.slug) {
-            resolvedSlug = match.slug;
-            filePath = findMarkdownPath(resolvedSlug);
+        const resolvedDocs = [];
+        const failures = [];
+
+        for (const match of corpusFetchMatches) {
+          const attrBlob = match[1] || '';
+          const slugMatch = attrBlob.match(/\bslug="([^"]*)"/i);
+          const titleMatch = attrBlob.match(/\btitle="([^"]*)"/i);
+          const requestedSlug = (slugMatch?.[1] || '').trim();
+          const requestedTitle = (titleMatch?.[1] || '').trim();
+
+          let resolvedSlug = requestedSlug;
+          let filePath = resolvedSlug ? findMarkdownPath(resolvedSlug) : null;
+
+          if (!filePath && requestedTitle) {
+            const byTitle = loadKnowledgeDocs().find(
+              (d) => String(d.title || '').trim().toLowerCase() === requestedTitle.toLowerCase()
+            );
+            if (byTitle?.slug) {
+              resolvedSlug = byTitle.slug;
+              filePath = findMarkdownPath(resolvedSlug);
+            }
+          }
+
+          if (filePath) {
+            const raw = fs.readFileSync(filePath, 'utf8');
+            const fmEnd = raw.indexOf('\n---', 3);
+            const fullBody = fmEnd >= 0 ? raw.slice(fmEnd + 4).trim() : raw.trim();
+            const meta = parseFrontmatterMeta(raw);
+            resolvedDocs.push({
+              slug: resolvedSlug,
+              title: meta.titleLine || resolvedSlug,
+              publishDate: meta.publishDateLine,
+              summary: meta.summaryLine,
+              body: fullBody,
+            });
+            continue;
+          }
+
+          const docs = loadKnowledgeDocs();
+          const kjMatch =
+            (resolvedSlug && docs.find((d) => d.slug === resolvedSlug)) ||
+            (requestedTitle &&
+              docs.find(
+                (d) => String(d.title || '').trim().toLowerCase() === requestedTitle.toLowerCase()
+              )) ||
+            null;
+          if (kjMatch?.body && String(kjMatch.body).trim()) {
+            resolvedSlug = kjMatch.slug || resolvedSlug || 'unknown';
+            resolvedDocs.push({
+              slug: resolvedSlug,
+              title: kjMatch.title || resolvedSlug,
+              publishDate: kjMatch.publish_date || kjMatch.date || 'unknown',
+              summary: kjMatch.summary || kjMatch.email_summary || '',
+              body: String(kjMatch.body).trim(),
+            });
+          } else {
+            failures.push({ requestedSlug, requestedTitle });
+            fullReply =
+              `${fullReply}\n\n[CORPUS_FETCH_FAILED slug="${requestedSlug || 'unknown'}"]\nCould not find a document matching slug "${requestedSlug}" or title "${requestedTitle}". Confirm the exact slug from the FULL CORPUS INDEX and try again.\n[/CORPUS_FETCH_FAILED]`.trim();
           }
         }
 
-        if (filePath) {
-          const raw = fs.readFileSync(filePath, 'utf8');
-          const fmEnd = raw.indexOf('\n---', 3);
-          const fullBody = fmEnd >= 0 ? raw.slice(fmEnd + 4).trim() : raw.trim();
-          const titleLine = (raw.match(/^title:\s*(.+)$/m) || [])[1] || resolvedSlug;
-          fullReply = `${fullReply}\n\n[CORPUS_FULL_TEXT slug="${resolvedSlug}"]\nTitle: ${titleLine}\n\n${fullBody}\n[/CORPUS_FULL_TEXT]`.trim();
-        } else {
-          // Last resort: full body already stored in knowledge.json (same bytes as source for journal posts).
-          const docs = loadKnowledgeDocs();
-          const match =
-            (resolvedSlug && docs.find((d) => d.slug === resolvedSlug)) ||
-            (requestedTitle &&
-              docs.find((d) => String(d.title || '').trim().toLowerCase() === requestedTitle.toLowerCase())) ||
-            null;
-          if (match?.body && String(match.body).trim()) {
-            resolvedSlug = match.slug || resolvedSlug || 'unknown';
-            fullReply = `${fullReply}\n\n[CORPUS_FULL_TEXT slug="${resolvedSlug}"]\nTitle: ${match.title || resolvedSlug}\n\n${String(match.body).trim()}\n[/CORPUS_FULL_TEXT]`.trim();
-          } else {
-            fullReply = `${fullReply}\n\n[CORPUS_FETCH_FAILED slug="${requestedSlug || 'unknown'}"]\nCould not find a document matching slug "${requestedSlug}" or title "${requestedTitle}". Confirm the exact slug from the FULL CORPUS INDEX and try again.\n[/CORPUS_FETCH_FAILED]`.trim();
+        if (resolvedDocs.length > 0) {
+          const remainingMs = remainingSoftBudgetMs();
+          if (remainingMs < 8_000) {
+            sendEvent('error', {
+              ok: false,
+              error:
+                'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.',
+            });
+            res.end();
+            return;
           }
+
+          const retrievedBlock = resolvedDocs
+            .map(
+              (d) => `### ${d.title} (slug: ${d.slug})
+Published: ${d.publishDate}
+Summary: ${d.summary || '(none)'}
+
+${d.body}`
+            )
+            .join('\n\n---\n\n');
+
+          const synthesisSystem = `${streamResult.systemPrompt || ''}
+
+## RETRIEVED DOCUMENT(S) — FOR YOUR USE, DO NOT QUOTE IN FULL UNLESS BART EXPLICITLY ASKS FOR THE VERBATIM TEXT
+
+The documents below were fetched server-side for this turn. Use them to answer Bart. Do not dump the raw file text into the chat. Synthesize, cite, and compare as needed. Include publish dates and series ordering when relevant.
+
+${retrievedBlock}
+`.trim();
+
+          const synthesisMessages =
+            Array.isArray(streamResult.messages) && streamResult.messages.length > 0
+              ? streamResult.messages
+              : [{ role: 'user', content: userMessage }];
+
+          // Replace the preamble/signal reply — synthesis becomes the stored/visible answer.
+          fullReply = '';
+          const synthesisClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+          const synthesisModel =
+            process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-5';
+
+          try {
+            await Promise.race([
+              (async () => {
+                const synthStream = synthesisClient.messages.stream({
+                  model: synthesisModel,
+                  max_tokens: 8000,
+                  system: synthesisSystem,
+                  messages: synthesisMessages,
+                });
+                synthStream.on('error', (err) => {
+                  console.error(
+                    '[chat.js] Corpus synthesis stream error:',
+                    err?.message || err
+                  );
+                });
+                synthStream.on('text', (text) => {
+                  if (!text) return;
+                  fullReply += text;
+                  sendEvent('token', { token: text });
+                });
+                await synthStream.finalMessage();
+              })(),
+              timeoutAfter(
+                remainingMs,
+                'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.'
+              ),
+            ]);
+          } catch (synthErr) {
+            console.error('[chat.js] Corpus synthesis failed:', synthErr?.message || synthErr);
+            sendEvent('error', {
+              ok: false,
+              error:
+                synthErr?.message ||
+                'Auto retrieved the documents but could not finish synthesizing a reply. Try again.',
+            });
+            res.end();
+            return;
+          }
+
+          if (!String(fullReply || '').trim()) {
+            sendEvent('error', {
+              ok: false,
+              error:
+                'Auto retrieved the documents but returned an empty synthesis. Try again.',
+            });
+            res.end();
+            return;
+          }
+
+          console.log(
+            `[chat.js] Corpus synthesis complete for: ${resolvedDocs.map((d) => d.slug).join(', ')}` +
+              (failures.length ? ` (${failures.length} failed)` : '')
+          );
         }
       } catch (err) {
         const safeMessage = err?.message || String(err);
