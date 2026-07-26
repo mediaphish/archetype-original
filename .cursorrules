@@ -58,13 +58,13 @@ The AI acts as:
    - Explain technical decisions in plain terms
    - Use analogies when helpful
    - If user doesn't understand, simplify further
-3. **Wait for Approval**: Never execute without explicit approval
+3. **Wait for Approval**: For **new** product/UX work, never execute without explicit approval
    - User may approve
    - User may say "I don't care" → Treat as approval and proceed
    - User may ask questions → Answer in plain language, then wait for approval
-   - **Exception:** When the user attaches or references a **Claude-authored prompt spec** (see below), that document is the approved plan—proceed without a separate approval step unless the user asks to review first or something in the spec is genuinely unclear
-4. **Ask Questions**: If anything is unclear, ask before proceeding
-5. **Execute**: Only after approval (or "I don't care" response), or when executing against an attached Claude-authored prompt spec
+   - **Exceptions (do not wait):** Claude-authored prompt specs (below); anything listed under **Standing approvals — do not re-ask**; publish/commit/push of finished approved work
+4. **Ask Questions**: If anything is unclear, ask before proceeding — but do not re-ask for standing processes
+5. **Execute**: After approval (or "I don't care"), or immediately when a standing approval / Claude prompt already covers the work
 
 ### Claude-authored prompt specs (approved plans)
 
@@ -76,6 +76,37 @@ When the user attaches or references a **prompt or spec written by Claude** (for
 - If the prompt is silent on a decision, follow existing project conventions and the Question-Asking Protocol—do not guess or reinterpret scope.
 - You may briefly summarize what you are doing in plain language when starting work; using the Claude prompt as the plan does not replace reporting back or listing changed files when work is done.
 
+### Standing approvals — do not re-ask (mandatory)
+
+**Approval is for new product decisions, not for repeating the same process.**
+
+Once Bart has approved a *kind of work* (or this file already authorizes it), **do that work without asking again** in later turns or sessions. Re-asking for the same process wastes his time and money.
+
+**Already standing — never gate these behind “Should I…?” / “Want me to…?” / “Say the word…”:**
+
+1. **Publish finished work** — commit and push so the live site updates (see Commit & Deploy below).
+2. **Claude prompt specs** — attached/referenced `cursor-prompt-*.md` (or equivalent) is the plan; execute it.
+3. **“I don’t care” / prior explicit approve** — for that decision and the same decision type when it comes up again the same way.
+4. **Established project routines** already documented here (devotional overlap check → integrate after he decides; knowledge refresh as part of content publish; reconcile/pull when the remote moved; quarantine/restore using the existing cleanup mechanism when he asks for another cleanup pass of the same kind).
+5. **Mechanical follow-through** after an approved plan (run the checks the plan calls for, list changed files, report done) — do not pause mid-pipeline to re-confirm steps he already approved.
+
+**Still ask (once) when it is genuinely new:**
+
+- A **new** feature, page, or behavior he has not approved yet
+- A **real choice** with different outcomes (what to keep vs remove, business preference, content judgment)
+- Something **unclear or conflicting** in a prompt/spec
+- Anything that would **delete live customer-facing content** or change public messaging without a plan he approved
+
+**Anti-patterns (forbidden):**
+
+- Asking permission to commit, push, or “deploy” after site work is done
+- Asking permission to execute a Claude prompt he just attached
+- Asking again for the same cleanup / quarantine / inventory pass style after he already chose that path
+- Turning every routine step into a mini approval gate (“Ready for me to continue?”, “OK to proceed with step 2?”) when the plan was already approved
+- Confusing “ask when scope is unclear” with “ask before every familiar action”
+
+If unsure whether something is standing vs new: prefer **one short clarifying question** over a full re-plan — and never invent a second approval loop for publish or for an attached Claude spec.
+
 ### Question-Asking Protocol
 - When requirements are ambiguous → Ask
 - When multiple valid approaches exist → Ask which to use (in plain language)
@@ -83,6 +114,7 @@ When the user attaches or references a **prompt or spec written by Claude** (for
 - When scope is unclear → Ask for clarification
 - **When you would otherwise interpret** (e.g. what to include, what counts as "relevant", what to leave out) → **Do not interpret. Ask instead.**
 - Never assume or "guess" what user wants
+- **Do not** use this protocol to re-litigate standing approvals above. Ambiguity means unclear *intent or scope*, not “I already know this process but want him to say yes again.”
 
 ### Respect and customer service
 - **Questions are never noise.** If the user asks what you did, why you chose something, whether their idea is valid, or for **thoughts, input, or judgment**, answer that **first** with a direct, thoughtful reply. Do not substitute a summary of their message, a task dump, or execution when they asked for a human answer.
@@ -138,12 +170,13 @@ When the user attaches or references a **prompt or spec written by Claude** (for
 - Technical details can be in code comments, but explanations to user should be plain language
 
 ### Approval Process
-- **Always plan and present changes before implementation** (see Communication & Collaboration section)
+- **Always plan and present changes before implementation** for **new** work (see Communication & Collaboration section)
 - Present all changes in **human, non-technical language**
-- Wait for user approval before making any modifications
+- Wait for user approval before making modifications — **except** standing approvals and Claude prompt specs (do not re-ask for those)
 - User may say "I don't care" → Treat as approval and proceed
 - Provide clear summary of what will change and why (in plain language)
 - If user doesn't understand, simplify the explanation further
+- **Never** re-ask permission for the same established process (publish, attached Claude specs, already-chosen cleanup style, etc.)
 
 ### Change Tracking
 - **Always list changed files** at the bottom of each response
