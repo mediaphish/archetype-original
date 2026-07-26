@@ -10,7 +10,7 @@
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
-import { runAutoChat, runAutoChatStream } from '../../../lib/ao/autoV2.js';
+import { runAutoChat, runAutoChatStream, findReferencedDrafts } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
@@ -31,14 +31,59 @@ import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
 
+/** Known social platform headers Auto uses in caption sets (bold markdown). */
+const CAPTION_PLATFORM_NAMES =
+  'LinkedIn Personal|LinkedIn Business|Instagram Business|Instagram Personal|Facebook Business|Facebook Personal|X';
+
+/**
+ * Detect a caption set from [SOCIAL_CAPTIONS] tags, or from 2+ bold platform
+ * headers when the model forgot the wrapper tag (server-enforced fallback).
+ * Returns { content, source: 'tag'|'fallback' } or null.
+ */
+function extractCaptionSetFromReply(text) {
+  const raw = String(text || '');
+  if (!raw.trim()) return null;
+
+  const tagMatch = raw.match(/\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i);
+  if (tagMatch) {
+    return { content: tagMatch[1].trim(), source: 'tag' };
+  }
+
+  const headerRe = new RegExp(`\\*\\*(${CAPTION_PLATFORM_NAMES})\\*\\*:?`, 'gi');
+  const matches = [...raw.matchAll(headerRe)];
+  if (matches.length < 2) return null;
+
+  const parts = [];
+  for (let i = 0; i < matches.length; i++) {
+    const headerEnd = matches[i].index + matches[i][0].length;
+    const sectionEnd = i + 1 < matches.length ? matches[i + 1].index : raw.length;
+    const platform = matches[i][1];
+    const body = raw.slice(headerEnd, sectionEnd).trim();
+    parts.push(`**${platform}**\n${body}`);
+  }
+
+  const content = parts.join('\n\n').trim();
+  if (!content) return null;
+  return { content, source: 'fallback' };
+}
+
+function extractCaptionSetFromTexts(texts = []) {
+  for (const t of texts) {
+    const found = extractCaptionSetFromReply(t);
+    if (found) return found;
+  }
+  return null;
+}
+
 /**
  * Detects content in the exchange and saves it to ao_content_drafts.
  * Runs server-side after every successful response — Auto cannot reliably save drafts itself.
  *
- * Primary rule: whenever [JOURNAL_CONTENT], [DEVOTIONAL_CONTENT], or [SOCIAL_CAPTIONS]
- * appears in the assistant reply, upsert immediately with status 'draft'. Approval
- * language only promotes an existing (or just-found) row to 'approved'. Content must
- * never depend on catching the right approval phrase.
+ * Primary rule: whenever [JOURNAL_CONTENT], [DEVOTIONAL_CONTENT], or a caption set
+ * ([SOCIAL_CAPTIONS] or 2+ known bold platform headers) appears in the assistant
+ * reply, upsert immediately with status 'draft'. Approval language only promotes
+ * an existing (or just-found) row to 'approved'. Content must never depend on
+ * catching the right approval phrase or on the model remembering a bracket tag.
  *
  * Never throws. Never blocks the response. Logs failures silently.
  */
@@ -70,6 +115,87 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
 
   function deriveSeriesSlug(slug) {
     return (slug || '').replace(/-part-\d+.*$/i, '') || slug;
+  }
+
+  /**
+   * Link caption drafts to the post under discussion: PUBLISH_JOURNAL attrs first,
+   * then the same recent-message draft matching used for full-draft injection.
+   */
+  async function resolveCaptionLinkMeta(attrs, searchBlob) {
+    const dateSlug = `captions-${new Date().toISOString().split('T')[0]}`;
+    if (attrs?.slug) {
+      return {
+        series_slug: deriveSeriesSlug(attrs.slug) || 'standalone',
+        part_number: extractPartNumber(attrs.slug),
+        slug: attrs.slug,
+        title: attrs.title || attrs.slug,
+      };
+    }
+
+    // Journal publish attrs may appear in recent assistant turns even when this reply is captions-only.
+    const publishInSearch = String(searchBlob || '').match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+    if (publishInSearch) {
+      const pubAttrs = parseAttrs(publishInSearch[1]);
+      if (pubAttrs.slug) {
+        return {
+          series_slug: deriveSeriesSlug(pubAttrs.slug) || 'standalone',
+          part_number: extractPartNumber(pubAttrs.slug),
+          slug: pubAttrs.slug,
+          title: pubAttrs.title || pubAttrs.slug,
+        };
+      }
+    }
+
+    const recentUserMessages = (recentHistory || [])
+      .filter((m) => m.role === 'user')
+      .map((m) => String(m.content || ''))
+      .filter(Boolean)
+      .slice(-5)
+      .reverse();
+
+    try {
+      const { data: drafts, error } = await supabaseAdmin
+        .from('ao_content_drafts')
+        .select('kind, series_slug, part_number, title, slug, status, content')
+        .eq('created_by_email', email.toLowerCase().trim())
+        .neq('status', 'published')
+        .neq('status', 'abandoned')
+        .neq('kind', 'session_brief')
+        .neq('kind', 'captions')
+        .neq('kind', 'content_constraint')
+        .order('updated_at', { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error('[chat.js] Caption link draft lookup failed:', error.message);
+      } else {
+        const matched = findReferencedDrafts(drafts || [], userMessage, recentUserMessages);
+        const preferred =
+          matched.find((d) => d.kind === 'journal') ||
+          matched.find((d) => d.kind === 'devotional') ||
+          matched[0];
+        if (preferred) {
+          return {
+            series_slug: preferred.series_slug || deriveSeriesSlug(preferred.slug) || 'standalone',
+            part_number:
+              preferred.part_number != null
+                ? preferred.part_number
+                : extractPartNumber(preferred.slug),
+            slug: preferred.slug || dateSlug,
+            title: preferred.title || preferred.slug || dateSlug,
+          };
+        }
+      }
+    } catch (err) {
+      console.error('[chat.js] Caption link draft lookup failed:', err?.message || err);
+    }
+
+    return {
+      series_slug: 'standalone',
+      part_number: 1,
+      slug: dateSlug,
+      title: dateSlug,
+    };
   }
 
   const searchTexts = [assistantReply];
@@ -203,28 +329,26 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
       );
     }
 
-    const captionsMatch = assistantReply.match(
-      /\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i
-    );
-    if (captionsMatch) {
+    const captionSet = extractCaptionSetFromReply(assistantReply);
+    if (captionSet) {
       const publishMatch = assistantReply.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
       const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
-      const slug = attrs.slug || 'captions-' + new Date().toISOString().split('T')[0];
+      const meta = await resolveCaptionLinkMeta(attrs, assistantReply);
       await upsertDraft(
         {
           created_by_email: email.toLowerCase().trim(),
           kind: 'captions',
-          series_slug: deriveSeriesSlug(attrs.slug) || 'standalone',
-          part_number: extractPartNumber(attrs.slug),
-          title: `Captions — ${attrs.title || slug}`,
-          slug,
-          content: captionsMatch[1].trim(),
+          series_slug: meta.series_slug,
+          part_number: meta.part_number,
+          title: `Captions — ${meta.title}`,
+          slug: meta.slug,
+          content: captionSet.content,
           summary: '',
           image_url: null,
           status: 'draft',
           updated_at: new Date().toISOString(),
         },
-        'Caption set saved on produce'
+        `Caption set saved on produce (${captionSet.source})`
       );
     }
   }
@@ -364,39 +488,35 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
     return;
   }
 
-  const captionsMatch = fullSearchText.match(
-    /\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i
-  );
-  if (captionsMatch) {
+  const captionSet = extractCaptionSetFromTexts(searchTexts);
+  if (captionSet) {
     const publishMatch = fullSearchText.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
     const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
-    const slug = attrs.slug || 'captions-' + new Date().toISOString().split('T')[0];
-    const series_slug = deriveSeriesSlug(attrs.slug) || 'standalone';
-    const part_number = extractPartNumber(attrs.slug);
+    const meta = await resolveCaptionLinkMeta(attrs, fullSearchText);
     const promoted = await promoteDraftStatus({
       kind: 'captions',
-      series_slug,
-      part_number,
-      slug,
-      title: `Captions — ${attrs.title || slug}`,
+      series_slug: meta.series_slug,
+      part_number: meta.part_number,
+      slug: meta.slug,
+      title: `Captions — ${meta.title}`,
     });
     if (!promoted) {
       await upsertDraft(
         {
           created_by_email: email.toLowerCase().trim(),
           kind: 'captions',
-          series_slug,
-          part_number,
-          title: `Captions — ${attrs.title || slug}`,
-          slug,
-          content: captionsMatch[1].trim(),
+          series_slug: meta.series_slug,
+          part_number: meta.part_number,
+          title: `Captions — ${meta.title}`,
+          slug: meta.slug,
+          content: captionSet.content,
           summary: '',
           image_url: null,
           status: 'approved',
           approved_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         },
-        'Caption set saved on approval'
+        `Caption set saved on approval (${captionSet.source})`
       );
     }
   }
