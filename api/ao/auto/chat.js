@@ -621,6 +621,30 @@ export default async function handler(req, res) {
       ? await getScheduleContext()
       : null;
 
+    // Give Auto real visual memory of prior header images in a series — actual
+    // image bytes, not a text description — gated the same way series text
+    // context already is, so this only loads when actually relevant.
+    if (contextProfile.needsSeriesContext) {
+      try {
+        const { loadSeriesImageReferenceBlocks } = await import('../../../lib/ao/seriesImageReferences.js');
+        const recentUserMessages = history
+          .filter((m) => m.role === 'user')
+          .map((m) => String(m.content || ''))
+          .filter(Boolean)
+          .slice(-5)
+          .reverse();
+        const seriesImageBlocks = await loadSeriesImageReferenceBlocks(userMessage, recentUserMessages);
+        if (seriesImageBlocks && seriesImageBlocks.length > 0) {
+          const existingParts = Array.isArray(currentMessageContent)
+            ? currentMessageContent
+            : [{ type: 'text', text: currentMessageContent }];
+          currentMessageContent = [...seriesImageBlocks, ...existingParts];
+        }
+      } catch (seriesImgErr) {
+        console.error('[chat.js] Series image reference load failed (non-fatal):', seriesImgErr?.message || seriesImgErr);
+      }
+    }
+
     // Stream the model response token by token.
     // Soft-timeout at 270s so we can still send a real error event before
     // Vercel's 300s hard kill (which would leave the client in silence).
@@ -1301,6 +1325,26 @@ ${retrievedBlock}
             });
             res.end();
             return;
+          }
+
+          // The synthesis call above generates brand-new prose that never passed through
+          // enforceResponseRules/enforceVoiceGuardrails (those ran earlier, on the original
+          // reply, before this block replaced fullReply entirely). Without this, any reply
+          // that touches the corpus silently skips voice/quality enforcement. Re-apply both
+          // here so synthesized replies get the same guarantees as every other reply.
+          fullReply = enforceResponseRules(fullReply, recentHistory);
+          {
+            const synthVoiceClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+            const synthVoiceResult = await enforceVoiceGuardrails(fullReply, {
+              anthropicClient: synthVoiceClient,
+              contextLabel: 'corpus-synthesis-reply',
+            });
+            if (synthVoiceResult.corrected) {
+              console.log(
+                `[chat.js] Voice guardrails corrected corpus-synthesis reply (${synthVoiceResult.forced ? 'forced-strip' : 'self-correct'}; ${synthVoiceResult.violations.length} hit(s))`
+              );
+            }
+            fullReply = synthVoiceResult.text;
           }
 
           console.log(
