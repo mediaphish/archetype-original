@@ -2404,6 +2404,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
       if (textareaRef.current) textareaRef.current.style.height = '22px';
 
+      let stallTimer = null;
+
       try {
         // Build attachments array for image uploads
         // Images are sent as base64 content blocks for the Anthropic vision API
@@ -2433,8 +2435,19 @@ export default function AutoV2Panel({ onNavigate, className }) {
         }
 
         const controller = new AbortController();
-        // No client timeout — streaming keeps the connection alive.
-        // The server sends tokens as they arrive; the connection only closes when done.
+        // Stall timeout: if no SSE event arrives for 90s, abort and show a visible
+        // error. This is the backstop for silent server kills / hung reader.read().
+        const STALL_MS = 90_000;
+        let lastEventAt = Date.now();
+        stallTimer = setInterval(() => {
+          if (Date.now() - lastEventAt > STALL_MS) {
+            try {
+              controller.abort();
+            } catch (_) {
+              /* ignore */
+            }
+          }
+        }, 5_000);
 
         const res = await fetch('/api/ao/auto/chat', {
           method: 'POST',
@@ -2448,6 +2461,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         });
 
         if (!res.ok) {
+          clearInterval(stallTimer);
           const errJson = await res.json().catch(() => ({}));
           throw new Error(errJson.error || 'Could not reach Auto');
         }
@@ -2477,6 +2491,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
             const { done, value } = await reader.read();
             if (done) break;
 
+            lastEventAt = Date.now();
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split('\n');
             buffer = lines.pop() || '';
@@ -2485,6 +2500,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
               if (line.startsWith('data: ')) {
                 try {
                   const parsed = JSON.parse(line.slice(6));
+                  lastEventAt = Date.now();
 
                   if (parsed.token !== undefined) {
                     // Text token — append to streaming display
@@ -2507,6 +2523,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
             }
           }
         } finally {
+          clearInterval(stallTimer);
           reader.releaseLock();
         }
 
@@ -2543,18 +2560,24 @@ export default function AutoV2Panel({ onNavigate, className }) {
         // Do not remove the optimistic message or clear the input.
         // The user's message may already be in the database (persisted before the
         // model call). Show an error with a Retry button. Never make the user retype.
-        const errorText =
-          e.message || 'Auto could not be reached. Your message was saved. Tap Retry to try again.';
+        const aborted = e?.name === 'AbortError' || /aborted/i.test(String(e?.message || ''));
+        const errorText = aborted
+          ? "Auto didn't respond in time. Try again, or start a new thread if this keeps happening."
+          : e.message ||
+            'Auto could not be reached. Your message was saved. Tap Retry to try again.';
         setError(errorText);
-        // Mark the optimistic message as failed so the UI can show it differently.
+        // Drop the empty streaming placeholder; keep the user's message marked failed.
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === optimisticMsg.id ? { ...m, meta: { ...m.meta, failed: true } } : m
-          )
+          prev
+            .filter((m) => !String(m.id || '').startsWith('streaming-'))
+            .map((m) =>
+              m.id === optimisticMsg.id ? { ...m, meta: { ...m.meta, failed: true } } : m
+            )
         );
         // Restore the input text so the user can retry without retyping.
         setInput(outgoing);
       } finally {
+        if (stallTimer) clearInterval(stallTimer);
         setSending(false);
       }
     },

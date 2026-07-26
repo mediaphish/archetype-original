@@ -32,17 +32,13 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Detects approved content in the current exchange and saves it to ao_content_drafts.
- * Runs server-side after every response — Auto cannot reliably save drafts itself.
+ * Detects content in the exchange and saves it to ao_content_drafts.
+ * Runs server-side after every successful response — Auto cannot reliably save drafts itself.
  *
- * Detects four content types:
- * 1. Journal draft — [JOURNAL_CONTENT] block with or without [PUBLISH_JOURNAL] signal
- * 2. Devotional draft — [DEVOTIONAL_CONTENT] block
- * 3. Caption set — [SOCIAL_CAPTIONS] block with multiple [CAPTION] blocks
- * 4. Standalone prose — substantial assistant prose approved without a signal block
- *
- * When the approval message arrives without content in the same response,
- * looks back at recentHistory to find the content in the prior assistant message.
+ * Primary rule: whenever [JOURNAL_CONTENT], [DEVOTIONAL_CONTENT], or [SOCIAL_CAPTIONS]
+ * appears in the assistant reply, upsert immediately with status 'draft'. Approval
+ * language only promotes an existing (or just-found) row to 'approved'. Content must
+ * never depend on catching the right approval phrase.
  *
  * Never throws. Never blocks the response. Logs failures silently.
  */
@@ -50,11 +46,15 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   if (!email || !assistantReply) return;
 
   const userLower = String(userMessage || '').toLowerCase();
-  const isApproval = /\b(approved?|looks good|go ahead|publish it|that.?s it|perfect|yes|confirmed?|do it|fire it|send it)\b/i.test(userLower);
-  const isRemoval = /\b(cut (that|this|it)|take (that|this) out|remove the|we'?re? not using that|don'?t include|leave (that|this) out|without the|no biographical|drop the|we cut|that'?s? cut|not in (the|this))\b/i.test(userLower);
-  if (!isApproval && !isRemoval) return;
+  const isApproval =
+    /\b(approved?|looks good|go ahead|publish it|that.?s it|perfect|yes|confirmed?|do it|fire it|send it|this works|i think (it'?s|this is|it) (good|works|solid)|ready|solid|nailed it|let'?s lock it|lock it in)\b/i.test(
+      userLower
+    );
+  const isRemoval =
+    /\b(cut (that|this|it)|take (that|this) out|remove the|we'?re? not using that|don'?t include|leave (that|this) out|without the|no biographical|drop the|we cut|that'?s? cut|not in (the|this))\b/i.test(
+      userLower
+    );
 
-  // Helper: parse attributes from a signal tag string
   function parseAttrs(str) {
     const attrs = {};
     const pattern = /(\w+)="([^"]*)"/g;
@@ -63,95 +63,101 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
     return attrs;
   }
 
-  // Helper: extract part number from slug
   function extractPartNumber(slug) {
     const match = (slug || '').match(/-part-(\d+)/i);
     return match ? parseInt(match[1], 10) : 1;
   }
 
-  // Helper: derive series slug from a full slug (strip part suffix)
   function deriveSeriesSlug(slug) {
     return (slug || '').replace(/-part-\d+.*$/i, '') || slug;
   }
 
-  // Search current reply and recent history for content blocks
-  // Content may be in the prior assistant message when approval is in the current user message
   const searchTexts = [assistantReply];
   if (recentHistory && recentHistory.length > 0) {
     const recentAssistant = recentHistory
-      .filter(m => m.role === 'assistant')
+      .filter((m) => m.role === 'assistant')
       .slice(-3)
-      .map(m => String(m.content || ''));
+      .map((m) => String(m.content || ''));
     searchTexts.push(...recentAssistant);
   }
   const fullSearchText = searchTexts.join('\n\n');
 
-  // --- REMOVAL CONSTRAINTS ---
-  // When Bart removes content from a draft, save it as a constraint that applies
-  // to all downstream content in this and future sessions for the same piece.
-  // Runs independently of approval — "cut this" is not an approval word.
-  if (isRemoval) {
-    const existingSlug = (() => {
-      const recentPublish = fullSearchText.match(/\[PUBLISH_JOURNAL[^\]]*slug="([^"]+)"/i);
-      return recentPublish ? recentPublish[1] : null;
-    })();
-
-    if (existingSlug || fullSearchText.includes('[JOURNAL_CONTENT]')) {
-      const constraintSlug = existingSlug || 'active-draft';
-      const partKey = Number(String(Date.now()).slice(-8));
-      try {
-        await supabaseAdmin
-          .from('ao_content_drafts')
-          .upsert({
-            created_by_email: email.toLowerCase().trim(),
-            kind: 'content_constraint',
-            series_slug: deriveSeriesSlug(constraintSlug) || constraintSlug,
-            part_number: partKey,
-            title: `Content constraint — ${constraintSlug}`,
-            slug: `constraint-${constraintSlug}-${Date.now()}`,
-            content: `REMOVAL CONSTRAINT logged ${new Date().toISOString()}:\n\nBart said: "${userMessage}"\n\nThis constraint applies to all captions, social posts, summaries, and derived content for this piece. Do not include any element that matches this removal instruction.`,
-            summary: String(userMessage).slice(0, 200),
-            status: 'approved',
-            approved_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }, {
-            onConflict: 'created_by_email,series_slug,part_number,kind',
-            ignoreDuplicates: false,
-          });
-        console.log(`[chat.js] Content removal constraint saved for: ${constraintSlug}`);
-      } catch (err) {
-        console.error('[chat.js] Content constraint save failed:', err?.message || err);
-      }
+  async function upsertDraft(row, label) {
+    try {
+      await supabaseAdmin.from('ao_content_drafts').upsert(row, {
+        onConflict: 'created_by_email,series_slug,part_number,kind',
+        ignoreDuplicates: false,
+      });
+      console.log(`[chat.js] ${label}: ${row.slug || row.title} (status=${row.status})`);
+    } catch (err) {
+      console.error(`[chat.js] ${label} failed:`, err?.message || err);
     }
   }
 
-  if (!isApproval) return;
+  async function promoteDraftStatus({ kind, series_slug, part_number, slug, title }) {
+    try {
+      let query = supabaseAdmin
+        .from('ao_content_drafts')
+        .update({
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('created_by_email', email.toLowerCase().trim())
+        .eq('kind', kind)
+        .neq('status', 'published')
+        .neq('status', 'abandoned');
 
-  // --- JOURNAL DRAFT ---
-  const journalContentMatch = fullSearchText.match(/\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i);
-  if (journalContentMatch) {
-    const publishMatch = fullSearchText.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
-    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+      if (series_slug) query = query.eq('series_slug', series_slug);
+      if (part_number != null) query = query.eq('part_number', part_number);
+      if (slug) query = query.eq('slug', slug);
 
-    // Try to extract slug and title from the publish signal or from the content frontmatter
-    let slug = attrs.slug || '';
-    let title = attrs.title || '';
-
-    if (!slug) {
-      // Try to find slug in frontmatter of the content block
-      const slugMatch = journalContentMatch[1].match(/^slug:\s*(.+)$/m);
-      if (slugMatch) slug = slugMatch[1].trim().replace(/^["']|["']$/g, '');
+      const { data, error } = await query.select('id, slug, title, status').limit(1);
+      if (error) throw error;
+      if (data?.length) {
+        console.log(`[chat.js] Draft promoted to approved: ${data[0].slug || data[0].title || title}`);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('[chat.js] Draft promote failed:', err?.message || err);
+      return false;
     }
-    if (!title) {
-      const titleMatch = journalContentMatch[1].match(/^title:\s*(.+)$/m);
-      if (titleMatch) title = titleMatch[1].trim().replace(/^["']|["']$/g, '');
-    }
+  }
 
-    if (slug || title) {
-      try {
-        await supabaseAdmin
-          .from('ao_content_drafts')
-          .upsert({
+  // --- SAVE ON PRODUCE: persist content blocks from THIS reply as draft ---
+  {
+    const journalContentMatch = assistantReply.match(
+      /\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i
+    );
+    if (journalContentMatch) {
+      const publishMatch = assistantReply.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+      const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+      let slug = attrs.slug || '';
+      let title = attrs.title || '';
+      if (!slug) {
+        const slugMatch = journalContentMatch[1].match(/^slug:\s*(.+)$/m);
+        if (slugMatch) slug = slugMatch[1].trim().replace(/^["']|["']$/g, '');
+      }
+      if (!title) {
+        const titleMatch = journalContentMatch[1].match(/^title:\s*(.+)$/m);
+        if (titleMatch) title = titleMatch[1].trim().replace(/^["']|["']$/g, '');
+      }
+      // Fall back: first markdown H1
+      if (!title) {
+        const h1 = journalContentMatch[1].match(/^#\s+(.+)$/m);
+        if (h1) title = h1[1].trim();
+      }
+      if (!slug && title) {
+        slug = title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          .slice(0, 80);
+      }
+      if (slug || title) {
+        await upsertDraft(
+          {
             created_by_email: email.toLowerCase().trim(),
             kind: 'journal',
             series_slug: deriveSeriesSlug(slug) || 'standalone',
@@ -161,34 +167,26 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
             content: journalContentMatch[1].trim(),
             summary: attrs.summary || '',
             image_url: attrs.image_url || null,
-            status: 'approved',
-            approved_at: new Date().toISOString(),
+            status: 'draft',
             updated_at: new Date().toISOString(),
-          }, {
-            onConflict: 'created_by_email,series_slug,part_number,kind',
-            ignoreDuplicates: false,
-          });
-        console.log(`[chat.js] Journal draft saved: ${slug || title}`);
-      } catch (err) {
-        console.error('[chat.js] Journal draft save failed:', err?.message || err);
+          },
+          'Journal draft saved on produce'
+        );
       }
     }
-    return; // Journal save handled — do not attempt other content types
-  }
 
-  // --- DEVOTIONAL DRAFT ---
-  const devotionalMatch = fullSearchText.match(/\[DEVOTIONAL_CONTENT\]([\s\S]*?)\[\/DEVOTIONAL_CONTENT\]/i);
-  if (devotionalMatch) {
-    const publishMatch = fullSearchText.match(/\[PUBLISH_DEVOTIONAL([^\]]*)\]/i);
-    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
-
-    const slug = attrs.slug || `devotional-${attrs.date || new Date().toISOString().split('T')[0]}`;
-    const title = attrs.title || `Devotional — ${attrs.date || new Date().toISOString().split('T')[0]}`;
-
-    try {
-      await supabaseAdmin
-        .from('ao_content_drafts')
-        .upsert({
+    const devotionalMatch = assistantReply.match(
+      /\[DEVOTIONAL_CONTENT\]([\s\S]*?)\[\/DEVOTIONAL_CONTENT\]/i
+    );
+    if (devotionalMatch) {
+      const publishMatch = assistantReply.match(/\[PUBLISH_DEVOTIONAL([^\]]*)\]/i);
+      const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+      const slug =
+        attrs.slug || `devotional-${attrs.date || new Date().toISOString().split('T')[0]}`;
+      const title =
+        attrs.title || `Devotional — ${attrs.date || new Date().toISOString().split('T')[0]}`;
+      await upsertDraft(
+        {
           created_by_email: email.toLowerCase().trim(),
           kind: 'devotional',
           series_slug: attrs.date ? attrs.date.slice(0, 7) : new Date().toISOString().slice(0, 7),
@@ -198,32 +196,22 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
           content: devotionalMatch[1].trim(),
           summary: attrs.summary || '',
           image_url: null,
-          status: 'approved',
-          approved_at: new Date().toISOString(),
+          status: 'draft',
           updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'created_by_email,series_slug,part_number,kind',
-          ignoreDuplicates: false,
-        });
-      console.log(`[chat.js] Devotional draft saved: ${slug}`);
-    } catch (err) {
-      console.error('[chat.js] Devotional draft save failed:', err?.message || err);
+        },
+        'Devotional draft saved on produce'
+      );
     }
-    return;
-  }
 
-  // --- CAPTION SET ---
-  const captionsMatch = fullSearchText.match(/\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i);
-  if (captionsMatch) {
-    // Extract the slug context from nearby publish signal or thread context
-    const publishMatch = fullSearchText.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
-    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
-    const slug = attrs.slug || 'captions-' + new Date().toISOString().split('T')[0];
-
-    try {
-      await supabaseAdmin
-        .from('ao_content_drafts')
-        .upsert({
+    const captionsMatch = assistantReply.match(
+      /\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i
+    );
+    if (captionsMatch) {
+      const publishMatch = assistantReply.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+      const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+      const slug = attrs.slug || 'captions-' + new Date().toISOString().split('T')[0];
+      await upsertDraft(
+        {
           created_by_email: email.toLowerCase().trim(),
           kind: 'captions',
           series_slug: deriveSeriesSlug(attrs.slug) || 'standalone',
@@ -233,16 +221,183 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
           content: captionsMatch[1].trim(),
           summary: '',
           image_url: null,
+          status: 'draft',
+          updated_at: new Date().toISOString(),
+        },
+        'Caption set saved on produce'
+      );
+    }
+  }
+
+  // --- REMOVAL CONSTRAINTS ---
+  if (isRemoval) {
+    const existingSlug = (() => {
+      const recentPublish = fullSearchText.match(/\[PUBLISH_JOURNAL[^\]]*slug="([^"]+)"/i);
+      return recentPublish ? recentPublish[1] : null;
+    })();
+
+    if (existingSlug || fullSearchText.includes('[JOURNAL_CONTENT]')) {
+      const constraintSlug = existingSlug || 'active-draft';
+      const partKey = Number(String(Date.now()).slice(-8));
+      await upsertDraft(
+        {
+          created_by_email: email.toLowerCase().trim(),
+          kind: 'content_constraint',
+          series_slug: deriveSeriesSlug(constraintSlug) || constraintSlug,
+          part_number: partKey,
+          title: `Content constraint — ${constraintSlug}`,
+          slug: `constraint-${constraintSlug}-${Date.now()}`,
+          content: `REMOVAL CONSTRAINT logged ${new Date().toISOString()}:\n\nBart said: "${userMessage}"\n\nThis constraint applies to all captions, social posts, summaries, and derived content for this piece. Do not include any element that matches this removal instruction.`,
+          summary: String(userMessage).slice(0, 200),
           status: 'approved',
           approved_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'created_by_email,series_slug,part_number,kind',
-          ignoreDuplicates: false,
-        });
-      console.log(`[chat.js] Caption set saved: ${slug}`);
-    } catch (err) {
-      console.error('[chat.js] Caption set save failed:', err?.message || err);
+        },
+        'Content removal constraint saved'
+      );
+    }
+  }
+
+  if (!isApproval) return;
+
+  // --- APPROVAL: promote existing draft, or upsert as approved if content is in history ---
+  const journalContentMatch = fullSearchText.match(
+    /\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i
+  );
+  if (journalContentMatch) {
+    const publishMatch = fullSearchText.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+    let slug = attrs.slug || '';
+    let title = attrs.title || '';
+    if (!slug) {
+      const slugMatch = journalContentMatch[1].match(/^slug:\s*(.+)$/m);
+      if (slugMatch) slug = slugMatch[1].trim().replace(/^["']|["']$/g, '');
+    }
+    if (!title) {
+      const titleMatch = journalContentMatch[1].match(/^title:\s*(.+)$/m);
+      if (titleMatch) title = titleMatch[1].trim().replace(/^["']|["']$/g, '');
+    }
+    if (!title) {
+      const h1 = journalContentMatch[1].match(/^#\s+(.+)$/m);
+      if (h1) title = h1[1].trim();
+    }
+    if (!slug && title) {
+      slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 80);
+    }
+    if (slug || title) {
+      const series_slug = deriveSeriesSlug(slug) || 'standalone';
+      const part_number = extractPartNumber(slug);
+      const promoted = await promoteDraftStatus({
+        kind: 'journal',
+        series_slug,
+        part_number,
+        slug,
+        title,
+      });
+      if (!promoted) {
+        await upsertDraft(
+          {
+            created_by_email: email.toLowerCase().trim(),
+            kind: 'journal',
+            series_slug,
+            part_number,
+            title: title || slug,
+            slug: slug || null,
+            content: journalContentMatch[1].trim(),
+            summary: attrs.summary || '',
+            image_url: attrs.image_url || null,
+            status: 'approved',
+            approved_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+          'Journal draft saved on approval'
+        );
+      }
+    }
+    return;
+  }
+
+  const devotionalMatch = fullSearchText.match(
+    /\[DEVOTIONAL_CONTENT\]([\s\S]*?)\[\/DEVOTIONAL_CONTENT\]/i
+  );
+  if (devotionalMatch) {
+    const publishMatch = fullSearchText.match(/\[PUBLISH_DEVOTIONAL([^\]]*)\]/i);
+    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+    const slug =
+      attrs.slug || `devotional-${attrs.date || new Date().toISOString().split('T')[0]}`;
+    const title =
+      attrs.title || `Devotional — ${attrs.date || new Date().toISOString().split('T')[0]}`;
+    const series_slug = attrs.date
+      ? attrs.date.slice(0, 7)
+      : new Date().toISOString().slice(0, 7);
+    const part_number = parseInt((attrs.date || '').replace(/-/g, '').slice(-2) || '1', 10);
+    const promoted = await promoteDraftStatus({
+      kind: 'devotional',
+      series_slug,
+      part_number,
+      slug,
+      title,
+    });
+    if (!promoted) {
+      await upsertDraft(
+        {
+          created_by_email: email.toLowerCase().trim(),
+          kind: 'devotional',
+          series_slug,
+          part_number,
+          title,
+          slug,
+          content: devotionalMatch[1].trim(),
+          summary: attrs.summary || '',
+          image_url: null,
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        'Devotional draft saved on approval'
+      );
+    }
+    return;
+  }
+
+  const captionsMatch = fullSearchText.match(
+    /\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i
+  );
+  if (captionsMatch) {
+    const publishMatch = fullSearchText.match(/\[PUBLISH_JOURNAL([^\]]*)\]/i);
+    const attrs = publishMatch ? parseAttrs(publishMatch[1]) : {};
+    const slug = attrs.slug || 'captions-' + new Date().toISOString().split('T')[0];
+    const series_slug = deriveSeriesSlug(attrs.slug) || 'standalone';
+    const part_number = extractPartNumber(attrs.slug);
+    const promoted = await promoteDraftStatus({
+      kind: 'captions',
+      series_slug,
+      part_number,
+      slug,
+      title: `Captions — ${attrs.title || slug}`,
+    });
+    if (!promoted) {
+      await upsertDraft(
+        {
+          created_by_email: email.toLowerCase().trim(),
+          kind: 'captions',
+          series_slug,
+          part_number,
+          title: `Captions — ${attrs.title || slug}`,
+          slug,
+          content: captionsMatch[1].trim(),
+          summary: '',
+          image_url: null,
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        'Caption set saved on approval'
+      );
     }
   }
 }
@@ -346,22 +501,34 @@ export default async function handler(req, res) {
       ? await getScheduleContext()
       : null;
 
-    // Stream the model response token by token
+    // Stream the model response token by token.
+    // Soft-timeout at 270s so we can still send a real error event before
+    // Vercel's 300s hard kill (which would leave the client in silence).
     let fullReply = '';
     let streamError = null;
 
+    function timeoutAfter(ms, message) {
+      return new Promise((_, reject) => setTimeout(() => reject(new Error(message)), ms));
+    }
+
     try {
-      const streamResult = await runAutoChatStream(
-        history,
-        currentMessageContent,
-        scheduleContext,
-        userMessage,
-        (token) => {
-          // Send each token to the client as it arrives
-          fullReply += token;
-          sendEvent('token', { token });
-        }
-      );
+      const streamResult = await Promise.race([
+        runAutoChatStream(
+          history,
+          currentMessageContent,
+          scheduleContext,
+          userMessage,
+          (token) => {
+            // Send each token to the client as it arrives
+            fullReply += token;
+            sendEvent('token', { token });
+          }
+        ),
+        timeoutAfter(
+          270_000,
+          'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.'
+        ),
+      ]);
 
       if (!streamResult.ok) {
         streamError = streamResult.error || 'Auto reply failed';
