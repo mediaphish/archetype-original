@@ -6,6 +6,7 @@ import AliHeader from '../../components/ali/AliHeader';
 import { buildAliDashboardSnapshot } from '../../lib/ali/archyContextPayload';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import AliFooter from '../../components/ali/AliFooter';
+import GapRangeBar from '../../components/ali/GapRangeBar';
 import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
 import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
@@ -1421,7 +1422,10 @@ const ALIDashboard = () => {
                 </div>
 
                 {/* Full Leadership Mirror */}
-                <div className="bg-white rounded-lg border border-black/[0.12] p-6">
+                <div className="bg-white rounded-lg border border-black/[0.12] border-t-4 border-t-blue-600 p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="text-[11px] font-bold text-blue-700 uppercase tracking-wide">The core insight</div>
+                  </div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <h2 className="text-[18px] font-semibold text-black/[0.87]">Leadership Mirror</h2>
@@ -1461,47 +1465,19 @@ const ALIDashboard = () => {
                         ) : (
                           <div className="space-y-4">
                             {visibleMirrorRows.map((row) => {
-                              const maxScore = Math.max(row.leaderScore ?? 0, row.teamScore ?? 0, 100);
                               const badge = severityToBadge(row.severity);
                               return (
                                 <div key={row.key} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
                                   <div className="flex items-start justify-between gap-3 mb-2">
                                     <div className="min-w-0">
                                       <div className="text-sm font-medium text-gray-900">{row.label}</div>
-                                      <div className="text-xs text-gray-500 mt-0.5">
-                                        Gap (leader − team):{' '}
-                                        <span className="font-semibold text-gray-700">{row.gap === null ? '—' : row.gap.toFixed(1)}</span>pt
-                                      </div>
                                     </div>
                                     <span className={`shrink-0 inline-flex items-center px-2 py-1 rounded-full border text-xs font-semibold ${badge.cls}`}>
                                       {badge.label}
                                     </span>
                                   </div>
 
-                                  <div className="flex items-center gap-4">
-                                    <div className="flex-1">
-                                      <div className="text-xs text-gray-500 mb-1">Leader</div>
-                                      <div
-                                        className="h-7 bg-blue-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
-                                        style={{ width: `${(((row.leaderScore ?? 0) / maxScore) * 100)}%` }}
-                                      >
-                                        <span className="text-xs font-semibold text-white">
-                                          {row.leaderScore === null ? '—' : row.leaderScore.toFixed(1)}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="flex-1">
-                                      <div className="text-xs text-gray-500 mb-1">Team</div>
-                                      <div
-                                        className="h-7 bg-green-600 rounded flex items-center justify-end pr-2 transition-all duration-700 ease-out"
-                                        style={{ width: `${(((row.teamScore ?? 0) / maxScore) * 100)}%` }}
-                                      >
-                                        <span className="text-xs font-semibold text-white">
-                                          {row.teamScore === null ? '—' : row.teamScore.toFixed(1)}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
+                                  <GapRangeBar leader={row.leaderScore} team={row.teamScore} severity={row.severity} />
                                 </div>
                               );
                             })}
