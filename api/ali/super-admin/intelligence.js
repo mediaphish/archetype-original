@@ -9,11 +9,15 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { requireSuperAdmin } from '../../../lib/ali-admin-auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  const admin = await requireSuperAdmin(req, res);
+  if (!admin) return;
 
   try {
     // Fetch intelligence items, most recent first

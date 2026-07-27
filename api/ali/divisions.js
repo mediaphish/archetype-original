@@ -18,6 +18,10 @@ export default async function handler(req, res) {
   const session = await requireAliSession(req, res);
   if (!session) return;
 
+  if (session.isSuperAdmin && !session.companyId) {
+    return res.status(403).json({ ok: false, error: 'This action requires a tenant account.' });
+  }
+
   const companyId = session.companyId;
   const { divisionId } = req.query;
 

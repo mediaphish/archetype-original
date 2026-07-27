@@ -8,34 +8,25 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { calculateAvailableAt, getNextSurveyIndex } from '../../../lib/ali-cadence.js';
+import { requireAliSession } from '../../../lib/ali-session.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const session = await requireAliSession(req, res);
+  if (!session) return;
+
+  if (session.isSuperAdmin && !session.companyId) {
+    return res.status(403).json({ ok: false, error: 'This action requires a tenant account.' });
+  }
+
   try {
-    const { companyId: companyIdParam, email: emailParam } = req.query;
-
-    // Allow resolving companyId via email for the current lightweight auth approach
-    let companyId = companyIdParam;
-    if (!companyId && emailParam) {
-      const email = String(emailParam).toLowerCase().trim();
-      const { data: contact, error: contactError } = await supabaseAdmin
-        .from('ali_contacts')
-        .select('company_id')
-        .eq('email', email)
-        .maybeSingle();
-
-      if (contactError) {
-        console.error('Error resolving company by email:', contactError);
-      }
-
-      companyId = contact?.company_id || null;
-    }
+    const companyId = session.companyId;
 
     if (!companyId) {
-      return res.status(400).json({ error: 'companyId is required (or provide email)' });
+      return res.status(400).json({ error: 'companyId is required' });
     }
 
     // Get company info

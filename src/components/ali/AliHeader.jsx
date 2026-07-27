@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
+import { clearAliSessionEmail } from '../../lib/magicLinkBrowserSession';
 
 export default function AliHeader({ active = 'dashboard', email = '', isSuperAdminUser = false, onNavigate }) {
   const [reportsDropdownOpen, setReportsDropdownOpen] = useState(false);
@@ -13,6 +14,16 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'instant' });
     setReportsDropdownOpen(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/ali/auth/logout', { method: 'POST', credentials: 'include' });
+    } catch (_) {
+      // proceed with client-side cleanup even if the network call fails
+    }
+    clearAliSessionEmail();
+    handleNavigate('/ali/login');
   };
 
   const withEmail = (path) => {
@@ -125,7 +136,7 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
                 Super Admin
               </button>
             )}
-            <button onClick={() => handleNavigate('/ali/login')} className="min-h-[44px] px-3 py-2 text-gray-600 hover:text-gray-900 rounded">
+            <button onClick={handleLogout} className="min-h-[44px] px-3 py-2 text-gray-600 hover:text-gray-900 rounded">
               Log Out
             </button>
           </nav>
@@ -179,7 +190,7 @@ export default function AliHeader({ active = 'dashboard', email = '', isSuperAdm
                   Super Admin
                 </button>
               )}
-              <button onClick={() => handleNavigate('/ali/login')} className="min-h-[44px] px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50 border-t border-gray-200 mt-2 pt-2">
+              <button onClick={handleLogout} className="min-h-[44px] px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50 border-t border-gray-200 mt-2 pt-2">
                 Log Out
               </button>
             </div>

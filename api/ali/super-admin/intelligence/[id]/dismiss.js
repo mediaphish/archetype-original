@@ -8,11 +8,15 @@
  */
 
 import { supabaseAdmin } from '../../../../../lib/supabase-admin.js';
+import { requireSuperAdmin } from '../../../../../lib/ali-admin-auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  const admin = await requireSuperAdmin(req, res, { body: req.body || {} });
+  if (!admin) return;
 
   const { id } = req.query;
 

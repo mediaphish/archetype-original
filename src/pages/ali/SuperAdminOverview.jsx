@@ -5,6 +5,7 @@ import AliArchyDrawer from '../../components/ali/AliArchyDrawer';
 import { OptimizedImage } from '../../components/OptimizedImage';
 import { buildSuperAdminOverviewSnapshot } from '../../lib/ali/archyContextPayload';
 import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
+import { getSuperAdminEmail } from '../../lib/ali-super-admin-email';
 
 const SuperAdminOverview = () => {
   const [data, setData] = useState(null);
@@ -18,7 +19,9 @@ const SuperAdminOverview = () => {
     setLoading(true);
     setData(null);
     try {
-      const response = await fetch('/api/ali/super-admin/overview', {
+      const email = getSuperAdminEmail();
+      const url = email ? `/api/ali/super-admin/overview?email=${encodeURIComponent(email)}` : '/api/ali/super-admin/overview';
+      const response = await fetch(url, {
         headers: { Accept: 'application/json' },
         cache: 'no-store'
       });

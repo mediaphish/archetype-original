@@ -63,7 +63,9 @@ const ALIDeploy = () => {
       }
 
       try {
-        const r = await fetch(`/api/ali/deploy/next?email=${encodeURIComponent(email)}`);
+        const r = await fetch(`/api/ali/deploy/next?email=${encodeURIComponent(email)}`, {
+          credentials: 'include',
+        });
         const j = await r.json().catch(() => ({}));
         if (!r.ok) {
           setNextSurvey({
@@ -166,6 +168,7 @@ const ALIDeploy = () => {
     try {
       const r = await fetch('/api/ali/deploy-survey', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,

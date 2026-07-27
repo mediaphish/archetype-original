@@ -10,7 +10,9 @@ const SuperAdminIntelligence = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/ali/super-admin/intelligence');
+        const email = getSuperAdminEmail();
+        const url = email ? `/api/ali/super-admin/intelligence?email=${encodeURIComponent(email)}` : '/api/ali/super-admin/intelligence';
+        const response = await fetch(url);
         const result = await response.json();
         if (result.ok) {
           setIntelligenceItems(result.items || []);
@@ -57,10 +59,11 @@ const SuperAdminIntelligence = () => {
     await navigator.clipboard.writeText(promptText);
     // Log action
     try {
+      const email = getSuperAdminEmail();
       await fetch(`/api/ali/super-admin/intelligence/${item.id}/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'prompt_copied' })
+        body: JSON.stringify({ action: 'prompt_copied', email })
       });
     } catch (error) {
       console.error('Error logging action:', error);
@@ -77,8 +80,11 @@ const SuperAdminIntelligence = () => {
 
   const handleMarkResolved = async (itemId) => {
     try {
+      const email = getSuperAdminEmail();
       await fetch(`/api/ali/super-admin/intelligence/${itemId}/dismiss`, {
-        method: 'POST'
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
       });
       setIntelligenceItems(items => items.filter(item => item.id !== itemId));
     } catch (error) {

@@ -21,6 +21,7 @@ import {
   calculateLeadershipMirror
 } from '../../../lib/ali-dashboard-calculations.js';
 import { CONDITION_KEYS, CONDITION_LABELS } from '../../../lib/ali-conditions.js';
+import { requireSuperAdmin } from '../../../lib/ali-admin-auth.js';
 
 function emptyPatternBuckets() {
   return CONDITION_KEYS.reduce((acc, k) => {
@@ -96,6 +97,9 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  const admin = await requireSuperAdmin(req, res);
+  if (!admin) return;
 
   try {
     // Load question bank

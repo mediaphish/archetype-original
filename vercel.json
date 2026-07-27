@@ -122,6 +122,7 @@
       { "src": "/api/ali/auth/login", "dest": "/api/ali/auth/login.js" },
       { "src": "/api/ali/auth/send-magic-link", "dest": "/api/ali/auth/send-magic-link.js" },
       { "src": "/api/ali/auth/verify-magic-link", "dest": "/api/ali/auth/verify-magic-link.js" },
+      { "src": "/api/ali/auth/logout", "dest": "/api/ali/auth/logout.js" },
     { "src": "/api/ali/billing", "dest": "/api/ali/billing.js" },
     { "src": "/api/ali/super-admin/intelligence/(.*)/action", "dest": "/api/ali/super-admin/intelligence/[id]/action.js?id=$1" },
     { "src": "/api/ali/super-admin/intelligence/(.*)/dismiss", "dest": "/api/ali/super-admin/intelligence/[id]/dismiss.js?id=$1" },

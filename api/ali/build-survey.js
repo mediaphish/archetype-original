@@ -28,6 +28,7 @@ import {
   buildPairedSurvey,
   validateSurveyComposition
 } from '../../lib/ali-survey-builder.js';
+import { requireAliSession } from '../../lib/ali-session.js';
 
 function isV2(instrumentVersion) {
   return instrumentVersion === 'v2.0' || (typeof instrumentVersion === 'string' && instrumentVersion.startsWith('v2.'));
@@ -93,19 +94,27 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  
+
+  const session = await requireAliSession(req, res);
+  if (!session) return;
+
+  if (session.isSuperAdmin && !session.companyId) {
+    return res.status(403).json({ ok: false, error: 'This action requires a tenant account.' });
+  }
+
   try {
     const {
-      clientId,
       surveyIndex,
       instrumentVersion = 'v1.0'
     } = req.body || {};
-    
+
+    const clientId = session.companyId;
+
     // Validation
     if (!clientId) {
       return res.status(400).json({ error: 'clientId is required' });
     }
-    
+
     if (!surveyIndex || !/^S\d+$/.test(surveyIndex)) {
       return res.status(400).json({ 
         error: 'surveyIndex is required and must match pattern S1, S2, S3, etc.' 
