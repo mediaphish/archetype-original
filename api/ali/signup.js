@@ -18,6 +18,7 @@
  */
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
+import crypto from 'crypto';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -193,6 +194,71 @@ export default async function handler(req, res) {
     if (acceptanceError) {
       console.error('Error recording legal acceptances:', acceptanceError);
       // Don't fail signup if acceptance logging fails, but log it
+    }
+
+    // Generate a real setup token (same table/pattern as the existing magic-link login flow)
+    const setupToken = crypto.randomBytes(32).toString('hex');
+    const setupExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours — longer than login links since this is a one-time onboarding step
+
+    const { error: setupTokenError } = await supabaseAdmin
+      .from('ali_magic_link_tokens')
+      .insert({
+        email: normalizedEmail,
+        token: setupToken,
+        expires_at: setupExpiresAt.toISOString(),
+        used: false,
+        ip_address: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || null,
+        user_agent: req.headers['user-agent'] || null,
+      });
+
+    if (setupTokenError) {
+      console.error('[ali/signup] Failed to create setup token:', setupTokenError.message);
+      // Don't fail the whole signup over this — the account was created successfully.
+      // The frontend will show a message and the contact can request a fresh link via
+      // the existing send-magic-link flow if this one never arrives.
+    } else {
+      const siteUrl = process.env.SITE_URL || 'https://www.archetypeoriginal.com';
+      const setupLink = `${siteUrl}/ali/setup-account?token=${setupToken}&email=${encodeURIComponent(normalizedEmail)}`;
+      const resendApiKey = process.env.RESEND_API_KEY;
+
+      if (!resendApiKey) {
+        console.log('[ali/signup] RESEND_API_KEY not configured — setup link (dev only):', setupLink);
+      } else {
+        const fromEmail = process.env.RESEND_FROM || 'Archetype Original <noreply@archetypeoriginal.com>';
+        const emailHtml = `
+          <!DOCTYPE html>
+          <html>
+            <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 10px;">Welcome to ALI</h1>
+                <p style="color: #666; font-size: 16px;">Finish setting up your account to get started</p>
+              </div>
+              <div style="text-align: center; margin: 40px 0;">
+                <a href="${setupLink}" style="background-color: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">
+                  Set Up My Account
+                </a>
+              </div>
+              <p style="color: #666; font-size: 14px; margin-top: 30px;">
+                This link will expire in 24 hours. If you didn't sign up for ALI, you can safely ignore this email.
+              </p>
+            </body>
+          </html>
+        `;
+
+        try {
+          const emailResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ from: fromEmail, to: normalizedEmail, subject: 'Welcome to ALI — set up your account', html: emailHtml }),
+          });
+          if (!emailResponse.ok) {
+            console.error('[ali/signup] Setup email send failed:', await emailResponse.text());
+          }
+        } catch (emailErr) {
+          console.error('[ali/signup] Setup email send threw:', emailErr?.message || emailErr);
+        }
+      }
     }
 
     return res.status(201).json({

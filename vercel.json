@@ -107,6 +107,7 @@
     { "src": "/api/knowledge", "dest": "/api/knowledge/index.js" },
     { "src": "/api/ali/apply", "dest": "/api/ali/apply.js" },
     { "src": "/api/ali/signup", "dest": "/api/ali/signup.js" },
+    { "src": "/api/ali/setup-account", "dest": "/api/ali/setup-account.js" },
     { "src": "/api/ali/contacts", "dest": "/api/ali/contacts.js" },
     { "src": "/api/ali/divisions", "dest": "/api/ali/divisions.js" },
     { "src": "/api/ali/build-survey", "dest": "/api/ali/build-survey.js" },
