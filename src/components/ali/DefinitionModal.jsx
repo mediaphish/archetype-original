@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { X, MessageSquare } from 'lucide-react';
 import AliArchyDrawer from './AliArchyDrawer';
 
@@ -23,7 +24,7 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
     }
   };
 
-  return (
+  return createPortal(
     <>
       {/* Modal Overlay */}
       <div 
@@ -78,9 +79,9 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
         initialMessage={`I'm looking at the ${title} section on my ALI dashboard. Can you help me understand what I'm seeing?`}
         getContextPayload={getArchyContextPayload}
       />
-    </>
+    </>,
+    document.body
   );
 };
 
 export default DefinitionModal;
-
