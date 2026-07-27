@@ -25,6 +25,7 @@ const ALIDashboard = () => {
   const [liveDashboardError, setLiveDashboardError] = useState(null);
   const [liveDashboardLoadedOnce, setLiveDashboardLoadedOnce] = useState(false);
   const [scoreCalculationExpanded, setScoreCalculationExpanded] = useState(false);
+  const [systemSpreadExpanded, setSystemSpreadExpanded] = useState(false);
   const [radarLayers, setRadarLayers] = useState({ overall: true, leader: true, team: true });
   const [metricInsights, setMetricInsights] = useState({});
   const [insightsLoading, setInsightsLoading] = useState(false);
@@ -248,13 +249,13 @@ const ALIDashboard = () => {
       content: (
         <div>
           <p className="mb-4">
-            Trajectory measures the overall direction of your leadership environment. It's calculated using the Drift Index method, which tracks how conditions are changing over time.
+            Trajectory measures the overall direction of your leadership environment — whether conditions are getting stronger or weaker over time.
           </p>
           <p className="mb-4">
             A positive trajectory (improving momentum) means your leadership conditions are getting stronger. A negative trajectory means drift is increasing and conditions are weakening.
           </p>
           <p className="text-sm text-gray-600">
-            This metric helps you see the big picture: are you moving toward healthier leadership patterns, or away from them?
+            This metric helps you see the big picture: are you moving toward healthier leadership patterns, or away from them? (Technical detail: we use a Drift Index method under the hood to track change over time.)
           </p>
         </div>
       )
@@ -825,6 +826,64 @@ const ALIDashboard = () => {
     })();
   };
 
+  // Hero insight signals (same math as System Spread "What this shows") — computed early
+  // so the plain-language sentence can lead the page before any chart.
+  const heroSystemSignals = (() => {
+    const respondents = Array.isArray(liveDashboard?.systemMap?.respondents)
+      ? liveDashboard.systemMap.respondents
+      : [];
+    if (!respondents.length) return null;
+
+    const mean = (arr) => {
+      if (!arr.length) return null;
+      return arr.reduce((a, b) => a + b, 0) / arr.length;
+    };
+    const spread = (arr) => {
+      if (!arr.length) return 0;
+      const sorted = [...arr].sort((a, b) => a - b);
+      const lo = sorted[Math.floor(sorted.length * 0.2)];
+      const hi = sorted[Math.floor(sorted.length * 0.8)];
+      return (typeof hi === 'number' && typeof lo === 'number') ? (hi - lo) : 0;
+    };
+
+    const leaderRows = respondents.filter((r) => r?.role === 'leader');
+    const teamRows = respondents.filter((r) => r?.role === 'team_member');
+
+    const rowsWithSignals = SYSTEM_KEYS.map((k) => {
+      const leaderVals = leaderRows
+        .map((r) => r?.scores?.[k])
+        .filter((v) => typeof v === 'number' && Number.isFinite(v));
+      const teamVals = teamRows
+        .map((r) => r?.scores?.[k])
+        .filter((v) => typeof v === 'number' && Number.isFinite(v));
+      const allVals = [...leaderVals, ...teamVals];
+      const leaderMean = mean(leaderVals);
+      const teamMean = mean(teamVals);
+      const gap = (typeof leaderMean === 'number' && typeof teamMean === 'number')
+        ? (leaderMean - teamMean)
+        : null;
+      return {
+        key: k,
+        leaderMean,
+        teamMean,
+        gap,
+        spread80: spread(allVals),
+      };
+    });
+
+    const biggestGapRow = rowsWithSignals
+      .filter((r) => typeof r.gap === 'number')
+      .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap))[0] || null;
+    const lowestTeamRow = rowsWithSignals
+      .filter((r) => typeof r.teamMean === 'number')
+      .sort((a, b) => (a.teamMean ?? 999) - (b.teamMean ?? 999))[0] || null;
+    const widestSpreadRow = rowsWithSignals
+      .slice()
+      .sort((a, b) => (b.spread80 ?? 0) - (a.spread80 ?? 0))[0] || null;
+
+    if (!biggestGapRow && !lowestTeamRow && !widestSpreadRow) return null;
+    return { biggestGapRow, lowestTeamRow, widestSpreadRow };
+  })();
 
   // Zone colors for score displays ONLY
   const getScoreColor = (score) => {
@@ -1244,13 +1303,13 @@ const ALIDashboard = () => {
                   <div className="px-6 pb-6 border-t border-black/[0.12]">
                     <div className="pt-6">
                       <p className="text-[14px] text-black/[0.87] mb-6">
-                        Your ALI score combines your 7 test scores (70%) with your Anchor score (30%). This weighted approach balances current leadership patterns with foundational behaviors that change slowly.
+                        Your ALI score is built mostly from your 7 leadership tests, with a smaller share from foundational Anchors that change more slowly. Use “View calculation formula” if you want the exact split.
                       </p>
                       
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* 7 Tests Explanation */}
                         <div>
-                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">7 Tests (70%)</div>
+                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">7 Tests (primary weight)</div>
                           <p className="text-[13px] text-black/[0.6] mb-4">
                             These seven patterns capture current leadership conditions that can change quickly: Clarity, Communication, Consistency, Trust, Alignment, Stability, and Drift.
                           </p>
@@ -1261,9 +1320,9 @@ const ALIDashboard = () => {
 
                         {/* Anchors Section */}
                         <div>
-                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">Anchors (30%)</div>
+                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">Anchors (foundation)</div>
                           <div className="rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 mb-4">
-                            <div className="text-[11px] text-black/[0.38] uppercase tracking-wide mb-1">Anchor score</div>
+                            <div className="text-[11px] text-black/[0.38] uppercase tracking-wide mb-1">Foundation score</div>
                             <div className="text-[28px] font-bold text-black/[0.87] leading-none mb-3">{fmt1(anchorCurrentScore)}</div>
                             <p className="text-[13px] text-black/[0.6] leading-relaxed">
                               Anchors stabilize your score across quarters by measuring core leadership behaviors that change slowly.
@@ -1442,6 +1501,51 @@ const ALIDashboard = () => {
           );
         })()}
 
+        {/* Hero insight — leads the story before any chart */}
+        {heroSystemSignals ? (
+          <section className="mb-8">
+            <div className="bg-gradient-to-br from-[#2563eb]/8 to-white rounded-lg border border-[#2563eb]/25 p-6">
+              <div className="text-[11px] font-semibold text-[#2563eb] uppercase tracking-wide mb-2">
+                What’s driving this most right now
+              </div>
+              <p className="text-[16px] text-black/[0.87] leading-relaxed">
+                {heroSystemSignals.biggestGapRow ? (
+                  <>
+                    The biggest gap right now is on{' '}
+                    <span className="font-semibold">
+                      {systemKeyToLabel(heroSystemSignals.biggestGapRow.key)}
+                    </span>
+                    {' '}
+                    (leader {Math.round(heroSystemSignals.biggestGapRow.leaderMean ?? 0)} vs team{' '}
+                    {Math.round(heroSystemSignals.biggestGapRow.teamMean ?? 0)}).
+                  </>
+                ) : null}
+                {heroSystemSignals.lowestTeamRow ? (
+                  <>
+                    {heroSystemSignals.biggestGapRow ? ' ' : null}
+                    The lowest team signal is{' '}
+                    <span className="font-semibold">
+                      {systemKeyToLabel(heroSystemSignals.lowestTeamRow.key)}
+                    </span>
+                    {' '}
+                    (team avg {Math.round(heroSystemSignals.lowestTeamRow.teamMean ?? 0)}).
+                  </>
+                ) : null}
+                {heroSystemSignals.widestSpreadRow ? (
+                  <>
+                    {(heroSystemSignals.biggestGapRow || heroSystemSignals.lowestTeamRow) ? ' ' : null}
+                    Experiences are most mixed on{' '}
+                    <span className="font-semibold">
+                      {systemKeyToLabel(heroSystemSignals.widestSpreadRow.key)}
+                    </span>
+                    .
+                  </>
+                ) : null}
+              </p>
+            </div>
+          </section>
+        ) : null}
+
         {/* PRIORITY 2: Key Insights & Movement - Generated by Archy */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
@@ -1566,7 +1670,7 @@ const ALIDashboard = () => {
                   </button>
                 </div>
                 <p className="text-[13px] text-black/[0.6]">
-                  The full 7-test diagnostic view (summary shape + individual response pattern).
+                  The full 7-test diagnostic view — start with the summary shape; open response distribution when you want the detail.
                 </p>
               </div>
               {!dashboardData.dataQuality?.meets_minimum_n_org && (
@@ -1993,9 +2097,27 @@ const ALIDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Diagnostic: distributions (scales to hundreds, no table scroll) */}
-                  <div className="bg-white rounded-lg border border-black/[0.12] p-6">
-                    <div className="flex items-start justify-between gap-4 mb-4">
+                  {/* Diagnostic: distributions — collapsed by default (disclosure) */}
+                  <div className="bg-white rounded-lg border border-black/[0.12] overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setSystemSpreadExpanded((v) => !v)}
+                      className="w-full flex items-center justify-between p-6 text-left hover:bg-black/[0.02] transition-colors"
+                    >
+                      <div>
+                        <div className="text-[16px] font-semibold text-black/[0.87]">Show response distribution</div>
+                        <div className="text-[13px] text-black/[0.6] mt-1">
+                          Individual responses across the 7 tests (leader vs team), with averages and the healthy band.
+                        </div>
+                      </div>
+                      <ChevronDown
+                        className={`w-5 h-5 text-black/[0.6] shrink-0 ml-4 transition-transform ${systemSpreadExpanded ? 'transform rotate-180' : ''}`}
+                      />
+                    </button>
+
+                    {systemSpreadExpanded ? (
+                    <div className="px-6 pb-6 border-t border-black/[0.12]">
+                    <div className="pt-4 flex items-start justify-between gap-4 mb-4">
                       <div>
                         <div className="text-[16px] font-semibold text-black/[0.87]">Leader vs Team: Response Spread</div>
                         <div className="text-[13px] text-black/[0.6] mt-1">
@@ -2102,10 +2224,10 @@ const ALIDashboard = () => {
                                   <div className="font-semibold text-black/[0.87] text-[13px]">What this shows (in your data)</div>
                                   <div className="mt-2 space-y-1">
                                     <div>
-                                      <span className="font-semibold text-black/[0.87]">Biggest leader/team difference:</span>{' '}
+                                      <span className="font-semibold text-black/[0.87]">Biggest gap right now:</span>{' '}
                                       {biggestGapRow ? (
                                         <>
-                                          {systemKeyToLabel(biggestGapRow.key)} ({Math.round(biggestGapRow.leaderMean ?? 0)} vs {Math.round(biggestGapRow.teamMean ?? 0)}; Δ {Math.round(biggestGapRow.gap ?? 0)})
+                                          {systemKeyToLabel(biggestGapRow.key)} (leader {Math.round(biggestGapRow.leaderMean ?? 0)} vs team {Math.round(biggestGapRow.teamMean ?? 0)}; difference {Math.round(biggestGapRow.gap ?? 0)})
                                         </>
                                       ) : (
                                         '—'
@@ -2122,10 +2244,10 @@ const ALIDashboard = () => {
                                       )}
                                     </div>
                                     <div>
-                                      <span className="font-semibold text-black/[0.87]">Most mixed experiences (widest spread):</span>{' '}
+                                      <span className="font-semibold text-black/[0.87]">Most mixed experiences:</span>{' '}
                                       {widestSpreadRow ? (
                                         <>
-                                          {systemKeyToLabel(widestSpreadRow.key)} (spread ~{Math.round(widestSpreadRow.spread80)}pts)
+                                          {systemKeyToLabel(widestSpreadRow.key)} (experiences differ by about {Math.round(widestSpreadRow.spread80)} points)
                                         </>
                                       ) : (
                                         '—'
@@ -2321,6 +2443,8 @@ const ALIDashboard = () => {
                         This diagnostic view appears once responses are available.
                       </div>
                     )}
+                    </div>
+                    ) : null}
                   </div>
                 </div>
               );

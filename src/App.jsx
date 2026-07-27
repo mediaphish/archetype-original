@@ -39,7 +39,6 @@ import ALIDashboardSaaS from "./pages/ali/Dashboard";
 import ALIDeploy from "./pages/ali/Deploy";
 import ALISettings from "./pages/ali/Settings";
 import ALIBilling from "./pages/ali/Billing";
-import ALIReports from "./pages/ali/Reports";
 import ReportsHub from "./pages/ali/ReportsHub";
 import ReportsZones from "./pages/ali/ReportsZones";
 import ReportsMirror from "./pages/ali/ReportsMirror";
