@@ -150,9 +150,12 @@ export default async function handler(req, res) {
         return res.status(500).json({ ok: false, error: error.message });
       }
 
+      let featuredImageUploadFailed = false;
+      let featuredImageUploadError = null;
+
       if (isReadyPost && featured?.content_base64 && featured?.filename && featured?.mime_type) {
         try {
-          await supabaseAdmin.from('ao_idea_assets').insert({
+          const { error: assetError } = await supabaseAdmin.from('ao_idea_assets').insert({
             idea_id: data.id,
             kind: 'featured_image',
             filename: String(featured.filename).slice(0, 200),
@@ -160,12 +163,25 @@ export default async function handler(req, res) {
             content_base64: String(featured.content_base64),
             created_at: new Date().toISOString(),
           });
-        } catch (_) {
-          // best-effort; the UI can retry upload later if needed
+          if (assetError) {
+            console.error('[ao/ideas POST] Featured image insert failed:', assetError.message);
+            featuredImageUploadFailed = true;
+            featuredImageUploadError = assetError.message;
+          }
+        } catch (err) {
+          console.error('[ao/ideas POST] Featured image insert threw:', err?.message || err);
+          featuredImageUploadFailed = true;
+          featuredImageUploadError = err?.message || 'Unknown error';
         }
       }
 
-      return res.status(200).json({ ok: true, idea: data });
+      return res.status(200).json({
+        ok: true,
+        idea: data,
+        ...(featuredImageUploadFailed
+          ? { featured_image_upload_failed: true, featured_image_upload_error: featuredImageUploadError }
+          : {}),
+      });
     } catch (e) {
       console.error('[ao/ideas POST]', e);
       return res.status(500).json({ ok: false, error: e.message });

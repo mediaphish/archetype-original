@@ -210,13 +210,19 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
 
   async function upsertDraft(row, label) {
     try {
-      await supabaseAdmin.from('ao_content_drafts').upsert(row, {
+      const { error } = await supabaseAdmin.from('ao_content_drafts').upsert(row, {
         onConflict: 'created_by_email,series_slug,part_number,kind',
         ignoreDuplicates: false,
       });
+      if (error) {
+        console.error(`[chat.js] ${label} failed (db error):`, error.message);
+        return { ok: false, error: error.message };
+      }
       console.log(`[chat.js] ${label}: ${row.slug || row.title} (status=${row.status})`);
+      return { ok: true };
     } catch (err) {
       console.error(`[chat.js] ${label} failed:`, err?.message || err);
+      return { ok: false, error: err?.message || 'Unknown error' };
     }
   }
 

@@ -35,6 +35,8 @@ export default async function handler(req, res) {
     const { data: row, error: fetchErr } = await supabaseAdmin
       .from('ao_quote_review_queue')
       .select()
+      .eq('id', id)
+      .eq('created_by_email', auth.email)
       .single();
 
     if (fetchErr) {
