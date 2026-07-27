@@ -255,7 +255,9 @@ export default function ReportsZones() {
       if (!email) return;
       try {
         setLiveDashboardError(null);
-        const resp = await fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`);
+        const resp = await fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`, {
+          credentials: 'include',
+        });
         const json = await resp.json();
         if (!resp.ok) throw new Error(json?.error || 'Failed to load dashboard summary');
         if (!isMounted) return;
@@ -328,6 +330,7 @@ export default function ReportsZones() {
 
         const resp = await fetch(`/api/ali/zone-recommendations?ts=${Date.now()}`, {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email,

@@ -105,7 +105,9 @@ const ALIDeploy = () => {
     setLoadingDeployments(true);
     setDeploymentsError('');
     try {
-      const r = await fetch(`/api/ali/deployments?email=${encodeURIComponent(email)}`);
+      const r = await fetch(`/api/ali/deployments?email=${encodeURIComponent(email)}`, {
+        credentials: 'include',
+      });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) {
         setDeploymentsError(j?.error || 'Failed to load deployments.');

@@ -10,10 +10,16 @@
  */
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
+import { requireAliSession } from '../../lib/ali-session.js';
 
 export default async function handler(req, res) {
   const { method } = req;
-  const { companyId, divisionId } = req.query;
+
+  const session = await requireAliSession(req, res);
+  if (!session) return;
+
+  const companyId = session.companyId;
+  const { divisionId } = req.query;
 
   try {
     // GET - List divisions for a company
@@ -39,13 +45,12 @@ export default async function handler(req, res) {
     // POST - Create a new division
     if (method === 'POST') {
       const {
-        companyId: bodyCompanyId,
         name,
         parentDivisionId,
         description
       } = req.body || {};
 
-      const targetCompanyId = companyId || bodyCompanyId;
+      const targetCompanyId = companyId;
 
       if (!targetCompanyId) {
         return res.status(400).json({ error: 'companyId is required' });

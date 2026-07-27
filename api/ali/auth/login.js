@@ -12,6 +12,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import bcrypt from 'bcryptjs';
+import { createSessionToken, sessionCookieHeader } from '../../../lib/ali-session.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -59,9 +60,13 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to load company information' });
     }
 
-    // Generate session token (in production, use JWT or session management library)
-    // For now, return user info - frontend should handle session storage
-    // TODO: Implement proper session management (JWT tokens, HTTP-only cookies, etc.)
+    const sessionToken = createSessionToken({
+      contactId: contact.id,
+      companyId: contact.company_id,
+      email: contact.email,
+      isSuperAdmin: false,
+    });
+    res.setHeader('Set-Cookie', sessionCookieHeader(sessionToken));
 
     return res.status(200).json({
       success: true,
@@ -74,8 +79,6 @@ export default async function handler(req, res) {
         permission_level: contact.permission_level,
         subscription_status: company.subscription_status
       },
-      // In production, return a secure session token here
-      // session_token: generateSessionToken(contact.id)
     });
 
   } catch (err) {

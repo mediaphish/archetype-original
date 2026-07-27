@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { CONDITION_LABELS } from '../../lib/ali-conditions.js';
+import { requireAliSession } from '../../lib/ali-session.js';
 
 function loadKnowledgeCorpus() {
   try {
@@ -86,27 +86,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const session = await requireAliSession(req, res);
+  if (!session) return;
+
   try {
-    const { email, zone, aliScore, lowestPatterns, largestGap, responseCount } = req.body || {};
+    const { zone, aliScore, lowestPatterns, largestGap, responseCount } = req.body || {};
 
-    if (!email) return res.status(400).json({ error: 'email is required' });
+    if (!session.companyId) {
+      return res.status(400).json({ error: 'companyId is required' });
+    }
     if (!zone) return res.status(400).json({ error: 'zone is required' });
-
-    // Basic auth check: must map to an ALI contact
-    const normalizedEmail = String(email).trim().toLowerCase();
-    const { data: contact, error: contactError } = await supabaseAdmin
-      .from('ali_contacts')
-      .select('company_id')
-      .eq('email', normalizedEmail)
-      .maybeSingle();
-
-    if (contactError) {
-      console.error('zone-recommendations: contact lookup error', contactError);
-      return res.status(500).json({ error: 'Failed to resolve account' });
-    }
-    if (!contact?.company_id) {
-      return res.status(404).json({ error: 'Account not found' });
-    }
 
     const corpus = loadKnowledgeCorpus();
     const query = [

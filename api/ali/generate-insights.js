@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { CONDITION_KEYS, CONDITION_LABELS } from '../../lib/ali-conditions.js';
+import { requireAliSession } from '../../lib/ali-session.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -53,6 +54,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
+
+  const session = await requireAliSession(req, res);
+  if (!session) return;
 
   try {
     console.log('[GENERATE_INSIGHTS] Processing request...');

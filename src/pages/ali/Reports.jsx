@@ -55,8 +55,12 @@ const ALIReports = () => {
       try {
         setLiveReportsError(null);
         const [reportsResp, dashResp] = await Promise.all([
-          fetch(`/api/ali/reports?email=${encodeURIComponent(email)}`),
-          fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`)
+          fetch(`/api/ali/reports?email=${encodeURIComponent(email)}`, {
+            credentials: 'include',
+          }),
+          fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`, {
+            credentials: 'include',
+          })
         ]);
         const reportsJson = await reportsResp.json();
         const dashJson = await dashResp.json();
@@ -830,6 +834,7 @@ const ALIReports = () => {
 
         const resp = await fetch('/api/ali/zone-recommendations', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email,

@@ -7,14 +7,18 @@
  */
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
+import { requireAliSession } from '../../lib/ali-session.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const session = await requireAliSession(req, res);
+  if (!session) return;
+
   try {
-    const { companyId } = req.query;
+    const companyId = session.companyId;
 
     if (!companyId) {
       return res.status(400).json({ error: 'companyId is required' });

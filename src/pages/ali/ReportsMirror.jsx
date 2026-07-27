@@ -76,7 +76,9 @@ export default function ReportsMirror() {
       if (!email) return;
       try {
         setError(null);
-        const resp = await fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`);
+        const resp = await fetch(`/api/ali/dashboard?email=${encodeURIComponent(email)}`, {
+          credentials: 'include',
+        });
         const json = await resp.json();
         if (!resp.ok) throw new Error(json?.error || 'Failed to load mirror');
         if (!isMounted) return;

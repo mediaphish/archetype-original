@@ -14,6 +14,7 @@ import {
   calculateRollingScore
 } from '../../lib/ali-scoring.js';
 import { CONDITION_KEYS } from '../../lib/ali-conditions.js';
+import { requireAliSession } from '../../lib/ali-session.js';
 
 function emptyPatternTrends() {
   return CONDITION_KEYS.reduce((acc, k) => {
@@ -99,33 +100,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const session = await requireAliSession(req, res);
+  if (!session) return;
+
   try {
-    const { companyId: companyIdParam, email } = req.query;
+    const companyId = session.companyId;
 
-    if (!companyIdParam && !email) {
-      return res.status(400).json({ error: 'companyId or email is required' });
-    }
-
-    let companyId = companyIdParam;
-    if (!companyId && email) {
-      // Resolve company from contact email (magic-link flow passes email)
-      const normalizedEmail = String(email).trim().toLowerCase();
-      const { data: contact, error: contactError } = await supabaseAdmin
-        .from('ali_contacts')
-        .select('company_id')
-        .eq('email', normalizedEmail)
-        .maybeSingle();
-
-      if (contactError) {
-        console.error('Error resolving company from email:', contactError);
-        return res.status(500).json({ error: 'Failed to resolve company for email' });
-      }
-
-      if (!contact?.company_id) {
-        return res.status(404).json({ error: 'Account not found for email' });
-      }
-
-      companyId = contact.company_id;
+    if (!companyId) {
+      return res.status(400).json({ error: 'companyId is required' });
     }
 
     // Get all completed deployments

@@ -8,6 +8,7 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { createSessionToken, sessionCookieHeader } from '../../../lib/ali-session.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -152,6 +153,13 @@ export default async function handler(req, res) {
         contactId: contact?.id || null,
         companyId: contact?.company_id || null
       };
+      const sessionToken = createSessionToken({
+        contactId: contact?.id || null,
+        companyId: contact?.company_id || null,
+        email: superAdmin.email,
+        isSuperAdmin: true,
+      });
+      res.setHeader('Set-Cookie', sessionCookieHeader(sessionToken));
     } else {
       // Check if regular contact
       const { data: contact, error: contactError } = await supabaseAdmin
@@ -199,6 +207,13 @@ export default async function handler(req, res) {
         subscription_status: company?.subscription_status || null,
         isSuperAdmin: false
       };
+      const sessionToken = createSessionToken({
+        contactId: contact.id,
+        companyId: contact.company_id,
+        email: contact.email,
+        isSuperAdmin: false,
+      });
+      res.setHeader('Set-Cookie', sessionCookieHeader(sessionToken));
     }
 
     // Redirect to appropriate dashboard with email in query string
