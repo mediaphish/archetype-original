@@ -24,46 +24,7 @@ const SuperAdminIntelligence = () => {
     fetchData();
   }, []);
 
-  // Mock data matching the screenshot
-  const mockData = [
-    {
-      id: 'int_001',
-      companyName: 'Acme Corp',
-      leaderName: 'Sarah Johnson',
-      timestamp: '2026-01-05T04:30:00Z',
-      priority: 'HIGH',
-      type: 'leadership challenge',
-      metrics: {
-        aliScore: 68.5,
-        pattern: 'Communication',
-        gap: 15
-      },
-      description: 'Based on the leadership assessment data showing a 15-point gap between leader self-perception (85) and team reality (70) in the area of Communication Clarity, I recommend focusing on:',
-      recommendations: [
-        'Weekly team check-ins with structured agenda',
-        'Implementing a feedback loop system',
-        'Documenting decisions and sharing context proactively'
-      ],
-      conclusion: 'The data indicates this gap has widened over the last 2 surveys, suggesting an urgent need for intervention.'
-    },
-    {
-      id: 'int_002',
-      companyName: 'TechStart Inc',
-      leaderName: 'Michael Chen',
-      timestamp: '2026-01-04T09:45:00Z',
-      priority: 'MEDIUM',
-      type: 'deployment feedback',
-      description: 'Deployment feedback indicates the leader is struggling with the initial survey setup. Recommended actions:',
-      recommendations: [
-        'Schedule a 30-minute onboarding call to walk through the survey deployment process',
-        'Provide the deployment checklist and timeline template',
-        'Address concerns about team response rates'
-      ],
-      conclusion: 'The leader expressed uncertainty about survey timing and whether to announce it in advance.'
-    }
-  ];
-
-  const displayItems = intelligenceItems.length > 0 ? intelligenceItems : mockData;
+  const displayItems = intelligenceItems;
   const pendingCount = displayItems.filter(item => !item.dismissed_at).length;
 
   const formatDate = (dateString) => {
@@ -134,7 +95,7 @@ const SuperAdminIntelligence = () => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-[28px] font-semibold text-black/[0.87] mb-1">Intelligence Inbox</h1>
-            <p className="text-[14px] text-black/[0.6]">AI-generated prompts from leadership challenges and deployment feedback</p>
+            <p className="text-[14px] text-black/[0.6]">Rule-based signals from leadership assessment data — perception gaps, low scores, and stale deployments</p>
           </div>
           <span className="px-3 py-1.5 rounded-full text-[13px] font-medium bg-blue-100 text-blue-700">
             {pendingCount} Pending
@@ -143,6 +104,11 @@ const SuperAdminIntelligence = () => {
 
         {/* Intelligence Cards */}
         <div className="space-y-4">
+          {displayItems.length === 0 && (
+            <div className="bg-white rounded-xl border border-black/[0.12] p-8 text-center text-[14px] text-black/[0.6]">
+              No intelligence items right now. The system checks weekly for leadership gaps, stale deployments, and low-scoring accounts — new items will appear here as real signals come in.
+            </div>
+          )}
           {displayItems.map((item) => (
             <div key={item.id} className="bg-white rounded-xl border border-black/[0.12] p-6 shadow-sm">
               {/* Header */}

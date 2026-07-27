@@ -17,11 +17,9 @@ function loadKnowledgeCorpus() {
   try {
     // Try multiple possible paths for Vercel serverless environment
     const possiblePaths = [
-      path.join(process.cwd(), 'api', 'knowledge.json'),
       path.join(process.cwd(), 'public', 'knowledge.json'),
-      path.join(process.cwd(), 'knowledge.json'),
-      '/var/task/api/knowledge.json',
       '/var/task/public/knowledge.json',
+      path.join(process.cwd(), 'knowledge.json'),
       './knowledge.json',
       '../public/knowledge.json'
     ];

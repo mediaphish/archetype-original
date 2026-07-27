@@ -3,8 +3,9 @@
  * 
  * GET /api/ali/super-admin/intelligence
  * 
- * Returns AI-generated intelligence items for super admin review.
- * Items are generated weekly by /api/cron/generate-intelligence.
+ * Returns rule-based intelligence items (threshold-triggered signals over real survey data,
+ * not LLM-generated) for super admin review. See api/cron/generate-intelligence.js for the
+ * actual detection logic.
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';

@@ -6,11 +6,9 @@ import { CONDITION_LABELS } from '../../lib/ali-conditions.js';
 function loadKnowledgeCorpus() {
   try {
     const possiblePaths = [
-      path.join(process.cwd(), 'api', 'knowledge.json'),
       path.join(process.cwd(), 'public', 'knowledge.json'),
-      path.join(process.cwd(), 'knowledge.json'),
-      '/var/task/api/knowledge.json',
       '/var/task/public/knowledge.json',
+      path.join(process.cwd(), 'knowledge.json'),
       './knowledge.json',
       '../public/knowledge.json'
     ];
