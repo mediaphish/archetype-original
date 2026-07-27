@@ -23,6 +23,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { CONDITION_KEYS } from '../../../lib/ali-conditions.js';
+import { generateEmbedding } from '../../../lib/ao/corpusEmbeddings.js';
 
 const MAX_LENGTH = 4000;
 const MIN_LENGTH = 8;
@@ -94,6 +95,26 @@ export default async function handler(req, res) {
     if (insertError) {
       console.error('[ali/narrative/submit] insert error:', insertError);
       return res.status(500).json({ ok: false, error: 'Failed to store narrative' });
+    }
+
+    // Best-effort: compute an embedding for clustering. Never blocks or fails the submission —
+    // if this fails, the narrative just won't be clustered until a later backfill pass.
+    try {
+      const embedding = await generateEmbedding(cleanedText);
+      if (embedding && embedding.length > 0) {
+        const embeddingValue = `[${embedding.join(',')}]`;
+        const { error: embedError } = await supabaseAdmin
+          .from('ali_narratives')
+          .update({ embedding_vector: embeddingValue })
+          .eq('id', narrative.id);
+        if (embedError) {
+          console.error('[ali/narrative/submit] Failed to store embedding:', embedError.message);
+        }
+      } else {
+        console.warn('[ali/narrative/submit] No embedding generated (missing API key or empty text) for narrative', narrative.id);
+      }
+    } catch (embedErr) {
+      console.error('[ali/narrative/submit] Embedding generation threw:', embedErr?.message || embedErr);
     }
 
     await supabaseAdmin.from('ali_narrative_audit').insert({

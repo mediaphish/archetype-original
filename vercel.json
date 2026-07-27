@@ -135,6 +135,7 @@
     { "src": "/api/ali/admin/deletions/initiate", "dest": "/api/ali/admin/deletions/initiate.js" },
     { "src": "/api/ali/admin/deletions/execute", "dest": "/api/ali/admin/deletions/execute.js" },
     { "src": "/api/cron/generate-intelligence", "dest": "/api/cron/generate-intelligence.js" },
+    { "src": "/api/cron/ali-process-narrative-clusters", "dest": "/api/cron/ali-process-narrative-clusters.js" },
     { "src": "/api/cron/ao/external-scan", "dest": "/api/cron/ao/external-scan.js" },
     { "src": "/api/cron/ao/internal-scan", "dest": "/api/cron/ao/internal-scan.js" },
     { "src": "/api/cron/ao/daily-run", "dest": "/api/cron/ao/daily-run.js" },
@@ -387,6 +388,10 @@
     {
       "path": "/api/cron/generate-intelligence",
       "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/ali-process-narrative-clusters",
+      "schedule": "30 9 * * 1"
     },
     {
       "path": "/api/cron/ao/internal-scan",
