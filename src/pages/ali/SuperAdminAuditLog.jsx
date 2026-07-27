@@ -9,7 +9,8 @@ const SuperAdminAuditLog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // This endpoint would need to be created
+        // TODO: Audit-log API endpoint needs to be built separately (e.g. GET /api/ali/super-admin/audit-log).
+        // Until then, do not invent fake entries — show an honest empty state only.
         // const response = await fetch('/api/ali/super-admin/audit-log');
         // const result = await response.json();
         // if (result.ok) {
@@ -24,35 +25,7 @@ const SuperAdminAuditLog = () => {
     fetchData();
   }, []);
 
-  // Mock data matching the screenshot
-  const mockData = [
-    {
-      id: 'log_001',
-      timestamp: '2026-01-05T08:32:15Z',
-      admin: 'admin@archetypeoriginal.com',
-      action: 'intelligence_prompt_copy',
-      resource: 'int_001',
-      details: 'Copied prompt for Acme Corp leadership challenge'
-    },
-    {
-      id: 'log_002',
-      timestamp: '2026-01-05T05:20:42Z',
-      admin: 'admin@archetypeoriginal.com',
-      action: 'tenant_view',
-      resource: 'ten_003',
-      details: 'Viewed Global Industries tenant details'
-    },
-    {
-      id: 'log_003',
-      timestamp: '2026-01-04T10:45:30Z',
-      admin: 'superadmin@archetypeoriginal.com',
-      action: 'deletion_dryrun',
-      resource: 'sur_042',
-      details: 'Ran dry-run for survey deletion (15 responses would be deleted)'
-    }
-  ];
-
-  const displayLogs = auditLogs.length > 0 ? auditLogs : mockData;
+  const displayLogs = auditLogs;
 
   const formatTimestamp = (dateString) => {
     const date = new Date(dateString);
@@ -112,7 +85,8 @@ const SuperAdminAuditLog = () => {
             </button>
             <button
               onClick={handleExportCSV}
-              className="px-4 py-2 bg-[#2563eb] text-white rounded-lg text-[14px] font-semibold hover:bg-[#1d4ed8] transition-colors flex items-center gap-2"
+              disabled={displayLogs.length === 0}
+              className="px-4 py-2 bg-[#2563eb] text-white rounded-lg text-[14px] font-semibold hover:bg-[#1d4ed8] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download className="w-4 h-4" />
               Export CSV
@@ -120,39 +94,47 @@ const SuperAdminAuditLog = () => {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-black/[0.12] overflow-x-auto">
-          <table className="w-full min-w-[600px]">
-            <thead className="bg-black/[0.04]">
-              <tr>
-                <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Timestamp</th>
-                <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Admin</th>
-                <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Action</th>
-                <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Resource</th>
-                <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Details</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/[0.12]">
-              {displayLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-black/[0.04] transition-colors">
-                  <td className="px-6 py-4 text-[14px] text-black/[0.87]">{formatTimestamp(log.timestamp)}</td>
-                  <td className="px-6 py-4 text-[14px] text-black/[0.87]">{log.admin}</td>
-                  <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-black/[0.08] text-black/[0.87]">
-                      {log.action}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-[14px] text-black/[0.87]">{log.resource}</td>
-                  <td className="px-6 py-4 text-[14px] text-black/[0.6]">{log.details}</td>
+        {loading ? (
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 text-center text-[14px] text-black/[0.6]">
+            Loading audit log…
+          </div>
+        ) : displayLogs.length === 0 ? (
+          <div className="bg-white rounded-xl border border-black/[0.12] p-8 text-center text-[14px] text-black/[0.6]">
+            Audit logging isn’t wired up yet — this screen will show real admin actions once the audit-log API is built.
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl border border-black/[0.12] overflow-x-auto">
+            <table className="w-full min-w-[600px]">
+              <thead className="bg-black/[0.04]">
+                <tr>
+                  <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Timestamp</th>
+                  <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Admin</th>
+                  <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Action</th>
+                  <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Resource</th>
+                  <th className="px-6 py-3 text-left text-[13px] font-semibold text-black/[0.6] uppercase tracking-wide">Details</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-black/[0.12]">
+                {displayLogs.map((log) => (
+                  <tr key={log.id} className="hover:bg-black/[0.04] transition-colors">
+                    <td className="px-6 py-4 text-[14px] text-black/[0.87]">{formatTimestamp(log.timestamp)}</td>
+                    <td className="px-6 py-4 text-[14px] text-black/[0.87]">{log.admin}</td>
+                    <td className="px-6 py-4">
+                      <span className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-black/[0.08] text-black/[0.87]">
+                        {log.action}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-[14px] text-black/[0.87]">{log.resource}</td>
+                    <td className="px-6 py-4 text-[14px] text-black/[0.6]">{log.details}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default SuperAdminAuditLog;
-

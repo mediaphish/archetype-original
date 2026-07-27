@@ -689,9 +689,9 @@ const ALIDashboard = () => {
       ...mockData,
       company: {
         ...mockData.company,
-        id: liveDashboard.company?.id || mockData.company.id,
-        name: liveDashboard.company?.name || mockData.company.name,
-        subscription_status: liveDashboard.company?.subscription_status || mockData.company.subscription_status
+        id: liveDashboard.company?.id || null,
+        name: liveDashboard.company?.name || '',
+        subscription_status: liveDashboard.company?.subscription_status || null
       },
       scores: {
         ...mockData.scores,
@@ -1077,6 +1077,31 @@ const ALIDashboard = () => {
         <main className="container mx-auto px-4 py-10 max-w-7xl">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">ALI Dashboard</h1>
           <p className="text-gray-600">Loading your live dashboard…</p>
+        </main>
+        <AliFooter />
+      </div>
+    );
+  }
+
+  // After load: never fall back to fabricated Acme/demo numbers when live data is missing.
+  if (!liveDashboard) {
+    return (
+      <div className="min-h-screen bg-white">
+        <AliHeader active="dashboard" email={email} isSuperAdminUser={isSuperAdminUser} onNavigate={handleNavigate} />
+
+        <main className="container mx-auto px-4 py-10 max-w-2xl">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">ALI Dashboard</h1>
+          <p className="text-gray-600 mb-4">
+            {liveDashboardError
+              ? `We couldn’t load your live dashboard (${liveDashboardError}).`
+              : 'No dashboard data yet — insights and scores will appear once your team starts responding.'}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="inline-flex items-center justify-center px-5 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+          >
+            Try again
+          </button>
         </main>
         <AliFooter />
       </div>
@@ -1594,60 +1619,35 @@ const ALIDashboard = () => {
                     </div>
                   </div>
                 );
-              }) : null}
-
-              {!liveDashboard ? mockData.insights.map((insight) => {
-                const Icon = insight.icon;
-                return (
-                  <div 
-                    key={insight.id}
-                    className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all cursor-pointer group"
-                    onClick={() => {
-                      setArchyInitialMessage(`I'm looking at this insight: "${insight.title}". ${insight.text} Can you help me understand what this means and what I should do about it?`);
-                      setShowArchyChat(true);
-                    }}
-                  >
-                    <Icon className={`w-6 h-6 mt-0.5 flex-shrink-0 ${insight.iconColor}`} />
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-                        {insight.title}
-                      </div>
-                      <div className="text-sm text-gray-700 mb-2">{insight.text}</div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setArchyInitialMessage(`Tell me more about: "${insight.title}". ${insight.text}`);
-                          setShowArchyChat(true);
-                        }}
-                        className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium"
-                      >
-                        <MessageSquareIcon className="w-3 h-3" />
-                        Ask Archy about this
-                      </button>
-                    </div>
-                  </div>
-                );
-              }) : null}
+              }) : (
+                <div className="p-4 rounded-lg border border-gray-200 text-sm text-gray-600">
+                  {isLoadingLive
+                    ? 'Loading your dashboard…'
+                    : 'No data yet — insights will appear once your team starts responding.'}
+                </div>
+              )}
             </div>
           </div>
         </section>
 
-        {/* Status Alert Panel */}
-        {!liveDashboard && mockData.alerts && mockData.alerts.length > 0 && (
+        {/* Status Alert Panel — only real alerts from live data (never fabricated demo alerts) */}
+        {(Array.isArray(liveDashboard?.alerts) && liveDashboard.alerts.length > 0) && (
           <section className="mb-8">
             <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-lg p-4">
               <div className="flex items-start">
                 <Bell className="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" />
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold text-yellow-800 mb-1">
-                    {mockData.alerts[0].title}
+                    {liveDashboard.alerts[0].title}
                   </h3>
                   <p className="text-sm text-yellow-700 mb-3">
-                    {mockData.alerts[0].message}
+                    {liveDashboard.alerts[0].message}
                   </p>
-                  <button className="text-sm font-medium text-yellow-800 hover:text-yellow-900 underline">
-                    {mockData.alerts[0].action} →
-                  </button>
+                  {liveDashboard.alerts[0].action ? (
+                    <button className="text-sm font-medium text-yellow-800 hover:text-yellow-900 underline">
+                      {liveDashboard.alerts[0].action} →
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -2624,8 +2624,8 @@ const ALIDashboard = () => {
                 70
               </div>
 
-              {/* Previous positions (trail) - only for demo mode */}
-              {!liveDashboard && mockData.experienceMap.previous.map((point, idx) => (
+              {/* Previous positions (trail) — only real historical trail from live data */}
+              {(Array.isArray(liveDashboard?.experienceMap?.previous) ? liveDashboard.experienceMap.previous : []).map((point, idx) => (
                 <div
                   key={idx}
                   className="absolute w-3 h-3 rounded-full bg-black/[0.2]"
@@ -2634,7 +2634,7 @@ const ALIDashboard = () => {
                     bottom: `${point.y}%`,
                     transform: "translate(-50%, 50%)",
                   }}
-                  title={`${point.period}: (${point.x}, ${point.y})`}
+                  title={`${point.period || ''}: (${point.x}, ${point.y})`}
                 />
               ))}
 
@@ -2643,8 +2643,14 @@ const ALIDashboard = () => {
                 <polyline
                   points={[
                     // SVG "points" expects raw numbers; % signs will crash rendering.
-                    ...(!liveDashboard ? mockData.experienceMap.previous.map((p) => `${p.x},${100 - p.y}`) : []),
-                    `${dashboardData.experienceMap.current.x},${100 - dashboardData.experienceMap.current.y}`,
+                    ...(Array.isArray(liveDashboard?.experienceMap?.previous)
+                      ? liveDashboard.experienceMap.previous
+                          .filter((p) => typeof p?.x === 'number' && typeof p?.y === 'number')
+                          .map((p) => `${p.x},${100 - p.y}`)
+                      : []),
+                    ...(typeof dashboardData.experienceMap.current.x === 'number' && typeof dashboardData.experienceMap.current.y === 'number'
+                      ? [`${dashboardData.experienceMap.current.x},${100 - dashboardData.experienceMap.current.y}`]
+                      : []),
                   ].join(" ")}
                   fill="none"
                   stroke="rgba(0,0,0,0.15)"

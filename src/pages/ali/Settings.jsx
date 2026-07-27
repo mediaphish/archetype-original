@@ -3,6 +3,16 @@ import { getAliSessionEmail, setAliSessionEmail } from '../../lib/magicLinkBrows
 
 const ALISettings = () => {
   const [activeTab, setActiveTab] = useState('company');
+  const [companyData, setCompanyData] = useState({
+    name: '',
+    size: '',
+    industry: '',
+    website: ''
+  });
+  const [contacts, setContacts] = useState([]);
+  const [contactsLoading, setContactsLoading] = useState(true);
+  const [contactsError, setContactsError] = useState(null);
+  const [companyProfileUnavailable, setCompanyProfileUnavailable] = useState(true);
 
   const handleNavigate = (path) => {
     window.history.pushState({}, '', path);
@@ -28,22 +38,60 @@ const ALISettings = () => {
     if (email) setAliSessionEmail(email);
   }, [emailParam, email]);
 
-  // Mock data
-  const [companyData, setCompanyData] = useState({
-    name: 'Acme Corporation',
-    size: '51-100',
-    industry: 'Technology',
-    website: 'https://acme.com'
-  });
-
-  const [contacts, setContacts] = useState([
-    { id: '1', name: 'John Doe', email: 'john@acme.com', role: 'CEO', permission: 'account_owner' },
-    { id: '2', name: 'Jane Smith', email: 'jane@acme.com', role: 'HR Director', permission: 'view_only' }
-  ]);
+  // Contacts: real endpoint exists (GET /api/ali/contacts). Company profile fields
+  // (size/industry/website) have no dedicated settings GET yet — leave empty and say so.
+  useEffect(() => {
+    let isMounted = true;
+    const run = async () => {
+      if (!email) {
+        if (isMounted) {
+          setContacts([]);
+          setContactsLoading(false);
+          setContactsError(null);
+          setCompanyProfileUnavailable(true);
+        }
+        return;
+      }
+      try {
+        setContactsLoading(true);
+        setContactsError(null);
+        const resp = await fetch('/api/ali/contacts', { credentials: 'include' });
+        const json = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          throw new Error(json?.error || 'Failed to load contacts');
+        }
+        if (!isMounted) return;
+        const rows = Array.isArray(json?.contacts) ? json.contacts : [];
+        setContacts(
+          rows.map((c) => ({
+            id: c.id,
+            name: c.full_name || c.name || '',
+            email: c.email || '',
+            role: c.role || '',
+            permission: c.permission_level || c.permission || 'view_only'
+          }))
+        );
+        // No company-profile GET endpoint yet — keep empty defaults (not Acme placeholders).
+        setCompanyData({ name: '', size: '', industry: '', website: '' });
+        setCompanyProfileUnavailable(true);
+      } catch (err) {
+        if (!isMounted) return;
+        setContacts([]);
+        setContactsError(err?.message || 'Failed to load contacts');
+        setCompanyProfileUnavailable(true);
+      } finally {
+        if (isMounted) setContactsLoading(false);
+      }
+    };
+    run();
+    return () => {
+      isMounted = false;
+    };
+  }, [email]);
 
   const handleCompanySave = (e) => {
     e.preventDefault();
-    alert('Company profile saved!');
+    alert('Company profile saving isn’t available yet — there’s no settings save endpoint wired for this screen.');
   };
 
   const handleAddContact = () => {
@@ -139,6 +187,12 @@ const ALISettings = () => {
         {activeTab === 'company' && (
           <section className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Company Profile</h2>
+
+            {companyProfileUnavailable ? (
+              <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                Company profile details aren’t available from the server for this screen yet — fields below stay blank on purpose so we don’t show invented company data. Contacts (next tab) load from the real contacts list when you’re signed in.
+              </div>
+            ) : null}
             
             <form onSubmit={handleCompanySave} className="space-y-6">
               <div>
@@ -151,7 +205,7 @@ const ALISettings = () => {
                   value={companyData.name}
                   onChange={(e) => setCompanyData({ ...companyData, name: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                  required
+                  placeholder="Not available yet"
                 />
               </div>
 
@@ -165,6 +219,7 @@ const ALISettings = () => {
                   onChange={(e) => setCompanyData({ ...companyData, size: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 >
+                  <option value="">Not available yet</option>
                   <option value="1-10">1-10 employees</option>
                   <option value="11-50">11-50 employees</option>
                   <option value="51-100">51-100 employees</option>
@@ -184,6 +239,7 @@ const ALISettings = () => {
                   value={companyData.industry}
                   onChange={(e) => setCompanyData({ ...companyData, industry: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  placeholder="Not available yet"
                 />
               </div>
 
@@ -197,6 +253,7 @@ const ALISettings = () => {
                   value={companyData.website}
                   onChange={(e) => setCompanyData({ ...companyData, website: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  placeholder="Not available yet"
                 />
               </div>
 
@@ -225,7 +282,15 @@ const ALISettings = () => {
               </button>
             </div>
 
-            {contacts.length === 0 ? (
+            {contactsLoading ? (
+              <div className="text-center py-8 text-gray-500">
+                Loading contacts…
+              </div>
+            ) : contactsError ? (
+              <div className="text-center py-8 text-red-600">
+                Couldn’t load contacts: {contactsError}
+              </div>
+            ) : contacts.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 No contacts added yet
               </div>
@@ -275,4 +340,3 @@ const ALISettings = () => {
 };
 
 export default ALISettings;
-
