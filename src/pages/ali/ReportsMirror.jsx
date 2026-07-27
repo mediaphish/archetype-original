@@ -31,6 +31,34 @@ function severityToCopy(sev) {
   return { label: '—', cls: 'bg-gray-50 border-gray-200 text-gray-700' };
 }
 
+function GapBar({ leader, team, className = '' }) {
+  const hasLeader = typeof leader === 'number' && Number.isFinite(leader);
+  const hasTeam = typeof team === 'number' && Number.isFinite(team);
+  if (!hasLeader && !hasTeam) return null;
+  const teamPct = hasTeam ? Math.max(0, Math.min(100, team)) : 0;
+  const leaderPct = hasLeader ? Math.max(0, Math.min(100, leader)) : 0;
+  return (
+    <div className={className}>
+      <div className="relative h-2.5 rounded-full bg-gray-100 overflow-hidden">
+        <div
+          className="absolute inset-y-0 left-0 rounded-full bg-gray-300"
+          style={{ width: `${teamPct}%` }}
+          title={`Team: ${fmt1(team)}`}
+        />
+        <div
+          className="absolute inset-y-0 w-0.5 bg-gray-900"
+          style={{ left: `${leaderPct}%` }}
+          title={`Leader: ${fmt1(leader)}`}
+        />
+      </div>
+      <div className="flex items-center gap-4 mt-1 text-[11px] text-gray-500">
+        <span className="flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-gray-300" /> Team experience</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-0.5 h-3 bg-gray-900" /> Leader belief</span>
+      </div>
+    </div>
+  );
+}
+
 export default function ReportsMirror() {
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
@@ -245,6 +273,7 @@ export default function ReportsMirror() {
                   Leader: <span className="font-semibold text-gray-900">{fmt1(topGap.leader)}</span> • Team:{' '}
                   <span className="font-semibold text-gray-900">{fmt1(topGap.team)}</span>
                 </div>
+                <GapBar leader={topGap.leader} team={topGap.team} className="mt-3 max-w-sm" />
               </div>
               <div className="flex items-start gap-3">
                 <div className={`px-3 py-1 rounded-full border text-xs font-semibold ${severityToCopy(topGap.severity).cls}`}>
@@ -307,6 +336,7 @@ export default function ReportsMirror() {
                         <td className="py-4 pr-4">
                           <div className="font-semibold text-gray-900">{row.label}</div>
                           <div className="text-xs text-gray-500 mt-1">{dir}</div>
+                          <GapBar leader={row.leader} team={row.team} className="mt-2 w-32" />
                         </td>
                         <td className="py-4 pr-4 text-gray-700">{fmt1(row.leader)}</td>
                         <td className="py-4 pr-4 text-gray-700">{fmt1(row.team)}</td>

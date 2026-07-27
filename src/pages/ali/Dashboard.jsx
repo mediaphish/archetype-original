@@ -1130,6 +1130,9 @@ const ALIDashboard = () => {
               <span className="ml-2 text-xs text-green-600">(live)</span>
             ) : null}
           </p>
+          <p className="text-sm text-gray-500 mt-2 max-w-2xl">
+            This is what's happening across your leadership environment right now — not a verdict, just what's real. The score below is one number; the gap in your Leadership Mirror is what's actually driving it.
+          </p>
         </div>
 
         {/* HERO: ALI Score Breakdown (2-column: Breakdown left, Zone/Mirror/Trajectory right) */}
