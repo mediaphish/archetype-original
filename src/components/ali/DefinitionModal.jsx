@@ -32,7 +32,7 @@ const DefinitionModal = ({ isOpen, onClose, title, content, sectionKey, onOpenAr
         onClick={onClose}
       >
         <div 
-          className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col"
+          className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
