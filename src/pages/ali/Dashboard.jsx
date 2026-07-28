@@ -1307,120 +1307,8 @@ const ALIDashboard = () => {
                 </div>
               </div>
 
-              {/* Accordion: How your score is calculated */}
-              <div className="bg-white rounded-lg border border-black/[0.12] overflow-hidden">
-                <button
-                  onClick={() => setScoreCalculationExpanded(!scoreCalculationExpanded)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-black/[0.02] transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-[18px] font-semibold text-black/[0.87]">How your score is calculated</h3>
-                    <HelpCircle 
-                      className="w-5 h-5 text-black/[0.38] hover:text-[#2563eb] transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenDefinition('ali-score-calculation');
-                      }}
-                    />
-                  </div>
-                  <ChevronDown 
-                    className={`w-5 h-5 text-black/[0.6] transition-transform ${scoreCalculationExpanded ? 'transform rotate-180' : ''}`}
-                  />
-                </button>
-                
-                {scoreCalculationExpanded && (
-                  <div className="px-6 pb-6 border-t border-black/[0.12]">
-                    <div className="pt-6">
-                      <p className="text-[14px] text-black/[0.87] mb-6">
-                        Your ALI score is built mostly from your 7 leadership tests, with a smaller share from foundational Anchors that change more slowly. Use “View calculation formula” if you want the exact split.
-                      </p>
-                      
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* 7 Tests Explanation */}
-                        <div>
-                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">7 Tests (primary weight)</div>
-                          <p className="text-[13px] text-black/[0.6] mb-4">
-                            These seven patterns capture current leadership conditions that can change quickly: Clarity, Communication, Consistency, Trust, Alignment, Stability, and Drift.
-                          </p>
-                          <div className="text-[13px] text-black/[0.6]">
-                            <span className="font-semibold text-black/[0.87]">Current mean:</span> {fmt1(patternMeanUsed)}
-                          </div>
-                        </div>
-
-                        {/* Anchors Section */}
-                        <div>
-                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">Anchors (foundation)</div>
-                          <div className="rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 mb-4">
-                            <div className="text-[11px] text-black/[0.38] uppercase tracking-wide mb-1">Foundation score</div>
-                            <div className="text-[28px] font-bold text-black/[0.87] leading-none mb-3">{fmt1(anchorCurrentScore)}</div>
-                            <p className="text-[13px] text-black/[0.6] leading-relaxed">
-                              Anchors stabilize your score across quarters by measuring core leadership behaviors that change slowly.
-                            </p>
-                          </div>
-                          
-                          <button
-                            onClick={() => setOpenDefinition('ali-score-calculation')}
-                            className="text-[12px] text-black/[0.6] hover:text-black/[0.87] underline flex items-center gap-1"
-                          >
-                            <HelpCircle className="w-4 h-4" />
-                            <span>View calculation formula</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* SECOND ROW: Zone + Full Leadership Mirror */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Current Zone */}
-                <div 
-                  className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
-                  style={{
-                    backgroundColor: zoneInfo ? `${zoneInfo.color}15` : 'rgba(0,0,0,0.04)',
-                    borderColor: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.12)'
-                  }}
-                  onClick={() => handleNavigate(withEmail('/ali/reports/zones'))}
-                >
-                  <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
-                    CURRENT ZONE
-                  </div>
-                  <div 
-                    className="text-[22px] font-bold mb-3"
-                    style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}
-                  >
-                    {zoneInfo ? zoneInfo.label : '—'}
-                  </div>
-                  {zoneInfo ? (
-                    <>
-                      <p className="text-[14px] leading-relaxed mb-4" style={{ color: zoneInfo.color }}>
-                        {zoneInfo.description}
-                      </p>
-                      <div className="mb-4 pt-4 border-t" style={{ borderColor: `${zoneInfo.color}40` }}>
-                        <p className="text-[13px] leading-relaxed mb-3" style={{ color: 'rgba(0,0,0,0.87)' }}>
-                          {zoneInfo.narrative}
-                        </p>
-                        <div className="bg-white/60 rounded-md p-3 border" style={{ borderColor: `${zoneInfo.color}30` }}>
-                          <div className="text-[11px] font-semibold uppercase tracking-wide mb-1" style={{ color: zoneInfo.color }}>
-                            Focus Area
-                          </div>
-                          <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(0,0,0,0.87)' }}>
-                            {zoneInfo.focus}
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <p className="text-[14px] leading-relaxed mb-3" style={{ color: 'rgba(0,0,0,0.6)' }}>
-                      Zone will appear once enough data is available.
-                    </p>
-                  )}
-                  <div className="text-[12px] font-semibold text-[#2563eb]">
-                    Open Zones guide →
-                  </div>
-                </div>
-
+              {/* Full Leadership Mirror — promoted above the fold */}
+              <div className="mb-6">
                 {/* Full Leadership Mirror */}
                 <div className="bg-white rounded-lg border border-black/[0.12] border-t-4 border-t-blue-600 p-6 shadow-sm">
                   <div className="flex items-center justify-between mb-1">
@@ -1500,6 +1388,122 @@ const ALIDashboard = () => {
                     );
                   })()}
                 </div>
+              </div>
+
+              {/* Accordion: How your score is calculated */}
+              <div className="bg-white rounded-lg border border-black/[0.12] overflow-hidden">
+                <button
+                  onClick={() => setScoreCalculationExpanded(!scoreCalculationExpanded)}
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-black/[0.02] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-[18px] font-semibold text-black/[0.87]">How your score is calculated</h3>
+                    <HelpCircle 
+                      className="w-5 h-5 text-black/[0.38] hover:text-[#2563eb] transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenDefinition('ali-score-calculation');
+                      }}
+                    />
+                  </div>
+                  <ChevronDown 
+                    className={`w-5 h-5 text-black/[0.6] transition-transform ${scoreCalculationExpanded ? 'transform rotate-180' : ''}`}
+                  />
+                </button>
+                
+                {scoreCalculationExpanded && (
+                  <div className="px-6 pb-6 border-t border-black/[0.12]">
+                    <div className="pt-6">
+                      <p className="text-[14px] text-black/[0.87] mb-6">
+                        Your ALI score is built mostly from your 7 leadership tests, with a smaller share from foundational Anchors that change more slowly. Use “View calculation formula” if you want the exact split.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* 7 Tests Explanation */}
+                        <div>
+                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">7 Tests (primary weight)</div>
+                          <p className="text-[13px] text-black/[0.6] mb-4">
+                            These seven patterns capture current leadership conditions that can change quickly: Clarity, Communication, Consistency, Trust, Alignment, Stability, and Drift.
+                          </p>
+                          <div className="text-[13px] text-black/[0.6]">
+                            <span className="font-semibold text-black/[0.87]">Current mean:</span> {fmt1(patternMeanUsed)}
+                          </div>
+                        </div>
+
+                        {/* Anchors Section */}
+                        <div>
+                          <div className="text-[14px] font-semibold text-black/[0.87] mb-2">Anchors (foundation)</div>
+                          <div className="rounded-lg border border-black/[0.12] bg-black/[0.02] p-4 mb-4">
+                            <div className="text-[11px] text-black/[0.38] uppercase tracking-wide mb-1">Foundation score</div>
+                            <div className="text-[28px] font-bold text-black/[0.87] leading-none mb-3">{fmt1(anchorCurrentScore)}</div>
+                            <p className="text-[13px] text-black/[0.6] leading-relaxed">
+                              Anchors stabilize your score across quarters by measuring core leadership behaviors that change slowly.
+                            </p>
+                          </div>
+                          
+                          <button
+                            onClick={() => setOpenDefinition('ali-score-calculation')}
+                            className="text-[12px] text-black/[0.6] hover:text-black/[0.87] underline flex items-center gap-1"
+                          >
+                            <HelpCircle className="w-4 h-4" />
+                            <span>View calculation formula</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Current Zone */}
+              <div className="grid grid-cols-1 gap-6">
+                {/* Current Zone */}
+                <div 
+                  className="rounded-lg border-2 p-6 cursor-pointer hover:shadow-lg transition-all"
+                  style={{
+                    backgroundColor: zoneInfo ? `${zoneInfo.color}15` : 'rgba(0,0,0,0.04)',
+                    borderColor: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.12)'
+                  }}
+                  onClick={() => handleNavigate(withEmail('/ali/reports/zones'))}
+                >
+                  <div className="text-[11px] font-medium text-black/[0.6] uppercase tracking-wide mb-2">
+                    CURRENT ZONE
+                  </div>
+                  <div 
+                    className="text-[22px] font-bold mb-3"
+                    style={{ color: zoneInfo ? zoneInfo.color : 'rgba(0,0,0,0.6)' }}
+                  >
+                    {zoneInfo ? zoneInfo.label : '—'}
+                  </div>
+                  {zoneInfo ? (
+                    <>
+                      <p className="text-[14px] leading-relaxed mb-4" style={{ color: zoneInfo.color }}>
+                        {zoneInfo.description}
+                      </p>
+                      <div className="mb-4 pt-4 border-t" style={{ borderColor: `${zoneInfo.color}40` }}>
+                        <p className="text-[13px] leading-relaxed mb-3" style={{ color: 'rgba(0,0,0,0.87)' }}>
+                          {zoneInfo.narrative}
+                        </p>
+                        <div className="bg-white/60 rounded-md p-3 border" style={{ borderColor: `${zoneInfo.color}30` }}>
+                          <div className="text-[11px] font-semibold uppercase tracking-wide mb-1" style={{ color: zoneInfo.color }}>
+                            Focus Area
+                          </div>
+                          <p className="text-[12px] leading-relaxed" style={{ color: 'rgba(0,0,0,0.87)' }}>
+                            {zoneInfo.focus}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-[14px] leading-relaxed mb-3" style={{ color: 'rgba(0,0,0,0.6)' }}>
+                      Zone will appear once enough data is available.
+                    </p>
+                  )}
+                  <div className="text-[12px] font-semibold text-[#2563eb]">
+                    Open Zones guide →
+                  </div>
+                </div>
+
               </div>
             </div>
           );
