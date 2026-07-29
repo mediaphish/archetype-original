@@ -15,6 +15,7 @@ import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuot
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
+import { logActivity } from '../../../lib/ao/logActivity.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
 import { getGuestsByIds } from '../../../lib/ao/guestIntakeStore.js';
@@ -794,6 +795,21 @@ export default async function handler(req, res) {
           if (reshareResult.photo) {
             reshareMeta.photo_used = reshareResult.photo;
           }
+
+          await logActivity({
+            action_type: 'reshare_completed',
+            source: 'chat.js:TRIGGER_RESHARE',
+            reference_table: 'ao_scheduled_posts',
+            reference_id: reshareResult.journal_url || null,
+            created_by_email: auth?.email || null,
+            detail: {
+              title: reshareResult.title,
+              journal_url: reshareResult.journal_url,
+              image_url: reshareResult.image_url || null,
+              photo: reshareResult.photo || null,
+              signal_strength: reshareResult.signal_strength || null,
+            },
+          });
         } else if (reshareResult.ok && reshareResult.message) {
           fullReply = `${fullReply}\n\n${reshareResult.message}`.trim();
         } else {
@@ -1064,6 +1080,19 @@ Return markdown only: a # title line, then the full post body.`,
             }
             const idLine = opportunityId ? ` id="${opportunityId}"` : '';
             fullReply = `${fullReply}\n\n[OPPORTUNITY_IMAGE_RESULT${idLine}]\nPull quote: "${imageResult.pull_quote}"\nMood: ${imageResult.mood || 'n/a'}\nImage: ${imageResult.image_url}\n[/OPPORTUNITY_IMAGE_RESULT]\n\nHere's the branded header image (real photo + pull quote + logo — same treatment as reshare). Approve it, ask for a different photo/quote, or say what to change. Captions come only after this image is approved — derived from the finished post, not before.`.trim();
+
+            await logActivity({
+              action_type: 'image_generated',
+              source: 'chat.js:OPPORTUNITY_GENERATE_IMAGE',
+              reference_table: opportunityId ? 'ao_opportunities' : null,
+              reference_id: opportunityId || null,
+              created_by_email: auth?.email || null,
+              detail: {
+                image_url: imageResult.image_url,
+                pull_quote: imageResult.pull_quote,
+                mood: imageResult.mood || null,
+              },
+            });
           }
         }
       } catch (err) {
