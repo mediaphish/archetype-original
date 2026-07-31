@@ -566,6 +566,13 @@ export default async function handler(req, res) {
 
   const userMessage = String(message).trim();
 
+  // Heartbeat: keeps real bytes flowing to the client during any long silent
+  // gap in server-side processing (e.g. image generation), so nothing between
+  // Vercel and the browser treats the connection as idle and kills it before
+  // the final SSE event is ever sent. Started after model token streaming
+  // ends, cleared right before the response ends (success or error).
+  let heartbeatTimer = null;
+
   try {
     const thread = await ensureAutoThread(auth.email, thread_id || '');
 
@@ -701,6 +708,15 @@ export default async function handler(req, res) {
       res.end();
       return;
     }
+
+    // Model token streaming is done. Everything from here forward (image
+    // generation, reshare/opportunity processing, database writes) can run
+    // for many seconds with zero bytes written to the client otherwise. Send
+    // a small heartbeat event periodically so the connection stays visibly
+    // alive until the real done/error event is sent below.
+    heartbeatTimer = setInterval(() => {
+      sendEvent('heartbeat', { t: Date.now() });
+    }, 15000);
 
     // Enforce response rules in code before any further processing.
     // These rules were previously in the system prompt as suggestions to the model.
@@ -1475,6 +1491,11 @@ ${retrievedBlock}
 
     const finalState = await getAutoThreadState(auth.email, thread.id);
 
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+
     // Send the complete processed reply and thread state as the final SSE event
     sendEvent('done', {
       ok: true,
@@ -1490,6 +1511,10 @@ ${retrievedBlock}
     res.end();
     return;
   } catch (err) {
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+    }
     console.error('[Auto V2 chat]', err?.message || err);
     try {
       sendEvent('error', {
