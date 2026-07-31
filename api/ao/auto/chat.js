@@ -1145,9 +1145,16 @@ Return markdown only: a # title line, then the full post body.`,
     // (not just the first). Fetched bodies are injected into a synthesis call — never
     // dumped raw into the visible/stored reply.
     const corpusFetchMatches = [...fullReply.matchAll(/\[CORPUS_FETCH_FULL_TEXT([^\]]*)\]/gi)];
-    if (corpusFetchMatches.length > 0) {
+    // DRAFT_FETCH_FULL_TEXT: same idea as CORPUS_FETCH_FULL_TEXT, but for Auto's own
+    // approved-or-in-progress drafts that have fallen out of this conversation's visible
+    // context (long threads push earlier turns out). Without this, Auto had no way to
+    // recover its own already-approved draft text except asking Bart to re-paste it, or
+    // — worse, what actually happened — fabricating a replacement and presenting it as real.
+    const draftFetchMatches = [...fullReply.matchAll(/\[DRAFT_FETCH_FULL_TEXT([^\]]*)\]/gi)];
+    if (corpusFetchMatches.length > 0 || draftFetchMatches.length > 0) {
       try {
         fullReply = fullReply.replace(/\[\/?CORPUS_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
+        fullReply = fullReply.replace(/\[\/?DRAFT_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
 
         let knowledgeDocs = null;
         const loadKnowledgeDocs = () => {
@@ -1284,6 +1291,55 @@ Return markdown only: a # title line, then the full post body.`,
             failures.push({ requestedSlug, requestedTitle });
             fullReply =
               `${fullReply}\n\n[CORPUS_FETCH_FAILED slug="${requestedSlug || 'unknown'}"]\nCould not find a document matching slug "${requestedSlug}" or title "${requestedTitle}". Confirm the exact slug from the FULL CORPUS INDEX and try again.\n[/CORPUS_FETCH_FAILED]`.trim();
+          }
+        }
+
+        for (const match of draftFetchMatches) {
+          const attrBlob = match[1] || '';
+          const slugMatch = attrBlob.match(/\bslug="([^"]*)"/i);
+          const requestedSlug = (slugMatch?.[1] || '').trim();
+
+          if (!requestedSlug) {
+            fullReply =
+              `${fullReply}\n\n[DRAFT_FETCH_FAILED slug="unknown"]\nNo slug given. DRAFT_FETCH_FULL_TEXT requires a slug attribute.\n[/DRAFT_FETCH_FAILED]`.trim();
+            continue;
+          }
+
+          try {
+            const { data: draftRow, error: draftFetchError } = await supabaseAdmin
+              .from('ao_content_drafts')
+              .select('slug, title, kind, status, content, updated_at')
+              .eq('created_by_email', auth.email.toLowerCase().trim())
+              .eq('slug', requestedSlug)
+              .in('kind', ['journal', 'devotional'])
+              .order('updated_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+
+            if (draftFetchError) {
+              console.error('[chat.js] DRAFT_FETCH_FULL_TEXT lookup failed:', draftFetchError.message);
+              fullReply =
+                `${fullReply}\n\n[DRAFT_FETCH_FAILED slug="${requestedSlug}"]\nLookup failed: ${draftFetchError.message}\n[/DRAFT_FETCH_FAILED]`.trim();
+              continue;
+            }
+
+            if (!draftRow || !draftRow.content) {
+              fullReply =
+                `${fullReply}\n\n[DRAFT_FETCH_FAILED slug="${requestedSlug}"]\nNo saved draft found for slug "${requestedSlug}". This means the content genuinely does not exist in storage — say so plainly to Bart rather than assuming it does.\n[/DRAFT_FETCH_FAILED]`.trim();
+              continue;
+            }
+
+            resolvedDocs.push({
+              slug: draftRow.slug,
+              title: draftRow.title || draftRow.slug,
+              publishDate: `not yet published — draft status: ${draftRow.status}`,
+              summary: "(this is Auto's own previously approved draft, retrieved from storage)",
+              body: draftRow.content,
+            });
+          } catch (draftErr) {
+            console.error('[chat.js] DRAFT_FETCH_FULL_TEXT error:', draftErr?.message || draftErr);
+            fullReply =
+              `${fullReply}\n\n[DRAFT_FETCH_FAILED slug="${requestedSlug}"]\nLookup failed: ${draftErr?.message || 'unknown error'}\n[/DRAFT_FETCH_FAILED]`.trim();
           }
         }
 
