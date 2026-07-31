@@ -1308,6 +1308,12 @@ ${retrievedBlock}
               : [{ role: 'user', content: userMessage }];
 
           // Replace the preamble/signal reply — synthesis becomes the stored/visible answer.
+          // Tell the client to wipe its live streaming buffer FIRST. Without this, the
+          // client keeps appending new tokens onto the same message bubble as the
+          // discarded first-pass reply, producing one garbled message that looks like
+          // Auto contradicting itself mid-sentence (two separate model generations
+          // glued together with no boundary).
+          sendEvent('reset', { reset: true });
           fullReply = '';
           const synthesisClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
           const synthesisModel =

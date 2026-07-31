@@ -2502,7 +2502,18 @@ export default function AutoV2Panel({ onNavigate, className }) {
                   const parsed = JSON.parse(line.slice(6));
                   lastEventAt = Date.now();
 
-                  if (parsed.token !== undefined) {
+                  if (parsed.reset) {
+                    // Server discarded the in-progress reply (e.g. it fetched full corpus
+                    // documents and is now streaming a fresh synthesis call). Clear the
+                    // live buffer so the new generation doesn't get glued onto the old
+                    // one in the same message bubble.
+                    streamingAssistantContent = '';
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === streamingMsgId ? { ...m, content: '' } : m
+                      )
+                    );
+                  } else if (parsed.token !== undefined) {
                     // Text token — append to streaming display
                     streamingAssistantContent += parsed.token;
                     setMessages((prev) =>
