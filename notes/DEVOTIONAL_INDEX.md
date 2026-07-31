@@ -218,6 +218,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-07-29 | Do Not Repay Evil for Evil | 1 Peter 3:9–10 (ESV) | `do-not-repay-evil-for-evil` | `2026-07-29-do-not-repay-evil-for-evil.md` |
 | 2026-07-30 | How Forceful Are Honest Words | Job 6:24–25 (ESV) | `how-forceful-are-honest-words` | `2026-07-30-how-forceful-are-honest-words.md` |
 | 2026-07-31 | Whoever Loves Life, Keep Your Tongue | Psalm 34:12–13 (ESV) | `whoever-loves-life-keep-your-tongue` | `2026-07-31-whoever-loves-life-keep-your-tongue.md` |
+| 2026-08-01 | Where Are You | Genesis 3:9 (ESV) | `where-are-you` | `2026-08-01-where-are-you.md` |
+| 2026-08-02 | Am I My Brother's Keeper | Genesis 4:9–10 (ESV) | `am-i-my-brothers-keeper` | `2026-08-02-am-i-my-brothers-keeper.md` |
+| 2026-08-03 | Be Sure Your Sin Will Find You Out | Numbers 32:20–23 (ESV) | `be-sure-your-sin-will-find-you-out` | `2026-08-03-be-sure-your-sin-will-find-you-out.md` |
+| 2026-08-04 | Achan's Confession | Joshua 7:19–21 (ESV) | `achans-confession` | `2026-08-04-achans-confession.md` |
+| 2026-08-05 | Our Secret Sins in the Light | Psalm 90:8 (ESV) | `our-secret-sins-in-the-light` | `2026-08-05-our-secret-sins-in-the-light.md` |
+| 2026-08-06 | Nothing Stays Hidden | Luke 12:2–3 (ESV) | `nothing-stays-hidden` | `2026-08-06-nothing-stays-hidden.md` |
+| 2026-08-07 | Each Will Give Account | Romans 14:10–12 (ESV) | `each-will-give-account` | `2026-08-07-each-will-give-account.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
