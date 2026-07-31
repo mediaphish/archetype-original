@@ -481,9 +481,10 @@ function MessageBubble({ message }) {
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
       <div
         className={`
-          w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold
+          w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold select-none
           ${isUser ? 'bg-gray-900 text-white' : 'bg-gray-100 border border-gray-200 text-gray-500'}
         `}
+        style={{ userSelect: 'none' }}
         aria-hidden="true"
       >
         {isUser ? 'B' : <AOMark className="w-3.5 h-3.5" />}
