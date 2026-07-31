@@ -2418,12 +2418,26 @@ export default function AutoV2Panel({ onNavigate, className }) {
               if (commaIdx === -1) throw new Error('Invalid dataUrl format');
               const header = fileSnap.dataUrl.slice(0, commaIdx);
               const b64data = fileSnap.dataUrl.slice(commaIdx + 1);
-              // Always derive mediaType from the dataUrl header — never trust fileSnap.type
-              // because file.type can be wrong on macOS for PNG files
-              const mediaTypeMatch = header.match(/^data:([^;]+);/);
-              if (!mediaTypeMatch) throw new Error('Could not parse mediaType from dataUrl header');
-              const mediaType = mediaTypeMatch[1];
               if (!b64data) throw new Error('Empty base64 data');
+              // Detect the real image type from the actual encoded bytes, not from the
+              // dataUrl header or file.type. Both of those come from the browser's OS-level,
+              // extension-based MIME lookup, which macOS gets wrong for files whose extension
+              // does not match their real content (e.g. a PNG saved or renamed with a .jpg
+              // extension) -- the exact failure Anthropic's API caught and rejected.
+              const detectRealImageType = (b64) => {
+                if (b64.startsWith('iVBORw0KGgo')) return 'image/png';
+                if (b64.startsWith('/9j/')) return 'image/jpeg';
+                if (b64.startsWith('R0lGODdh') || b64.startsWith('R0lGODlh')) return 'image/gif';
+                if (b64.startsWith('UklGR')) return 'image/webp';
+                return null;
+              };
+              const detectedType = detectRealImageType(b64data);
+              let mediaType = detectedType;
+              if (!mediaType) {
+                const mediaTypeMatch = header.match(/^data:([^;]+);/);
+                if (!mediaTypeMatch) throw new Error('Could not parse mediaType from dataUrl header');
+                mediaType = mediaTypeMatch[1];
+              }
               attachments.push({
                 type: 'image',
                 mediaType,
