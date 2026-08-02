@@ -951,6 +951,16 @@ function ArtifactPanel({
                 {journalPublishBanner.journalUrl}
               </a>
             ) : null}
+            {Array.isArray(journalPublishBanner.warnings) && journalPublishBanner.warnings.length > 0 && (
+              <div className="mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                <p className="font-medium mb-1">The entry is live, but part of this did not fully complete:</p>
+                <ul className="list-disc pl-4 space-y-0.5">
+                  {journalPublishBanner.warnings.map((w, i) => (
+                    <li key={i}>{w}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
         {journalPublishBanner?.status === 'error' && (
@@ -2876,10 +2886,33 @@ export default function AutoV2Panel({ onNavigate, className }) {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Publish failed');
+
+      // The GitHub commit (the part that matters most) already succeeded by this
+      // point. But captions, the draft's published status, and the corpus embed
+      // all run afterward and can fail independently -- without this check, a
+      // partial failure looked identical to a full success, and Bart had no way
+      // to know social posts never actually got scheduled, or a draft is stuck
+      // showing as pending forever.
+      const warnings = [];
+      if (socialCaptionsBlock && (json.captions_error || !json.captions_scheduled)) {
+        warnings.push(
+          json.captions_error
+            ? `Social captions were NOT scheduled: ${json.captions_error}`
+            : 'Social captions were expected but 0 were scheduled. Check the [SOCIAL_CAPTIONS] block with Auto.'
+        );
+      }
+      if (json.draft_mark_error) {
+        warnings.push(`Draft status update failed: ${json.draft_mark_error}. It may still show as pending to Auto.`);
+      }
+      if (json.corpus_embed_error) {
+        warnings.push(`Not added to Auto's search corpus: ${json.corpus_embed_error}. Auto may not find this piece later.`);
+      }
+
       setJournalPublishBanner({
         status: 'success',
         title: attrs.title,
         journalUrl: json.journal_url || '',
+        warnings,
       });
     } catch (e) {
       setJournalPublishBanner({
