@@ -1842,10 +1842,22 @@ export default function AutoV2Panel({ onNavigate, className }) {
   useEffect(() => {
     if (!Array.isArray(messages) || messages.length === 0) return;
 
-    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
-    if (!lastAssistant) return;
+    // Look back through the last several assistant replies for the most recent
+    // one that actually contains a complete publish signal, instead of only
+    // trusting the single most recent message. Auto's very next reply after
+    // firing [PUBLISH_JOURNAL] is often an ordinary follow-up ("let me know if
+    // you want changes") that does not repeat the tag -- checking only that
+    // last message silently made the Publish button disappear with no error.
+    const recentAssistantMessages = [...messages]
+      .filter((m) => m.role === 'assistant')
+      .reverse()
+      .slice(0, 10);
 
-    const parsed = extractJournalPublishFromAssistantContent(String(lastAssistant.content || ''));
+    let parsed = null;
+    for (const m of recentAssistantMessages) {
+      parsed = extractJournalPublishFromAssistantContent(String(m.content || ''));
+      if (parsed) break;
+    }
     if (!parsed) return;
 
     const { attrs, journalContent, socialCaptionsBlock } = parsed;
@@ -2807,12 +2819,28 @@ export default function AutoV2Panel({ onNavigate, className }) {
       return;
     }
 
-    // Full publish mode
-    if (!attrs.image_url) {
-      const confirmed = window.confirm(
-        'No header image URL found in the publish signal.\n\nThe entry will be blocked by the server without an image.\n\nCancel and ask Auto to re-send the publish signal with the image_url included.'
+    // Full publish mode -- if this particular signal did not repeat the image_url
+    // attribute, look up the real, currently-saved image for this post instead of
+    // asking Bart to gamble on a popup. Tonight's earlier fixes mean the database
+    // now reliably has the real image_url for a post at all times.
+    let resolvedImageUrl = attrs.image_url || '';
+    if (!resolvedImageUrl) {
+      try {
+        const draftRes = await fetch(`/api/ao/auto/content-draft?slug=${encodeURIComponent(attrs.slug)}`);
+        const draftJson = await draftRes.json().catch(() => ({}));
+        if (draftRes.ok && draftJson.ok && draftJson.draft?.image_url) {
+          resolvedImageUrl = draftJson.draft.image_url;
+        }
+      } catch (_) {
+        // Fall through -- resolvedImageUrl stays empty and the server will report the real error.
+      }
+    }
+
+    if (!resolvedImageUrl) {
+      setError(
+        `No image is saved yet for "${attrs.title}". Generate or upload a header image before publishing.`
       );
-      if (!confirmed) return;
+      return;
     }
 
     setJournalPublishBanner({ status: 'loading', title: attrs.title });
@@ -2830,7 +2858,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
           publish_date: attrs.publish_date || '',
           categories: categoriesRaw,
           featured_image: attrs.featured_image || '',
-          image_url: attrs.image_url || '',
+          image_url: resolvedImageUrl,
           takeaways: [],
           notify,
           notify_delay_ms: 300000,
