@@ -76,6 +76,131 @@ function extractCaptionSetFromTexts(texts = []) {
   return null;
 }
 
+/**
+ * Whether a user message is itself a full post rather than an instruction or
+ * a short remark. A real post consistently has a markdown H1 title line and
+ * real length; a short "publish this" or "what do you think" never does.
+ * Deliberately conservative (long H1 posts, or very long text regardless) to
+ * avoid mistaking a long instruction for a post and overwriting real content.
+ */
+function looksLikeFullPastedPost(text) {
+  const raw = String(text || '');
+  const hasH1 = /^#\s+.+$/m.test(raw);
+  if (hasH1 && raw.length > 400) return true;
+  if (raw.length > 1500) return true;
+  return false;
+}
+
+/**
+ * Saves a post Bart pastes directly into chat straight to the database, the
+ * moment it arrives -- never waiting on Auto to echo it back inside a
+ * [JOURNAL_CONTENT] tag first. Confirmed directly against the database: a
+ * complete post pasted hours earlier in a real conversation was never saved
+ * at all, because the only existing save path depended entirely on Auto's
+ * reply containing that exact tag, and it never did. This removes that
+ * dependency for the most important case: the post text itself.
+ *
+ * Never throws. Returns null (and nothing extra is sent to Claude) on any
+ * failure or when the message does not look like a full post.
+ */
+async function trySaveUserPastedPostDirectly(userMessage, email, recentHistory = []) {
+  try {
+    if (!email) return null;
+    const raw = String(userMessage || '');
+    if (!looksLikeFullPastedPost(raw)) return null;
+
+    // Title: first H1 line, else the first non-empty line, capped to a sane length.
+    const h1Match = raw.match(/^#\s+(.+)$/m);
+    let title = h1Match ? h1Match[1].trim() : '';
+    if (!title) {
+      const firstLine = raw.split('\n').map((l) => l.trim()).find(Boolean) || '';
+      title = firstLine.slice(0, 120);
+    }
+    if (!title) return null;
+
+    // Slug: an explicit "slug is x-y-z" phrase in the message, else slugify the title.
+    let targetSlug = '';
+    const slugPhraseMatch = raw.match(
+      /\bslug\s*(?:is|:|=)?\s*["']?([a-z0-9]+(?:-[a-z0-9]+){1,10})["']?/i
+    );
+    if (slugPhraseMatch) {
+      targetSlug = slugPhraseMatch[1].toLowerCase();
+    } else {
+      targetSlug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80);
+    }
+    if (!targetSlug) return null;
+
+    const kind = /\bdevotional\b/i.test(raw.slice(0, 400)) ? 'devotional' : 'journal';
+
+    const { data: updatedRow, error: updateError } = await supabaseAdmin
+      .from('ao_content_drafts')
+      .update({
+        content: raw,
+        title,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('created_by_email', email.toLowerCase().trim())
+      .eq('slug', targetSlug)
+      .in('kind', ['journal', 'devotional'])
+      .select('slug, title, status, image_url')
+      .maybeSingle();
+
+    if (updateError) {
+      console.error('[chat.js] trySaveUserPastedPostDirectly update failed:', updateError.message);
+      return null;
+    }
+
+    if (updatedRow) {
+      const imageNote = updatedRow.image_url
+        ? `Its already-saved image is untouched at: ${updatedRow.image_url}.`
+        : 'No image is saved for it yet.';
+      return (
+        `[SYSTEM FACT -- the full post text in this message was automatically saved to the ` +
+        `existing draft "${updatedRow.title}" (slug: ${updatedRow.slug}, status: ${updatedRow.status}). ` +
+        `This already happened in the database before you answered. ${imageNote} Confirm plainly to ` +
+        `Bart that the post text is saved under this slug. Do not ask him to re-paste it, and do not ` +
+        `claim you generated or fabricated any part of it -- it is saved verbatim as given.]`
+      );
+    }
+
+    const { data: createdRow, error: insertError } = await supabaseAdmin
+      .from('ao_content_drafts')
+      .insert({
+        created_by_email: email.toLowerCase().trim(),
+        kind,
+        series_slug: targetSlug,
+        part_number: 1,
+        slug: targetSlug,
+        title,
+        content: raw,
+        status: 'draft',
+      })
+      .select('slug, title, status')
+      .single();
+
+    if (insertError) {
+      console.error('[chat.js] trySaveUserPastedPostDirectly insert failed:', insertError.message);
+      return null;
+    }
+
+    return (
+      `[SYSTEM FACT -- the full post text in this message was automatically saved as a new draft ` +
+      `"${createdRow.title}" (slug: ${createdRow.slug}, status: ${createdRow.status}). This already ` +
+      `happened in the database before you answered. Confirm plainly to Bart that the post text is ` +
+      `saved under this slug, and that no image is saved for it yet unless one is added separately. ` +
+      `Do not ask him to re-paste it, and do not claim you generated or fabricated any part of it -- ` +
+      `it is saved verbatim as given.]`
+    );
+  } catch (err) {
+    console.error('[chat.js] trySaveUserPastedPostDirectly unexpected error:', err?.message || err);
+    return null;
+  }
+}
+
 const ATTACHED_IMAGE_STORAGE_BUCKET = 'ao-auto-attachments';
 const ATTACHED_IMAGE_STORAGE_PREFIX = 'ao-design-images';
 
@@ -828,6 +953,14 @@ export default async function handler(req, res) {
       );
     }
 
+    // If Bart pastes a full post directly, save it to the database right now --
+    // do not wait on Auto's reply to echo it back inside a tag first. Runs on
+    // every message; the function itself is conservative about what counts as
+    // "a full post" so ordinary chat is never mistaken for one.
+    const pastedPostFact = await trySaveUserPastedPostDirectly(userMessage, auth.email, history);
+
+    const combinedFacts = [attachedImageFact, pastedPostFact].filter(Boolean).join('\n\n');
+
     // Build the current user message content — include image attachments if present.
     // The Anthropic API accepts multi-part content arrays with image blocks.
     // This allows Auto to see uploaded images rather than treating them as invisible.
@@ -846,13 +979,15 @@ export default async function handler(req, res) {
           });
         }
       }
-      const textWithFact = attachedImageFact
-        ? `${userMessage}\n\n${attachedImageFact}`
+      const textWithFact = combinedFacts
+        ? `${userMessage}\n\n${combinedFacts}`
         : userMessage;
       contentParts.push({ type: 'text', text: textWithFact });
       currentMessageContent = contentParts;
     } else {
-      currentMessageContent = userMessage;
+      currentMessageContent = combinedFacts
+        ? `${userMessage}\n\n${combinedFacts}`
+        : userMessage;
     }
 
     // Load schedule context only when the request involves scheduling or publishing.
