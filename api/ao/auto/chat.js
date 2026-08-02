@@ -92,6 +92,84 @@ function looksLikeFullPastedPost(text) {
 }
 
 /**
+ * A draft row can exist with empty content for a real reason that has nothing
+ * to do with anything being broken right now: the post text was pasted before
+ * the deterministic save existed, or before it happened to run, and nothing
+ * ever goes back over old messages in a thread to catch it -- the live save
+ * only ever looks at the message arriving right now. Confirmed directly
+ * against the database: a real post sat with an empty draft for hours this
+ * way while an image and captions were built on top of it.
+ *
+ * Before reporting a draft's content as genuinely missing, scan the rest of
+ * THIS thread's own message history for a message that looks like the
+ * original pasted post (same conservative heuristic as
+ * trySaveUserPastedPostDirectly) and whose derived slug matches the one being
+ * requested. If found, save it immediately and return it. Never throws.
+ * Returns null on any failure or when nothing in the thread matches.
+ */
+async function tryBackfillMissingDraftContent(requestedSlug, allMessages, email) {
+  try {
+    if (!requestedSlug || !email || !Array.isArray(allMessages)) return null;
+
+    const userTexts = allMessages
+      .filter((m) => m.role === 'user')
+      .map((m) => String(m.content || ''))
+      .filter(Boolean);
+
+    for (const raw of userTexts) {
+      if (!looksLikeFullPastedPost(raw)) continue;
+
+      const h1Match = raw.match(/^#\s+(.+)$/m);
+      let title = h1Match ? h1Match[1].trim() : '';
+      if (!title) {
+        const firstLine = raw.split('\n').map((l) => l.trim()).find(Boolean) || '';
+        title = firstLine.slice(0, 120);
+      }
+      if (!title) continue;
+
+      let candidateSlug = '';
+      const slugPhraseMatch = raw.match(
+        /\bslug\s*(?:is|:|=)?\s*["']?([a-z0-9]+(?:-[a-z0-9]+){1,10})["']?/i
+      );
+      if (slugPhraseMatch) {
+        candidateSlug = slugPhraseMatch[1].toLowerCase();
+      } else {
+        candidateSlug = title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .slice(0, 80);
+      }
+
+      if (candidateSlug !== requestedSlug) continue;
+
+      const { data: updatedRow, error: updateError } = await supabaseAdmin
+        .from('ao_content_drafts')
+        .update({ content: raw, title, updated_at: new Date().toISOString() })
+        .eq('created_by_email', email.toLowerCase().trim())
+        .eq('slug', requestedSlug)
+        .in('kind', ['journal', 'devotional'])
+        .select('slug, title, status, content, image_url')
+        .maybeSingle();
+
+      if (updateError) {
+        console.error('[chat.js] tryBackfillMissingDraftContent update failed:', updateError.message);
+        return null;
+      }
+      if (updatedRow?.content) {
+        console.log(`[chat.js] Backfilled missing content for slug "${requestedSlug}" from thread history.`);
+        return updatedRow;
+      }
+    }
+
+    return null;
+  } catch (err) {
+    console.error('[chat.js] tryBackfillMissingDraftContent unexpected error:', err?.message || err);
+    return null;
+  }
+}
+
+/**
  * Saves a post Bart pastes directly into chat straight to the database, the
  * moment it arrives -- never waiting on Auto to echo it back inside a
  * [JOURNAL_CONTENT] tag first. Confirmed directly against the database: a
@@ -1786,6 +1864,28 @@ Return markdown only: a # title line, then the full post body.`,
             }
 
             if (!draftRow.content) {
+              // Before giving up, check whether the original post is sitting somewhere
+              // earlier in this same thread, unsaved only because it predates the save
+              // mechanism (or was otherwise missed). If so, recover it now instead of
+              // telling Bart it's missing.
+              const backfilled = await tryBackfillMissingDraftContent(
+                requestedSlug,
+                prior.messages,
+                auth.email
+              );
+
+              if (backfilled?.content) {
+                resolvedDocs.push({
+                  slug: backfilled.slug,
+                  title: backfilled.title || backfilled.slug,
+                  publishDate: `not yet published — draft status: ${backfilled.status}`,
+                  summary:
+                    "(this is Auto's own previously approved draft, recovered from this thread's history and saved just now)",
+                  body: backfilled.content,
+                });
+                continue;
+              }
+
               const imageNote = draftRow.image_url
                 ? `An image is already saved for it at: ${draftRow.image_url}.`
                 : 'No image is saved for it yet either.';
