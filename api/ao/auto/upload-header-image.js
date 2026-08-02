@@ -113,10 +113,52 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (!updatedRow) {
-      res.status(404).json({
+    if (updatedRow) {
+      res.status(200).json({
+        ok: true,
+        image_url: imageUrl,
+        slug: updatedRow.slug,
+        title: updatedRow.title,
+        status: updatedRow.status,
+      });
+      return;
+    }
+
+    // No draft exists yet under this slug -- the post text hasn't been saved
+    // as a draft yet, only the image has been made. Rather than fail, create
+    // a lightweight placeholder draft now with just the image attached. When
+    // the real post text is saved later under this same slug (through Auto's
+    // normal save-on-produce flow), it lands on this same row and fills in
+    // the content -- it will not lose this image, because that save path
+    // only ever sets the fields it explicitly lists, and image_url is not
+    // one of them unless a publish signal supplies it.
+    const derivedTitle = safeSlug
+      .split('-')
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+
+    const { data: createdRow, error: insertError } = await supabaseAdmin
+      .from('ao_content_drafts')
+      .insert({
+        created_by_email: auth.email.toLowerCase().trim(),
+        kind: 'journal',
+        series_slug: safeSlug,
+        part_number: 1,
+        slug: safeSlug,
+        title: derivedTitle,
+        content: '',
+        status: 'draft',
+        image_url: imageUrl,
+      })
+      .select('slug, title, status, image_url')
+      .single();
+
+    if (insertError) {
+      console.error('[upload-header-image] Placeholder draft creation failed:', insertError.message);
+      res.status(500).json({
         ok: false,
-        error: `Image uploaded to storage, but no saved draft was found for slug "${safeSlug}". Check the slug is correct.`,
+        error: `Image uploaded to storage, but no draft existed yet for slug "${safeSlug}" and creating one failed: ${insertError.message}`,
         image_url: imageUrl,
       });
       return;
@@ -125,9 +167,10 @@ export default async function handler(req, res) {
     res.status(200).json({
       ok: true,
       image_url: imageUrl,
-      slug: updatedRow.slug,
-      title: updatedRow.title,
-      status: updatedRow.status,
+      slug: createdRow.slug,
+      title: createdRow.title,
+      status: createdRow.status,
+      created_new_draft: true,
     });
   } catch (err) {
     console.error('[upload-header-image] Unexpected error:', err?.message || err);
