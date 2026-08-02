@@ -897,6 +897,56 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
         `Caption set saved on approval (${captionSet.source})`
       );
     }
+    return;
+  }
+
+  // FALLBACK: Bart's message read as approval, but this exchange did not repeat
+  // a [JOURNAL_CONTENT]/[DEVOTIONAL_CONTENT] tag or a caption set -- this
+  // happens whenever Auto's reply to "Approved" is an ordinary follow-up
+  // instead of re-emitting the content. Without this, a real "Approved" from
+  // Bart silently promotes nothing: Auto sounds like it worked, but no
+  // draft's status ever actually changes, and there is no error to say so.
+  // Resolve the most likely pending draft the same way tonight's other fixes
+  // resolve a slug (an explicit reference in the message, otherwise the most
+  // recently updated pending draft) and promote that one directly. Promoting
+  // to 'approved' does not publish anything by itself -- Bart still has to
+  // click Publish separately -- so this only closes a "nothing happened"
+  // failure mode, it does not create a new way to go live unintentionally.
+  try {
+    const { data: pendingDrafts, error: pendingErr } = await supabaseAdmin
+      .from('ao_content_drafts')
+      .select('kind, series_slug, part_number, title, slug, status, updated_at')
+      .eq('created_by_email', email.toLowerCase().trim())
+      .eq('status', 'draft')
+      .in('kind', ['journal', 'devotional'])
+      .order('updated_at', { ascending: false })
+      .limit(10);
+
+    if (!pendingErr && pendingDrafts?.length) {
+      const recentUserMessages = (recentHistory || [])
+        .filter((m) => m.role === 'user')
+        .map((m) => String(m.content || ''))
+        .filter(Boolean)
+        .slice(-5)
+        .reverse();
+      const fuzzyMatches = findReferencedDrafts(pendingDrafts, userMessage, recentUserMessages);
+      const target = fuzzyMatches[0] || pendingDrafts[0];
+
+      if (target?.slug || target?.series_slug) {
+        const promoted = await promoteDraftStatus({
+          kind: target.kind,
+          series_slug: target.series_slug,
+          part_number: target.part_number,
+          slug: target.slug,
+          title: target.title,
+        });
+        if (promoted) {
+          console.log(`[chat.js] Approval fallback promoted draft: ${target.slug || target.title}`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[chat.js] Approval fallback failed:', err?.message || err);
   }
 }
 
