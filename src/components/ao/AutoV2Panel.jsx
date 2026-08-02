@@ -2282,6 +2282,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
       if (sessionJson.thread?.id) {
         setActiveThreadId(sessionJson.thread.id);
+        // Restore the Clear point from the thread itself, not just whatever this
+        // tab happened to have in memory -- on a fresh page load there is no
+        // in-memory value at all, so without this every image ever generated in
+        // the thread would reappear regardless of how many times Clear was
+        // clicked in a previous session.
+        const persistedClearedAt = sessionJson.thread?.state?.design_images_cleared_at;
+        clearedAt.current = persistedClearedAt ? new Date(persistedClearedAt).getTime() : null;
         const msgs = Array.isArray(sessionJson.messages) ? sessionJson.messages : [];
         setMessages(msgs);
         syncArtifactFromMessages(msgs);
@@ -2323,6 +2330,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json.ok) throw new Error(json.error || 'Could not open conversation');
         setActiveThreadId(json.thread?.id || threadId);
+        // Restore this conversation's own Clear point, the same reason as the
+        // initial page load above -- each thread can have its own, and it must
+        // not be lost just because we switched away and back.
+        const persistedClearedAt = json.thread?.state?.design_images_cleared_at;
+        clearedAt.current = persistedClearedAt ? new Date(persistedClearedAt).getTime() : null;
         const msgs = Array.isArray(json.messages) ? json.messages : [];
         setMessages(msgs);
         syncArtifactFromMessages(msgs);
@@ -2946,7 +2958,22 @@ export default function AutoV2Panel({ onNavigate, className }) {
     setGeneratedDesignImages([]);
     setCurrentCardIndex(0);
     setSeedManifestTotal(null);
-  }, []);
+
+    // Persist this onto the thread itself so it survives a page reload -- the
+    // ref alone only lives in this browser tab's memory and resets to nothing
+    // the moment the page remounts, which previously made Clear look like it
+    // never worked at all after a refresh.
+    if (activeThreadId) {
+      fetch('/api/ao/auto/thread-clear-design-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thread_id: activeThreadId }),
+      }).catch(() => {
+        // Best-effort -- the in-memory ref still clears the panel immediately
+        // either way, this only affects whether it stays cleared after a reload.
+      });
+    }
+  }, [activeThreadId]);
 
   const publishCards = useCallback(async () => {
     if (!generatedImages || generatedImages.length === 0) {
