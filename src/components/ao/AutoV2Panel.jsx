@@ -1682,6 +1682,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
             url: json.image_url,
             label: `${json.title || json.slug} (manual upload)`,
             addedAt: Date.now(),
+            manualUpload: true,
           },
         ]);
       } catch (err) {
@@ -2181,13 +2182,22 @@ export default function AutoV2Panel({ onNavigate, className }) {
       }
       return prev;
     });
-    // Design images: always append across messages (journal series accumulates)
+    // Design images: accumulate across messages (journal series accumulates), but
+    // honor Clear the same way generatedImages already does above, and never
+    // silently discard an image that was manually uploaded rather than found in
+    // a message -- a manual upload never appears in any message's text, so a
+    // rebuild that only trusts message content was throwing every upload away.
     setGeneratedDesignImages((prev) => {
       const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
       const seenUrls = new Set();
       const allDesign = [];
+      const clearTime = clearedAt.current;
       for (const m of allMsgs) {
         if (m.role !== 'assistant') continue;
+        // Skip messages that were created before the last Clear, same rule
+        // already applied to generatedImages above.
+        const msgTime = m.created_at ? new Date(m.created_at).getTime() : null;
+        if (clearTime && msgTime && msgTime < clearTime) continue;
         const imgs = extractDesignImagesFromAssistantContent(String(m.content || ''));
         for (const img of imgs) {
           const key = img.url;
@@ -2200,8 +2210,15 @@ export default function AutoV2Panel({ onNavigate, className }) {
           });
         }
       }
-      if (allDesign.length > 0) return allDesign;
-      return prev;
+      // Carry forward manually uploaded images that are not already in the list
+      // above and were not themselves added before the last Clear.
+      for (const p of prev || []) {
+        if (!p?.manualUpload || !p.url || seenUrls.has(p.url)) continue;
+        if (clearTime && p.addedAt && p.addedAt < clearTime) continue;
+        seenUrls.add(p.url);
+        allDesign.push(p);
+      }
+      return allDesign;
     });
     // If no images found in any message, leave existing images in place
     // Images only clear when starting a new thread (handled in startNewThread)
