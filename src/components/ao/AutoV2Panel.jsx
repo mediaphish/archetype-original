@@ -250,6 +250,27 @@ function extractNavigateToSignal(content) {
   return match ? match[1] : null;
 }
 
+/**
+ * Best-guess the slug a manual image upload should attach to, by scanning
+ * recent messages (most recent first) for a slug="..." attribute on any
+ * known content signal. This is only ever a suggested starting value --
+ * the person uploading always confirms or corrects it before it's used,
+ * so a wrong guess here costs nothing.
+ */
+function guessMostRecentDraftSlug(messages) {
+  if (!Array.isArray(messages)) return '';
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const text = String(messages[i]?.content || '');
+    const match =
+      text.match(/\[PUBLISH_JOURNAL[^\]]*\bslug="([^"]+)"/i) ||
+      text.match(/\[PUBLISH_DEVOTIONAL[^\]]*\bslug="([^"]+)"/i) ||
+      text.match(/\[DRAFT_FETCH_FULL_TEXT[^\]]*\bslug="([^"]+)"/i) ||
+      text.match(/\[CORPUS_FETCH_FULL_TEXT[^\]]*\bslug="([^"]+)"/i);
+    if (match) return match[1];
+  }
+  return '';
+}
+
 function stripBareKnownSignalMentions(text) {
   return String(text || '').replace(/\[\/?([A-Z_]+)\]/g, (match, tagName) =>
     KNOWN_REAL_SIGNALS.has(tagName) ? '' : match
@@ -437,6 +458,16 @@ function PaperclipIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+    </svg>
+  );
+}
+
+function UploadImageIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 15l-5-5L5 21" />
     </svg>
   );
 }
@@ -1596,6 +1627,71 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
+  const imageUploadInputRef = useRef(null);
+  const [uploadingHeaderImage, setUploadingHeaderImage] = useState(false);
+
+  const handleHeaderImageUpload = useCallback(
+    async (e) => {
+      const file = e.target.files?.[0];
+      if (e.target) e.target.value = '';
+      if (!file) return;
+
+      const suggestedSlug = guessMostRecentDraftSlug(messages);
+      const slug = window.prompt(
+        'Which draft is this image for? Confirm or correct the slug:',
+        suggestedSlug
+      );
+      if (!slug || !slug.trim()) return;
+
+      setUploadingHeaderImage(true);
+      setError('');
+
+      try {
+        const dataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ''));
+          reader.onerror = () => reject(new Error('Could not read the selected file'));
+          reader.readAsDataURL(file);
+        });
+
+        const commaIdx = dataUrl.indexOf(',');
+        if (commaIdx === -1) throw new Error('Invalid file data');
+        const header = dataUrl.slice(0, commaIdx);
+        const base64Data = dataUrl.slice(commaIdx + 1);
+        const mediaTypeMatch = header.match(/^data:([^;]+);/);
+        const mediaType = mediaTypeMatch ? mediaTypeMatch[1] : file.type || 'image/png';
+
+        const res = await fetch('/api/ao/auto/upload-header-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug: slug.trim(),
+            image_base64: base64Data,
+            media_type: mediaType,
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+
+        if (!res.ok || !json.ok) {
+          throw new Error(json.error || 'Upload failed');
+        }
+
+        setGeneratedDesignImages((prev) => [
+          ...prev,
+          {
+            url: json.image_url,
+            label: `${json.title || json.slug} (manual upload)`,
+            addedAt: Date.now(),
+          },
+        ]);
+      } catch (err) {
+        setError(err?.message || 'Could not upload header image');
+      } finally {
+        setUploadingHeaderImage(false);
+      }
+    },
+    [messages]
+  );
 
   const isJournalEntry = useMemo(() => {
     if (!artifact) return false;
@@ -3150,6 +3246,24 @@ export default function AutoV2Panel({ onNavigate, className }) {
               multiple
               className="hidden"
               onChange={handleFileSelect}
+            />
+
+            <button
+              type="button"
+              onClick={() => imageUploadInputRef.current?.click()}
+              disabled={sending || startingNew || uploadingHeaderImage}
+              className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded disabled:opacity-40"
+              aria-label="Upload header image"
+              title="Upload a header image made outside Auto (e.g. ChatGPT) directly to a draft"
+            >
+              <UploadImageIcon />
+            </button>
+            <input
+              ref={imageUploadInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleHeaderImageUpload}
             />
 
             <textarea

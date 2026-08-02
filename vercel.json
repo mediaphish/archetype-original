@@ -262,6 +262,7 @@
     { "src": "/api/ao/auto/chat", "dest": "/api/ao/auto/chat.js" },
     { "src": "/api/ao/auto/generate-card-image", "dest": "/api/ao/auto/generate-card-image.js" },
     { "src": "/api/ao/auto/generate-design-image", "dest": "/api/ao/auto/generate-design-image.js" },
+    { "src": "/api/ao/auto/upload-header-image", "dest": "/api/ao/auto/upload-header-image.js" },
     { "src": "/api/ao/auto/schedule-cards", "dest": "/api/ao/auto/schedule-cards.js" },
     { "src": "/api/ao/auto/schedule-status", "dest": "/api/ao/auto/schedule-status.js" },
     { "src": "/api/ao/auto/publish-journal", "dest": "/api/ao/auto/publish-journal.js" },
