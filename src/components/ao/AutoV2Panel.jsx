@@ -2195,15 +2195,20 @@ export default function AutoV2Panel({ onNavigate, className }) {
       return prev;
     });
     // Design images: accumulate across messages (journal series accumulates), but
-    // honor Clear the same way generatedImages already does above, and never
+    // honor Clear the same way generatedImages already does above, never
     // silently discard an image that was manually uploaded rather than found in
-    // a message -- a manual upload never appears in any message's text, so a
-    // rebuild that only trusts message content was throwing every upload away.
+    // a message, and never show an image Bart already rejected next to the one
+    // that replaced it. Auto reuses the same `label` (the post's title) every
+    // time it regenerates an image for the same post -- that never changes
+    // between a rejected attempt and its replacement -- so keying on
+    // label+size instead of url means the newer generation for that post
+    // replaces the older one instead of both sitting in the panel forever.
+    // A genuinely different post (different title) still gets its own entry
+    // and still accumulates normally across a series.
     setGeneratedDesignImages((prev) => {
       const prevByUrl = new Map((prev || []).map((p) => [p.url, p]));
-      const seenUrls = new Set();
-      const allDesign = [];
       const clearTime = clearedAt.current;
+      const byLabel = new Map();
       for (const m of allMsgs) {
         if (m.role !== 'assistant') continue;
         // Skip messages that were created before the last Clear, same rule
@@ -2212,16 +2217,19 @@ export default function AutoV2Panel({ onNavigate, className }) {
         if (clearTime && msgTime && msgTime < clearTime) continue;
         const imgs = extractDesignImagesFromAssistantContent(String(m.content || ''));
         for (const img of imgs) {
-          const key = img.url;
-          if (!key || seenUrls.has(key)) continue;
-          seenUrls.add(key);
-          const older = prevByUrl.get(key);
-          allDesign.push({
+          if (!img.url) continue;
+          // allMsgs is in chronological order, so setting this key again for a
+          // later message intentionally overwrites the earlier (rejected) one.
+          const key = `${String(img.label || '').trim().toLowerCase()}::${img.size || ''}`;
+          const older = prevByUrl.get(img.url);
+          byLabel.set(key, {
             ...img,
             addedAt: older?.addedAt ?? Date.now(),
           });
         }
       }
+      const allDesign = Array.from(byLabel.values());
+      const seenUrls = new Set(allDesign.map((d) => d.url));
       // Carry forward manually uploaded images that are not already in the list
       // above and were not themselves added before the last Clear.
       for (const p of prev || []) {
