@@ -1537,7 +1537,7 @@ Return markdown only: a # title line, then the full post body.`,
           try {
             const { data: draftRow, error: draftFetchError } = await supabaseAdmin
               .from('ao_content_drafts')
-              .select('slug, title, kind, status, content, updated_at')
+              .select('slug, title, kind, status, content, image_url, updated_at')
               .eq('created_by_email', auth.email.toLowerCase().trim())
               .eq('slug', requestedSlug)
               .in('kind', ['journal', 'devotional'])
@@ -1552,9 +1552,24 @@ Return markdown only: a # title line, then the full post body.`,
               continue;
             }
 
-            if (!draftRow || !draftRow.content) {
+            // IMPORTANT: "no row found" and "row found but content is empty" are two
+            // different, real situations -- a row with empty content commonly means an
+            // image was already saved for this post (via the upload button or a chat
+            // attachment) before the post text itself was ever written. Reporting the
+            // second case as "genuinely does not exist" is a false statement and has
+            // previously caused Auto to spiral into a fabricated response. Keep them separate.
+            if (!draftRow) {
               fullReply =
-                `${fullReply}\n\n[DRAFT_FETCH_FAILED slug="${requestedSlug}"]\nNo saved draft found for slug "${requestedSlug}". This means the content genuinely does not exist in storage — say so plainly to Bart rather than assuming it does.\n[/DRAFT_FETCH_FAILED]`.trim();
+                `${fullReply}\n\n[DRAFT_FETCH_FAILED slug="${requestedSlug}"]\nNo saved draft found for slug "${requestedSlug}". This means no row exists in storage for this slug at all — say so plainly to Bart rather than assuming it does.\n[/DRAFT_FETCH_FAILED]`.trim();
+              continue;
+            }
+
+            if (!draftRow.content) {
+              const imageNote = draftRow.image_url
+                ? `An image is already saved for it at: ${draftRow.image_url}.`
+                : 'No image is saved for it yet either.';
+              fullReply =
+                `${fullReply}\n\n[DRAFT_FETCH_FAILED slug="${requestedSlug}"]\nA draft row DOES exist for slug "${requestedSlug}" (title: ${draftRow.title || requestedSlug}, status: ${draftRow.status}), but it has no post text saved yet -- only a placeholder. ${imageNote} Tell Bart plainly that the post text has not been saved yet for this slug, do not claim it does not exist at all, and do not invent replacement content.\n[/DRAFT_FETCH_FAILED]`.trim();
               continue;
             }
 
