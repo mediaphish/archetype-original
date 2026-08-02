@@ -563,6 +563,35 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
     }
   }
 
+  /**
+   * Looks up the image_url already saved for a post before it gets overwritten.
+   * upsertDraft replaces the whole row on every content save, including ordinary
+   * revisions -- without this, a post that already had a real, approved image
+   * would silently lose it the next time its text was saved and that particular
+   * reply did not also happen to repeat the image_url attribute. Returns null on
+   * any failure or if nothing is saved yet, which is always a safe fallback.
+   */
+  async function getExistingImageUrl(series_slug, part_number, kind) {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('ao_content_drafts')
+        .select('image_url')
+        .eq('created_by_email', email.toLowerCase().trim())
+        .eq('series_slug', series_slug)
+        .eq('part_number', part_number)
+        .eq('kind', kind)
+        .maybeSingle();
+      if (error) {
+        console.error('[chat.js] getExistingImageUrl lookup failed:', error.message);
+        return null;
+      }
+      return data?.image_url || null;
+    } catch (err) {
+      console.error('[chat.js] getExistingImageUrl unexpected error:', err?.message || err);
+      return null;
+    }
+  }
+
   async function promoteDraftStatus({ kind, series_slug, part_number, slug, title }) {
     try {
       let query = supabaseAdmin
@@ -625,17 +654,21 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
           .slice(0, 80);
       }
       if (slug || title) {
+        const series_slug_for_save = deriveSeriesSlug(slug) || 'standalone';
+        const part_number_for_save = extractPartNumber(slug);
+        const preservedImageUrl =
+          attrs.image_url || (await getExistingImageUrl(series_slug_for_save, part_number_for_save, 'journal'));
         await upsertDraft(
           {
             created_by_email: email.toLowerCase().trim(),
             kind: 'journal',
-            series_slug: deriveSeriesSlug(slug) || 'standalone',
-            part_number: extractPartNumber(slug),
+            series_slug: series_slug_for_save,
+            part_number: part_number_for_save,
             title: title || slug,
             slug: slug || null,
             content: journalContentMatch[1].trim(),
             summary: attrs.summary || '',
-            image_url: attrs.image_url || null,
+            image_url: preservedImageUrl || null,
             status: 'draft',
             updated_at: new Date().toISOString(),
           },
@@ -766,6 +799,8 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
         title,
       });
       if (!promoted) {
+        const preservedImageUrl =
+          attrs.image_url || (await getExistingImageUrl(series_slug, part_number, 'journal'));
         await upsertDraft(
           {
             created_by_email: email.toLowerCase().trim(),
@@ -776,7 +811,7 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
             slug: slug || null,
             content: journalContentMatch[1].trim(),
             summary: attrs.summary || '',
-            image_url: attrs.image_url || null,
+            image_url: preservedImageUrl || null,
             status: 'approved',
             approved_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
