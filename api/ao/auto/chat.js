@@ -76,6 +76,217 @@ function extractCaptionSetFromTexts(texts = []) {
   return null;
 }
 
+const ATTACHED_IMAGE_STORAGE_BUCKET = 'ao-auto-attachments';
+const ATTACHED_IMAGE_STORAGE_PREFIX = 'ao-design-images';
+
+/**
+ * When an image is attached to a chat message, Claude receives it as a vision
+ * content block and can see it -- but seeing an image is not the same as
+ * having anywhere to put it. Left with no real action, Claude has previously
+ * guessed (badly): once returning an unrelated garbled response, once
+ * fabricating a self-generated replacement image and presenting it as if it
+ * were the one Bart uploaded. This function removes the guessing entirely.
+ * It runs in code, before Claude ever answers, and deterministically:
+ *   1. figures out which draft the image belongs to
+ *   2. uploads it to the same storage bucket Auto's own generated images use
+ *   3. writes the URL onto that draft (creating a lightweight placeholder
+ *      draft if none exists yet, same as the dedicated upload button)
+ *   4. returns a short factual note to inject into the message Claude is
+ *      about to answer, so its reply states the true, already-completed
+ *      outcome instead of inventing one.
+ *
+ * Never throws. Returns null (and the caller sends nothing extra to Claude)
+ * on any failure, rather than blocking the chat response.
+ */
+async function trySaveAttachedImageAsHeader(userMessage, attachments, email, recentHistory = []) {
+  try {
+    if (!email || !Array.isArray(attachments) || attachments.length === 0) return null;
+    const imageAttachment = attachments.find(
+      (a) => a?.type === 'image' && a?.data && a?.mediaType
+    );
+    if (!imageAttachment) return null;
+
+    const msgLower = String(userMessage || '').toLowerCase();
+
+    // Pull the candidate pending drafts once, reused by every matching strategy below.
+    const { data: candidateDrafts, error: fetchErr } = await supabaseAdmin
+      .from('ao_content_drafts')
+      .select('kind, series_slug, part_number, title, slug, status')
+      .eq('created_by_email', email.toLowerCase().trim())
+      .neq('status', 'published')
+      .neq('status', 'abandoned')
+      .neq('kind', 'session_brief')
+      .neq('kind', 'captions')
+      .neq('kind', 'content_constraint')
+      .order('updated_at', { ascending: false })
+      .limit(20);
+
+    if (fetchErr) {
+      console.error('[chat.js] trySaveAttachedImageAsHeader draft lookup failed:', fetchErr.message);
+    }
+
+    let targetSlug = '';
+    let matchedDraft = null;
+
+    // Strategy 1 — the exact slug of a known pending draft appears literally in the message.
+    if (!fetchErr && candidateDrafts?.length) {
+      const literalMatch = candidateDrafts.find(
+        (d) => d.slug && msgLower.includes(String(d.slug).toLowerCase())
+      );
+      if (literalMatch) {
+        targetSlug = literalMatch.slug;
+        matchedDraft = literalMatch;
+      }
+    }
+
+    // Strategy 2 — same fuzzy title/slug matching already used to link captions to posts.
+    if (!targetSlug && !fetchErr && candidateDrafts?.length) {
+      const recentUserMessages = (recentHistory || [])
+        .filter((m) => m.role === 'user')
+        .map((m) => String(m.content || ''))
+        .filter(Boolean)
+        .slice(-5)
+        .reverse();
+      const fuzzyMatches = findReferencedDrafts(candidateDrafts, userMessage, recentUserMessages);
+      const preferred =
+        fuzzyMatches.find((d) => d.kind === 'journal') ||
+        fuzzyMatches.find((d) => d.kind === 'devotional') ||
+        fuzzyMatches[0];
+      if (preferred?.slug) {
+        targetSlug = preferred.slug;
+        matchedDraft = preferred;
+      }
+    }
+
+    // Strategy 3 — an explicit "slug is x-y-z" / "slug: x-y-z" phrase, even for a post
+    // that has no saved draft yet (brand-new idea, image made before the text was saved).
+    if (!targetSlug) {
+      const slugPhraseMatch = String(userMessage || '').match(
+        /\bslug\s*(?:is|:|=)?\s*["']?([a-z0-9]+(?:-[a-z0-9]+){1,10})["']?/i
+      );
+      if (slugPhraseMatch) {
+        targetSlug = slugPhraseMatch[1].toLowerCase();
+      }
+    }
+
+    // Upload the image regardless of whether a target was found -- never lose the file.
+    const extMap = {
+      'image/png': 'png',
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/webp': 'webp',
+      'image/gif': 'gif',
+    };
+    const ext = extMap[String(imageAttachment.mediaType).toLowerCase()] || 'png';
+    const timestamp = Date.now();
+    const safeSlugForFilename = targetSlug || 'unmatched';
+    const filename = `chat-attached-${safeSlugForFilename}-${timestamp}.${ext}`;
+    const storagePath = `${ATTACHED_IMAGE_STORAGE_PREFIX}/${filename}`;
+
+    let buffer;
+    try {
+      buffer = Buffer.from(imageAttachment.data, 'base64');
+    } catch (decodeErr) {
+      console.error('[chat.js] trySaveAttachedImageAsHeader decode failed:', decodeErr?.message);
+      return null;
+    }
+    if (!buffer || buffer.length === 0) return null;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(ATTACHED_IMAGE_STORAGE_BUCKET)
+      .upload(storagePath, buffer, { contentType: imageAttachment.mediaType, upsert: false });
+
+    if (uploadError) {
+      console.error('[chat.js] trySaveAttachedImageAsHeader storage upload failed:', uploadError.message);
+      return null;
+    }
+
+    const { data: urlData } = supabaseAdmin.storage
+      .from(ATTACHED_IMAGE_STORAGE_BUCKET)
+      .getPublicUrl(storagePath);
+    const imageUrl = urlData?.publicUrl;
+    if (!imageUrl) return null;
+
+    if (!targetSlug) {
+      // Uploaded successfully but could not be matched to any post -- tell Claude the
+      // truth (uploaded, unmatched) instead of letting it guess or invent an outcome.
+      return (
+        `[SYSTEM FACT -- an image attached to this message was uploaded successfully to storage ` +
+        `at ${imageUrl}, but it could not be automatically matched to any existing post. ` +
+        `Do not claim it was saved as a header image for any specific post, and do not say the ` +
+        `upload failed -- it succeeded. Ask Bart which post (by title or slug) this image belongs to.]`
+      );
+    }
+
+    // Write the image onto the matching draft, or create a placeholder if none exists yet --
+    // same logic as the dedicated upload-header-image.js endpoint.
+    const { data: updatedRow, error: updateError } = await supabaseAdmin
+      .from('ao_content_drafts')
+      .update({ image_url: imageUrl, updated_at: new Date().toISOString() })
+      .eq('created_by_email', email.toLowerCase().trim())
+      .eq('slug', targetSlug)
+      .in('kind', ['journal', 'devotional'])
+      .select('slug, title, status, image_url')
+      .maybeSingle();
+
+    if (updateError) {
+      console.error('[chat.js] trySaveAttachedImageAsHeader update failed:', updateError.message);
+      return null;
+    }
+
+    if (updatedRow) {
+      return (
+        `[SYSTEM FACT -- an image attached to this message was already automatically saved as the ` +
+        `header image for the existing draft "${updatedRow.title || updatedRow.slug}" (slug: ${updatedRow.slug}, ` +
+        `status: ${updatedRow.status}). Its real, live URL is: ${updatedRow.image_url}. This already ` +
+        `happened in the database before you answered. Confirm this plainly to Bart using the exact ` +
+        `URL above. Do not claim you generated a new image. Do not claim this failed or is unverified.]`
+      );
+    }
+
+    const derivedTitle =
+      matchedDraft?.title ||
+      targetSlug
+        .split('-')
+        .filter(Boolean)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+    const { data: createdRow, error: insertError } = await supabaseAdmin
+      .from('ao_content_drafts')
+      .insert({
+        created_by_email: email.toLowerCase().trim(),
+        kind: 'journal',
+        series_slug: targetSlug,
+        part_number: 1,
+        slug: targetSlug,
+        title: derivedTitle,
+        content: '',
+        status: 'draft',
+        image_url: imageUrl,
+      })
+      .select('slug, title, status, image_url')
+      .single();
+
+    if (insertError) {
+      console.error('[chat.js] trySaveAttachedImageAsHeader placeholder creation failed:', insertError.message);
+      return null;
+    }
+
+    return (
+      `[SYSTEM FACT -- no saved draft existed yet for slug "${targetSlug}", so an image attached to this ` +
+      `message was used to automatically create a new placeholder draft ("${createdRow.title}", status: draft) ` +
+      `with this image already saved as its header. Its real, live URL is: ${createdRow.image_url}. This ` +
+      `already happened in the database before you answered. Confirm this plainly to Bart using the exact ` +
+      `URL above, and note the post text itself still needs to be saved under this same slug when ready. ` +
+      `Do not claim you generated a new image. Do not claim this failed or is unverified.]`
+    );
+  } catch (err) {
+    console.error('[chat.js] trySaveAttachedImageAsHeader unexpected error:', err?.message || err);
+    return null;
+  }
+}
+
 /**
  * Detects content in the exchange and saves it to ao_content_drafts.
  * Runs server-side after every successful response — Auto cannot reliably save drafts itself.
@@ -602,6 +813,21 @@ export default async function handler(req, res) {
         content: String(m.content || ''),
       }));
 
+    // An attached image is not just something for Claude to look at -- if Bart is
+    // sending it as a post's header image (which is the only reason he ever attaches
+    // an image here), it needs to actually land in the database automatically. This
+    // runs before Claude answers, so its reply reports what genuinely happened instead
+    // of guessing or inventing an outcome (both have happened before this fix).
+    let attachedImageFact = null;
+    if (Array.isArray(attachments) && attachments.length > 0) {
+      attachedImageFact = await trySaveAttachedImageAsHeader(
+        userMessage,
+        attachments,
+        auth.email,
+        history
+      );
+    }
+
     // Build the current user message content — include image attachments if present.
     // The Anthropic API accepts multi-part content arrays with image blocks.
     // This allows Auto to see uploaded images rather than treating them as invisible.
@@ -620,7 +846,10 @@ export default async function handler(req, res) {
           });
         }
       }
-      contentParts.push({ type: 'text', text: userMessage });
+      const textWithFact = attachedImageFact
+        ? `${userMessage}\n\n${attachedImageFact}`
+        : userMessage;
+      contentParts.push({ type: 'text', text: textWithFact });
       currentMessageContent = contentParts;
     } else {
       currentMessageContent = userMessage;
