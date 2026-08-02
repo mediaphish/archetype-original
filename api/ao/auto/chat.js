@@ -1182,6 +1182,7 @@ export default async function handler(req, res) {
       userMessage,
       reply: fullReply,
       email: auth.email,
+      recentHistory: history,
     });
 
     // Reshare trigger — runs the reshare cycle IN-PROCESS (no HTTP self-fetch, ever).
