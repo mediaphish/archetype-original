@@ -317,7 +317,7 @@ export default function PodcastDashboard() {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not start episode');
-      navigateTo(`/ao/analyst?thread=${json.thread_id}`);
+      navigateTo(`/ao/podcast/episode/${json.thread_id}`);
     } catch (e) {
       setBuildEpisodeError(e.message || 'Could not start episode');
     } finally {
@@ -337,7 +337,7 @@ export default function PodcastDashboard() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not start episode');
       setSelectedGuestIds([]);
-      navigateTo(`/ao/analyst?thread=${json.thread_id}`);
+      navigateTo(`/ao/podcast/episode/${json.thread_id}`);
     } catch (e) {
       setBuildEpisodeError(e.message || 'Could not start episode');
     } finally {
@@ -454,7 +454,13 @@ export default function PodcastDashboard() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => navigateTo(`/ao/podcast/guest/${guest.id}`)}
+                    onClick={() =>
+                      navigateTo(
+                        guest.episode_thread_id
+                          ? `/ao/podcast/episode/${guest.episode_thread_id}`
+                          : `/ao/podcast/guest/${guest.id}`
+                      )
+                    }
                     className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
                     View
@@ -476,7 +482,20 @@ export default function PodcastDashboard() {
             ))}
           </ul>
 
-          {selectedGuestIds.length >= 2 && (
+          {selectedGuestIds.length >= 2 && (() => {
+            const selectedGuests = selectedGuestIds
+              .map((id) => guests.find((g) => g.id === id))
+              .filter(Boolean);
+            const threadIds = selectedGuests.map((g) => g.episode_thread_id).filter(Boolean);
+            const allLoaded = selectedGuests.length === selectedGuestIds.length;
+            const sharedThreadId =
+              allLoaded &&
+              threadIds.length === selectedGuestIds.length &&
+              new Set(threadIds).size === 1
+                ? threadIds[0]
+                : null;
+
+            return (
             <div className="mt-4 flex items-center justify-between rounded-lg border border-gray-900 bg-gray-50 px-4 py-3">
               <p className="text-sm text-gray-800">
                 {selectedGuestIds.length} guests selected
@@ -489,15 +508,15 @@ export default function PodcastDashboard() {
                 >
                   Clear
                 </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigateTo(`/ao/podcast/guest-combined/${selectedGuestIds.join(',')}`)
-                  }
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  View combined prep
-                </button>
+                {sharedThreadId && (
+                  <button
+                    type="button"
+                    onClick={() => navigateTo(`/ao/podcast/episode/${sharedThreadId}`)}
+                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    View combined prep
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => handleBuildMultiGuestEpisode(selectedGuestIds)}
@@ -508,7 +527,8 @@ export default function PodcastDashboard() {
                 </button>
               </div>
             </div>
-          )}
+            );
+          })()}
 
           {!isSearching && guestTotal > PAGE_SIZE && (
             <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
