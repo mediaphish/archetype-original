@@ -33,9 +33,9 @@ bodyText = bodyText.replace(/\\\s*\n\s*/g, '\n');
 
 // Step 6: Remove frontmatter blocks (handle both normal and RTF-escaped versions)
 // Normal frontmatter: --- ... --- (with proper newlines)
-bodyText = bodyText.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/gm, '');
+bodyText = bodyText.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '');
 // Frontmatter without proper newlines (single line or escaped)
-bodyText = bodyText.replace(/^---[\s\S]*?^---\s*/gm, '');
+bodyText = bodyText.replace(/^---[\s\S]*?---\s*/, '');
 // RTF-escaped frontmatter: ---\ ... ---\
 bodyText = bodyText.replace(/---\\[\s\S]*?---\\/g, '');
 // Also handle frontmatter that might have escaped newlines or be on single lines
