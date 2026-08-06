@@ -85,6 +85,12 @@ export default function PodcastEpisodeAdmin() {
     error: '',
     results: [],
   });
+  const [combinedShowNotes, setCombinedShowNotes] = useState('');
+  const [showNotesStatus, setShowNotesStatus] = useState({
+    loading: false,
+    message: '',
+    error: '',
+  });
   const timezoneGroups = getTimezoneOptionGroups();
 
   useEffect(() => {
@@ -182,6 +188,28 @@ export default function PodcastEpisodeAdmin() {
   }, [threadId]);
 
   useEffect(() => {
+    if (!threadId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/ao/podcast/episode/show-notes?thread_id=${encodeURIComponent(threadId)}`
+        );
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok || cancelled) return;
+        setCombinedShowNotes(
+          typeof json.combined_show_notes_md === 'string' ? json.combined_show_notes_md : ''
+        );
+      } catch {
+        // Prefill is best-effort.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [threadId]);
+
+  useEffect(() => {
     if (mainTab === 'hosting') {
       setHostingTab('combined');
     }
@@ -189,6 +217,32 @@ export default function PodcastEpisodeAdmin() {
 
   const updateGuest = (updated) => {
     setGuests((prev) => prev.map((g) => (g.id === updated.id ? { ...g, ...updated } : g)));
+  };
+
+  const saveCombinedShowNotes = async () => {
+    if (!threadId) return;
+    setShowNotesStatus({ loading: true, message: '', error: '' });
+    try {
+      const res = await fetch('/api/ao/podcast/episode/show-notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thread_id: threadId,
+          combined_show_notes_md: combinedShowNotes,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || 'Could not save notes');
+      }
+      setShowNotesStatus({ loading: false, message: 'Notes saved.', error: '' });
+    } catch (e) {
+      setShowNotesStatus({
+        loading: false,
+        message: '',
+        error: e.message || 'Could not save notes',
+      });
+    }
   };
 
   const sendRecordingLink = async () => {
@@ -598,20 +652,51 @@ export default function PodcastEpisodeAdmin() {
                 </div>
 
                 {hostingTab === 'combined' ? (
-                  <div role="tabpanel" className="border-b border-[#E1DED8] bg-[#E1DED8] px-4 py-4">
-                    <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
-                      Conversation architecture
-                    </p>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {CONVERSATION_ARCHITECTURE_BEATS.map((beat) => (
-                        <div key={beat.title} className="flex items-start gap-2.5">
-                          <div className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#DB0812]" aria-hidden />
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">{beat.title}</p>
-                            <p className="text-xs leading-relaxed text-gray-600">{beat.detail}</p>
+                  <div role="tabpanel" className="space-y-6">
+                    <div className="rounded-xl border border-[#E1DED8] bg-white p-4 sm:p-6">
+                      <p className="mb-3 text-[10px] font-semibold uppercase tracking-wide text-[#8B7D72]">
+                        Combined show notes
+                      </p>
+                      <textarea
+                        rows={20}
+                        value={combinedShowNotes}
+                        onChange={(e) => setCombinedShowNotes(e.target.value)}
+                        placeholder="Paste the combined intro and run sheet here…"
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 font-mono text-sm leading-relaxed text-gray-900"
+                      />
+                      <div className="mt-3 flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={saveCombinedShowNotes}
+                          disabled={showNotesStatus.loading}
+                          className="rounded-full bg-[#2B2929] px-4 py-2 text-xs font-medium text-white hover:bg-black disabled:opacity-50"
+                        >
+                          {showNotesStatus.loading ? 'Saving…' : 'Save notes'}
+                        </button>
+                        {showNotesStatus.message && (
+                          <p className="text-sm text-green-700">{showNotesStatus.message}</p>
+                        )}
+                        {showNotesStatus.error && (
+                          <p className="text-sm text-red-600">{showNotesStatus.error}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="border-b border-[#E1DED8] bg-[#E1DED8] px-4 py-4">
+                      <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                        Conversation architecture
+                      </p>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {CONVERSATION_ARCHITECTURE_BEATS.map((beat) => (
+                          <div key={beat.title} className="flex items-start gap-2.5">
+                            <div className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#DB0812]" aria-hidden />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{beat.title}</p>
+                              <p className="text-xs leading-relaxed text-gray-600">{beat.detail}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ) : activeHostingGuest ? (

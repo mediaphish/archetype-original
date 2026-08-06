@@ -240,6 +240,7 @@
     { "src": "/api/ao/podcast/schedule/([^/]+)", "dest": "/api/ao/podcast/schedule/[id].js?id=$1" },
     { "src": "/api/ao/podcast/guest-magic-link", "dest": "/api/ao/podcast/guest-magic-link.js" },
     { "src": "/api/ao/podcast/episode/recording-link", "dest": "/api/ao/podcast/episode/recording-link.js" },
+    { "src": "/api/ao/podcast/episode/show-notes", "dest": "/api/ao/podcast/episode/show-notes.js" },
     { "src": "/api/ao/podcast/episode/guests", "dest": "/api/ao/podcast/episode/guests.js" },
     { "src": "/api/ao/podcast/guest-research", "dest": "/api/ao/podcast/guest-research.js" },
     { "src": "/api/ao/podcast/guest-questions", "dest": "/api/ao/podcast/guest-questions.js" },
