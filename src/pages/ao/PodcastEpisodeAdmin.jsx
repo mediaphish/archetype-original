@@ -8,6 +8,7 @@ import AOHeader from '../../components/ao/AOHeader';
 import { getTimezoneOptionGroups } from '../../../lib/ao/podcastTimezones.js';
 import { localDateTimeToIso } from '../../../lib/ao/podcastScheduleUtils.js';
 import { CONVERSATION_ARCHITECTURE_BEATS } from '../../components/podcast/conversationArchitecture.js';
+import JournalMarkdownBody from '../../components/JournalMarkdownBody';
 import {
   GuestPrepBody,
   GuestHostingBody,
@@ -86,6 +87,7 @@ export default function PodcastEpisodeAdmin() {
     results: [],
   });
   const [combinedShowNotes, setCombinedShowNotes] = useState('');
+  const [notesEditing, setNotesEditing] = useState(true);
   const [showNotesStatus, setShowNotesStatus] = useState({
     loading: false,
     message: '',
@@ -197,9 +199,10 @@ export default function PodcastEpisodeAdmin() {
         );
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json.ok || cancelled) return;
-        setCombinedShowNotes(
-          typeof json.combined_show_notes_md === 'string' ? json.combined_show_notes_md : ''
-        );
+        const notes =
+          typeof json.combined_show_notes_md === 'string' ? json.combined_show_notes_md : '';
+        setCombinedShowNotes(notes);
+        setNotesEditing(!notes.trim());
       } catch {
         // Prefill is best-effort.
       }
@@ -236,6 +239,7 @@ export default function PodcastEpisodeAdmin() {
         throw new Error(json.error || 'Could not save notes');
       }
       setShowNotesStatus({ loading: false, message: 'Notes saved.', error: '' });
+      setNotesEditing(false);
     } catch (e) {
       setShowNotesStatus({
         loading: false,
@@ -654,32 +658,57 @@ export default function PodcastEpisodeAdmin() {
                 {hostingTab === 'combined' ? (
                   <div role="tabpanel" className="space-y-6">
                     <div className="rounded-xl border border-[#E1DED8] bg-white p-4 sm:p-6">
-                      <p className="mb-3 text-[10px] font-semibold uppercase tracking-wide text-[#8B7D72]">
-                        Combined show notes
-                      </p>
-                      <textarea
-                        rows={20}
-                        value={combinedShowNotes}
-                        onChange={(e) => setCombinedShowNotes(e.target.value)}
-                        placeholder="Paste the combined intro and run sheet here…"
-                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 font-mono text-sm leading-relaxed text-gray-900"
-                      />
-                      <div className="mt-3 flex flex-wrap items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={saveCombinedShowNotes}
-                          disabled={showNotesStatus.loading}
-                          className="rounded-full bg-[#2B2929] px-4 py-2 text-xs font-medium text-white hover:bg-black disabled:opacity-50"
-                        >
-                          {showNotesStatus.loading ? 'Saving…' : 'Save notes'}
-                        </button>
-                        {showNotesStatus.message && (
-                          <p className="text-sm text-green-700">{showNotesStatus.message}</p>
-                        )}
-                        {showNotesStatus.error && (
-                          <p className="text-sm text-red-600">{showNotesStatus.error}</p>
+                      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-[10px] font-semibold uppercase tracking-wide text-[#8B7D72]">
+                          Combined show notes
+                        </p>
+                        {!notesEditing && combinedShowNotes.trim() && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setNotesEditing(true);
+                              setShowNotesStatus({ loading: false, message: '', error: '' });
+                            }}
+                            className="text-xs font-medium text-[#8B7D72] hover:underline"
+                          >
+                            Edit notes
+                          </button>
                         )}
                       </div>
+
+                      {!notesEditing && combinedShowNotes.trim() ? (
+                        <div className="max-w-3xl">
+                          <JournalMarkdownBody
+                            post={{ title: '', body: combinedShowNotes, image: null }}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          <textarea
+                            rows={20}
+                            value={combinedShowNotes}
+                            onChange={(e) => setCombinedShowNotes(e.target.value)}
+                            placeholder="Paste the combined intro and run sheet here…"
+                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 font-mono text-sm leading-relaxed text-gray-900"
+                          />
+                          <div className="mt-3 flex flex-wrap items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={saveCombinedShowNotes}
+                              disabled={showNotesStatus.loading}
+                              className="rounded-full bg-[#2B2929] px-4 py-2 text-xs font-medium text-white hover:bg-black disabled:opacity-50"
+                            >
+                              {showNotesStatus.loading ? 'Saving…' : 'Save notes'}
+                            </button>
+                            {showNotesStatus.message && (
+                              <p className="text-sm text-green-700">{showNotesStatus.message}</p>
+                            )}
+                            {showNotesStatus.error && (
+                              <p className="text-sm text-red-600">{showNotesStatus.error}</p>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </div>
 
                     <div className="border-b border-[#E1DED8] bg-[#E1DED8] px-4 py-4">
