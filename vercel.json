@@ -239,7 +239,6 @@
     { "src": "/api/ao/podcast/schedule", "dest": "/api/ao/podcast/schedule.js" },
     { "src": "/api/ao/podcast/schedule/([^/]+)", "dest": "/api/ao/podcast/schedule/[id].js?id=$1" },
     { "src": "/api/ao/podcast/guest-magic-link", "dest": "/api/ao/podcast/guest-magic-link.js" },
-    { "src": "/api/ao/podcast/tmp-send-recording-link-tonight", "dest": "/api/ao/podcast/tmp-send-recording-link-tonight.js" },
     { "src": "/api/ao/podcast/guest-research", "dest": "/api/ao/podcast/guest-research.js" },
     { "src": "/api/ao/podcast/guest-questions", "dest": "/api/ao/podcast/guest-questions.js" },
     { "src": "/api/ao/podcast/guest-producer-brief", "dest": "/api/ao/podcast/guest-producer-brief.js" },
