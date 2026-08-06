@@ -584,6 +584,7 @@ export default function PodcastGuestAdminCombined() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState('prep');
+  const [hostingTab, setHostingTab] = useState('combined');
   const [recordingLinkForm, setRecordingLinkForm] = useState({
     riverside_link: '',
     riverside_episode_id: '',
@@ -599,6 +600,12 @@ export default function PodcastGuestAdminCombined() {
     results: [],
   });
   const timezoneGroups = getTimezoneOptionGroups();
+
+  useEffect(() => {
+    if (viewMode === 'hosting') {
+      setHostingTab('combined');
+    }
+  }, [viewMode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -715,6 +722,10 @@ export default function PodcastGuestAdminCombined() {
   const sharedThreadId = guests[0]?.episode_thread_id || null;
   const titleNames = guests.map((g) => g.name).filter(Boolean).join(' & ');
   const researchReady = guests.every((g) => g.research_brief && g.suggested_questions);
+  const activeHostingGuest =
+    viewMode === 'hosting' && hostingTab !== 'combined'
+      ? guests.find((g) => g.id === hostingTab) || null
+      : null;
 
   const sendRecordingLink = async () => {
     if (!sharedThreadId) return;
@@ -996,65 +1007,115 @@ export default function PodcastGuestAdminCombined() {
               )}
             </div>
 
-            {/* 2. Quick-jump row */}
-            <div className="sticky top-[57px] z-40 mb-8 flex items-center gap-2 bg-[#FAFAF9]/95 py-2 backdrop-blur-sm">
-              <span className="mr-1 text-[10px] uppercase tracking-wide text-gray-400">Jump to:</span>
-              {guests.map((g) => (
-                <a
-                  key={g.id}
-                  href={`#guest-${g.id}`}
-                  className="rounded-full border border-[#E1DED8] bg-white px-3 py-1 text-xs font-medium text-gray-700 transition hover:border-[#8B7D72] hover:text-[#8B7D72]"
-                >
-                  {g.name}
-                </a>
-              ))}
-            </div>
-
-            {viewMode === 'hosting' && (
-              <div className="mb-8 border-b border-[#E1DED8] bg-[#E1DED8] px-4 py-4">
-                <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
-                  Conversation architecture
-                </p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {CONVERSATION_ARCHITECTURE_BEATS.map((beat) => (
-                    <div key={beat.title} className="flex items-start gap-2.5">
-                      <div className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#DB0812]" aria-hidden />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{beat.title}</p>
-                        <p className="text-xs leading-relaxed text-gray-600">{beat.detail}</p>
-                      </div>
-                    </div>
+            {viewMode === 'prep' ? (
+              <>
+                {/* Prep: Jump to sticky row + stacked guest sections (unchanged) */}
+                <div className="sticky top-[57px] z-40 mb-8 flex items-center gap-2 bg-[#FAFAF9]/95 py-2 backdrop-blur-sm">
+                  <span className="mr-1 text-[10px] uppercase tracking-wide text-gray-400">Jump to:</span>
+                  {guests.map((g) => (
+                    <a
+                      key={g.id}
+                      href={`#guest-${g.id}`}
+                      className="rounded-full border border-[#E1DED8] bg-white px-3 py-1 text-xs font-medium text-gray-700 transition hover:border-[#8B7D72] hover:text-[#8B7D72]"
+                    >
+                      {g.name}
+                    </a>
                   ))}
                 </div>
-              </div>
-            )}
 
-            {/* 3–6. Guest sections with divider */}
-            {guests.map((guest, index) => (
-              <React.Fragment key={guest.id}>
-                {index > 0 && (
-                  <div className="my-10 flex items-center gap-3">
-                    <div className="h-px flex-1 bg-gray-200" />
-                    <span className="text-[10px] uppercase tracking-wide text-gray-400">Next guest</span>
-                    <div className="h-px flex-1 bg-gray-200" />
-                  </div>
-                )}
+                {guests.map((guest, index) => (
+                  <React.Fragment key={guest.id}>
+                    {index > 0 && (
+                      <div className="my-10 flex items-center gap-3">
+                        <div className="h-px flex-1 bg-gray-200" />
+                        <span className="text-[10px] uppercase tracking-wide text-gray-400">
+                          Next guest
+                        </span>
+                        <div className="h-px flex-1 bg-gray-200" />
+                      </div>
+                    )}
 
-                <section id={`guest-${guest.id}`} className="scroll-mt-32">
-                  <div className="mb-5 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E1DED8] font-serif text-sm font-bold text-[#8B7D72]">
-                      {guestInitials(guest.name)}
+                    <section id={`guest-${guest.id}`} className="scroll-mt-32">
+                      <div className="mb-5 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E1DED8] font-serif text-sm font-bold text-[#8B7D72]">
+                          {guestInitials(guest.name)}
+                        </div>
+                        <h2 className="font-serif text-xl text-gray-900">{guest.name}</h2>
+                      </div>
+                      <GuestPrepBody guest={guest} onGuestUpdated={updateGuest} />
+                    </section>
+                  </React.Fragment>
+                ))}
+              </>
+            ) : (
+              <>
+                {/* Hosting: real tabs, one panel at a time — no scroll-to-anchor */}
+                <div
+                  className="mb-6 flex flex-wrap gap-2 border-b border-[#E1DED8] pb-3"
+                  role="tablist"
+                  aria-label="Hosting views"
+                >
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={hostingTab === 'combined'}
+                    onClick={() => setHostingTab('combined')}
+                    className={`rounded-full px-4 py-2 text-xs font-medium ${
+                      hostingTab === 'combined'
+                        ? 'bg-[#2B2929] text-white'
+                        : 'border border-[#E1DED8] bg-white text-gray-700 hover:border-[#8B7D72]'
+                    }`}
+                  >
+                    Combined show page
+                  </button>
+                  {guests.map((g) => (
+                    <button
+                      key={g.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={hostingTab === g.id}
+                      onClick={() => setHostingTab(g.id)}
+                      className={`rounded-full px-4 py-2 text-xs font-medium ${
+                        hostingTab === g.id
+                          ? 'bg-[#2B2929] text-white'
+                          : 'border border-[#E1DED8] bg-white text-gray-700 hover:border-[#8B7D72]'
+                      }`}
+                    >
+                      {g.name}
+                    </button>
+                  ))}
+                </div>
+
+                {hostingTab === 'combined' ? (
+                  <div role="tabpanel" className="border-b border-[#E1DED8] bg-[#E1DED8] px-4 py-4">
+                    <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                      Conversation architecture
+                    </p>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {CONVERSATION_ARCHITECTURE_BEATS.map((beat) => (
+                        <div key={beat.title} className="flex items-start gap-2.5">
+                          <div className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#DB0812]" aria-hidden />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{beat.title}</p>
+                            <p className="text-xs leading-relaxed text-gray-600">{beat.detail}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <h2 className="font-serif text-xl text-gray-900">{guest.name}</h2>
                   </div>
-                  {viewMode === 'hosting' ? (
-                    <GuestHostingBody guest={guest} />
-                  ) : (
-                    <GuestPrepBody guest={guest} onGuestUpdated={updateGuest} />
-                  )}
-                </section>
-              </React.Fragment>
-            ))}
+                ) : activeHostingGuest ? (
+                  <section role="tabpanel">
+                    <div className="mb-5 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E1DED8] font-serif text-sm font-bold text-[#8B7D72]">
+                        {guestInitials(activeHostingGuest.name)}
+                      </div>
+                      <h2 className="font-serif text-xl text-gray-900">{activeHostingGuest.name}</h2>
+                    </div>
+                    <GuestHostingBody guest={activeHostingGuest} />
+                  </section>
+                ) : null}
+              </>
+            )}
           </>
         )}
       </main>
