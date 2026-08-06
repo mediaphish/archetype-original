@@ -7,9 +7,39 @@ import React, { useCallback, useEffect, useState } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import PodcastGuestSubmissionContent from '../../components/podcast/PodcastGuestSubmissionContent';
 import { getTimezoneOptionGroups } from '../../../lib/ao/podcastTimezones.js';
-import { formatGuestSchedulePrefs } from '../../../lib/ao/podcastScheduleUtils.js';
+import {
+  formatGuestSchedulePrefs,
+  localDateTimeToIso,
+} from '../../../lib/ao/podcastScheduleUtils.js';
 import { CONVERSATION_ARCHITECTURE_BEATS } from '../../components/podcast/conversationArchitecture.js';
 import PostRecordingCapture from '../../components/podcast/PostRecordingCapture';
+
+function isoToDateAndTimeParts(iso, timezone) {
+  if (!iso) return { date: '', time: '' };
+  try {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return { date: '', time: '' };
+    const tz = timezone || 'America/Chicago';
+    const date = new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(d);
+    const timeParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(d);
+    const hour = timeParts.find((p) => p.type === 'hour')?.value || '00';
+    const minute = timeParts.find((p) => p.type === 'minute')?.value || '00';
+    const normalizedHour = hour === '24' ? '00' : hour.padStart(2, '0');
+    return { date, time: `${normalizedHour}:${minute}` };
+  } catch {
+    return { date: '', time: '' };
+  }
+}
 
 function navigateTo(path) {
   window.history.pushState({}, '', path);
@@ -503,6 +533,48 @@ function GuestPrepBody({ guest, onGuestUpdated }) {
   );
 }
 
+/** Condensed hosting view: bio, producer brief, questions only. */
+function GuestHostingBody({ guest }) {
+  const bioSnippet = String(guest.bio_md || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 160);
+  const bioLine = [guest.company, bioSnippet].filter(Boolean).join(' · ');
+
+  return (
+    <div className="space-y-6">
+      {bioLine && <p className="text-sm text-gray-600">{bioLine}{bioSnippet.length >= 160 ? '…' : ''}</p>}
+
+      <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+          Producer brief
+        </p>
+        {guest.producer_brief ? (
+          <div className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-800">
+            {guest.producer_brief}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">No producer brief yet. Switch to Prep to generate one.</p>
+        )}
+      </section>
+
+      <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+        <p className="mb-4 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+          Interview questions
+        </p>
+        {guest.suggested_questions ? (
+          <div className="space-y-8">
+            <QuestionSet title="Person-specific" items={guest.suggested_questions.person_specific} />
+            <QuestionSet title="AO theology connections" items={guest.suggested_questions.ao_theology} />
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">No questions yet. Switch to Prep to generate them.</p>
+        )}
+      </section>
+    </div>
+  );
+}
+
 export default function PodcastGuestAdminCombined() {
   const guestIds = parseCombinedGuestIds(window.location.pathname);
 
@@ -511,6 +583,22 @@ export default function PodcastGuestAdminCombined() {
   const [guests, setGuests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [viewMode, setViewMode] = useState('prep');
+  const [recordingLinkForm, setRecordingLinkForm] = useState({
+    riverside_link: '',
+    riverside_episode_id: '',
+    date: '',
+    time: '',
+    timezone: 'America/Chicago',
+  });
+  const [recordingLinkSentAt, setRecordingLinkSentAt] = useState(null);
+  const [recordingLinkStatus, setRecordingLinkStatus] = useState({
+    loading: false,
+    message: '',
+    error: '',
+    results: [],
+  });
+  const timezoneGroups = getTimezoneOptionGroups();
 
   useEffect(() => {
     let cancelled = false;
@@ -590,6 +678,36 @@ export default function PodcastGuestAdminCombined() {
     loadGuests();
   }, [authChecked, loadGuests]);
 
+  useEffect(() => {
+    const threadId = guests[0]?.episode_thread_id;
+    if (!threadId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/ao/podcast/episode/recording-link?thread_id=${encodeURIComponent(threadId)}`
+        );
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok || cancelled) return;
+        const tz = json.timezone || 'America/Chicago';
+        const parts = isoToDateAndTimeParts(json.scheduled_at, tz);
+        setRecordingLinkForm({
+          riverside_link: json.riverside_link || '',
+          riverside_episode_id: json.riverside_episode_id || '',
+          date: parts.date,
+          time: parts.time,
+          timezone: tz,
+        });
+        setRecordingLinkSentAt(json.recording_link_sent_at || null);
+      } catch {
+        // Prefill is best-effort; leave defaults.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [guests[0]?.episode_thread_id]);
+
   const updateGuest = (updated) => {
     setGuests((prev) => prev.map((g) => (g.id === updated.id ? { ...g, ...updated } : g)));
   };
@@ -597,6 +715,67 @@ export default function PodcastGuestAdminCombined() {
   const sharedThreadId = guests[0]?.episode_thread_id || null;
   const titleNames = guests.map((g) => g.name).filter(Boolean).join(' & ');
   const researchReady = guests.every((g) => g.research_brief && g.suggested_questions);
+
+  const sendRecordingLink = async () => {
+    if (!sharedThreadId) return;
+    setRecordingLinkStatus({ loading: true, message: '', error: '', results: [] });
+    try {
+      const scheduledAt = localDateTimeToIso(
+        recordingLinkForm.date,
+        recordingLinkForm.time,
+        recordingLinkForm.timezone
+      );
+      if (!scheduledAt) {
+        throw new Error('Enter a valid recording date, time, and timezone.');
+      }
+      if (!String(recordingLinkForm.riverside_link || '').trim()) {
+        throw new Error('Enter the Riverside recording link.');
+      }
+
+      const res = await fetch('/api/ao/podcast/episode/recording-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          thread_id: sharedThreadId,
+          riverside_link: recordingLinkForm.riverside_link.trim(),
+          riverside_episode_id: recordingLinkForm.riverside_episode_id.trim() || null,
+          scheduled_at: scheduledAt,
+          timezone: recordingLinkForm.timezone || 'America/Chicago',
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || 'Could not send recording link');
+      }
+
+      const results = Array.isArray(json.results) ? json.results : [];
+      const sent = Number(json.sent_count || 0);
+      const total = Number(json.guest_count || results.length);
+      const failed = results.filter((r) => !r.ok);
+      let message = `Sent to ${sent} of ${total} guest${total === 1 ? '' : 's'}.`;
+      if (failed.length) {
+        message += ` Failed: ${failed.map((r) => r.name || r.email || r.id).join(', ')}.`;
+      }
+      setRecordingLinkStatus({
+        loading: false,
+        message,
+        error: failed.length && sent === 0 ? 'No emails were sent.' : '',
+        results,
+      });
+      if (json.recording_link_sent_at) {
+        setRecordingLinkSentAt(json.recording_link_sent_at);
+      } else if (sent > 0) {
+        setRecordingLinkSentAt(new Date().toISOString());
+      }
+    } catch (e) {
+      setRecordingLinkStatus({
+        loading: false,
+        message: '',
+        error: e.message || 'Could not send recording link',
+        results: [],
+      });
+    }
+  };
 
   if (!authChecked) {
     return (
@@ -654,6 +833,30 @@ export default function PodcastGuestAdminCombined() {
               </div>
               {sharedThreadId && (
                 <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="flex overflow-hidden rounded-full border border-gray-300 bg-white">
+                    <button
+                      type="button"
+                      onClick={() => setViewMode('prep')}
+                      className={`px-4 py-2 text-xs font-medium ${
+                        viewMode === 'prep'
+                          ? 'bg-[#2B2929] text-white'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      Prep
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setViewMode('hosting')}
+                      className={`px-4 py-2 text-xs font-medium ${
+                        viewMode === 'hosting'
+                          ? 'bg-[#2B2929] text-white'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      Hosting
+                    </button>
+                  </div>
                   <button
                     type="button"
                     onClick={() => navigateTo(`/ao/analyst?thread=${sharedThreadId}`)}
@@ -668,6 +871,127 @@ export default function PodcastGuestAdminCombined() {
                   >
                     Back to Podcast
                   </button>
+                </div>
+              )}
+
+              {sharedThreadId && (
+                <div className="mt-5 rounded-xl border border-[#E1DED8] bg-white/70 p-4">
+                  <p className="mb-3 text-[10px] font-semibold uppercase tracking-wide text-[#8B7D72]">
+                    Riverside recording link
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <label className="block sm:col-span-2">
+                      <span className="mb-1 block text-xs text-gray-600">Studio link</span>
+                      <input
+                        type="url"
+                        value={recordingLinkForm.riverside_link}
+                        onChange={(e) =>
+                          setRecordingLinkForm((prev) => ({
+                            ...prev,
+                            riverside_link: e.target.value,
+                          }))
+                        }
+                        placeholder="https://riverside.com/studio/..."
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+                      />
+                    </label>
+                    <label className="block sm:col-span-2">
+                      <span className="mb-1 block text-xs text-gray-600">
+                        Riverside episode ID (optional)
+                      </span>
+                      <input
+                        type="text"
+                        value={recordingLinkForm.riverside_episode_id}
+                        onChange={(e) =>
+                          setRecordingLinkForm((prev) => ({
+                            ...prev,
+                            riverside_episode_id: e.target.value,
+                          }))
+                        }
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-1 block text-xs text-gray-600">Recording date</span>
+                      <input
+                        type="date"
+                        value={recordingLinkForm.date}
+                        onChange={(e) =>
+                          setRecordingLinkForm((prev) => ({ ...prev, date: e.target.value }))
+                        }
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-1 block text-xs text-gray-600">Recording time</span>
+                      <input
+                        type="time"
+                        value={recordingLinkForm.time}
+                        onChange={(e) =>
+                          setRecordingLinkForm((prev) => ({ ...prev, time: e.target.value }))
+                        }
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+                      />
+                    </label>
+                    <label className="block sm:col-span-2">
+                      <span className="mb-1 block text-xs text-gray-600">Timezone</span>
+                      <select
+                        value={recordingLinkForm.timezone}
+                        onChange={(e) =>
+                          setRecordingLinkForm((prev) => ({
+                            ...prev,
+                            timezone: e.target.value,
+                          }))
+                        }
+                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+                      >
+                        <optgroup label="United States">
+                          {timezoneGroups.us.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="Other">
+                          {timezoneGroups.rest.map((tz) => (
+                            <option key={tz} value={tz}>
+                              {tz}
+                            </option>
+                          ))}
+                        </optgroup>
+                      </select>
+                    </label>
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={sendRecordingLink}
+                      disabled={recordingLinkStatus.loading}
+                      className="rounded-full bg-[#DB0812] px-4 py-2 text-xs font-medium text-white hover:bg-[#b5070f] disabled:opacity-50"
+                    >
+                      {recordingLinkStatus.loading ? 'Sending…' : 'Send to both guests'}
+                    </button>
+                    {recordingLinkSentAt && (
+                      <p className="text-xs text-gray-500">
+                        Sent {formatTimestamp(recordingLinkSentAt)}
+                      </p>
+                    )}
+                  </div>
+                  {recordingLinkStatus.message && (
+                    <p className="mt-2 text-sm text-green-700">{recordingLinkStatus.message}</p>
+                  )}
+                  {recordingLinkStatus.error && (
+                    <p className="mt-2 text-sm text-red-600">{recordingLinkStatus.error}</p>
+                  )}
+                  {recordingLinkStatus.results?.length > 0 && (
+                    <ul className="mt-2 space-y-1 text-xs text-gray-600">
+                      {recordingLinkStatus.results.map((r) => (
+                        <li key={r.id || r.email}>
+                          {r.name || r.email}: {r.ok ? 'sent' : `failed (${r.error || 'error'})`}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
             </div>
@@ -685,6 +1009,25 @@ export default function PodcastGuestAdminCombined() {
                 </a>
               ))}
             </div>
+
+            {viewMode === 'hosting' && (
+              <div className="mb-8 border-b border-[#E1DED8] bg-[#E1DED8] px-4 py-4">
+                <p className="mb-3 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
+                  Conversation architecture
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {CONVERSATION_ARCHITECTURE_BEATS.map((beat) => (
+                    <div key={beat.title} className="flex items-start gap-2.5">
+                      <div className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#DB0812]" aria-hidden />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{beat.title}</p>
+                        <p className="text-xs leading-relaxed text-gray-600">{beat.detail}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* 3–6. Guest sections with divider */}
             {guests.map((guest, index) => (
@@ -704,7 +1047,11 @@ export default function PodcastGuestAdminCombined() {
                     </div>
                     <h2 className="font-serif text-xl text-gray-900">{guest.name}</h2>
                   </div>
-                  <GuestPrepBody guest={guest} onGuestUpdated={updateGuest} />
+                  {viewMode === 'hosting' ? (
+                    <GuestHostingBody guest={guest} />
+                  ) : (
+                    <GuestPrepBody guest={guest} onGuestUpdated={updateGuest} />
+                  )}
                 </section>
               </React.Fragment>
             ))}
