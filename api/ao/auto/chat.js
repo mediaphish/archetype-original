@@ -92,6 +92,26 @@ function looksLikeFullPastedPost(text) {
 }
 
 /**
+ * An attached image should only be auto-saved as a post's header when Bart's own message
+ * actually signals that intent. Without this check, every attached image -- including ones
+ * sent purely so Auto can look at something -- gets written to the database and reported as
+ * already handled, which is wrong far more often than it's right. Default to "just show Auto
+ * the image," and only treat it as a save-worthy header image when the text says so.
+ */
+function messageSignalsHeaderImageIntent(userMessage) {
+  const msg = String(userMessage || '');
+  if (!msg.trim()) return false;
+  return (
+    /\b(header|cover)\s*(image|photo|pic)?\b/i.test(msg) ||
+    /\bimage\s*(for|to)\s*(the|this)?\s*(post|draft|article|entry)\b/i.test(msg) ||
+    /\buse\s+(this|it)\s+(as|for)\b/i.test(msg) ||
+    /\bslug\s*(is|:|=)/i.test(msg) ||
+    /\bset\s+(the\s+)?(header|cover)?\s*image\b/i.test(msg) ||
+    /\battach(ed)?\s+(this|it)\s+to\b/i.test(msg)
+  );
+}
+
+/**
  * A draft row can exist with empty content for a real reason that has nothing
  * to do with anything being broken right now: the post text was pasted before
  * the deterministic save existed, or before it happened to run, and nothing
@@ -1107,7 +1127,11 @@ export default async function handler(req, res) {
     // runs before Claude answers, so its reply reports what genuinely happened instead
     // of guessing or inventing an outcome (both have happened before this fix).
     let attachedImageFact = null;
-    if (Array.isArray(attachments) && attachments.length > 0) {
+    if (
+      Array.isArray(attachments) &&
+      attachments.length > 0 &&
+      messageSignalsHeaderImageIntent(userMessage)
+    ) {
       attachedImageFact = await trySaveAttachedImageAsHeader(
         userMessage,
         attachments,
