@@ -722,6 +722,60 @@ export default async function handler(req, res) {
       console.error('[publish-journal] Unexpected error marking draft published:', draftMarkError);
     }
 
+    // After the existing primary match attempt, if it found nothing, try harder before giving up.
+    if (!draftMarkedPublished) {
+      try {
+        // Fallback 1: normalize the draft's own stored slug the same way safeSlug was normalized,
+        // in case the two only differ by punctuation-to-hyphen handling.
+        const { data: candidates } = await supabaseAdmin
+          .from('ao_content_drafts')
+          .select('id, slug, title')
+          .eq('kind', 'journal')
+          .neq('status', 'published');
+
+        const normalize = (s) =>
+          String(s || '')
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9-]/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '');
+
+        let fallbackMatch = (candidates || []).find((c) => normalize(c.slug) === safeSlug);
+
+        // Fallback 2: same title, trimmed and case-insensitive — the one value that's identical
+        // at draft-creation time and publish time regardless of how the slug was typed.
+        if (!fallbackMatch) {
+          const normalizedTitle = String(title || '').trim().toLowerCase();
+          fallbackMatch = (candidates || []).find(
+            (c) => String(c.title || '').trim().toLowerCase() === normalizedTitle
+          );
+        }
+
+        if (fallbackMatch) {
+          const { error: fallbackError } = await supabaseAdmin
+            .from('ao_content_drafts')
+            .update({ status: 'published', updated_at: new Date().toISOString() })
+            .eq('id', fallbackMatch.id);
+
+          if (fallbackError) {
+            draftMarkError = `primary match failed, fallback also failed: ${fallbackError.message}`;
+          } else {
+            draftMarkedPublished = true;
+            draftMarkError = `primary slug/series match failed; matched via fallback (slug="${fallbackMatch.slug}", title match)`;
+            console.warn(
+              `[publish-journal] Draft marked published via fallback match for "${title}" — primary match found 0 rows. This means the draft's stored slug ("${fallbackMatch.slug}") and the published safeSlug ("${safeSlug}") diverge; worth checking why if this keeps happening.`
+            );
+          }
+        }
+      } catch (fallbackErr) {
+        console.error(
+          '[publish-journal] Fallback draft-match attempt threw:',
+          fallbackErr?.message || fallbackErr
+        );
+      }
+    }
+
     // Instagram bio + delayed Resend notify stay fire-and-forget intentionally:
     // they are external side effects with their own retries/delays and are not
     // required for Auto's corpus awareness. Do not await them here.

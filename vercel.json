@@ -270,6 +270,7 @@
     { "src": "/api/ao/auto/schedule-cards", "dest": "/api/ao/auto/schedule-cards.js" },
     { "src": "/api/ao/auto/schedule-status", "dest": "/api/ao/auto/schedule-status.js" },
     { "src": "/api/ao/auto/publish-journal", "dest": "/api/ao/auto/publish-journal.js" },
+    { "src": "/api/ao/auto/check-stuck-drafts", "dest": "/api/ao/auto/check-stuck-drafts.js" },
     { "src": "/api/ao/auto/update-scheduled-captions", "dest": "/api/ao/auto/update-scheduled-captions.js" },
     { "src": "/api/ao/auto/derive-content", "dest": "/api/ao/auto/derive-content.js" },
     { "src": "/api/ao/auto/publish-devotional", "dest": "/api/ao/auto/publish-devotional.js" },
