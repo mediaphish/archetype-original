@@ -225,6 +225,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-08-05 | Our Secret Sins in the Light | Psalm 90:8 (ESV) | `our-secret-sins-in-the-light` | `2026-08-05-our-secret-sins-in-the-light.md` |
 | 2026-08-06 | Nothing Stays Hidden | Luke 12:2–3 (ESV) | `nothing-stays-hidden` | `2026-08-06-nothing-stays-hidden.md` |
 | 2026-08-07 | Each Will Give Account | Romans 14:10–12 (ESV) | `each-will-give-account` | `2026-08-07-each-will-give-account.md` |
+| 2026-08-08 | Much Required | Luke 12:47–48 (ESV) | `much-required` | `2026-08-08-much-required.md` |
+| 2026-08-09 | Settling the Account | Luke 19:15–19 (ESV) | `settling-the-account` | `2026-08-09-settling-the-account.md` |
+| 2026-08-10 | The Governor Who Refused the Allowance | Nehemiah 5:14–15 (ESV) | `the-governor-who-refused-the-allowance` | `2026-08-10-the-governor-who-refused-the-allowance.md` |
+| 2026-08-11 | Stewards, Not Owners | 1 Corinthians 4:1–2 (ESV) | `stewards-not-owners` | `2026-08-11-stewards-not-owners.md` |
+| 2026-08-12 | Use What Was Given | Romans 12:6–8 (ESV) | `use-what-was-given` | `2026-08-12-use-what-was-given.md` |
+| 2026-08-13 | Guard the Deposit | 2 Timothy 1:13–14 (ESV) | `guard-the-deposit` | `2026-08-13-guard-the-deposit.md` |
+| 2026-08-14 | So That No One Can Blame Us | 2 Corinthians 8:18–21 (ESV) | `so-that-no-one-can-blame-us` | `2026-08-14-so-that-no-one-can-blame-us.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
