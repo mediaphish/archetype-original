@@ -531,10 +531,12 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   if (!email || !assistantReply) return;
 
   const userLower = String(userMessage || '').toLowerCase();
+  const APPROVAL_PATTERN =
+    /\b(approved?|looks good|go ahead|publish it|that.?s it|perfect|yes|confirmed?|do it|fire it|send it|this works|i think (it'?s|this is|it) (good|works|solid)|ready|solid|nailed it|let'?s lock it|lock it in)\b/i;
+  const NEGATED_APPROVAL_PATTERN =
+    /\b(not|isn'?t|don'?t|doesn'?t|didn'?t|wasn'?t|weren'?t|never|no)\b[\s\S]{0,20}\b(ready|solid|good|approved?|works?|there yet|it)\b|\b(ready|solid|good|approved?|works?)\b[\s\S]{0,15}\b(not|yet\??$|isn'?t|don'?t)\b/i;
   const isApproval =
-    /\b(approved?|looks good|go ahead|publish it|that.?s it|perfect|yes|confirmed?|do it|fire it|send it|this works|i think (it'?s|this is|it) (good|works|solid)|ready|solid|nailed it|let'?s lock it|lock it in)\b/i.test(
-      userLower
-    );
+    APPROVAL_PATTERN.test(userLower) && !NEGATED_APPROVAL_PATTERN.test(userLower);
   const isRemoval =
     /\b(cut (that|this|it)|take (that|this) out|remove the|we'?re? not using that|don'?t include|leave (that|this) out|without the|no biographical|drop the|we cut|that'?s? cut|not in (the|this))\b/i.test(
       userLower
@@ -1029,9 +1031,14 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
         .slice(-5)
         .reverse();
       const fuzzyMatches = findReferencedDrafts(pendingDrafts, userMessage, recentUserMessages);
-      const target = fuzzyMatches[0] || pendingDrafts[0];
+      const target =
+        fuzzyMatches[0] || (pendingDrafts.length === 1 ? pendingDrafts[0] : null);
 
-      if (target?.slug || target?.series_slug) {
+      if (!target) {
+        console.log(
+          `[chat.js] Approval fallback found no confident match among ${pendingDrafts.length} pending drafts — nothing promoted, avoiding a blind guess.`
+        );
+      } else if (target?.slug || target?.series_slug) {
         const promoted = await promoteDraftStatus({
           kind: target.kind,
           series_slug: target.series_slug,
