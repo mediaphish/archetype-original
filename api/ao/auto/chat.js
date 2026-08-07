@@ -10,7 +10,12 @@
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
-import { runAutoChat, runAutoChatStream, findReferencedDrafts } from '../../../lib/ao/autoV2.js';
+import {
+  runAutoChat,
+  runAutoChatStream,
+  findReferencedDrafts,
+  canonicalizeSlug,
+} from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
@@ -388,7 +393,7 @@ async function trySaveAttachedImageAsHeader(userMessage, attachments, email, rec
         /\bslug\s*(?:is|:|=)?\s*["']?([a-z0-9]+(?:-[a-z0-9]+){1,10})["']?/i
       );
       if (slugPhraseMatch) {
-        targetSlug = slugPhraseMatch[1].toLowerCase();
+        targetSlug = canonicalizeSlug(slugPhraseMatch[1]);
       }
     }
 
@@ -559,11 +564,12 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   async function resolveCaptionLinkMeta(attrs, searchBlob) {
     const dateSlug = `captions-${new Date().toISOString().split('T')[0]}`;
     if (attrs?.slug) {
+      const slug = canonicalizeSlug(attrs.slug);
       return {
-        series_slug: deriveSeriesSlug(attrs.slug) || 'standalone',
-        part_number: extractPartNumber(attrs.slug),
-        slug: attrs.slug,
-        title: attrs.title || attrs.slug,
+        series_slug: deriveSeriesSlug(slug) || 'standalone',
+        part_number: extractPartNumber(slug),
+        slug,
+        title: attrs.title || slug,
       };
     }
 
@@ -572,11 +578,12 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
     if (publishInSearch) {
       const pubAttrs = parseAttrs(publishInSearch[1]);
       if (pubAttrs.slug) {
+        const slug = canonicalizeSlug(pubAttrs.slug);
         return {
-          series_slug: deriveSeriesSlug(pubAttrs.slug) || 'standalone',
-          part_number: extractPartNumber(pubAttrs.slug),
-          slug: pubAttrs.slug,
-          title: pubAttrs.title || pubAttrs.slug,
+          series_slug: deriveSeriesSlug(slug) || 'standalone',
+          part_number: extractPartNumber(slug),
+          slug,
+          title: pubAttrs.title || slug,
         };
       }
     }
@@ -745,12 +752,9 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
         if (h1) title = h1[1].trim();
       }
       if (!slug && title) {
-        slug = title
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '')
-          .slice(0, 80);
+        slug = title;
       }
+      slug = canonicalizeSlug(slug);
       if (slug || title) {
         const series_slug_for_save = deriveSeriesSlug(slug) || 'standalone';
         const part_number_for_save = extractPartNumber(slug);
@@ -880,12 +884,9 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
       if (h1) title = h1[1].trim();
     }
     if (!slug && title) {
-      slug = title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
-        .slice(0, 80);
+      slug = title;
     }
+    slug = canonicalizeSlug(slug);
     if (slug || title) {
       const series_slug = deriveSeriesSlug(slug) || 'standalone';
       const part_number = extractPartNumber(slug);

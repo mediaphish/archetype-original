@@ -1,4 +1,5 @@
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
+import { canonicalizeSlug } from '../../../lib/ao/autoV2.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 
 const STORAGE_BUCKET = 'ao-auto-attachments';
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
   try {
     const { slug, image_base64, media_type } = req.body || {};
 
-    const safeSlug = String(slug || '').trim();
+    const safeSlug = canonicalizeSlug(slug);
     if (!safeSlug) {
       res.status(400).json({ ok: false, error: 'slug is required' });
       return;
