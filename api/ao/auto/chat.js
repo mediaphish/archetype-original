@@ -1142,15 +1142,10 @@ export default async function handler(req, res) {
           });
         }
       }
-      const textWithFact = combinedFacts
-        ? `${userMessage}\n\n${combinedFacts}`
-        : userMessage;
-      contentParts.push({ type: 'text', text: textWithFact });
+      contentParts.push({ type: 'text', text: userMessage });
       currentMessageContent = contentParts;
     } else {
-      currentMessageContent = combinedFacts
-        ? `${userMessage}\n\n${combinedFacts}`
-        : userMessage;
+      currentMessageContent = userMessage;
     }
 
     // Load schedule context only when the request involves scheduling or publishing.
@@ -1215,7 +1210,8 @@ export default async function handler(req, res) {
             // Send each token to the client as it arrives
             fullReply += token;
             sendEvent('token', { token });
-          }
+          },
+          combinedFacts || null
         ),
         timeoutAfter(
           SOFT_TIMEOUT_MS,
