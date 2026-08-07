@@ -117,6 +117,19 @@ function messageSignalsHeaderImageIntent(userMessage) {
 }
 
 /**
+ * A long paste should only overwrite a draft that ALREADY has real content when Bart's message
+ * actually signals he means to replace it -- otherwise a long, unrelated paste that happens to
+ * slugify to the same title as an existing post would silently destroy real content. Filling in
+ * a draft that's currently empty or near-empty is always safe and does not require this signal.
+ */
+function messageSignalsIntentToReplaceExistingDraft(userMessage) {
+  const msg = String(userMessage || '');
+  return /\b(update|updated|updating|replace|replacing|revised?|revision|new version|rewrite|rewritten|swap (this |it )?in|use this instead|overwrite)\b/i.test(
+    msg
+  );
+}
+
+/**
  * A draft row can exist with empty content for a real reason that has nothing
  * to do with anything being broken right now: the post text was pasted before
  * the deterministic save existed, or before it happened to run, and nothing
@@ -239,35 +252,58 @@ async function trySaveUserPastedPostDirectly(userMessage, email, recentHistory =
 
     const kind = /\bdevotional\b/i.test(raw.slice(0, 400)) ? 'devotional' : 'journal';
 
-    const { data: updatedRow, error: updateError } = await supabaseAdmin
+    const { data: existingRow, error: existingErr } = await supabaseAdmin
       .from('ao_content_drafts')
-      .update({
-        content: raw,
-        title,
-        updated_at: new Date().toISOString(),
-      })
+      .select('id, slug, title, status, image_url, content')
       .eq('created_by_email', email.toLowerCase().trim())
       .eq('slug', targetSlug)
       .in('kind', ['journal', 'devotional'])
-      .select('slug, title, status, image_url')
       .maybeSingle();
 
-    if (updateError) {
-      console.error('[chat.js] trySaveUserPastedPostDirectly update failed:', updateError.message);
+    if (existingErr) {
+      console.error('[chat.js] trySaveUserPastedPostDirectly existing-row lookup failed:', existingErr.message);
       return null;
     }
 
-    if (updatedRow) {
-      const imageNote = updatedRow.image_url
-        ? `Its already-saved image is untouched at: ${updatedRow.image_url}.`
-        : 'No image is saved for it yet.';
-      return (
-        `[SYSTEM FACT -- the full post text in this message was automatically saved to the ` +
-        `existing draft "${updatedRow.title}" (slug: ${updatedRow.slug}, status: ${updatedRow.status}). ` +
-        `This already happened in the database before you answered. ${imageNote} Confirm plainly to ` +
-        `Bart that the post text is saved under this slug. Do not ask him to re-paste it, and do not ` +
-        `claim you generated or fabricated any part of it -- it is saved verbatim as given.]`
+    const hasSubstantialExistingContent =
+      existingRow?.content && existingRow.content.trim().length > 200;
+
+    if (existingRow && hasSubstantialExistingContent && !messageSignalsIntentToReplaceExistingDraft(raw)) {
+      console.log(
+        `[chat.js] Skipped auto-overwrite of existing draft "${existingRow.slug}" (${existingRow.content.trim().length} chars) — message did not signal replace intent.`
       );
+      return null;
+    }
+
+    if (existingRow) {
+      const { data: updatedRow, error: updateError } = await supabaseAdmin
+        .from('ao_content_drafts')
+        .update({
+          content: raw,
+          title,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existingRow.id)
+        .select('slug, title, status, image_url')
+        .maybeSingle();
+
+      if (updateError) {
+        console.error('[chat.js] trySaveUserPastedPostDirectly update failed:', updateError.message);
+        return null;
+      }
+
+      if (updatedRow) {
+        const imageNote = updatedRow.image_url
+          ? `Its already-saved image is untouched at: ${updatedRow.image_url}.`
+          : 'No image is saved for it yet.';
+        return (
+          `[SYSTEM FACT -- the full post text in this message was automatically saved to the ` +
+          `existing draft "${updatedRow.title}" (slug: ${updatedRow.slug}, status: ${updatedRow.status}). ` +
+          `This already happened in the database before you answered. ${imageNote} Confirm plainly to ` +
+          `Bart that the post text is saved under this slug. Do not ask him to re-paste it, and do not ` +
+          `claim you generated or fabricated any part of it -- it is saved verbatim as given.]`
+        );
+      }
     }
 
     const { data: createdRow, error: insertError } = await supabaseAdmin
