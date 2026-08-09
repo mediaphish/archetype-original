@@ -595,6 +595,7 @@ export default async function handler(req, res) {
     // Schedule social captions if present in the content body
     let captionsScheduled = 0;
     let captionsError = null;
+    let captionsSkippedAsDuplicate = false;
     try {
       // Meta (Instagram/Facebook) requires an absolute http(s) image URL.
       // Never store the literal "none", a relative "/images/..." path, or any other
@@ -670,6 +671,7 @@ export default async function handler(req, res) {
             console.log(`[publish-journal] ${captionsScheduled} social posts scheduled for ${safeSlug}`);
           }
         } else {
+          captionsSkippedAsDuplicate = captionRows.length > 0;
           console.log(`[publish-journal] All ${captionRows.length} caption row(s) for ${safeSlug} were already scheduled — nothing new to insert.`);
         }
       }
@@ -732,36 +734,65 @@ export default async function handler(req, res) {
     // Mark the matching draft as published so it drops out of Auto's
     // "approved drafts pending publish" context. Awaited for the same reason —
     // fire-and-forget was getting cut off and drafts stayed stuck as pending.
+    //
+    // slug is the one identity value verified against the real draft row -- series_slug/part_number
+    // on the publish tag are text Auto typed and were never checked against the database. Trust slug
+    // first always; only fall back to series_slug+part_number if slug alone can't find the row (e.g.
+    // a genuinely slug-less lookup path elsewhere in the system).
     let draftMarkedPublished = false;
     let draftMarkError = null;
     try {
-      let query = supabaseAdmin
+      const { data: existingDraftRow, error: existingDraftLookupErr } = await supabaseAdmin
         .from('ao_content_drafts')
-        .update({ status: 'published', updated_at: new Date().toISOString() })
+        .select('id, slug, series_slug, part_number, status')
         .eq('kind', 'journal')
-        .neq('status', 'published');
+        .eq('slug', safeSlug)
+        .maybeSingle();
 
-      if (seriesSlug && partNumber) {
-        query = query.eq('series_slug', seriesSlug).eq('part_number', partNumber);
+      if (existingDraftLookupErr) {
+        draftMarkError = existingDraftLookupErr.message;
+        console.error('[publish-journal] Draft lookup failed:', existingDraftLookupErr.message);
       } else {
-        query = query.eq('slug', safeSlug);
-      }
+        let draftRowToUpdate = existingDraftRow;
+        if (!draftRowToUpdate && seriesSlug && partNumber) {
+          const { data: fallbackRow } = await supabaseAdmin
+            .from('ao_content_drafts')
+            .select('id, slug, series_slug, part_number, status')
+            .eq('kind', 'journal')
+            .eq('series_slug', seriesSlug)
+            .eq('part_number', partNumber)
+            .maybeSingle();
+          draftRowToUpdate = fallbackRow;
+        }
 
-      const { data: updatedRows, error: draftUpdateError } = await query.select('id');
-
-      if (draftUpdateError) {
-        draftMarkError = draftUpdateError.message;
-        console.error('[publish-journal] Failed to mark draft as published:', draftUpdateError.message);
-      } else if (!updatedRows || updatedRows.length === 0) {
-        draftMarkError = `matched 0 rows for slug="${safeSlug}" series_slug="${seriesSlug || 'n/a'}" part_number="${partNumber || 'n/a'}"`;
-        console.warn(
-          `[publish-journal] Post-publish draft-status update ${draftMarkError} — draft may show as stuck pending in Auto's context.`
-        );
-      } else {
-        draftMarkedPublished = true;
-        console.log(
-          `[publish-journal] Draft marked published (${updatedRows.length} row(s)) for slug="${safeSlug}" series_slug="${seriesSlug}" part_number="${partNumber}"`
-        );
+        if (!draftRowToUpdate) {
+          // Genuinely couldn't find this post's draft row by any identity we have -- a real problem.
+          draftMarkError = `No draft row found for slug="${safeSlug}"${seriesSlug ? ` (also tried series_slug="${seriesSlug}" part_number="${partNumber || 'n/a'}")` : ''}.`;
+          console.warn(
+            `[publish-journal] Post-publish draft-status update ${draftMarkError} — draft may show as stuck pending in Auto's context.`
+          );
+        } else if (draftRowToUpdate.status === 'published') {
+          // Found it, and it's already published -- this is a re-publish of an already-live post.
+          // Nothing to update, and this is not an error.
+          draftMarkedPublished = true;
+          console.log(
+            `[publish-journal] Draft "${draftRowToUpdate.slug}" already marked published -- skipping redundant status update.`
+          );
+        } else {
+          const { error: updateErr } = await supabaseAdmin
+            .from('ao_content_drafts')
+            .update({ status: 'published', updated_at: new Date().toISOString() })
+            .eq('id', draftRowToUpdate.id);
+          if (updateErr) {
+            draftMarkError = updateErr.message;
+            console.error('[publish-journal] Failed to mark draft as published:', updateErr.message);
+          } else {
+            draftMarkedPublished = true;
+            console.log(
+              `[publish-journal] Draft marked published for slug="${draftRowToUpdate.slug}" (id=${draftRowToUpdate.id})`
+            );
+          }
+        }
       }
     } catch (err) {
       draftMarkError = err?.message || String(err);
@@ -835,6 +866,7 @@ export default async function handler(req, res) {
       notify_scheduled: notify,
       notify_delay_ms: notify ? notify_delay_ms : 0,
       captions_scheduled: captionsScheduled,
+      captions_skipped_as_duplicate: captionsSkippedAsDuplicate,
       captions_error: captionsError || null,
       embedded_in_corpus: embedOk,
       corpus_embed_error: embedError,

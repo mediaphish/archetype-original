@@ -2925,7 +2925,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       // to know social posts never actually got scheduled, or a draft is stuck
       // showing as pending forever.
       const warnings = [];
-      if (socialCaptionsBlock && (json.captions_error || !json.captions_scheduled)) {
+      if (socialCaptionsBlock && (json.captions_error || (!json.captions_scheduled && !json.captions_skipped_as_duplicate))) {
         warnings.push(
           json.captions_error
             ? `Social captions were NOT scheduled: ${json.captions_error}`
