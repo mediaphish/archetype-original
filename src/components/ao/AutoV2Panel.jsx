@@ -2919,6 +2919,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
       if (json.corpus_embed_error) {
         warnings.push(`Not added to Auto's search corpus: ${json.corpus_embed_error}. Auto may not find this piece later.`);
       }
+      if (json.editorial_memory_error) {
+        warnings.push(`Editorial memory was not rebuilt: ${json.editorial_memory_error}. Auto may not know this piece was just published until the next scheduled rebuild.`);
+      }
 
       setJournalPublishBanner({
         status: 'success',
