@@ -2,8 +2,8 @@
 title: The Absalom Archetype
 slug: the-absalom-archetype
 publish_date: '2026-08-03'
-created_at: '2026-07-31'
-updated_at: '2026-07-31'
+created_at: '2026-08-09'
+updated_at: '2026-08-09'
 summary: >-
   Absalom never accused David of failing. He just stood in a gap his father left open, morning after morning, until the sympathy he built there cost David his own most trusted counselor.
 categories:
