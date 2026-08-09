@@ -2645,7 +2645,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
         // Show streaming content in the chat as it arrives
         // Insert a streaming message placeholder
-        const streamingMsgId = `streaming-${Date.now()}`;
+        let streamingMsgId = `streaming-${Date.now()}`;
         setMessages((prev) => [
           ...prev,
           {
@@ -2672,7 +2672,26 @@ export default function AutoV2Panel({ onNavigate, className }) {
                   const parsed = JSON.parse(line.slice(6));
                   lastEventAt = Date.now();
 
-                  if (parsed.reset) {
+                  if (parsed.finalize_segment !== undefined) {
+                    // Pass 1 wrote something real before Auto asked for more source text.
+                    // Lock the current bubble in as its own finished message (it's already
+                    // saved server-side too) instead of erasing it, then open a new bubble
+                    // for the synthesis reply that follows.
+                    const finishedId = streamingMsgId;
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === finishedId
+                          ? { ...m, content: parsed.finalize_segment, meta: { streaming: false } }
+                          : m
+                      )
+                    );
+                    streamingMsgId = `streaming-${Date.now()}`;
+                    streamingAssistantContent = '';
+                    setMessages((prev) => [
+                      ...prev,
+                      { role: 'assistant', content: '', id: streamingMsgId, meta: { streaming: true } },
+                    ]);
+                  } else if (parsed.reset) {
                     // Server discarded the in-progress reply (e.g. it fetched full corpus
                     // documents and is now streaming a fresh synthesis call). Clear the
                     // live buffer so the new generation doesn't get glued onto the old

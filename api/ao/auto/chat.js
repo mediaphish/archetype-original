@@ -2028,13 +2028,39 @@ ${retrievedBlock}
               ? streamResult.messages
               : [{ role: 'user', content: userMessage }];
 
-          // Replace the preamble/signal reply — synthesis becomes the stored/visible answer.
-          // Tell the client to wipe its live streaming buffer FIRST. Without this, the
-          // client keeps appending new tokens onto the same message bubble as the
-          // discarded first-pass reply, producing one garbled message that looks like
-          // Auto contradicting itself mid-sentence (two separate model generations
-          // glued together with no boundary).
-          sendEvent('reset', { reset: true });
+          // If pass 1 already wrote real, substantial content before the fetch tag (a full
+          // draft, a real answer -- not just a bare signal tag with a sentence of filler),
+          // that content must not be silently destroyed. It already streamed to Bart's
+          // screen; wiping it here deleted it from both the screen AND the saved history,
+          // which is the actual "ghost post" bug Bart reported -- a full draft streamed,
+          // displayed, then vanished with no trace, replaced by the synthesis reply.
+          // Save it as its own real message and start the synthesis reply as a new one,
+          // instead of overwriting it. This still prevents the original problem this
+          // reset mechanism was built for (synthesis tokens gluing onto pass-1 text mid-
+          // sentence into one garbled message) -- the two passes are just two separate
+          // messages now, not one blended one and not a silent deletion.
+          const preTagContent = fullReply.trim();
+          const hasSubstantialPreTagContent = preTagContent.length > 150;
+
+          if (hasSubstantialPreTagContent) {
+            try {
+              await addAutoMessage({
+                threadId: thread.id,
+                role: 'assistant',
+                mode: 'plan',
+                content: preTagContent,
+                meta: { auto_v2: true, pre_synthesis_segment: true },
+              });
+            } catch (preSaveErr) {
+              console.error(
+                '[chat.js] Failed to save pre-synthesis segment (continuing anyway, content stays on screen):',
+                preSaveErr?.message || preSaveErr
+              );
+            }
+            sendEvent('finalize_segment', { finalize_segment: preTagContent });
+          } else {
+            sendEvent('reset', { reset: true });
+          }
           fullReply = '';
           const synthesisClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
           const synthesisModel =
