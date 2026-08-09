@@ -117,6 +117,23 @@ function messageSignalsHeaderImageIntent(userMessage) {
 }
 
 /**
+ * Loading real prior header images into the model's vision context is expensive (real image
+ * bytes, not text) and, worse, causes the model to start narrating/describing them mid-reply
+ * even when the user never asked -- confirmed live when Auto pulled up and described the Saul
+ * and Absalom headers unprompted during a pure text-editing conversation about a different post.
+ * needsSeriesContext (from requestClassifier.js) is a topic-detection flag that's true for nearly
+ * an entire series conversation -- it is not evidence the user wants to discuss images. Require
+ * this separate, narrower signal before spending the vision-context budget and risking the model
+ * bringing up images unprompted.
+ */
+function messageOrHistorySignalsImageDiscussion(userMessage, recentUserMessages) {
+  const pattern =
+    /\b(header|cover)\s*(image|photo|pic)?\b|\bimage\s*(prompt|generation|style|reference)\b|\bdall-?e\b|\bvisual\s*(style|continuity|bar|reference)\b|\bwhat\s+(does|should)\s+the\s+(header|cover|image)\b|\bpropose\s+(the\s+)?(header|cover)?\s*image\b/i;
+  if (pattern.test(String(userMessage || ''))) return true;
+  return (recentUserMessages || []).some((m) => pattern.test(String(m || '')));
+}
+
+/**
  * A long paste should only overwrite a draft that ALREADY has real content when Bart's message
  * actually signals he means to replace it -- otherwise a long, unrelated paste that happens to
  * slugify to the same title as an existing post would silently destroy real content. Filling in
@@ -1226,26 +1243,29 @@ export default async function handler(req, res) {
       : null;
 
     // Give Auto real visual memory of prior header images in a series — actual
-    // image bytes, not a text description — gated the same way series text
-    // context already is, so this only loads when actually relevant.
+    // image bytes, not a text description. needsSeriesContext alone is too broad
+    // (true for nearly any series conversation); also require real image-discussion intent.
     if (contextProfile.needsSeriesContext) {
-      try {
-        const { loadSeriesImageReferenceBlocks } = await import('../../../lib/ao/seriesImageReferences.js');
-        const recentUserMessages = history
-          .filter((m) => m.role === 'user')
-          .map((m) => String(m.content || ''))
-          .filter(Boolean)
-          .slice(-5)
-          .reverse();
-        const seriesImageBlocks = await loadSeriesImageReferenceBlocks(userMessage, recentUserMessages);
-        if (seriesImageBlocks && seriesImageBlocks.length > 0) {
-          const existingParts = Array.isArray(currentMessageContent)
-            ? currentMessageContent
-            : [{ type: 'text', text: currentMessageContent }];
-          currentMessageContent = [...seriesImageBlocks, ...existingParts];
+      const recentUserMessages = history
+        .filter((m) => m.role === 'user')
+        .map((m) => String(m.content || ''))
+        .filter(Boolean)
+        .slice(-5)
+        .reverse();
+
+      if (messageOrHistorySignalsImageDiscussion(userMessage, recentUserMessages)) {
+        try {
+          const { loadSeriesImageReferenceBlocks } = await import('../../../lib/ao/seriesImageReferences.js');
+          const seriesImageBlocks = await loadSeriesImageReferenceBlocks(userMessage, recentUserMessages);
+          if (seriesImageBlocks && seriesImageBlocks.length > 0) {
+            const existingParts = Array.isArray(currentMessageContent)
+              ? currentMessageContent
+              : [{ type: 'text', text: currentMessageContent }];
+            currentMessageContent = [...seriesImageBlocks, ...existingParts];
+          }
+        } catch (seriesImgErr) {
+          console.error('[chat.js] Series image reference load failed (non-fatal):', seriesImgErr?.message || seriesImgErr);
         }
-      } catch (seriesImgErr) {
-        console.error('[chat.js] Series image reference load failed (non-fatal):', seriesImgErr?.message || seriesImgErr);
       }
     }
 
