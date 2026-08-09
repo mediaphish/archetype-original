@@ -625,17 +625,52 @@ export default async function handler(req, res) {
         socialImageUrl || ''
       );
       if (captionRows.length > 0) {
-        const { data: captionData, error: captionInsertError } = await supabaseAdmin
+        // Guard against double-scheduling if Publish gets triggered twice for the same post
+        // (a page reload followed by a re-trigger, or Auto re-emitting the publish tag). A
+        // duplicate GitHub commit is harmless; a duplicate caption schedule means the same
+        // post goes out twice per platform if both rows ever fire.
+        const { data: existingScheduled, error: existingScheduledError } = await supabaseAdmin
           .from('ao_scheduled_posts')
-          .insert(captionRows)
-          .select('id, platform, scheduled_at');
+          .select('platform, account_id')
+          .eq('source_kind', 'journal_launch')
+          .contains('intent', { journal_slug: safeSlug })
+          .neq('status', 'failed');
 
-        if (captionInsertError) {
-          console.error('[publish-journal] Caption scheduling failed:', captionInsertError.message);
-          captionsError = captionInsertError.message;
+        if (existingScheduledError) {
+          console.error(
+            '[publish-journal] Could not check for already-scheduled captions, proceeding without dedup:',
+            existingScheduledError.message
+          );
+        }
+
+        const alreadyScheduledKeys = new Set(
+          (existingScheduled || []).map((r) => `${r.platform}::${r.account_id}`)
+        );
+        const newRows = captionRows.filter(
+          (r) => !alreadyScheduledKeys.has(`${r.platform}::${r.account_id}`)
+        );
+        const skippedCount = captionRows.length - newRows.length;
+        if (skippedCount > 0) {
+          console.warn(
+            `[publish-journal] Skipped ${skippedCount} caption row(s) already scheduled for ${safeSlug} — avoiding duplicate social posts.`
+          );
+        }
+
+        if (newRows.length > 0) {
+          const { data: captionData, error: captionInsertError } = await supabaseAdmin
+            .from('ao_scheduled_posts')
+            .insert(newRows)
+            .select('id, platform, scheduled_at');
+
+          if (captionInsertError) {
+            console.error('[publish-journal] Caption scheduling failed:', captionInsertError.message);
+            captionsError = captionInsertError.message;
+          } else {
+            captionsScheduled = (captionData || []).length;
+            console.log(`[publish-journal] ${captionsScheduled} social posts scheduled for ${safeSlug}`);
+          }
         } else {
-          captionsScheduled = (captionData || []).length;
-          console.log(`[publish-journal] ${captionsScheduled} social posts scheduled for ${safeSlug}`);
+          console.log(`[publish-journal] All ${captionRows.length} caption row(s) for ${safeSlug} were already scheduled — nothing new to insert.`);
         }
       }
     } catch (captionErr) {
