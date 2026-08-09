@@ -242,6 +242,7 @@ async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
 
   const captionsBlock = captionsMatch[1];
   const rows = [];
+  const missingChannels = [];
 
   for (const ch of JOURNAL_LAUNCH_CHANNEL_MAP) {
     // Find the opening tag for this channel
@@ -250,7 +251,10 @@ async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
       'i'
     );
     const openMatch = captionsBlock.match(openTagPattern);
-    if (!openMatch) continue;
+    if (!openMatch) {
+      missingChannels.push(ch.key);
+      continue;
+    }
 
     // Extract the scheduled_time attribute from the opening tag if present
     const scheduledTimeMatch = openMatch[1]?.match(/scheduled_time="([^"]+)"/i);
@@ -317,14 +321,21 @@ async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
     });
   }
 
-  // Validate that every row has a non-empty caption before returning.
-  // A scheduled post with no caption will post blank — never allow this.
+  // Validate that every expected channel was present and every row has a non-empty
+  // caption before returning. A scheduled post with no caption will post blank —
+  // and a channel silently dropped (missing tag) means that platform never goes out.
   const blankRows = rows.filter((r) => !r.caption || String(r.caption).trim() === '');
-  if (blankRows.length > 0) {
-    const platforms = blankRows.map((r) => r.platform).join(', ');
-    console.error(`[publish-journal] parseSocialCaptions produced blank captions for: ${platforms}`);
+  if (blankRows.length > 0 || missingChannels.length > 0) {
+    const problems = [];
+    if (blankRows.length > 0) {
+      problems.push(`blank captions for: ${blankRows.map((r) => r.platform).join(', ')}`);
+    }
+    if (missingChannels.length > 0) {
+      problems.push(`no caption tag found at all for: ${missingChannels.join(', ')}`);
+    }
+    console.error(`[publish-journal] parseSocialCaptions found problems — ${problems.join('; ')}`);
     throw new Error(
-      `Caption generation failed for platforms: ${platforms}. The [SOCIAL_CAPTIONS] block may be malformed or missing caption text for these channels. Fix the captions in Auto and re-fire the publish signal.`
+      `Caption generation incomplete — ${problems.join('; ')}. The [SOCIAL_CAPTIONS] block may be malformed or missing these channels entirely. Fix the captions in Auto and re-fire the publish signal.`
     );
   }
 
