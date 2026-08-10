@@ -384,6 +384,7 @@
     { "src": "/api/ao/auto/reshare-settings", "dest": "/api/ao/auto/reshare-settings.js" },
     { "src": "/api/ao/auto/series-context", "dest": "/api/ao/auto/series-context.js" },
     { "src": "/api/ao/auto/content-draft", "dest": "/api/ao/auto/content-draft.js" },
+    { "src": "/api/ao/auto/scheduled-posts-status", "dest": "/api/ao/auto/scheduled-posts-status.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],

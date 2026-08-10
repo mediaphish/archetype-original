@@ -1907,6 +1907,26 @@ export default function AutoV2Panel({ onNavigate, className }) {
         }
       }
       if (cancelled) return;
+
+      if (isActuallyPublished) {
+        // Already published -- check whether captions are ALSO already scheduled before
+        // showing a "schedule captions" prompt. Confirmed live: this post's captions were
+        // already fully scheduled (2 posted, 2 still queued for later today), but the bar
+        // showed anyway with a button that had no dedup protection at all.
+        try {
+          const capRes = await fetch(`/api/ao/auto/scheduled-posts-status?slug=${encodeURIComponent(attrs.slug)}`);
+          const capJson = await capRes.json();
+          if (capJson?.ok && capJson.scheduled_count > 0) {
+            if (cancelled) return;
+            setJournalPendingPublish(null);
+            return;
+          }
+        } catch (capCheckErr) {
+          console.error('[AutoV2Panel] Could not verify scheduled-captions status (showing prompt as a safe default):', capCheckErr?.message || capCheckErr);
+        }
+      }
+
+      if (cancelled) return;
       setJournalPendingPublish({ attrs, journalContent, socialCaptionsBlock, categoriesRaw, notify, captionAttachOnly: isActuallyPublished });
       signalNewArtifact();
     })();

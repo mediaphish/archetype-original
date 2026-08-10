@@ -107,11 +107,15 @@ export default async function handler(req, res) {
       text,
       caption: text,
       status: 'scheduled',
-      source_kind: 'ao_journal_social',
+      // Match the field names every other real row and publish-journal.js's own
+      // duplicate guard already use ('journal_launch' / intent.journal_slug) --
+      // this endpoint previously used 'ao_journal_social' / intent.slug, which
+      // meant nothing else in the system could ever detect rows it created.
+      source_kind: 'journal_launch',
       intent: {
         auto_hub: true,
         channel_label: ch.label,
-        slug,
+        journal_slug: slug,
         title: title || null,
         journal_url: journalUrl,
         publish_date: publishYmd,
@@ -124,9 +128,52 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'No valid captions provided' });
   }
 
+  // Guard against double-scheduling -- same pattern as publish-journal.js's existing
+  // duplicate-publish guard (commit 64bed13ab). Without this, clicking "Schedule social
+  // posts" on an already-scheduled post inserts a second full set of rows, and any that
+  // haven't posted yet go out twice per platform.
+  const { data: existingScheduled, error: existingScheduledError } = await supabaseAdmin
+    .from('ao_scheduled_posts')
+    .select('platform, account_id')
+    .eq('source_kind', 'journal_launch')
+    .contains('intent', { journal_slug: slug })
+    .neq('status', 'failed');
+
+  if (existingScheduledError) {
+    console.error(
+      '[schedule-journal-launch] Could not check for already-scheduled captions, proceeding without dedup:',
+      existingScheduledError.message
+    );
+  }
+
+  const alreadyScheduledKeys = new Set(
+    (existingScheduled || []).map((r) => `${r.platform}::${r.account_id}`)
+  );
+  const newRows = rows.filter((r) => !alreadyScheduledKeys.has(`${r.platform}::${r.account_id}`));
+  const skippedCount = rows.length - newRows.length;
+  if (skippedCount > 0) {
+    console.warn(
+      `[schedule-journal-launch] Skipped ${skippedCount} caption row(s) already scheduled for ${slug} — avoiding duplicate social posts.`
+    );
+  }
+
+  if (newRows.length === 0) {
+    return res.status(200).json({
+      ok: true,
+      slug,
+      title: title || null,
+      journal_url: journalUrl,
+      launch_date: `${launchYmd}T12:00:00.000Z`,
+      scheduled: [],
+      total: 0,
+      skipped_as_duplicate: rows.length,
+      message: `All ${rows.length} caption row(s) for ${slug} were already scheduled — nothing new to insert.`,
+    });
+  }
+
   const { data, error } = await supabaseAdmin
     .from('ao_scheduled_posts')
-    .insert(rows)
+    .insert(newRows)
     .select('id, platform, scheduled_at, status');
 
   if (error) {
