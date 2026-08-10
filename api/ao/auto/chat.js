@@ -125,12 +125,23 @@ function messageSignalsHeaderImageIntent(userMessage) {
  * an entire series conversation -- it is not evidence the user wants to discuss images. Require
  * this separate, narrower signal before spending the vision-context budget and risking the model
  * bringing up images unprompted.
+ *
+ * Checking the last 5 messages caused a single mention describing a LATER workflow step
+ * (e.g. a handoff brief saying "...then header image prompt gets proposed for review...")
+ * to keep re-triggering real image loading for every turn over the next several exchanges,
+ * including turns where Bart explicitly said to drop the topic. Confirmed live. Require the
+ * signal to be in the CURRENT message only -- if Auto genuinely needs to revisit images next
+ * turn, the model can ask again in that turn's own reply, which will correctly re-trigger this.
  */
-function messageOrHistorySignalsImageDiscussion(userMessage, recentUserMessages) {
+const IMAGE_DEFERRAL_PATTERN =
+  /\b(not|isn'?t|don'?t|doesn'?t|no)\b[\s\S]{0,30}\b(touch(ing)?|ready|now|yet|there|discussing?|talking? about)\b[\s\S]{0,20}\bimages?\b|\blong\s+way\s+from\b|\bhyperfixat(e|ion|ing)\b.{0,30}\bimage\b|\bnot\s+(yet|now)\b/i;
+
+function messageOrHistorySignalsImageDiscussion(userMessage) {
+  const msg = String(userMessage || '');
+  if (IMAGE_DEFERRAL_PATTERN.test(msg)) return false;
   const pattern =
     /\b(header|cover)\s*(image|photo|pic)?\b|\bimage\s*(prompt|generation|style|reference)\b|\bdall-?e\b|\bvisual\s*(style|continuity|bar|reference)\b|\bwhat\s+(does|should)\s+the\s+(header|cover|image)\b|\bpropose\s+(the\s+)?(header|cover)?\s*image\b/i;
-  if (pattern.test(String(userMessage || ''))) return true;
-  return (recentUserMessages || []).some((m) => pattern.test(String(m || '')));
+  return pattern.test(msg);
 }
 
 /**
@@ -1259,7 +1270,7 @@ export default async function handler(req, res) {
         .slice(-5)
         .reverse();
 
-      if (messageOrHistorySignalsImageDiscussion(userMessage, recentUserMessages)) {
+      if (messageOrHistorySignalsImageDiscussion(userMessage)) {
         try {
           const { loadSeriesImageReferenceBlocks } = await import('../../../lib/ao/seriesImageReferences.js');
           const seriesImageBlocks = await loadSeriesImageReferenceBlocks(userMessage, recentUserMessages);
