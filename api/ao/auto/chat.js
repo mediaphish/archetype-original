@@ -591,8 +591,10 @@ async function trySaveAttachedImageAsHeader(userMessage, attachments, email, rec
  *
  * Never throws. Never blocks the response. Logs failures silently.
  */
-async function trySaveDraftFromExchange(userMessage, assistantReply, email, recentHistory = []) {
+async function trySaveDraftFromExchange(userMessage, assistantReply, email, recentHistory = [], options = {}) {
   if (!email || !assistantReply) return;
+
+  const skipSaveOnProduce = !!options.skipSaveOnProduce;
 
   const userLower = String(userMessage || '').toLowerCase();
   const APPROVAL_PATTERN =
@@ -801,7 +803,9 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   }
 
   // --- SAVE ON PRODUCE: persist content blocks from THIS reply as draft ---
-  {
+  // Skipped when save_draft already succeeded via the mid-turn tool loop this turn
+  // (avoids overwriting an intentional approved status with draft).
+  if (!skipSaveOnProduce) {
     const journalContentMatch = assistantReply.match(
       /\[JOURNAL_CONTENT\]([\s\S]*?)\[\/JOURNAL_CONTENT\]/i
     );
@@ -1316,7 +1320,8 @@ export default async function handler(req, res) {
             fullReply += token;
             sendEvent('token', { token });
           },
-          combinedFacts || null
+          combinedFacts || null,
+          { email: auth.email }
         ),
         timeoutAfter(
           SOFT_TIMEOUT_MS,
@@ -1407,18 +1412,28 @@ export default async function handler(req, res) {
       threadId: thread.id,
     });
 
-    fullReply = await appendDesignImageToReplyIfNeeded({
-      userMessage,
-      reply: fullReply,
-      email: auth.email,
-      recentHistory: history,
-    });
+    // JARVIS Step 7: if generate_image already ran as a real tool this turn, strip
+    // leftover [DALLE_GENERATE] tags instead of running the legacy image pipeline again.
+    const toolsUsedThisTurn = Array.isArray(streamResult?.toolsUsed)
+      ? streamResult.toolsUsed
+      : [];
+    if (toolsUsedThisTurn.includes('generate_image')) {
+      fullReply = fullReply.replace(/\[DALLE_GENERATE[^\]]*\]/gi, '').trim();
+    } else {
+      fullReply = await appendDesignImageToReplyIfNeeded({
+        userMessage,
+        reply: fullReply,
+        email: auth.email,
+        recentHistory: history,
+      });
+    }
 
     // Reshare trigger — runs the reshare cycle IN-PROCESS (no HTTP self-fetch, ever).
     // Image URL is attached as message meta (reshare_image_url) so the chat panel
     // can render it inline — not as a raw URL line in the text body.
+    // JARVIS Step 7: skip legacy tag path when trigger_reshare tool already ran.
     let reshareMeta = {};
-    if (/\[TRIGGER_RESHARE\]/i.test(fullReply)) {
+    if (/\[TRIGGER_RESHARE\]/i.test(fullReply) && !toolsUsedThisTurn.includes('trigger_reshare')) {
       try {
         const reshareResult = await runReshareCycle();
         fullReply = fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim();
@@ -1469,6 +1484,8 @@ export default async function handler(req, res) {
         fullReply = `${fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim()}\n\n[Reshare engine did not complete: ${safeMessage}]`.trim();
         console.error('[chat.js] TRIGGER_RESHARE handler error:', err?.message || err);
       }
+    } else if (/\[TRIGGER_RESHARE\]/i.test(fullReply) && toolsUsedThisTurn.includes('trigger_reshare')) {
+      fullReply = fullReply.replace(/\[\/?TRIGGER_RESHARE\]/gi, '').trim();
     }
 
     // Reshare caption edit — updates a still-pending reshare row directly, in-process.
@@ -1780,7 +1797,15 @@ Return markdown only: a # title line, then the full post body.`,
     // recover its own already-approved draft text except asking Bart to re-paste it, or
     // — worse, what actually happened — fabricating a replacement and presenting it as real.
     const draftFetchMatches = [...fullReply.matchAll(/\[DRAFT_FETCH_FULL_TEXT([^\]]*)\]/gi)];
-    if (corpusFetchMatches.length > 0 || draftFetchMatches.length > 0) {
+    // JARVIS Step 7: when fetch_full_text already ran mid-turn, strip leftover tags and
+    // do not start the legacy second-call restart path (that discarded the first reply).
+    if (
+      (corpusFetchMatches.length > 0 || draftFetchMatches.length > 0) &&
+      toolsUsedThisTurn.includes('fetch_full_text')
+    ) {
+      fullReply = fullReply.replace(/\[\/?CORPUS_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
+      fullReply = fullReply.replace(/\[\/?DRAFT_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
+    } else if (corpusFetchMatches.length > 0 || draftFetchMatches.length > 0) {
       try {
         fullReply = fullReply.replace(/\[\/?CORPUS_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
         fullReply = fullReply.replace(/\[\/?DRAFT_FETCH_FULL_TEXT[^\]]*\]/gi, '').trim();
@@ -2204,7 +2229,9 @@ ${retrievedBlock}
     // because the response closed before the write finished. Every signal processor
     // that performs a write must complete before res.end() is called.
     try {
-      await trySaveDraftFromExchange(userMessage, fullReply, auth.email, recentHistory);
+      await trySaveDraftFromExchange(userMessage, fullReply, auth.email, recentHistory, {
+        skipSaveOnProduce: !!streamResult?.saveDraftSucceeded,
+      });
     } catch (err) {
       console.error('[chat.js] trySaveDraftFromExchange error:', err?.message || err);
     }
