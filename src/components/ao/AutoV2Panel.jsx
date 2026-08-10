@@ -1872,10 +1872,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
     const { attrs, journalContent, socialCaptionsBlock } = parsed;
 
-    // If this slug was already published successfully in this session,
-    // treat the new signal as a caption-attach request, not a re-publish.
-    // Show the pending button but mark it as caption-attach mode.
-    const alreadyPublished = journalPublishBanner?.status === 'success' && 
+    // In-memory success state from THIS session (survives until remount).
+    const alreadyPublishedThisSession = journalPublishBanner?.status === 'success' &&
       journalPublishBanner?.journalUrl?.includes(attrs.slug);
 
     const categoriesRaw = String(attrs.categories || '')
@@ -1887,8 +1885,35 @@ export default function AutoV2Panel({ onNavigate, className }) {
         ? true
         : !/^(false|0|no)$/i.test(String(attrs.notify).trim());
 
-    setJournalPendingPublish({ attrs, journalContent, socialCaptionsBlock, categoriesRaw, notify, captionAttachOnly: alreadyPublished });
-    signalNewArtifact();
+    // In-memory session state resets on navigation/remount, but the real
+    // published status doesn't -- confirmed live: navigating to Library and
+    // back made an already-published post's "Ready to publish" bar reappear,
+    // because journalPublishBanner had reset to null and nothing checked the
+    // actual database. Verify against the real draft status before deciding.
+    let cancelled = false;
+    (async () => {
+      let isActuallyPublished = alreadyPublishedThisSession;
+      if (!isActuallyPublished && attrs.slug) {
+        try {
+          const res = await fetch(
+            `/api/ao/auto/content-draft?slug=${encodeURIComponent(attrs.slug)}&kind=journal&include_published=1`
+          );
+          const json = await res.json();
+          if (json?.ok && json.draft?.status === 'published') {
+            isActuallyPublished = true;
+          }
+        } catch (statusCheckErr) {
+          console.error('[AutoV2Panel] Could not verify real draft status (showing pending publish as a safe default):', statusCheckErr?.message || statusCheckErr);
+        }
+      }
+      if (cancelled) return;
+      setJournalPendingPublish({ attrs, journalContent, socialCaptionsBlock, categoriesRaw, notify, captionAttachOnly: isActuallyPublished });
+      signalNewArtifact();
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [messages, activeThreadId, signalNewArtifact, journalPublishBanner]);
 
   // Detect [UPDATE_SCHEDULED_CAPTIONS] signal and call the update route

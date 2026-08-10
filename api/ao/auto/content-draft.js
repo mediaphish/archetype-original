@@ -9,6 +9,7 @@
  * - slug: exact slug match
  * - series_slug: series slug match (returns most recent approved part)
  * - kind: optional filter (journal, devotional, captions)
+ * - include_published: pass "1" to also return published drafts (default excludes them)
  *
  * Response: { ok: true, draft: { slug, title, content, kind, status, image_url } }
  */
@@ -24,7 +25,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
-  const { slug, series_slug, kind } = req.query;
+  const { slug, series_slug, kind, include_published } = req.query;
+  const includePublished = String(include_published || '') === '1';
 
   if (!slug && !series_slug) {
     return res.status(400).json({ ok: false, error: 'slug or series_slug required' });
@@ -35,10 +37,12 @@ export default async function handler(req, res) {
       .from('ao_content_drafts')
       .select('slug, title, content, kind, status, image_url, approved_at, series_slug, part_number')
       .eq('created_by_email', auth.email.toLowerCase().trim())
-      .neq('status', 'published')
-      .neq('status', 'abandoned')
       .order('approved_at', { ascending: false })
       .limit(1);
+
+    if (!includePublished) {
+      query = query.neq('status', 'published').neq('status', 'abandoned');
+    }
 
     if (slug) query = query.eq('slug', slug);
     if (series_slug) query = query.eq('series_slug', series_slug);
