@@ -1453,9 +1453,17 @@ The 7 Conditions: Why This Series Exists
 https://www.archetypeoriginal.com/journal/ali-series-the-7-conditions-why-this-series-exists
 We are going to spend the next seven posts talking about the conditions that determine whether your leadership is actually working. Not whether you think it is working. Whether the people living inside the system you have built experience it as working.
 
+The Absalom Archetype
+https://www.archetypeoriginal.com/journal/the-absalom-archetype
+Absalom never accused David of failing. He just stood in a gap his father left open, morning after morning, until the sympathy he built there cost David his own most trusted counselor.
+
 The Approval Economy
 https://www.archetypeoriginal.com/journal/the-approval-economy
 When favoritism takes hold inside a team, something predictable happens. People stop optimizing for results and start optimizing for access. This entry examines how that shift happens, what it does to team culture, and why servant leadership demands a different economy entirely.
+
+The Barnabas Archetype
+https://www.archetypeoriginal.com/journal/the-barnabas-archetype
+Barnabas gave before proof existed: money, reputation, and a decade of belief in Paul with no contact to back it up. A positive archetype in the leadership series, examined through the same lens as Judas, Absalom, and Nehemiah.
 
 The Case for Servant Leadership (Part 1)
 https://www.archetypeoriginal.com/journal/the-case-for-servant-leadership-part-1
@@ -1525,6 +1533,10 @@ The Manufactured Crisis
 https://www.archetypeoriginal.com/journal/manufactured-crisis
 Narcissistic leaders manufacture urgency to maintain control and relevance. Servant leaders calm the room, steward pressure wisely, and protect their teams from emotional volatility.
 
+The Nehemiah Archetype
+https://www.archetypeoriginal.com/journal/the-nehemiah-archetype
+The wall was never the hardest part. Nehemiah held two threats at once, external opposition and corruption inside his own community, without letting either one wait.
+
 The Pendulum of Leadership: Efficiency vs. Empathy
 https://www.archetypeoriginal.com/journal/the-pendulum-of-leadership-efficiency-vs-empathy
 This post explores the constant tension leaders face between efficiency and empathy, showing how real leadership lies in managing the balance between clarity and compassion.
@@ -1532,6 +1544,10 @@ This post explores the constant tension leaders face between efficiency and empa
 The Performance of Perfection
 https://www.archetypeoriginal.com/journal/performance-of-perfection
 Narcissistic leaders hide behind curated competence and flawless optics. Servant leaders choose transparency, courage, and truth over image.
+
+The Pipeline Isn't Draining. It's Refusing to Fill.
+https://www.archetypeoriginal.com/journal/the-pipeline-isnt-draining-its-refusing-to-fill
+Leadership burnout data reveals a pipeline collapse, not a wellness problem. When leaders exceed their capacity to absorb pressure, it goes downward onto teams or inward onto their own health. The next generation is watching and refusing to inherit the role under current conditions.
 
 The Producer-Leader Paradox
 https://www.archetypeoriginal.com/journal/the-producer-leader-paradox
@@ -1564,6 +1580,10 @@ Seven conditions. Eight posts. One question that has been building from the begi
 The Work Is Now Public
 https://www.archetypeoriginal.com/journal/the-work-is-now-public
 A reflection on the public launch of Archetype Original and the decision to make decades of leadership work visible and accessible.
+
+They Still Call Him
+https://www.archetypeoriginal.com/journal/they-still-call-him
+Part one of a five-part series on transformational and servant leadership. Nick Saban's 1998 phone call to a stranger, days before the biggest game of his career, is the proof that transactional leadership fails under real pressure and what has to replace it.
 
 Toxic Empathy
 https://www.archetypeoriginal.com/journal/toxic-empathy
@@ -1634,10 +1654,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 205.
+Published devotional entries: 223.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-07-25T02:03:46.454Z
+Generated at: 2026-08-11T20:17:01.713Z
