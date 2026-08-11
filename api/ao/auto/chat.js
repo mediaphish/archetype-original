@@ -732,16 +732,22 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
 
   async function upsertDraft(row, label) {
     try {
-      const { error } = await supabaseAdmin.from('ao_content_drafts').upsert(row, {
-        onConflict: 'created_by_email,series_slug,part_number,kind',
-        ignoreDuplicates: false,
-      });
+      const { data, error } = await supabaseAdmin
+        .from('ao_content_drafts')
+        .upsert(row, {
+          onConflict: 'created_by_email,slug,kind',
+          ignoreDuplicates: false,
+        })
+        .select('id, slug, status')
+        .maybeSingle();
       if (error) {
         console.error(`[chat.js] ${label} failed (db error):`, error.message);
         return { ok: false, error: error.message };
       }
-      console.log(`[chat.js] ${label}: ${row.slug || row.title} (status=${row.status})`);
-      return { ok: true };
+      console.log(
+        `[chat.js] ${label}: ${row.slug || row.title} (status=${row.status}${data?.id ? `, id=${data.id}` : ''})`
+      );
+      return { ok: true, id: data?.id || null };
     } catch (err) {
       console.error(`[chat.js] ${label} failed:`, err?.message || err);
       return { ok: false, error: err?.message || 'Unknown error' };
@@ -749,37 +755,55 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   }
 
   /**
-   * Looks up the image_url already saved for a post before it gets overwritten.
-   * upsertDraft replaces the whole row on every content save, including ordinary
-   * revisions -- without this, a post that already had a real, approved image
-   * would silently lose it the next time its text was saved and that particular
-   * reply did not also happen to repeat the image_url attribute. Returns null on
-   * any failure or if nothing is saved yet, which is always a safe fallback.
+   * Looks up an existing draft by stable identity (email + slug + kind).
+   * series_slug/part_number are metadata only and must not be used as the write target.
    */
-  async function getExistingImageUrl(series_slug, part_number, kind) {
+  async function getExistingDraftBySlug(slug, kind) {
     try {
+      if (!slug) return null;
       const { data, error } = await supabaseAdmin
         .from('ao_content_drafts')
-        .select('image_url')
+        .select('id, slug, kind, series_slug, part_number, title, status, image_url')
         .eq('created_by_email', email.toLowerCase().trim())
-        .eq('series_slug', series_slug)
-        .eq('part_number', part_number)
+        .eq('slug', slug)
         .eq('kind', kind)
         .maybeSingle();
       if (error) {
-        console.error('[chat.js] getExistingImageUrl lookup failed:', error.message);
+        console.error('[chat.js] getExistingDraftBySlug lookup failed:', error.message);
         return null;
       }
-      return data?.image_url || null;
+      return data || null;
     } catch (err) {
-      console.error('[chat.js] getExistingImageUrl unexpected error:', err?.message || err);
+      console.error('[chat.js] getExistingDraftBySlug unexpected error:', err?.message || err);
       return null;
     }
   }
 
-  async function promoteDraftStatus({ kind, series_slug, part_number, slug, title }) {
+  async function resolveSeriesMetaForSave(slug, kind, preferredSeries = '', preferredPart = null) {
+    const existing = await getExistingDraftBySlug(slug, kind);
+    const series_slug =
+      (preferredSeries && String(preferredSeries).trim()) ||
+      (existing?.series_slug ? String(existing.series_slug) : '') ||
+      deriveSeriesSlug(slug) ||
+      'standalone';
+    const part_number =
+      preferredPart != null && preferredPart !== ''
+        ? parseInt(preferredPart, 10) || 1
+        : existing?.part_number != null
+          ? parseInt(existing.part_number, 10) || 1
+          : extractPartNumber(slug);
+    return {
+      existing,
+      series_slug,
+      part_number,
+      image_url: existing?.image_url || null,
+    };
+  }
+
+  async function promoteDraftStatus({ kind, slug, title }) {
     try {
-      let query = supabaseAdmin
+      if (!slug) return false;
+      const { data, error } = await supabaseAdmin
         .from('ao_content_drafts')
         .update({
           status: 'approved',
@@ -788,14 +812,11 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
         })
         .eq('created_by_email', email.toLowerCase().trim())
         .eq('kind', kind)
+        .eq('slug', slug)
         .neq('status', 'published')
-        .neq('status', 'abandoned');
-
-      if (series_slug) query = query.eq('series_slug', series_slug);
-      if (part_number != null) query = query.eq('part_number', part_number);
-      if (slug) query = query.eq('slug', slug);
-
-      const { data, error } = await query.select('id, slug, title, status').limit(1);
+        .neq('status', 'abandoned')
+        .select('id, slug, title, status')
+        .limit(1);
       if (error) throw error;
       if (data?.length) {
         console.log(`[chat.js] Draft promoted to approved: ${data[0].slug || data[0].title || title}`);
@@ -838,16 +859,19 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
       }
       slug = canonicalizeSlug(slug);
       if (slug || title) {
-        const series_slug_for_save = deriveSeriesSlug(slug) || 'standalone';
-        const part_number_for_save = extractPartNumber(slug);
-        const preservedImageUrl =
-          attrs.image_url || (await getExistingImageUrl(series_slug_for_save, part_number_for_save, 'journal'));
+        const meta = await resolveSeriesMetaForSave(
+          slug,
+          'journal',
+          attrs.series_slug || '',
+          attrs.part_number ?? null
+        );
+        const preservedImageUrl = attrs.image_url || meta.image_url;
         await upsertDraft(
           {
             created_by_email: email.toLowerCase().trim(),
             kind: 'journal',
-            series_slug: series_slug_for_save,
-            part_number: part_number_for_save,
+            series_slug: meta.series_slug,
+            part_number: meta.part_number,
             title: title || slug,
             slug: slug || null,
             content: journalContentMatch[1].trim(),
@@ -970,24 +994,25 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
     }
     slug = canonicalizeSlug(slug);
     if (slug || title) {
-      const series_slug = deriveSeriesSlug(slug) || 'standalone';
-      const part_number = extractPartNumber(slug);
+      const meta = await resolveSeriesMetaForSave(
+        slug,
+        'journal',
+        attrs.series_slug || '',
+        attrs.part_number ?? null
+      );
       const promoted = await promoteDraftStatus({
         kind: 'journal',
-        series_slug,
-        part_number,
         slug,
         title,
       });
       if (!promoted) {
-        const preservedImageUrl =
-          attrs.image_url || (await getExistingImageUrl(series_slug, part_number, 'journal'));
+        const preservedImageUrl = attrs.image_url || meta.image_url;
         await upsertDraft(
           {
             created_by_email: email.toLowerCase().trim(),
             kind: 'journal',
-            series_slug,
-            part_number,
+            series_slug: meta.series_slug,
+            part_number: meta.part_number,
             title: title || slug,
             slug: slug || null,
             content: journalContentMatch[1].trim(),
@@ -1020,8 +1045,6 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
     const part_number = parseInt((attrs.date || '').replace(/-/g, '').slice(-2) || '1', 10);
     const promoted = await promoteDraftStatus({
       kind: 'devotional',
-      series_slug,
-      part_number,
       slug,
       title,
     });
