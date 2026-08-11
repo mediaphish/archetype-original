@@ -2747,6 +2747,17 @@ export default function AutoV2Panel({ onNavigate, className }) {
                         m.id === streamingMsgId ? { ...m, content: '' } : m
                       )
                     );
+                  } else if (parsed.assistant_message !== undefined && parsed.reply_replaced) {
+                    // Action-claim gate (or similar) replaced a false "done" reply with a
+                    // corrected regeneration before the final done event.
+                    streamingAssistantContent = String(parsed.assistant_message || '');
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === streamingMsgId
+                          ? { ...m, content: streamingAssistantContent }
+                          : m
+                      )
+                    );
                   } else if (parsed.token !== undefined) {
                     // Text token — append to streaming display
                     streamingAssistantContent += parsed.token;

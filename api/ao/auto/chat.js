@@ -15,11 +15,17 @@ import {
   runAutoChatStream,
   findReferencedDrafts,
   canonicalizeSlug,
+  buildAutoToolsArray,
 } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
+import {
+  findUnbackedActionClaims,
+  buildUnbackedClaimCorrectionNote,
+} from '../../../lib/ao/gateActionClaims.js';
+import { createCompleteMessage } from '../../../lib/ao/anthropicCompleteMessage.js';
 import { logActivity } from '../../../lib/ao/logActivity.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
@@ -1342,14 +1348,104 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Model token streaming is done. Everything from here forward (image
-    // generation, reshare/opportunity processing, database writes) can run
+    // Model token streaming is done. Everything from here forward (claim correction,
+    // image generation, reshare/opportunity processing, database writes) can run
     // for many seconds with zero bytes written to the client otherwise. Send
     // a small heartbeat event periodically so the connection stays visibly
     // alive until the real done/error event is sent below.
     heartbeatTimer = setInterval(() => {
       sendEvent('heartbeat', { t: Date.now() });
     }, 15000);
+
+    // Action-claim gate: model must not say an action already happened unless this
+    // turn has a successful tool result (or a legacy bracket signal that still runs it).
+    // Prefer regenerating with an explicit correction note (path b) over silently
+    // rewriting Bart's visible reply.
+    {
+      let claimEvidence = {
+        toolResults: streamResult?.toolResults || [],
+        toolsUsed: streamResult?.toolsUsed || [],
+      };
+      let claimGate = findUnbackedActionClaims(fullReply, claimEvidence);
+      if (claimGate.unbacked.length > 0) {
+        console.warn(
+          '[chat.js] Unbacked action claims:',
+          claimGate.unbacked.map((u) => `${u.ruleId}:${u.matchedText}`).join(', ')
+        );
+        try {
+          const correctionNote = buildUnbackedClaimCorrectionNote(claimGate.unbacked);
+          const claimClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+          const tools = buildAutoToolsArray();
+          const correctionMessages = [
+            ...(Array.isArray(streamResult?.messages) ? streamResult.messages : []),
+            { role: 'assistant', content: fullReply },
+            { role: 'user', content: correctionNote },
+          ];
+          const corrected = await Promise.race([
+            createCompleteMessage(
+              claimClient,
+              {
+                model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-5',
+                system:
+                  streamResult?.systemPrompt ||
+                  'You are Auto. Follow the system correction exactly.',
+                messages: correctionMessages,
+                tools,
+              },
+              {
+                maxContinuations: 2,
+                maxTokens: 16000,
+                toolContext: { email: auth.email },
+              }
+            ),
+            timeoutAfter(
+              remainingSoftBudgetMs(),
+              'Action-claim correction timed out'
+            ),
+          ]);
+
+          if (corrected?.ok && String(corrected.text || '').trim()) {
+            fullReply = String(corrected.text).trim();
+            streamResult = {
+              ...streamResult,
+              saveDraftSucceeded:
+                !!streamResult?.saveDraftSucceeded || !!corrected.saveDraftSucceeded,
+              toolsUsed: [
+                ...(streamResult?.toolsUsed || []),
+                ...(corrected.toolsUsed || []),
+              ],
+              toolResults: [
+                ...(streamResult?.toolResults || []),
+                ...(corrected.toolResults || []),
+              ],
+            };
+            claimEvidence = {
+              toolResults: streamResult.toolResults,
+              toolsUsed: streamResult.toolsUsed,
+            };
+            claimGate = findUnbackedActionClaims(fullReply, claimEvidence);
+            if (claimGate.unbacked.length > 0) {
+              // Second pass still unbacked — append a visible warning rather than loop forever.
+              console.warn(
+                '[chat.js] Action claims still unbacked after correction:',
+                claimGate.unbacked.map((u) => u.ruleId).join(', ')
+              );
+              fullReply =
+                `${fullReply.trim()}\n\n---\n**⚠️ SYSTEM WARNING:** This reply still claimed completed actions without a successful tool result this turn (${claimGate.unbacked
+                  .map((u) => u.label)
+                  .join(', ')}). Treat those claims as plans only — nothing was confirmed by the server.`
+                  .trim();
+            } else {
+              console.log('[chat.js] Action-claim gate cleared after correction turn');
+            }
+            // Client already saw the original stream; replace the bubble with corrected text.
+            sendEvent('reply_replaced', { reply_replaced: true, assistant_message: fullReply });
+          }
+        } catch (claimErr) {
+          console.error('[chat.js] Action-claim correction failed:', claimErr?.message || claimErr);
+        }
+      }
+    }
 
     // Enforce response rules in code before any further processing.
     // These rules were previously in the system prompt as suggestions to the model.
