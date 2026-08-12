@@ -2,6 +2,7 @@ import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { canonicalizeSlug } from '../../../lib/ao/autoV2.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { contentDrafts } from '../../../lib/db/contentDrafts.js';
+import { recordManualHeaderUploadFact } from '../../../lib/ao/manualHeaderUploadFact.js';
 
 const STORAGE_BUCKET = 'ao-auto-attachments';
 const STORAGE_PREFIX = 'ao-design-images';
@@ -13,13 +14,16 @@ const STORAGE_PREFIX = 'ao-design-images';
  * as the header image for a specific draft, skipping Auto's own image
  * generation entirely. Uploads to the same storage bucket Auto's own
  * generated images use, then writes the resulting URL straight onto the
- * matching ao_content_drafts row's image_url field -- no chat round-trip,
- * no signal tag, no manual database wiring required.
+ * matching ao_content_drafts row's image_url field.
+ *
+ * Also records a durable system fact on the active Auto thread so the model
+ * learns the upload happened on the next chat turn (without Bart pasting a URL).
  *
  * Body: {
  *   slug: string,          -- which draft this image belongs to
  *   image_base64: string,  -- raw base64 image data (no data: prefix)
  *   media_type: string,    -- e.g. "image/png", "image/jpeg"
+ *   thread_id?: string,    -- optional; defaults to the owner's active thread
  * }
  */
 export default async function handler(req, res) {
@@ -32,7 +36,7 @@ export default async function handler(req, res) {
   if (!auth) return;
 
   try {
-    const { slug, image_base64, media_type } = req.body || {};
+    const { slug, image_base64, media_type, thread_id } = req.body || {};
 
     const safeSlug = canonicalizeSlug(slug);
     if (!safeSlug) {
@@ -93,9 +97,6 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Write the real URL directly onto the matching draft row -- this is the
-    // step that's normally missing, and exactly what Bart asked to skip
-    // having to work around by hand.
     const { data: updatedRow, error: updateError } = await contentDrafts()
       .update({ image_url: imageUrl, updated_at: new Date().toISOString() })
       .eq('created_by_email', auth.email.toLowerCase().trim())
@@ -114,63 +115,75 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (updatedRow) {
-      res.status(200).json({
-        ok: true,
-        image_url: imageUrl,
-        slug: updatedRow.slug,
-        title: updatedRow.title,
-        status: updatedRow.status,
-      });
-      return;
+    let resultSlug = updatedRow?.slug || safeSlug;
+    let resultTitle = updatedRow?.title || null;
+    let resultStatus = updatedRow?.status || null;
+    let createdNewDraft = false;
+
+    if (!updatedRow) {
+      const derivedTitle = safeSlug
+        .split('-')
+        .filter(Boolean)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+      const { data: createdRow, error: insertError } = await contentDrafts()
+        .insert({
+          created_by_email: auth.email.toLowerCase().trim(),
+          kind: 'journal',
+          series_slug: safeSlug,
+          part_number: 1,
+          slug: safeSlug,
+          title: derivedTitle,
+          content: '',
+          status: 'draft',
+          image_url: imageUrl,
+        })
+        .select('slug, title, status, image_url')
+        .single();
+
+      if (insertError) {
+        console.error('[upload-header-image] Placeholder draft creation failed:', insertError.message);
+        res.status(500).json({
+          ok: false,
+          error: `Image uploaded to storage, but no draft existed yet for slug "${safeSlug}" and creating one failed: ${insertError.message}`,
+          image_url: imageUrl,
+        });
+        return;
+      }
+
+      resultSlug = createdRow.slug;
+      resultTitle = createdRow.title;
+      resultStatus = createdRow.status;
+      createdNewDraft = true;
     }
 
-    // No draft exists yet under this slug -- the post text hasn't been saved
-    // as a draft yet, only the image has been made. Rather than fail, create
-    // a lightweight placeholder draft now with just the image attached. When
-    // the real post text is saved later under this same slug (through Auto's
-    // normal save-on-produce flow), it lands on this same row and fills in
-    // the content -- it will not lose this image, because that save path
-    // only ever sets the fields it explicitly lists, and image_url is not
-    // one of them unless a publish signal supplies it.
-    const derivedTitle = safeSlug
-      .split('-')
-      .filter(Boolean)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-
-    const { data: createdRow, error: insertError } = await contentDrafts()
-      .insert({
-        created_by_email: auth.email.toLowerCase().trim(),
-        kind: 'journal',
-        series_slug: safeSlug,
-        part_number: 1,
-        slug: safeSlug,
-        title: derivedTitle,
-        content: '',
-        status: 'draft',
-        image_url: imageUrl,
-      })
-      .select('slug, title, status, image_url')
-      .single();
-
-    if (insertError) {
-      console.error('[upload-header-image] Placeholder draft creation failed:', insertError.message);
-      res.status(500).json({
-        ok: false,
-        error: `Image uploaded to storage, but no draft existed yet for slug "${safeSlug}" and creating one failed: ${insertError.message}`,
-        image_url: imageUrl,
-      });
-      return;
+    let threadFactRecorded = false;
+    let threadFactError = null;
+    const factResult = await recordManualHeaderUploadFact({
+      email: auth.email,
+      threadId: thread_id || null,
+      slug: resultSlug,
+      imageUrl,
+      title: resultTitle,
+    });
+    if (factResult.ok) {
+      threadFactRecorded = true;
+    } else {
+      threadFactError = factResult.error;
+      console.error('[upload-header-image] Thread fact not recorded:', factResult.error);
     }
 
     res.status(200).json({
       ok: true,
       image_url: imageUrl,
-      slug: createdRow.slug,
-      title: createdRow.title,
-      status: createdRow.status,
-      created_new_draft: true,
+      slug: resultSlug,
+      title: resultTitle,
+      status: resultStatus,
+      created_new_draft: createdNewDraft || undefined,
+      thread_fact_recorded: threadFactRecorded,
+      thread_fact_error: threadFactError,
+      thread_id: factResult.thread_id || null,
     });
   } catch (err) {
     console.error('[upload-header-image] Unexpected error:', err?.message || err);

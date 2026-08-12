@@ -867,6 +867,9 @@ function ArtifactPanel({
   onCardIndexChange,
   cardReviewMode,
   onCardReviewModeChange,
+  onUploadHeaderToDraft,
+  uploadingHeaderImage,
+  headerImageInputRef,
   seedManifestTotal,
   guestRecord,
   guestRecordLoading,
@@ -905,6 +908,31 @@ function ArtifactPanel({
             <CloseIcon />
           </button>
         </div>
+      </div>
+
+      <div className="shrink-0 border-b border-gray-200 bg-white px-4 py-2.5">
+        <button
+          type="button"
+          onClick={() => headerImageInputRef?.current?.click()}
+          disabled={uploadingHeaderImage}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-2 text-xs font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-100 disabled:opacity-40"
+          title="Saves the image onto a draft by slug. Does not attach it to your next chat message — Auto is told about it separately."
+        >
+          <UploadImageIcon />
+          {uploadingHeaderImage
+            ? 'Saving header to draft…'
+            : 'Upload header image directly to draft (skips chat)'}
+        </button>
+        <input
+          ref={headerImageInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={onUploadHeaderToDraft}
+        />
+        <p className="mt-1.5 text-[10px] leading-snug text-gray-500">
+          This is not a chat attachment. It writes the image onto the draft and tells Auto on your next message.
+        </p>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden p-4">
@@ -1682,7 +1710,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
 
       const suggestedSlug = guessMostRecentDraftSlug(messages);
       const slug = window.prompt(
-        'Which draft is this image for? Confirm or correct the slug:',
+        'Which draft is this header image for? Confirm or correct the slug:',
         suggestedSlug
       );
       if (!slug || !slug.trim()) return;
@@ -1712,6 +1740,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
             slug: slug.trim(),
             image_base64: base64Data,
             media_type: mediaType,
+            thread_id: activeThreadId || null,
           }),
         });
         const json = await res.json().catch(() => ({}));
@@ -1724,18 +1753,24 @@ export default function AutoV2Panel({ onNavigate, className }) {
           ...prev,
           {
             url: json.image_url,
-            label: `${json.title || json.slug} (manual upload)`,
+            label: `${json.title || json.slug} (direct to draft — not via chat)`,
             addedAt: Date.now(),
             manualUpload: true,
           },
         ]);
+
+        if (json.thread_fact_recorded === false && json.thread_fact_error) {
+          setError(
+            `Image saved to the draft, but Auto was not notified (${json.thread_fact_error}). Tell Auto the slug and image URL if needed.`
+          );
+        }
       } catch (err) {
         setError(err?.message || 'Could not upload header image');
       } finally {
         setUploadingHeaderImage(false);
       }
     },
-    [messages]
+    [messages, activeThreadId]
   );
 
   const isJournalEntry = useMemo(() => {
@@ -1799,7 +1834,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
   }, []);
 
   const visibleChatMessages = useMemo(
-    () => (Array.isArray(messages) ? messages.filter((m) => m.role !== 'receipt') : []),
+    () =>
+      Array.isArray(messages)
+        ? messages.filter((m) => m.role !== 'receipt' && m.role !== 'system')
+        : [],
     [messages]
   );
 
@@ -3188,6 +3226,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
     seedManifestTotal,
     guestRecord,
     guestRecordLoading,
+    onUploadHeaderToDraft: handleHeaderImageUpload,
+    uploadingHeaderImage,
+    headerImageInputRef: imageUploadInputRef,
   };
 
   const mobileBottomNav = isMobile && !keyboardOpen ? (
@@ -3490,7 +3531,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
               disabled={sending || startingNew}
               className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded disabled:opacity-40"
               aria-label="Attach file"
-              title="Attach image or file"
+              title="Attach image or file to this message (Auto can see it)"
             >
               <PaperclipIcon />
             </button>
@@ -3501,24 +3542,6 @@ export default function AutoV2Panel({ onNavigate, className }) {
               multiple
               className="hidden"
               onChange={handleFileSelect}
-            />
-
-            <button
-              type="button"
-              onClick={() => imageUploadInputRef.current?.click()}
-              disabled={sending || startingNew || uploadingHeaderImage}
-              className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded disabled:opacity-40"
-              aria-label="Upload header image"
-              title="Upload a header image made outside Auto (e.g. ChatGPT) directly to a draft"
-            >
-              <UploadImageIcon />
-            </button>
-            <input
-              ref={imageUploadInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleHeaderImageUpload}
             />
 
             <textarea

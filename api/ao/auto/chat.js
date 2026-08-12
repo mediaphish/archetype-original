@@ -1245,7 +1245,27 @@ export default async function handler(req, res) {
     // "a full post" so ordinary chat is never mistaken for one.
     const pastedPostFact = await trySaveUserPastedPostDirectly(userMessage, auth.email, history);
 
-    const combinedFacts = [attachedImageFact, pastedPostFact].filter(Boolean).join('\n\n');
+    // Manual header uploads (the separate "upload to draft" control) write a
+    // durable system fact on the thread. Fold any still-unconsumed ones into
+    // this turn so Auto knows the image exists without Bart pasting a URL.
+    let manualUploadFactsText = '';
+    let manualUploadFactIds = [];
+    let markManualHeaderUploadFactsConsumed = null;
+    try {
+      const manualFactMod = await import('../../../lib/ao/manualHeaderUploadFact.js');
+      markManualHeaderUploadFactsConsumed = manualFactMod.markManualHeaderUploadFactsConsumed;
+      const loaded = await manualFactMod.loadUnconsumedManualHeaderUploadFacts(thread.id);
+      if (loaded.facts.length > 0) {
+        manualUploadFactsText = loaded.facts.join('\n\n');
+        manualUploadFactIds = loaded.messageIds;
+      }
+    } catch (manualFactErr) {
+      console.error('[chat.js] manual header-upload facts load failed:', manualFactErr?.message);
+    }
+
+    const combinedFacts = [attachedImageFact, pastedPostFact, manualUploadFactsText]
+      .filter(Boolean)
+      .join('\n\n');
 
     // Build the current user message content — include image attachments if present.
     // The Anthropic API accepts multi-part content arrays with image blocks.
@@ -1357,6 +1377,20 @@ export default async function handler(req, res) {
       sendEvent('error', { ok: false, error: streamError });
       res.end();
       return;
+    }
+
+    // Facts were included in this turn's system prompt — mark consumed so the
+    // next turn does not re-inject the same block forever. Failed turns above
+    // leave them unconsumed so a retry still sees them.
+    if (
+      manualUploadFactIds.length > 0 &&
+      typeof markManualHeaderUploadFactsConsumed === 'function'
+    ) {
+      try {
+        await markManualHeaderUploadFactsConsumed(manualUploadFactIds);
+      } catch (consumeErr) {
+        console.error('[chat.js] could not mark manual upload facts consumed:', consumeErr?.message);
+      }
     }
 
     // Model token streaming is done. Everything from here forward (claim correction,
