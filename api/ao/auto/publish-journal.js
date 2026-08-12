@@ -21,7 +21,11 @@
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
-import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
+import {
+  parseJournalSocialCaptions,
+  buildCaptionsCoverageMessage,
+  JOURNAL_LAUNCH_REQUIRED_CHANNELS,
+} from '../../../lib/ao/parseJournalSocialCaptions.js';
 
 import fs from 'fs';
 import path from 'path';
@@ -214,132 +218,15 @@ async function updateInstagramBioLink(journalUrl) {
   }
 }
 
-// LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
-// Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").
-// App is pending LinkedIn review as of July 2026.
-// Do not re-enable until: (1) LinkedIn approves the app, (2) cursor-prompt-linkedin-business-enable.md is executed.
-// When re-enabled: account_id must be set to 'page', token path must use ao_linkedin_tokens.page_urn.
-// Auto still generates LinkedIn Business captions in chat for manual paste. Only the queue row is excluded.
-const JOURNAL_LAUNCH_CHANNEL_MAP = [
-  { key: 'linkedin_personal',  platform: 'linkedin',  account_id: 'personal', label: 'linkedin_personal' },
-  { key: 'instagram_business', platform: 'instagram', account_id: 'meta',     label: 'instagram_business' },
-  { key: 'facebook_business',  platform: 'facebook',  account_id: 'meta',     label: 'facebook_business' },
-  { key: 'twitter',            platform: 'twitter',   account_id: 'personal', label: 'x' },
-];
+// Channel map + parse logic live in lib/ao/parseJournalSocialCaptions.js
+// (linkedin_business remains manual-only / excluded from the automated queue).
 
 /**
- * Parse [SOCIAL_CAPTIONS] block from the journal content body if present.
- * Returns an array of { platform, account_id, label, text, scheduled_at } objects.
- * Returns empty array if no captions block found.
- *
- * Parsing strategy: for each channel, find its opening [CAPTION platform="..."] tag,
- * then extract text until the next [CAPTION tag or [/SOCIAL_CAPTIONS] — NOT until [/CAPTION].
- * This prevents one channel's caption from bleeding into the next channel's tag text.
+ * Parse [SOCIAL_CAPTIONS] — schedules every well-formed channel even if others
+ * are missing. Incomplete coverage is reported, never used to void the batch.
  */
 async function parseSocialCaptions(body, slug, journalUrl, imageUrl = '') {
-  const captionsMatch = body.match(/\[SOCIAL_CAPTIONS\]([\s\S]*?)\[\/SOCIAL_CAPTIONS\]/i);
-  if (!captionsMatch) return [];
-
-  const captionsBlock = captionsMatch[1];
-  const rows = [];
-  const missingChannels = [];
-
-  for (const ch of JOURNAL_LAUNCH_CHANNEL_MAP) {
-    // Find the opening tag for this channel
-    const openTagPattern = new RegExp(
-      `\\[CAPTION\\s+platform="${ch.key}"([^\\]]*)\\]`,
-      'i'
-    );
-    const openMatch = captionsBlock.match(openTagPattern);
-    if (!openMatch) {
-      missingChannels.push(ch.key);
-      continue;
-    }
-
-    // Extract the scheduled_time attribute from the opening tag if present
-    const scheduledTimeMatch = openMatch[1]?.match(/scheduled_time="([^"]+)"/i);
-
-    // Find where this channel's content starts (after the opening tag)
-    const openTagEnd = captionsBlock.indexOf(openMatch[0]) + openMatch[0].length;
-    const remaining = captionsBlock.slice(openTagEnd);
-
-    // Find where this channel's content ends:
-    // Either at the next [CAPTION tag, or at [/CAPTION], or at [/SOCIAL_CAPTIONS]
-    // Take the earliest of these boundaries.
-    const nextCaptionIdx = remaining.search(/\[CAPTION\s+platform=/i);
-    const closingTagIdx = remaining.search(/\[\/CAPTION\]/i);
-    const socialClosingIdx = remaining.search(/\[\/SOCIAL_CAPTIONS\]/i);
-
-    const boundaries = [nextCaptionIdx, closingTagIdx, socialClosingIdx]
-      .filter((idx) => idx >= 0);
-
-    const endIdx = boundaries.length > 0 ? Math.min(...boundaries) : remaining.length;
-    let text = remaining.slice(0, endIdx).trim();
-
-    if (!text) continue;
-
-    // Instagram: strip URLs from body, ensure Link in bio
-    if (ch.platform === 'instagram') {
-      text = text.replace(/https?:\/\/[^\s]+/g, '').trim();
-      if (!text.includes('Link in bio')) {
-        text = `${text}\n\nLink in bio.`;
-      }
-    }
-
-    const scheduledAt = scheduledTimeMatch
-      ? scheduledTimeMatch[1]
-      : await toScheduledAt(new Date(), ch.platform);
-
-    const trimmedImage =
-      typeof imageUrl === 'string' ? imageUrl.trim() : '';
-    let safeImageUrl = null;
-    if (trimmedImage.startsWith('https://') || trimmedImage.startsWith('http://')) {
-      safeImageUrl = trimmedImage;
-    } else if (trimmedImage.startsWith('/images/')) {
-      const siteBase = (
-        process.env.PUBLIC_SITE_URL || 'https://www.archetypeoriginal.com'
-      ).replace(/\/$/, '');
-      safeImageUrl = `${siteBase}${trimmedImage}`;
-    }
-    // Anything else ("none", empty, relative junk) → null — never store placeholders.
-
-    rows.push({
-      platform: ch.platform,
-      account_id: ch.account_id,
-      scheduled_at: scheduledAt,
-      text,
-      caption: text,
-      image_url: safeImageUrl,
-      status: 'scheduled',
-      source_kind: 'journal_launch',
-      intent: {
-        auto_hub: true,
-        channel_label: ch.label,
-        journal_slug: slug,
-        journal_url: journalUrl,
-      },
-    });
-  }
-
-  // Validate that every expected channel was present and every row has a non-empty
-  // caption before returning. A scheduled post with no caption will post blank —
-  // and a channel silently dropped (missing tag) means that platform never goes out.
-  const blankRows = rows.filter((r) => !r.caption || String(r.caption).trim() === '');
-  if (blankRows.length > 0 || missingChannels.length > 0) {
-    const problems = [];
-    if (blankRows.length > 0) {
-      problems.push(`blank captions for: ${blankRows.map((r) => r.platform).join(', ')}`);
-    }
-    if (missingChannels.length > 0) {
-      problems.push(`no caption tag found at all for: ${missingChannels.join(', ')}`);
-    }
-    console.error(`[publish-journal] parseSocialCaptions found problems — ${problems.join('; ')}`);
-    throw new Error(
-      `Caption generation incomplete — ${problems.join('; ')}. The [SOCIAL_CAPTIONS] block may be malformed or missing these channels entirely. Fix the captions in Auto and re-fire the publish signal.`
-    );
-  }
-
-  return rows;
+  return parseJournalSocialCaptions(body, slug, journalUrl, imageUrl);
 }
 
 export default async function handler(req, res) {
@@ -596,6 +483,10 @@ export default async function handler(req, res) {
     let captionsScheduled = 0;
     let captionsError = null;
     let captionsSkippedAsDuplicate = false;
+    let captionsMissing = [];
+    let captionsExpected = JOURNAL_LAUNCH_REQUIRED_CHANNELS.length;
+    let captionsFound = 0;
+    let captionsHasBlock = false;
     try {
       // Meta (Instagram/Facebook) requires an absolute http(s) image URL.
       // Never store the literal "none", a relative "/images/..." path, or any other
@@ -619,12 +510,21 @@ export default async function handler(req, res) {
         socialImageUrl = `${siteBase}/images/${resolvedFeaturedImage}`;
       }
 
-      const captionRows = await parseSocialCaptions(
+      const parsedCaptions = await parseSocialCaptions(
         content,
         safeSlug,
         journalUrl,
         socialImageUrl || ''
       );
+      const captionRows = Array.isArray(parsedCaptions?.rows) ? parsedCaptions.rows : [];
+      captionsHasBlock = !!parsedCaptions?.hasBlock;
+      captionsExpected = parsedCaptions?.requiredCount || JOURNAL_LAUNCH_REQUIRED_CHANNELS.length;
+      captionsFound = parsedCaptions?.foundCount || captionRows.length;
+      captionsMissing = [
+        ...(parsedCaptions?.missingChannels || []),
+        ...(parsedCaptions?.blankChannels || []),
+      ];
+
       if (captionRows.length > 0) {
         // Guard against double-scheduling if Publish gets triggered twice for the same post
         // (a page reload followed by a re-trigger, or Auto re-emitting the publish tag). A
@@ -674,6 +574,27 @@ export default async function handler(req, res) {
           captionsSkippedAsDuplicate = captionRows.length > 0;
           console.log(`[publish-journal] All ${captionRows.length} caption row(s) for ${safeSlug} were already scheduled — nothing new to insert.`);
         }
+      }
+
+      // Incomplete channel coverage is reported without voiding the good rows above.
+      if (captionsHasBlock && captionsMissing.length > 0) {
+        const coverageMsg = buildCaptionsCoverageMessage({
+          foundCount: captionsFound,
+          requiredCount: captionsExpected,
+          missingChannels: captionsMissing,
+          scheduledCount: captionsScheduled,
+        });
+        console.error(`[publish-journal] Incomplete social captions — ${coverageMsg}`);
+        // Prefer coverage message over a later insert error only when insert succeeded
+        // or nothing was attempted beyond the partial set.
+        if (!captionsError) {
+          captionsError = coverageMsg;
+        } else {
+          captionsError = `${coverageMsg} Also: ${captionsError}`;
+        }
+      } else if (captionsHasBlock && captionsFound === 0 && !captionsError) {
+        captionsError =
+          'A [SOCIAL_CAPTIONS] block was present but no usable captions were found for the automated channels.';
       }
     } catch (captionErr) {
       console.error('[publish-journal] Caption scheduling threw:', captionErr?.message || captionErr);
@@ -868,6 +789,18 @@ export default async function handler(req, res) {
       captions_scheduled: captionsScheduled,
       captions_skipped_as_duplicate: captionsSkippedAsDuplicate,
       captions_error: captionsError || null,
+      captions_missing: captionsMissing,
+      captions_expected: captionsExpected,
+      captions_found: captionsFound,
+      captions_has_block: captionsHasBlock,
+      captions_coverage_message: captionsHasBlock
+        ? buildCaptionsCoverageMessage({
+            foundCount: captionsFound,
+            requiredCount: captionsExpected,
+            missingChannels: captionsMissing,
+            scheduledCount: captionsScheduled,
+          })
+        : null,
       embedded_in_corpus: embedOk,
       corpus_embed_error: embedError,
       editorial_memory_rebuilt: editorialMemoryOk,

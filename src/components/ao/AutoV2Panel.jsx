@@ -920,6 +920,37 @@ function ArtifactPanel({
                 ? 'This entry is already live. Click to schedule social captions to the queue.'
                 : 'Draft and image approved. Click Publish to commit to GitHub.'}
             </p>
+            {(() => {
+              const required = [
+                'linkedin_personal',
+                'instagram_business',
+                'facebook_business',
+                'twitter',
+              ];
+              const block = String(journalPendingPublish.socialCaptionsBlock || '');
+              const missing = block
+                ? required.filter(
+                    (key) => !new RegExp(`\\[CAPTION\\s+platform="${key}"`, 'i').test(block)
+                  )
+                : required;
+              if (!block) {
+                return (
+                  <p className="mb-3 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-900">
+                    No social captions block found. The journal can still publish, but zero automated
+                    social posts will be scheduled until Auto writes LinkedIn Personal, Instagram
+                    Business, Facebook Business, and X captions.
+                  </p>
+                );
+              }
+              if (missing.length === 0) return null;
+              return (
+                <p className="mb-3 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-900">
+                  Missing captions for: {missing.join(', ')}. Publishing will still put the journal
+                  live and schedule whatever captions are present — ask Auto for the missing ones
+                  after publish so they can be queued.
+                </p>
+              );
+            })()}
             <button
               type="button"
               onClick={onPublishJournal}
@@ -950,6 +981,9 @@ function ArtifactPanel({
               >
                 {journalPublishBanner.journalUrl}
               </a>
+            ) : null}
+            {journalPublishBanner.captionsSummary ? (
+              <p className="mt-2 text-xs text-green-950/80">{journalPublishBanner.captionsSummary}</p>
             ) : null}
             {Array.isArray(journalPublishBanner.warnings) && journalPublishBanner.warnings.length > 0 && (
               <div className="mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
@@ -2983,20 +3017,35 @@ export default function AutoV2Panel({ onNavigate, className }) {
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Publish failed');
 
-      // The GitHub commit (the part that matters most) already succeeded by this
-      // point. But captions, the draft's published status, and the corpus embed
-      // all run afterward and can fail independently -- without this check, a
-      // partial failure looked identical to a full success, and Bart had no way
-      // to know social posts never actually got scheduled, or a draft is stuck
-      // showing as pending forever.
+      // Caption scheduling can partially succeed. Always surface coverage so a
+      // "1 of 4 scheduled" publish never looks identical to a full success.
       const warnings = [];
-      if (socialCaptionsBlock && (json.captions_error || (!json.captions_scheduled && !json.captions_skipped_as_duplicate))) {
+      const expected = Number(json.captions_expected) || 4;
+      const scheduled = Number(json.captions_scheduled) || 0;
+      const missing = Array.isArray(json.captions_missing) ? json.captions_missing : [];
+      const coverage =
+        json.captions_coverage_message ||
+        (json.captions_has_block || socialCaptionsBlock
+          ? `Scheduled ${scheduled} of ${expected} social posts${
+              missing.length ? ` — missing captions for: ${missing.join(', ')}` : ''
+            }.`
+          : null);
+
+      if (json.captions_error) {
+        warnings.push(json.captions_error);
+      } else if (coverage && (missing.length > 0 || (socialCaptionsBlock && scheduled === 0 && !json.captions_skipped_as_duplicate))) {
+        warnings.push(coverage);
+      } else if (socialCaptionsBlock && scheduled === 0 && !json.captions_skipped_as_duplicate) {
         warnings.push(
-          json.captions_error
-            ? `Social captions were NOT scheduled: ${json.captions_error}`
-            : 'Social captions were expected but 0 were scheduled. Check the [SOCIAL_CAPTIONS] block with Auto.'
+          'Social captions were expected but 0 were scheduled. Check the [SOCIAL_CAPTIONS] block with Auto.'
+        );
+      } else if (scheduled > 0 && scheduled < expected) {
+        warnings.push(
+          coverage ||
+            `Scheduled ${scheduled} of ${expected} social posts — some channels are still missing. Ask Auto to write the rest.`
         );
       }
+
       if (json.draft_mark_error) {
         warnings.push(`Draft status update failed: ${json.draft_mark_error}. It may still show as pending to Auto.`);
       }
@@ -3011,6 +3060,12 @@ export default function AutoV2Panel({ onNavigate, className }) {
         status: 'success',
         title: attrs.title,
         journalUrl: json.journal_url || '',
+        captionsSummary:
+          json.captions_has_block || socialCaptionsBlock
+            ? coverage || `Scheduled ${scheduled} of ${expected} social posts.`
+            : scheduled > 0
+              ? `Scheduled ${scheduled} social post${scheduled === 1 ? '' : 's'}.`
+              : null,
         warnings,
       });
     } catch (e) {
