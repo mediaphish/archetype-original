@@ -26,6 +26,7 @@ import {
   annotateUnbackedActionClaims,
 } from '../../../lib/ao/gateActionClaims.js';
 import { annotateFalseDenialClaims } from '../../../lib/ao/gateDenialClaims.js';
+import { maybeCaptureStatedPreferenceFromMessage } from '../../../lib/ao/statedPreferences.js';
 import { logActivity } from '../../../lib/ao/logActivity.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
@@ -2453,6 +2454,28 @@ ${retrievedBlock}
         save_draft_succeeded: !!streamResult?.saveDraftSucceeded,
       },
     });
+
+    // Phase 2: capture durable stated preferences from Bart's message into
+    // owner-scoped memory (cross-thread). Conservative — misses are OK.
+    try {
+      const prefCapture = await maybeCaptureStatedPreferenceFromMessage({
+        email: auth.email,
+        userMessage,
+        threadId: thread.id,
+        messageId: persistedUserMessage?.id || null,
+      });
+      if (prefCapture?.stored) {
+        console.log(
+          '[chat.js] stated preference stored:',
+          prefCapture.preference?.fact?.slice(0, 80)
+        );
+      }
+    } catch (prefErr) {
+      console.warn(
+        '[chat.js] stated preference capture failed (non-fatal):',
+        prefErr?.message || prefErr
+      );
+    }
 
     // Save draft to ao_content_drafts if this exchange contains an approved journal draft.
     // This runs server-side regardless of Auto's behavior — Auto cannot save drafts itself.
