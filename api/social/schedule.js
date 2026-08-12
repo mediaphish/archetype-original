@@ -6,6 +6,7 @@
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { validatePlatformAccount } from '../../lib/social/config.js';
+import { insertScheduledPostsSafely } from '../../lib/social/scheduledPostIntegrity.js';
 
 function requireSecret(req) {
   const secret = process.env.SOCIAL_POST_SECRET;
@@ -37,24 +38,31 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'scheduled_at must be a valid ISO date string' });
     }
 
-    const { data, error } = await supabaseAdmin
-      .from('ao_scheduled_posts')
-      .insert({
+    const result = await insertScheduledPostsSafely([
+      {
         platform,
         account_id,
         scheduled_at: at.toISOString(),
         text: text.trim(),
+        caption: text.trim(),
         image_url: image_url && typeof image_url === 'string' ? image_url.trim() || null : null,
         first_comment: first_comment && typeof first_comment === 'string' ? first_comment.trim() || null : null,
-        status: 'scheduled'
-      })
-      .select('id')
-      .single();
+        status: 'scheduled',
+      },
+    ], { select: 'id' });
 
-    if (error) {
-      return res.status(500).json({ ok: false, error: error.message });
+    if (!result.ok || !result.inserted?.[0]?.id) {
+      return res.status(result.rejected?.length ? 400 : 500).json({
+        ok: false,
+        error: result.error || 'Insert failed',
+        rejected: result.rejected || [],
+      });
     }
-    return res.status(200).json({ ok: true, id: data.id });
+    return res.status(200).json({
+      ok: true,
+      id: result.inserted[0].id,
+      rejected: result.rejected || [],
+    });
   } catch (err) {
     return res.status(500).json({ ok: false, error: err.message || 'Server error' });
   }

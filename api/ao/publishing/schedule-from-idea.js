@@ -6,6 +6,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -85,29 +86,26 @@ export default async function handler(req, res) {
 
     if (rows.length === 0) return res.status(400).json({ ok: false, error: 'No scheduled channels provided' });
 
-    let inserted = null;
-    try {
-      const out = await supabaseAdmin
-        .from('ao_scheduled_posts')
-        .insert(rows)
-        .select('id, platform, scheduled_at, status');
-      if (out.error) throw out.error;
-      inserted = out.data || [];
-    } catch (e2) {
-      const msg = String(e2?.message || '');
-      const missingIntentCols = msg.includes('source_kind') || msg.includes('source_idea_id') || msg.includes('intent');
-      if (!missingIntentCols) return res.status(500).json({ ok: false, error: msg || 'Insert failed' });
+    const result = await insertScheduledPostsSafely(rows, {
+      select: 'id, platform, scheduled_at, status',
+      allowMinimalFallback: true,
+      stripForFallback: ({ source_kind, source_idea_id, intent, ...rest }) => rest,
+    });
 
-      const minimalRows = rows.map(({ source_kind, source_idea_id, intent, ...rest }) => rest);
-      const out = await supabaseAdmin
-        .from('ao_scheduled_posts')
-        .insert(minimalRows)
-        .select('id, platform, scheduled_at, status');
-      if (out.error) return res.status(500).json({ ok: false, error: out.error.message });
-      inserted = out.data || [];
+    if (!result.ok) {
+      return res.status(result.rejected?.length ? 400 : 500).json({
+        ok: false,
+        error: result.error || 'Insert failed',
+        rejected: result.rejected || [],
+      });
     }
 
-    return res.status(200).json({ ok: true, scheduled: inserted || [] });
+    return res.status(200).json({
+      ok: true,
+      scheduled: result.inserted || [],
+      rejected: result.rejected || [],
+      integrity_summary: result.integrity_summary,
+    });
   } catch (e) {
     console.error('[ao/publishing/schedule-from-idea]', e);
     return res.status(500).json({ ok: false, error: e.message });

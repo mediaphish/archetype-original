@@ -558,17 +558,26 @@ export default async function handler(req, res) {
         }
 
         if (newRows.length > 0) {
-          const { data: captionData, error: captionInsertError } = await supabaseAdmin
-            .from('ao_scheduled_posts')
-            .insert(newRows)
-            .select('id, platform, scheduled_at');
+          const { insertScheduledPostsSafely, formatIntegrityRejectedSummary } = await import(
+            '../../../lib/social/scheduledPostIntegrity.js'
+          );
+          const insertResult = await insertScheduledPostsSafely(newRows, {
+            select: 'id, platform, scheduled_at',
+          });
 
-          if (captionInsertError) {
-            console.error('[publish-journal] Caption scheduling failed:', captionInsertError.message);
-            captionsError = captionInsertError.message;
+          if (!insertResult.ok && insertResult.inserted.length === 0) {
+            console.error('[publish-journal] Caption scheduling failed:', insertResult.error);
+            captionsError = insertResult.error;
           } else {
-            captionsScheduled = (captionData || []).length;
+            captionsScheduled = (insertResult.inserted || []).length;
             console.log(`[publish-journal] ${captionsScheduled} social posts scheduled for ${safeSlug}`);
+            if (insertResult.rejected?.length) {
+              const rejectMsg = formatIntegrityRejectedSummary(insertResult.rejected);
+              console.error('[publish-journal]', rejectMsg);
+              captionsError = captionsError
+                ? `${captionsError} Also: ${rejectMsg}`
+                : rejectMsg;
+            }
           }
         } else {
           captionsSkippedAsDuplicate = captionRows.length > 0;

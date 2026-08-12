@@ -9,6 +9,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
+import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -113,27 +114,27 @@ export default async function handler(req, res) {
 
     if (rows.length === 0) return res.status(400).json({ ok: false, error: 'No scheduled channels provided' });
 
-    let inserted = null;
-    try {
-      const out = await supabaseAdmin
-        .from('ao_scheduled_posts')
-        .insert(rows)
-        .select('id, platform, scheduled_at, status');
-      if (out.error) throw out.error;
-      inserted = out.data || [];
-    } catch (e2) {
-      const msg = String(e2?.message || '');
-      const missingIntentCols = msg.includes('source_kind') || msg.includes('source_quote_id') || msg.includes('intent') || msg.includes('why_it_matters');
-      if (!missingIntentCols) return res.status(500).json({ ok: false, error: msg || 'Insert failed' });
+    const result = await insertScheduledPostsSafely(rows, {
+      select: 'id, platform, scheduled_at, status',
+      allowMinimalFallback: true,
+      stripForFallback: ({
+        source_kind,
+        source_quote_id,
+        intent,
+        best_move,
+        why_it_matters,
+        ao_lane,
+        topic_tags,
+        ...rest
+      }) => rest,
+    });
 
-      // Backward-compatible insert (without intent columns).
-      const minimalRows = rows.map(({ source_kind, source_quote_id, intent, best_move, why_it_matters, ao_lane, topic_tags, ...rest }) => rest);
-      const out = await supabaseAdmin
-        .from('ao_scheduled_posts')
-        .insert(minimalRows)
-        .select('id, platform, scheduled_at, status');
-      if (out.error) return res.status(500).json({ ok: false, error: out.error.message });
-      inserted = out.data || [];
+    if (!result.ok) {
+      return res.status(result.rejected?.length ? 400 : 500).json({
+        ok: false,
+        error: result.error || 'Insert failed',
+        rejected: result.rejected || [],
+      });
     }
 
     // Clear routing so it doesn't keep showing up in Drafts.
@@ -144,7 +145,12 @@ export default async function handler(req, res) {
         .eq('id', quoteId);
     } catch (_) {}
 
-    return res.status(200).json({ ok: true, scheduled: inserted || [] });
+    return res.status(200).json({
+      ok: true,
+      scheduled: result.inserted || [],
+      rejected: result.rejected || [],
+      integrity_summary: result.integrity_summary,
+    });
   } catch (e) {
     console.error('[ao/publishing/schedule-from-quote]', e);
     return res.status(500).json({ ok: false, error: e.message });

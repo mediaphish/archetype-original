@@ -22,6 +22,7 @@ import {
   enforceVoiceGuardrails,
   enforceVoiceGuardrailsDeep,
 } from '../../../lib/ao/voiceGuardrails.js';
+import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -1004,17 +1005,22 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     return { ok: false, error: 'No captions were generated for any channel', httpStatus: 500 };
   }
 
-  const { data: inserted, error: insertError } = await supabaseAdmin
-    .from('ao_scheduled_posts')
-    .insert(rows)
-    .select('id, platform, scheduled_at, status');
+  const insertResult = await insertScheduledPostsSafely(rows, {
+    select: 'id, platform, scheduled_at, status',
+  });
 
-  if (insertError) {
-    console.error('[reshare-journal] Insert error:', insertError.message);
-    return { ok: false, error: insertError.message, httpStatus: 500 };
+  if (!insertResult.ok) {
+    console.error('[reshare-journal] Insert error:', insertResult.error);
+    return {
+      ok: false,
+      error: insertResult.error,
+      rejected: insertResult.rejected || [],
+      httpStatus: insertResult.rejected?.length ? 400 : 500,
+    };
   }
 
-  const insertedIds = (inserted || []).map((r) => r.id);
+  const inserted = insertResult.inserted || [];
+  const insertedIds = inserted.map((r) => r.id);
 
   await supabaseAdmin
     .from('ao_reshare_queue')
@@ -1047,6 +1053,8 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
     pending_review: !autoApprove,
     posts: inserted || [],
     total: (inserted || []).length,
+    rejected: insertResult.rejected || [],
+    integrity_summary: insertResult.integrity_summary,
     captions,
     pull_quote: pullQuote || null,
     mood: mood || null,

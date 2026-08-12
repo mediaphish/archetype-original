@@ -18,7 +18,7 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
 
 // LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
 // Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").
@@ -90,22 +90,29 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'No valid captions provided' });
   }
 
-  const { data, error } = await supabaseAdmin
-    .from('ao_scheduled_posts')
-    .insert(rows)
-    .select('id, platform, scheduled_at, status');
+  const result = await insertScheduledPostsSafely(rows, {
+    select: 'id, platform, scheduled_at, status',
+  });
 
-  if (error) {
-    console.error('[attach-captions]', error.message);
-    return res.status(500).json({ ok: false, error: error.message });
+  if (!result.ok) {
+    console.error('[attach-captions]', result.error);
+    return res.status(result.rejected?.length ? 400 : 500).json({
+      ok: false,
+      error: result.error,
+      rejected: result.rejected || [],
+    });
   }
 
   return res.status(200).json({
     ok: true,
     slug,
     journal_url: journalUrl,
-    scheduled: data || [],
-    total: (data || []).length,
-    message: `${(data || []).length} social posts scheduled for ${slug}`,
+    scheduled: result.inserted || [],
+    total: (result.inserted || []).length,
+    rejected: result.rejected || [],
+    integrity_summary: result.integrity_summary,
+    message: `${(result.inserted || []).length} social posts scheduled for ${slug}${
+      result.integrity_summary ? ` — ${result.integrity_summary}` : ''
+    }`,
   });
 }

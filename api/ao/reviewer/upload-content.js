@@ -8,8 +8,8 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
+import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
 
 const VALID_PLATFORMS = ['linkedin_personal', 'linkedin_business', 'facebook', 'instagram', 'twitter'];
 
@@ -120,13 +120,16 @@ export default async function handler(req, res) {
       };
     });
 
-    const { data, error } = await supabaseAdmin
-      .from('ao_scheduled_posts')
-      .insert(rows)
-      .select('id, platform, scheduled_at, status');
+    const result = await insertScheduledPostsSafely(rows, {
+      select: 'id, platform, scheduled_at, status',
+    });
 
-    if (error) {
-      return res.status(500).json({ ok: false, error: error.message });
+    if (!result.ok) {
+      return res.status(result.rejected?.length ? 400 : 500).json({
+        ok: false,
+        error: result.error,
+        rejected: result.rejected || [],
+      });
     }
 
     await logReviewerEvent({
@@ -139,11 +142,19 @@ export default async function handler(req, res) {
         has_image: !!imageUrl,
       },
       resultOk: true,
-      resultSummary: { post_ids: (data || []).map((p) => p.id) },
+      resultSummary: {
+        post_ids: (result.inserted || []).map((p) => p.id),
+        rejected_count: (result.rejected || []).length,
+      },
       req,
     });
 
-    return res.status(200).json({ ok: true, posts: data });
+    return res.status(200).json({
+      ok: true,
+      posts: result.inserted,
+      rejected: result.rejected || [],
+      integrity_summary: result.integrity_summary,
+    });
   } catch (err) {
     console.error('[reviewer/upload-content]', err?.message || err);
     return res.status(500).json({ ok: false, error: err?.message || 'Server error' });

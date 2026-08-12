@@ -9,6 +9,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
+import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -160,21 +161,19 @@ export default async function handler(req, res) {
 
     if (!rows.length) return res.status(400).json({ ok: false, error: 'Nothing to schedule' });
 
-    let inserted = null;
-    try {
-      const out = await supabaseAdmin.from('ao_scheduled_posts').insert(rows).select('id, platform, scheduled_at, status');
-      if (out.error) throw out.error;
-      inserted = out.data || [];
-    } catch (e2) {
-      const msg = String(e2?.message || '');
-      const missing = msg.includes('source_kind') || msg.includes('intent') || msg.includes('weekly');
-      if (!missing) return res.status(500).json({ ok: false, error: msg || 'Insert failed' });
-      const minimalRows = rows.map(
-        ({ source_kind, intent, best_move, why_it_matters, ao_lane, topic_tags, ...rest }) => rest
-      );
-      const out = await supabaseAdmin.from('ao_scheduled_posts').insert(minimalRows).select('id, platform, scheduled_at, status');
-      if (out.error) return res.status(500).json({ ok: false, error: out.error.message });
-      inserted = out.data || [];
+    const result = await insertScheduledPostsSafely(rows, {
+      select: 'id, platform, scheduled_at, status',
+      allowMinimalFallback: true,
+      stripForFallback: ({ source_kind, intent, best_move, why_it_matters, ao_lane, topic_tags, ...rest }) =>
+        rest,
+    });
+
+    if (!result.ok) {
+      return res.status(result.rejected?.length ? 400 : 500).json({
+        ok: false,
+        error: result.error || 'Insert failed',
+        rejected: result.rejected || [],
+      });
     }
 
     try {
@@ -190,7 +189,9 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       ok: true,
-      scheduled: inserted || [],
+      scheduled: result.inserted || [],
+      rejected: result.rejected || [],
+      integrity_summary: result.integrity_summary,
       message:
         'Queued with image + caption for Instagram, Facebook, LinkedIn, and X. Open Publisher to adjust times or text.',
     });

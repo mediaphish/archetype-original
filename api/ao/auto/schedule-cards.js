@@ -15,9 +15,9 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { findNextQueueDate, addWeekdays, toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { resolveQuoteCardScheduleCopy } from '../../../lib/ao/scheduledPostCopy.js';
+import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
 
 // LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
 // Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").
@@ -95,20 +95,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data, error } = await supabaseAdmin
-      .from('ao_scheduled_posts')
-      .insert(rows)
-      .select('id, platform, scheduled_at, status');
+    const result = await insertScheduledPostsSafely(rows, {
+      select: 'id, platform, scheduled_at, status',
+    });
 
-    if (error) {
-      console.error('[schedule-cards]', error.message);
-      return res.status(500).json({ ok: false, error: error.message });
+    if (!result.ok) {
+      console.error('[schedule-cards]', result.error);
+      return res.status(result.rejected?.length ? 400 : 500).json({
+        ok: false,
+        error: result.error,
+        rejected: result.rejected || [],
+      });
     }
 
     return res.status(200).json({
       ok: true,
-      scheduled: data || [],
-      total: (data || []).length,
+      scheduled: result.inserted || [],
+      total: (result.inserted || []).length,
+      rejected: result.rejected || [],
+      integrity_summary: result.integrity_summary,
       first_card_date: rows[0]?.scheduled_at || null,
       cards_scheduled: sortedCards.length,
       channels_per_card: APPROVED_CHANNELS.length,
