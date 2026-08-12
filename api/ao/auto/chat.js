@@ -1632,11 +1632,17 @@ export default async function handler(req, res) {
           });
           const revisedCaption = voiceResult.text;
           if (revisedCaption) {
-            await supabaseAdmin
-              .from('ao_scheduled_posts')
-              .update({ caption: revisedCaption, text: revisedCaption })
-              .eq('id', pendingRow.id);
-            fullReply = `${fullReply}\n\nUpdated the ${platformKey} caption:\n\n${revisedCaption}`.trim();
+            const { updateScheduledPostCopy } = await import('../../../lib/ao/scheduledPostCopy.js');
+            const updated = await updateScheduledPostCopy(supabaseAdmin, {
+              id: pendingRow.id,
+              body: revisedCaption,
+              onlyIfStatus: ['scheduled', 'pending_review'],
+            });
+            if (!updated.ok) {
+              fullReply = `${fullReply}\n\n[Could not update that caption: ${updated.error}]`.trim();
+            } else {
+              fullReply = `${fullReply}\n\nUpdated the ${platformKey} caption:\n\n${revisedCaption}`.trim();
+            }
           }
         }
       } catch (err) {

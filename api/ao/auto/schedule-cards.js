@@ -17,6 +17,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { findNextQueueDate, addWeekdays, toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
+import { resolveQuoteCardScheduleCopy } from '../../../lib/ao/scheduledPostCopy.js';
 
 // LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
 // Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").
@@ -31,10 +32,6 @@ const APPROVED_CHANNELS = [
   { platform: 'facebook',  account_id: 'meta',     label: 'facebook_business' },
   { platform: 'twitter',   account_id: 'personal', label: 'x' },
 ];
-
-// Date logic now lives in lib/ao/unifiedScheduler.js, shared with every
-// other content type (journal launches, ideas). This file no longer
-// duplicates its own weekday/gap logic.
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -58,39 +55,37 @@ export default async function handler(req, res) {
   const rows = [];
 
   for (const card of sortedCards) {
-    const cardNum = Number(card.card_index) || 1;
-    const line1 = card.line1 || '';
-    const line2 = card.line2 || '';
-    const caption = String(card.caption || '').trim();
-    if (!caption) {
-      console.error(`[schedule-cards] Card ${cardNum} has no caption — cannot schedule. Caption is required.`);
+    const resolved = resolveQuoteCardScheduleCopy(card);
+    if (!resolved.ok) {
+      console.error(`[schedule-cards] ${resolved.error}`);
       return res.status(400).json({
         ok: false,
-        error: `Card ${cardNum} has no caption. Every card must have a caption before scheduling. Generate captions in Auto and approve them before hitting Publish.`,
-        card_index: cardNum,
+        error: resolved.error,
+        card_index: resolved.card_index,
       });
     }
-    const imageUrl = String(card.image_url || '').trim();
-    const cardText = [line1, line2].filter(Boolean).join('\n').trim();
-    const textBody = cardText || caption || `Quote card ${cardNum}`;
 
-    // All 5 channels share the same calendar date, different platform times
+    const imageUrl = String(card.image_url || '').trim();
+
     for (const ch of APPROVED_CHANNELS) {
       rows.push({
         platform: ch.platform,
         account_id: ch.account_id,
         scheduled_at: await toScheduledAt(currentDate, ch.platform),
-        text: textBody,
+        text: resolved.text,
         image_url: imageUrl || null,
-        caption,
+        caption: resolved.caption,
         status: 'scheduled',
         source_kind: 'auto_quote_card',
         intent: {
           auto_hub: true,
-          card_index: cardNum,
+          card_index: resolved.card_index,
           channel_label: ch.label,
           created_by_email: auth.email,
           thread_id: thread_id || null,
+          line1: resolved.line1 || null,
+          line2: resolved.line2 || null,
+          card_text: resolved.cardText || null,
         },
       });
     }

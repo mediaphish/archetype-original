@@ -4,6 +4,9 @@
  * Updates the caption text on scheduled (not yet posted) social posts for a given slug.
  * Called when Auto fires the [UPDATE_SCHEDULED_CAPTIONS] signal after captions are corrected.
  *
+ * Always writes text and caption together via updateScheduledPostCopy so the two
+ * fields cannot drift apart (publishOne reads text only).
+ *
  * Body: {
  *   slug: string,           — Journal slug to update captions for
  *   captions: {             — Map of platform key to corrected caption text
@@ -20,6 +23,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { updateScheduledPostCopy } from '../../../lib/ao/scheduledPostCopy.js';
 
 const PLATFORM_MAP = {
   linkedin_personal: { platform: 'linkedin', account_id: 'personal' },
@@ -79,7 +83,6 @@ export default async function handler(req, res) {
     }
 
     try {
-      // Find scheduled (not posted) rows for this slug and platform
       const { data: rows, error: fetchErr } = await supabaseAdmin
         .from('ao_scheduled_posts')
         .select('id, platform, caption, status, intent')
@@ -98,20 +101,15 @@ export default async function handler(req, res) {
         continue;
       }
 
-      // Update all matching rows
       for (const row of rows) {
-        const { error: updateErr } = await supabaseAdmin
-          .from('ao_scheduled_posts')
-          .update({
-            caption: text,
-            text,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', row.id)
-          .eq('status', 'scheduled'); // Safety: never update posted rows
+        const result = await updateScheduledPostCopy(supabaseAdmin, {
+          id: row.id,
+          body: text,
+          onlyIfStatus: 'scheduled',
+        });
 
-        if (updateErr) {
-          errors.push(`Update failed for ${key} row ${row.id}: ${updateErr.message}`);
+        if (!result.ok) {
+          errors.push(`Update failed for ${key} row ${row.id}: ${result.error}`);
         } else {
           updated.push({ id: row.id, platform: mapping.platform, key });
           console.log(`[update-scheduled-captions] Updated ${key} for slug ${safeSlug} (row ${row.id})`);
