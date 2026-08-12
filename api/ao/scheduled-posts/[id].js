@@ -8,6 +8,7 @@
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { upsertMemoryFromScheduledPost } from '../../../lib/ao/editorialMemory.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'PATCH') {
@@ -36,8 +37,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'feedback_notes must be a string' });
   }
 
-  const { data: row, error: fetchError } = await supabaseAdmin
-    .from('ao_scheduled_posts')
+  const { data: row, error: fetchError } = await scheduledPosts()
     .select('id, status')
     .eq('id', id)
     .single();
@@ -75,8 +75,7 @@ export default async function handler(req, res) {
   let updated = null;
   let updateError = null;
   try {
-    const out = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const out = await scheduledPosts()
       .update(patch)
       .eq('id', id)
       .select('id, platform, account_id, scheduled_at, text, image_url, status, first_comment, first_comment_status, first_comment_error_message, source_kind, source_quote_id, source_idea_id, intent, best_move, why_it_matters, ao_lane, topic_tags, posted_at, feedback_rating, feedback_notes, feedback_at, created_at, updated_at')
@@ -93,8 +92,7 @@ export default async function handler(req, res) {
         error: 'Feedback fields are not set up yet. Run database/ao_scheduled_posts_intent_and_feedback.sql in Supabase.',
       });
     }
-    const out = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const out = await scheduledPosts()
       .update({ ...(updatingFirstComment ? { first_comment: patch.first_comment } : {}), updated_at: patch.updated_at })
       .eq('id', id)
       .select('id, platform, account_id, scheduled_at, text, image_url, status, first_comment, first_comment_status, first_comment_error_message, created_at, updated_at')

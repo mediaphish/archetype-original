@@ -6,6 +6,7 @@
  */
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'mediaphish';
@@ -58,8 +59,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data: drafts, error } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: drafts, error } = await contentDrafts()
       .select('id, slug, title, status')
       .eq('kind', 'journal')
       .neq('status', 'published');

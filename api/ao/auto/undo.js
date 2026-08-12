@@ -1,5 +1,6 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -27,8 +28,7 @@ export default async function handler(req, res) {
     const ids = Array.isArray(log?.undo_payload?.scheduled_post_ids) ? log.undo_payload.scheduled_post_ids : [];
     if (!ids.length) return res.status(400).json({ ok: false, error: 'Nothing to undo for this action yet.' });
 
-    const del = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const del = await scheduledPosts()
       .delete()
       .eq('status', 'scheduled')
       .in('id', ids);

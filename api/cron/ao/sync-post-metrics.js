@@ -15,6 +15,7 @@
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 const GRAPH_VERSION = 'v25.0';
 const GRAPH_BASE = `https://graph.facebook.com/${GRAPH_VERSION}`;
@@ -179,8 +180,7 @@ export default async function handler(req, res) {
   console.log('[sync-metrics] Starting daily metrics sync...');
 
   // Fetch all posted rows with external_id set
-  const { data: posts, error: postsError } = await supabaseAdmin
-    .from('ao_scheduled_posts')
+  const { data: posts, error: postsError } = await scheduledPosts()
     .select('id, platform, account_id, external_id, posted_at, intent')
     .eq('status', 'posted')
     .not('external_id', 'is', null)

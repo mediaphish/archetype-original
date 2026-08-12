@@ -6,6 +6,7 @@
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { requireAoSession } from '../../lib/ao/requireAoSession.js';
+import { scheduledPosts } from '../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -22,14 +23,12 @@ export default async function handler(req, res) {
 
   let query;
   try {
-    query = supabaseAdmin
-      .from('ao_scheduled_posts')
+    query = scheduledPosts()
       .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, source_kind, source_quote_id, source_idea_id, intent, best_move, why_it_matters, ao_lane, topic_tags, posted_at, feedback_rating, feedback_notes, feedback_at, created_at, updated_at')
       .order('scheduled_at', { ascending: false })
       .limit(limit);
   } catch (_) {
-    query = supabaseAdmin
-      .from('ao_scheduled_posts')
+    query = scheduledPosts()
       .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, created_at, updated_at')
       .order('scheduled_at', { ascending: false })
       .limit(limit);
@@ -52,8 +51,7 @@ export default async function handler(req, res) {
     data = out.data;
     error = out.error;
     if (error && String(error.message || '').includes('source_kind')) {
-      const out2 = await supabaseAdmin
-        .from('ao_scheduled_posts')
+      const out2 = await scheduledPosts()
         .select('id, platform, account_id, scheduled_at, text, image_url, status, external_id, error_message, first_comment, first_comment_status, first_comment_error_message, created_at, updated_at')
         .order('scheduled_at', { ascending: false })
         .limit(limit);

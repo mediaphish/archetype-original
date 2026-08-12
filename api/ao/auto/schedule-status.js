@@ -6,6 +6,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -17,8 +18,7 @@ export default async function handler(req, res) {
 
   try {
     // Count by status
-    const { data: statusCounts, error: countError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: statusCounts, error: countError } = await scheduledPosts()
       .select('status')
       .eq('source_kind', 'auto_quote_card');
 
@@ -30,8 +30,7 @@ export default async function handler(req, res) {
     }
 
     // Next scheduled post
-    const { data: nextPost, error: nextError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: nextPost, error: nextError } = await scheduledPosts()
       .select('platform, scheduled_at, image_url, caption')
       .eq('source_kind', 'auto_quote_card')
       .eq('status', 'scheduled')
@@ -41,8 +40,7 @@ export default async function handler(req, res) {
     if (nextError) throw nextError;
 
     // Spot check: verify first 5 scheduled image URLs contain today's or recent timestamps
-    const { data: spotCheck, error: spotError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: spotCheck, error: spotError } = await scheduledPosts()
       .select('platform, scheduled_at, image_url')
       .eq('source_kind', 'auto_quote_card')
       .eq('status', 'scheduled')

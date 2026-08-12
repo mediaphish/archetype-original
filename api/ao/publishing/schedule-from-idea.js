@@ -6,7 +6,7 @@
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
+import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
 
 function parseIso(v) {
   if (!v) return null;

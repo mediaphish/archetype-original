@@ -17,7 +17,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { findNextQueueDate, addWeekdays, toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
 import { resolveQuoteCardScheduleCopy } from '../../../lib/ao/scheduledPostCopy.js';
-import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
+import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
 
 // LINKEDIN BUSINESS — EXCLUDED FROM AUTOMATED QUEUE
 // Requires Community Management API via second LinkedIn developer app ("AO Page Publisher").

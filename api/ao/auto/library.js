@@ -11,6 +11,8 @@
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
+import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
 export default async function handler(req, res) {
   const auth = requireOwnerSession(req, res);
@@ -59,8 +61,7 @@ export default async function handler(req, res) {
     }
 
     // --- SCHEDULED POSTS ---
-    const { data: posts, error: postsError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: posts, error: postsError } = await scheduledPosts()
       .select('id, platform, scheduled_at, status, caption, image_url, error_message, intent, source_kind')
       .in('source_kind', ['journal_launch', 'ao_journal_social', 'ao_journal_reshare'])
       .order('scheduled_at', { ascending: false })
@@ -96,8 +97,7 @@ export default async function handler(req, res) {
     }
 
     // --- APPROVED DRAFTS ---
-    const { data: drafts } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: drafts } = await contentDrafts()
       .select('slug, title, status, approved_at, image_url, kind, series_slug, part_number')
       .eq('created_by_email', auth.email)
       .in('kind', ['journal', 'devotional'])

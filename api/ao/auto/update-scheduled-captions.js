@@ -24,6 +24,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { updateScheduledPostCopy } from '../../../lib/ao/scheduledPostCopy.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 const PLATFORM_MAP = {
   linkedin_personal: { platform: 'linkedin', account_id: 'personal' },
@@ -83,8 +84,7 @@ export default async function handler(req, res) {
     }
 
     try {
-      const { data: rows, error: fetchErr } = await supabaseAdmin
-        .from('ao_scheduled_posts')
+      const { data: rows, error: fetchErr } = await scheduledPosts()
         .select('id, platform, caption, status, intent')
         .eq('platform', mapping.platform)
         .eq('account_id', mapping.account_id)

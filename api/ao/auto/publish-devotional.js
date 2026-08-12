@@ -18,6 +18,7 @@
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'mediaphish';
@@ -158,8 +159,7 @@ summary: "${summary.replace(/"/g, '\\"')}"
     let draftMarkedPublished = false;
     let draftMarkError = null;
     try {
-      const { data: updatedRows, error: draftUpdateError } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data: updatedRows, error: draftUpdateError } = await contentDrafts()
         .update({ status: 'published' })
         .eq('slug', safeSlug)
         .neq('status', 'published')

@@ -14,6 +14,7 @@ import { postToFacebook } from '../../../lib/social/facebook.js';
 import { postToInstagram } from '../../../lib/social/instagram.js';
 import { postToTwitter } from '../../../lib/social/twitter.js';
 import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -33,8 +34,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data: post, error: fetchErr } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: post, error: fetchErr } = await scheduledPosts()
       .select('*')
       .eq('id', post_id)
       .eq('source_kind', 'reviewer_upload')
@@ -63,8 +63,7 @@ export default async function handler(req, res) {
     }
 
     if (!result.success) {
-      await supabaseAdmin
-        .from('ao_scheduled_posts')
+      await scheduledPosts()
         .update({ status: 'failed', error_message: result.error })
         .eq('id', post_id);
 
@@ -81,8 +80,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ ok: false, error: result.error, platform: post.platform });
     }
 
-    await supabaseAdmin
-      .from('ao_scheduled_posts')
+    await scheduledPosts()
       .update({
         status: 'posted',
         posted_at: new Date().toISOString(),

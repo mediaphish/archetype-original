@@ -40,6 +40,8 @@ import { approveOrDiscardReshare } from './reshare-review.js';
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
+import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
 /** Known social platform headers Auto uses in caption sets (bold markdown). */
 const CAPTION_PLATFORM_NAMES =
@@ -213,8 +215,7 @@ async function tryBackfillMissingDraftContent(requestedSlug, allMessages, email)
 
       if (candidateSlug !== requestedSlug) continue;
 
-      const { data: updatedRow, error: updateError } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data: updatedRow, error: updateError } = await contentDrafts()
         .update({ content: raw, title, updated_at: new Date().toISOString() })
         .eq('created_by_email', email.toLowerCase().trim())
         .eq('slug', requestedSlug)
@@ -284,8 +285,7 @@ async function trySaveUserPastedPostDirectly(userMessage, email, recentHistory =
 
     const kind = /\bdevotional\b/i.test(raw.slice(0, 400)) ? 'devotional' : 'journal';
 
-    const { data: existingRow, error: existingErr } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: existingRow, error: existingErr } = await contentDrafts()
       .select('id, slug, title, status, image_url, content')
       .eq('created_by_email', email.toLowerCase().trim())
       .eq('slug', targetSlug)
@@ -308,8 +308,7 @@ async function trySaveUserPastedPostDirectly(userMessage, email, recentHistory =
     }
 
     if (existingRow) {
-      const { data: updatedRow, error: updateError } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data: updatedRow, error: updateError } = await contentDrafts()
         .update({
           content: raw,
           title,
@@ -338,8 +337,7 @@ async function trySaveUserPastedPostDirectly(userMessage, email, recentHistory =
       }
     }
 
-    const { data: createdRow, error: insertError } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: createdRow, error: insertError } = await contentDrafts()
       .insert({
         created_by_email: email.toLowerCase().trim(),
         kind,
@@ -405,8 +403,7 @@ async function trySaveAttachedImageAsHeader(userMessage, attachments, email, rec
     const msgLower = String(userMessage || '').toLowerCase();
 
     // Pull the candidate pending drafts once, reused by every matching strategy below.
-    const { data: candidateDrafts, error: fetchErr } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: candidateDrafts, error: fetchErr } = await contentDrafts()
       .select('kind, series_slug, part_number, title, slug, status')
       .eq('created_by_email', email.toLowerCase().trim())
       .neq('status', 'published')
@@ -516,8 +513,7 @@ async function trySaveAttachedImageAsHeader(userMessage, attachments, email, rec
 
     // Write the image onto the matching draft, or create a placeholder if none exists yet --
     // same logic as the dedicated upload-header-image.js endpoint.
-    const { data: updatedRow, error: updateError } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: updatedRow, error: updateError } = await contentDrafts()
       .update({ image_url: imageUrl, updated_at: new Date().toISOString() })
       .eq('created_by_email', email.toLowerCase().trim())
       .eq('slug', targetSlug)
@@ -548,8 +544,7 @@ async function trySaveAttachedImageAsHeader(userMessage, attachments, email, rec
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-    const { data: createdRow, error: insertError } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: createdRow, error: insertError } = await contentDrafts()
       .insert({
         created_by_email: email.toLowerCase().trim(),
         kind: 'journal',
@@ -674,8 +669,7 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
       .reverse();
 
     try {
-      const { data: drafts, error } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data: drafts, error } = await contentDrafts()
         .select('kind, series_slug, part_number, title, slug, status, content')
         .eq('created_by_email', email.toLowerCase().trim())
         .neq('status', 'published')
@@ -730,8 +724,7 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
 
   async function upsertDraft(row, label) {
     try {
-      const { data, error } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data, error } = await contentDrafts()
         .upsert(row, {
           onConflict: 'created_by_email,slug,kind',
           ignoreDuplicates: false,
@@ -759,8 +752,7 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   async function getExistingDraftBySlug(slug, kind) {
     try {
       if (!slug) return null;
-      const { data, error } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data, error } = await contentDrafts()
         .select('id, slug, kind, series_slug, part_number, title, status, image_url')
         .eq('created_by_email', email.toLowerCase().trim())
         .eq('slug', slug)
@@ -801,8 +793,7 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   async function promoteDraftStatus({ kind, slug, title }) {
     try {
       if (!slug) return false;
-      const { data, error } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data, error } = await contentDrafts()
         .update({
           status: 'approved',
           approved_at: new Date().toISOString(),
@@ -1115,8 +1106,7 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   // click Publish separately -- so this only closes a "nothing happened"
   // failure mode, it does not create a new way to go live unintentionally.
   try {
-    const { data: pendingDrafts, error: pendingErr } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: pendingDrafts, error: pendingErr } = await contentDrafts()
       .select('kind, series_slug, part_number, title, slug, status, updated_at')
       .eq('created_by_email', email.toLowerCase().trim())
       .eq('status', 'draft')
@@ -1408,8 +1398,7 @@ export default async function handler(req, res) {
               .match(/slug[=:\s]+["']?([a-z0-9-]{5,80})/i) || [])[1] ||
             null;
           if (slugGuess) {
-            const { data: existingDraft } = await supabaseAdmin
-              .from('ao_content_drafts')
+            const { data: existingDraft } = await contentDrafts()
               .select('id, slug')
               .eq('created_by_email', auth.email.toLowerCase().trim())
               .eq('slug', canonicalizeSlug(slugGuess))
@@ -1596,8 +1585,7 @@ export default async function handler(req, res) {
     if (reshareEditMatch) {
       const [, platformKey, instruction] = reshareEditMatch;
       try {
-        const { data: pendingRow } = await supabaseAdmin
-          .from('ao_scheduled_posts')
+        const { data: pendingRow } = await scheduledPosts()
           .select('id, caption')
           .eq('source_kind', 'ao_journal_reshare')
           .eq('status', 'pending_review')
@@ -2067,8 +2055,7 @@ Return markdown only: a # title line, then the full post body.`,
           }
 
           try {
-            const { data: draftRow, error: draftFetchError } = await supabaseAdmin
-              .from('ao_content_drafts')
+            const { data: draftRow, error: draftFetchError } = await contentDrafts()
               .select('slug, title, kind, status, content, image_url, updated_at')
               .eq('created_by_email', auth.email.toLowerCase().trim())
               .eq('slug', requestedSlug)

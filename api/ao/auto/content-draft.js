@@ -16,6 +16,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -33,8 +34,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    let query = supabaseAdmin
-      .from('ao_content_drafts')
+    let query = contentDrafts()
       .select('slug, title, content, kind, status, image_url, approved_at, series_slug, part_number')
       .eq('created_by_email', auth.email.toLowerCase().trim())
       .order('approved_at', { ascending: false })

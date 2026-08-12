@@ -29,6 +29,8 @@ import {
 
 import fs from 'fs';
 import path from 'path';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
+import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'mediaphish';
@@ -530,8 +532,7 @@ export default async function handler(req, res) {
         // (a page reload followed by a re-trigger, or Auto re-emitting the publish tag). A
         // duplicate GitHub commit is harmless; a duplicate caption schedule means the same
         // post goes out twice per platform if both rows ever fire.
-        const { data: existingScheduled, error: existingScheduledError } = await supabaseAdmin
-          .from('ao_scheduled_posts')
+        const { data: existingScheduled, error: existingScheduledError } = await scheduledPosts()
           .select('platform, account_id')
           .eq('source_kind', 'journal_launch')
           .contains('intent', { journal_slug: safeSlug })
@@ -558,9 +559,7 @@ export default async function handler(req, res) {
         }
 
         if (newRows.length > 0) {
-          const { insertScheduledPostsSafely, formatIntegrityRejectedSummary } = await import(
-            '../../../lib/social/scheduledPostIntegrity.js'
-          );
+          const { insertScheduledPostsSafely, formatIntegrityRejectedSummary } = await import('../../../lib/db/scheduledPosts.js');
           const insertResult = await insertScheduledPostsSafely(newRows, {
             select: 'id, platform, scheduled_at',
           });
@@ -672,8 +671,7 @@ export default async function handler(req, res) {
     let draftMarkedPublished = false;
     let draftMarkError = null;
     try {
-      const { data: existingDraftRow, error: existingDraftLookupErr } = await supabaseAdmin
-        .from('ao_content_drafts')
+      const { data: existingDraftRow, error: existingDraftLookupErr } = await contentDrafts()
         .select('id, slug, series_slug, part_number, status')
         .eq('kind', 'journal')
         .eq('slug', safeSlug)
@@ -685,8 +683,7 @@ export default async function handler(req, res) {
       } else {
         let draftRowToUpdate = existingDraftRow;
         if (!draftRowToUpdate && seriesSlug && partNumber) {
-          const { data: fallbackRow } = await supabaseAdmin
-            .from('ao_content_drafts')
+          const { data: fallbackRow } = await contentDrafts()
             .select('id, slug, series_slug, part_number, status')
             .eq('kind', 'journal')
             .eq('series_slug', seriesSlug)
@@ -709,8 +706,7 @@ export default async function handler(req, res) {
             `[publish-journal] Draft "${draftRowToUpdate.slug}" already marked published -- skipping redundant status update.`
           );
         } else {
-          const { error: updateErr } = await supabaseAdmin
-            .from('ao_content_drafts')
+          const { error: updateErr } = await contentDrafts()
             .update({ status: 'published', updated_at: new Date().toISOString() })
             .eq('id', draftRowToUpdate.id);
           if (updateErr) {
@@ -734,8 +730,7 @@ export default async function handler(req, res) {
       try {
         // Fallback 1: normalize the draft's own stored slug the same way safeSlug was normalized,
         // in case the two only differ by punctuation-to-hyphen handling.
-        const { data: candidates } = await supabaseAdmin
-          .from('ao_content_drafts')
+        const { data: candidates } = await contentDrafts()
           .select('id, slug, title')
           .eq('kind', 'journal')
           .neq('status', 'published');
@@ -760,8 +755,7 @@ export default async function handler(req, res) {
         }
 
         if (fallbackMatch) {
-          const { error: fallbackError } = await supabaseAdmin
-            .from('ao_content_drafts')
+          const { error: fallbackError } = await contentDrafts()
             .update({ status: 'published', updated_at: new Date().toISOString() })
             .eq('id', fallbackMatch.id);
 

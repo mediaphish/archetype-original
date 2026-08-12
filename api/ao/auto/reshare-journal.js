@@ -22,7 +22,8 @@ import {
   enforceVoiceGuardrails,
   enforceVoiceGuardrailsDeep,
 } from '../../../lib/ao/voiceGuardrails.js';
-import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
+import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -437,8 +438,7 @@ async function selectReshareEntryIntelligently(availableEntries) {
 
   let recentPostsSummary = '';
   try {
-    const { data: recentPosts } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: recentPosts } = await scheduledPosts()
       .select('caption, platform, scheduled_at, source_kind, intent')
       .in('status', ['scheduled', 'posted'])
       .order('scheduled_at', { ascending: false })
@@ -750,8 +750,7 @@ async function resolveScheduleDayIfAutoApprove() {
       const ymd = candidate.toISOString().split('T')[0];
       const dow = candidate.getDay();
       if (dow === 0 || dow === 6) continue;
-      const { data: existing } = await supabaseAdmin
-        .from('ao_scheduled_posts')
+      const { data: existing } = await scheduledPosts()
         .select('id')
         .eq('source_kind', 'ao_journal_reshare')
         .in('status', ['scheduled', 'pending_review'])

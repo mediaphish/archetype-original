@@ -10,6 +10,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -25,8 +26,7 @@ export default async function handler(req, res) {
 
   try {
     // Posts across all four platforms this tool actually publishes to.
-    const { data: posts, error: postsError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: posts, error: postsError } = await scheduledPosts()
       .select('id, platform, account_id, caption, text, scheduled_at, status, posted_at')
       .in('platform', ['linkedin', 'facebook', 'instagram', 'twitter'])
       .order('scheduled_at', { ascending: false })

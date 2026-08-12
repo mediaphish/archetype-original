@@ -6,7 +6,7 @@
 
 import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { validatePlatformAccount } from '../../lib/social/config.js';
-import { insertScheduledPostsSafely } from '../../lib/social/scheduledPostIntegrity.js';
+import { insertScheduledPostsSafely } from '../../lib/db/scheduledPosts.js';
 
 function requireSecret(req) {
   const secret = process.env.SOCIAL_POST_SECRET;

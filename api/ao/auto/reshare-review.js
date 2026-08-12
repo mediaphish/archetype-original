@@ -15,6 +15,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 /**
  * Find the best day this week to schedule a reshare post.
@@ -81,8 +82,7 @@ async function findBestReshareDay() {
     const dow = candidate.getDay();
     if (dow === 0 || dow === 6) continue;
 
-    const { data: existing } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: existing } = await scheduledPosts()
       .select('id')
       .eq('source_kind', 'ao_journal_reshare')
       .in('status', ['scheduled', 'pending_review'])
@@ -126,8 +126,7 @@ export async function approveOrDiscardReshare(action, slug) {
   }
 
   try {
-    const { data: pendingRows, error: fetchError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: pendingRows, error: fetchError } = await scheduledPosts()
       .select('id, platform, caption, image_url, intent')
       .eq('status', 'pending_review')
       .eq('source_kind', 'ao_journal_reshare')
@@ -144,8 +143,7 @@ export async function approveOrDiscardReshare(action, slug) {
     const ids = pendingRows.map((r) => r.id);
 
     if (action === 'discard') {
-      const { error: deleteError } = await supabaseAdmin
-        .from('ao_scheduled_posts')
+      const { error: deleteError } = await scheduledPosts()
         .delete()
         .in('id', ids);
 
@@ -185,8 +183,7 @@ export async function approveOrDiscardReshare(action, slug) {
     for (const row of pendingRows) {
       const scheduledAt = await toScheduledAt(scheduleDay, row.platform);
       updates.push(
-        supabaseAdmin
-          .from('ao_scheduled_posts')
+        scheduledPosts()
           .update({
             status: 'scheduled',
             scheduled_at: scheduledAt,
@@ -228,8 +225,7 @@ export default async function handler(req, res) {
   if (!auth) return;
 
   if (req.method === 'GET') {
-    const { data: pendingRows, error } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: pendingRows, error } = await scheduledPosts()
       .select('id, platform, caption, image_url, intent, scheduled_at')
       .eq('status', 'pending_review')
       .eq('source_kind', 'ao_journal_reshare')

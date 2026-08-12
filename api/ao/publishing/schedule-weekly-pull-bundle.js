@@ -9,7 +9,7 @@ import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
-import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
+import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
 
 function parseIso(v) {
   if (!v) return null;

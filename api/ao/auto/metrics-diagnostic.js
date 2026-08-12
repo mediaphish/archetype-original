@@ -8,6 +8,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 const GRAPH_VERSION = 'v25.0';
 const GRAPH_BASE = `https://graph.facebook.com/${GRAPH_VERSION}`;
@@ -22,8 +23,7 @@ export default async function handler(req, res) {
   }
 
   // Get one posted row per platform
-  const { data: posts } = await supabaseAdmin
-    .from('ao_scheduled_posts')
+  const { data: posts } = await scheduledPosts()
     .select('id, platform, external_id, posted_at')
     .eq('status', 'posted')
     .not('external_id', 'is', null)

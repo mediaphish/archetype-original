@@ -5,9 +5,9 @@
  * Optional: header x-ao-secret must match SOCIAL_POST_SECRET if set.
  */
 
-import { supabaseAdmin } from '../../lib/supabase-admin.js';
 import { validatePlatformAccount } from '../../lib/social/config.js';
 import { publishPostById } from '../../lib/social/publish.js';
+import { insertScheduledPostsSafely } from '../../lib/db/scheduledPosts.js';
 
 function requireSecret(req) {
   const secret = process.env.SOCIAL_POST_SECRET;
@@ -36,30 +36,38 @@ export default async function handler(req, res) {
     }
 
     const now = new Date().toISOString();
-    const { data: row, error: insertError } = await supabaseAdmin
-      .from('ao_scheduled_posts')
-      .insert({
-        platform,
-        account_id,
-        scheduled_at: now,
-        text: text.trim(),
-        image_url: image_url && typeof image_url === 'string' ? image_url.trim() || null : null,
-        first_comment: first_comment && typeof first_comment === 'string' ? first_comment.trim() || null : null,
-        status: 'scheduled'
-      })
-      .select('id')
-      .single();
+    const trimmed = text.trim();
+    const result = await insertScheduledPostsSafely(
+      [
+        {
+          platform,
+          account_id,
+          scheduled_at: now,
+          text: trimmed,
+          caption: trimmed,
+          image_url: image_url && typeof image_url === 'string' ? image_url.trim() || null : null,
+          first_comment:
+            first_comment && typeof first_comment === 'string' ? first_comment.trim() || null : null,
+          status: 'scheduled',
+        },
+      ],
+      { select: 'id' }
+    );
 
-    if (insertError) {
-      return res.status(500).json({ ok: false, error: insertError.message });
+    if (!result.ok || !result.inserted?.[0]?.id) {
+      return res.status(result.rejected?.length ? 400 : 500).json({
+        ok: false,
+        error: result.error || 'Insert failed',
+        rejected: result.rejected || [],
+      });
     }
 
-    const result = await publishPostById(row.id);
-    return res.status(200).json({
-      ok: result.ok,
-      id: row.id,
-      ...(result.ok ? { postId: result.externalId } : { error: result.error })
-    });
+    const id = result.inserted[0].id;
+    const pub = await publishPostById(id);
+    if (!pub.ok) {
+      return res.status(500).json({ ok: false, error: pub.error, id });
+    }
+    return res.status(200).json({ ok: true, id, externalId: pub.externalId });
   } catch (err) {
     return res.status(500).json({ ok: false, error: err.message || 'Server error' });
   }

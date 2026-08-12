@@ -6,6 +6,7 @@
  */
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -42,8 +43,7 @@ export default async function handler(req, res) {
   // 5. Supabase connection
   try {
     const { supabaseAdmin } = await import('../../../lib/supabase-admin.js');
-    const { error } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { error } = await scheduledPosts()
       .select('id')
       .limit(1);
     checks.supabase = error

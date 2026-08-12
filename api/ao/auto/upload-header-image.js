@@ -1,6 +1,7 @@
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
 import { canonicalizeSlug } from '../../../lib/ao/autoV2.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
 const STORAGE_BUCKET = 'ao-auto-attachments';
 const STORAGE_PREFIX = 'ao-design-images';
@@ -95,8 +96,7 @@ export default async function handler(req, res) {
     // Write the real URL directly onto the matching draft row -- this is the
     // step that's normally missing, and exactly what Bart asked to skip
     // having to work around by hand.
-    const { data: updatedRow, error: updateError } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: updatedRow, error: updateError } = await contentDrafts()
       .update({ image_url: imageUrl, updated_at: new Date().toISOString() })
       .eq('created_by_email', auth.email.toLowerCase().trim())
       .eq('slug', safeSlug)
@@ -139,8 +139,7 @@ export default async function handler(req, res) {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
 
-    const { data: createdRow, error: insertError } = await supabaseAdmin
-      .from('ao_content_drafts')
+    const { data: createdRow, error: insertError } = await contentDrafts()
       .insert({
         created_by_email: auth.email.toLowerCase().trim(),
         kind: 'journal',

@@ -9,7 +9,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
-import { insertScheduledPostsSafely } from '../../../lib/social/scheduledPostIntegrity.js';
+import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
 
 const VALID_PLATFORMS = ['linkedin_personal', 'linkedin_business', 'facebook', 'instagram', 'twitter'];
 

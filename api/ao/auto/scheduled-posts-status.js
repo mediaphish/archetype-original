@@ -13,6 +13,7 @@
 
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -28,8 +29,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data, error } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data, error } = await scheduledPosts()
       .select('platform')
       .eq('source_kind', 'journal_launch')
       .contains('intent', { journal_slug: slug })

@@ -8,6 +8,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { logReviewerEvent } from '../../../lib/ao/reviewerAuditLog.js';
+import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -22,8 +23,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data: posts, error } = await supabaseAdmin
-      .from('ao_scheduled_posts')
+    const { data: posts, error } = await scheduledPosts()
       .select('id, platform, caption, text, status, posted_at, external_id')
       .in('platform', ['linkedin', 'facebook', 'instagram', 'twitter'])
       .eq('status', 'posted')
