@@ -23,6 +23,15 @@ function FirstCommentStatusBadge({ status, errorMessage }) {
   );
 }
 
+/** ISO → value suitable for <input type="datetime-local"> in the browser's local zone. */
+function isoToDatetimeLocalValue(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export default function Publishing() {
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
@@ -42,6 +51,9 @@ export default function Publishing() {
   const [draftEdits, setDraftEdits] = useState({}); // { [ideaId]: { linkedin, facebook, instagram, x } }
   const [studioSchedule, setStudioSchedule] = useState({}); // { [quoteId]: { linkedin, facebook, instagram, x } }
   const [studioEdits, setStudioEdits] = useState({}); // { [quoteId]: { linkedin, facebook, instagram, x } }
+  /** Shared analytics-grounded defaults: { linkedin, facebook, instagram, x } as datetime-local strings */
+  const [scheduleDefaults, setScheduleDefaults] = useState(null);
+  const [scheduleDefaultsNote, setScheduleDefaultsNote] = useState('');
   const [draftError, setDraftError] = useState('');
   const [historyMessage, setHistoryMessage] = useState('');
   const [historyError, setHistoryError] = useState('');
@@ -72,6 +84,39 @@ export default function Publishing() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    if (!authChecked) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ao/publishing/recommended-schedule');
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok || !json.channels) return;
+        const map = {};
+        const notes = [];
+        for (const ch of ['linkedin', 'facebook', 'instagram', 'x']) {
+          const info = json.channels[ch];
+          if (!info?.scheduled_at) continue;
+          map[ch] = isoToDatetimeLocalValue(info.scheduled_at);
+          if (info.source === 'engagement_data') {
+            notes.push(`${ch}: based on ${info.sample_count || 0} scored posts`);
+          } else {
+            notes.push(`${ch}: general fallback (not enough engagement history yet)`);
+          }
+        }
+        if (!cancelled) {
+          setScheduleDefaults(map);
+          setScheduleDefaultsNote(notes.join(' · '));
+        }
+      } catch (_) {
+        /* non-fatal — fields stay empty */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [authChecked]);
 
   const fetchPosts = useCallback(async () => {
     if (!authChecked) return;
@@ -260,6 +305,9 @@ export default function Publishing() {
             <div className="p-6 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Drafts</h2>
               <p className="text-sm text-gray-600 mt-1">Drafts ready for scheduling (from Studio and from Ready Posts).</p>
+              {scheduleDefaultsNote ? (
+                <p className="text-xs text-gray-500 mt-2">Suggested times: {scheduleDefaultsNote}</p>
+              ) : null}
               {draftError ? <p className="text-sm text-red-600 mt-2">{draftError}</p> : null}
             </div>
             {draftsLoading ? (
@@ -277,7 +325,7 @@ export default function Publishing() {
                 {studioDrafts.map((q) => {
                   const id = q.id;
                   const d = q.drafts_by_channel || {};
-                  const sched = studioSchedule[id] || {};
+                  const sched = { ...(scheduleDefaults || {}), ...(studioSchedule[id] || {}) };
                   const edits = studioEdits[id] || {};
                   const setSched = (channel, v) => setStudioSchedule((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
                   const setEdit = (channel, v) => setStudioEdits((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
@@ -350,7 +398,7 @@ export default function Publishing() {
                 {readyDrafts.map((idea) => {
                   const id = idea.id;
                   const d = idea.ready_social_drafts?.drafts_by_channel || {};
-                  const sched = draftSchedule[id] || {};
+                  const sched = { ...(scheduleDefaults || {}), ...(draftSchedule[id] || {}) };
                   const edits = draftEdits[id] || {};
                   const setSched = (channel, v) => setDraftSchedule((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
                   const setEdit = (channel, v) => setDraftEdits((p) => ({ ...p, [id]: { ...(p[id] || {}), [channel]: v } }));
