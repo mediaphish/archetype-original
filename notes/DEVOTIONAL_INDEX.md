@@ -232,6 +232,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-08-12 | Use What Was Given | Romans 12:6–8 (ESV) | `use-what-was-given` | `2026-08-12-use-what-was-given.md` |
 | 2026-08-13 | Guard the Deposit | 2 Timothy 1:13–14 (ESV) | `guard-the-deposit` | `2026-08-13-guard-the-deposit.md` |
 | 2026-08-14 | So That No One Can Blame Us | 2 Corinthians 8:18–21 (ESV) | `so-that-no-one-can-blame-us` | `2026-08-14-so-that-no-one-can-blame-us.md` |
+| 2026-08-15 | Shepherds Who Fed Themselves | Ezekiel 34:2–4 (ESV) | `shepherds-who-fed-themselves` | `2026-08-15-shepherds-who-fed-themselves.md` |
+| 2026-08-16 | I Will Not Cease to Pray for You | 1 Samuel 12:23 (ESV) | `i-will-not-cease-to-pray-for-you` | `2026-08-16-i-will-not-cease-to-pray-for-you.md` |
+| 2026-08-17 | Managing Your Own Household First | 1 Timothy 3:4–5 (ESV) | `managing-your-own-household-first` | `2026-08-17-managing-your-own-household-first.md` |
+| 2026-08-18 | Do Not Say We Did Not Know | Proverbs 24:11–12 (ESV) | `do-not-say-we-did-not-know` | `2026-08-18-do-not-say-we-did-not-know.md` |
+| 2026-08-19 | Examples, Not Domineering | 1 Peter 5:1–3 (ESV) | `examples-not-domineering` | `2026-08-19-examples-not-domineering.md` |
+| 2026-08-20 | Search Me | Psalm 139:23–24 (ESV) | `search-me` | `2026-08-20-search-me.md` |
+| 2026-08-21 | I Am Innocent of the Blood of All | Acts 20:24–27 (ESV) | `i-am-innocent-of-the-blood-of-all` | `2026-08-21-i-am-innocent-of-the-blood-of-all.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
