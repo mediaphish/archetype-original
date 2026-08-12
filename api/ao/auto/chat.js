@@ -15,17 +15,15 @@ import {
   runAutoChatStream,
   findReferencedDrafts,
   canonicalizeSlug,
-  buildAutoToolsArray,
 } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import {
-  findUnbackedActionClaims,
-  buildUnbackedClaimCorrectionNote,
+  collectPriorSuccessfulToolResults,
+  annotateUnbackedActionClaims,
 } from '../../../lib/ao/gateActionClaims.js';
-import { createCompleteMessage } from '../../../lib/ao/anthropicCompleteMessage.js';
 import { logActivity } from '../../../lib/ao/logActivity.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
@@ -1380,92 +1378,76 @@ export default async function handler(req, res) {
       sendEvent('heartbeat', { t: Date.now() });
     }, 15000);
 
-    // Action-claim gate: model must not say an action already happened unless this
-    // turn has a successful tool result (or a legacy bracket signal that still runs it).
-    // Prefer regenerating with an explicit correction note (path b) over silently
-    // rewriting Bart's visible reply.
+    // Action-claim gate: do not wipe a real streamed reply.
+    // If prose claims a completed action without evidence, keep the original text
+    // and append a visible warning. Save-status claims may use successful save_draft
+    // results from earlier turns in this thread; approve/publish stay current-turn-only.
     {
-      let claimEvidence = {
+      const priorToolResults = collectPriorSuccessfulToolResults(priorMessages);
+      // Fallback for older thread messages that predate tool_results meta:
+      // if the reply is reporting draft status and a matching row exists, treat that
+      // as thread-scoped save evidence (status only — not approve/publish).
+      const turnHasSave = (streamResult?.toolResults || []).some(
+        (r) => r?.name === 'save_draft' && r?.result?.ok
+      );
+      const priorHasSave = priorToolResults.some((r) => r?.name === 'save_draft');
+      if (
+        !turnHasSave &&
+        !priorHasSave &&
+        /\bis saved(?:\s+in\s+drafts?)?\b|\bsaved(?:\s+as\s+(?:a\s+)?draft)\b/i.test(fullReply)
+      ) {
+        try {
+          const slugGuess =
+            (fullReply.match(/\bslug[:\s]+["']?([a-z0-9-]{5,80})/i) || [])[1] ||
+            (fullReply.match(/\(([a-z0-9-]{5,80})\)/) || [])[1] ||
+            (priorMessages
+              .slice()
+              .reverse()
+              .map((m) => String(m?.content || ''))
+              .join('\n')
+              .match(/slug[=:\s]+["']?([a-z0-9-]{5,80})/i) || [])[1] ||
+            null;
+          if (slugGuess) {
+            const { data: existingDraft } = await supabaseAdmin
+              .from('ao_content_drafts')
+              .select('id, slug')
+              .eq('created_by_email', auth.email.toLowerCase().trim())
+              .eq('slug', canonicalizeSlug(slugGuess))
+              .in('kind', ['journal', 'devotional'])
+              .limit(1)
+              .maybeSingle();
+            if (existingDraft?.id) {
+              priorToolResults.push({
+                name: 'save_draft',
+                result: { ok: true, slug: existingDraft.slug, source: 'db_status_fallback' },
+              });
+            }
+          }
+        } catch (statusErr) {
+          console.warn(
+            '[chat.js] save-status DB fallback failed (non-fatal):',
+            statusErr?.message || statusErr
+          );
+        }
+      }
+
+      const claimEvidence = {
         toolResults: streamResult?.toolResults || [],
         toolsUsed: streamResult?.toolsUsed || [],
+        priorToolResults,
       };
-      let claimGate = findUnbackedActionClaims(fullReply, claimEvidence);
-      if (claimGate.unbacked.length > 0) {
+      const annotated = annotateUnbackedActionClaims(fullReply, claimEvidence);
+      if (annotated.unbacked.length > 0) {
         console.warn(
-          '[chat.js] Unbacked action claims:',
-          claimGate.unbacked.map((u) => `${u.ruleId}:${u.matchedText}`).join(', ')
+          '[chat.js] Unbacked action claims (annotate, do not replace):',
+          annotated.unbacked.map((u) => `${u.ruleId}:${u.matchedText}`).join(', ')
         );
-        try {
-          const correctionNote = buildUnbackedClaimCorrectionNote(claimGate.unbacked);
-          const claimClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-          const tools = buildAutoToolsArray();
-          const correctionMessages = [
-            ...(Array.isArray(streamResult?.messages) ? streamResult.messages : []),
-            { role: 'assistant', content: fullReply },
-            { role: 'user', content: correctionNote },
-          ];
-          const corrected = await Promise.race([
-            createCompleteMessage(
-              claimClient,
-              {
-                model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-5',
-                system:
-                  streamResult?.systemPrompt ||
-                  'You are Auto. Follow the system correction exactly.',
-                messages: correctionMessages,
-                tools,
-              },
-              {
-                maxContinuations: 2,
-                maxTokens: 16000,
-                toolContext: { email: auth.email },
-              }
-            ),
-            timeoutAfter(
-              remainingSoftBudgetMs(),
-              'Action-claim correction timed out'
-            ),
-          ]);
-
-          if (corrected?.ok && String(corrected.text || '').trim()) {
-            fullReply = String(corrected.text).trim();
-            streamResult = {
-              ...streamResult,
-              saveDraftSucceeded:
-                !!streamResult?.saveDraftSucceeded || !!corrected.saveDraftSucceeded,
-              toolsUsed: [
-                ...(streamResult?.toolsUsed || []),
-                ...(corrected.toolsUsed || []),
-              ],
-              toolResults: [
-                ...(streamResult?.toolResults || []),
-                ...(corrected.toolResults || []),
-              ],
-            };
-            claimEvidence = {
-              toolResults: streamResult.toolResults,
-              toolsUsed: streamResult.toolsUsed,
-            };
-            claimGate = findUnbackedActionClaims(fullReply, claimEvidence);
-            if (claimGate.unbacked.length > 0) {
-              // Second pass still unbacked — append a visible warning rather than loop forever.
-              console.warn(
-                '[chat.js] Action claims still unbacked after correction:',
-                claimGate.unbacked.map((u) => u.ruleId).join(', ')
-              );
-              fullReply =
-                `${fullReply.trim()}\n\n---\n**⚠️ SYSTEM WARNING:** This reply still claimed completed actions without a successful tool result this turn (${claimGate.unbacked
-                  .map((u) => u.label)
-                  .join(', ')}). Treat those claims as plans only — nothing was confirmed by the server.`
-                  .trim();
-            } else {
-              console.log('[chat.js] Action-claim gate cleared after correction turn');
-            }
-            // Client already saw the original stream; replace the bubble with corrected text.
-            sendEvent('reply_replaced', { reply_replaced: true, assistant_message: fullReply });
-          }
-        } catch (claimErr) {
-          console.error('[chat.js] Action-claim correction failed:', claimErr?.message || claimErr);
+        fullReply = annotated.reply;
+        if (annotated.appendedNote) {
+          sendEvent('reply_append', {
+            reply_append: true,
+            append_text: `\n\n${annotated.appendedNote}`,
+          });
         }
       }
     }
@@ -2333,7 +2315,13 @@ ${retrievedBlock}
       role: 'assistant',
       mode: 'plan',
       content: fullReply,
-      meta: { auto_v2: true, ...reshareMeta },
+      meta: {
+        auto_v2: true,
+        ...reshareMeta,
+        tools_used: Array.isArray(streamResult?.toolsUsed) ? streamResult.toolsUsed : [],
+        tool_results: Array.isArray(streamResult?.toolResults) ? streamResult.toolResults : [],
+        save_draft_succeeded: !!streamResult?.saveDraftSucceeded,
+      },
     });
 
     // Save draft to ao_content_drafts if this exchange contains an approved journal draft.

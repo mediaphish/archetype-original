@@ -2748,9 +2748,18 @@ export default function AutoV2Panel({ onNavigate, className }) {
                       )
                     );
                   } else if (parsed.assistant_message !== undefined && parsed.reply_replaced) {
-                    // Action-claim gate (or similar) replaced a false "done" reply with a
-                    // corrected regeneration before the final done event.
+                    // Legacy replace path (kept for older server events). Prefer reply_append.
                     streamingAssistantContent = String(parsed.assistant_message || '');
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === streamingMsgId
+                          ? { ...m, content: streamingAssistantContent }
+                          : m
+                      )
+                    );
+                  } else if (parsed.reply_append && parsed.append_text !== undefined) {
+                    // Action-claim gate: keep streamed content; append warning note only.
+                    streamingAssistantContent += String(parsed.append_text || '');
                     setMessages((prev) =>
                       prev.map((m) =>
                         m.id === streamingMsgId
