@@ -902,14 +902,10 @@ function ArtifactPanel({
         {journalPendingPublish && !journalPublishBanner && (
           <div className="shrink-0 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <p className="font-medium mb-1">
-              {journalPendingPublish.captionAttachOnly
-                ? `Schedule captions: ${journalPendingPublish.attrs?.title}`
-                : `Ready to publish: ${journalPendingPublish.attrs?.title}`}
+              {`Schedule captions: ${journalPendingPublish.attrs?.title}`}
             </p>
             <p className="text-xs text-amber-700 mb-3">
-              {journalPendingPublish.captionAttachOnly
-                ? 'This entry is already live. Click to schedule social captions to the queue.'
-                : 'Draft and image approved. Click Publish to commit to GitHub.'}
+              This entry is already live. Click to schedule social captions to the queue.
             </p>
             {(() => {
               const required = [
@@ -927,18 +923,16 @@ function ArtifactPanel({
               if (!block) {
                 return (
                   <p className="mb-3 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-900">
-                    No social captions block found. The journal can still publish, but zero automated
-                    social posts will be scheduled until Auto writes LinkedIn Personal, Instagram
-                    Business, Facebook Business, and X captions.
+                    No social captions block found. Ask Auto to write LinkedIn Personal, Instagram
+                    Business, Facebook Business, and X captions before scheduling.
                   </p>
                 );
               }
               if (missing.length === 0) return null;
               return (
                 <p className="mb-3 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-900">
-                  Missing captions for: {missing.join(', ')}. Publishing will still put the journal
-                  live and schedule whatever captions are present — ask Auto for the missing ones
-                  after publish so they can be queued.
+                  Missing captions for: {missing.join(', ')}. Scheduling will queue whatever captions
+                  are present — ask Auto for the missing ones so they can be queued too.
                 </p>
               );
             })()}
@@ -947,9 +941,7 @@ function ArtifactPanel({
               onClick={onPublishJournal}
               className="w-full py-2 px-3 bg-amber-900 text-white text-sm font-medium rounded-lg hover:bg-amber-800 transition-colors"
             >
-              {journalPendingPublish.captionAttachOnly
-                ? 'Schedule social posts'
-                : 'Publish to archetypeoriginal.com'}
+              Schedule social posts
             </button>
           </div>
         )}
@@ -1962,7 +1954,24 @@ export default function AutoV2Panel({ onNavigate, className }) {
       }
 
       if (cancelled) return;
-      setJournalPendingPublish({ attrs, journalContent, socialCaptionsBlock, categoriesRaw, notify, captionAttachOnly: isActuallyPublished });
+
+      // Full first-time publish no longer uses a Ready-to-publish UI button.
+      // Approving the draft + telling Auto to publish (publish_journal tool) is the gate.
+      // Keep the amber bar only for caption-attach on an already-published entry
+      // when captions are still missing (legacy [PUBLISH_JOURNAL] + schedule path).
+      if (!isActuallyPublished) {
+        setJournalPendingPublish(null);
+        return;
+      }
+
+      setJournalPendingPublish({
+        attrs,
+        journalContent,
+        socialCaptionsBlock,
+        categoriesRaw,
+        notify,
+        captionAttachOnly: true,
+      });
       signalNewArtifact();
     })();
 
