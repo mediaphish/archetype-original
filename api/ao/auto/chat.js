@@ -1220,23 +1220,68 @@ export default async function handler(req, res) {
         content: String(m.content || ''),
       }));
 
-    // An attached image is not just something for Claude to look at -- if Bart is
-    // sending it as a post's header image (which is the only reason he ever attaches
-    // an image here), it needs to actually land in the database automatically. This
-    // runs before Claude answers, so its reply reports what genuinely happened instead
-    // of guessing or inventing an outcome (both have happened before this fix).
+    // Always persist chat-attached images to storage + durable thread facts so
+    // generate_image can use reference_image_urls on this or later turns.
+    // Separately, when the message clearly means "this is the header," also
+    // write the image onto the matching draft (existing header-save path).
     let attachedImageFact = null;
-    if (
-      Array.isArray(attachments) &&
-      attachments.length > 0 &&
-      messageSignalsHeaderImageIntent(userMessage)
-    ) {
-      attachedImageFact = await trySaveAttachedImageAsHeader(
-        userMessage,
-        attachments,
-        auth.email,
-        history
-      );
+    let chatAttachedFactTexts = '';
+    let chatAttachedFactIds = [];
+    let markChatAttachedImageFactsConsumed = null;
+    if (Array.isArray(attachments) && attachments.length > 0) {
+      try {
+        const chatAttMod = await import('../../../lib/ao/chatAttachedImageFact.js');
+        markChatAttachedImageFactsConsumed = chatAttMod.markChatAttachedImageFactsConsumed;
+        const persisted = await chatAttMod.persistChatAttachedImages({
+          email: auth.email,
+          threadId: thread.id,
+          attachments,
+        });
+        if (persisted.factTexts?.length) {
+          chatAttachedFactTexts = persisted.factTexts.join('\n\n');
+        }
+        if (persisted.messageIds?.length) {
+          chatAttachedFactIds.push(...persisted.messageIds);
+        }
+      } catch (chatAttErr) {
+        console.error('[chat.js] chat attached image persist failed:', chatAttErr?.message);
+      }
+
+      if (messageSignalsHeaderImageIntent(userMessage)) {
+        attachedImageFact = await trySaveAttachedImageAsHeader(
+          userMessage,
+          attachments,
+          auth.email,
+          history
+        );
+      }
+    }
+
+    // Prior-turn attached reference images (durable facts) — so "use that photo"
+    // works after the base64 is gone from the live message.
+    try {
+      const chatAttMod = await import('../../../lib/ao/chatAttachedImageFact.js');
+      markChatAttachedImageFactsConsumed =
+        markChatAttachedImageFactsConsumed || chatAttMod.markChatAttachedImageFactsConsumed;
+      const loadedAtt = await chatAttMod.loadUnconsumedChatAttachedImageFacts(thread.id);
+      if (loadedAtt.facts.length > 0) {
+        // Avoid duplicating facts just recorded this turn (same URLs already in chatAttachedFactTexts).
+        const already = new Set(
+          (chatAttachedFactTexts.match(/https?:\/\/\S+/g) || []).map((u) => u.replace(/[.,)]+$/, ''))
+        );
+        const fresh = [];
+        for (let i = 0; i < loadedAtt.facts.length; i += 1) {
+          const url = loadedAtt.urls[i];
+          if (url && already.has(url)) continue;
+          fresh.push(loadedAtt.facts[i]);
+          chatAttachedFactIds.push(loadedAtt.messageIds[i]);
+        }
+        if (fresh.length) {
+          chatAttachedFactTexts = [chatAttachedFactTexts, ...fresh].filter(Boolean).join('\n\n');
+        }
+      }
+    } catch (loadAttErr) {
+      console.error('[chat.js] chat attached image facts load failed:', loadAttErr?.message);
     }
 
     // If Bart pastes a full post directly, save it to the database right now --
@@ -1263,7 +1308,12 @@ export default async function handler(req, res) {
       console.error('[chat.js] manual header-upload facts load failed:', manualFactErr?.message);
     }
 
-    const combinedFacts = [attachedImageFact, pastedPostFact, manualUploadFactsText]
+    const combinedFacts = [
+      attachedImageFact,
+      chatAttachedFactTexts,
+      pastedPostFact,
+      manualUploadFactsText,
+    ]
       .filter(Boolean)
       .join('\n\n');
 
@@ -1390,6 +1440,19 @@ export default async function handler(req, res) {
         await markManualHeaderUploadFactsConsumed(manualUploadFactIds);
       } catch (consumeErr) {
         console.error('[chat.js] could not mark manual upload facts consumed:', consumeErr?.message);
+      }
+    }
+    if (
+      chatAttachedFactIds.length > 0 &&
+      typeof markChatAttachedImageFactsConsumed === 'function'
+    ) {
+      try {
+        await markChatAttachedImageFactsConsumed(chatAttachedFactIds);
+      } catch (consumeAttErr) {
+        console.error(
+          '[chat.js] could not mark chat-attached image facts consumed:',
+          consumeAttErr?.message
+        );
       }
     }
 
