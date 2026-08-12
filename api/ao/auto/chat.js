@@ -27,6 +27,7 @@ import {
 } from '../../../lib/ao/gateActionClaims.js';
 import { annotateFalseDenialClaims } from '../../../lib/ao/gateDenialClaims.js';
 import { maybeCaptureStatedPreferenceFromMessage } from '../../../lib/ao/statedPreferences.js';
+import { maybeResolveOutlineFromUserMessage } from '../../../lib/ao/waypointGates.js';
 import { logActivity } from '../../../lib/ao/logActivity.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
@@ -2474,6 +2475,27 @@ ${retrievedBlock}
       console.warn(
         '[chat.js] stated preference capture failed (non-fatal):',
         prefErr?.message || prefErr
+      );
+    }
+
+    // Phase 3: if an outline is pending, lock or skip it from Bart's reply.
+    try {
+      const outlineResolve = await maybeResolveOutlineFromUserMessage({
+        email: auth.email,
+        userMessage,
+      });
+      if (outlineResolve?.updated) {
+        console.log(
+          '[chat.js] outline',
+          outlineResolve.decision,
+          'for slug=',
+          outlineResolve.slug
+        );
+      }
+    } catch (outlineErr) {
+      console.warn(
+        '[chat.js] outline resolve failed (non-fatal):',
+        outlineErr?.message || outlineErr
       );
     }
 
