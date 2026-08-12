@@ -15,6 +15,7 @@ import {
   runAutoChatStream,
   findReferencedDrafts,
   canonicalizeSlug,
+  loadApprovedDraftsContext,
 } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
@@ -24,6 +25,7 @@ import {
   collectPriorSuccessfulToolResults,
   annotateUnbackedActionClaims,
 } from '../../../lib/ao/gateActionClaims.js';
+import { annotateFalseDenialClaims } from '../../../lib/ao/gateDenialClaims.js';
 import { logActivity } from '../../../lib/ao/logActivity.js';
 import { enforceVoiceGuardrails } from '../../../lib/ao/voiceGuardrails.js';
 import { processEpisodeResearchSignal } from '../../../lib/ao/processEpisodeResearchSignal.js';
@@ -1533,6 +1535,44 @@ export default async function handler(req, res) {
           sendEvent('reply_append', {
             reply_append: true,
             append_text: `\n\n${annotated.appendedNote}`,
+          });
+        }
+      }
+
+      // False-denial gate: Auto saying "I don't see an image/URL" when this turn's
+      // injected context actually has one (approved drafts image saved at: / manual upload).
+      let approvedDraftsForDenialGate = '';
+      try {
+        const recentUserForGate = priorMessages
+          .filter((m) => m?.role === 'user')
+          .slice(-6)
+          .map((m) => String(m?.content || ''));
+        approvedDraftsForDenialGate = await loadApprovedDraftsContext(
+          auth.email,
+          userMessage,
+          recentUserForGate
+        );
+      } catch (denialCtxErr) {
+        console.warn(
+          '[chat.js] denial-gate drafts context load failed (non-fatal):',
+          denialCtxErr?.message || denialCtxErr
+        );
+      }
+      const denialAnnotated = annotateFalseDenialClaims(fullReply, {
+        contextText: [approvedDraftsForDenialGate, combinedFacts].filter(Boolean).join('\n\n'),
+      });
+      if (denialAnnotated.falseDenials.length > 0) {
+        console.warn(
+          '[chat.js] False denial claims (annotate, do not replace):',
+          denialAnnotated.falseDenials
+            .map((d) => `${d.ruleId}:${d.matchedText}`)
+            .join(', ')
+        );
+        fullReply = denialAnnotated.reply;
+        if (denialAnnotated.appendedNote) {
+          sendEvent('reply_append', {
+            reply_append: true,
+            append_text: `\n\n${denialAnnotated.appendedNote}`,
           });
         }
       }
