@@ -47,3 +47,5 @@ backups/_cleanup_quarantine/**/dist/
 # dist/privacy-policy/
 # dist/terms-and-conditions/
 # dist/what-i-do/
+.vercel
+.env*
