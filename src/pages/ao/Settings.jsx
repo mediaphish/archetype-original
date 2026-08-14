@@ -40,6 +40,13 @@ export default function Settings() {
   const [metaTestResult, setMetaTestResult] = useState({ facebook: null, instagram: null }); // success|error|null
   const [metaTestError, setMetaTestError] = useState({ facebook: '', instagram: '' });
 
+  const [igPersonalLoading, setIgPersonalLoading] = useState(true);
+  const [igPersonalStatus, setIgPersonalStatus] = useState(null);
+  const [igPersonalError, setIgPersonalError] = useState('');
+  const [igPersonalTestLoading, setIgPersonalTestLoading] = useState(false);
+  const [igPersonalTestResult, setIgPersonalTestResult] = useState(null); // success|error|null
+  const [igPersonalTestError, setIgPersonalTestError] = useState('');
+
   const [xLoading, setXLoading] = useState(true);
   const [xConnected, setXConnected] = useState(false);
   const [xState, setXState] = useState('not_connected'); // connected | not_connected | needs_reconnect
@@ -180,6 +187,34 @@ export default function Settings() {
         }
       } finally {
         if (!cancelled) setMetaLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [authChecked]);
+
+  useEffect(() => {
+    if (!authChecked) return;
+    let cancelled = false;
+    (async () => {
+      setIgPersonalLoading(true);
+      setIgPersonalError('');
+      try {
+        const res = await fetch('/api/ao/instagram-login/status');
+        const json = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        if (res.ok && json.ok) {
+          setIgPersonalStatus(json);
+        } else {
+          setIgPersonalStatus(null);
+          setIgPersonalError(json.error || 'Instagram Personal status check failed');
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setIgPersonalStatus(null);
+          setIgPersonalError(e.message || 'Instagram Personal status check failed');
+        }
+      } finally {
+        if (!cancelled) setIgPersonalLoading(false);
       }
     })();
     return () => { cancelled = true; };
@@ -592,6 +627,32 @@ export default function Settings() {
       setMetaTestError((p) => ({ ...p, [platform]: e.message || 'Request failed' }));
     } finally {
       setMetaTestLoading((p) => ({ ...p, [platform]: false }));
+    }
+  }
+
+  async function handleIgPersonalTestPost() {
+    if (!authChecked) return;
+    setIgPersonalTestResult(null);
+    setIgPersonalTestError('');
+    setIgPersonalTestLoading(true);
+    try {
+      const res = await fetch('/api/providers/meta/test-post-personal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (json.ok) {
+        setIgPersonalTestResult('success');
+      } else {
+        setIgPersonalTestResult('error');
+        setIgPersonalTestError(json.error || 'Request failed');
+      }
+    } catch (e) {
+      setIgPersonalTestResult('error');
+      setIgPersonalTestError(e.message || 'Request failed');
+    } finally {
+      setIgPersonalTestLoading(false);
     }
   }
 
@@ -1331,7 +1392,67 @@ export default function Settings() {
               </div>
 
               <p className="text-xs text-gray-500">
-                Test posts publish real content to your Facebook Page and Instagram feed. If connection is missing, see <a href="https://github.com/mediaphish/archetype-original/blob/main/notes/SOCIAL_VERCEL_ENV.md" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">notes/SOCIAL_VERCEL_ENV.md</a>.
+                Test posts publish real content to your Facebook Page and Instagram Business feed. If connection is missing, see <a href="https://github.com/mediaphish/archetype-original/blob/main/notes/SOCIAL_VERCEL_ENV.md" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">notes/SOCIAL_VERCEL_ENV.md</a>.
+              </p>
+            </div>
+          )}
+        </section>
+
+        <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Instagram (Personal)</h2>
+          <p className="text-gray-600 text-sm mb-4">
+            Status for your personal Instagram account (@mediaphish). This uses a separate connection from Instagram Business above. Status and test only — reconnect is handled offline when needed.
+          </p>
+          {igPersonalLoading ? (
+            <p className="text-gray-500 text-sm">Checking connection…</p>
+          ) : igPersonalError ? (
+            <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">Instagram Personal status check failed. {igPersonalError}</div>
+          ) : (
+            <div className="space-y-4">
+              <div className="p-3 border border-gray-200 rounded">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-900">Instagram Personal</span>
+                  <StatusPill state={igPersonalStatus?.state || (igPersonalStatus?.connected ? 'connected' : 'not_connected')} />
+                </div>
+                {igPersonalStatus?.connected ? (
+                  <p className="text-xs text-gray-500 mt-1">
+                    @{igPersonalStatus.username || 'mediaphish'}
+                    {igPersonalStatus.instagram_user_id ? ` · ${igPersonalStatus.instagram_user_id}` : ''}
+                    {igPersonalStatus.expires_at
+                      ? ` · token expires ${new Date(igPersonalStatus.expires_at).toLocaleDateString()}`
+                      : ''}
+                  </p>
+                ) : (
+                  <p className="text-xs text-gray-500 mt-1">Not connected — no personal Instagram token on file.</p>
+                )}
+                {igPersonalStatus?.expiry_warning && (
+                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-900 text-sm">
+                    {igPersonalStatus.expiry_warning}
+                  </div>
+                )}
+                <div className="mt-3 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleIgPersonalTestPost}
+                    disabled={!igPersonalStatus?.connected || igPersonalTestLoading}
+                    className="inline-block px-4 py-2 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    {igPersonalTestLoading ? 'Posting…' : 'Post Instagram Personal Test'}
+                  </button>
+                </div>
+                {igPersonalTestResult === 'success' && (
+                  <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded text-green-800 text-sm">
+                    Instagram Personal test post published to @mediaphish.
+                  </div>
+                )}
+                {igPersonalTestResult === 'error' && (
+                  <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded text-red-800 text-sm">
+                    Instagram Personal test post failed.{igPersonalTestError ? ` ${igPersonalTestError}` : ''}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-gray-500">
+                This posts a real test image and caption to your personal Instagram feed. It does not use the Facebook Page / Instagram Business connection above.
               </p>
             </div>
           )}

@@ -368,6 +368,8 @@
     { "src": "/api/providers/linkedin/test-post", "dest": "/api/providers/linkedin/test-post.js" },
     { "src": "/api/ao/meta/status", "dest": "/api/ao/meta/status.js" },
     { "src": "/api/providers/meta/test-post", "dest": "/api/providers/meta/test-post.js" },
+    { "src": "/api/ao/instagram-login/status", "dest": "/api/ao/instagram-login/status.js" },
+    { "src": "/api/providers/meta/test-post-personal", "dest": "/api/providers/meta/test-post-personal.js" },
     { "src": "/api/ao/x/status", "dest": "/api/ao/x/status.js" },
     { "src": "/api/providers/x/test-post", "dest": "/api/providers/x/test-post.js" },
     { "src": "/api/providers/facebook/group-post", "dest": "/api/providers/facebook/group-post.js" },
