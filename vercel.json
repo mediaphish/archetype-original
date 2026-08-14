@@ -207,6 +207,7 @@
     { "src": "/api/social/publish-now", "dest": "/api/social/publish-now.js" },
     { "src": "/api/social/post-now", "dest": "/api/social/post-now.js" },
     { "src": "/api/cron/publish-scheduled-posts", "dest": "/api/cron/publish-scheduled-posts.js" },
+    { "src": "/api/cron/publish-scheduled-journals", "dest": "/api/cron/publish-scheduled-journals.js" },
     { "src": "/api/bad-leader-admin-clusters", "dest": "/api/bad-leader-admin-clusters.js" },
     { "src": "/api/bad-leader-admin-intelligence", "dest": "/api/bad-leader-admin-intelligence.js" },
     { "src": "/api/bad-leader-admin-moderate", "dest": "/api/bad-leader-admin-moderate.js" },
@@ -453,6 +454,10 @@
     },
     {
       "path": "/api/cron/publish-scheduled-posts",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/publish-scheduled-journals",
       "schedule": "*/15 * * * *"
     },
     {
