@@ -29,6 +29,47 @@ assert(dirtyHits.some((h) => h.id === 'furthermore'), 'detects furthermore');
 assert(dirtyHits.some((h) => h.id === 'em-dash'), 'detects em dash');
 assert(dirtyHits.some((h) => h.id === 'unlock'), 'detects unlock');
 
+// #133 — "something to sit with" family expansion
+{
+  const sitPhrase =
+    'That fork in the road is the whole story compressed into a single moment, and it is something to sit with before moving forward.';
+  const sitHits = detectVoiceViolations(sitPhrase);
+  assert(
+    sitHits.some((h) => h.id === 'something-to-sit-with'),
+    'detects "something to sit with"'
+  );
+  const sitStrip = await enforceVoiceGuardrails(sitPhrase, {
+    anthropicClient: {
+      messages: {
+        create: async () => ({
+          content: [{ type: 'text', text: sitPhrase }],
+        }),
+      },
+    },
+    contextLabel: 'unit-test-sit-with',
+  });
+  assert(sitStrip.forced === true || sitStrip.corrected === true, 'sitting phrase is corrected or stripped');
+  assert(!/\bsomething\s+to\s+sit\s+with\b/i.test(sitStrip.text), 'forced path removes something-to-sit-with');
+
+  // Existing sitting-family patterns still detect
+  assert(
+    detectVoiceViolations('This is worth sitting with.').some((h) => h.id === 'worth-sitting-with'),
+    'worth-sitting-with unchanged'
+  );
+  assert(
+    detectVoiceViolations('worth sitting in silence').some((h) => h.id === 'worth-sitting-in'),
+    'worth-sitting-in unchanged'
+  );
+  assert(
+    detectVoiceViolations('worth sitting on for a bit').some((h) => h.id === 'worth-sitting-on'),
+    'worth-sitting-on unchanged'
+  );
+  assert(
+    detectVoiceViolations('Sit with that for a moment.').some((h) => h.id === 'sit-with-that'),
+    'sit-with-that unchanged'
+  );
+}
+
 const clean = 'Short sentences. Direct. Bart wrote this himself.';
 assert(detectVoiceViolations(clean).length === 0, 'clean string has zero violations');
 

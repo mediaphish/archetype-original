@@ -50,6 +50,7 @@ import { approveOrDiscardReshare } from './reshare-review.js';
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'fs';
 import path from 'path';
+import { detectUserApprovalIntent } from '../../../lib/ao/detectUserApprovalIntent.js';
 import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 
@@ -606,18 +607,9 @@ async function trySaveDraftFromExchange(userMessage, assistantReply, email, rece
   const skipSaveOnProduce = !!options.skipSaveOnProduce;
 
   const userLower = String(userMessage || '').toLowerCase();
-  const APPROVAL_PATTERN =
-    /\b(approved?|looks good|go ahead|publish it|that.?s it|perfect|yes|confirmed?|do it|fire it|send it|this works|i think (it'?s|this is|it) (good|works|solid)|ready|solid|nailed it|let'?s lock it|lock it in)\b/i;
-  // "nothing"/"none" are real negation words but were missing from this list --
-  // confirmed live: "Nothing has been approved yet" matched APPROVAL_PATTERN on "approved"
-  // and was NOT caught here (\bnot\b correctly does not fuzzy-match inside "Nothing" -- that's
-  // right, "not" and "nothing" are different words and both need to be listed explicitly),
-  // which caused a real, incorrect status="approved" database write on a draft Bart had
-  // explicitly said was not approved.
-  const NEGATED_APPROVAL_PATTERN =
-    /\b(not|nothing|none|isn'?t|don'?t|doesn'?t|didn'?t|wasn'?t|weren'?t|never|no)\b[\s\S]{0,20}\b(ready|solid|good|approved?|works?|there yet|it)\b|\b(ready|solid|good|approved?|works?)\b[\s\S]{0,15}\b(not|nothing|none|yet\??$|isn'?t|don'?t)\b/i;
-  const isApproval =
-    APPROVAL_PATTERN.test(userLower) && !NEGATED_APPROVAL_PATTERN.test(userLower);
+  // #132: bare "ready"/"yes"/etc. must not approve from long planning docs (e.g. paste-ready).
+  const approvalIntent = detectUserApprovalIntent(userMessage);
+  const isApproval = !!approvalIntent.isApproval;
   const isRemoval =
     /\b(cut (that|this|it)|take (that|this) out|remove the|we'?re? not using that|don'?t include|leave (that|this) out|without the|no biographical|drop the|we cut|that'?s? cut|not in (the|this))\b/i.test(
       userLower
