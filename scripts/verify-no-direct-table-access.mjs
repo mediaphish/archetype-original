@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * Build-time gate: fail if api/ or lib/ touch ao_scheduled_posts or ao_content_drafts
- * outside the sanctioned lib/db modules.
+ * Build-time gate: fail if api/ or lib/ touch ao_scheduled_posts, ao_content_drafts,
+ * or ao_content_draft_versions outside the sanctioned lib/db modules.
  *
  * Allowed:
  *   lib/db/scheduledPosts.js
  *   lib/db/contentDrafts.js
+ *   lib/db/contentDraftVersions.js
  *
  * Run: node scripts/verify-no-direct-table-access.mjs
  */
@@ -28,6 +29,11 @@ const TABLES = [
     name: 'ao_content_drafts',
     pattern: /\.from\(\s*['"]ao_content_drafts['"]\s*\)/g,
     allow: [path.join(ROOT, 'lib', 'db', 'contentDrafts.js')],
+  },
+  {
+    name: 'ao_content_draft_versions',
+    pattern: /\.from\(\s*['"]ao_content_draft_versions['"]\s*\)/g,
+    allow: [path.join(ROOT, 'lib', 'db', 'contentDraftVersions.js')],
   },
 ];
 
@@ -90,6 +96,6 @@ if (violations.length > 0) {
 }
 
 console.log(
-  'verify-no-direct-table-access: ok (ao_scheduled_posts + ao_content_drafts only via lib/db)'
+  'verify-no-direct-table-access: ok (ao_scheduled_posts + ao_content_drafts + ao_content_draft_versions only via lib/db)'
 );
 process.exit(0);

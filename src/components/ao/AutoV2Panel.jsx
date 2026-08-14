@@ -17,6 +17,11 @@ import React, {
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
+import {
+  buildDraftWordDiff,
+  extractSlugFromDraftContent,
+  formatVersionTimestamp,
+} from './draftDiff.js';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 
@@ -574,13 +579,223 @@ function ListArtifact({ content, label }) {
   );
 }
 
+function DraftDiffBody({ priorContent, currentContent }) {
+  const parts = useMemo(
+    () => buildDraftWordDiff(priorContent, currentContent),
+    [priorContent, currentContent]
+  );
+  return (
+    <div
+      className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800"
+      data-testid="draft-diff-body"
+    >
+      {parts.map((part, i) => {
+        if (part.type === 'added') {
+          return (
+            <span
+              key={i}
+              data-diff="added"
+              className="rounded-sm bg-emerald-100 text-emerald-950"
+            >
+              {part.value}
+            </span>
+          );
+        }
+        if (part.type === 'removed') {
+          return (
+            <span
+              key={i}
+              data-diff="removed"
+              className="rounded-sm bg-rose-100/80 text-rose-900/80 line-through decoration-rose-400/80"
+            >
+              {part.value}
+            </span>
+          );
+        }
+        return <span key={i}>{part.value}</span>;
+      })}
+    </div>
+  );
+}
+
 function DraftArtifact({ content, label }) {
+  const slug = useMemo(() => extractSlugFromDraftContent(content), [content]);
+  const [showChanges, setShowChanges] = useState(false);
+  const [versions, setVersions] = useState([]);
+  const [draftId, setDraftId] = useState(null);
+  const [selectedVersionId, setSelectedVersionId] = useState('');
+  const [priorContent, setPriorContent] = useState(null);
+  const [versionsLoading, setVersionsLoading] = useState(false);
+  const [priorLoading, setPriorLoading] = useState(false);
+  const [versionsError, setVersionsError] = useState(null);
+
+  useEffect(() => {
+    if (!slug) {
+      setVersions([]);
+      setDraftId(null);
+      setSelectedVersionId('');
+      setPriorContent(null);
+      setVersionsError(null);
+      return undefined;
+    }
+
+    let cancelled = false;
+    (async () => {
+      setVersionsLoading(true);
+      setVersionsError(null);
+      try {
+        const res = await fetch(
+          `/api/ao/auto/draft-versions?slug=${encodeURIComponent(slug)}&kind=journal`
+        );
+        const json = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        if (!res.ok || !json.ok) {
+          setVersions([]);
+          setDraftId(null);
+          setSelectedVersionId('');
+          setVersionsError(json.error || 'Could not load version history');
+          return;
+        }
+        const list = Array.isArray(json.versions) ? json.versions : [];
+        setVersions(list);
+        setDraftId(json.draft_id || null);
+        setSelectedVersionId(list[0]?.id || '');
+      } catch (err) {
+        if (!cancelled) {
+          setVersionsError(err?.message || 'Could not load version history');
+        }
+      } finally {
+        if (!cancelled) setVersionsLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  useEffect(() => {
+    if (!showChanges || !selectedVersionId) {
+      setPriorContent(null);
+      return undefined;
+    }
+
+    let cancelled = false;
+    (async () => {
+      setPriorLoading(true);
+      try {
+        const res = await fetch(
+          `/api/ao/auto/draft-versions?version_id=${encodeURIComponent(selectedVersionId)}`
+        );
+        const json = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        if (!res.ok || !json.ok) {
+          setPriorContent(null);
+          setVersionsError(json.error || 'Could not load that version');
+          return;
+        }
+        setPriorContent(json.version?.content ?? null);
+        setVersionsError(null);
+      } catch (err) {
+        if (!cancelled) {
+          setVersionsError(err?.message || 'Could not load that version');
+        }
+      } finally {
+        if (!cancelled) setPriorLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showChanges, selectedVersionId]);
+
+  const hasHistory = versions.length > 0;
+  const compareOptions = useMemo(() => {
+    if (!versions.length) return [];
+    const newest = versions[0];
+    const oldest = versions[versions.length - 1];
+    const opts = [
+      {
+        id: newest.id,
+        label: `Most recent prior (${formatVersionTimestamp(newest.created_at)})`,
+      },
+    ];
+    if (oldest.id !== newest.id) {
+      opts.push({
+        id: oldest.id,
+        label: `First saved version (${formatVersionTimestamp(oldest.created_at)})`,
+      });
+    }
+    for (const v of versions) {
+      if (v.id === newest.id || v.id === oldest.id) continue;
+      opts.push({
+        id: v.id,
+        label: formatVersionTimestamp(v.created_at),
+      });
+    }
+    return opts;
+  }, [versions]);
+
   return (
     <div className="flex flex-col flex-1 min-h-0 space-y-3">
-      <p className="flex-shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{label}</p>
-      <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
-        {content}
+      <div className="flex-shrink-0 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{label}</p>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="inline-flex items-center gap-1.5 text-xs text-gray-600 select-none">
+            <input
+              type="checkbox"
+              className="rounded border-gray-300 text-gray-900 focus:ring-gray-400"
+              checked={showChanges}
+              disabled={!hasHistory || versionsLoading}
+              onChange={(e) => setShowChanges(e.target.checked)}
+              data-testid="draft-show-changes"
+            />
+            Show changes
+          </label>
+          {showChanges && hasHistory ? (
+            <select
+              className="max-w-[14rem] rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700"
+              value={selectedVersionId}
+              onChange={(e) => setSelectedVersionId(e.target.value)}
+              aria-label="Compare to version"
+              data-testid="draft-compare-version"
+            >
+              {compareOptions.map((opt) => (
+                <option key={opt.id} value={opt.id}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          ) : null}
+        </div>
       </div>
+      {versionsError && showChanges ? (
+        <p className="flex-shrink-0 text-xs text-rose-700">{versionsError}</p>
+      ) : null}
+      {!hasHistory && slug && !versionsLoading ? (
+        <p className="flex-shrink-0 text-[11px] text-gray-400">
+          No earlier saves yet — changes will highlight after the next edit.
+        </p>
+      ) : null}
+      {showChanges && hasHistory ? (
+        priorLoading || priorContent == null ? (
+          <div className="min-h-0 flex-1 overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-400">
+            Loading changes…
+          </div>
+        ) : (
+          <DraftDiffBody priorContent={priorContent} currentContent={content} />
+        )
+      ) : (
+        <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-800">
+          {content}
+        </div>
+      )}
+      {draftId && showChanges ? (
+        <p className="flex-shrink-0 text-[10px] text-gray-400">
+          Green = added · Struck red = removed · Plain = unchanged
+        </p>
+      ) : null}
     </div>
   );
 }

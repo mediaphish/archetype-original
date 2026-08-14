@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
   try {
     let query = contentDrafts()
-      .select('slug, title, content, kind, status, image_url, approved_at, series_slug, part_number')
+      .select('id, slug, title, content, kind, status, image_url, approved_at, series_slug, part_number, updated_at')
       .eq('created_by_email', auth.email.toLowerCase().trim())
       .order('approved_at', { ascending: false })
       .limit(1);
