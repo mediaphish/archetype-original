@@ -26,6 +26,7 @@ import {
   annotateUnbackedActionClaims,
 } from '../../../lib/ao/gateActionClaims.js';
 import { annotateFalseDenialClaims } from '../../../lib/ao/gateDenialClaims.js';
+import { annotateFabricatedCompletions } from '../../../lib/ao/gateFabricatedCompletion.js';
 import { maybeCaptureStatedPreferenceFromMessage } from '../../../lib/ao/statedPreferences.js';
 import { maybeResolveOutlineFromUserMessage } from '../../../lib/ao/waypointGates.js';
 import { logActivity } from '../../../lib/ao/logActivity.js';
@@ -1575,6 +1576,25 @@ export default async function handler(req, res) {
           sendEvent('reply_append', {
             reply_append: true,
             append_text: `\n\n${denialAnnotated.appendedNote}`,
+          });
+        }
+      }
+
+      // Fabricated-completion gate: claimed new verified details + save_draft with
+      // unchanged content vs prior version.
+      const fabricated = annotateFabricatedCompletions(fullReply, {
+        toolResults: streamResult?.toolResults || [],
+      });
+      if (fabricated.fabrications.length > 0) {
+        console.warn(
+          '[chat.js] Fabricated completion claims (annotate, do not replace):',
+          fabricated.fabrications.map((f) => `${f.ruleId}:${f.matchedText}`).join(', ')
+        );
+        fullReply = fabricated.reply;
+        if (fabricated.appendedNote) {
+          sendEvent('reply_append', {
+            reply_append: true,
+            append_text: `\n\n${fabricated.appendedNote}`,
           });
         }
       }
