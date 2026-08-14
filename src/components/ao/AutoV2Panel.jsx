@@ -22,34 +22,14 @@ import {
   extractSlugFromDraftContent,
   formatVersionTimestamp,
 } from './draftDiff.js';
+import {
+  parseArtifact,
+  resolveArtifactPanelState,
+} from './draftArtifactSync.js';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 
-// ─── Artifact parsing ─────────────────────────────────────────────────────────
-
-function parseArtifact(text) {
-  if (!text) return { artifact: null, cleanText: text };
-
-  const tagPattern = /\[ARTIFACT([^\]]*)\]([\s\S]*?)\[\/ARTIFACT\]/i;
-  const match = text.match(tagPattern);
-
-  if (!match) return { artifact: null, cleanText: text };
-
-  const attrString = match[1] || '';
-  const content = match[2]?.trim() || '';
-
-  const typeMatch = attrString.match(/type="([^"]+)"/i);
-  const labelMatch = attrString.match(/label="([^"]+)"/i);
-
-  const artifact = {
-    type: typeMatch?.[1] || 'draft',
-    label: labelMatch?.[1] || 'Artifact',
-    content,
-  };
-
-  const cleanText = text.replace(tagPattern, '').trim();
-  return { artifact, cleanText };
-}
+// parseArtifact / resolveArtifactPanelState live in draftArtifactSync.js (#131)
 
 function extractGeneratedImagesFromAssistantContent(content) {
   const m = String(content || '').match(/\[IMAGES_GENERATED\]([\s\S]*?)\[\/IMAGES_GENERATED\]/);
@@ -2459,16 +2439,43 @@ export default function AutoV2Panel({ onNavigate, className }) {
       }
     }
 
-    // Artifact: read from last assistant message only
-    const lastAssistant = [...allMsgs].reverse().find((m) => m.role === 'assistant');
-    if (!lastAssistant) {
+    // Artifact panel: prefer latest tag; if missing, keep prior tag in thread.
+    // Never blank the panel just because the latest reply was prose-only (#131).
+    const resolved = resolveArtifactPanelState(allMsgs);
+    if (resolved.clear) {
       setArtifact(null);
       // Do not clear images — they persist for the whole thread session
-      return;
+      // (still run image accumulation below when messages exist)
+    } else if (resolved.artifact) {
+      setArtifact(resolved.artifact);
+      const slug = extractSlugFromDraftContent(resolved.artifact.content);
+      if (slug && resolved.artifact.type === 'draft') {
+        void (async () => {
+          try {
+            const res = await fetch(
+              `/api/ao/auto/content-draft?slug=${encodeURIComponent(slug)}&kind=journal&include_published=1`
+            );
+            const json = await res.json().catch(() => ({}));
+            if (!res.ok || !json?.ok || !json?.draft?.content) return;
+            const live = String(json.draft.content || '').trim();
+            if (!live) return;
+            setArtifact((prev) => {
+              if (!prev || prev.type !== 'draft') return prev;
+              const prevSlug = extractSlugFromDraftContent(prev.content);
+              if (prevSlug && prevSlug !== slug) return prev;
+              return {
+                ...prev,
+                label: json.draft.title || prev.label || slug,
+                content: live,
+              };
+            });
+          } catch (_) {
+            /* keep chat-derived artifact */
+          }
+        })();
+      }
     }
-    const raw = String(lastAssistant.content || '');
-    const { artifact: a } = parseArtifact(raw);
-    setArtifact(a || null);
+    // source === 'none': leave existing artifact state untouched
 
     // Accumulate card images across messages, but skip any message that was
     // present at the time of the last Clear. This allows Clear to work correctly

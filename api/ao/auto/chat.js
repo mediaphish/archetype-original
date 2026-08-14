@@ -20,6 +20,10 @@ import {
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
 import { appendImageGeneratedFromToolResults } from '../../../lib/ao/appendImageGeneratedFromToolResults.js';
+import {
+  appendDraftArtifactFromSaveResults,
+  sanitizeToolResultsForMeta,
+} from '../../../lib/ao/appendDraftArtifactFromSaveResults.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import {
@@ -2468,6 +2472,17 @@ ${retrievedBlock}
 
     // User message was already persisted at the top of the handler (before the
     // model call). Only the assistant reply is written here.
+    //
+    // #131: after a real full-length save_draft, guarantee [ARTIFACT] from saved content
+    // so Bart always sees the current draft and the review panel does not go blank.
+    {
+      const bridgedDraft = appendDraftArtifactFromSaveResults(
+        fullReply,
+        streamResult?.toolResults || []
+      );
+      fullReply = bridgedDraft.reply;
+    }
+
     await addAutoMessage({
       threadId: thread.id,
       role: 'assistant',
@@ -2477,7 +2492,9 @@ ${retrievedBlock}
         auto_v2: true,
         ...reshareMeta,
         tools_used: Array.isArray(streamResult?.toolsUsed) ? streamResult.toolsUsed : [],
-        tool_results: Array.isArray(streamResult?.toolResults) ? streamResult.toolResults : [],
+        tool_results: sanitizeToolResultsForMeta(
+          Array.isArray(streamResult?.toolResults) ? streamResult.toolResults : []
+        ),
         save_draft_succeeded: !!streamResult?.saveDraftSucceeded,
       },
     });
