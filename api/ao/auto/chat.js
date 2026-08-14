@@ -19,6 +19,7 @@ import {
 } from '../../../lib/ao/autoV2.js';
 import { appendQuoteCardImagesToReplyIfNeeded } from '../../../lib/ao/appendQuoteCardImagesAfterApproval.js';
 import { appendDesignImageToReplyIfNeeded } from '../../../lib/ao/appendDesignImageToReplyIfNeeded.js';
+import { appendImageGeneratedFromToolResults } from '../../../lib/ao/appendImageGeneratedFromToolResults.js';
 import { getScheduleContext } from '../../../lib/ao/getScheduleContext.js';
 import { enforceResponseRules, KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import {
@@ -1662,12 +1663,17 @@ export default async function handler(req, res) {
     });
 
     // JARVIS Step 7: if generate_image already ran as a real tool this turn, strip
-    // leftover [DALLE_GENERATE] tags instead of running the legacy image pipeline again.
+    // leftover [DALLE_GENERATE] tags and append the client [IMAGE_GENERATED] signal
+    // from the real tool result (same tag the legacy path produces for ArtifactPanel).
     const toolsUsedThisTurn = Array.isArray(streamResult?.toolsUsed)
       ? streamResult.toolsUsed
       : [];
     if (toolsUsedThisTurn.includes('generate_image')) {
-      fullReply = fullReply.replace(/\[DALLE_GENERATE[^\]]*\]/gi, '').trim();
+      const bridged = appendImageGeneratedFromToolResults(
+        fullReply,
+        streamResult?.toolResults || []
+      );
+      fullReply = bridged.reply;
     } else {
       fullReply = await appendDesignImageToReplyIfNeeded({
         userMessage,
