@@ -151,6 +151,12 @@ export async function fetchInstagramMediaMetrics(mediaId, userToken) {
 }
 
 export async function fetchLinkedInPostMetrics(postUrn, accessToken) {
+  // Reading likes/comments uses LinkedIn's Community Management socialActions
+  // endpoint (partnerApiSocialActions). That permission is restricted / partner-
+  // gated (r_member_social_feed), not something the current posting token
+  // (openid profile email w_member_social) can pick up by reconnecting.
+  // Do not "fix" this by adding a scope to the OAuth request until LinkedIn
+  // grants that product. Failures are stored on sync_error and surfaced in Auto.
   try {
     const encodedUrn = encodeURIComponent(postUrn);
     const url = `${LINKEDIN_API_BASE}/socialActions/${encodedUrn}`;

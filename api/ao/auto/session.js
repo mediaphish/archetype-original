@@ -63,6 +63,14 @@ export default async function handler(req, res) {
       linkedinTokenStatus = { status: 'unknown' };
     }
 
+    let metricsSync = { ok: true, platforms: {}, alerts: [], has_alert: false };
+    try {
+      const { getMetricsSyncHealth } = await import('../../../lib/ao/postMetrics.js');
+      metricsSync = await getMetricsSyncHealth();
+    } catch (_) {
+      /* never block session load */
+    }
+
     return res.status(200).json({
       ok: true,
       thread: state.thread,
@@ -71,6 +79,8 @@ export default async function handler(req, res) {
       bundles: bundleList,
       guardrails: guardrails.slice(0, 12),
       linkedin_token_status: linkedinTokenStatus,
+      metrics_sync_alerts: metricsSync.alerts || [],
+      metrics_sync: metricsSync,
     });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });

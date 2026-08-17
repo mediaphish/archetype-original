@@ -1829,6 +1829,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [journalPublishBanner, setJournalPublishBanner] = useState(null);
   const [journalPendingPublish, setJournalPendingPublish] = useState(null);
   const [linkedinTokenWarning, setLinkedinTokenWarning] = useState(null);
+  const [metricsSyncAlerts, setMetricsSyncAlerts] = useState([]);
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [episodeDraft, setEpisodeDraft] = useState(null);
   const [episodeProcessBanner, setEpisodeProcessBanner] = useState(null);
@@ -2592,6 +2593,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
       } else {
         setLinkedinTokenWarning(null);
       }
+
+      setMetricsSyncAlerts(
+        Array.isArray(sessionJson.metrics_sync_alerts) ? sessionJson.metrics_sync_alerts : []
+      );
 
       const { mainRows, archivedRows } = mergeThreadRows(sessionJson, draftsJson);
 
@@ -3563,6 +3568,16 @@ export default function AutoV2Panel({ onNavigate, className }) {
             >
               Reconnect
             </a>
+          </div>
+        )}
+        {metricsSyncAlerts.length > 0 && (
+          <div className="flex-shrink-0 px-4 py-2 text-xs bg-amber-50 border-b border-amber-200 text-amber-900">
+            <p className="font-medium mb-1">Engagement numbers are not updating on some channels:</p>
+            <ul className="list-disc pl-4 space-y-0.5">
+              {metricsSyncAlerts.map((w, i) => (
+                <li key={i}>{w}</li>
+              ))}
+            </ul>
           </div>
         )}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
