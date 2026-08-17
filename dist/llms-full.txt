@@ -1413,6 +1413,10 @@ Recognizing Unsafe Leadership Environments
 https://www.archetypeoriginal.com/journal/recognizing-unsafe-leadership-environments
 Post 9 of the Unaccountable series examines how unsafe leadership environments reveal themselves through patterns that restrict correction, narrow truth, and reorganize systems around protecting authority.
 
+Scoreboard Leadership
+https://www.archetypeoriginal.com/journal/scoreboard-leadership
+Wells Fargo's "Eight is Great" sales culture shows what happens when a number replaces a mission -- and why the two employees who used the company's own ethics hotline to report the fraud were the ones who got fired, years before Congress ever questioned the CEO who built it.
+
 Stop Turning Your Team Into Opponents
 https://www.archetypeoriginal.com/journal/stop-turning-your-team-into-opponents
 This post warns leaders against creating competition and scarcity inside their teams, reminding that true leadership builds trust, clarity, and shared success.
@@ -1561,6 +1565,10 @@ The Pursuit of Power Corrupts
 https://www.archetypeoriginal.com/journal/the-pursuit-of-power-corrupts
 A reflection on how the pursuit of power can erode trust and culture, contrasting power-hungry leadership with servant-hearted leadership that carries people, not control.
 
+The Ruth Archetype
+https://www.archetypeoriginal.com/journal/the-ruth-archetype
+Naomi stopped on the road back to Bethlehem and told both of her daughters-in-law to go home. She had nothing left to offer them. Her husband was dead. Both of her sons were dead. She was an old widow returning to a country that had watched her leave during a famine years earlier
+
 The Saul Archetype
 https://www.archetypeoriginal.com/journal/the-saul-archetype
 Saul was chosen, transformed, and given every advantage a leader could ask for. His fall came from what he chose to protect once he had power, not from how he started. The third entry in The Archetype Series traces the decisions that took him from anointed to unrecognizable.
@@ -1654,10 +1662,10 @@ Devotional series
 
 The Servant Leadership Devotional Series publishes one entry per day, connecting Scripture to the real pressures of leadership. Formation for leaders who want clarity, restraint, and genuine care for people.
 
-Published devotional entries: 223.
+Published devotional entries: 229.
 Browse the series at https://www.archetypeoriginal.com/faith.
 Individual devotional URLs are listed in https://www.archetypeoriginal.com/sitemap.xml.
 
 
 
-Generated at: 2026-08-11T20:17:01.713Z
+Generated at: 2026-08-17T16:22:34.744Z
