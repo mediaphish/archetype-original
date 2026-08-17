@@ -11,7 +11,7 @@ const TABS = [
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 
-export default function AOHeader({ active, email, onNavigate }) {
+export default function AOHeader({ active, email, onNavigate, hideBottomNav = false }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const keyboardInset = useKeyboardInset({ enabled: true });
 
@@ -115,7 +115,9 @@ export default function AOHeader({ active, email, onNavigate }) {
         )}
       </div>
     </header>
-    <AOBottomNav active={active} onNavigate={handleNavigate} keyboardInset={keyboardInset} />
+    {!hideBottomNav && (
+      <AOBottomNav active={active} onNavigate={handleNavigate} keyboardInset={keyboardInset} />
+    )}
     </>
   );
 }

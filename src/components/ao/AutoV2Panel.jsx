@@ -28,6 +28,13 @@ import {
 } from './draftArtifactSync.js';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
+import {
+  MAX_TOTAL_ATTACHMENT_BYTES,
+  attachmentOverLimitMessage,
+  packAttachmentsUnderLimit,
+  resizeImageFileToDataUrl,
+  totalAttachmentBytes,
+} from './chatAttachmentLimits.js';
 
 // parseArtifact / resolveArtifactPanelState live in draftArtifactSync.js (#131)
 
@@ -2767,37 +2774,35 @@ export default function AutoV2Panel({ onNavigate, className }) {
     }
   }, [startingNew, sending, loading, loadThreadList, syncArtifactFromMessages]);
 
-  const handleFileSelect = useCallback((e) => {
+  const handleFileSelect = useCallback(async (e) => {
     const files = Array.from(e.target.files || []);
+    e.target.value = '';
     if (files.length === 0) return;
 
-    const readers = files.map((file) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const dataUrl = ev.target.result || '';
-          // Derive actual MIME type from the dataUrl header, not from file.type.
-          // file.type can be wrong on macOS (e.g. reports image/jpeg for PNG files).
-          // The dataUrl header set by FileReader is always accurate.
-          const headerMatch = dataUrl.match(/^data:([^;]+);/);
-          const actualType = headerMatch ? headerMatch[1] : file.type;
-          resolve({
-            file,
-            name: file.name,
-            dataUrl,
-            type: actualType,
-          });
-        };
-        reader.readAsDataURL(file);
-      });
-    });
+    setError('');
+    try {
+      const results = [];
+      for (const file of files) {
+        const dataUrl = await resizeImageFileToDataUrl(file);
+        const headerMatch = dataUrl.match(/^data:([^;]+);/);
+        const actualType = headerMatch ? headerMatch[1] : file.type;
+        results.push({
+          file,
+          name: file.name,
+          dataUrl,
+          type: actualType,
+        });
+      }
 
-    Promise.all(readers).then((results) => {
-      setPendingFiles((prev) => [...prev, ...results]);
-    });
-
-    e.target.value = '';
-  }, []);
+      const { kept, dropped } = packAttachmentsUnderLimit(pendingFiles, results);
+      if (dropped.length > 0) {
+        setError(attachmentOverLimitMessage());
+      }
+      setPendingFiles(kept);
+    } catch (err) {
+      setError(err?.message || 'Could not read the selected file');
+    }
+  }, [pendingFiles]);
 
   async function buildOutgoingMessage(text, fileSnaps) {
     let body = String(text || '').trim();
@@ -2838,6 +2843,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
       const fileSnaps = pendingFiles;
 
       if ((!textInput.trim() && pendingFiles.length === 0) || sending) return;
+
+      if (totalAttachmentBytes(fileSnaps) > MAX_TOTAL_ATTACHMENT_BYTES) {
+        setError(attachmentOverLimitMessage());
+        return;
+      }
 
       let outgoing = '';
       try {
