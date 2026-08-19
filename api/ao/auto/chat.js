@@ -1679,6 +1679,17 @@ export default async function handler(req, res) {
     const toolsUsedThisTurn = Array.isArray(streamResult?.toolsUsed)
       ? streamResult.toolsUsed
       : [];
+
+    // The model is told never to write [IMAGE_GENERATED] itself (autoV2.js system
+    // prompt) — this is a soft instruction with no enforcement behind it. Confirmed
+    // live (2026-08-19): Auto wrote this tag and described a finished image twice
+    // in one thread before ever calling generate_image. gateActionClaims already
+    // catches the fabricated claim and warns Bart after the fact, but nothing
+    // removes the tag itself, so it still renders as a result. Strip it
+    // unconditionally here — both branches below only ever re-add it from a real
+    // tool result or a real legacy DALLE run, never from the model's raw text.
+    fullReply = fullReply.replace(/\[IMAGE_GENERATED[^\]]*\]/gi, '').trim();
+
     if (toolsUsedThisTurn.includes('generate_image')) {
       const bridged = appendImageGeneratedFromToolResults(
         fullReply,
