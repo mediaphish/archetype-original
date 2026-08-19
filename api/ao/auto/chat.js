@@ -1229,6 +1229,8 @@ export default async function handler(req, res) {
     let attachedImageFact = null;
     let chatAttachedFactTexts = '';
     let chatAttachedFactIds = [];
+    let chatAttachedImageUrlsThisTurn = [];
+    let chatAttachedImageUrlsPrior = [];
     let markChatAttachedImageFactsConsumed = null;
     if (Array.isArray(attachments) && attachments.length > 0) {
       try {
@@ -1244,6 +1246,9 @@ export default async function handler(req, res) {
         }
         if (persisted.messageIds?.length) {
           chatAttachedFactIds.push(...persisted.messageIds);
+        }
+        if (persisted.urls?.length) {
+          chatAttachedImageUrlsThisTurn.push(...persisted.urls);
         }
       } catch (chatAttErr) {
         console.error('[chat.js] chat attached image persist failed:', chatAttErr?.message);
@@ -1272,11 +1277,17 @@ export default async function handler(req, res) {
           (chatAttachedFactTexts.match(/https?:\/\/\S+/g) || []).map((u) => u.replace(/[.,)]+$/, ''))
         );
         const fresh = [];
+        const freshUrls = [];
         for (let i = 0; i < loadedAtt.facts.length; i += 1) {
           const url = loadedAtt.urls[i];
           if (url && already.has(url)) continue;
           fresh.push(loadedAtt.facts[i]);
+          if (url) freshUrls.push(url);
           chatAttachedFactIds.push(loadedAtt.messageIds[i]);
+        }
+        if (freshUrls.length) {
+          // Most-recent prior attachment first — same discipline as fact text ordering.
+          chatAttachedImageUrlsPrior.push(...freshUrls.slice().reverse());
         }
         if (fresh.length) {
           chatAttachedFactTexts = [chatAttachedFactTexts, ...fresh].filter(Boolean).join('\n\n');
@@ -1410,7 +1421,11 @@ export default async function handler(req, res) {
             sendEvent('token', { token });
           },
           combinedFacts || null,
-          { email: auth.email }
+          {
+            email: auth.email,
+            chatAttachedImageUrlsThisTurn,
+            chatAttachedImageUrlsPrior,
+          }
         ),
         timeoutAfter(
           SOFT_TIMEOUT_MS,
