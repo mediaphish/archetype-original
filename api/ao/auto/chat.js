@@ -1399,6 +1399,35 @@ export default async function handler(req, res) {
     let fullReply = '';
     let streamError = null;
     let streamResult = null;
+    let directImageResult = null;
+
+    const toolContext = {
+      email: auth.email,
+      threadId: thread.id,
+      chatAttachedImageUrlsThisTurn,
+      chatAttachedImageUrlsPrior,
+    };
+
+    async function runDirectImageIfNeeded() {
+      if (chatAttachedImageUrlsThisTurn.length === 0) return null;
+      try {
+        const { isDirectImageBrief } = await import('../../../lib/ao/directImageMode.js');
+        if (!isDirectImageBrief(userMessage, { hasAttachmentThisTurn: true })) return null;
+        sendEvent('image_generating', { source: 'direct_image' });
+        const { handleGenerateImage } = await import('../../../lib/ao/autoToolHandlers.js');
+        return await handleGenerateImage(
+          {
+            intent: 'attach_for_reference',
+            prompt_description: userMessage,
+            reference_image_urls: [chatAttachedImageUrlsThisTurn[0]],
+          },
+          toolContext
+        );
+      } catch (directImgErr) {
+        console.error('[chat.js] direct image generation failed:', directImgErr?.message);
+        return { ok: false, error: directImgErr?.message || String(directImgErr) };
+      }
+    }
 
     function timeoutAfter(ms, message) {
       return new Promise((_, reject) => setTimeout(() => reject(new Error(message)), ms));
@@ -1409,29 +1438,30 @@ export default async function handler(req, res) {
     }
 
     try {
-      streamResult = await Promise.race([
-        runAutoChatStream(
-          history,
-          currentMessageContent,
-          scheduleContext,
-          userMessage,
-          (token) => {
-            // Send each token to the client as it arrives
-            fullReply += token;
-            sendEvent('token', { token });
-          },
-          combinedFacts || null,
-          {
-            email: auth.email,
-            chatAttachedImageUrlsThisTurn,
-            chatAttachedImageUrlsPrior,
-          }
-        ),
-        timeoutAfter(
-          SOFT_TIMEOUT_MS,
-          'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.'
-        ),
+      const [streamOutcome, directOutcome] = await Promise.all([
+        Promise.race([
+          runAutoChatStream(
+            history,
+            currentMessageContent,
+            scheduleContext,
+            userMessage,
+            (token) => {
+              // Send each token to the client as it arrives
+              fullReply += token;
+              sendEvent('token', { token });
+            },
+            combinedFacts || null,
+            toolContext
+          ),
+          timeoutAfter(
+            SOFT_TIMEOUT_MS,
+            'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.'
+          ),
+        ]),
+        runDirectImageIfNeeded(),
       ]);
+      streamResult = streamOutcome;
+      directImageResult = directOutcome;
 
       if (!streamResult.ok) {
         streamError = streamResult.error || 'Auto reply failed';
@@ -1695,6 +1725,27 @@ export default async function handler(req, res) {
         fullReply,
         streamResult?.toolResults || []
       );
+      fullReply = bridged.reply;
+      if (directImageResult?.ok) {
+        try {
+          await logActivity({
+            action_type: 'direct_image_duplicate_discarded',
+            source: 'chat.js:direct_image_enforcement',
+            created_by_email: auth.email,
+            detail: {
+              thread_id: thread.id,
+              discarded_image_url: directImageResult.image_url,
+              reason: 'Auto already called generate_image this turn',
+            },
+          });
+        } catch (_) {
+          /* non-fatal */
+        }
+      }
+    } else if (directImageResult?.ok) {
+      const bridged = appendImageGeneratedFromToolResults(fullReply, [
+        { name: 'generate_image', result: directImageResult },
+      ]);
       fullReply = bridged.reply;
     } else {
       fullReply = await appendDesignImageToReplyIfNeeded({

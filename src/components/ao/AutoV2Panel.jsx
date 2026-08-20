@@ -457,22 +457,26 @@ function PaperclipIcon() {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function TypingIndicator() {
+function TypingIndicator({ label = null }) {
   return (
     <div className="flex gap-3">
       <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center bg-gray-100 border border-gray-200">
         <AOMark className="w-3.5 h-3.5 text-gray-500" />
       </div>
       <div className="bg-gray-50 border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3">
-        <div className="flex gap-1 items-center h-4">
-          {[0, 150, 300].map((delay) => (
-            <span
-              key={delay}
-              className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-              style={{ animationDelay: `${delay}ms` }}
-            />
-          ))}
-        </div>
+        {label ? (
+          <p className="text-sm text-gray-600">{label}</p>
+        ) : (
+          <div className="flex gap-1 items-center h-4">
+            {[0, 150, 300].map((delay) => (
+              <span
+                key={delay}
+                className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                style={{ animationDelay: `${delay}ms` }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1814,6 +1818,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [activeThreadId, setActiveThreadId] = useState(null);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [imageGenerating, setImageGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [artifact, setArtifact] = useState(null);
@@ -2882,6 +2887,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       setInput('');
       setMessages((prev) => [...prev, optimisticMsg]);
       setSending(true);
+      setImageGenerating(false);
       setError('');
 
       if (textareaRef.current) textareaRef.current.style.height = '22px';
@@ -3038,6 +3044,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
                           : m
                       )
                     );
+                  } else if (parsed.image_generating) {
+                    setImageGenerating(true);
                   } else if (parsed.reply_append && parsed.append_text !== undefined) {
                     // Action-claim gate: keep streamed content; append warning note only.
                     streamingAssistantContent += String(parsed.append_text || '');
@@ -3051,6 +3059,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
                   } else if (parsed.token !== undefined) {
                     // Text token — append to streaming display
                     streamingAssistantContent += parsed.token;
+                    if (/\[IMAGE_GENERATED/i.test(streamingAssistantContent)) {
+                      setImageGenerating(false);
+                    }
                     setMessages((prev) =>
                       prev.map((m) =>
                         m.id === streamingMsgId
@@ -3060,6 +3071,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
                     );
                   } else if (parsed.ok !== undefined) {
                     // Done event or error event with full state
+                    setImageGenerating(false);
                     json = parsed;
                   }
                 } catch (_) {
@@ -3125,6 +3137,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
       } finally {
         if (stallTimer) clearInterval(stallTimer);
         setSending(false);
+        setImageGenerating(false);
       }
     },
     [input, sending, activeThreadId, pendingFiles, loadThreadList, syncArtifactFromMessages, isMobile]
@@ -3681,7 +3694,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
             <MessageBubble key={msg.id || `${msg.role}-${i}-${msg.created_at}`} message={msg} />
           ))}
 
-          {sending && <TypingIndicator />}
+          {sending && !imageGenerating && <TypingIndicator />}
+
+          {imageGenerating && (
+            <TypingIndicator label="Generating your image — this may take a moment…" />
+          )}
 
           {error && (
             <div className="flex flex-col gap-2 px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-700">
