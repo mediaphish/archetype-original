@@ -6,6 +6,7 @@ import path from 'path';
 import { getArchyRetrievalDepthFromPaid } from '../lib/ao/archyAccess.js';
 import { isArchyPaidSessionAsync } from '../lib/ao/archyEntitlements.js';
 import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyThreadMemory.js';
+import { searchCorpusChunks, groupChunksByDocument } from '../lib/ao/corpusChunks.js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -185,7 +186,8 @@ function ensureRemainingHumanInKnowledge(relevantKnowledge, corpus, pageContext)
   if (!rh) return relevantKnowledge;
   const has = relevantKnowledge.some((d) => d.slug === 'remaining-human');
   if (has) return relevantKnowledge;
-  return [rh, ...relevantKnowledge].slice(0, 5);
+  // Keep the existing floor of 5, but never shorten a longer semantic result set.
+  return [rh, ...relevantKnowledge].slice(0, Math.max(5, relevantKnowledge.length));
 }
 
 /** On /advisory, pin The Room manuscript so Archy can answer from the book. */
@@ -197,7 +199,8 @@ function ensureTheRoomInKnowledge(relevantKnowledge, corpus, pageContext) {
   if (!book) return relevantKnowledge;
   const has = relevantKnowledge.some((d) => d.slug === 'the-room');
   if (has) return relevantKnowledge;
-  return [book, ...relevantKnowledge].slice(0, 5);
+  // Keep the existing floor of 5, but never shorten a longer semantic result set.
+  return [book, ...relevantKnowledge].slice(0, Math.max(5, relevantKnowledge.length));
 }
 
 // Get client IP from Vercel headers
@@ -299,7 +302,41 @@ export default async function handler(req, res) {
   const archyDepth = getArchyRetrievalDepthFromPaid(archyPaid);
   const archyMemory = archyPaid ? await loadArchyThreadMemory(sessionId) : null;
 
-  let relevantKnowledge = searchKnowledge(message, knowledgeCorpus, { maxDocs: archyDepth.maxDocs });
+  // Semantic passage retrieval first (ao_corpus_chunks). Falls back to the
+  // legacy keyword scorer only if semantic search returns nothing at all —
+  // an embedding failure or an empty chunk table should degrade, not break.
+  let relevantKnowledge = [];
+  let retrievalMode = 'semantic';
+
+  const passageHits = await searchCorpusChunks(message, {
+    maxResults: archyDepth.maxPassages,
+    maxPerDoc: 3,
+  });
+
+  if (passageHits.length > 0) {
+    const corpusBySlug = new Map(
+      (knowledgeCorpus.docs || []).map((doc) => [doc.slug, doc])
+    );
+    relevantKnowledge = groupChunksByDocument(passageHits).map((group) => {
+      const source = corpusBySlug.get(group.slug) || {};
+      return {
+        ...source,
+        slug: group.slug,
+        title: group.title || source.title,
+        summary: group.summary || source.summary || '',
+        tags: source.tags || [],
+        // The passages ARE the relevant excerpt. Joined here so every existing
+        // downstream reader of doc.body keeps working unchanged.
+        body: group.passages.map((p) => p.content).join('\n\n[...]\n\n'),
+        passageCount: group.passages.length,
+        fromSemanticSearch: true,
+      };
+    });
+  } else {
+    retrievalMode = 'keyword';
+    relevantKnowledge = searchKnowledge(message, knowledgeCorpus, { maxDocs: archyDepth.maxDocs });
+  }
+
   relevantKnowledge = ensureRemainingHumanInKnowledge(
     relevantKnowledge,
     knowledgeCorpus,
@@ -307,7 +344,10 @@ export default async function handler(req, res) {
   );
   relevantKnowledge = ensureTheRoomInKnowledge(relevantKnowledge, knowledgeCorpus, context);
   console.log('Searching for:', message);
-  console.log('Relevant knowledge found:', relevantKnowledge.length, 'documents');
+  console.log(
+    `Relevant knowledge found: ${relevantKnowledge.length} documents ` +
+      `(${retrievalMode}${retrievalMode === 'semantic' ? `, ${passageHits.length} passages` : ''})`
+  );
   if (relevantKnowledge.length > 0) {
     console.log('Found documents:', relevantKnowledge.map(doc => doc.title));
   }
@@ -327,7 +367,15 @@ export default async function handler(req, res) {
       if (doc.summary) {
         knowledgeContext += `Summary: ${doc.summary}\n`;
       }
-      // Include more content for canonical/doctrinal documents to ensure full context
+      // Semantically retrieved passages are already the relevant excerpt,
+      // bounded by maxPassages. Truncating them here would reintroduce exactly
+      // the defect this replaced: answering long essays from their opening.
+      if (doc.fromSemanticSearch) {
+        knowledgeContext += `Content (${doc.passageCount} passage${doc.passageCount === 1 ? '' : 's'}): ${doc.body}\n\n`;
+        return;
+      }
+
+      // Legacy keyword path: include more content for canonical/doctrinal documents
       const isCanonical = doc.title?.toLowerCase().includes('section') ||
                           doc.title?.toLowerCase().includes('canon') ||
                           doc.title?.toLowerCase().includes('doctrine') ||
@@ -341,7 +389,8 @@ export default async function handler(req, res) {
         : isCanonical
           ? Math.min(Math.floor(cap * 1.15), 2000)
           : cap;
-      knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}...\n\n`;
+      const truncated = doc.body.length > contentLength;
+      knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}${truncated ? '...' : ''}\n\n`;
     });
   }
 
