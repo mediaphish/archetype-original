@@ -1,78 +1,75 @@
 # Summary: How the Cursor Agent Is Used in Archetype Original
 
+**Last refreshed:** 2026-08-20
+
 ## Role of the Agent
 
-Inside **archetype-original**, the Cursor AI agent is used as the **technical owner** for the project. The user does not work in local development or run builds and deploys themselves; they rely on the live site and on the agent to do all technical work. The agent is expected to:
+Inside **archetype-original** (product name: **Archetype Original**), the Cursor AI agent is the **technical owner**. Bart does not work in local development or run builds and deploys himself. He relies on the **live site** and on the agent for all technical work. The agent is expected to:
 
-- **Plan first** and present changes in plain language (no technical jargon) for approval.
+- **Plan first** and present changes in plain language (no technical jargon) for approval — except standing approvals and Claude-authored prompt specs (see `.cursorrules`).
 - **Execute** all code changes, commits, and deploys so the live site reflects the work.
-- **Never leave work uncommitted or undeployed**—commit and push so the host (e.g. Vercel) gets the updates.
-- **Read the latest handoff notes** when present (captures recent decisions and “how we work” expectations):
-  - `notes/AGENT_HANDOFF_preparing-for-major-system-updates_2026-03-10.md`
+- **Never leave work uncommitted or undeployed** — commit and push so the host gets the updates. Do not ask “Should I commit?”
+- **Read the latest handoff notes** before acting:
+  - `notes/AGENT_USAGE_SUMMARY.md` (this file)
+  - `notes/AGENT_HANDOFF_current_2026-08-20.md` (current expectations and hard-won lessons)
+  - Older notes such as `notes/AGENT_HANDOFF_preparing-for-major-system-updates_2026-03-10.md` are **historical only** unless Bart points at them.
 
-So in practice: the agent writes and edits code, runs builds, commits, and deploys; the user approves direction and checks the live site.
+So in practice: the agent writes and edits code, runs checks, commits, and deploys; Bart approves direction and checks the live site.
 
 ---
 
 ## Common Uses
 
-### 1. **Devotionals: adding and importing**
+### 1. Devotionals: adding and importing
 
 - **Adding new devotionals**  
-  The user provides markdown files (e.g. from Downloads). The agent:
+  Bart provides markdown files (e.g. from Downloads). The agent:
   - Copies them into `ao-knowledge-hq-kit/journal/devotionals/`
   - Ensures front matter and sections match the project (title, slug, date, scripture_reference, summary, etc.)
   - Normalizes details (e.g. categories, ESV reference format) to match existing posts
 
 - **Overlap checks before adding**  
-  When the user is unsure whether a new devotional repeats others, the agent:
+  When Bart is unsure whether a new devotional repeats others, the agent:
   - Compares **scripture references** to existing devotionals (no duplicate passages)
-  - Compares **themes and summaries** (e.g. courage + God’s presence, drift, self-control) and reports heavy overlap or a clear lane for the new post
-  - Recommends skipping, merging, or refocusing (e.g. “focus only on the protective angle”) in plain language
+  - Compares **themes and summaries** and reports heavy overlap or a clear lane
+  - Recommends skipping, merging, or refocusing in plain language
+  - **Stops** before copy/build/commit if overlap is found, and waits for Bart’s decision
 
 - **Knowledge build and deploy**  
-  After adding or changing devotionals, the agent:
-  - Runs the knowledge build (`node scripts/build-knowledge.mjs`) so devotionals are included in `public/knowledge.json`
-  - Commits new/updated devotional files (and, when appropriate, the updated `knowledge.json`)
-  - Pushes to the remote so the site deploys (e.g. Vercel). If the remote has new commits, the agent handles merge/rebase and push so the deploy completes.
+  After adding or changing devotionals, the agent refreshes the knowledge index, commits, and pushes so the live site updates.
 
-### 2. **Content and display**
+### 2. Journal and corpus publish
 
-- **Devotional display and API**  
-  Past work (from conversation context) has included:
-  - Month-overview parsing and display for devotionals
-  - Normalizing scripture references (e.g. “5b, ESV”) in the API and in `esvUrl` so links and fetches work correctly
+- Long-form journal articles stay **`status: draft`** until Bart approves them for the public Journal.
+- Corpus publish defaults to draft. Live publish requires Bart’s explicit approval token flow — Auto/tools must not imply “live” without that step.
+- Publication actions that can push site content should leave an audit trail Bart can inspect.
 
-- **Faith route**  
-  Devotionals are served from the knowledge corpus and appear on the `/faith` route; the agent’s edits and deploys keep that content and behavior in sync.
+### 3. Auto (chat assistant) and images
 
-### 3. **Long-form Journal articles (guardrail)**
+Auto is a major product surface. Recent work (summer 2026) focused on making image generation behave more like a simple “attach photo + describe what you want → get the image” flow, plus likeness checks and social publish reliability.
 
-- New or in-progress **journal articles** (markdown in `ao-knowledge-hq-kit/journal/`, not under `devotionals/`) must use **`status: draft`** until you approve them for the public Journal. Only **`status: published`** includes them in the built index and live Journal.
-- Devotionals keep their existing rule: **`status: draft`** hides them; **`status: published`** is used for scheduled devotionals.
+**Hard-won lessons and current expectations** live in:
 
-### 3b. **Corpus publish → Journal (explicit live approval)**
+- `notes/AGENT_HANDOFF_current_2026-08-20.md`
+- `notes/CORRECTION_phase1-already-on-main_2026-08-06.md` (do not re-apply Phase 1 wiring)
 
-- `POST /api/ao/corpus/publish` writes `ao-knowledge-hq-kit/journal/<slug>.md` **as draft by default** (public Journal excludes drafts).
-- To commit as **`status: published`**, Bart must first `POST /api/ao/journal/publish-approval` with `{ slug }`, then call corpus publish again with **`live_on_site: true`** and **`publish_approval_token`** (single-use, bound to AO email + path). Auto/tools must not imply “live” without that human-initiated mint step.
+Bart has been burned by repeated Auto image failures and by agents/Claude re-diagnosing work that is already on `main`. Treat trust as fragile: verify against the live repo before claiming something is missing; prefer proof on the live site over another speculative prompt.
 
-### 3c. **Publication audit trail**
+### 4. Social / journal-launch posts
 
-- Server actions that can push site content or merge to Git write rows to **`ao_publication_audit`** (install script: `database/ao_publication_audit.sql`). **`GET /api/ao/audit/publication`** (AO login required) returns recent events so Bart can see what touched the repo or knowledge index without guessing.
-- The knowledge build script also logs a summary row when Supabase env vars are present (e.g. CI after secrets are set).
+Scheduled journal-launch posts can snapshot an empty image URL at schedule time. Publish-time refresh from the source draft was added so Instagram/Facebook are not stuck with a permanent blank image when the header exists later. Failed rows still need a deliberate reset if Bart wants a retry — they do not auto-heal.
 
-### 4. **Commit and deploy discipline**
+### 5. Commit and deploy discipline
 
-- The agent is required to **commit and push all project changes** (except things the project explicitly excludes, e.g. secrets) so the live site is never left behind.
-- When push is rejected (e.g. remote has new commits), the agent **stashes if needed, pulls, resolves conflicts** (e.g. for `public/knowledge.json`), and **pushes** so deploy happens. It does not hand off “run git pull/push” to the user.
+- Commit and push **all** project changes that belong in the repo (except secrets / explicit excludes).
+- If the remote moved, reconcile and push — do not hand “run git pull/push” to Bart.
 
-### 5. **Other technical work**
+### 6. Other technical work
 
-- The agent is also used for general **engineering and UX work**: architecture, bug fixes, UI/design decisions, and research—always with plans and explanations in **human, non-technical language** and with approval before execution.
-- **Notes and docs** (e.g. `notes/DEVOTIONAL_IMPORT_PROCESS.md`, `notes/CURSOR_GIT_PUSH.md`) are used to record processes so future agent sessions (or the user) can follow the same workflow.
+Architecture, bugs, UX/UI, research — always in human language, with approval for **new** product decisions. Standing processes (publish, Claude specs, already-chosen cleanup styles) do not get a second approval gate.
 
 ---
 
 ## Summary in one sentence
 
-**Inside archetype-original, the agent is used as the technical owner that plans and executes all code and content changes (especially devotionals), checks for overlap with existing posts, runs the knowledge build, and commits and deploys so the live site is always up to date.**
+**Inside archetype-original, the agent is the technical owner that plans and executes code and content work (devotionals, journal, Auto, social), verifies claims against the live repo, and commits and deploys so the live site stays current — without re-asking for work Bart already approved.**

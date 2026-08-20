@@ -1,6 +1,10 @@
 # Agent handoff: Preparing for major system updates (2026-03-10)
 
-This note captures the *reusable* context from the transcript `cursor_preparing_for_major_system_updat.md` (exported 2026-03-10). The full transcript is long; this is the practical “source of truth” summary for how to work and what matters.
+> **Historical note (2026-08-20):** This file is kept for archive context (Topics & Scenarios era).  
+> For current how-we-work expectations and Auto/image lessons, read  
+> `notes/AGENT_HANDOFF_current_2026-08-20.md` and `notes/AGENT_USAGE_SUMMARY.md` instead.
+
+This note captures the *reusable* context from the transcript `cursor_preparing_for_major_system_updat.md` (exported 2026-03-10). The full transcript is long; this is the practical “source of truth” summary for how to work and what matters **as of March 2026**.
 
 ---
 

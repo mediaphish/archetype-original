@@ -9,7 +9,8 @@
 3. If something breaks on your side but the user's goal is achieved (e.g. the site works, the feature is live), say so simply: "What you need is working. I hit a snag when I tried to verify something on my side, but it doesn’t affect you or the site." Do **not** explain the snag in technical terms.
 4. **Check the project handoff notes** (so you inherit the latest context and expectations):
    - `notes/AGENT_USAGE_SUMMARY.md`
-   - `notes/AGENT_HANDOFF_preparing-for-major-system-updates_2026-03-10.md`
+   - `notes/AGENT_HANDOFF_current_2026-08-20.md`
+   - `notes/AGENT_HANDOFF_preparing-for-major-system-updates_2026-03-10.md` is **historical only** (March 2026). Do not treat it as current unless Bart points at that work.
 
 Follow this every time. The user does not need to remind you.
 
@@ -106,6 +107,16 @@ Once Bart has approved a *kind of work* (or this file already authorizes it), **
 - Confusing “ask when scope is unclear” with “ask before every familiar action”
 
 If unsure whether something is standing vs new: prefer **one short clarifying question** over a full re-plan — and never invent a second approval loop for publish or for an attached Claude spec.
+
+### Hard-won lessons — Auto, images, and Claude prompts (mandatory)
+
+These are standing lessons from live failures (summer 2026). Full detail: `notes/AGENT_HANDOFF_current_2026-08-20.md`.
+
+1. **Verify Claude’s claims against the live repo before executing a Claude prompt.** Claude has been wrong about missing files, wrong table/column names, and “never shipped” work that was already on `main`. Correct false claims; do not implement from an incorrect audit. Empty activity logs do **not** prove wiring is missing — often the success path simply has not been exercised yet. See `notes/CORRECTION_phase1-already-on-main_2026-08-06.md`.
+2. **Prompt-only fixes are not enough for Auto image behavior.** If Bart’s experience must be “attach + full brief → image,” that must be enforced in server behavior, not only in Auto’s written instructions.
+3. **Likeness checks must use a real uploaded photo of Bart**, not the previous AI image. Generation may use the last output for continuity; verification must stay anchored to a real reference or the face drifts while the log says “verified.”
+4. **When Bart already wrote a complete image brief, reuse his wording** — do not rewrite it into a “better” prompt.
+5. **Bart’s trust in Auto is fragile.** Do not invent new Auto image campaigns unprompted. If he asks to pause, strip, or delete Auto, follow that. Do not talk him into keeping it.
 
 ### Question-Asking Protocol
 - When requirements are ambiguous → Ask
