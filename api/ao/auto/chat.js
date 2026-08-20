@@ -1840,7 +1840,7 @@ export default async function handler(req, res) {
         } else {
           const editClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
           const editResponse = await editClient.messages.create({
-            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
             max_tokens: 1000,
             system:
               "You revise one social media caption per the requested instruction. Keep Bart's voice rules: no em dashes, no AI signature phrases, short declarative sentences. Return ONLY the revised caption text, nothing else.",
@@ -1932,7 +1932,7 @@ export default async function handler(req, res) {
 
           const draftClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
           const draftResponse = await draftClient.messages.create({
-            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+            model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
             max_tokens: 4000,
             system: `You are Auto, Bart Paden's AI CMO writing a companion journal entry for Archetype Original.
 

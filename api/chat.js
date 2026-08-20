@@ -7,6 +7,12 @@ import { getArchyRetrievalDepthFromPaid } from '../lib/ao/archyAccess.js';
 import { isArchyPaidSessionAsync } from '../lib/ao/archyEntitlements.js';
 import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyThreadMemory.js';
 import { searchCorpusChunks, groupChunksByDocument } from '../lib/ao/corpusChunks.js';
+import {
+  archyComplete,
+  archyClassify,
+  archyYesNo,
+  archyModelConfigured,
+} from '../lib/ao/archyModel.js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -556,38 +562,37 @@ ${isDarkHours ? 'DARK HOURS: Bart\'s office is closed (6 p.m.–10 a.m. CST). Yo
 
 Remember: This is a real conversation. Listen, understand, and respond authentically. Keep the conversation going.`;
 
-  // Try OpenAI first, fallback to simple error if it fails
-  if (process.env.OPEN_API_KEY) {
+  // Archy's answer. Previously OpenAI `gpt-4`, which resolves to gpt-4-0613
+  // (June 2023) — confirmed in production logs 2026-08-20. Now Claude Sonnet 5
+  // via lib/ao/archyModel.js.
+  //
+  // max_tokens went from 520 to 1024: with passage-level retrieval Archy now
+  // has real material to quote, and 520 truncated it mid-thought.
+  if (archyModelConfigured()) {
     try {
-      const messages = [
-        { role: 'system', content: systemPrompt },
-        ...conversationHistory,
-        { role: 'user', content: message },
-      ];
-
-      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.OPEN_API_KEY}`,
-          },
-        body: JSON.stringify({
-          model: 'gpt-4',
-          messages: messages,
-          max_tokens: 520,
-          temperature: 0.7
-        })
+      const completion = await archyComplete({
+        system: systemPrompt,
+        history: conversationHistory,
+        message,
+        maxTokens: 1024,
       });
 
-      console.log('OpenAI response status:', openaiResponse.status);
-      console.log('OpenAI response headers:', Object.fromEntries(openaiResponse.headers.entries()));
-      
-      const data = await openaiResponse.json();
-      console.log('OpenAI response data:', data);
-      
+      console.log(
+        `Archy model: ${process.env.ARCHY_ANTHROPIC_MODEL || 'claude-sonnet-5'} | ok=${completion.ok}` +
+          (completion.error ? ` | error=${completion.error}` : '') +
+          (completion.usage ? ` | in=${completion.usage.input_tokens} out=${completion.usage.output_tokens}` : '')
+      );
+
+      // Shaped like the OpenAI payload this replaced so the large block below,
+      // which reads data.choices[0].message.content, is untouched.
+      const data =
+        completion.ok && completion.text
+          ? { choices: [{ message: { content: completion.text } }], usage: completion.usage }
+          : {};
+
       // Calculate response time
       const responseTime = Date.now() - startTime;
-      
+
       if (data.choices && data.choices[0]) {
         let response = data.choices[0].message.content;
         let followUpPrompts = null;
@@ -656,34 +661,13 @@ Respond with ONLY a JSON object:
   "reason": "brief explanation"
 }`;
 
-            const nonsensicalCheckResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.OPEN_API_KEY}`,
-              },
-              body: JSON.stringify({
-                model: 'gpt-4',
-                messages: [{ role: 'user', content: nonsensicalCheckPrompt }],
-                max_tokens: 100,
-                temperature: 0.3
-              })
-            });
-
-            if (nonsensicalCheckResponse.ok) {
-              const checkData = await nonsensicalCheckResponse.json();
-              const checkText = checkData.choices?.[0]?.message?.content;
-              if (checkText) {
-                try {
-                  const check = JSON.parse(checkText);
-                  isNonsensical = check.isNonsensical === true;
-                  if (isNonsensical) {
-                    console.log('AI detected nonsensical question:', check.reason);
-                  }
-                } catch (parseError) {
-                  // If parsing fails, fall back to pattern matching only
-                  console.error('Error parsing nonsensical check:', parseError);
-                }
+            // archyClassify returns parsed JSON or null; a null keeps the
+            // existing pattern-matching fallback, same as a parse failure did.
+            const check = await archyClassify({ prompt: nonsensicalCheckPrompt, maxTokens: 100 });
+            if (check) {
+              isNonsensical = check.isNonsensical === true;
+              if (isNonsensical) {
+                console.log('AI detected nonsensical question:', check.reason);
               }
             }
           } catch (checkError) {
@@ -796,41 +780,20 @@ Respond with ONLY a JSON object:
   "category": "potential_client" | "canon_worthy" | "neither"
 }`;
 
-              const assessmentResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${process.env.OPEN_API_KEY}`,
-                },
-                body: JSON.stringify({
-                  model: 'gpt-4',
-                  messages: [{ role: 'user', content: assessmentPrompt }],
-                  max_tokens: 150,
-                  temperature: 0.3
-                })
-              });
-
-              if (assessmentResponse.ok) {
-                const assessmentData = await assessmentResponse.json();
-                const assessmentText = assessmentData.choices?.[0]?.message?.content;
-                if (assessmentText) {
-                  try {
-                    const assessment = JSON.parse(assessmentText);
-                    isValuableQuestion = assessment.isValuable === true;
-                    console.log('Question assessment:', assessment);
-                  } catch (parseError) {
-                    console.error('Error parsing assessment:', parseError);
-                    // Fallback: check for keywords that suggest value
-                    const valuableKeywords = [
-                      'consulting', 'mentorship', 'leadership', 'team', 'company', 'business',
-                      'culture', 'organization', 'help', 'guidance', 'advice', 'work together',
-                      'services', 'pricing', 'how much', 'cost', 'schedule', 'meeting', 'call'
-                    ];
-                    isValuableQuestion = valuableKeywords.some(keyword => 
-                      message.toLowerCase().includes(keyword)
-                    );
-                  }
-                }
+              const assessment = await archyClassify({ prompt: assessmentPrompt, maxTokens: 150 });
+              if (assessment) {
+                isValuableQuestion = assessment.isValuable === true;
+                console.log('Question assessment:', assessment);
+              } else {
+                // Same keyword fallback the parse-failure path used.
+                const valuableKeywords = [
+                  'consulting', 'mentorship', 'leadership', 'team', 'company', 'business',
+                  'culture', 'organization', 'help', 'guidance', 'advice', 'work together',
+                  'services', 'pricing', 'how much', 'cost', 'schedule', 'meeting', 'call'
+                ];
+                isValuableQuestion = valuableKeywords.some(keyword =>
+                  message.toLowerCase().includes(keyword)
+                );
               }
             } catch (assessmentError) {
               console.error('Error assessing question value:', assessmentError);
@@ -986,25 +949,10 @@ Conversation length: ${conversationHistory.length} messages
 
 Should we offer direct contact with Bart?`;
 
-            const escalationCheck = await fetch('https://api.openai.com/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${process.env.OPEN_API_KEY}`,
-              },
-              body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: [
-                  { role: 'system', content: 'Answer only yes or no.' },
-                  { role: 'user', content: escalationPrompt },
-                ],
-                max_tokens: 10,
-                temperature: 0,
-              }),
-            });
-            const escData = await escalationCheck.json().catch(() => ({}));
-            const escText = escData.choices?.[0]?.message?.content?.toLowerCase() || '';
-            shouldOfferEscalation = escText.includes('yes');
+            // null means the call could not be made — treat that as "no", the
+            // same as the previous code's empty-string fallthrough.
+            const escalate = await archyYesNo({ prompt: escalationPrompt });
+            shouldOfferEscalation = escalate === true;
           } catch (err) {
             console.error('Escalation check failed:', err);
             shouldOfferEscalation = false;

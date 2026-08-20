@@ -138,7 +138,7 @@ No preamble, no markdown, no explanation.`;
     const response = await withRetry(
       () =>
         client.messages.create({
-          model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
           max_tokens: 300,
           system: systemPrompt,
           messages: [{ role: 'user', content: userPrompt }],
@@ -173,7 +173,7 @@ Respond with ONLY a JSON object: {"mood": "confrontational" | "working" | "refle
     const response = await withRetry(
       () =>
         client.messages.create({
-          model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
           max_tokens: 100,
           system: systemPrompt,
           messages: [{ role: 'user', content: userPrompt }],
@@ -528,7 +528,7 @@ Search for current leadership news and trends, then select the best entry from t
     const response = await withRetry(
       () =>
         client.messages.create({
-          model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
           max_tokens: 1000,
           system: systemPrompt,
           messages: [{ role: 'user', content: userPrompt }],
@@ -655,7 +655,7 @@ Write four reshare captions for this article. Surface a fresh angle. Do not summ
   const response = await withRetry(
     () =>
       client.messages.create({
-        model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+        model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
         max_tokens: 2000,
         system: systemPrompt,
         messages: [{ role: 'user', content: userPrompt }],

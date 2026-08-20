@@ -122,7 +122,7 @@ Generate the content derivation plan for this post. Identify 3-5 LinkedIn chunks
 
   try {
     const response = await client.messages.create({
-      model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+      model: process.env.AUTO_ANTHROPIC_MODEL || 'claude-opus-5',
       max_tokens: 4000,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
