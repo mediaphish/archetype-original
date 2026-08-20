@@ -725,7 +725,7 @@ Respond with ONLY a JSON object:
             const questionLower = message.toLowerCase();
             let topicCategory = 'nonsensical';
             
-            await supabase
+            await supabaseAdmin
               .from('archy_questions')
               .insert([
                 {
@@ -1056,7 +1056,7 @@ Should we offer direct contact with Bart?`;
             topicCategory = 'about';
           }
           
-          await supabase
+          await supabaseAdmin
             .from('archy_questions')
             .insert([
               {
