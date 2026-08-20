@@ -707,7 +707,46 @@ async function buildKnowledgeCorpus() {
     console.log(`   ⏭️  Skipped: ${faqSkipped}`);
   }
   
-  // Sort: journal posts and devotionals by publish_date, everything else by updated_at
+  // Carry timestamps forward for documents that have not actually changed.
+  //
+  // The doc builders above each fall back to `new Date()` when a source file carries
+  // no frontmatter date, so every build restamped most of the corpus. This must run
+  // BEFORE the sort, because the sort reads updated_at — restamped dates changed the
+  // output order, which is what actually produced ~1,000 lines of churn per run.
+  let previousCorpus = null;
+  try {
+    if (fs.existsSync(OUTPUT_FILE)) {
+      previousCorpus = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
+    }
+  } catch (err) {
+    console.warn('⚠️  Could not read previous knowledge.json:', err?.message || err);
+  }
+
+  const previousBySlug = new Map((previousCorpus?.docs || []).map((doc) => [doc.slug, doc]));
+  const withoutStamps = (doc) => {
+    const { created_at, updated_at, ...rest } = doc;
+    return JSON.stringify(rest);
+  };
+
+  let carriedForward = 0;
+  for (const doc of docs) {
+    const previous = previousBySlug.get(doc.slug);
+    if (!previous) continue;
+    if (withoutStamps(previous) === withoutStamps(doc)) {
+      doc.created_at = previous.created_at;
+      doc.updated_at = previous.updated_at;
+      carriedForward++;
+    }
+  }
+
+  // Sort: journal posts and devotionals by publish_date, everything else by updated_at.
+  //
+  // Slug is the final tiebreaker on purpose. Documents whose source file carries no
+  // frontmatter date are stamped with `new Date()` by the builders above, and a full
+  // build spans several milliseconds — so ties broke differently on every run and the
+  // output order was not reproducible. That alone rewrote ~1,000 lines an hour and
+  // made the hourly Action commit and redeploy the site with no content change behind
+  // it. Ordering now depends only on the documents themselves.
   docs.sort((a, b) => {
     const aIsJournal = a.type === 'journal-post' || a.type === 'devotional';
     const bIsJournal = b.type === 'journal-post' || b.type === 'devotional';
@@ -716,14 +755,17 @@ async function buildKnowledgeCorpus() {
       // Both journal/devotional: sort by publish_date descending
       const aDate = a.publish_date || a.date || a.updated_at || '';
       const bDate = b.publish_date || b.date || b.updated_at || '';
-      return bDate.localeCompare(aDate);
+      const byDate = bDate.localeCompare(aDate);
+      return byDate !== 0 ? byDate : String(a.slug || '').localeCompare(String(b.slug || ''));
     }
 
     if (aIsJournal && !bIsJournal) return -1;
     if (!aIsJournal && bIsJournal) return 1;
 
     // Both non-journal: sort by updated_at descending
-    return new Date(b.updated_at) - new Date(a.updated_at);
+    const byUpdated = new Date(b.updated_at) - new Date(a.updated_at);
+    if (byUpdated !== 0) return byUpdated;
+    return String(a.slug || '').localeCompare(String(b.slug || ''));
   });
 
   const beforeGuard = docs.length;
@@ -781,12 +823,29 @@ async function buildKnowledgeCorpus() {
     }
   }
 
+  // Keep the previous generated_at when the corpus is byte-identical, so an
+  // unchanged build produces no commit and no deploy at all.
+  let generatedAt = new Date().toISOString();
+  const corpusUnchanged =
+    previousCorpus &&
+    previousCorpus.count === dedupedDocs.length &&
+    JSON.stringify(previousCorpus.docs) === JSON.stringify(dedupedDocs);
+
+  if (corpusUnchanged && previousCorpus.generated_at) {
+    generatedAt = previousCorpus.generated_at;
+    console.log(
+      `ℹ️  Corpus unchanged (${carriedForward} documents carried forward) — keeping previous generated_at, so no empty commit or deploy is triggered.`
+    );
+  } else if (carriedForward > 0) {
+    console.log(`ℹ️  ${carriedForward} unchanged document(s) kept their existing timestamps.`);
+  }
+
   const knowledgeCorpus = {
-    generated_at: new Date().toISOString(),
+    generated_at: generatedAt,
     count: dedupedDocs.length,
     docs: dedupedDocs,
   };
-  
+
   // Write to output file
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(knowledgeCorpus, null, 2));
 
