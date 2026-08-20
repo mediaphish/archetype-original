@@ -298,9 +298,21 @@ export default async function handler(req, res) {
   const knowledgeCorpus = loadKnowledgeCorpus();
   console.log('Knowledge corpus loaded:', knowledgeCorpus.docs ? knowledgeCorpus.docs.length : 0, 'documents');
 
-  const archyPaid = await isArchyPaidSessionAsync(sessionId);
+  // No paid tier until the corpus passes 1,000,000 words (Bart's call,
+  // 2026-08-20; it is ~306k today). Until then every visitor gets full
+  // retrieval depth and conversation memory.
+  //
+  // Worth recording why this is not a loss: the paid branch had never run in
+  // production. archy_chat_entitlements holds zero rows and
+  // ARCHY_PAID_SESSION_IDS is unset, so isArchyPaidSessionAsync could only
+  // return false — meaning thread memory was dead code for every visitor since
+  // it was written, and ao_archy_thread_memory has never been written to.
+  //
+  // Flip this one constant to restore tiering.
+  const ARCHY_TIERING_ENABLED = false;
+  const archyPaid = ARCHY_TIERING_ENABLED ? await isArchyPaidSessionAsync(sessionId) : true;
   const archyDepth = getArchyRetrievalDepthFromPaid(archyPaid);
-  const archyMemory = archyPaid ? await loadArchyThreadMemory(sessionId) : null;
+  const archyMemory = await loadArchyThreadMemory(sessionId);
 
   // Semantic passage retrieval first (ao_corpus_chunks). Falls back to the
   // legacy keyword scorer only if semantic search returns nothing at all —
@@ -426,7 +438,9 @@ export default async function handler(req, res) {
   const systemPrompt = `You are Archy, the digital reflection of Bart Paden. You are having a real conversation with a real person. You must listen, understand, and respond authentically.
 
 You are the visitor-facing assistant named Archy. Do not mention internal automation tools or names that only Bart's team uses; visitors only need to know you as Archy.
-${archyPaid ? '\nThis session has deeper access to Bart’s published library—use the retrieved passages below as your primary ground.\n' : ''}
+
+Use the retrieved passages below as your primary ground. They are drawn from Bart's published library by meaning, not keyword, and each one is the part of its document that bears on this question — quote and reason from them directly rather than speaking generally.
+
 ${archyMemory?.summary ? `\nContinuity from earlier in this conversation (paraphrase, do not quote verbatim):\n${archyMemory.summary.slice(0, 3000)}\n` : ''}
 ${liveDataSection}${aliInternalSection}
 
@@ -1065,7 +1079,7 @@ Should we offer direct contact with Bart?`;
           // Don't fail the request if logging fails
         }
 
-        if (archyPaid && sessionId) {
+        if (sessionId) {
           appendArchyThreadMemory(sessionId, { userLine: message, assistantLine: response }).catch(() => {});
         }
 
