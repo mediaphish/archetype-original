@@ -6,6 +6,7 @@ import path from 'path';
 import { getArchyRetrievalDepthFromPaid } from '../lib/ao/archyAccess.js';
 import { isArchyPaidSessionAsync } from '../lib/ao/archyEntitlements.js';
 import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyThreadMemory.js';
+import { searchCorpusChunks, groupChunksByDocument } from '../lib/ao/corpusChunks.js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -185,7 +186,8 @@ function ensureRemainingHumanInKnowledge(relevantKnowledge, corpus, pageContext)
   if (!rh) return relevantKnowledge;
   const has = relevantKnowledge.some((d) => d.slug === 'remaining-human');
   if (has) return relevantKnowledge;
-  return [rh, ...relevantKnowledge].slice(0, 5);
+  // Keep the existing floor of 5, but never shorten a longer semantic result set.
+  return [rh, ...relevantKnowledge].slice(0, Math.max(5, relevantKnowledge.length));
 }
 
 /** On /advisory, pin The Room manuscript so Archy can answer from the book. */
@@ -197,7 +199,8 @@ function ensureTheRoomInKnowledge(relevantKnowledge, corpus, pageContext) {
   if (!book) return relevantKnowledge;
   const has = relevantKnowledge.some((d) => d.slug === 'the-room');
   if (has) return relevantKnowledge;
-  return [book, ...relevantKnowledge].slice(0, 5);
+  // Keep the existing floor of 5, but never shorten a longer semantic result set.
+  return [book, ...relevantKnowledge].slice(0, Math.max(5, relevantKnowledge.length));
 }
 
 // Get client IP from Vercel headers
@@ -295,11 +298,57 @@ export default async function handler(req, res) {
   const knowledgeCorpus = loadKnowledgeCorpus();
   console.log('Knowledge corpus loaded:', knowledgeCorpus.docs ? knowledgeCorpus.docs.length : 0, 'documents');
 
-  const archyPaid = await isArchyPaidSessionAsync(sessionId);
+  // No paid tier until the corpus passes 1,000,000 words (Bart's call,
+  // 2026-08-20; it is ~306k today). Until then every visitor gets full
+  // retrieval depth and conversation memory.
+  //
+  // Worth recording why this is not a loss: the paid branch had never run in
+  // production. archy_chat_entitlements holds zero rows and
+  // ARCHY_PAID_SESSION_IDS is unset, so isArchyPaidSessionAsync could only
+  // return false — meaning thread memory was dead code for every visitor since
+  // it was written, and ao_archy_thread_memory has never been written to.
+  //
+  // Flip this one constant to restore tiering.
+  const ARCHY_TIERING_ENABLED = false;
+  const archyPaid = ARCHY_TIERING_ENABLED ? await isArchyPaidSessionAsync(sessionId) : true;
   const archyDepth = getArchyRetrievalDepthFromPaid(archyPaid);
-  const archyMemory = archyPaid ? await loadArchyThreadMemory(sessionId) : null;
+  const archyMemory = await loadArchyThreadMemory(sessionId);
 
-  let relevantKnowledge = searchKnowledge(message, knowledgeCorpus, { maxDocs: archyDepth.maxDocs });
+  // Semantic passage retrieval first (ao_corpus_chunks). Falls back to the
+  // legacy keyword scorer only if semantic search returns nothing at all —
+  // an embedding failure or an empty chunk table should degrade, not break.
+  let relevantKnowledge = [];
+  let retrievalMode = 'semantic';
+
+  const passageHits = await searchCorpusChunks(message, {
+    maxResults: archyDepth.maxPassages,
+    maxPerDoc: 3,
+  });
+
+  if (passageHits.length > 0) {
+    const corpusBySlug = new Map(
+      (knowledgeCorpus.docs || []).map((doc) => [doc.slug, doc])
+    );
+    relevantKnowledge = groupChunksByDocument(passageHits).map((group) => {
+      const source = corpusBySlug.get(group.slug) || {};
+      return {
+        ...source,
+        slug: group.slug,
+        title: group.title || source.title,
+        summary: group.summary || source.summary || '',
+        tags: source.tags || [],
+        // The passages ARE the relevant excerpt. Joined here so every existing
+        // downstream reader of doc.body keeps working unchanged.
+        body: group.passages.map((p) => p.content).join('\n\n[...]\n\n'),
+        passageCount: group.passages.length,
+        fromSemanticSearch: true,
+      };
+    });
+  } else {
+    retrievalMode = 'keyword';
+    relevantKnowledge = searchKnowledge(message, knowledgeCorpus, { maxDocs: archyDepth.maxDocs });
+  }
+
   relevantKnowledge = ensureRemainingHumanInKnowledge(
     relevantKnowledge,
     knowledgeCorpus,
@@ -307,7 +356,10 @@ export default async function handler(req, res) {
   );
   relevantKnowledge = ensureTheRoomInKnowledge(relevantKnowledge, knowledgeCorpus, context);
   console.log('Searching for:', message);
-  console.log('Relevant knowledge found:', relevantKnowledge.length, 'documents');
+  console.log(
+    `Relevant knowledge found: ${relevantKnowledge.length} documents ` +
+      `(${retrievalMode}${retrievalMode === 'semantic' ? `, ${passageHits.length} passages` : ''})`
+  );
   if (relevantKnowledge.length > 0) {
     console.log('Found documents:', relevantKnowledge.map(doc => doc.title));
   }
@@ -327,7 +379,15 @@ export default async function handler(req, res) {
       if (doc.summary) {
         knowledgeContext += `Summary: ${doc.summary}\n`;
       }
-      // Include more content for canonical/doctrinal documents to ensure full context
+      // Semantically retrieved passages are already the relevant excerpt,
+      // bounded by maxPassages. Truncating them here would reintroduce exactly
+      // the defect this replaced: answering long essays from their opening.
+      if (doc.fromSemanticSearch) {
+        knowledgeContext += `Content (${doc.passageCount} passage${doc.passageCount === 1 ? '' : 's'}): ${doc.body}\n\n`;
+        return;
+      }
+
+      // Legacy keyword path: include more content for canonical/doctrinal documents
       const isCanonical = doc.title?.toLowerCase().includes('section') ||
                           doc.title?.toLowerCase().includes('canon') ||
                           doc.title?.toLowerCase().includes('doctrine') ||
@@ -341,7 +401,8 @@ export default async function handler(req, res) {
         : isCanonical
           ? Math.min(Math.floor(cap * 1.15), 2000)
           : cap;
-      knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}...\n\n`;
+      const truncated = doc.body.length > contentLength;
+      knowledgeContext += `Content: ${doc.body.substring(0, contentLength)}${truncated ? '...' : ''}\n\n`;
     });
   }
 
@@ -377,7 +438,9 @@ export default async function handler(req, res) {
   const systemPrompt = `You are Archy, the digital reflection of Bart Paden. You are having a real conversation with a real person. You must listen, understand, and respond authentically.
 
 You are the visitor-facing assistant named Archy. Do not mention internal automation tools or names that only Bart's team uses; visitors only need to know you as Archy.
-${archyPaid ? '\nThis session has deeper access to Bart’s published library—use the retrieved passages below as your primary ground.\n' : ''}
+
+Use the retrieved passages below as your primary ground. They are drawn from Bart's published library by meaning, not keyword, and each one is the part of its document that bears on this question — quote and reason from them directly rather than speaking generally.
+
 ${archyMemory?.summary ? `\nContinuity from earlier in this conversation (paraphrase, do not quote verbatim):\n${archyMemory.summary.slice(0, 3000)}\n` : ''}
 ${liveDataSection}${aliInternalSection}
 
@@ -1016,7 +1079,7 @@ Should we offer direct contact with Bart?`;
           // Don't fail the request if logging fails
         }
 
-        if (archyPaid && sessionId) {
+        if (sessionId) {
           appendArchyThreadMemory(sessionId, { userLine: message, assistantLine: response }).catch(() => {});
         }
 

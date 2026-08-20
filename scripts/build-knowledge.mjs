@@ -735,10 +735,56 @@ async function buildKnowledgeCorpus() {
     );
   }
 
+  // Collapse duplicate slugs before writing.
+  //
+  // Everything downstream keys on slug and is UNIQUE on it — ao_corpus_embeddings,
+  // ao_corpus_chunks — so two docs sharing a slug means whichever is written last
+  // wins, non-deterministically. Found live on 2026-08-20: 568 docs, 566 distinct
+  // slugs. 'culture-science-section-10' existed as both the real 3,227-char
+  // section and a 27-char stub, either of which could win on any nightly run, and
+  // the two index tables had already landed on different versions of
+  // 'faithfulness-in-the-ordinary'.
+  //
+  // Longest body wins, because the failure that matters is losing Bart's writing.
+  // Warns rather than throwing: a duplicate slug should not block a publish, but
+  // it must never again be silent.
+  const bySlug = new Map();
+  const slugCollisions = [];
+  for (const doc of scheduleSafeDocs) {
+    const slug = String(doc.slug || '').trim();
+    if (!slug) continue;
+    const existing = bySlug.get(slug);
+    if (!existing) {
+      bySlug.set(slug, doc);
+      continue;
+    }
+    const keep = (doc.body || '').length > (existing.body || '').length ? doc : existing;
+    const drop = keep === doc ? existing : doc;
+    bySlug.set(slug, keep);
+    slugCollisions.push({
+      slug,
+      kept: (keep.body || '').length,
+      dropped: (drop.body || '').length,
+      title: keep.title || slug,
+    });
+  }
+
+  const dedupedDocs = [...bySlug.values()];
+
+  if (slugCollisions.length > 0) {
+    console.warn(
+      `⚠️  Duplicate slugs: collapsed ${slugCollisions.length} collision(s). ` +
+        'Two source files share one slug — fix the source, this is data loss waiting to happen:'
+    );
+    for (const c of slugCollisions) {
+      console.warn(`     ${c.slug} — kept ${c.kept} chars, dropped ${c.dropped} chars ("${c.title}")`);
+    }
+  }
+
   const knowledgeCorpus = {
     generated_at: new Date().toISOString(),
-    count: scheduleSafeDocs.length,
-    docs: scheduleSafeDocs,
+    count: dedupedDocs.length,
+    docs: dedupedDocs,
   };
   
   // Write to output file
@@ -746,8 +792,8 @@ async function buildKnowledgeCorpus() {
 
   try {
     const { auditPublicationEvent } = await import('../lib/ao/auditPublicationEvent.js');
-    const journalPostCount = scheduleSafeDocs.filter((d) => d.type === 'journal-post').length;
-    const devotionalCount = scheduleSafeDocs.filter((d) => d.type === 'devotional').length;
+    const journalPostCount = dedupedDocs.filter((d) => d.type === 'journal-post').length;
+    const devotionalCount = dedupedDocs.filter((d) => d.type === 'devotional').length;
     await auditPublicationEvent({
       source: 'script:build-knowledge',
       action: 'write_public_knowledge_json',
@@ -755,7 +801,8 @@ async function buildKnowledgeCorpus() {
       actor_email: null,
       resource_paths: [OUTPUT_FILE],
       detail: {
-        doc_count: scheduleSafeDocs.length,
+        doc_count: dedupedDocs.length,
+        slug_collisions: slugCollisions.length,
         journal_post_count: journalPostCount,
         devotional_count: devotionalCount,
         publication_tz: publicationTimeZone(),
