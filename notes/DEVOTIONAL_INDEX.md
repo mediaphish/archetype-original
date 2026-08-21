@@ -29,7 +29,7 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-01-21 | Renewed Identity Without Performance | Matthew 23:11–12 (ESV) | `renewed-identity-without-performance` | `2026-01-21-renewed-identity-without-performance.md` |
 | 2026-01-22 | Examining Motives | Colossians 3:23–24 (ESV) | `examining-motives` | `2026-01-22-examining-motives.md` |
 | 2026-01-23 | Receiving Correction Well | Proverbs 12:1 (ESV) | `receiving-correction-well` | `2026-01-23-receiving-correction-well.md` |
-| 2026-01-24 | Faithfulness in the Ordinary | Luke 16:10–11 | `faithfulness-in-the-ordinary` | `2026-01-24-faithfulness-in-the-ordinary.md` |
+| 2026-01-24 | Faithfulness in the Ordinary | Luke 16:10–11 | `faithfulness-in-small-things` | `2026-01-24-faithfulness-in-the-ordinary.md` |
 | 2026-01-25 | Clarity Through Stillness | Psalm 46:10 (ESV) | `clarity-through-stillness` | `2026-01-25-clarity-through-stillness.md` |
 | 2026-01-26 | Integrity When No One Is Watching | Proverbs 10:9 (ESV) | `integrity-when-no-one-is-watching` | `2026-01-26-integrity-when-no-one-is-watching.md` |
 | 2026-01-27 | Trusting the Work You Cannot See | Galatians 6:9–10 | `trusting-the-work-you-cannot-see` | `2026-01-27-trusting-the-work-you-cannot-see.md` |
@@ -279,9 +279,7 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 
 ### Same slug
 
-- **faithfulness-in-the-ordinary**
-  - 2026-01-13 — Faithfulness in the Ordinary (`2026-01-13-faithfulness-in-the-ordinary.md`, slug: `faithfulness-in-the-ordinary`)
-  - 2026-01-24 — Faithfulness in the Ordinary (`2026-01-24-faithfulness-in-the-ordinary.md`, slug: `faithfulness-in-the-ordinary`)
+_(resolved 2026-08-21 — the 2026-01-24 entry now uses `faithfulness-in-small-things`)_
 
 ## Missing key fields (needs attention)
 

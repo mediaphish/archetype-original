@@ -1,6 +1,6 @@
 ---
 title: "Faithfulness in the Ordinary"
-slug: faithfulness-in-the-ordinary
+slug: faithfulness-in-small-things
 date: "2026-01-24"
 type: devotional
 categories: ["servant-leadership", "devotional"]
