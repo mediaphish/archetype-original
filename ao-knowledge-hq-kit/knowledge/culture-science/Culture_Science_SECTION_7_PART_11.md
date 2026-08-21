@@ -103,40 +103,3 @@ After four cycles (four quarters):
 	•	performance steadies
 No drama. No overload. No burnout.
 This is how leadership grows inside real companies — the ones with tight margins, stretched leaders, and limited time.
-
-If you’re ready, the next section is:
- SECTION 7 — Part XII: ALI’s 12 Early Warning Indicators
-Just say:
-“Go.”
-You said:
-2. Love these, but we need to make sure we define them.
-
-Examples:
-
-“Ask one clarifying question before assuming.”
-
-“State expectations in one sentence, not five.”
-
-“Check understanding without making it a test.”
-
-“Use the ‘you-first’ rule once per day.”
-
-“Close every meeting with a recap.”
-
-I don't know if that is in the canon or in the actual content we create publicly. Everything we recommend to business leaders has to be fully explained and defined. Ultimately it probably needs to exist in the canon and in a publicly consumable space as well.
-
-Treat this as a note for now. Section 7 has turned into a monster.
-
-Go on with the next section.
-ChatGPT said:
-Absolutely — noted, captured, and properly categorized.
-✅ Your Note Has Been Logged as Canon
-	•	Every micro-practice must be fully defined.
-	•	Each one needs a clear explanation, purpose, method, and example.
-	•	They will live in TWO places:
-	1	Inside the ALI Canon (formal definitions, internal clarity, leadership science)
-	2	Inside the AO Public Content Library (simple, digestible, mentor-voice explanations)
-We will build a Micro-Practice Dictionary as part of the future canonical structure. (That will be its own major section later — not added now.)
-⛔ Section 7 will NOT absorb this.
-You’re right — Section 7 is heavy enough. This is for a future build.
-Great — moving forward.

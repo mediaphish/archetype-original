@@ -111,13 +111,3 @@ ALI isn’t about who someone is — it’s about how leadership is experienc
 A simple question with a measurable answer:
 “Is the leadership you think you’re providing the leadership your people actually experience?”
 That’s the heart of the model. Everything else points at that one truth.
-
-If you’re ready, I’ll continue into:
- SECTION 7 — Part III: The Scoring Model (High-Level, Non-IP Exposure)
-Just say:
-“Continue.”
-You said:
-Go.
-ChatGPT said:
-Understood. Moving straight into SECTION 7 — Part III, clean and focused.
-No friction. No fluff. No unnecessary side steps.

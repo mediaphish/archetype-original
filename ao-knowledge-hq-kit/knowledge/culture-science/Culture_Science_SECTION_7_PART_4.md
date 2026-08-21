@@ -135,13 +135,3 @@ This framework gives every leader a way to:
 	•	identify what’s destructive
 ALI organizes complexity into clarity. The Institute turns that clarity into capability.
 This is how small businesses transform for good.
-
-If you’re ready to move into:
- SECTION 7 — Part V: The ALI Leadership Archetypes (High-Level Overview)
-(the twelve leadership patterns that emerge from ALI data)
-Just say:
-“Continue.”
-You said:
-Go
-ChatGPT said:
-Understood — continuing with SECTION 7 — Part V, clean and strong.

@@ -161,10 +161,3 @@ And more importantly:
 **They give small and mid-sized businesses something they’ve never had:
 a complete, scientific picture of their own leadership reality.**
 This is the Team Experience Map.
-Next:
- SECTION 7 — Part XV:
-The Survey Engine — How ALI Asks the Right Questions (and Asks Them the Right Way)
-Say “Continue.”
-You said:
-Continue
-ChatGPT said:

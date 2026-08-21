@@ -83,5 +83,3 @@ Your role becomes:
 	•	direction
 	•	reinforcement
 This is how ALI scales: a human mentor empowered by a precision engine.
-
-If this looks right, we’ll move forward. Now continuing into SECTION 7 — Part XI, as promised.

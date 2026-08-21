@@ -128,15 +128,3 @@ They need:
 That’s what the Drift Timeline gives them.
 And because ALI measures micro-patterns quarterly — leaders get a moving picture of their culture, not a frozen one.
 This is the difference between prevention and repair. ALI exists to prevent.
-
-If you're ready, next is:
- SECTION 7 — Part IX: The Early Warning Indicators (The 12 Signals ALI Tracks Before Problems Hit)
-Just say:
-“Continue.”
-You said:
-Side note for 7. We need to make sure we have a plan for training in between surveys. May require a full on curriculum.
-
-Go on with Section 7
-ChatGPT said:
-Absolutely — noted on the training plan between surveys. You’re right: ALI without ongoing development would be incomplete. We’ll build that into Section 7 after we finish this pass. (We’ll eventually create: quarterly modules, micro-trainings, remediation tracks, leadership “strengthening cycles,” and guided materials for each archetype + drift level.)
-Now continuing cleanly into Section 7 — Part IX, keeping the same voice, structure, and canon integrity.

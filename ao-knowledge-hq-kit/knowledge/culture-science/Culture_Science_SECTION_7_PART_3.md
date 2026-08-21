@@ -127,13 +127,3 @@ Alongside the scores, ALI produces a Behavioral Map:
 	•	Where leadership behaviors become accelerators
 This is where the Institute lives. This is where coaching, mentoring, and training begin. This is where transformation happens.
 ALI shines a light. The Institute builds the path forward.
-
-If this is approved, I’ll move to:
- SECTION 7 — Part IV: The ALI Categories (The Seven Patterns Every Leader Must Master)
-Just say:
-“Continue.”
-You said:
-Continue'
-ChatGPT said:
-Understood. Moving directly into SECTION 7 — Part IV, clean, strong, and without any unnecessary friction.
-No tool use here — just canon.

@@ -6,7 +6,12 @@
       "source": "/:path*",
       "destination": "https://www.archetypeoriginal.com/:path*",
       "permanent": true,
-      "has": [{ "type": "host", "value": "archetypeoriginal.com" }]
+      "has": [
+        {
+          "type": "host",
+          "value": "archetypeoriginal.com"
+        }
+      ]
     },
     {
       "source": "/culture-science/anti-projects/scoreboard-leadership",
@@ -65,332 +70,1542 @@
     }
   ],
   "builds": [
-    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
-    { "src": "api/ao/auto/schedule-status.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 10, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/publish-journal.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 30, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/publish-devotional.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 30, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/episode-process.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 120, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/episode-publish.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/episode-video-upload.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 15, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/episode-clip-upload.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 15, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/episode-clip-drafts/index.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 30, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/episode-clip-drafts/[id].js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 30, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/episode-drafts/[id].js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 15, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/guest-search.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 15, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/preflight.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 10, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/confirm-live.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 120, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/chat.js", "use": "@vercel/node", "config": { "maxDuration": 300, "memory": 1024, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/**", "ao-knowledge-hq-kit/**"] } },
-    { "src": "api/ao/auto/thread/new.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 120, "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } },
-    { "src": "api/ao/auto/reshare-journal.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "ao-knowledge-hq-kit/journal/**", "public/images/**", "public/fonts/**"] } },
-    { "src": "api/ao/auto/reshare-review.js", "use": "@vercel/node", "config": { "memory": 256, "maxDuration": 30, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/reshare-settings.js", "use": "@vercel/node", "config": { "memory": 128, "maxDuration": 10, "includeFiles": ["lib/**"] } },
-    { "src": "api/ao/auto/seed-corpus.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json"] } },
-    { "src": "api/cron/ao/backfill-corpus-embeddings.js", "use": "@vercel/node", "config": { "memory": 1024, "maxDuration": 300, "includeFiles": ["lib/**", "public/knowledge.json"] } },
-    { "src": "api/ao/auto/derive-content.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 60, "includeFiles": ["lib/**", "ao-knowledge-hq-kit/journal/**"] } },
-    { "src": "api/ao/podcast/episode-seed.js", "use": "@vercel/node", "config": { "memory": 512, "maxDuration": 180, "includeFiles": ["lib/**"] } },
-    { "src": "api/**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["lib/**", "public/knowledge.json", "public/fonts/**", "public/brand/**", "public/images/ao-logo.svg", "public/images/ao-logo-offwhite.png", "public/images/ao-logo-black.png"] } }
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/ao/auto/schedule-status.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 10,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/publish-journal.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 30,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/publish-devotional.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 30,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/episode-process.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 120,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/episode-publish.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/episode-video-upload.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 15,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/episode-clip-upload.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 15,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/episode-clip-drafts/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 30,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/episode-clip-drafts/[id].js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 30,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/episode-drafts/[id].js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 15,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/guest-search.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 15,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/preflight.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 10,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/confirm-live.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 120,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/chat.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 300,
+        "memory": 1024,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/**",
+          "ao-knowledge-hq-kit/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/thread/new.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 120,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/reshare-journal.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "ao-knowledge-hq-kit/journal/**",
+          "public/images/**",
+          "public/fonts/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/reshare-review.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 256,
+        "maxDuration": 30,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/reshare-settings.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 128,
+        "maxDuration": 10,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/seed-corpus.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json"
+        ]
+      }
+    },
+    {
+      "src": "api/cron/ao/backfill-corpus-embeddings.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 300,
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/auto/derive-content.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 60,
+        "includeFiles": [
+          "lib/**",
+          "ao-knowledge-hq-kit/journal/**"
+        ]
+      }
+    },
+    {
+      "src": "api/ao/podcast/episode-seed.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 180,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "lib/**",
+          "public/knowledge.json",
+          "data/knowledge-full.json",
+          "public/fonts/**",
+          "public/brand/**",
+          "public/images/ao-logo.svg",
+          "public/images/ao-logo-offwhite.png",
+          "public/images/ao-logo-black.png"
+        ]
+      }
+    }
   ],
   "routes": [
-    { "src": "/api/chat", "dest": "/api/chat.js" },
-    { "src": "/api/chat/cannot-answer", "dest": "/api/chat/cannot-answer.js" },
-    { "src": "/api/chat/question-feedback", "dest": "/api/chat/question-feedback.js" },
-    { "src": "/api/contact", "dest": "/api/contact.js" },
-    { "src": "/api/engagement-inquiry", "dest": "/api/engagement-inquiry.js" },
-    { "src": "/api/podcast/guest-intake", "dest": "/api/podcast/guest-intake.js" },
-    { "src": "/api/podcast/guest-intake-upload", "dest": "/api/podcast/guest-intake-upload.js" },
-    { "src": "/api/podcast/guest-magic-link", "dest": "/api/podcast/guest-magic-link.js" },
-    { "src": "/api/podcast/guest-magic-verify", "dest": "/api/podcast/guest-magic-verify.js" },
-    { "src": "/api/podcast/guest-record", "dest": "/api/podcast/guest-record.js" },
-    { "src": "/api/monitoring/analytics", "dest": "/api/monitoring/analytics.js" },
-    { "src": "/api/monitoring/errors", "dest": "/api/monitoring/errors.js" },
-    { "src": "/api/handoff", "dest": "/api/handoff.js" },
-    { "src": "/api/knowledge", "dest": "/api/knowledge/index.js" },
-    { "src": "/api/ali/apply", "dest": "/api/ali/apply.js" },
-    { "src": "/api/ali/signup", "dest": "/api/ali/signup.js" },
-    { "src": "/api/ali/setup-account", "dest": "/api/ali/setup-account.js" },
-    { "src": "/api/ali/contacts", "dest": "/api/ali/contacts.js" },
-    { "src": "/api/ali/divisions", "dest": "/api/ali/divisions.js" },
-    { "src": "/api/ali/build-survey", "dest": "/api/ali/build-survey.js" },
-    { "src": "/api/ali/deploy-survey", "dest": "/api/ali/deploy-survey.js" },
-    { "src": "/api/ali/submit-response", "dest": "/api/ali/submit-response.js" },
-    { "src": "/api/ali/survey/(.*)", "dest": "/api/ali/survey/[token].js?token=$1" },
-    { "src": "/api/ali/dashboard", "dest": "/api/ali/dashboard.js" },
-    { "src": "/api/ali/deploy/next", "dest": "/api/ali/deploy/next.js" },
-    { "src": "/api/ali/deployments", "dest": "/api/ali/deployments.js" },
-    { "src": "/api/ali/reports", "dest": "/api/ali/reports.js" },
-    { "src": "/api/ali/zone-recommendations", "dest": "/api/ali/zone-recommendations.js" },
-    { "src": "/api/ali/generate-insights", "dest": "/api/ali/generate-insights.js" },
-    { "src": "/api/ali/narrative/submit", "dest": "/api/ali/narrative/submit.js" },
-    { "src": "/api/ali/narrative/admin/clusters", "dest": "/api/ali/narrative/admin/clusters.js" },
-    { "src": "/api/ali/narrative/admin/expose", "dest": "/api/ali/narrative/admin/expose.js" },
-    { "src": "/api/ali/narrative/admin/moderate", "dest": "/api/ali/narrative/admin/moderate.js" },
-    { "src": "/api/ali/narrative/admin/queue", "dest": "/api/ali/narrative/admin/queue.js" },
-      { "src": "/api/ali/auth/login", "dest": "/api/ali/auth/login.js" },
-      { "src": "/api/ali/auth/send-magic-link", "dest": "/api/ali/auth/send-magic-link.js" },
-      { "src": "/api/ali/auth/verify-magic-link", "dest": "/api/ali/auth/verify-magic-link.js" },
-      { "src": "/api/ali/auth/logout", "dest": "/api/ali/auth/logout.js" },
-    { "src": "/api/ali/billing", "dest": "/api/ali/billing.js" },
-    { "src": "/api/ali/super-admin/intelligence/(.*)/action", "dest": "/api/ali/super-admin/intelligence/[id]/action.js?id=$1" },
-    { "src": "/api/ali/super-admin/intelligence/(.*)/dismiss", "dest": "/api/ali/super-admin/intelligence/[id]/dismiss.js?id=$1" },
-    { "src": "/api/ali/super-admin/intelligence", "dest": "/api/ali/super-admin/intelligence.js" },
-    { "src": "/api/ali/super-admin/overview", "dest": "/api/ali/super-admin/overview.js" },
-    { "src": "/api/ali/admin/tenants/(.*)", "dest": "/api/ali/admin/tenants/[companyId].js?companyId=$1" },
-    { "src": "/api/ali/admin/tenants", "dest": "/api/ali/admin/tenants.js" },
-    { "src": "/api/ali/admin/deletions/dry-run", "dest": "/api/ali/admin/deletions/dry-run.js" },
-    { "src": "/api/ali/admin/deletions/initiate", "dest": "/api/ali/admin/deletions/initiate.js" },
-    { "src": "/api/ali/admin/deletions/execute", "dest": "/api/ali/admin/deletions/execute.js" },
-    { "src": "/api/cron/generate-intelligence", "dest": "/api/cron/generate-intelligence.js" },
-    { "src": "/api/cron/ali-process-narrative-clusters", "dest": "/api/cron/ali-process-narrative-clusters.js" },
-    { "src": "/api/cron/ao/external-scan", "dest": "/api/cron/ao/external-scan.js" },
-    { "src": "/api/cron/ao/internal-scan", "dest": "/api/cron/ao/internal-scan.js" },
-    { "src": "/api/cron/ao/daily-run", "dest": "/api/cron/ao/daily-run.js" },
-    { "src": "/api/cron/ao/scout-pass", "dest": "/api/cron/ao/scout-pass.js" },
-    { "src": "/api/cron/ao/scout-pass-morning", "dest": "/api/cron/ao/scout-pass.js" },
-    { "src": "/api/cron/ao/scout-pass-midday", "dest": "/api/cron/ao/scout-pass.js" },
-    { "src": "/api/cron/ao/scout-pass-evening", "dest": "/api/cron/ao/scout-pass.js" },
-    { "src": "/api/cron/ao/brief-prep", "dest": "/api/cron/ao/brief-prep.js" },
-    { "src": "/api/cron/ao/corpus-pull-seed", "dest": "/api/cron/ao/corpus-pull-seed.js" },
-    { "src": "/api/cron/ao/weekly-pull-quotes", "dest": "/api/cron/ao/weekly-pull-quotes.js" },
-    { "src": "/api/cron/ao/backfill-corpus-embeddings", "dest": "/api/cron/ao/backfill-corpus-embeddings.js" },
-    { "src": "/api/ao/publishing/schedule-weekly-pull-bundle", "dest": "/api/ao/publishing/schedule-weekly-pull-bundle.js" },
-    { "src": "/api/ao/weekly-pull-bundle-now", "dest": "/api/ao/weekly-pull-bundle-now.js" },
-    { "src": "/api/cron/ao/editorial-rebuild", "dest": "/api/cron/ao/editorial-rebuild.js" },
-    { "src": "/api/cron/ao/competitor-digest", "dest": "/api/cron/ao/competitor-digest.js" },
-        { "src": "/api/journal/subscribe", "dest": "/api/journal/subscribe.js" },
-        { "src": "/api/journal/notify", "dest": "/api/journal/notify.js" },
-        { "src": "/api/journal/send-duplicate-apology", "dest": "/api/journal/send-duplicate-apology.js" },
-        { "src": "/api/journal/retry-failed-emails", "dest": "/api/journal/retry-failed-emails.js" },
-        { "src": "/api/journal/check-subscription", "dest": "/api/journal/check-subscription.js" },
-        { "src": "/api/journal/diagnose-subscriptions", "dest": "/api/journal/diagnose-subscriptions.js" },
-        { "src": "/api/cron/daily-devotional-notify", "dest": "/api/cron/daily-devotional-notify.js" },
-        { "src": "/api/cron/retry-failed-emails", "dest": "/api/cron/retry-failed-emails.js" },
-        { "src": "/api/esv/passage", "dest": "/api/esv/passage.js" },
-        { "src": "/api/operators/events", "dest": "/api/operators/events/index.js" },
-        { "src": "/api/operators/events/create", "dest": "/api/operators/events/create.js" },
-        { "src": "/api/operators/events/(.*)/open", "dest": "/api/operators/events/[id]/open.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/close", "dest": "/api/operators/events/[id]/close.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/reopen", "dest": "/api/operators/events/[id]/reopen.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/revert-to-live", "dest": "/api/operators/events/[id]/revert-to-live.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/delete", "dest": "/api/operators/events/[id]/delete.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/update", "dest": "/api/operators/events/[id]/update.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/rsvp", "dest": "/api/operators/events/[id]/rsvp.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/remove-rsvp", "dest": "/api/operators/events/[id]/remove-rsvp.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/promote-waitlist", "dest": "/api/operators/events/[id]/promote-waitlist.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/votes/remaining", "dest": "/api/operators/events/[id]/votes/remaining.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/votes", "dest": "/api/operators/events/[id]/votes.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/check-in", "dest": "/api/operators/events/[id]/check-in.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/test-roi", "dest": "/api/operators/events/[id]/test-roi.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/roi", "dest": "/api/operators/events/[id]/roi.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/recalculate-roi", "dest": "/api/operators/events/[id]/recalculate-roi.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/close-rsvp", "dest": "/api/operators/events/[id]/close-rsvp.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/generate-scenarios", "dest": "/api/operators/events/[id]/generate-scenarios.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/scenarios", "dest": "/api/operators/events/[id]/scenarios.js?id=$1" },
-        { "src": "/api/operators/events/(.*)/announce", "dest": "/api/operators/events/[id]/announce.js?id=$1" },
-        { "src": "/api/operators/events/(.*)", "dest": "/api/operators/events/[id]/index.js?id=$1" },
-        { "src": "/api/operators/candidates", "dest": "/api/operators/candidates/index.js" },
-        { "src": "/api/operators/candidates/submit", "dest": "/api/operators/candidates/submit.js" },
-        { "src": "/api/operators/candidates/(.*)/approve", "dest": "/api/operators/candidates/[id]/approve.js?id=$1" },
-        { "src": "/api/operators/candidates/(.*)/deny", "dest": "/api/operators/candidates/[id]/deny.js?id=$1" },
-        { "src": "/api/operators/dashboard", "dest": "/api/operators/dashboard.js" },
-        { "src": "/api/operators/users", "dest": "/api/operators/users/index.js" },
-        { "src": "/api/operators/users/me", "dest": "/api/operators/users/me.js" },
-        { "src": "/api/operators/users/(.*)/promote", "dest": "/api/operators/users/[email]/promote.js?email=$1" },
-        { "src": "/api/operators/users/(.*)/reverse-offense", "dest": "/api/operators/users/[email]/reverse-offense.js?email=$1" },
-        { "src": "/api/operators/offenses/record", "dest": "/api/operators/offenses/record.js" },
-        { "src": "/api/operators/upload-logo", "dest": "/api/operators/upload-logo.js" },
-        { "src": "/api/operators/upload-headshot", "dest": "/api/operators/upload-headshot.js" },
-        { "src": "/api/operators/auth/send-magic-link", "dest": "/api/operators/auth/send-magic-link.js" },
-        { "src": "/api/operators/auth/verify-magic-link", "dest": "/api/operators/auth/verify-magic-link.js" },
-        { "src": "/api/operators/auth/test-login", "dest": "/api/operators/auth/test-login.js" },
-        { "src": "/api/operators/interest/submit", "dest": "/api/operators/interest/submit.js" },
-    { "src": "/api/social/schedule", "dest": "/api/social/schedule.js" },
-    { "src": "/api/social/publish-now", "dest": "/api/social/publish-now.js" },
-    { "src": "/api/social/post-now", "dest": "/api/social/post-now.js" },
-    { "src": "/api/cron/publish-scheduled-posts", "dest": "/api/cron/publish-scheduled-posts.js" },
-    { "src": "/api/cron/publish-scheduled-journals", "dest": "/api/cron/publish-scheduled-journals.js" },
-    { "src": "/api/bad-leader-admin-clusters", "dest": "/api/bad-leader-admin-clusters.js" },
-    { "src": "/api/bad-leader-admin-intelligence", "dest": "/api/bad-leader-admin-intelligence.js" },
-    { "src": "/api/bad-leader-admin-moderate", "dest": "/api/bad-leader-admin-moderate.js" },
-    { "src": "/api/bad-leader-admin-queue", "dest": "/api/bad-leader-admin-queue.js" },
-    { "src": "/api/bad-leader-admin-published", "dest": "/api/bad-leader-admin-published.js" },
-    { "src": "/api/bad-leader-admin-session", "dest": "/api/bad-leader-admin-session.js" },
-    { "src": "/api/bad-leader-admin-stats", "dest": "/api/bad-leader-admin-stats.js" },
-    { "src": "/api/bad-leader-magic-link", "dest": "/api/bad-leader-magic-link.js" },
-    { "src": "/api/bad-leader-magic-verify", "dest": "/api/bad-leader-magic-verify.js" },
-    { "src": "/api/bad-leader-process-clusters", "dest": "/api/bad-leader-process-clusters.js" },
-    { "src": "/api/bad-leader-public-stats", "dest": "/api/bad-leader-public-stats.js" },
-    { "src": "/api/bad-leader-stories", "dest": "/api/bad-leader-stories.js" },
-    { "src": "/api/bad-leader-submit", "dest": "/api/bad-leader-submit.js" },
-    { "src": "/api/bad-leader-thumbsup", "dest": "/api/bad-leader-thumbsup.js" },
-    { "src": "/api/ao/auth/send-magic-link", "dest": "/api/ao/auth/send-magic-link.js" },
-    { "src": "/api/ao/auth/verify-magic-link", "dest": "/api/ao/auth/verify-magic-link.js" },
-    { "src": "/api/ao/auth/logout", "dest": "/api/ao/auth/logout.js" },
-    { "src": "/api/ao/auth/reviewer-login", "dest": "/api/ao/auth/reviewer-login.js" },
-    { "src": "/api/ao/reviewer/upload-content", "dest": "/api/ao/reviewer/upload-content.js" },
-    { "src": "/api/ao/reviewer/publish-now", "dest": "/api/ao/reviewer/publish-now.js" },
-    { "src": "/api/ao/reviewer/analytics", "dest": "/api/ao/reviewer/analytics.js" },
-    { "src": "/api/ao/reviewer/library", "dest": "/api/ao/reviewer/library.js" },
-    { "src": "/api/ao/reviewer/settings", "dest": "/api/ao/reviewer/settings.js" },
-    { "src": "/api/ao/me", "dest": "/api/ao/me.js" },
-    { "src": "/api/ao/podcast/guest", "dest": "/api/ao/podcast/guest.js" },
-    { "src": "/api/ao/podcast/guests", "dest": "/api/ao/podcast/guests.js" },
-    { "src": "/api/ao/podcast/content-threads", "dest": "/api/ao/podcast/content-threads.js" },
-    { "src": "/api/ao/podcast/episode-seed", "dest": "/api/ao/podcast/episode-seed.js" },
-    { "src": "/api/ao/podcast/episodes", "dest": "/api/ao/podcast/episodes.js" },
-    { "src": "/api/ao/podcast/schedule", "dest": "/api/ao/podcast/schedule.js" },
-    { "src": "/api/ao/podcast/schedule/([^/]+)", "dest": "/api/ao/podcast/schedule/[id].js?id=$1" },
-    { "src": "/api/ao/podcast/guest-magic-link", "dest": "/api/ao/podcast/guest-magic-link.js" },
-    { "src": "/api/ao/podcast/episode/recording-link", "dest": "/api/ao/podcast/episode/recording-link.js" },
-    { "src": "/api/ao/podcast/episode/show-notes", "dest": "/api/ao/podcast/episode/show-notes.js" },
-    { "src": "/api/ao/podcast/episode/guests", "dest": "/api/ao/podcast/episode/guests.js" },
-    { "src": "/api/ao/podcast/guest-research", "dest": "/api/ao/podcast/guest-research.js" },
-    { "src": "/api/ao/podcast/guest-questions", "dest": "/api/ao/podcast/guest-questions.js" },
-    { "src": "/api/ao/podcast/guest-producer-brief", "dest": "/api/ao/podcast/guest-producer-brief.js" },
-    { "src": "/api/ao/podcast/guest-post-recording", "dest": "/api/ao/podcast/guest-post-recording.js" },
-    { "src": "/api/ao/db-check", "dest": "/api/ao/db-check.js" },
-    { "src": "/api/ao/editorial/rebuild", "dest": "/api/ao/editorial/rebuild.js" },
-    { "src": "/api/ao/editorial/settings", "dest": "/api/ao/editorial/settings.js" },
-    { "src": "/api/ao/editorial/coverage", "dest": "/api/ao/editorial/coverage.js" },
-    { "src": "/api/ao/editorial/chase-list", "dest": "/api/ao/editorial/chase-list.js" },
-    { "src": "/api/ao/editorial/generate-chase-list", "dest": "/api/ao/editorial/generate-chase-list.js" },
-    { "src": "/api/ao/auto/session", "dest": "/api/ao/auto/session.js" },
-    { "src": "/api/ao/auto/thread/new", "dest": "/api/ao/auto/thread/new.js" },
-    { "src": "/api/ao/auto/thread/resume", "dest": "/api/ao/auto/thread/resume.js" },
-    { "src": "/api/ao/auto/thread/pin", "dest": "/api/ao/auto/thread/pin.js" },
-    { "src": "/api/ao/auto/thread/unpin", "dest": "/api/ao/auto/thread/unpin.js" },
-    { "src": "/api/ao/auto/thread/rename", "dest": "/api/ao/auto/thread/rename.js" },
-    { "src": "/api/ao/auto/thread/archive", "dest": "/api/ao/auto/thread/archive.js" },
-    { "src": "/api/ao/auto/thread-clear-design-images", "dest": "/api/ao/auto/thread-clear-design-images.js" },
-    { "src": "/api/ao/auto/thread/([^/]+)", "dest": "/api/ao/auto/thread/[id].js?id=$1" },
-    { "src": "/api/ao/auto/drafts/save", "dest": "/api/ao/auto/drafts/save.js" },
-    { "src": "/api/ao/auto/drafts", "dest": "/api/ao/auto/drafts/index.js" },
-    { "src": "/api/ao/auto/chat", "dest": "/api/ao/auto/chat.js" },
-    { "src": "/api/ao/auto/generate-card-image", "dest": "/api/ao/auto/generate-card-image.js" },
-    { "src": "/api/ao/auto/generate-design-image", "dest": "/api/ao/auto/generate-design-image.js" },
-    { "src": "/api/ao/auto/upload-header-image", "dest": "/api/ao/auto/upload-header-image.js" },
-    { "src": "/api/ao/auto/schedule-cards", "dest": "/api/ao/auto/schedule-cards.js" },
-    { "src": "/api/ao/auto/schedule-status", "dest": "/api/ao/auto/schedule-status.js" },
-    { "src": "/api/ao/auto/publish-journal", "dest": "/api/ao/auto/publish-journal.js" },
-    { "src": "/api/ao/auto/check-stuck-drafts", "dest": "/api/ao/auto/check-stuck-drafts.js" },
-    { "src": "/api/ao/auto/update-scheduled-captions", "dest": "/api/ao/auto/update-scheduled-captions.js" },
-    { "src": "/api/ao/auto/derive-content", "dest": "/api/ao/auto/derive-content.js" },
-    { "src": "/api/ao/auto/publish-devotional", "dest": "/api/ao/auto/publish-devotional.js" },
-    { "src": "/api/ao/auto/episode-process", "dest": "/api/ao/auto/episode-process.js" },
-    { "src": "/api/ao/auto/episode-publish", "dest": "/api/ao/auto/episode-publish.js" },
-    { "src": "/api/ao/auto/episode-video-upload", "dest": "/api/ao/auto/episode-video-upload.js" },
-    { "src": "/api/ao/auto/episode-clip-upload", "dest": "/api/ao/auto/episode-clip-upload.js" },
-    { "src": "/api/ao/auto/episode-clip-drafts/([^/]+)", "dest": "/api/ao/auto/episode-clip-drafts/[id].js?id=$1" },
-    { "src": "/api/ao/auto/episode-clip-drafts", "dest": "/api/ao/auto/episode-clip-drafts/index.js" },
-    { "src": "/api/ao/auto/episode-drafts/([^/]+)", "dest": "/api/ao/auto/episode-drafts/[id].js?id=$1" },
-    { "src": "/api/ao/auto/guest-search", "dest": "/api/ao/auto/guest-search.js" },
-    { "src": "/api/ao/auto/preflight", "dest": "/api/ao/auto/preflight.js" },
-    { "src": "/api/ao/auto/x-media-check", "dest": "/api/ao/auto/x-media-check.js" },
-    { "src": "/api/ao/auto/confirm-live", "dest": "/api/ao/auto/confirm-live.js" },
-    { "src": "/api/ao/corpus/drafts/([^/]+)/hero-image", "dest": "/api/ao/corpus/drafts/[id]/hero-image.js?id=$1" },
-    { "src": "/api/ao/corpus/drafts/([^/]+)", "dest": "/api/ao/corpus/drafts/[id].js?id=$1" },
-    { "src": "/api/ao/corpus/drafts", "dest": "/api/ao/corpus/drafts/index.js" },
-    { "src": "/api/ao/corpus/publish", "dest": "/api/ao/corpus/publish.js" },
-    { "src": "/api/ao/journal/publish-approval", "dest": "/api/ao/journal/publish-approval.js" },
-    { "src": "/api/ao/auto/attachments", "dest": "/api/ao/auto/attachments.js" },
-    { "src": "/api/ao/auto/undo", "dest": "/api/ao/auto/undo.js" },
-    { "src": "/api/ao/auto/bundles/([^/]+)", "dest": "/api/ao/auto/bundles/[id].js?id=$1" },
-    { "src": "/api/ao/auto/bundles", "dest": "/api/ao/auto/bundles/index.js" },
-    { "src": "/api/ao/auto/guardrails/([^/]+)", "dest": "/api/ao/auto/guardrails/[id].js?id=$1" },
-    { "src": "/api/ao/auto/guardrails", "dest": "/api/ao/auto/guardrails/index.js" },
-    { "src": "/api/ao/analyst/chat", "dest": "/api/ao/analyst/chat.js" },
-    { "src": "/api/ao/scout/hunt-goals", "dest": "/api/ao/scout/hunt-goals.js" },
-    { "src": "/api/ao/scheduled-posts/([^/]+)", "dest": "/api/ao/scheduled-posts/[id].js?id=$1" },
-    { "src": "/api/ao/scheduled-posts", "dest": "/api/ao/scheduled-posts.js" },
-    { "src": "/api/ao/quotes/list", "dest": "/api/ao/quotes/list.js" },
-    { "src": "/api/ao/quotes/flush-pending", "dest": "/api/ao/quotes/flush-pending.js" },
-    { "src": "/api/ao/quotes/purge", "dest": "/api/ao/quotes/purge.js" },
-    { "src": "/api/ao/quotes/(.*)/approve", "dest": "/api/ao/quotes/[id]/approve.js?id=$1" },
-    { "src": "/api/ao/quotes/(.*)/brief", "dest": "/api/ao/quotes/[id]/brief.js?id=$1" },
-    { "src": "/api/ao/quotes/(.*)/studio-assets", "dest": "/api/ao/quotes/[id]/studio-assets.js?id=$1" },
-    { "src": "/api/ao/quotes/(.*)/studio-chat", "dest": "/api/ao/quotes/[id]/studio-chat.js?id=$1" },
-    { "src": "/api/ao/quotes/(.*)/studio", "dest": "/api/ao/quotes/[id]/studio.js?id=$1" },
-    { "src": "/api/ao/quotes/(.*)/reject", "dest": "/api/ao/quotes/[id]/reject.js?id=$1" },
-    { "src": "/api/ao/quotes/(.*)/hold", "dest": "/api/ao/quotes/[id]/hold.js?id=$1" },
-    { "src": "/api/ao/quotes/(.*)/unhold", "dest": "/api/ao/quotes/[id]/unhold.js?id=$1" },
-    { "src": "/api/ao/automation-status", "dest": "/api/ao/automation-status.js" },
-    { "src": "/api/ao/journal-topics/list", "dest": "/api/ao/journal-topics/list.js" },
-    { "src": "/api/ao/journal-topics/(.*)/approve", "dest": "/api/ao/journal-topics/[id]/approve.js?id=$1" },
-    { "src": "/api/ao/journal-topics/(.*)/reject", "dest": "/api/ao/journal-topics/[id]/reject.js?id=$1" },
-    { "src": "/api/ao/journal-topics/(.*)/approve-and-draft", "dest": "/api/ao/journal-topics/[id]/approve-and-draft.js?id=$1" },
-    { "src": "/api/ao/writing/list", "dest": "/api/ao/writing/list.js" },
-    { "src": "/api/ao/writing/(.*)/draft", "dest": "/api/ao/writing/[id]/draft.js?id=$1" },
-    { "src": "/api/ao/writing/(.*)/discard", "dest": "/api/ao/writing/[id]/discard.js?id=$1" },
-    { "src": "/api/ao/scan-internal", "dest": "/api/ao/scan-internal.js" },
-    { "src": "/api/ao/scan-external", "dest": "/api/ao/scan-external.js" },
-    { "src": "/api/ao/daily-run-now", "dest": "/api/ao/daily-run-now.js" },
-    { "src": "/api/ao/ai/status", "dest": "/api/ao/ai/status.js" },
-    { "src": "/api/ao/scout/pending-sources/([^/]+)", "dest": "/api/ao/scout/pending-sources/[id].js?id=$1" },
-    { "src": "/api/ao/scout/pending-sources", "dest": "/api/ao/scout/pending-sources/index.js" },
-    { "src": "/api/ao/scout/cap-status", "dest": "/api/ao/scout/cap-status.js" },
-    { "src": "/api/ao/scout/runs", "dest": "/api/ao/scout/runs.js" },
-    { "src": "/api/ao/scout-pass-now", "dest": "/api/ao/scout-pass-now.js" },
-    { "src": "/api/ao/competitors/digest-status", "dest": "/api/ao/competitors/digest-status.js" },
-    { "src": "/api/ao/competitors/digest-now", "dest": "/api/ao/competitors/digest-now.js" },
-    { "src": "/api/ao/quotes/by-source", "dest": "/api/ao/quotes/by-source.js" },
-    { "src": "/api/ao/import/upload", "dest": "/api/ao/import/upload.js" },
-    { "src": "/api/ao/import/batches/([^/]+)/publish", "dest": "/api/ao/import/batches/[id].js?id=$1&action=publish" },
-    { "src": "/api/ao/import/batches/([^/]+)", "dest": "/api/ao/import/batches/[id].js?id=$1" },
-    { "src": "/api/ao/import/batches", "dest": "/api/ao/import/batches.js" },
-    { "src": "/api/ao/ideas/([^/]+)/shape-brief", "dest": "/api/ao/ideas/[id]/shape-brief.js?id=$1" },
-    { "src": "/api/ao/ideas/([^/]+)/hold", "dest": "/api/ao/ideas/[id]/hold.js?id=$1" },
-    { "src": "/api/ao/ideas/([^/]+)/unhold", "dest": "/api/ao/ideas/[id]/unhold.js?id=$1" },
-    { "src": "/api/ao/ideas/([^/]+)/archive", "dest": "/api/ao/ideas/[id]/archive.js?id=$1" },
-    { "src": "/api/ao/ideas/([^/]+)/generate-social-drafts", "dest": "/api/ao/ideas/[id]/generate-social-drafts.js?id=$1" },
-    { "src": "/api/ao/ideas/([^/]+)/send-to-import", "dest": "/api/ao/ideas/[id]/send-to-import.js?id=$1" },
-    { "src": "/api/ao/ideas/([^/]+)", "dest": "/api/ao/ideas/[id].js?id=$1" },
-    { "src": "/api/ao/ideas/resurface", "dest": "/api/ao/ideas/resurface.js" },
-    { "src": "/api/ao/ideas", "dest": "/api/ao/ideas/index.js" },
-    { "src": "/api/ao/opportunities/([^/]+)", "dest": "/api/ao/opportunities/[id].js?id=$1" },
-    { "src": "/api/ao/opportunities", "dest": "/api/ao/opportunities/index.js" },
-    { "src": "/api/ao/publishing/schedule-from-idea", "dest": "/api/ao/publishing/schedule-from-idea.js" },
-    { "src": "/api/ao/publishing/post-metrics", "dest": "/api/ao/publishing/post-metrics.js" },
-    { "src": "/api/ao/publishing/schedule-from-quote", "dest": "/api/ao/publishing/schedule-from-quote.js" },
-    { "src": "/api/cron/ao/sync-post-metrics", "dest": "/api/cron/ao/sync-post-metrics.js" },
-    { "src": "/api/ao/external-sources/wipe", "dest": "/api/ao/external-sources/wipe.js" },
-    { "src": "/api/ao/external-sources/rebuild", "dest": "/api/ao/external-sources/rebuild.js" },
-    { "src": "/api/ao/external-sources/seed", "dest": "/api/ao/external-sources/seed.js" },
-    { "src": "/api/ao/external-sources/([^/]+)", "dest": "/api/ao/external-sources/[id].js?id=$1" },
-    { "src": "/api/ao/external-sources", "dest": "/api/ao/external-sources/index.js" },
-    { "src": "/api/ao/brain-trust/([^/]+)", "dest": "/api/ao/brain-trust/[id].js?id=$1" },
-    { "src": "/api/ao/brain-trust", "dest": "/api/ao/brain-trust/index.js" },
-    { "src": "/api/ao/brand/assets/([^/]+)", "dest": "/api/ao/brand/assets/[id].js?id=$1" },
-    { "src": "/api/ao/brand/assets", "dest": "/api/ao/brand/assets/index.js" },
-    { "src": "/api/auth/linkedin/callback", "dest": "/api/auth/linkedin/callback.js" },
-    { "src": "/api/auth/linkedin/start", "dest": "/api/auth/linkedin/start.js" },
-    { "src": "/api/auth/meta/start", "dest": "/api/auth/meta/start.js" },
-    { "src": "/api/auth/meta/callback", "dest": "/api/auth/meta/callback.js" },
-    { "src": "/api/auth/x/start", "dest": "/api/auth/x/start.js" },
-    { "src": "/api/auth/x/callback", "dest": "/api/auth/x/callback.js" },
-    { "src": "/api/ao/linkedin/status", "dest": "/api/ao/linkedin/status.js" },
-    { "src": "/api/providers/linkedin/test-post", "dest": "/api/providers/linkedin/test-post.js" },
-    { "src": "/api/ao/meta/status", "dest": "/api/ao/meta/status.js" },
-    { "src": "/api/providers/meta/test-post", "dest": "/api/providers/meta/test-post.js" },
-    { "src": "/api/ao/instagram-login/status", "dest": "/api/ao/instagram-login/status.js" },
-    { "src": "/api/providers/meta/test-post-personal", "dest": "/api/providers/meta/test-post-personal.js" },
-    { "src": "/api/ao/x/status", "dest": "/api/ao/x/status.js" },
-    { "src": "/api/providers/x/test-post", "dest": "/api/providers/x/test-post.js" },
-    { "src": "/api/providers/facebook/group-post", "dest": "/api/providers/facebook/group-post.js" },
-    { "src": "/api/ao/meta-accounts", "dest": "/api/ao/meta-accounts.js" },
-    { "src": "/api/ao/auto/metrics-diagnostic", "dest": "/api/ao/auto/metrics-diagnostic.js" },
-    { "src": "/api/ao/auto/attach-captions", "dest": "/api/ao/auto/attach-captions.js" },
-    { "src": "/api/ao/auto/schedule-journal-launch", "dest": "/api/ao/auto/schedule-journal-launch.js" },
-    { "src": "/api/ao/auto/journal-prefetch", "dest": "/api/ao/auto/journal-prefetch.js" },
-    { "src": "/api/ao/auto/library", "dest": "/api/ao/auto/library.js" },
-    { "src": "/api/ao/auto/corpus-overlap", "dest": "/api/ao/auto/corpus-overlap.js" },
-    { "src": "/api/ao/auto/seed-corpus", "dest": "/api/ao/auto/seed-corpus.js" },
-    { "src": "/api/ao/auto/reshare-journal", "dest": "/api/ao/auto/reshare-journal.js" },
-    { "src": "/api/ao/auto/reshare-review", "dest": "/api/ao/auto/reshare-review.js" },
-    { "src": "/api/ao/auto/reshare-settings", "dest": "/api/ao/auto/reshare-settings.js" },
-    { "src": "/api/ao/auto/series-context", "dest": "/api/ao/auto/series-context.js" },
-    { "src": "/api/ao/auto/content-draft", "dest": "/api/ao/auto/content-draft.js" },
-    { "src": "/api/ao/auto/scheduled-posts-status", "dest": "/api/ao/auto/scheduled-posts-status.js" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/api/chat",
+      "dest": "/api/chat.js"
+    },
+    {
+      "src": "/api/chat/cannot-answer",
+      "dest": "/api/chat/cannot-answer.js"
+    },
+    {
+      "src": "/api/chat/question-feedback",
+      "dest": "/api/chat/question-feedback.js"
+    },
+    {
+      "src": "/api/contact",
+      "dest": "/api/contact.js"
+    },
+    {
+      "src": "/api/engagement-inquiry",
+      "dest": "/api/engagement-inquiry.js"
+    },
+    {
+      "src": "/api/podcast/guest-intake",
+      "dest": "/api/podcast/guest-intake.js"
+    },
+    {
+      "src": "/api/podcast/guest-intake-upload",
+      "dest": "/api/podcast/guest-intake-upload.js"
+    },
+    {
+      "src": "/api/podcast/guest-magic-link",
+      "dest": "/api/podcast/guest-magic-link.js"
+    },
+    {
+      "src": "/api/podcast/guest-magic-verify",
+      "dest": "/api/podcast/guest-magic-verify.js"
+    },
+    {
+      "src": "/api/podcast/guest-record",
+      "dest": "/api/podcast/guest-record.js"
+    },
+    {
+      "src": "/api/monitoring/analytics",
+      "dest": "/api/monitoring/analytics.js"
+    },
+    {
+      "src": "/api/monitoring/errors",
+      "dest": "/api/monitoring/errors.js"
+    },
+    {
+      "src": "/api/handoff",
+      "dest": "/api/handoff.js"
+    },
+    {
+      "src": "/api/knowledge",
+      "dest": "/api/knowledge/index.js"
+    },
+    {
+      "src": "/api/ali/apply",
+      "dest": "/api/ali/apply.js"
+    },
+    {
+      "src": "/api/ali/signup",
+      "dest": "/api/ali/signup.js"
+    },
+    {
+      "src": "/api/ali/setup-account",
+      "dest": "/api/ali/setup-account.js"
+    },
+    {
+      "src": "/api/ali/contacts",
+      "dest": "/api/ali/contacts.js"
+    },
+    {
+      "src": "/api/ali/divisions",
+      "dest": "/api/ali/divisions.js"
+    },
+    {
+      "src": "/api/ali/build-survey",
+      "dest": "/api/ali/build-survey.js"
+    },
+    {
+      "src": "/api/ali/deploy-survey",
+      "dest": "/api/ali/deploy-survey.js"
+    },
+    {
+      "src": "/api/ali/submit-response",
+      "dest": "/api/ali/submit-response.js"
+    },
+    {
+      "src": "/api/ali/survey/(.*)",
+      "dest": "/api/ali/survey/[token].js?token=$1"
+    },
+    {
+      "src": "/api/ali/dashboard",
+      "dest": "/api/ali/dashboard.js"
+    },
+    {
+      "src": "/api/ali/deploy/next",
+      "dest": "/api/ali/deploy/next.js"
+    },
+    {
+      "src": "/api/ali/deployments",
+      "dest": "/api/ali/deployments.js"
+    },
+    {
+      "src": "/api/ali/reports",
+      "dest": "/api/ali/reports.js"
+    },
+    {
+      "src": "/api/ali/zone-recommendations",
+      "dest": "/api/ali/zone-recommendations.js"
+    },
+    {
+      "src": "/api/ali/generate-insights",
+      "dest": "/api/ali/generate-insights.js"
+    },
+    {
+      "src": "/api/ali/narrative/submit",
+      "dest": "/api/ali/narrative/submit.js"
+    },
+    {
+      "src": "/api/ali/narrative/admin/clusters",
+      "dest": "/api/ali/narrative/admin/clusters.js"
+    },
+    {
+      "src": "/api/ali/narrative/admin/expose",
+      "dest": "/api/ali/narrative/admin/expose.js"
+    },
+    {
+      "src": "/api/ali/narrative/admin/moderate",
+      "dest": "/api/ali/narrative/admin/moderate.js"
+    },
+    {
+      "src": "/api/ali/narrative/admin/queue",
+      "dest": "/api/ali/narrative/admin/queue.js"
+    },
+    {
+      "src": "/api/ali/auth/login",
+      "dest": "/api/ali/auth/login.js"
+    },
+    {
+      "src": "/api/ali/auth/send-magic-link",
+      "dest": "/api/ali/auth/send-magic-link.js"
+    },
+    {
+      "src": "/api/ali/auth/verify-magic-link",
+      "dest": "/api/ali/auth/verify-magic-link.js"
+    },
+    {
+      "src": "/api/ali/auth/logout",
+      "dest": "/api/ali/auth/logout.js"
+    },
+    {
+      "src": "/api/ali/billing",
+      "dest": "/api/ali/billing.js"
+    },
+    {
+      "src": "/api/ali/super-admin/intelligence/(.*)/action",
+      "dest": "/api/ali/super-admin/intelligence/[id]/action.js?id=$1"
+    },
+    {
+      "src": "/api/ali/super-admin/intelligence/(.*)/dismiss",
+      "dest": "/api/ali/super-admin/intelligence/[id]/dismiss.js?id=$1"
+    },
+    {
+      "src": "/api/ali/super-admin/intelligence",
+      "dest": "/api/ali/super-admin/intelligence.js"
+    },
+    {
+      "src": "/api/ali/super-admin/overview",
+      "dest": "/api/ali/super-admin/overview.js"
+    },
+    {
+      "src": "/api/ali/admin/tenants/(.*)",
+      "dest": "/api/ali/admin/tenants/[companyId].js?companyId=$1"
+    },
+    {
+      "src": "/api/ali/admin/tenants",
+      "dest": "/api/ali/admin/tenants.js"
+    },
+    {
+      "src": "/api/ali/admin/deletions/dry-run",
+      "dest": "/api/ali/admin/deletions/dry-run.js"
+    },
+    {
+      "src": "/api/ali/admin/deletions/initiate",
+      "dest": "/api/ali/admin/deletions/initiate.js"
+    },
+    {
+      "src": "/api/ali/admin/deletions/execute",
+      "dest": "/api/ali/admin/deletions/execute.js"
+    },
+    {
+      "src": "/api/cron/generate-intelligence",
+      "dest": "/api/cron/generate-intelligence.js"
+    },
+    {
+      "src": "/api/cron/ali-process-narrative-clusters",
+      "dest": "/api/cron/ali-process-narrative-clusters.js"
+    },
+    {
+      "src": "/api/cron/ao/external-scan",
+      "dest": "/api/cron/ao/external-scan.js"
+    },
+    {
+      "src": "/api/cron/ao/internal-scan",
+      "dest": "/api/cron/ao/internal-scan.js"
+    },
+    {
+      "src": "/api/cron/ao/daily-run",
+      "dest": "/api/cron/ao/daily-run.js"
+    },
+    {
+      "src": "/api/cron/ao/scout-pass",
+      "dest": "/api/cron/ao/scout-pass.js"
+    },
+    {
+      "src": "/api/cron/ao/scout-pass-morning",
+      "dest": "/api/cron/ao/scout-pass.js"
+    },
+    {
+      "src": "/api/cron/ao/scout-pass-midday",
+      "dest": "/api/cron/ao/scout-pass.js"
+    },
+    {
+      "src": "/api/cron/ao/scout-pass-evening",
+      "dest": "/api/cron/ao/scout-pass.js"
+    },
+    {
+      "src": "/api/cron/ao/brief-prep",
+      "dest": "/api/cron/ao/brief-prep.js"
+    },
+    {
+      "src": "/api/cron/ao/corpus-pull-seed",
+      "dest": "/api/cron/ao/corpus-pull-seed.js"
+    },
+    {
+      "src": "/api/cron/ao/weekly-pull-quotes",
+      "dest": "/api/cron/ao/weekly-pull-quotes.js"
+    },
+    {
+      "src": "/api/cron/ao/backfill-corpus-embeddings",
+      "dest": "/api/cron/ao/backfill-corpus-embeddings.js"
+    },
+    {
+      "src": "/api/ao/publishing/schedule-weekly-pull-bundle",
+      "dest": "/api/ao/publishing/schedule-weekly-pull-bundle.js"
+    },
+    {
+      "src": "/api/ao/weekly-pull-bundle-now",
+      "dest": "/api/ao/weekly-pull-bundle-now.js"
+    },
+    {
+      "src": "/api/cron/ao/editorial-rebuild",
+      "dest": "/api/cron/ao/editorial-rebuild.js"
+    },
+    {
+      "src": "/api/cron/ao/competitor-digest",
+      "dest": "/api/cron/ao/competitor-digest.js"
+    },
+    {
+      "src": "/api/journal/subscribe",
+      "dest": "/api/journal/subscribe.js"
+    },
+    {
+      "src": "/api/journal/notify",
+      "dest": "/api/journal/notify.js"
+    },
+    {
+      "src": "/api/journal/send-duplicate-apology",
+      "dest": "/api/journal/send-duplicate-apology.js"
+    },
+    {
+      "src": "/api/journal/retry-failed-emails",
+      "dest": "/api/journal/retry-failed-emails.js"
+    },
+    {
+      "src": "/api/journal/check-subscription",
+      "dest": "/api/journal/check-subscription.js"
+    },
+    {
+      "src": "/api/journal/diagnose-subscriptions",
+      "dest": "/api/journal/diagnose-subscriptions.js"
+    },
+    {
+      "src": "/api/cron/daily-devotional-notify",
+      "dest": "/api/cron/daily-devotional-notify.js"
+    },
+    {
+      "src": "/api/cron/retry-failed-emails",
+      "dest": "/api/cron/retry-failed-emails.js"
+    },
+    {
+      "src": "/api/esv/passage",
+      "dest": "/api/esv/passage.js"
+    },
+    {
+      "src": "/api/operators/events",
+      "dest": "/api/operators/events/index.js"
+    },
+    {
+      "src": "/api/operators/events/create",
+      "dest": "/api/operators/events/create.js"
+    },
+    {
+      "src": "/api/operators/events/(.*)/open",
+      "dest": "/api/operators/events/[id]/open.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/close",
+      "dest": "/api/operators/events/[id]/close.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/reopen",
+      "dest": "/api/operators/events/[id]/reopen.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/revert-to-live",
+      "dest": "/api/operators/events/[id]/revert-to-live.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/delete",
+      "dest": "/api/operators/events/[id]/delete.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/update",
+      "dest": "/api/operators/events/[id]/update.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/rsvp",
+      "dest": "/api/operators/events/[id]/rsvp.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/remove-rsvp",
+      "dest": "/api/operators/events/[id]/remove-rsvp.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/promote-waitlist",
+      "dest": "/api/operators/events/[id]/promote-waitlist.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/votes/remaining",
+      "dest": "/api/operators/events/[id]/votes/remaining.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/votes",
+      "dest": "/api/operators/events/[id]/votes.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/check-in",
+      "dest": "/api/operators/events/[id]/check-in.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/test-roi",
+      "dest": "/api/operators/events/[id]/test-roi.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/roi",
+      "dest": "/api/operators/events/[id]/roi.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/recalculate-roi",
+      "dest": "/api/operators/events/[id]/recalculate-roi.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/close-rsvp",
+      "dest": "/api/operators/events/[id]/close-rsvp.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/generate-scenarios",
+      "dest": "/api/operators/events/[id]/generate-scenarios.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/scenarios",
+      "dest": "/api/operators/events/[id]/scenarios.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)/announce",
+      "dest": "/api/operators/events/[id]/announce.js?id=$1"
+    },
+    {
+      "src": "/api/operators/events/(.*)",
+      "dest": "/api/operators/events/[id]/index.js?id=$1"
+    },
+    {
+      "src": "/api/operators/candidates",
+      "dest": "/api/operators/candidates/index.js"
+    },
+    {
+      "src": "/api/operators/candidates/submit",
+      "dest": "/api/operators/candidates/submit.js"
+    },
+    {
+      "src": "/api/operators/candidates/(.*)/approve",
+      "dest": "/api/operators/candidates/[id]/approve.js?id=$1"
+    },
+    {
+      "src": "/api/operators/candidates/(.*)/deny",
+      "dest": "/api/operators/candidates/[id]/deny.js?id=$1"
+    },
+    {
+      "src": "/api/operators/dashboard",
+      "dest": "/api/operators/dashboard.js"
+    },
+    {
+      "src": "/api/operators/users",
+      "dest": "/api/operators/users/index.js"
+    },
+    {
+      "src": "/api/operators/users/me",
+      "dest": "/api/operators/users/me.js"
+    },
+    {
+      "src": "/api/operators/users/(.*)/promote",
+      "dest": "/api/operators/users/[email]/promote.js?email=$1"
+    },
+    {
+      "src": "/api/operators/users/(.*)/reverse-offense",
+      "dest": "/api/operators/users/[email]/reverse-offense.js?email=$1"
+    },
+    {
+      "src": "/api/operators/offenses/record",
+      "dest": "/api/operators/offenses/record.js"
+    },
+    {
+      "src": "/api/operators/upload-logo",
+      "dest": "/api/operators/upload-logo.js"
+    },
+    {
+      "src": "/api/operators/upload-headshot",
+      "dest": "/api/operators/upload-headshot.js"
+    },
+    {
+      "src": "/api/operators/auth/send-magic-link",
+      "dest": "/api/operators/auth/send-magic-link.js"
+    },
+    {
+      "src": "/api/operators/auth/verify-magic-link",
+      "dest": "/api/operators/auth/verify-magic-link.js"
+    },
+    {
+      "src": "/api/operators/auth/test-login",
+      "dest": "/api/operators/auth/test-login.js"
+    },
+    {
+      "src": "/api/operators/interest/submit",
+      "dest": "/api/operators/interest/submit.js"
+    },
+    {
+      "src": "/api/social/schedule",
+      "dest": "/api/social/schedule.js"
+    },
+    {
+      "src": "/api/social/publish-now",
+      "dest": "/api/social/publish-now.js"
+    },
+    {
+      "src": "/api/social/post-now",
+      "dest": "/api/social/post-now.js"
+    },
+    {
+      "src": "/api/cron/publish-scheduled-posts",
+      "dest": "/api/cron/publish-scheduled-posts.js"
+    },
+    {
+      "src": "/api/cron/publish-scheduled-journals",
+      "dest": "/api/cron/publish-scheduled-journals.js"
+    },
+    {
+      "src": "/api/bad-leader-admin-clusters",
+      "dest": "/api/bad-leader-admin-clusters.js"
+    },
+    {
+      "src": "/api/bad-leader-admin-intelligence",
+      "dest": "/api/bad-leader-admin-intelligence.js"
+    },
+    {
+      "src": "/api/bad-leader-admin-moderate",
+      "dest": "/api/bad-leader-admin-moderate.js"
+    },
+    {
+      "src": "/api/bad-leader-admin-queue",
+      "dest": "/api/bad-leader-admin-queue.js"
+    },
+    {
+      "src": "/api/bad-leader-admin-published",
+      "dest": "/api/bad-leader-admin-published.js"
+    },
+    {
+      "src": "/api/bad-leader-admin-session",
+      "dest": "/api/bad-leader-admin-session.js"
+    },
+    {
+      "src": "/api/bad-leader-admin-stats",
+      "dest": "/api/bad-leader-admin-stats.js"
+    },
+    {
+      "src": "/api/bad-leader-magic-link",
+      "dest": "/api/bad-leader-magic-link.js"
+    },
+    {
+      "src": "/api/bad-leader-magic-verify",
+      "dest": "/api/bad-leader-magic-verify.js"
+    },
+    {
+      "src": "/api/bad-leader-process-clusters",
+      "dest": "/api/bad-leader-process-clusters.js"
+    },
+    {
+      "src": "/api/bad-leader-public-stats",
+      "dest": "/api/bad-leader-public-stats.js"
+    },
+    {
+      "src": "/api/bad-leader-stories",
+      "dest": "/api/bad-leader-stories.js"
+    },
+    {
+      "src": "/api/bad-leader-submit",
+      "dest": "/api/bad-leader-submit.js"
+    },
+    {
+      "src": "/api/bad-leader-thumbsup",
+      "dest": "/api/bad-leader-thumbsup.js"
+    },
+    {
+      "src": "/api/ao/auth/send-magic-link",
+      "dest": "/api/ao/auth/send-magic-link.js"
+    },
+    {
+      "src": "/api/ao/auth/verify-magic-link",
+      "dest": "/api/ao/auth/verify-magic-link.js"
+    },
+    {
+      "src": "/api/ao/auth/logout",
+      "dest": "/api/ao/auth/logout.js"
+    },
+    {
+      "src": "/api/ao/auth/reviewer-login",
+      "dest": "/api/ao/auth/reviewer-login.js"
+    },
+    {
+      "src": "/api/ao/reviewer/upload-content",
+      "dest": "/api/ao/reviewer/upload-content.js"
+    },
+    {
+      "src": "/api/ao/reviewer/publish-now",
+      "dest": "/api/ao/reviewer/publish-now.js"
+    },
+    {
+      "src": "/api/ao/reviewer/analytics",
+      "dest": "/api/ao/reviewer/analytics.js"
+    },
+    {
+      "src": "/api/ao/reviewer/library",
+      "dest": "/api/ao/reviewer/library.js"
+    },
+    {
+      "src": "/api/ao/reviewer/settings",
+      "dest": "/api/ao/reviewer/settings.js"
+    },
+    {
+      "src": "/api/ao/me",
+      "dest": "/api/ao/me.js"
+    },
+    {
+      "src": "/api/ao/podcast/guest",
+      "dest": "/api/ao/podcast/guest.js"
+    },
+    {
+      "src": "/api/ao/podcast/guests",
+      "dest": "/api/ao/podcast/guests.js"
+    },
+    {
+      "src": "/api/ao/podcast/content-threads",
+      "dest": "/api/ao/podcast/content-threads.js"
+    },
+    {
+      "src": "/api/ao/podcast/episode-seed",
+      "dest": "/api/ao/podcast/episode-seed.js"
+    },
+    {
+      "src": "/api/ao/podcast/episodes",
+      "dest": "/api/ao/podcast/episodes.js"
+    },
+    {
+      "src": "/api/ao/podcast/schedule",
+      "dest": "/api/ao/podcast/schedule.js"
+    },
+    {
+      "src": "/api/ao/podcast/schedule/([^/]+)",
+      "dest": "/api/ao/podcast/schedule/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/podcast/guest-magic-link",
+      "dest": "/api/ao/podcast/guest-magic-link.js"
+    },
+    {
+      "src": "/api/ao/podcast/episode/recording-link",
+      "dest": "/api/ao/podcast/episode/recording-link.js"
+    },
+    {
+      "src": "/api/ao/podcast/episode/show-notes",
+      "dest": "/api/ao/podcast/episode/show-notes.js"
+    },
+    {
+      "src": "/api/ao/podcast/episode/guests",
+      "dest": "/api/ao/podcast/episode/guests.js"
+    },
+    {
+      "src": "/api/ao/podcast/guest-research",
+      "dest": "/api/ao/podcast/guest-research.js"
+    },
+    {
+      "src": "/api/ao/podcast/guest-questions",
+      "dest": "/api/ao/podcast/guest-questions.js"
+    },
+    {
+      "src": "/api/ao/podcast/guest-producer-brief",
+      "dest": "/api/ao/podcast/guest-producer-brief.js"
+    },
+    {
+      "src": "/api/ao/podcast/guest-post-recording",
+      "dest": "/api/ao/podcast/guest-post-recording.js"
+    },
+    {
+      "src": "/api/ao/db-check",
+      "dest": "/api/ao/db-check.js"
+    },
+    {
+      "src": "/api/ao/editorial/rebuild",
+      "dest": "/api/ao/editorial/rebuild.js"
+    },
+    {
+      "src": "/api/ao/editorial/settings",
+      "dest": "/api/ao/editorial/settings.js"
+    },
+    {
+      "src": "/api/ao/editorial/coverage",
+      "dest": "/api/ao/editorial/coverage.js"
+    },
+    {
+      "src": "/api/ao/editorial/chase-list",
+      "dest": "/api/ao/editorial/chase-list.js"
+    },
+    {
+      "src": "/api/ao/editorial/generate-chase-list",
+      "dest": "/api/ao/editorial/generate-chase-list.js"
+    },
+    {
+      "src": "/api/ao/auto/session",
+      "dest": "/api/ao/auto/session.js"
+    },
+    {
+      "src": "/api/ao/auto/thread/new",
+      "dest": "/api/ao/auto/thread/new.js"
+    },
+    {
+      "src": "/api/ao/auto/thread/resume",
+      "dest": "/api/ao/auto/thread/resume.js"
+    },
+    {
+      "src": "/api/ao/auto/thread/pin",
+      "dest": "/api/ao/auto/thread/pin.js"
+    },
+    {
+      "src": "/api/ao/auto/thread/unpin",
+      "dest": "/api/ao/auto/thread/unpin.js"
+    },
+    {
+      "src": "/api/ao/auto/thread/rename",
+      "dest": "/api/ao/auto/thread/rename.js"
+    },
+    {
+      "src": "/api/ao/auto/thread/archive",
+      "dest": "/api/ao/auto/thread/archive.js"
+    },
+    {
+      "src": "/api/ao/auto/thread-clear-design-images",
+      "dest": "/api/ao/auto/thread-clear-design-images.js"
+    },
+    {
+      "src": "/api/ao/auto/thread/([^/]+)",
+      "dest": "/api/ao/auto/thread/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/auto/drafts/save",
+      "dest": "/api/ao/auto/drafts/save.js"
+    },
+    {
+      "src": "/api/ao/auto/drafts",
+      "dest": "/api/ao/auto/drafts/index.js"
+    },
+    {
+      "src": "/api/ao/auto/chat",
+      "dest": "/api/ao/auto/chat.js"
+    },
+    {
+      "src": "/api/ao/auto/generate-card-image",
+      "dest": "/api/ao/auto/generate-card-image.js"
+    },
+    {
+      "src": "/api/ao/auto/generate-design-image",
+      "dest": "/api/ao/auto/generate-design-image.js"
+    },
+    {
+      "src": "/api/ao/auto/upload-header-image",
+      "dest": "/api/ao/auto/upload-header-image.js"
+    },
+    {
+      "src": "/api/ao/auto/schedule-cards",
+      "dest": "/api/ao/auto/schedule-cards.js"
+    },
+    {
+      "src": "/api/ao/auto/schedule-status",
+      "dest": "/api/ao/auto/schedule-status.js"
+    },
+    {
+      "src": "/api/ao/auto/publish-journal",
+      "dest": "/api/ao/auto/publish-journal.js"
+    },
+    {
+      "src": "/api/ao/auto/check-stuck-drafts",
+      "dest": "/api/ao/auto/check-stuck-drafts.js"
+    },
+    {
+      "src": "/api/ao/auto/update-scheduled-captions",
+      "dest": "/api/ao/auto/update-scheduled-captions.js"
+    },
+    {
+      "src": "/api/ao/auto/derive-content",
+      "dest": "/api/ao/auto/derive-content.js"
+    },
+    {
+      "src": "/api/ao/auto/publish-devotional",
+      "dest": "/api/ao/auto/publish-devotional.js"
+    },
+    {
+      "src": "/api/ao/auto/episode-process",
+      "dest": "/api/ao/auto/episode-process.js"
+    },
+    {
+      "src": "/api/ao/auto/episode-publish",
+      "dest": "/api/ao/auto/episode-publish.js"
+    },
+    {
+      "src": "/api/ao/auto/episode-video-upload",
+      "dest": "/api/ao/auto/episode-video-upload.js"
+    },
+    {
+      "src": "/api/ao/auto/episode-clip-upload",
+      "dest": "/api/ao/auto/episode-clip-upload.js"
+    },
+    {
+      "src": "/api/ao/auto/episode-clip-drafts/([^/]+)",
+      "dest": "/api/ao/auto/episode-clip-drafts/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/auto/episode-clip-drafts",
+      "dest": "/api/ao/auto/episode-clip-drafts/index.js"
+    },
+    {
+      "src": "/api/ao/auto/episode-drafts/([^/]+)",
+      "dest": "/api/ao/auto/episode-drafts/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/auto/guest-search",
+      "dest": "/api/ao/auto/guest-search.js"
+    },
+    {
+      "src": "/api/ao/auto/preflight",
+      "dest": "/api/ao/auto/preflight.js"
+    },
+    {
+      "src": "/api/ao/auto/x-media-check",
+      "dest": "/api/ao/auto/x-media-check.js"
+    },
+    {
+      "src": "/api/ao/auto/confirm-live",
+      "dest": "/api/ao/auto/confirm-live.js"
+    },
+    {
+      "src": "/api/ao/corpus/drafts/([^/]+)/hero-image",
+      "dest": "/api/ao/corpus/drafts/[id]/hero-image.js?id=$1"
+    },
+    {
+      "src": "/api/ao/corpus/drafts/([^/]+)",
+      "dest": "/api/ao/corpus/drafts/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/corpus/drafts",
+      "dest": "/api/ao/corpus/drafts/index.js"
+    },
+    {
+      "src": "/api/ao/corpus/publish",
+      "dest": "/api/ao/corpus/publish.js"
+    },
+    {
+      "src": "/api/ao/journal/publish-approval",
+      "dest": "/api/ao/journal/publish-approval.js"
+    },
+    {
+      "src": "/api/ao/auto/attachments",
+      "dest": "/api/ao/auto/attachments.js"
+    },
+    {
+      "src": "/api/ao/auto/undo",
+      "dest": "/api/ao/auto/undo.js"
+    },
+    {
+      "src": "/api/ao/auto/bundles/([^/]+)",
+      "dest": "/api/ao/auto/bundles/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/auto/bundles",
+      "dest": "/api/ao/auto/bundles/index.js"
+    },
+    {
+      "src": "/api/ao/auto/guardrails/([^/]+)",
+      "dest": "/api/ao/auto/guardrails/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/auto/guardrails",
+      "dest": "/api/ao/auto/guardrails/index.js"
+    },
+    {
+      "src": "/api/ao/analyst/chat",
+      "dest": "/api/ao/analyst/chat.js"
+    },
+    {
+      "src": "/api/ao/scout/hunt-goals",
+      "dest": "/api/ao/scout/hunt-goals.js"
+    },
+    {
+      "src": "/api/ao/scheduled-posts/([^/]+)",
+      "dest": "/api/ao/scheduled-posts/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/scheduled-posts",
+      "dest": "/api/ao/scheduled-posts.js"
+    },
+    {
+      "src": "/api/ao/quotes/list",
+      "dest": "/api/ao/quotes/list.js"
+    },
+    {
+      "src": "/api/ao/quotes/flush-pending",
+      "dest": "/api/ao/quotes/flush-pending.js"
+    },
+    {
+      "src": "/api/ao/quotes/purge",
+      "dest": "/api/ao/quotes/purge.js"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/approve",
+      "dest": "/api/ao/quotes/[id]/approve.js?id=$1"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/brief",
+      "dest": "/api/ao/quotes/[id]/brief.js?id=$1"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/studio-assets",
+      "dest": "/api/ao/quotes/[id]/studio-assets.js?id=$1"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/studio-chat",
+      "dest": "/api/ao/quotes/[id]/studio-chat.js?id=$1"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/studio",
+      "dest": "/api/ao/quotes/[id]/studio.js?id=$1"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/reject",
+      "dest": "/api/ao/quotes/[id]/reject.js?id=$1"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/hold",
+      "dest": "/api/ao/quotes/[id]/hold.js?id=$1"
+    },
+    {
+      "src": "/api/ao/quotes/(.*)/unhold",
+      "dest": "/api/ao/quotes/[id]/unhold.js?id=$1"
+    },
+    {
+      "src": "/api/ao/automation-status",
+      "dest": "/api/ao/automation-status.js"
+    },
+    {
+      "src": "/api/ao/journal-topics/list",
+      "dest": "/api/ao/journal-topics/list.js"
+    },
+    {
+      "src": "/api/ao/journal-topics/(.*)/approve",
+      "dest": "/api/ao/journal-topics/[id]/approve.js?id=$1"
+    },
+    {
+      "src": "/api/ao/journal-topics/(.*)/reject",
+      "dest": "/api/ao/journal-topics/[id]/reject.js?id=$1"
+    },
+    {
+      "src": "/api/ao/journal-topics/(.*)/approve-and-draft",
+      "dest": "/api/ao/journal-topics/[id]/approve-and-draft.js?id=$1"
+    },
+    {
+      "src": "/api/ao/writing/list",
+      "dest": "/api/ao/writing/list.js"
+    },
+    {
+      "src": "/api/ao/writing/(.*)/draft",
+      "dest": "/api/ao/writing/[id]/draft.js?id=$1"
+    },
+    {
+      "src": "/api/ao/writing/(.*)/discard",
+      "dest": "/api/ao/writing/[id]/discard.js?id=$1"
+    },
+    {
+      "src": "/api/ao/scan-internal",
+      "dest": "/api/ao/scan-internal.js"
+    },
+    {
+      "src": "/api/ao/scan-external",
+      "dest": "/api/ao/scan-external.js"
+    },
+    {
+      "src": "/api/ao/daily-run-now",
+      "dest": "/api/ao/daily-run-now.js"
+    },
+    {
+      "src": "/api/ao/ai/status",
+      "dest": "/api/ao/ai/status.js"
+    },
+    {
+      "src": "/api/ao/scout/pending-sources/([^/]+)",
+      "dest": "/api/ao/scout/pending-sources/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/scout/pending-sources",
+      "dest": "/api/ao/scout/pending-sources/index.js"
+    },
+    {
+      "src": "/api/ao/scout/cap-status",
+      "dest": "/api/ao/scout/cap-status.js"
+    },
+    {
+      "src": "/api/ao/scout/runs",
+      "dest": "/api/ao/scout/runs.js"
+    },
+    {
+      "src": "/api/ao/scout-pass-now",
+      "dest": "/api/ao/scout-pass-now.js"
+    },
+    {
+      "src": "/api/ao/competitors/digest-status",
+      "dest": "/api/ao/competitors/digest-status.js"
+    },
+    {
+      "src": "/api/ao/competitors/digest-now",
+      "dest": "/api/ao/competitors/digest-now.js"
+    },
+    {
+      "src": "/api/ao/quotes/by-source",
+      "dest": "/api/ao/quotes/by-source.js"
+    },
+    {
+      "src": "/api/ao/import/upload",
+      "dest": "/api/ao/import/upload.js"
+    },
+    {
+      "src": "/api/ao/import/batches/([^/]+)/publish",
+      "dest": "/api/ao/import/batches/[id].js?id=$1&action=publish"
+    },
+    {
+      "src": "/api/ao/import/batches/([^/]+)",
+      "dest": "/api/ao/import/batches/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/import/batches",
+      "dest": "/api/ao/import/batches.js"
+    },
+    {
+      "src": "/api/ao/ideas/([^/]+)/shape-brief",
+      "dest": "/api/ao/ideas/[id]/shape-brief.js?id=$1"
+    },
+    {
+      "src": "/api/ao/ideas/([^/]+)/hold",
+      "dest": "/api/ao/ideas/[id]/hold.js?id=$1"
+    },
+    {
+      "src": "/api/ao/ideas/([^/]+)/unhold",
+      "dest": "/api/ao/ideas/[id]/unhold.js?id=$1"
+    },
+    {
+      "src": "/api/ao/ideas/([^/]+)/archive",
+      "dest": "/api/ao/ideas/[id]/archive.js?id=$1"
+    },
+    {
+      "src": "/api/ao/ideas/([^/]+)/generate-social-drafts",
+      "dest": "/api/ao/ideas/[id]/generate-social-drafts.js?id=$1"
+    },
+    {
+      "src": "/api/ao/ideas/([^/]+)/send-to-import",
+      "dest": "/api/ao/ideas/[id]/send-to-import.js?id=$1"
+    },
+    {
+      "src": "/api/ao/ideas/([^/]+)",
+      "dest": "/api/ao/ideas/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/ideas/resurface",
+      "dest": "/api/ao/ideas/resurface.js"
+    },
+    {
+      "src": "/api/ao/ideas",
+      "dest": "/api/ao/ideas/index.js"
+    },
+    {
+      "src": "/api/ao/opportunities/([^/]+)",
+      "dest": "/api/ao/opportunities/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/opportunities",
+      "dest": "/api/ao/opportunities/index.js"
+    },
+    {
+      "src": "/api/ao/publishing/schedule-from-idea",
+      "dest": "/api/ao/publishing/schedule-from-idea.js"
+    },
+    {
+      "src": "/api/ao/publishing/post-metrics",
+      "dest": "/api/ao/publishing/post-metrics.js"
+    },
+    {
+      "src": "/api/ao/publishing/schedule-from-quote",
+      "dest": "/api/ao/publishing/schedule-from-quote.js"
+    },
+    {
+      "src": "/api/cron/ao/sync-post-metrics",
+      "dest": "/api/cron/ao/sync-post-metrics.js"
+    },
+    {
+      "src": "/api/ao/external-sources/wipe",
+      "dest": "/api/ao/external-sources/wipe.js"
+    },
+    {
+      "src": "/api/ao/external-sources/rebuild",
+      "dest": "/api/ao/external-sources/rebuild.js"
+    },
+    {
+      "src": "/api/ao/external-sources/seed",
+      "dest": "/api/ao/external-sources/seed.js"
+    },
+    {
+      "src": "/api/ao/external-sources/([^/]+)",
+      "dest": "/api/ao/external-sources/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/external-sources",
+      "dest": "/api/ao/external-sources/index.js"
+    },
+    {
+      "src": "/api/ao/brain-trust/([^/]+)",
+      "dest": "/api/ao/brain-trust/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/brain-trust",
+      "dest": "/api/ao/brain-trust/index.js"
+    },
+    {
+      "src": "/api/ao/brand/assets/([^/]+)",
+      "dest": "/api/ao/brand/assets/[id].js?id=$1"
+    },
+    {
+      "src": "/api/ao/brand/assets",
+      "dest": "/api/ao/brand/assets/index.js"
+    },
+    {
+      "src": "/api/auth/linkedin/callback",
+      "dest": "/api/auth/linkedin/callback.js"
+    },
+    {
+      "src": "/api/auth/linkedin/start",
+      "dest": "/api/auth/linkedin/start.js"
+    },
+    {
+      "src": "/api/auth/meta/start",
+      "dest": "/api/auth/meta/start.js"
+    },
+    {
+      "src": "/api/auth/meta/callback",
+      "dest": "/api/auth/meta/callback.js"
+    },
+    {
+      "src": "/api/auth/x/start",
+      "dest": "/api/auth/x/start.js"
+    },
+    {
+      "src": "/api/auth/x/callback",
+      "dest": "/api/auth/x/callback.js"
+    },
+    {
+      "src": "/api/ao/linkedin/status",
+      "dest": "/api/ao/linkedin/status.js"
+    },
+    {
+      "src": "/api/providers/linkedin/test-post",
+      "dest": "/api/providers/linkedin/test-post.js"
+    },
+    {
+      "src": "/api/ao/meta/status",
+      "dest": "/api/ao/meta/status.js"
+    },
+    {
+      "src": "/api/providers/meta/test-post",
+      "dest": "/api/providers/meta/test-post.js"
+    },
+    {
+      "src": "/api/ao/instagram-login/status",
+      "dest": "/api/ao/instagram-login/status.js"
+    },
+    {
+      "src": "/api/providers/meta/test-post-personal",
+      "dest": "/api/providers/meta/test-post-personal.js"
+    },
+    {
+      "src": "/api/ao/x/status",
+      "dest": "/api/ao/x/status.js"
+    },
+    {
+      "src": "/api/providers/x/test-post",
+      "dest": "/api/providers/x/test-post.js"
+    },
+    {
+      "src": "/api/providers/facebook/group-post",
+      "dest": "/api/providers/facebook/group-post.js"
+    },
+    {
+      "src": "/api/ao/meta-accounts",
+      "dest": "/api/ao/meta-accounts.js"
+    },
+    {
+      "src": "/api/ao/auto/metrics-diagnostic",
+      "dest": "/api/ao/auto/metrics-diagnostic.js"
+    },
+    {
+      "src": "/api/ao/auto/attach-captions",
+      "dest": "/api/ao/auto/attach-captions.js"
+    },
+    {
+      "src": "/api/ao/auto/schedule-journal-launch",
+      "dest": "/api/ao/auto/schedule-journal-launch.js"
+    },
+    {
+      "src": "/api/ao/auto/journal-prefetch",
+      "dest": "/api/ao/auto/journal-prefetch.js"
+    },
+    {
+      "src": "/api/ao/auto/library",
+      "dest": "/api/ao/auto/library.js"
+    },
+    {
+      "src": "/api/ao/auto/corpus-overlap",
+      "dest": "/api/ao/auto/corpus-overlap.js"
+    },
+    {
+      "src": "/api/ao/auto/seed-corpus",
+      "dest": "/api/ao/auto/seed-corpus.js"
+    },
+    {
+      "src": "/api/ao/auto/reshare-journal",
+      "dest": "/api/ao/auto/reshare-journal.js"
+    },
+    {
+      "src": "/api/ao/auto/reshare-review",
+      "dest": "/api/ao/auto/reshare-review.js"
+    },
+    {
+      "src": "/api/ao/auto/reshare-settings",
+      "dest": "/api/ao/auto/reshare-settings.js"
+    },
+    {
+      "src": "/api/ao/auto/series-context",
+      "dest": "/api/ao/auto/series-context.js"
+    },
+    {
+      "src": "/api/ao/auto/content-draft",
+      "dest": "/api/ao/auto/content-draft.js"
+    },
+    {
+      "src": "/api/ao/auto/scheduled-posts-status",
+      "dest": "/api/ao/auto/scheduled-posts-status.js"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ],
   "crons": [
     {

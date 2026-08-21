@@ -99,12 +99,3 @@ Patterns that help leaders understand:
 Every leader leans toward several archetypes. Most teams contain a blend. Healthy cultures don’t suppress patterns — they understand them.
 ALI doesn’t reduce leaders into one archetype. It reveals the profile, the blend, and the behaviors that matter most in their environment.
 This is how diagnostics become transformation.
-
-If you’re ready, I’ll move into:
- SECTION 7 — Part VI: The Team Experience Map (How ALI Visualizes Leadership Impact)
-Just say:
-“Continue.”
-You said:
-Go
-ChatGPT said:
-Understood — continuing into SECTION 7 — Part VI with the same clean, fast, no-friction momentum.

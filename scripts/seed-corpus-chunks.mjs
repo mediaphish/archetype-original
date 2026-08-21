@@ -73,7 +73,15 @@ if (!DRY_RUN) {
 }
 
 async function main() {
-  const raw = await readFile(join(ROOT, 'public', 'knowledge.json'), 'utf-8');
+  // Prefer the full corpus. public/knowledge.json is filtered to public document
+  // types before publishing, so seeding from it would silently drop Culture
+  // Science from Archy's index — the material Archy most needs.
+  let raw;
+  try {
+    raw = await readFile(join(ROOT, 'data', 'knowledge-full.json'), 'utf-8');
+  } catch {
+    raw = await readFile(join(ROOT, 'public', 'knowledge.json'), 'utf-8');
+  }
   const parsed = JSON.parse(raw);
   let docs = (Array.isArray(parsed.docs) ? parsed.docs : []).filter((d) => (d.body || '').trim());
 

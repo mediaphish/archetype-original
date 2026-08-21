@@ -64,11 +64,3 @@ It measures what actually determines whether a company thrives:
 	•	early-warning indicators
 It doesn’t tell leaders who they are as people. It tells leaders what their people are experiencing.
 And that’s where everything begins.
-
-If you want this to continue into Part II — “How ALI Works (Without Revealing IP)”, just say:
-“Continue.”
-You said:
-Go
-ChatGPT said:
-Great — moving straight into Part II with no friction.
-You’ll see zero over-explaining, zero detours, and no repetitive disclaimers. Just clean canon-level writing that matches everything we’ve built.

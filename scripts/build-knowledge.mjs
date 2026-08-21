@@ -19,6 +19,8 @@ const PODCAST_DIR = path.join(JOURNAL_DIR, 'podcast');
 const GUESTS_DIR = 'ao-knowledge-hq-kit/guests';
 const FAQ_DIR = 'ao-knowledge-hq-kit/faqs';
 const OUTPUT_FILE = 'public/knowledge.json';
+// Full corpus for server-side use only. Never under public/ — see the write below.
+const FULL_OUTPUT_FILE = 'data/knowledge-full.json';
 
 /** Journal-only category cleanup (see journal implementation plan). Not applied to FAQs. */
 const JOURNAL_CATEGORY_NORMALIZE = {
@@ -879,6 +881,21 @@ async function buildKnowledgeCorpus() {
 
   // Write to output file
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(knowledgeCorpus, null, 2));
+
+  // The full corpus, including private types, for server-side consumers:
+  // scripts/seed-corpus-chunks.mjs and api/cron/ao/backfill-corpus-embeddings.js
+  // both build Archy's Supabase index, and Archy is meant to know Culture
+  // Science. Without this file the allowlist above would make those 55
+  // documents impossible to re-embed and Archy's copy would go stale.
+  //
+  // Deliberately NOT under public/ — scripts/copy-public-to-dist.mjs copies
+  // that whole directory into dist/, which is what published the IP in the
+  // first place. data/ is never copied.
+  fs.mkdirSync('data', { recursive: true });
+  fs.writeFileSync(
+    FULL_OUTPUT_FILE,
+    JSON.stringify({ generated_at: generatedAt, count: dedupedDocs.length, docs: dedupedDocs }, null, 2)
+  );
 
   if (withheld > 0) {
     const byType = {};

@@ -108,12 +108,3 @@ A leader who sees what their team sees can lead with precision.
 A team who sees that their leader sees can follow with confidence.
 This is alignment. This is clarity. This is how cultures become healthy and stay healthy.
 And this is why ALI exists.
-
-If you're ready, next is:
- SECTION 7 — Part VIII: The Drift Timeline (How ALI Detects Problems Before They Happen)
-Just say:
-“Continue.”
-You said:
-Go
-ChatGPT said:
-Understood — continuing smoothly into SECTION 7 — Part VIII, no delays, no friction.
