@@ -15,6 +15,19 @@ jest.mock('../../../../lib/supabase-admin.js', () => ({
   },
 }));
 
+// overview.js gained a requireSuperAdmin guard after this test was written, so
+// the bare `req = { method: 'GET' }` below started returning 403 and the test
+// went red against a handler that was behaving correctly.
+//
+// Mocked rather than satisfied with a header, because the guard also queries
+// ali_super_admins and ali_super_admin_users — teaching the Supabase mock those
+// tables would couple this test to auth internals. This test exists for the
+// overview payload shape (the leadershipMirror/experienceMap undefined throw).
+// Authorization deserves its own test, against the guard directly.
+jest.mock('../../../../lib/ali-admin-auth.js', () => ({
+  requireSuperAdmin: jest.fn(async () => ({ email: 'admin@example.com' })),
+}));
+
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 
 const thenable = (data, error = null) => ({ then: (resolve) => resolve({ data, error }) });

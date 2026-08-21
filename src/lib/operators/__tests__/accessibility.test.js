@@ -90,6 +90,10 @@ describe('accessibility utilities', () => {
       const button2 = document.createElement('button');
       element.appendChild(button1);
       element.appendChild(button2);
+      // focus() is a no-op on a detached node, so activeElement stayed <body>
+      // and this failed against a correct implementation. The element has to be
+      // in the document, exactly as it is in real use.
+      document.body.appendChild(element);
 
       const cleanup = trapFocus(element);
 
@@ -97,6 +101,7 @@ describe('accessibility utilities', () => {
       expect(cleanup).toBeInstanceOf(Function);
 
       cleanup();
+      document.body.removeChild(element);
     });
 
     it('should return undefined if element is null', () => {

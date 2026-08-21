@@ -88,9 +88,12 @@ describe('ConfirmModal component', () => {
       />
     );
     
-    const overlay = screen.getByRole('dialog').parentElement;
+    // The element with role="dialog" IS the overlay — it carries
+    // onClick={handleCancel}. Its parentElement is Testing Library's own
+    // container, which has no handler, so this was clicking nothing.
+    const overlay = screen.getByRole('dialog');
     fireEvent.click(overlay);
-    
+
     expect(mockOnClose).toHaveBeenCalled();
   });
 
@@ -105,9 +108,11 @@ describe('ConfirmModal component', () => {
       />
     );
     
-    const modalContent = screen.getByText('Test Modal').closest('div[class*="rounded-lg"]');
+    // Was looking for 'Test Modal' while the render above passes title="Test",
+    // so the query threw before it could assert anything.
+    const modalContent = screen.getByText('Test').closest('div[class*="rounded-lg"]');
     fireEvent.click(modalContent);
-    
+
     expect(mockOnClose).not.toHaveBeenCalled();
   });
 

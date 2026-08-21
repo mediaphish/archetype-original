@@ -14,7 +14,14 @@ export const validateEmail = (email) => {
 };
 
 export const validateRequired = (value, fieldName = 'This field') => {
-  if (!value || (typeof value === 'string' && value.trim() === '')) {
+  // `!value` treated the number 0 as missing, so a required numeric field could
+  // never be satisfied by zero. Absent means null, undefined, or blank text —
+  // not merely falsy.
+  const missing =
+    value === null ||
+    value === undefined ||
+    (typeof value === 'string' && value.trim() === '');
+  if (missing) {
     return { valid: false, error: `${fieldName} is required` };
   }
   return { valid: true };
@@ -39,7 +46,16 @@ export const validateURL = (url) => {
     return { valid: true }; // URL is optional
   }
   try {
-    new URL(url.startsWith('http') ? url : `https://${url}`);
+    const parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
+    // `new URL('https://not-a-url')` parses happily — "not-a-url" is a legal
+    // hostname — so this accepted any single word as someone's website. A real
+    // host needs a dot and a plausible suffix. Bare domains stay valid on
+    // purpose: "example.com" is what people actually type, and https:// is
+    // prepended above.
+    const host = parsed.hostname;
+    if (!host.includes('.') || !/\.[a-z]{2,}$/i.test(host)) {
+      return { valid: false, error: 'Please enter a valid URL' };
+    }
     return { valid: true };
   } catch {
     return { valid: false, error: 'Please enter a valid URL' };
