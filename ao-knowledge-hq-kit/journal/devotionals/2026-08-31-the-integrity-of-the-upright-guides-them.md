@@ -22,7 +22,7 @@ We addressed accountability to those a leader is responsible for. Shepherds who 
 
 We spent the final stretch with avoidance itself. Aaron's excuse. Jonah's flight in the opposite direction. The quiet self-deception of believing there is nothing to hide. The heart's own unreliable testimony about itself. Every dark corner a leader might use for cover, and the outward appearance that so easily substitutes for real discernment. And then the turn: concealment does not prosper, but confession and forsaking obtain mercy, modeled finally in five words that needed no more.
 
-September will turn toward grace and restoration, what happens after account has been given honestly and the leader has to find a way forward. That arc is still ahead.
+September will turn toward grace and mercy, how a leader who has learned what account costs turns and extends that same grace to the people under them. That arc is still ahead.
 
 ## Scripture
 
@@ -38,7 +38,7 @@ Every passage this month described what happens when that guidance is ignored. A
 
 The second half of the proverb is a warning worth carrying forward. The crookedness of the treacherous destroys them. Not a slow inconvenience. A destruction that grows out of the crookedness itself, the same way the guidance grows out of the integrity. Neither one is imposed from outside. Both are the natural harvest of what was already there.
 
-A leader who wants September's grace to mean something has to arrive at it the way this proverb describes, guided by integrity through August rather than repeatedly failing and hoping mercy will average out the pattern. Accountability and grace are not opposites. Grace is what meets the leader who has actually let integrity guide them into an honest account.
+A leader who wants September to mean something has to arrive at it the way this proverb describes, guided by integrity through August rather than repeatedly failing and hoping mercy will average out the pattern. Accountability and mercy are not opposites. A leader who has honestly given account is the leader positioned to extend mercy to someone else who has failed, without excusing what integrity has already named as wrong.
 
 ## Practical Application
 
