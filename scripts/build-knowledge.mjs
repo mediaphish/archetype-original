@@ -840,14 +840,57 @@ async function buildKnowledgeCorpus() {
     console.log(`ℹ️  ${carriedForward} unchanged document(s) kept their existing timestamps.`);
   }
 
+  // public/knowledge.json is served at https://www.archetypeoriginal.com/knowledge.json
+  // with no authentication. Anything placed in it is published to the world.
+  //
+  // Culture Science is unpublished IP. Its own section headings say so —
+  // "How ALI Works (Without Revealing IP)", "The Scoring Model (High-Level,
+  // Non-IP Exposure)". Until now all 55 of those documents shipped in that
+  // public file: the scoring model, the Four-Survey Framework, the archetypes,
+  // the drift timeline. Thirteen of them also carried raw ChatGPT transcripts,
+  // which published Bart's side of those planning conversations verbatim.
+  //
+  // Archy is unaffected. It retrieves from ao_corpus_chunks in Supabase, which
+  // holds all 55 documents as 215 chunks server-side. The only consumers of the
+  // public file are FAQs.jsx and AccidentalCEO.jsx, and both filter to
+  // type === 'faq'.
+  //
+  // This is an allowlist, not a blocklist. A new private doc type must be
+  // added deliberately to become public, rather than leaking by default.
+  const PUBLIC_DOC_TYPES = new Set([
+    'journal-post',
+    'devotional',
+    'faq',
+    'article',
+    'chapter',
+    'book',
+    'preface',
+    'podcast-episode',
+  ]);
+
+  const publicDocs = dedupedDocs.filter((doc) => PUBLIC_DOC_TYPES.has(String(doc?.type || '')));
+  const withheld = dedupedDocs.length - publicDocs.length;
+
   const knowledgeCorpus = {
     generated_at: generatedAt,
-    count: dedupedDocs.length,
-    docs: dedupedDocs,
+    count: publicDocs.length,
+    docs: publicDocs,
   };
 
   // Write to output file
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(knowledgeCorpus, null, 2));
+
+  if (withheld > 0) {
+    const byType = {};
+    for (const doc of dedupedDocs) {
+      const t = String(doc?.type || '');
+      if (!PUBLIC_DOC_TYPES.has(t)) byType[t] = (byType[t] || 0) + 1;
+    }
+    const detail = Object.entries(byType)
+      .map(([t, n]) => `${n} ${t}`)
+      .join(', ');
+    console.log(`🔒 Withheld from public/knowledge.json: ${detail} (still available to Archy via Supabase)`);
+  }
 
   try {
     const { auditPublicationEvent } = await import('../lib/ao/auditPublicationEvent.js');
