@@ -40,7 +40,49 @@ export default async function handler(req, res) {
     ? { ok: true, message: 'RESEND_API_KEY is set' }
     : { ok: false, message: 'RESEND_API_KEY is not set — subscriber emails will fail' };
 
-  // 5. Supabase connection
+  // 5. X image posting (OAuth 1.0a)
+  //
+  // X has two entirely separate auth paths, which is why "it has been posting"
+  // and "images have never worked" were both true at the same time:
+  //
+  //   - Text posts use OAuth 2.0 via Connect X. That token lives in the
+  //     ao_x_tokens table and refreshes itself. No environment variables.
+  //   - Media upload requires OAuth 1.0a, which reads the four variables below.
+  //     They have never been set, so no image has ever attached.
+  //
+  // Before 2026-08-17 a missing-credential image post fell through and posted
+  // the image's storage URL as body text, recorded as a success. It fails
+  // outright now, which is what finally made this visible.
+  //
+  // Checked through getSocialCredentials — the same function the posting path
+  // uses — so it cannot drift from real capability. Names only, never values.
+  try {
+    const { getSocialCredentials } = await import('../../../lib/social/config.js');
+    const xCreds = getSocialCredentials('twitter', 'personal');
+    if (xCreds) {
+      checks.x_image_posting = {
+        ok: true,
+        message: 'X OAuth 1.0a credentials are set — images can attach',
+      };
+    } else {
+      const missing = [
+        'TWITTER_API_KEY',
+        'TWITTER_API_SECRET',
+        'TWITTER_ACCESS_TOKEN',
+        'TWITTER_ACCESS_TOKEN_SECRET',
+      ].filter((name) => !process.env[name]);
+      checks.x_image_posting = {
+        ok: false,
+        message:
+          `X image posts will fail — missing ${missing.join(', ')}. ` +
+          'Text-only posts still work via the separate OAuth 2.0 Connect X token.',
+      };
+    }
+  } catch (err) {
+    checks.x_image_posting = { ok: false, message: `X credential check failed: ${err.message}` };
+  }
+
+  // 6. Supabase connection
   try {
     const { supabaseAdmin } = await import('../../../lib/supabase-admin.js');
     const { error } = await scheduledPosts()
