@@ -9,7 +9,15 @@ export default {
     {
       displayName: 'dom',
       testMatch: ['**/__tests__/**/*.(js|jsx)', '**/*.(test|spec).(js|jsx)'],
-      testPathIgnorePatterns: ['/lib/__tests__/', '/api/ali/super-admin/__tests__/'],
+      // Anchored to <rootDir>. These exist to hand the root-level lib/ and the
+      // super-admin API tests to the "node" project above. Unanchored, the
+      // '/lib/__tests__/' pattern also matched src/lib/__tests__/, which the
+      // node project does not pick up either — so any test placed there ran in
+      // neither project and passed silently by never executing.
+      testPathIgnorePatterns: [
+        '<rootDir>/lib/__tests__/',
+        '<rootDir>/api/ali/super-admin/__tests__/',
+      ],
       testEnvironment: 'jsdom',
       setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
       moduleNameMapper: {

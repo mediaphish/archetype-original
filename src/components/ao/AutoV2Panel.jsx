@@ -14,7 +14,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import {
@@ -27,6 +27,7 @@ import {
   resolveArtifactPanelState,
 } from './draftArtifactSync.js';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
+import { metricsAlertKeyFor } from '../../lib/metricsAlertKey';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import {
   MAX_TOTAL_ATTACHMENT_BYTES,
@@ -1835,6 +1836,19 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const [journalPendingPublish, setJournalPendingPublish] = useState(null);
   const [linkedinTokenWarning, setLinkedinTokenWarning] = useState(null);
   const [metricsSyncAlerts, setMetricsSyncAlerts] = useState([]);
+  // Dismissal is keyed to the alert text, not to time and not forever. The
+  // LinkedIn engagement failure behind this banner is blocked on LinkedIn's own
+  // review queue and has been for weeks, so an undismissable warning becomes
+  // permanent furniture. Content-keyed means this exact failure stays dismissed
+  // while a new or changed failure still gets through.
+  const [dismissedMetricsAlertKey, setDismissedMetricsAlertKey] = useState(() => {
+    try {
+      return localStorage.getItem('ao_dismissed_metrics_alert_key') || null;
+    } catch {
+      return null;
+    }
+  });
+  const metricsAlertKey = useMemo(() => metricsAlertKeyFor(metricsSyncAlerts), [metricsSyncAlerts]);
   const [devotionalPublishBanner, setDevotionalPublishBanner] = useState(null);
   const [episodeDraft, setEpisodeDraft] = useState(null);
   const [episodeProcessBanner, setEpisodeProcessBanner] = useState(null);
@@ -3583,14 +3597,32 @@ export default function AutoV2Panel({ onNavigate, className }) {
             </a>
           </div>
         )}
-        {metricsSyncAlerts.length > 0 && (
-          <div className="flex-shrink-0 px-4 py-2 text-xs bg-amber-50 border-b border-amber-200 text-amber-900">
-            <p className="font-medium mb-1">Engagement numbers are not updating on some channels:</p>
-            <ul className="list-disc pl-4 space-y-0.5">
-              {metricsSyncAlerts.map((w, i) => (
-                <li key={i}>{w}</li>
-              ))}
-            </ul>
+        {metricsSyncAlerts.length > 0 && metricsAlertKey !== dismissedMetricsAlertKey && (
+          <div className="flex-shrink-0 flex items-start justify-between gap-3 px-4 py-2 text-xs bg-amber-50 border-b border-amber-200 text-amber-900">
+            <div>
+              <p className="font-medium mb-1">Engagement numbers are not updating on some channels:</p>
+              <ul className="list-disc pl-4 space-y-0.5">
+                {metricsSyncAlerts.map((w, i) => (
+                  <li key={i}>{w}</li>
+                ))}
+              </ul>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setDismissedMetricsAlertKey(metricsAlertKey);
+                try {
+                  localStorage.setItem('ao_dismissed_metrics_alert_key', metricsAlertKey);
+                } catch {
+                  /* best-effort only — dismissal is a UI nicety, not data */
+                }
+              }}
+              className="flex-shrink-0 text-amber-700 hover:text-amber-900"
+              aria-label="Dismiss"
+              title="Dismiss until this changes"
+            >
+              <X className="h-3.5 w-3.5" aria-hidden strokeWidth={2} />
+            </button>
           </div>
         )}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-3">

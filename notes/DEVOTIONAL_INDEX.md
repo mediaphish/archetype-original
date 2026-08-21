@@ -239,6 +239,16 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-08-19 | Examples, Not Domineering | 1 Peter 5:1–3 (ESV) | `examples-not-domineering` | `2026-08-19-examples-not-domineering.md` |
 | 2026-08-20 | Search Me | Psalm 139:23–24 (ESV) | `search-me` | `2026-08-20-search-me.md` |
 | 2026-08-21 | I Am Innocent of the Blood of All | Acts 20:24–27 (ESV) | `i-am-innocent-of-the-blood-of-all` | `2026-08-21-i-am-innocent-of-the-blood-of-all.md` |
+| 2026-08-22 | So I Threw It Into the Fire, and Out Came This Calf | Exodus 32:21–24 (ESV) | `so-i-threw-it-into-the-fire` | `2026-08-22-so-i-threw-it-into-the-fire.md` |
+| 2026-08-23 | You Will Not Call to Account | Psalm 10:13 (ESV) | `you-will-not-call-to-account` | `2026-08-23-you-will-not-call-to-account.md` |
+| 2026-08-24 | Jonah Rose to Flee | Jonah 1:1–3 (ESV) | `jonah-rose-to-flee` | `2026-08-24-jonah-rose-to-flee.md` |
+| 2026-08-25 | If We Say We Have No Sin | 1 John 1:8 (ESV) | `if-we-say-we-have-no-sin` | `2026-08-25-if-we-say-we-have-no-sin.md` |
+| 2026-08-26 | The Heart Is Deceitful Above All Things | Jeremiah 17:9–10 (ESV) | `the-heart-is-deceitful-above-all-things` | `2026-08-26-the-heart-is-deceitful-above-all-things.md` |
+| 2026-08-27 | His Eyes Are on the Ways of a Man | Job 34:21–23 (ESV) | `his-eyes-are-on-the-ways-of-a-man` | `2026-08-27-his-eyes-are-on-the-ways-of-a-man.md` |
+| 2026-08-28 | The Lord Looks on the Heart | 1 Samuel 16:6–7 (ESV) | `the-lord-looks-on-the-heart` | `2026-08-28-the-lord-looks-on-the-heart.md` |
+| 2026-08-29 | Whoever Conceals His Transgressions | Proverbs 28:13 (ESV) | `whoever-conceals-his-transgressions` | `2026-08-29-whoever-conceals-his-transgressions.md` |
+| 2026-08-30 | I Have Sinned Against the Lord | 2 Samuel 12:13 (ESV) | `i-have-sinned-against-the-lord` | `2026-08-30-i-have-sinned-against-the-lord.md` |
+| 2026-08-31 | The Integrity of the Upright Guides Them | Proverbs 11:3 (ESV) | `the-integrity-of-the-upright-guides-them` | `2026-08-31-the-integrity-of-the-upright-guides-them.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
