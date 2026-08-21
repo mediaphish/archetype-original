@@ -44,17 +44,25 @@ jobs:
       # default instead of waiting to be remembered here.
       - name: Run standalone self-tests
         run: |
-          # These four open a real Supabase connection and cannot run without
-          # production credentials. Named explicitly — a silent skip would read
-          # as coverage that does not exist.
-          NEEDS_DB="autoToolHandlers.draftIdentity editorialMemory.seriesTitle handlePublishJournal publishDueScheduledJournals"
-          failed=0
+          # 17 of these open a real Supabase connection and cannot run without
+          # production credentials. Detected at runtime rather than kept as a
+          # hand-written skip list: a list that long goes stale, and a new
+          # self-test needing credentials would fail CI for the wrong reason.
+          #
+          # Only the missing-credentials signature is treated as a skip. Every
+          # other non-zero exit is a real failure. Counts are printed so the
+          # skipped ones never read as coverage that exists.
+          ran=0; skipped=0; failed=0
           for f in lib/ao/*.selftest.mjs; do
             name=$(basename "$f" .selftest.mjs)
-            case " $NEEDS_DB " in
-              *" $name "*) echo "SKIP (needs database): $name"; continue ;;
-            esac
-            echo "RUN  $name"
-            node "$f" || { echo "FAILED: $name"; failed=1; }
+            if out=$(node "$f" 2>&1); then
+              ran=$((ran+1)); echo "PASS  $name"
+            elif printf '%s' "$out" | grep -qE 'supabaseUrl is required|Missing Supabase configuration'; then
+              skipped=$((skipped+1)); echo "SKIP  $name (needs database credentials)"
+            else
+              failed=$((failed+1)); echo "FAIL  $name"; printf '%s\n' "$out" | tail -20
+            fi
           done
-          exit $failed
+          echo ""
+          echo "self-tests: $ran passed, $skipped skipped (no credentials), $failed failed"
+          [ "$failed" -eq 0 ]
