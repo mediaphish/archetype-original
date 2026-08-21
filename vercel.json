@@ -284,6 +284,7 @@
     { "src": "/api/ao/auto/episode-drafts/([^/]+)", "dest": "/api/ao/auto/episode-drafts/[id].js?id=$1" },
     { "src": "/api/ao/auto/guest-search", "dest": "/api/ao/auto/guest-search.js" },
     { "src": "/api/ao/auto/preflight", "dest": "/api/ao/auto/preflight.js" },
+    { "src": "/api/ao/auto/x-media-check", "dest": "/api/ao/auto/x-media-check.js" },
     { "src": "/api/ao/auto/confirm-live", "dest": "/api/ao/auto/confirm-live.js" },
     { "src": "/api/ao/corpus/drafts/([^/]+)/hero-image", "dest": "/api/ao/corpus/drafts/[id]/hero-image.js?id=$1" },
     { "src": "/api/ao/corpus/drafts/([^/]+)", "dest": "/api/ao/corpus/drafts/[id].js?id=$1" },
