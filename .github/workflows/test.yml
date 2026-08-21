@@ -1,0 +1,60 @@
+name: Tests
+
+# Nothing has ever run this suite in CI. It sat at 18 failures out of 200 for
+# long enough that "tests pass" stopped carrying information, and two real bugs
+# hid among the stale assertions — the number 0 failing a required-field check,
+# and any single word passing as a website URL.
+#
+# The suite is green as of 2026-08-21. This keeps it that way: a red suite is
+# worse than no suite, because it teaches everyone to ignore the signal.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      # 29 standalone regression scripts predate the jest suite and are not
+      # picked up by it, so nothing has ever run them together. Two were red
+      # when this workflow was written — both stale fixtures missing the
+      # instagram_personal channel, which was added to the required set after
+      # they were written.
+      #
+      # Globbed rather than listed, so a newly added self-test is covered by
+      # default instead of waiting to be remembered here.
+      - name: Run standalone self-tests
+        run: |
+          # These four open a real Supabase connection and cannot run without
+          # production credentials. Named explicitly — a silent skip would read
+          # as coverage that does not exist.
+          NEEDS_DB="autoToolHandlers.draftIdentity editorialMemory.seriesTitle handlePublishJournal publishDueScheduledJournals"
+          failed=0
+          for f in lib/ao/*.selftest.mjs; do
+            name=$(basename "$f" .selftest.mjs)
+            case " $NEEDS_DB " in
+              *" $name "*) echo "SKIP (needs database): $name"; continue ;;
+            esac
+            echo "RUN  $name"
+            node "$f" || { echo "FAILED: $name"; failed=1; }
+          done
+          exit $failed
