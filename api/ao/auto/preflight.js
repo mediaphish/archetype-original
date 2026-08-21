@@ -40,46 +40,41 @@ export default async function handler(req, res) {
     ? { ok: true, message: 'RESEND_API_KEY is set' }
     : { ok: false, message: 'RESEND_API_KEY is not set — subscriber emails will fail' };
 
-  // 5. X image posting (OAuth 1.0a)
+  // 5. X image posting
   //
-  // X has two entirely separate auth paths, which is why "it has been posting"
-  // and "images have never worked" were both true at the same time:
+  // Both text and images now use the single OAuth 2.0 Connect X token stored in
+  // ao_x_tokens. Images additionally need the media.write scope on that token,
+  // which POST /2/media/upload requires; without it the upload 403s.
   //
-  //   - Text posts use OAuth 2.0 via Connect X. That token lives in the
-  //     ao_x_tokens table and refreshes itself. No environment variables.
-  //   - Media upload requires OAuth 1.0a, which reads the four variables below.
-  //     They have never been set, so no image has ever attached.
+  // The four TWITTER_* variables are not consulted here. They belonged to the
+  // OAuth 1.0a media path, and X retired the v1.1 endpoints that path used on
+  // 2025-06-09.
   //
-  // Before 2026-08-17 a missing-credential image post fell through and posted
-  // the image's storage URL as body text, recorded as a success. It fails
-  // outright now, which is what finally made this visible.
-  //
-  // Checked through getSocialCredentials — the same function the posting path
-  // uses — so it cannot drift from real capability. Names only, never values.
+  // This reports scope presence, which is still an inference. Run
+  // /api/ao/auto/x-media-check to observe an actual upload succeed.
   try {
-    const { getSocialCredentials } = await import('../../../lib/social/config.js');
-    const xCreds = getSocialCredentials('twitter', 'personal');
-    if (xCreds) {
+    const { getXAccessToken } = await import('../../../lib/social/xConnection.js');
+    const token = await getXAccessToken();
+    if (!token.ok || !token.accessToken) {
+      checks.x_image_posting = {
+        ok: false,
+        message: 'No connected X account — connect X from Auto settings',
+      };
+    } else if (String(token.scope || '').split(/\s+/).includes('media.write')) {
       checks.x_image_posting = {
         ok: true,
-        message: 'X OAuth 1.0a credentials are set — images can attach',
+        message: 'Connected X token carries media.write — images can attach',
       };
     } else {
-      const missing = [
-        'TWITTER_API_KEY',
-        'TWITTER_API_SECRET',
-        'TWITTER_ACCESS_TOKEN',
-        'TWITTER_ACCESS_TOKEN_SECRET',
-      ].filter((name) => !process.env[name]);
       checks.x_image_posting = {
         ok: false,
         message:
-          `X image posts will fail — missing ${missing.join(', ')}. ` +
-          'Text-only posts still work via the separate OAuth 2.0 Connect X token.',
+          'Connected X token is missing the media.write scope, so image posts will 403. ' +
+          'Reconnect X to re-authorize. Text-only posts are unaffected.',
       };
     }
   } catch (err) {
-    checks.x_image_posting = { ok: false, message: `X credential check failed: ${err.message}` };
+    checks.x_image_posting = { ok: false, message: `X check failed: ${err.message}` };
   }
 
   // 6. Supabase connection

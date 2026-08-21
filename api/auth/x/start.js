@@ -18,6 +18,10 @@ const DEFAULT_SCOPES = [
   'tweet.write',
   'users.read',
   'offline.access',
+  // Required by POST /2/media/upload. Without it that endpoint returns 403 and
+  // no image can attach to a post. A token issued before this scope was
+  // requested does not carry it, so X must be reconnected once after deploy.
+  'media.write',
 ].join(' ');
 
 function getClientId() {
