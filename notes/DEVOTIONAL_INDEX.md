@@ -279,7 +279,7 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 
 ### Same slug
 
-_(resolved 2026-08-21 — the 2026-01-24 entry now uses `faithfulness-in-small-things`)_
+- None found.
 
 ## Missing key fields (needs attention)
 
