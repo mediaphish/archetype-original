@@ -24,6 +24,23 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const ruleText = safeText(req.body?.rule_text, 1000);
     if (!ruleText) return res.status(400).json({ ok: false, error: 'rule_text required' });
+
+    // Guardrails are binding standing instructions that Auto now reads every
+    // turn, so what lands here has to actually read as a rule. This endpoint
+    // previously accepted any string, which is how three frustrated messages
+    // Bart typed at Auto ("You're fired.") ended up stored as enabled, global
+    // policy. They never took effect only because nothing read the table.
+    const { validateGuardrailText } = await import('../../../../lib/ao/guardrailMemory.js');
+    const check = await validateGuardrailText(ruleText);
+    if (!check.valid) {
+      return res.status(400).json({
+        ok: false,
+        error:
+          'That does not read as a standing rule. Phrase it as a durable instruction — "always ...", "never ...", "from now on ..." — so it is safe to apply on every future turn.',
+        reason: check.reason,
+      });
+    }
+
     const out = await supabaseAdmin
       .from('ao_auto_guardrails')
       .insert({
