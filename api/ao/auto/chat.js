@@ -2443,12 +2443,24 @@ ${retrievedBlock}
           try {
             await Promise.race([
               (async () => {
-                const synthStream = synthesisClient.messages.stream({
-                  model: synthesisModel,
-                  max_tokens: 8000,
-                  system: synthesisSystem,
-                  messages: synthesisMessages,
-                });
+                // Tools MUST be sent here. Without them this pass runs as a
+                // toolless model, and Auto answers the turn by explaining that
+                // it cannot approve drafts, schedule or publish — which is true
+                // of a model with no tools and false of Auto. Bart hit exactly
+                // that after typing "Go": a full identity disclaimer in reply to
+                // two characters, from an assistant that had generated an image
+                // one turn earlier.
+                const { buildSynthesisRequest } = await import(
+                  '../../../lib/ao/synthesisRequest.js'
+                );
+                const synthStream = synthesisClient.messages.stream(
+                  buildSynthesisRequest({
+                    model: synthesisModel,
+                    system: synthesisSystem,
+                    messages: synthesisMessages,
+                    tools: streamResult.tools,
+                  })
+                );
                 synthStream.on('error', (err) => {
                   console.error(
                     '[chat.js] Corpus synthesis stream error:',
@@ -2461,6 +2473,20 @@ ${retrievedBlock}
                   sendEvent('token', { token: text });
                 });
                 await synthStream.finalMessage();
+
+                // Surface the failure mode rather than waiting for Bart to
+                // notice it. If this fires, something upstream stripped the
+                // tools or the system prompt for this turn.
+                const { looksLikeCapabilityDisclaimer } = await import(
+                  '../../../lib/ao/synthesisRequest.js'
+                );
+                if (looksLikeCapabilityDisclaimer(fullReply)) {
+                  console.error(
+                    '[chat.js] Auto disowned its own capabilities in the synthesis pass. ' +
+                      `tools_sent=${Array.isArray(streamResult.tools) ? streamResult.tools.length : 0} ` +
+                      `system_len=${synthesisSystem.length} messages=${synthesisMessages.length}`
+                  );
+                }
               })(),
               timeoutAfter(
                 remainingMs,
