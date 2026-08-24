@@ -5,7 +5,7 @@ publish_date: '2026-06-15'
 created_at: '2026-06-05'
 updated_at: '2026-06-05'
 summary: >-
-  The leader most likely to miss favoritism is not the tyrant. It is the relational leader — the one who genuinely invests in people and believes deeply that their job is to serve. This entry examines how affinity masquerades as servant leadership and what Greenleaf's original test demands of every leader who claims the title.
+  The leader most likely to miss favoritism is not the tyrant. It is the relational leader, the one who genuinely invests in people and believes deeply that their job is to serve. This entry examines how affinity masquerades as servant leadership and what Greenleaf's original test demands of every leader who claims the title.
 categories:
   - servant-leadership
   - leadership
@@ -36,7 +36,7 @@ That is the blind spot this entry is about.
 
 Servant leadership, practiced honestly, is one of the most demanding forms of leadership there is. It requires the leader to subordinate their own comfort, preference, and ego to the genuine needs of the people they lead. It is not natural. It is chosen, repeatedly, against the grain of every instinct that pulls a leader toward self-protection and self-interest.
 
-But there is a version of servant leadership that feels identical from the inside and produces something entirely different on the outside. It is the version where the leader invests deeply, relationally, and generously — but only in the people they are most naturally drawn to.
+But there is a version of servant leadership that feels identical from the inside and produces something entirely different on the outside. It is the version where the leader invests deeply, relationally, and generously, but only in the people they are most naturally drawn to.
 
 Investment follows attention. Attention follows comfort. Comfort follows affinity. The leader spends more time with the people who energize them. They develop those relationships more fully, extend more grace, create more opportunity, and invest more development resources. They experience this as service. They are pouring into their people. They are showing up for the team.
 

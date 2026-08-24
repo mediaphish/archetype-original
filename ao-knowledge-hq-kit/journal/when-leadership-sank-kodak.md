@@ -5,7 +5,7 @@ publish_date: '2025-08-26'
 created_at: '2025-08-26'
 updated_at: '2025-08-26'
 summary: >-
-  Kodak's downfall wasn't technological—it was a failure of leadership. A
+  Kodak's downfall wasn't technological. It was a failure of leadership. A
   reflection on fear, control, and how servant leadership could have saved an
   empire built on memories.
 categories:
@@ -38,13 +38,13 @@ The answer isn't technology. The answer is leadership.
 
 Kodak's executives understood the threat of digital photography, but they feared it more than they embraced it. Why? Because their profits were built on film. Every roll of film developed was another dollar in the bank. Digital cameras disrupted that steady stream.
 
-Instead of serving their people—the customers, the employees, and even the culture of photography itself—they tried to serve their profit model. Leadership clung to control, protecting what was instead of investing in what could be.
+Instead of serving their people, the customers, the employees, and even the culture of photography itself, they tried to serve their profit model. Leadership clung to control, protecting what was instead of investing in what could be.
 
 Psychologists call this **status quo bias**: the tendency to prefer the familiar over the unknown, even when the unknown holds more promise. Leaders under fear grip tighter to what they know, and in doing so, they often strangle the very future of their organization.
 
 ## The Servant Leader's Alternative
 
-Servant leadership flips this on its head. A servant leader doesn't ask, *How do we protect what we've built?* but rather, *How do we continue to serve the people we exist for—even if it costs us?*
+Servant leadership flips this on its head. A servant leader doesn't ask, *How do we protect what we've built?* but rather, *How do we continue to serve the people we exist for, even if it costs us?*
 
 Imagine if Kodak had approached the rise of digital photography not as a threat to their revenue but as a chance to help the world capture life more freely, more immediately, more joyfully. They had the technology. They had the trust. They had the people. What they lacked was the humility to sacrifice short-term security for long-term impact.
 
@@ -52,6 +52,6 @@ Imagine if Kodak had approached the rise of digital photography not as a threat 
 
 Leadership failure often comes disguised as "prudent caution" or "protecting the bottom line." But the truth is, when leaders put control and profit above people and purpose, the end is already in motion. Kodak's story isn't just about cameras. It's about what happens when leaders forget who they're called to serve.
 
-Every leader will face their "Kodak moment"—that decision point where the future asks for courage while the past begs for comfort. Servant leaders choose courage. They choose people. And because of that, their legacy doesn't collapse into bankruptcy—it multiplies into something that outlives them.
+Every leader will face their "Kodak moment," that decision point where the future asks for courage while the past begs for comfort. Servant leaders choose courage. They choose people. And because of that, their legacy doesn't collapse into bankruptcy. It multiplies into something that outlives them.
 
 *Originally published on Facebook on August 26, 2025.*
