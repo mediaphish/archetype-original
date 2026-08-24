@@ -49,3 +49,7 @@ backups/_cleanup_quarantine/**/dist/
 # dist/what-i-do/
 .vercel
 .env*
+
+# Plate originals. The committed plates are the JPEGs; the PNGs that come out
+# of the image tool are ~9x larger for no visible gain and stay local.
+public/images/cards/*.png
