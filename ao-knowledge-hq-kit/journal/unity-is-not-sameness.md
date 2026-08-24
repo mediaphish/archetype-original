@@ -5,7 +5,8 @@ publish_date: '2026-08-17T23:30:33.885Z'
 created_at: '2026-08-17'
 updated_at: '2026-08-17'
 summary: >-
-  New post. Already written. Check it, but I have already approved it. The growth of humans is tied to being united with others who are not the same. Most leaders would agree with that in principle and then build a team that violates it in practice. Unity is not sameness. That mix-
+  The growth of humans is tied to being united with others who are not the same. Most leaders
+  agree with that in principle, then build a team that violates it in practice.
 categories:
   - Leadership
   - Servant Leadership

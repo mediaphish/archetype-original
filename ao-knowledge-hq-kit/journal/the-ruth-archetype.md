@@ -5,7 +5,9 @@ publish_date: '2026-08-17T15:00:13.803Z'
 created_at: '2026-08-17'
 updated_at: '2026-08-17'
 summary: >-
-  Naomi stopped on the road back to Bethlehem and told both of her daughters-in-law to go home. She had nothing left to offer them. Her husband was dead. Both of her sons were dead. She was an old widow returning to a country that had watched her leave during a famine years earlier
+  Naomi told both of her daughters-in-law to go home. She had nothing left to offer them: her
+  husband dead, both sons dead, and a road back to a country that had watched her leave during
+  a famine. Ruth refused to go.
 categories:
   - Leadership
   - Servant Leadership

@@ -5,7 +5,9 @@ publish_date: '2026-08-19T11:01:43.195Z'
 created_at: '2026-08-19'
 updated_at: '2026-08-19'
 summary: >-
-  Nick Saban walked off the field in January 2024 for the last time as a head coach. Reporters who had covered him for years kept using the same word to describe what surprised them most about his players' reactions. Not relief. Grief. Men who had been screamed at in practice, who 
+  Nick Saban walked off the field for the last time in January 2024, and the word reporters
+  kept reaching for was not relief. It was grief. Men who had been screamed at in practice did
+  not describe a tyrant.
 categories:
   - Leadership
   - Servant Leadership

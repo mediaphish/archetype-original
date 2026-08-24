@@ -5,7 +5,9 @@ publish_date: '2026-08-24T11:01:29.932Z'
 created_at: '2026-08-24'
 updated_at: '2026-08-24'
 summary: >-
-  Naboth had a vineyard next to the palace in Jezreel. Ahab wanted it. He offered a fair trade, a better vineyard or a fair price, and Naboth said no. Not out of spite. The land was his inheritance, passed down from his fathers, and the law forbade him from selling it away. Ahab we
+  Jezebel never drew a sword. She wrote letters in the king's name, called an
+  assembly, seated false witnesses, and let the process do the killing. The
+  seventh Archetype entry on power that hides inside procedure.
 categories:
   - Leadership
   - Servant Leadership

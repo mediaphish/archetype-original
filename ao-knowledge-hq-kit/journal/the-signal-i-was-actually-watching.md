@@ -5,7 +5,9 @@ publish_date: '2026-08-21T11:01:29.939Z'
 created_at: '2026-08-21'
 updated_at: '2026-08-21'
 summary: >-
-  A mentor client of mine asked me a question this week that I have kept turning over since. He wanted to know if there was a moment when I knew I had made it. He meant it financially. Was there a number in the bank account, a specific figure that crossed a line, that told me I had
+  A mentor client asked me whether there was a moment I knew I had made it, and he meant
+  financially. There was no number. What I actually watched was whether my people were
+  growing.
 categories:
   - Leadership
   - Servant Leadership
