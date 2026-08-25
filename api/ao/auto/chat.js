@@ -1167,13 +1167,56 @@ export default async function handler(req, res) {
   res.setHeader('X-Accel-Buffering', 'no');
   res.flushHeaders();
 
+  // Heartbeat: keeps real bytes flowing to the client during any long silent
+  // gap, so nothing between Vercel and the browser treats the connection as
+  // idle. Declared here rather than further down because the abort listener
+  // below needs to clear it.
+  //
+  // It used to start only after model token streaming finished, which protected
+  // post-processing and left the model turn itself completely unguarded. See the
+  // comment at the start call for why that was the actual bug.
+  let heartbeatTimer = null;
+
+  // The client aborts after 90 seconds of silence, and when it does the server
+  // never finds out. It kept running to its own 270 second budget and kept
+  // writing to the database, so a user who retried briefly had two overlapping
+  // runs against the same thread.
+  let clientGone = false;
+
   // Helper to send an SSE event
   const sendEvent = (event, data) => {
+    if (clientGone) return;
     try {
       res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
     } catch (_) {
       // Client disconnected — ignore
     }
+  };
+
+  req.on('close', () => {
+    clientGone = true;
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+  });
+
+  /**
+   * End the response with an error, clearing the heartbeat first.
+   *
+   * A helper rather than three copies of the same four lines, because the
+   * heartbeat now starts before the model call and every early return between
+   * there and the end of the handler has to clear it. There were already five
+   * such exits, and an uncleared interval holds the serverless function open to
+   * maxDuration. Use this for any new one instead of writing res.end() directly.
+   */
+  const endWithError = (error) => {
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+    sendEvent('error', { ok: false, error });
+    res.end();
   };
 
   const { message, thread_id, attachments } = req.body || {};
@@ -1185,13 +1228,6 @@ export default async function handler(req, res) {
   }
 
   const userMessage = String(message).trim();
-
-  // Heartbeat: keeps real bytes flowing to the client during any long silent
-  // gap in server-side processing (e.g. image generation), so nothing between
-  // Vercel and the browser treats the connection as idle and kills it before
-  // the final SSE event is ever sent. Started after model token streaming
-  // ends, cleared right before the response ends (success or error).
-  let heartbeatTimer = null;
 
   try {
     const thread = await ensureAutoThread(auth.email, thread_id || '');
@@ -1437,6 +1473,26 @@ export default async function handler(req, res) {
       return Math.max(0, SOFT_TIMEOUT_MS - (Date.now() - streamStartedAt));
     }
 
+    // Start the heartbeat BEFORE the model call, not after it.
+    //
+    // This is the fix for "Auto didn't respond in time." The client aborts after
+    // 90 seconds during which no SSE event arrives. During the model turn the
+    // only event ever emitted is `token`, one per text delta, so the connection
+    // is completely silent through extended thinking, through every tool call,
+    // and through the gaps between round trips in a multi-tool loop. Any one of
+    // those exceeding 90 seconds killed a request the server would have finished.
+    //
+    // Observed 2026-08-25: a revision turn with a full draft injected logged
+    // nothing between 19:40:59 and the user's retry at 19:43:45. The server was
+    // working the whole time. Retry appeared to fix it only because a retry
+    // often takes a shorter path, not because anything had cleared.
+    //
+    // Starting here covers the model turn and continues to cover post-stream
+    // processing, which is all it used to cover.
+    heartbeatTimer = setInterval(() => {
+      sendEvent('heartbeat', { t: Date.now() });
+    }, 15000);
+
     try {
       const [streamOutcome, directOutcome] = await Promise.all([
         Promise.race([
@@ -1471,8 +1527,10 @@ export default async function handler(req, res) {
     }
 
     if (streamError) {
-      sendEvent('error', { ok: false, error: streamError });
-      res.end();
+      // Clears the heartbeat, which now starts before the model call. Left
+      // running it would hold the serverless function open to maxDuration on
+      // every failed turn.
+      endWithError(streamError);
       return;
     }
 
@@ -1503,14 +1561,23 @@ export default async function handler(req, res) {
       }
     }
 
-    // Model token streaming is done. Everything from here forward (claim correction,
-    // image generation, reshare/opportunity processing, database writes) can run
-    // for many seconds with zero bytes written to the client otherwise. Send
-    // a small heartbeat event periodically so the connection stays visibly
-    // alive until the real done/error event is sent below.
-    heartbeatTimer = setInterval(() => {
-      sendEvent('heartbeat', { t: Date.now() });
-    }, 15000);
+    // Model token streaming is done. Everything from here forward (claim
+    // correction, image generation, reshare/opportunity processing, database
+    // writes) can run for many seconds with zero bytes written to the client.
+    // The heartbeat that covers it is already running: it now starts before the
+    // model call rather than here, so it covers the model turn as well.
+    //
+    // If the client aborted while the model was working, stop before the writes.
+    // Continuing would keep mutating drafts for a browser that is gone, and the
+    // user's retry would race those writes.
+    if (clientGone) {
+      if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+      }
+      console.warn('[chat.js] client disconnected during model turn; skipping post-stream processing');
+      return;
+    }
 
     // Action-claim gate: do not wipe a real streamed reply.
     // If prose claims a completed action without evidence, keep the original text
@@ -2369,12 +2436,9 @@ Return markdown only: a # title line, then the full post body.`,
         if (resolvedDocs.length > 0) {
           const remainingMs = remainingSoftBudgetMs();
           if (remainingMs < 8_000) {
-            sendEvent('error', {
-              ok: false,
-              error:
-                'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.',
-            });
-            res.end();
+            endWithError(
+              'Auto took too long to respond — this usually means the conversation got too large. Try starting a new thread.'
+            );
             return;
           }
 
@@ -2495,23 +2559,17 @@ ${retrievedBlock}
             ]);
           } catch (synthErr) {
             console.error('[chat.js] Corpus synthesis failed:', synthErr?.message || synthErr);
-            sendEvent('error', {
-              ok: false,
-              error:
-                synthErr?.message ||
-                'Auto retrieved the documents but could not finish synthesizing a reply. Try again.',
-            });
-            res.end();
+            endWithError(
+              synthErr?.message ||
+                'Auto retrieved the documents but could not finish synthesizing a reply. Try again.'
+            );
             return;
           }
 
           if (!String(fullReply || '').trim()) {
-            sendEvent('error', {
-              ok: false,
-              error:
-                'Auto retrieved the documents but returned an empty synthesis. Try again.',
-            });
-            res.end();
+            endWithError(
+              'Auto retrieved the documents but returned an empty synthesis. Try again.'
+            );
             return;
           }
 

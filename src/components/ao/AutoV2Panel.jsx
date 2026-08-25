@@ -17,6 +17,7 @@ import React, {
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
+import { abortReasonFor, abortMessageFor } from '../../lib/autoStreamTimeouts.js';
 import {
   buildDraftWordDiff,
   extractSlugFromDraftContent,
@@ -2907,6 +2908,10 @@ export default function AutoV2Panel({ onNavigate, className }) {
       if (textareaRef.current) textareaRef.current.style.height = '22px';
 
       let stallTimer = null;
+      // Which limit aborted the request, so the catch block can tell the user
+      // what actually happened. Declared out here because the timer sets it and
+      // the catch reads it.
+      let abortReason = null;
 
       try {
         // Build attachments array for image uploads
@@ -2953,10 +2958,25 @@ export default function AutoV2Panel({ onNavigate, className }) {
         const controller = new AbortController();
         // Stall timeout: if no SSE event arrives for 90s, abort and show a visible
         // error. This is the backstop for silent server kills / hung reader.read().
-        const STALL_MS = 90_000;
+        //
+        // 90 seconds of true silence is a real hang now that the server sends a
+        // heartbeat every 15 seconds from the start of the request. It did not
+        // used to: the heartbeat only began after model streaming finished, so
+        // any thinking block or tool call over 90 seconds aborted a request the
+        // server was still working on. That was the whole "Auto didn't respond
+        // in time" bug, and the fix belongs on the server, not in a longer
+        // timeout here.
+        const startedAt = Date.now();
         let lastEventAt = Date.now();
         stallTimer = setInterval(() => {
-          if (Date.now() - lastEventAt > STALL_MS) {
+          // Thresholds and the stall-vs-cap decision live in autoStreamTimeouts
+          // so they can be tested without standing up a component.
+          const reason = abortReasonFor({
+            silentForMs: Date.now() - lastEventAt,
+            elapsedMs: Date.now() - startedAt,
+          });
+          if (reason) {
+            abortReason = reason;
             try {
               controller.abort();
             } catch (_) {
@@ -3133,10 +3153,14 @@ export default function AutoV2Panel({ onNavigate, className }) {
         // The user's message may already be in the database (persisted before the
         // model call). Show an error with a Retry button. Never make the user retype.
         const aborted = e?.name === 'AbortError' || /aborted/i.test(String(e?.message || ''));
+        // Two different failures used to share one message, which is why this
+        // read as intermittent for weeks. A stall means something is stuck; the
+        // hard cap means Auto was genuinely still working and ran out of budget.
+        // The user can act on those differently, so they should not say the same
+        // thing.
         const errorText = aborted
-          ? "Auto didn't respond in time. Try again, or start a new thread if this keeps happening."
-          : e.message ||
-            'Auto could not be reached. Your message was saved. Tap Retry to try again.';
+          ? abortMessageFor(abortReason)
+          : e.message || 'Auto could not be reached. Your message was saved. Tap Retry to try again.';
         setError(errorText);
         // Drop the empty streaming placeholder; keep the user's message marked failed.
         setMessages((prev) =>
