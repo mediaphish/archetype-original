@@ -10,6 +10,7 @@ export const PUBLIC_STATIC_SITEMAP_ROUTES = [
   { path: '/consulting', priority: '0.8', changefreq: 'monthly' },
   { path: '/fractional-roles', priority: '0.8', changefreq: 'monthly' },
   { path: '/fractional-roles/cco', priority: '0.7', changefreq: 'monthly' },
+  { path: '/fractional-roles/cto', priority: '0.7', changefreq: 'monthly' },
   { path: '/operators', priority: '0.65', changefreq: 'monthly' },
   { path: '/ali-eula', priority: '0.25', changefreq: 'yearly' },
   { path: '/culture-science', priority: '0.9', changefreq: 'monthly' },

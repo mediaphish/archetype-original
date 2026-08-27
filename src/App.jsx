@@ -23,6 +23,7 @@ import AboutPage from "./pages/About";
 import ConsultingPage from "./pages/methods/Consulting";
 import FractionalRolesPage from "./pages/methods/FractionalRoles";
 import CCOPage from "./pages/methods/fractionalRoles/CCO";
+import CTOPage from "./pages/methods/fractionalRoles/CTO";
 import WhatIDoPage from "./pages/WhatIDo.jsx";
 // Culture Science ALI marketing pages (remain under /culture-science/ali/*)
 import ALI from "./pages/cultureScience/ALI";
@@ -172,6 +173,7 @@ export default function App() {
     if (path === '/philosophy') return 'about';
     if (path === '/consulting') return 'methods-consulting';
     if (path === '/fractional-roles/cco') return 'methods-fractional-cco';
+    if (path === '/fractional-roles/cto') return 'methods-fractional-cto';
     if (path === '/fractional-roles') return 'methods-fractional-roles';
     if (path === '/what-i-do') return 'what-i-do';
     if (path === '/accidental-ceo') return 'accidental-ceo';
@@ -622,6 +624,8 @@ export default function App() {
         setCurrentPage('methods-consulting');
       } else if (path === '/fractional-roles/cco') {
         setCurrentPage('methods-fractional-cco');
+      } else if (path === '/fractional-roles/cto') {
+        setCurrentPage('methods-fractional-cto');
       } else if (path === '/fractional-roles') {
         setCurrentPage('methods-fractional-roles');
       } else if (path === '/what-i-do') {
@@ -743,6 +747,17 @@ export default function App() {
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
         <CCOPage />
+        <Footer />
+      </main>
+    );
+  }
+
+  // Render Methods Fractional CTO page
+  if (currentPage === 'methods-fractional-cto') {
+    return (
+      <main className="bg-warm-offWhite text-warm-charcoal">
+        <Header />
+        <CTOPage />
         <Footer />
       </main>
     );

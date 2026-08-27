@@ -287,23 +287,38 @@ export default function FractionalRoles() {
             </div>
             <div className="font-sans text-[15px] leading-[1.75] text-[#444]">
               <p className="mb-3.5">
-                Most organizations that need a fractional CTO do not actually need a developer. They need someone who
-                can see the full scope of what they are building, assemble the right team to build it, and lead that team
-                through execution without losing the thread of what they are actually trying to deliver.
+                Most organizations that need a fractional CTO do not need a developer. They need someone to make the
+                decisions that get made before anyone writes code, and to know which of those decisions cannot be undone
+                later.
               </p>
               <p className="mb-3.5">
-                I have spent thirty-three years building things. Software companies, platforms, digital systems, and the
-                teams that bring them to life. I know how to evaluate technical talent, how to structure a build process,
-                how to manage the communication between the people who want the thing and the people building it, and how
-                to hold the whole operation together when complexity increases and timelines compress.
+                I have spent thirty-three years in and around software. For the last four I have been learning something
+                specific: how to lead the building of real applications with AI doing most of the typing. Not
+                experimenting with it. Shipping with it. I am currently the CTO for a navigation product heading toward
+                launch, where a software defect does not produce a support ticket, it puts a boat on a rock.
               </p>
               <p className="mb-3.5">
-                What I bring into a CTO role: clarity on scope and timeline, the ability to hire and lead a technical and
-                creative team, and the judgment to know when to push and when to protect the work from premature speed.
+                I am not an engineer and have never claimed to be. What I have done for three decades is lead the people
+                who are, decide what gets built and in what order, and carry responsibility for whether it works when it
+                reaches a customer. On that product, the decisions that mattered most were a mapping choice worth about
+                fifty thousand dollars a year, an insurance gap where neither policy covers a software error that hurts
+                someone, and an app store review that can block a launch and takes four months of lead time to clear.
+                None of those are coding problems.
+              </p>
+              <p className="mb-3.5">
+                What I bring into a CTO role: the early architectural and vendor decisions made deliberately rather than
+                by default, scope held fixed so the date stays real, the risks that live outside the code found before
+                they find you, and an honest read on what a small team plus AI can and cannot actually deliver.
               </p>
               <p className="mt-1 border-t border-[#E0DBD4] pt-3.5 font-sans text-[14px] italic text-[#777]">
-                This role is best suited to organizations in a specific build season. If you are launching something,
-                scaling a platform, or rebuilding what exists, that is the environment where this works.
+                <a
+                  href="/fractional-roles/cto"
+                  onClick={navigateTo('/fractional-roles/cto')}
+                  className="text-[#1a1a1a] underline decoration-[#C8C4BE] underline-offset-4 hover:text-ao-red"
+                >
+                  More on how this role works
+                </a>
+                , including what AI changed about building software and what it did not.
               </p>
             </div>
           </article>

@@ -64,6 +64,7 @@ const SCHEMA_ROUTE_CHECKS = [
   { path: '/consulting', types: ['Service'] },
   { path: '/fractional-roles', types: ['Service'] },
   { path: '/fractional-roles/cco', types: ['Service'] },
+  { path: '/fractional-roles/cto', types: ['Service'] },
   { path: '/meet-bart', types: ['ProfilePage'] },
 ];
 
