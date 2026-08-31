@@ -256,6 +256,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-09-05 | Choosing Mercy Over the Payback You're Owed | Genesis 45:3–5 (ESV) | `choosing-mercy-over-the-payback-youre-owed` | `2026-09-05-choosing-mercy-over-the-payback-youre-owed.md` |
 | 2026-09-06 | Angry That Mercy Was Shown | Jonah 4:1–4 (ESV) | `angry-that-mercy-was-shown` | `2026-09-06-angry-that-mercy-was-shown.md` |
 | 2026-09-07 | Restoring Gently | Galatians 6:1 (ESV) | `restoring-gently` | `2026-09-07-restoring-gently.md` |
+| 2026-09-08 | A Tender Heart, Put Into Practice | 1 Peter 3:8 (ESV) | `a-tender-heart-put-into-practice` | `2026-09-08-a-tender-heart-put-into-practice.md` |
+| 2026-09-09 | Kindness Presumed Upon | Romans 2:1–4 (ESV) | `kindness-presumed-upon` | `2026-09-09-kindness-presumed-upon.md` |
+| 2026-09-10 | Kindness for Someone Else's Sake | 2 Samuel 9:6–7 (ESV) | `kindness-for-someone-elses-sake` | `2026-09-10-kindness-for-someone-elses-sake.md` |
+| 2026-09-11 | While He Was Still a Long Way Off | Luke 15:11–12, 20–21 (ESV) | `while-he-was-still-a-long-way-off` | `2026-09-11-while-he-was-still-a-long-way-off.md` |
+| 2026-09-12 | The Glory of Overlooking an Offense | Proverbs 19:11 (ESV) | `the-glory-of-overlooking-an-offense` | `2026-09-12-the-glory-of-overlooking-an-offense.md` |
+| 2026-09-13 | Charge It to My Account | Philemon 1:10, 15–18 (ESV) | `charge-it-to-my-account` | `2026-09-13-charge-it-to-my-account.md` |
+| 2026-09-14 | He Went to Him | Luke 10:31, 33–35 (ESV) | `he-went-to-him` | `2026-09-14-he-went-to-him.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
