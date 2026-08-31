@@ -249,6 +249,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-08-29 | Whoever Conceals His Transgressions | Proverbs 28:13 (ESV) | `whoever-conceals-his-transgressions` | `2026-08-29-whoever-conceals-his-transgressions.md` |
 | 2026-08-30 | I Have Sinned Against the Lord | 2 Samuel 12:13 (ESV) | `i-have-sinned-against-the-lord` | `2026-08-30-i-have-sinned-against-the-lord.md` |
 | 2026-08-31 | The Integrity of the Upright Guides Them | Proverbs 11:3 (ESV) | `the-integrity-of-the-upright-guides-them` | `2026-08-31-the-integrity-of-the-upright-guides-them.md` |
+| 2026-09-01 | What the Lord Requires | Micah 6:6–8 (ESV) | `what-the-lord-requires` | `2026-09-01-what-the-lord-requires.md` |
+| 2026-09-02 | Merciful and Just at Once | Exodus 34:6–7 (ESV) | `merciful-and-just-at-once` | `2026-09-02-merciful-and-just-at-once.md` |
+| 2026-09-03 | Mercy as Imitation | Luke 6:35–36 (ESV) | `mercy-as-imitation` | `2026-09-03-mercy-as-imitation.md` |
+| 2026-09-04 | As You Were Forgiven | Ephesians 4:32 (ESV) | `as-you-were-forgiven` | `2026-09-04-as-you-were-forgiven.md` |
+| 2026-09-05 | Choosing Mercy Over the Payback You're Owed | Genesis 45:3–5 (ESV) | `choosing-mercy-over-the-payback-youre-owed` | `2026-09-05-choosing-mercy-over-the-payback-youre-owed.md` |
+| 2026-09-06 | Angry That Mercy Was Shown | Jonah 4:1–4 (ESV) | `angry-that-mercy-was-shown` | `2026-09-06-angry-that-mercy-was-shown.md` |
+| 2026-09-07 | Restoring Gently | Galatians 6:1 (ESV) | `restoring-gently` | `2026-09-07-restoring-gently.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
