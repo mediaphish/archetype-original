@@ -11,6 +11,7 @@
  * - ESV copyright
  */
 import React, { useState, useEffect } from 'react';
+import { useLocationPathname } from '../lib/useLocationPathname.js';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import seoConfig from '../config/seo.json';
@@ -20,6 +21,9 @@ import JournalSubscription from '../components/JournalSubscription';
 import ShareLinks from '../components/ShareLinks';
 
 export default function DevotionalPost({ post: postProp = null }) {
+  // Pathname as state. This page does not remount when navigating from one
+  // devotional to another, so the URL has to be a dependency.
+  const pathname = useLocationPathname();
   const [post, setPost] = useState(postProp);
   const [loading, setLoading] = useState(!postProp);
   const [error, setError] = useState(null);
@@ -34,7 +38,7 @@ export default function DevotionalPost({ post: postProp = null }) {
 
     // Otherwise, load from URL
     // Extract slug from URL
-    const path = window.location.pathname;
+    const path = pathname;
     const slug = path.replace('/journal/', '').replace('/devotional/', '').replace(/\/$/, '');
     
     if (!slug) {
@@ -62,7 +66,7 @@ export default function DevotionalPost({ post: postProp = null }) {
         setError('Failed to load post');
         setLoading(false);
       });
-  }, [postProp]);
+  }, [postProp, pathname]);
 
   if (loading) {
     return (

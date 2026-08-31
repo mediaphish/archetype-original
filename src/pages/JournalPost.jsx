@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocationPathname } from '../lib/useLocationPathname.js';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import seoConfig from '../config/seo.json';
@@ -10,6 +11,9 @@ import JournalAdvisoryCTA from '../components/JournalAdvisoryCTA';
 import JournalMarkdownBody from '../components/JournalMarkdownBody';
 
 export default function JournalPost() {
+  // Pathname as state: this component does not remount when navigating from
+  // one post to another, so the URL has to be a dependency, not a mount-time read.
+  const pathname = useLocationPathname();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,8 +47,9 @@ export default function JournalPost() {
       setTimeout(scrollToTop, delay)
     );
     
-    // Extract slug from URL
-    const path = window.location.pathname;
+    // Extract slug from URL. `pathname` is state, so this effect re-runs when
+    // navigation moves from one journal post to another.
+    const path = pathname;
     const slug = path.replace('/journal/', '').replace(/\/$/, '');
     
     if (!slug) {
@@ -101,7 +106,7 @@ export default function JournalPost() {
     return () => {
       timers.forEach(clearTimeout);
     };
-  }, []);
+  }, [pathname]);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';

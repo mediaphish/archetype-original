@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useLocationPathname } from '../lib/useLocationPathname.js';
 import { Helmet } from 'react-helmet-async';
 import seoConfig from '../config/seo.json';
 import ShareLinks from '../components/ShareLinks';
@@ -38,6 +39,9 @@ function navigateTo(path) {
 }
 
 export default function PodcastEpisode() {
+  // Pathname as state: this component does not remount when navigating from
+  // one post to another, so the URL has to be a dependency, not a mount-time read.
+  const pathname = useLocationPathname();
   const [episode, setEpisode] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -61,7 +65,8 @@ export default function PodcastEpisode() {
 
     const timers = [0, 10, 50, 100, 200, 300, 500].map((delay) => setTimeout(scrollToTop, delay));
 
-    const path = window.location.pathname;
+    // `pathname` is state, so this effect re-runs on episode-to-episode navigation.
+    const path = pathname;
     const slug = path.replace('/podcast/', '').replace(/\/$/, '');
 
     if (!slug) {
@@ -102,7 +107,7 @@ export default function PodcastEpisode() {
     return () => {
       timers.forEach(clearTimeout);
     };
-  }, []);
+  }, [pathname]);
 
   const transcriptLines = useMemo(() => {
     if (!episode?.transcript) return [];
