@@ -1,6 +1,9 @@
 ---
 title: "Power vs. Authority: Part 3 — The Test"
 slug: power-vs-authority-part-3-the-test
+series: power-vs-authority
+series_name: "Power vs. Authority"
+series_part: 3
 publish_date: '2026-07-10'
 created_at: '2026-07-10'
 updated_at: '2026-07-10'

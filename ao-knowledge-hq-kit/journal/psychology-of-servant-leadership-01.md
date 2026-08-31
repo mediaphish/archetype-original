@@ -1,6 +1,9 @@
 ---
 title: 'Psychology of Servant Leadership, Part 1: The Servant Mindset'
 slug: psychology-of-servant-leadership-part-1
+series: psychology-of-servant-leadership
+series_name: "Psychology of Servant Leadership"
+series_part: 1
 publish_date: '2025-12-08'
 created_at: '2025-12-08'
 updated_at: '2025-12-08'

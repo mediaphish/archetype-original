@@ -1,6 +1,9 @@
 ---
 title: "Power vs. Authority: Part 1 — The Hunger"
 slug: power-vs-authority-part-1-the-hunger
+series: power-vs-authority
+series_name: "Power vs. Authority"
+series_part: 1
 publish_date: '2026-06-23'
 created_at: '2026-06-24'
 updated_at: '2026-06-24'

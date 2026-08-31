@@ -1,6 +1,9 @@
 ---
 title: 'Psychology of Servant Leadership, Part 4: Flourishing and Flow'
 slug: psychology-of-servant-leadership-part-4
+series: psychology-of-servant-leadership
+series_name: "Psychology of Servant Leadership"
+series_part: 4
 publish_date: '2025-12-29'
 created_at: '2025-12-29'
 updated_at: '2025-12-29'

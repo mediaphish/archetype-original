@@ -1,6 +1,9 @@
 ---
 title: "The 7 Conditions: Drift"
 slug: "ali-series-drift-the-condition-that-moves-without-permission"
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 8
 publish_date: "2026-06-11"
 created_at: "2026-06-02"
 updated_at: "2026-06-02"

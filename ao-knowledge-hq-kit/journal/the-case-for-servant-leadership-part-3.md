@@ -1,6 +1,9 @@
 ---
 title: The Case for Servant Leadership (Part 3)
 slug: the-case-for-servant-leadership-part-3
+series: the-case-for-servant-leadership
+series_name: "The Case for Servant Leadership"
+series_part: 3
 publish_date: '2025-11-17T10:00:00-06:00'
 created_at: '2025-11-17T10:00:00-06:00'
 updated_at: '2025-10-30'

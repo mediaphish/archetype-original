@@ -1,6 +1,9 @@
 ---
 title: "The 7 Conditions: Trust"
 slug: "ali-series-trust-the-condition-that-cannot-be-declared"
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 5
 publish_date: "2026-05-26"
 created_at: "2026-05-22"
 updated_at: "2026-05-22"

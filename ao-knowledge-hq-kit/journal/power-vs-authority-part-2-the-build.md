@@ -1,6 +1,9 @@
 ---
 title: "Power vs. Authority: Part 2 — The Build"
 slug: power-vs-authority-part-2-the-build
+series: power-vs-authority
+series_name: "Power vs. Authority"
+series_part: 2
 publish_date: '2026-07-06'
 created_at: '2026-07-02'
 updated_at: '2026-07-02'

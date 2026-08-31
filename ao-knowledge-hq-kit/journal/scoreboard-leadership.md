@@ -1,6 +1,9 @@
 ---
 title: Scoreboard Leadership
 slug: scoreboard-leadership
+series: transformational-leadership
+series_name: "Transformational Leadership"
+series_part: 2
 publish_date: '2026-08-12'
 created_at: '2026-08-12'
 updated_at: '2026-08-12'

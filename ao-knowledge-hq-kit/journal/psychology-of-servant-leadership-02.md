@@ -1,6 +1,9 @@
 ---
 title: 'Psychology of Servant Leadership, Part 2: Safety Before Strategy'
 slug: psychology-of-servant-leadership-part-2
+series: psychology-of-servant-leadership
+series_name: "Psychology of Servant Leadership"
+series_part: 2
 publish_date: '2025-12-15'
 created_at: '2025-12-15'
 updated_at: '2025-12-15'

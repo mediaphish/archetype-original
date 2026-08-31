@@ -1,6 +1,9 @@
 ---
 title: "The System Behind the Conditions"
 slug: "ali-series-introducing-the-archetype-leadership-index"
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 9
 publish_date: "2026-06-25"
 created_at: "2026-06-08"
 updated_at: "2026-06-08"

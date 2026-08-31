@@ -472,6 +472,16 @@ async function buildKnowledgeCorpus() {
           takeaways: frontmatter.takeaways || [],
           applications: frontmatter.applications || [],
           related: frontmatter.related || [],
+          // Series membership, carried from frontmatter so it is queryable.
+          //
+          // It used to exist only inside the title string and the slug, which
+          // is why nothing could look up what series a post belonged to. Auto
+          // filled the gap by inventing a plausible name ("the leadership
+          // series"), and the drafts table, the only place structured series
+          // data lived, was missing 81 of 98 published posts.
+          series: frontmatter.series || null,
+          series_name: frontmatter.series_name || null,
+          series_part: frontmatter.series_part ?? null,
           body: body ? body.trim() : ''
         };
         

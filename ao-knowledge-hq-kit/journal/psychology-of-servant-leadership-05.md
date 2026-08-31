@@ -1,6 +1,9 @@
 ---
 title: 'Psychology of Servant Leadership, Part 5: The Paradox of the Servant'
 slug: psychology-of-servant-leadership-part-5
+series: psychology-of-servant-leadership
+series_name: "Psychology of Servant Leadership"
+series_part: 5
 publish_date: '2026-01-05'
 created_at: '2026-01-05'
 updated_at: '2026-01-05'

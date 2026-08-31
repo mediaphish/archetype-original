@@ -1,6 +1,9 @@
 ---
 title: "The 7 Conditions: Alignment"
 slug: "ali-series-alignment-when-the-direction-actually-holds"
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 6
 publish_date: "2026-05-28"
 created_at: "2026-05-26"
 updated_at: "2026-05-26"

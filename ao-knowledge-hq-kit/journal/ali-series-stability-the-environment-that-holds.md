@@ -1,6 +1,9 @@
 ---
 title: "The 7 Conditions: Stability"
 slug: "ali-series-stability-the-environment-that-holds"
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 7
 publish_date: "2026-06-09"
 created_at: "2026-06-05"
 updated_at: "2026-06-05"

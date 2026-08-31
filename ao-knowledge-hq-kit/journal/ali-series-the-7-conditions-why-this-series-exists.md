@@ -1,6 +1,9 @@
 ---
 title: 'The 7 Conditions: Why This Series Exists'
 slug: ali-series-the-7-conditions-why-this-series-exists
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 1
 publish_date: '2026-05-07'
 created_at: '2026-05-07'
 updated_at: '2026-05-07'

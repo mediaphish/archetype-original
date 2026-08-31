@@ -1,6 +1,9 @@
 ---
 title: 'Psychology of Servant Leadership, Part 3: Motivation and Meaning'
 slug: psychology-of-servant-leadership-part-3
+series: psychology-of-servant-leadership
+series_name: "Psychology of Servant Leadership"
+series_part: 3
 publish_date: '2025-12-22'
 created_at: '2025-12-22'
 updated_at: '2025-12-22'

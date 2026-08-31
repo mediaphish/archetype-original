@@ -1,6 +1,9 @@
 ---
 title: 'Leadership Is Not a Clenched Fist, but a Guiding Hand (Part 3)'
 slug: leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-3
+series: clenched-fist-guiding-hand
+series_name: "Leadership Is Not a Clenched Fist, but a Guiding Hand"
+series_part: 3
 publish_date: '2025-09-15'
 created_at: '2025-09-15'
 updated_at: '2025-10-28'

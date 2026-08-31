@@ -1,6 +1,9 @@
 ---
 title: 'The 7 Conditions: Communication'
 slug: ali-series-communication-the-message-that-actually-arrives
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 3
 publish_date: '2026-05-14'
 created_at: '2026-05-14'
 updated_at: '2026-05-14'

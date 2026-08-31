@@ -1,6 +1,9 @@
 ---
 title: The Standard That Held
 slug: the-standard-that-held
+series: transformational-leadership
+series_name: "Transformational Leadership"
+series_part: 3
 publish_date: '2026-08-19T11:01:43.195Z'
 created_at: '2026-08-19'
 updated_at: '2026-08-19'

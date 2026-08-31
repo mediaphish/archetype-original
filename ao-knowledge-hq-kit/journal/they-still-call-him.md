@@ -1,6 +1,9 @@
 ---
 title: They Still Call Him
 slug: they-still-call-him
+series: transformational-leadership
+series_name: "Transformational Leadership"
+series_part: 1
 publish_date: '2026-08-05'
 created_at: '2026-08-02'
 updated_at: '2026-08-02'

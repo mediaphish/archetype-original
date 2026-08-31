@@ -1,6 +1,9 @@
 ---
 title: "The 7 Conditions: Consistency"
 slug: "ali-series-consistency-the-leader-people-learn-to-predict"
+series: the-7-conditions
+series_name: "The 7 Conditions"
+series_part: 4
 publish_date: "2026-05-21"
 created_at: "2026-05-19"
 updated_at: "2026-05-21"
