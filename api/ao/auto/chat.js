@@ -1719,20 +1719,53 @@ export default async function handler(req, res) {
     const recentHistory = priorMessages.slice(-6);
     fullReply = enforceResponseRules(fullReply, recentHistory);
 
-    // Voice / anti-AI-signature guardrails — same post-stream timing as enforceResponseRules.
-    // A violation may flicker in the live token stream; it must not survive into the saved thread.
+    // Voice guardrails run on PROSE ONLY, never on dialogue.
+    //
+    // Bart, 2026-09-08: "If I say 'sit with,' I'm giving a note... If it's
+    // responding to my callout with 'This is why I used sit with,' that's
+    // dialogue about what I need it to do. Where 'sit with' should never exist
+    // is in the writing itself."
+    //
+    // Running it over the whole reply produced the exact inversion. He asked
+    // why "sit with" survived two drafts; Auto had to quote the phrase to
+    // answer; the quote tripped the detector; the entire reply went to a second
+    // model and his answer was replaced. Meanwhile the phrase that actually
+    // shipped, "the hardest leadership failures to sit with", matched nothing
+    // on the list and went out twice. The conversation was sanitised and the
+    // violation was published.
+    //
+    // The artifact boundary is the same one the client uses to decide what goes
+    // in the panel versus the chat, so the guardrail now polices exactly what
+    // Bart sees as the post and leaves the conversation alone.
     {
-      const voiceClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-      const voiceResult = await enforceVoiceGuardrails(fullReply, {
-        anthropicClient: voiceClient,
-        contextLabel: 'chat-reply',
-      });
-      if (voiceResult.corrected) {
-        console.log(
-          `[chat.js] Voice guardrails corrected chat-reply (${voiceResult.forced ? 'forced-strip' : 'self-correct'}; ${voiceResult.violations.length} hit(s))`
-        );
+      const { splitReplySurfaces, rejoinReplySurfaces } = await import('../../../lib/ao/replySurfaces.js');
+      const { prose, hasProse } = splitReplySurfaces(fullReply);
+
+      if (hasProse) {
+        const voiceClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const corrected = [];
+        let anyCorrected = false;
+        let totalHits = 0;
+
+        for (const block of prose) {
+          const voiceResult = await enforceVoiceGuardrails(block, {
+            anthropicClient: voiceClient,
+            contextLabel: 'chat-reply-prose',
+          });
+          corrected.push(voiceResult.text);
+          if (voiceResult.corrected) anyCorrected = true;
+          totalHits += voiceResult.violations.length;
+        }
+
+        if (anyCorrected) {
+          fullReply = rejoinReplySurfaces(fullReply, corrected);
+          console.log(
+            `[chat.js] Voice guardrails corrected ${prose.length} prose block(s); ${totalHits} hit(s). Dialogue untouched.`
+          );
+        }
       }
-      fullReply = voiceResult.text;
+      // No artifact in this reply means it is pure conversation. Nothing to
+      // police, and policing it is what broke the dialogue.
     }
 
     // Deterministic brief-page navigation. The model often explains that the
