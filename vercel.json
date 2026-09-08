@@ -96,6 +96,17 @@
       }
     },
     {
+      "src": "api/ao/auto/draft-versions.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 512,
+        "maxDuration": 15,
+        "includeFiles": [
+          "lib/**"
+        ]
+      }
+    },
+    {
       "src": "api/ao/auto/publish-journal.js",
       "use": "@vercel/node",
       "config": {
@@ -1041,6 +1052,10 @@
     {
       "src": "/api/ao/podcast/guest-post-recording",
       "dest": "/api/ao/podcast/guest-post-recording.js"
+    },
+    {
+      "src": "/api/ao/auto/draft-versions",
+      "dest": "/api/ao/auto/draft-versions.js"
     },
     {
       "src": "/api/ao/db-check",
