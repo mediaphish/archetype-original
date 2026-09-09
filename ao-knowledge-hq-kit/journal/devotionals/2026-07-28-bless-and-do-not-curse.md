@@ -22,7 +22,7 @@ Blessing those who persecute is not a natural response. It requires something to
 
 Verse fifteen grounds the same principle in the emotional register. Rejoicing with those who rejoice and weeping with those who weep is not about performing the appropriate response for a given situation. It is about actually being present with the people you lead in a way that allows their experience to matter to you.
 
-Leaders who communicate from this posture are doing something that technique cannot replicate. They are demonstrating that the person in front of them is worth full engagement, not management. That their joy matters enough to celebrate and their grief matters enough to sit with.
+Leaders who communicate from this posture are doing something that technique cannot replicate. They are demonstrating that the person in front of them is worth full engagement, not management. That their joy matters enough to celebrate and their grief matters enough to share.
 
 Communication at this level is what builds the kind of loyalty that survives difficulty. Not because the leader performed it well, but because the people on the receiving end experienced something genuine.
 

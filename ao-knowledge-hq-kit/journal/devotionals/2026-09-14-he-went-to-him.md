@@ -20,7 +20,7 @@ Compassion in this passage isn't the end of the sentence. It's the first clause 
 
 That distinction matters because compassion alone is available to everyone, including the priest who passed by on the other side just before this. It's entirely possible to feel something and keep walking. What separates the Samaritan isn't that he felt more than the priest did. It's that his compassion actually turned into oil, wine, transportation, and money, in that order, without stopping at the feeling.
 
-The two denarii and the promise to cover whatever more it costs are worth sitting with specifically. This wasn't a single act completed and closed. It was an open financial commitment made to a stranger, with no guarantee the man would ever be able to repay it or even remember who helped him. Mercy extended this far has genuinely left the giver exposed.
+The two denarii and the promise to cover whatever more it costs deserve specific attention. This wasn't a single act completed and closed. It was an open financial commitment made to a stranger, with no guarantee the man would ever be able to repay it or even remember who helped him. Mercy extended this far has genuinely left the giver exposed.
 
 A leader's mercy is measured the same way. Sympathy costs nothing and can be offered freely without any real exposure. Actually binding the wounds, actually covering the cost, actually leaving an open account for whatever more it takes, requires a leader to be willing to absorb an amount they can't fully predict in advance.
 

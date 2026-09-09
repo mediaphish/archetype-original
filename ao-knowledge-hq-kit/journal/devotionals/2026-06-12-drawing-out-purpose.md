@@ -22,7 +22,7 @@ Purpose in leadership is often like this. It is present but not immediately acce
 
 Leaders who never do this work operate from whatever is most immediately available, which is usually habit, expectation, or the demands of the moment. Those things are not purpose. They are circumstance.
 
-The clarity that sustains leadership over time is not clarity about tasks. It is clarity about what the tasks are actually for. That kind of clarity requires the work of drawing it out, sitting with it, examining what is actually in the deep water rather than what the surface suggests.
+The clarity that sustains leadership over time is not clarity about tasks. It is clarity about what the tasks are actually for. That kind of clarity requires the work of drawing it out, staying with it, examining what is actually in the deep water rather than what the surface suggests.
 
 A leader with drawn-out purpose moves differently. They are not easily redirected by the pull of what is loud and immediate. They know what they are doing and why.
 

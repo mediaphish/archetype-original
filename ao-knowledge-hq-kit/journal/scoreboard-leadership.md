@@ -101,7 +101,7 @@ None of those relationships announce themselves as transactional. They just quie
 
 ## Where this leads
 
-Scoreboard Leadership is not always cruel in intent. Stumpf did not build Eight is Great to hurt anyone. He built it because a number is simpler to manage than a person, easier to defend in a boardroom, easier to point to when investors ask why the stock keeps climbing. A rate does not have a bad week. It does not need a hard conversation. It does not require a leader to sit with someone else's pain long enough to actually understand it. That is exactly what makes it so easy to trust, and exactly why it is not trustworthy at all.
+Scoreboard Leadership is not always cruel in intent. Stumpf did not build Eight is Great to hurt anyone. He built it because a number is simpler to manage than a person, easier to defend in a boardroom, easier to point to when investors ask why the stock keeps climbing. A rate does not have a bad week. It does not need a hard conversation. It does not require a leader to stay in someone else's pain long enough to actually understand it. That is exactly what makes it so easy to trust, and exactly why it is not trustworthy at all.
 
 That is why it can win for a while. Wells Fargo posted strong numbers for years before anyone official said the word fraud out loud. Compliance is real and it is fast. What it cannot do is sustain itself, because compliance is the only thing it was ever built to produce, and it runs out the moment the person complying finds a door, or in Wells Fargo's case, the moment enough of them decide fraud is a smaller risk than losing the job.
 

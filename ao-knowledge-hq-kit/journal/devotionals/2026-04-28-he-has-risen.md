@@ -45,7 +45,7 @@ The empty tomb stands as the evidence.
 ## Practical Application
 
 Take a moment to read the full account.
-Let its weight sit with you.
+Let its weight stay with you.
 If you believe it’s true, this moment is where your story changes forever.
 
 ## Takeaways

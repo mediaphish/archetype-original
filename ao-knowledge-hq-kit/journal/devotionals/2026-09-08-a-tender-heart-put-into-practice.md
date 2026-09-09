@@ -30,7 +30,7 @@ This opens the second week of the month for a reason. Everything ahead, David's 
 
 - Notice one place where you've let disappointment harden you slightly, and name it honestly.
 - Practice sympathy toward someone this week before you practice correction.
-- Ask whether your team would describe you as tenderhearted, and sit with the honest answer.
+- Ask whether your team would describe you as tenderhearted, and stay with the honest answer.
 
 ## Takeaways
 

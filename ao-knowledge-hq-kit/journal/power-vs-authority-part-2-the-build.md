@@ -119,7 +119,7 @@ It is worth being direct about this because most writing on servant leadership a
 
 The build costs you things that feel like they matter.
 
-It costs you the relief of not having to justify yourself. Every meeting where you genuinely invite challenge, where you ask the room what you are missing, where you sit with the discomfort of a disagreement that does not resolve cleanly, is a meeting where you are paying a cost that the power-driven leader does not pay. They decided faster. They projected more certainty. They walked out of the room looking, in the moment, more decisive.
+It costs you the relief of not having to justify yourself. Every meeting where you genuinely invite challenge, where you ask the room what you are missing, where you carry the discomfort of a disagreement that does not resolve cleanly, is a meeting where you are paying a cost that the power-driven leader does not pay. They decided faster. They projected more certainty. They walked out of the room looking, in the moment, more decisive.
 
 You will not always get credit for what you are doing. The leader who admits a mistake does not usually receive a standing ovation. The leader who fights for the team budget and loses does not always have the team know they fought. The leader who stays in a hard conversation rather than closing it down through authority does not always see the downstream benefit in time to connect it to the behavior that produced it.
 

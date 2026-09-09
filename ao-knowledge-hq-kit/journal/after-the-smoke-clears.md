@@ -90,7 +90,7 @@ And because it’s steady, it creates psychological safety.
 Because it’s grounded, it strengthens culture.  
 Because it’s human, people rise, not shrink.
 
-Healthy leaders sit with the real problem long enough to understand it. They remain present in tension. They take responsibility instead of redirecting it. They communicate directly instead of filtering truth through layers. They don’t need crisis, chaos, or scarcity to feel relevant.
+Healthy leaders stay with the real problem long enough to understand it. They remain present in tension. They take responsibility instead of redirecting it. They communicate directly instead of filtering truth through layers. They don’t need crisis, chaos, or scarcity to feel relevant.
 
 They build teams that can think.  
 Teams that can grow.  

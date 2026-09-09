@@ -1,0 +1,121 @@
+{
+  "note": "Known voice violations in already-published posts. New ones fail the build. This number should only go down.",
+  "updated": "2026-09-09",
+  "total": 49,
+  "files": {
+    "accountability-is-a-design-problem": {
+      "leverage-verb": 1
+    },
+    "ali-series-alignment-when-the-direction-actually-holds": {
+      "navigate": 1
+    },
+    "ali-series-stability-the-environment-that-holds": {
+      "navigate": 2
+    },
+    "ali-series-trust-the-condition-that-cannot-be-declared": {
+      "navigate": 1
+    },
+    "build-it-on-purpose": {
+      "elevate": 1
+    },
+    "darvo-when-the-guilty-become-the-victim": {
+      "leverage-verb": 1
+    },
+    "how-leaders-lose-the-capacity-for-accountability": {
+      "leverage-verb": 1
+    },
+    "how-pressure-triggers-threat-in-unaccountable-leaders": {
+      "leverage-verb": 3
+    },
+    "leadership-is-not-a-clenched-fist-but-a-guiding-hand-part-1": {
+      "at-the-end-of-the-day": 1
+    },
+    "power-vs-authority-part-1-the-hunger": {
+      "nuanced": 1
+    },
+    "power-vs-authority-part-2-the-build": {
+      "at-its-core": 1
+    },
+    "psychology-of-servant-leadership-part-1": {
+      "at-its-core": 1,
+      "unlock": 1
+    },
+    "psychology-of-servant-leadership-part-3": {
+      "leverage-verb": 1
+    },
+    "psychology-of-servant-leadership-part-5": {
+      "navigate": 1
+    },
+    "the-case-for-servant-leadership-part-1": {
+      "unlock": 1,
+      "resonate": 1
+    },
+    "the-case-for-servant-leadership-part-2": {
+      "its-not-its": 1
+    },
+    "the-distraction-play": {
+      "elevate": 1
+    },
+    "the-judas-archetype": {
+      "leverage-verb": 1
+    },
+    "the-pursuit-of-power-corrupts": {
+      "holistic": 1
+    },
+    "the-saul-archetype": {
+      "em-dash": 1,
+      "moreover": 1
+    },
+    "the-scarcity-switch": {
+      "elevate": 1,
+      "navigate": 1
+    },
+    "when-responsibility-stops-being-accidental": {
+      "leverage-verb": 1
+    },
+    "when-stability-replaces-accountability": {
+      "at-its-core": 1
+    },
+    "where-we-begin": {
+      "at-its-core": 1,
+      "resonate": 1
+    },
+    "words-into-action": {
+      "at-its-core": 1
+    },
+    "strength-under-control": {
+      "elevate": 1
+    },
+    "redefining-authority": {
+      "elevate": 2
+    },
+    "strength-that-serves": {
+      "elevate": 1
+    },
+    "stewardship-over-ownership": {
+      "not-just-its": 1
+    },
+    "love-that-refuses-to-exploit-power": {
+      "leverage-verb": 1,
+      "elevate": 1
+    },
+    "compassionate-clarity": {
+      "elevate": 1
+    },
+    "discerning-the-trap": {
+      "leverage-verb": 1
+    },
+    "build-on-what-is-solid": {
+      "not-just-its": 1
+    },
+    "understanding-in-everything": {
+      "speaks-to": 1
+    },
+    "a-fool-gives-full-vent": {
+      "unleash": 1
+    },
+    "choosing-mercy-over-the-payback-youre-owed": {
+      "leverage-verb": 4
+    }
+  }
+}

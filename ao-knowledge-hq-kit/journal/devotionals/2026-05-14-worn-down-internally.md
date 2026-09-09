@@ -18,7 +18,7 @@ summary: "Internal weariness affects the whole person."
 
 The language David uses here is not mild.
 
-Bowed down. Burning. Feeble. Crushed. These words describe a person whose internal condition has reached a significant low point — and whose body is reflecting it.
+Bowed down. Burning. Feeble. Crushed. These words describe a person whose internal condition has reached a significant low point, and whose body is reflecting it.
 
 This is not a moment of self-pity. It is an accurate description of what accumulated, unaddressed strain produces over time.
 

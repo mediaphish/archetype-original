@@ -82,7 +82,7 @@ For this category of leader, image is not a byproduct of success. It is the prim
 
 The downstream effects compound. As Paul Zak documented in his 2017 Harvard Business Review article "The Neuroscience of Trust," compared with people at low-trust companies, people at high-trust companies report 74% less stress, 50% higher productivity, and 76% more engagement. Those are not abstract numbers. That is what is happening inside the organization while the leader is telling the board that morale is strong.
 
-There is something else worth naming. The leader who cannot admit failure often cannot learn from it either. Failure is information. It is the most expensive and specific feedback a leader ever receives. A leader who cannot sit with that information, who has to immediately reframe it or reassign it or rationalize it away, loses the education it was trying to deliver. They make the same category of mistake again under slightly different conditions, and they are genuinely surprised when it happens, because they never processed what the first one was telling them.
+There is something else worth naming. The leader who cannot admit failure often cannot learn from it either. Failure is information. It is the most expensive and specific feedback a leader ever receives. A leader who cannot receive that information, who has to immediately reframe it or reassign it or rationalize it away, loses the education it was trying to deliver. They make the same category of mistake again under slightly different conditions, and they are genuinely surprised when it happens, because they never processed what the first one was telling them.
 
 I failed in business. More than once. Small decisions I was certain about that turned out to be complete misses. Larger ones with real consequences for real people. I am not carrying those as badges. I am naming them because the leaders I most needed to learn from were the ones who had been broken by something and built back through it. They spoke differently about difficulty. They sat in hard conversations without the energy of someone who needed the conversation to resolve cleanly. They could hold tension without flinching because they had held worse.
 
@@ -112,7 +112,7 @@ So. You said yes to the question. Probably before you finished reading it.
 
 Now ask your team.
 
-Not in a survey where their name is attached and the results go to HR. In a real conversation, one on one, with someone who has watched you lead long enough to have an honest answer. Ask them whether the way you lead matches the things you have said out loud about how you lead. Sit with whatever they say. Do not defend. Do not explain. Just receive it.
+Not in a survey where their name is attached and the results go to HR. In a real conversation, one on one, with someone who has watched you lead long enough to have an honest answer. Ask them whether the way you lead matches the things you have said out loud about how you lead. Hear whatever they say. Do not defend. Do not explain. Just receive it.
 
 That moment, if you can stay present in it, is servant leadership. That is where it starts. Not in the language. In the willingness to hear the truth and let it do something to you.
 

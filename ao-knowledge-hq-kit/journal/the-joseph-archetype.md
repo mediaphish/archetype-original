@@ -38,7 +38,7 @@ That is the Joseph Archetype. And if you have led anything for any length of tim
 
 Be honest about the beginning, because the Joseph Archetype does not start with a saint.
 
-Joseph was seventeen, favored by his father in a way his brothers could not miss, and apparently comfortable telling them about his dreams where they all bowed down to him. He was not naive about what that communicated. He said it anyway. There is something in that early Joseph worth sitting with. He was not a fully formed leader. He was a young man with genuine gifts and not enough wisdom yet to carry them quietly.
+Joseph was seventeen, favored by his father in a way his brothers could not miss, and apparently comfortable telling them about his dreams where they all bowed down to him. He was not naive about what that communicated. He said it anyway. There is something in that early Joseph worth understanding. He was not a fully formed leader. He was a young man with genuine gifts and not enough wisdom yet to carry them quietly.
 
 His brothers had been stewing for years. The coat was not the cause. It was the last visible symbol of something that had been building.
 

@@ -18,7 +18,7 @@ summary: "Some of the clarity you are looking for may already be in your hands, 
 
 Paul does not explain everything he says. He gives an image, the hardworking farmer, and then instructs Timothy to think it over.
 
-That instruction assumes something important. Understanding is not always immediate. Sometimes a leader is given something true and has to sit with it before its full weight becomes clear.
+That instruction assumes something important. Understanding is not always immediate. Sometimes a leader is given something true and has to carry it a while before its full weight becomes clear.
 
 This runs against the pace most leaders operate at. Information is consumed quickly, applied quickly, and moved past quickly. The instruction to think over what has been said assumes a slower process, one where understanding develops rather than arrives instantly.
 

@@ -26,7 +26,7 @@ status: published
 
 # The System Behind the Conditions
 
-If you have read this entire series, you have spent seven posts sitting with one question.
+If you have read this entire series, you have spent seven posts on one question.
 
 Not the question we asked at the end of each post. Those were about your own organization. The question underneath all of them.
 

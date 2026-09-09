@@ -24,7 +24,7 @@ Leaders are often trained to project stability. The expectation, internally and 
 
 That expectation can become its own problem.
 
-When internal strain is suppressed rather than addressed, it does not disappear. It finds expression in other ways — through exhaustion, physical symptoms, shortened capacity, and compromised clarity.
+When internal strain is suppressed rather than addressed, it does not disappear. It finds expression in other ways: through exhaustion, physical symptoms, shortened capacity, and compromised clarity.
 
 Scripture is direct about this connection. The body and mind are not separate systems.
 

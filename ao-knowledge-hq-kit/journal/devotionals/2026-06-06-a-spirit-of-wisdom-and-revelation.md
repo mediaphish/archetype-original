@@ -20,7 +20,7 @@ Paul is praying for something specific on behalf of the people he is writing to.
 
 Wisdom. Revelation. Enlightened eyes.
 
-The language of verse eighteen is worth sitting with. The eyes of the heart. This is not cognitive clarity produced by gathering enough information. It is a different kind of seeing, one that perceives what cannot be accessed through observation alone.
+The language of verse eighteen deserves a slow read. The eyes of the heart. This is not cognitive clarity produced by gathering enough information. It is a different kind of seeing, one that perceives what cannot be accessed through observation alone.
 
 Leaders need both kinds. The kind that comes from experience, study, and careful attention to what is in front of them. And the kind that perceives what is true about their calling, their purpose, and the people they are responsible for, things that are not visible on the surface.
 
