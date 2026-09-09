@@ -141,6 +141,66 @@
       "description": "Most companies that need a CTO do not need someone to write the code. They need someone to make the decisions that get made before anyone writes code, and to know which cannot be undone later.",
       "keywords": "fractional CTO, chief technology officer, AI development leadership, technical leadership, build leadership, Bart Paden, Archetype Original",
       "image": "/og-default.jpg"
+    },
+    "journal": {
+      "title": "Journal | Archetype Original",
+      "description": "Essays on leadership, culture, and accountability from Bart Paden. Long-form writing on what holds under pressure and what does not.",
+      "keywords": "leadership journal, servant leadership, culture, accountability, Bart Paden, Archetype Original",
+      "image": "/og-default.jpg"
+    },
+    "journal-post": {
+      "title": "Servant Leadership Devotional | Archetype Original",
+      "description": "Short daily readings connecting scripture to the practical work of leading people well.",
+      "keywords": "servant leadership devotional, daily leadership devotional, scripture and leadership, Bart Paden",
+      "image": "/og-default.jpg"
+    },
+    "ali": {
+      "title": "Archetype Leadership Index | Archetype Original",
+      "description": "The Archetype Leadership Index measures the seven conditions that determine whether a culture holds: trust, clarity, communication, consistency, alignment, stability, and drift.",
+      "keywords": "Archetype Leadership Index, ALI, leadership assessment, culture measurement, seven conditions",
+      "image": "/og-default.jpg"
+    },
+    "ali-apply": {
+      "title": "Apply for the Archetype Leadership Index | Archetype Original",
+      "description": "Request access to the Archetype Leadership Index and measure the conditions shaping your organization.",
+      "keywords": "ALI application, leadership assessment, culture diagnostic, Archetype Original",
+      "image": "/og-default.jpg"
+    },
+    "ali-thanks": {
+      "title": "Application Received | Archetype Original",
+      "description": "Your Archetype Leadership Index application has been received.",
+      "keywords": "ALI, Archetype Leadership Index, Archetype Original",
+      "image": "/og-default.jpg"
+    },
+    "ali-eula": {
+      "title": "ALI End User License Agreement | Archetype Original",
+      "description": "End user license agreement for the Archetype Leadership Index.",
+      "keywords": "ALI EULA, license agreement, Archetype Leadership Index",
+      "image": "/og-default.jpg"
+    },
+    "ethics": {
+      "title": "Research Ethics | Archetype Original",
+      "description": "How Culture Science research is conducted: what is measured, how data is handled, and the standards the work is held to.",
+      "keywords": "research ethics, Culture Science, data handling, leadership research, Archetype Original",
+      "image": "/og-default.jpg"
+    },
+    "industry-reports": {
+      "title": "Industry Reports | Archetype Original",
+      "description": "Culture Science reports on leadership conditions across industries, built from measured data rather than opinion.",
+      "keywords": "industry reports, leadership research, Culture Science, organizational data",
+      "image": "/og-default.jpg"
+    },
+    "privacy-policy": {
+      "title": "Privacy Policy | Archetype Original",
+      "description": "How Archetype Original collects, uses, and protects your information.",
+      "keywords": "privacy policy, data protection, Archetype Original",
+      "image": "/og-default.jpg"
+    },
+    "terms-and-conditions": {
+      "title": "Terms and Conditions | Archetype Original",
+      "description": "Terms governing the use of Archetype Original and its services.",
+      "keywords": "terms and conditions, terms of service, Archetype Original",
+      "image": "/og-default.jpg"
     }
   }
 }
