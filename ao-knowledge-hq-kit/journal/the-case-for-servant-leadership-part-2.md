@@ -63,7 +63,7 @@ Kinda ironic for someone who just finished the first draft of a leadership book,
 
 If you’re ready to build the kind of culture that science, and experience, both confirm works, that’s what I do now. I mentor leaders and consult with teams who want to replace pressure with purpose, and performance anxiety with trust that lasts.
 
-Because the data doesn't lie. Servant leadership works. It's not idealism. It's intelligence.
+Because the data doesn't lie. Servant leadership works. This is not idealism. It is intelligence.
 
 ### Data Reference Block
 

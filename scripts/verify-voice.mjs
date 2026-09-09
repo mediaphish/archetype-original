@@ -6,20 +6,29 @@
  * nothing did the equivalent for voice, so a banned phrase already in a
  * published file stayed there, invisible, forever.
  *
- * WHY THIS IS A RATCHET AND NOT A HARD FAIL.
+ * THE BASELINE IS NOW ZERO.
  *
- * The first scan found 93 violations across 57 of 358 published files,
- * including 25 instances of "sit with" and 9 em dashes in live prose. A check
- * that failed on all of them would have failed on day one, which means it would
- * have been switched off within the hour and never switched back on.
+ * The first scan found 93 violations across 57 of 358 published files. It was
+ * built as a ratchet so a check could ship without failing on day one, since a
+ * build that fails on day one gets switched off within the hour.
  *
- * So the existing 93 are baselined into voice-baseline.json and reported at
- * every build, and anything NEW fails. The count can only go down. Editing 57
- * published posts is Bart's decision about his own writing, not something a
- * build script does quietly at 2am.
+ * That debt is paid. 2026-09-09: 40 instances rewritten by hand, each in its
+ * own sentence, and the rest were the detector being wrong rather than the
+ * writing:
  *
- * To clean one up: fix the prose, then run this with --update to shrink the
- * baseline. The baseline is a debt register, not a permission slip.
+ *   167 of 176 dashes were scripture references and number ranges, where an en
+ *   dash is correct typography.
+ *   "leverage" matched the noun, which is load-bearing in the accountability
+ *   posts. "elevate" matched raising a person up, which is the whole subject.
+ *   "speaks to" matched a leader literally speaking to people.
+ *   "not just X, it's Y" matched across a full stop into an unrelated sentence.
+ *   The scan flagged "Moreover" inside a direct quotation of 1 Samuel 28.
+ *
+ * Fixing patterns rather than prose is the right move whenever a rule and the
+ * writing disagree, because the writing is the thing being protected.
+ *
+ * With the baseline at zero, any violation fails the build. Keep it there. If a
+ * pattern is wrong rather than the writing, change the pattern.
  */
 
 import fs from 'fs';

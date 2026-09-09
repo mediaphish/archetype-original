@@ -55,7 +55,7 @@ Every servant leader eventually hits this wall:
 How do you serve others without losing yourself?
 
 That’s the paradox.  
-And most leaders never learn how to navigate it.
+And most leaders never learn how to handle it.
 
 ---
 

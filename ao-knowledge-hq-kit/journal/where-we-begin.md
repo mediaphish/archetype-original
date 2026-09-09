@@ -50,7 +50,7 @@ It is a call to lead differently.
 
 This work exists for builders, leaders who have come to understand that using people as tools eventually breaks both the people and the work. Leaders who have learned that winning the deal, hitting the number, or reaching the goal is hollow if the humans doing the work are diminished in the process.
 
-At its core, Archetype Original is about service. About choosing to develop people, not consume them. About carrying authority in a way that strengthens rather than extracts.
+Archetype Original is about service. About choosing to develop people, not consume them. About carrying authority in a way that strengthens rather than extracts.
 
 For me, that conviction is grounded in Scripture.
 
@@ -82,7 +82,7 @@ But it is where I begin, and where I return.
 
 ## A Daily Practice
 
-If this grounding resonates with you, you’re invited to receive the Servant Leadership Devotional as a daily email.
+If this grounding lands with you, you’re invited to receive the Servant Leadership Devotional as a daily email.
 
 Each entry is designed to be brief, intentional, and grounding, something you can return to at the start of the day or in the margin before decisions are made. Not to consume more content, but to stay anchored to the posture this work begins with.
 

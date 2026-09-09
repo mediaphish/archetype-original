@@ -84,7 +84,7 @@ The pursuit is not a neutral waiting room before the real problem begins. The pu
 
 ## What David McClelland Actually Found
 
-Harvard psychologist David McClelland spent his career studying human motivation, and his framework for power motivation is more nuanced and more useful than most people who cite it suggest.
+Harvard psychologist David McClelland spent his career studying human motivation, and his framework for power motivation is more careful and more useful than most people who cite it suggest.
 
 McClelland did not find that the desire for power is inherently destructive. What he found is that there are two fundamentally different expressions of the drive toward influence, and they produce radically different outcomes.
 

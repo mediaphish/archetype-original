@@ -167,7 +167,7 @@ The distance between those answers is the alignment gap. It is measurable. It is
 
 ## How Alignment Connects to What Comes Next
 
-A team that is genuinely aligned can absorb pressure without lurching. When difficulty arrives, when the quarter turns hard or the market shifts or a key person leaves, the team has enough shared understanding of the direction to navigate without constant intervention from leadership.
+A team that is genuinely aligned can absorb pressure without lurching. When difficulty arrives, when the quarter turns hard or the market shifts or a key person leaves, the team has enough shared understanding of the direction to hold direction without constant intervention from leadership.
 
 A team that is misaligned cannot do that. Pressure reveals the gaps in the shared understanding that calm conditions concealed. The organization that looked aligned when things were easy fractures when things get hard. Not because of the pressure. Because the alignment was never real enough to hold under it.
 

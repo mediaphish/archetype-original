@@ -83,12 +83,12 @@ People stop protecting themselves and start creating solutions.
 They move from fight-or-flight to problem-solving mode.
 
 Researchers call it psychological safety.  
-But at its core, it’s just this:  
+But underneath, it’s just this:  
 People do their best work when they know they’re safe to be honest, to make mistakes, and to try again.
 
 Humility isn’t weakness either.  
 It’s the ability to say “I don’t know” without fear.  
-That one sentence unlocks more creativity and ownership than a thousand “do it my way” orders.
+That one sentence produces more creativity and ownership than a thousand “do it my way” orders.
 
 ---
 

@@ -129,7 +129,7 @@ And it costs you certainty. Not the performance of certainty, which power-driven
 
 These are real costs. The leader who tells you the build is easy or natural or always rewarding in the moment is describing something other than what the build actually is.
 
-What the build produces on the other side of those costs is an organization that functions differently at its core. Not because people are required to perform. Because they have made a genuine choice to invest. That distinction is invisible in the metrics until the moment something goes wrong and it suddenly becomes the only thing that matters.
+What the build produces on the other side of those costs is an organization that functions differently underneath. Not because people are required to perform. Because they have made a genuine choice to invest. That distinction is invisible in the metrics until the moment something goes wrong and it suddenly becomes the only thing that matters.
 
 ---
 

@@ -74,7 +74,7 @@ True leadership prioritizes the human.
 * Whether someone faced personal struggles or work challenges, they knew they could count on me to listen first, and guide second.
 * By creating an environment where people felt seen and heard, I watched them grow into their best selves, at work and beyond.
 * Servant-hearted leaders build trust through empathy.
-* They foster holistic growth.
+* They grow the whole person.
 * They lift people higher than they could ever climb alone.
 
 Power Isn’t the Answer

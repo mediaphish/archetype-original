@@ -40,7 +40,7 @@ For nearly two years I wrestled with that question. I read, researched, and refl
 
 And that realization wasn’t just philosophical, it was scientific.
 
-The data confirmed what my gut always knew. Gallup found that teams rooted in trust and psychological safety outperform high-pressure cultures by up to 50% in productivity and 76% in engagement. MIT Sloan showed that collaborative cultures drive innovation by as much as 30%. The NeuroLeadership Institute proved that when people feel safe and valued, cortisol (the stress hormone) drops, and oxytocin rises, unlocking creativity, memory, and connection. Those numbers tell a story most leaders miss: fear gets you compliance, but trust gets you performance.
+The data confirmed what my gut always knew. Gallup found that teams rooted in trust and psychological safety outperform high-pressure cultures by up to 50% in productivity and 76% in engagement. MIT Sloan showed that collaborative cultures drive innovation by as much as 30%. The NeuroLeadership Institute proved that when people feel safe and valued, cortisol (the stress hormone) drops, and oxytocin rises, opening up creativity, memory, and connection. Those numbers tell a story most leaders miss: fear gets you compliance, but trust gets you performance.
 
 In my reflection, I also began to see these leadership patterns inside myself. I’ve led from strength. I’ve also led from exhaustion. I’ve led through calm, and at times, through fear. But the seasons where I led through service, when I protected my people, invested in their growth, and trusted them to rise, those were the seasons that flourished. Those were the teams that stayed together, innovated faster, and healed stronger.
 
@@ -52,7 +52,7 @@ And if you’ve been wondering whether the way you led mattered, or if you’re 
 
 That’s what I do now. I mentor leaders who want to build trust instead of tension. I consult with teams and organizations who need to realign their culture, rebuild confidence, and restore clarity. Some engagements last a few sessions, others a few months, depending on what’s needed. Either way, it’s real work that gets real results.
 
-If this resonates, and you're ready to make the shift, from pressure to purpose, from fear to trust, from competition to completion, reach out. Let's build something that lasts.
+If this lands, and you're ready to make the shift, from pressure to purpose, from fear to trust, from competition to completion, reach out. Let's build something that lasts.
 
 ### Data Reference Block
 

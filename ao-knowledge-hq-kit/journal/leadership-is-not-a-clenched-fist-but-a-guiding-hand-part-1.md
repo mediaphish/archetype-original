@@ -61,7 +61,7 @@ These aren’t easy postures. They cost more than domination. But they create so
 
 ## Why It Matters
 
-At the end of the day, people don’t follow clenched fists. They endure them. Fear might keep bodies in seats, but it never wins hearts. A guiding hand, however, invites people into something bigger than themselves. It says, “I’m with you, I believe in you, and together we can get there.”
+People don’t follow clenched fists. They endure them. Fear might keep bodies in seats, but it never wins hearts. A guiding hand, however, invites people into something bigger than themselves. It says, “I’m with you, I believe in you, and together we can get there.”
 
 Organizations shaped by guiding hands don’t just hit goals, they build people. And when you build people, the results will always outlast the fear-driven gains of control.
 

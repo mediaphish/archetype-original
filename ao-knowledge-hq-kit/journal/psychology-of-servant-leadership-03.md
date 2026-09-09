@@ -171,7 +171,7 @@ They motivate by giving people ownership, growth, and belonging.
 
 They set clear goals, then get out of the way.  
 They coach through failure instead of punishing it.  
-They invest in relationships before they need to leverage them.  
+They invest in relationships before they need anything from them.  
 They understand that motivation isn’t something you install; it’s something you unblock.
 
 When those three needs, autonomy, competence, and relatedness, are met, people don’t just perform for you.  

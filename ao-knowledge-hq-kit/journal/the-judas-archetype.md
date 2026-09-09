@@ -123,7 +123,7 @@ It refuses the parallel economy. The servant leader does not run a private ledge
 
 It refuses the gesture as instrument. The servant leader does not use the gestures of relationship as cover for extraction. The question asked is the question meant. The advocacy offered is the advocacy delivered. The person on the other side of the trust does not become collateral.
 
-It refuses proximity without alignment. Being in the room is not a position to be leveraged. The access that comes with trust is treated as the responsibility it actually is, not as inventory for a future transaction.
+It refuses proximity without alignment. Being in the room is not a position to be traded on. The access that comes with trust is treated as the responsibility it actually is, not as inventory for a future transaction.
 
 It refuses the certainty that makes rationalization possible. The servant leader submits their own motivations to examination. Not once, performatively, but regularly. Not because they are uniquely prone to the pattern. Because the pattern is available to everyone and the only defense against it is the willingness to look.
 

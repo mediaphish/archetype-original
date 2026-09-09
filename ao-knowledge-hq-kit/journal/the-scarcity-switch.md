@@ -92,7 +92,7 @@ Servant leaders move the opposite direction.
 
 They create abundance, not financially, but emotionally and structurally. They give opportunity away instead of hoarding it. They make sure information flows horizontally, not just vertically. They share credit. They democratize access. They make it clear that growth is not a contest but an expectation.
 
-When resources are genuinely limited, they say so plainly, and they explain the plan, not the fear. They don’t weaponize scarcity; they navigate it with transparency. And in doing so, they remove the fear that keeps people small.
+When resources are genuinely limited, they say so plainly, and they explain the plan, not the fear. They don’t weaponize scarcity; they handle it with transparency. And in doing so, they remove the fear that keeps people small.
 
 In a healthy environment, people don’t fight for space.  
 They build more of it.

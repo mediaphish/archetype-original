@@ -41,7 +41,7 @@ Leadership systems can be studied the same way biological or mechanical systems 
 
 Servant leadership stands in direct contrast.
 
-At its core, servant leadership assumes human fallibility and therefore requires accountability as a non-negotiable condition. It depends on unfiltered truth, constructive dissent, and the willingness of leaders to be corrected by others. Where these conditions exist, systems tend to learn, adapt, and build trust over time.
+Servant leadership assumes human fallibility and therefore requires accountability as a non-negotiable condition. It depends on unfiltered truth, constructive dissent, and the willingness of leaders to be corrected by others. Where these conditions exist, systems tend to learn, adapt, and build trust over time.
 
 Where they do not, servant leadership cannot survive.
 

@@ -93,7 +93,7 @@ Only 50% of workers say their managers create psychological safety on their team
 
 This condition carries the same human weight as the ones before it.
 
-A person can work in a low-trust environment for a period of time without obvious consequence. They adjust. They learn the rules. They figure out what is safe to say and what is not, who can be trusted and who cannot, where the landmines are and how to navigate around them. They perform adequately. They do not bring their full capability to the work because doing so requires a level of risk the environment has taught them not to take.
+A person can work in a low-trust environment for a period of time without obvious consequence. They adjust. They learn the rules. They figure out what is safe to say and what is not, who can be trusted and who cannot, where the landmines are and how to step around them. They perform adequately. They do not bring their full capability to the work because doing so requires a level of risk the environment has taught them not to take.
 
 Over time that adjustment becomes exhaustion. Not the exhaustion of overwork. The exhaustion of constant vigilance. Of managing not just the work but the environment around the work. Of editing every communication before it goes out, thinking twice before raising a concern, calculating the likely reaction before deciding whether something is worth saying.
 

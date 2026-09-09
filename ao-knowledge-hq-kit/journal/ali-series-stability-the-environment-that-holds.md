@@ -61,7 +61,7 @@ They experience the organization from a position that is inherently more stable 
 
 The team experiences the organization differently. They feel the turbulence that the leader's position insulates them from. They notice when the plan shifts without explanation. They absorb the emotional tone the leader does not realize they are broadcasting. They operate inside uncertainty that the leader has already processed and moved past.
 
-59% of U.S. employees reported burnout in 2024. Burnout is not primarily about volume of work. It is about working in conditions where the effort required to navigate the environment exceeds the capacity people have to sustain it. Instability is one of the primary drivers of that exhaustion. Not the pressure of the work itself. The unpredictability of the environment the work happens inside.
+59% of U.S. employees reported burnout in 2024. Burnout is not primarily about volume of work. It is about working in conditions where the effort required to work inside the environment exceeds the capacity people have to sustain it. Instability is one of the primary drivers of that exhaustion. Not the pressure of the work itself. The unpredictability of the environment the work happens inside.
 
 Improving psychological safety has the potential to result in a 27% reduction in turnover, a 40% reduction in safety incidents, and a 12% increase in productivity. Those numbers are not about eliminating difficulty. They are about creating conditions stable enough that people can engage with difficulty productively rather than reactively.
 
@@ -85,7 +85,7 @@ The most expensive instability is the kind teams have learned to expect. When pe
 
 ## The Human Cost
 
-A person can work in an unstable environment for a period of time without obvious consequence. They absorb the unpredictability. They learn to navigate it. They develop the habits and workarounds that make operating inside it survivable.
+A person can work in an unstable environment for a period of time without obvious consequence. They absorb the unpredictability. They learn to work around it. They develop the habits and workarounds that make operating inside it survivable.
 
 Over time those habits become the job. The work of managing the environment becomes indistinguishable from the work itself. And the energy that should be going toward the actual output goes toward staying upright inside a structure that keeps shifting.
 

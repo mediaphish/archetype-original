@@ -24,7 +24,7 @@ Leadership breaks when it treats people, roles, and outcomes like personal prope
 
 Peter frames everything we carry as something entrusted. Not earned. Not possessed. Given. That one shift changes how leaders lead. When you see your influence as a trust, you stop using it to protect yourself and start using it to serve others.
 
-Verse 11 completes the picture. Stewardship is not just what we do, it's how we do it. Leaders do not lead from self-sufficiency. They lead from dependence. Strength comes from God, not image. And the goal is not personal credit, but God's glory. That's the difference between leadership that consumes people and leadership that lifts them.
+Verse 11 completes the picture. Stewardship is how we do it, not only what we do. Leaders do not lead from self-sufficiency. They lead from dependence. Strength comes from God, not image. And the goal is not personal credit, but God's glory. That's the difference between leadership that consumes people and leadership that lifts them.
 
 ---
 
