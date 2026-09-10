@@ -14,6 +14,13 @@ export default function ChatApp({
   contextPayload = null,
   /** () => object | null — fresh snapshot on each message (e.g. live dashboard). */
   getContextPayload = null,
+  /**
+   * What the visitor is reading, when it is a single piece: { kind, slug, title, path }.
+   * Kept separate from contextPayload on purpose. A non-empty contextPayload
+   * disables the public cannot-answer handoff, which is right for ALI screens
+   * supplying live data and wrong for "this person is on an essay".
+   */
+  pageContext = null,
 }) {
   const marketing = variant === 'marketing';
   const rh = marketing && context === 'remaining-human';
@@ -309,6 +316,7 @@ export default function ChatApp({
           conversationHistory,
           sessionId,
           context: context || 'default',
+          ...(pageContext ? { pageContext } : {}),
           ...payload,
         }),
       });

@@ -16,7 +16,7 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'Culture & clarity', send: 'How do you approach culture and organizational clarity?' },
   ],
   journal: [
-    { label: 'Pick an idea from the journal', send: 'I’m reading the journal — what should I reflect on first?' },
+    { label: 'Pick an idea from the journal', send: 'I am reading the journal. What should I reflect on first?' },
     { label: 'Apply this to my team', send: 'How would I apply these ideas with my team this week?' },
     { label: 'Go deeper on one theme', send: 'What themes show up across Bart’s writing?' },
   ],
@@ -43,7 +43,7 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'Where to start', send: 'If we think we are running this pattern, where should we start?' },
   ],
   archy: [
-    { label: 'How you work', send: 'How do you work as Archy — what can you help with?' },
+    { label: 'How you work', send: 'How do you work as Archy, and what can you help with?' },
     { label: 'What you know about Bart', send: 'What sources and perspective do you draw from?' },
     { label: 'Limits & ethics', send: 'What won’t you do or claim?' },
   ],
@@ -63,7 +63,7 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'Fit for my stage', send: 'How do I know if this is a fit for where I lead today?' },
   ],
   methods: [
-    { label: 'Overview of Methods', send: 'Give me an overview of Methods — mentoring, consulting, fractional.' },
+    { label: 'Overview of Methods', send: 'Give me an overview of Methods: mentoring, consulting, fractional.' },
     { label: 'Which path might fit?', send: 'How do I think about which Method might fit my situation?' },
     { label: 'What engagement looks like', send: 'What does an engagement typically look like?' },
   ],
@@ -87,6 +87,15 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'Signals you need one', send: 'What signals suggest a fractional CCO might help?' },
     { label: 'How engagements run', send: 'How do fractional CCO engagements typically run?' },
   ],
+  // The CTO page had no context key at all and fell through to the generic
+  // company prompts, which is the worst offer on the page most likely to be
+  // read by someone deciding whether to get in touch.
+  'methods-fractional-cto': [
+    { label: 'Is this for us?', send: 'How do I know whether a fractional CTO is what my organization actually needs?' },
+    { label: 'Decisions before code', send: 'Which technical decisions are cheap now and expensive later?' },
+    { label: 'Building with AI', send: 'What does Bart say actually changed about building software with AI, and what did not?' },
+    { label: 'Where it does not fit', send: 'When is a fractional CTO the wrong answer?' },
+  ],
   advisory: [
     { label: 'The Room (the book)', send: 'What is The Room about in one clear summary?' },
     { label: 'Private advisory', send: 'How does private advisory outside the organization work?' },
@@ -98,7 +107,7 @@ const ARCHY_QUICK_PROMPTS = {
     { label: 'AI-shaped systems', send: 'What does “AI-shaped systems” mean for leaders here?' },
   ],
   default: [
-    { label: 'Leadership question', send: 'I have a leadership challenge — can you help me think it through?' },
+    { label: 'Leadership question', send: 'I have a leadership challenge. Can you help me think it through?' },
     { label: 'Culture & clarity', send: 'How do you think about culture and clarity in organizations?' },
     { label: 'Work with Bart', send: 'How could someone explore working with Bart?' },
     { label: 'Tell me about Bart', send: 'Tell me about Bart’s background and approach.' },

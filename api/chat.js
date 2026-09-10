@@ -7,6 +7,7 @@ import { getArchyRetrievalDepthFromPaid } from '../lib/ao/archyAccess.js';
 import { isArchyPaidSessionAsync } from '../lib/ao/archyEntitlements.js';
 import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyThreadMemory.js';
 import { searchCorpusChunks, groupChunksByDocument } from '../lib/ao/corpusChunks.js';
+import { detectCannotAnswer } from '../lib/ao/archyAnswerability.js';
 import {
   archyComplete,
   archyClassify,
@@ -283,7 +284,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { message, conversationHistory = [], sessionId, context, contextPayload } = req.body;
+  const { message, conversationHistory = [], sessionId, context, contextPayload, pageContext } = req.body;
   const clientIP = getClientIP(req);
 
   if (!message) {
@@ -361,6 +362,25 @@ export default async function handler(req, res) {
     context
   );
   relevantKnowledge = ensureTheRoomInKnowledge(relevantKnowledge, knowledgeCorpus, context);
+
+  // The piece on screen goes in first, whatever semantic search thought.
+  //
+  // Without this, telling Archy "they are reading X" while X is absent from the
+  // passages is worse than saying nothing: he would be primed to discuss a
+  // document he cannot quote, which is how confident invention starts. A
+  // question about the piece in front of someone is also the case where the
+  // right passage is least in doubt.
+  if (pageContext?.kind === 'article' && pageContext.slug) {
+    const slug = String(pageContext.slug);
+    if (!relevantKnowledge.some((doc) => doc?.slug === slug)) {
+      const doc = (knowledgeCorpus.docs || []).find((d) => d?.slug === slug);
+      if (doc) {
+        relevantKnowledge = [doc, ...relevantKnowledge].slice(0, archyDepth.maxDocs || 20);
+        console.log('[archy] pinned the page being read into retrieval:', slug);
+      }
+    }
+  }
+
   console.log('Searching for:', message);
   console.log(
     `Relevant knowledge found: ${relevantKnowledge.length} documents ` +
@@ -436,8 +456,30 @@ export default async function handler(req, res) {
       ? `\nALI LOGGED-IN TOOLS: The user is inside ALI (dashboard, reports, or Super Admin). Ground answers in AUTHORITATIVE LIVE DATA when it is present. For Super Admin overview, help interpret platform metrics and suggest journal or content angles. Quote specific figures from the snapshot when relevant. Do not claim you cannot see data that appears in AUTHORITATIVE LIVE DATA.\n`
       : '';
 
+  /**
+   * Tell Archy what the visitor is looking at.
+   *
+   * Context was resolved to the section only, so on a journal post he knew
+   * "journal" and nothing about which of a hundred essays was on the screen.
+   * A reader's question almost always refers to the thing they just read, and
+   * "this", "it" and "that point" were unresolvable without this.
+   */
+  const readingArticle =
+    pageContext && typeof pageContext === 'object' && pageContext.kind === 'article' && pageContext.slug
+      ? { slug: String(pageContext.slug).slice(0, 200), title: pageContext.title ? String(pageContext.title).slice(0, 300) : null }
+      : null;
+
+  const readingSection = readingArticle
+    ? `
+WHAT THIS PERSON IS READING RIGHT NOW:
+${readingArticle.title ? `"${readingArticle.title}"` : readingArticle.slug} (/journal/${readingArticle.slug})
+
+They opened this conversation from that page. Assume "this", "it", "that point" and similar refer to that piece unless they clearly mean something else. Answer as someone who knows they have just read it: do not re-summarise the whole thing back to them, engage with what it would have raised. If their question turns out to be about something else entirely, follow them there without comment.
+`
+    : '';
+
   // Build conversation context
-  const nameReferenceInstruction = bartPadenMentioned 
+  const nameReferenceInstruction = bartPadenMentioned
     ? 'CRITICAL: "Bart Paden" has already been mentioned in this conversation. You MUST use "Bart" or "he" instead of "Bart Paden" throughout your response. Only use "Bart Paden" if it\'s the very first mention in your current response, otherwise always use "Bart" or "he".'
     : 'IMPORTANT: When referring to Bart Paden, use natural, conversational references. After the first mention of "Bart Paden" in a response, use "Bart" or "he" instead of repeating the full name. This makes the conversation feel more natural and human, like you\'re actually talking about someone you know well.';
 
@@ -447,6 +489,7 @@ You are the visitor-facing assistant named Archy. Do not mention internal automa
 
 Use the retrieved passages below as your primary ground. They are drawn from Bart's published library by meaning, not keyword, and each one is the part of its document that bears on this question — quote and reason from them directly rather than speaking generally.
 
+${readingSection}
 ${archyMemory?.summary ? `\nContinuity from earlier in this conversation (paraphrase, do not quote verbatim):\n${archyMemory.summary.slice(0, 3000)}\n` : ''}
 ${liveDataSection}${aliInternalSection}
 
@@ -630,30 +673,27 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         response = extracted.text;
         followUpPrompts = extracted.prompts;
 
-        // Detect if Archy cannot answer the question
-        // Check for indicators that Archy is uncertain or doesn't have the answer
-        const cannotAnswerIndicators = [
-          /i (don't|do not) (know|have|understand)/i,
-          /i'm (not sure|uncertain|unable)/i,
-          /i (can't|cannot) (answer|help|provide)/i,
-          /(don't|do not) have (that|this) (information|answer|knowledge)/i,
-          /(not|outside) (in|of) (my|the) (knowledge|corpus|experience)/i,
-          /i (don't|do not) have (access|information) (to|about)/i,
-        ];
-        
-        const responseLower = response.toLowerCase();
-        const hasLowKnowledge = relevantKnowledge.length === 0 || 
+        // Did Archy actually fail to answer?
+        //
+        // This used to scan the finished answer for refusal phrases and discard
+        // the whole thing on any match anywhere. Measured 2026-09-10: the same
+        // question, asked twice thirty seconds apart, returned the canned
+        // handoff once and a real answer once. The difference was phrasing, not
+        // knowledge. The rule punished careful partial answers hardest, which
+        // is the behaviour most worth keeping. See lib/ao/archyAnswerability.js.
+        const hasLowKnowledge = relevantKnowledge.length === 0 ||
           (relevantKnowledge.length > 0 && relevantKnowledge.every(doc => {
             const docText = (doc.title + ' ' + doc.summary + ' ' + doc.body).toLowerCase();
             const messageWords = message.toLowerCase().split(/\s+/).filter(w => w.length > 3);
             return messageWords.every(word => !docText.includes(word));
           }));
-        
-        const indicatesCannotAnswer = cannotAnswerIndicators.some(pattern => pattern.test(responseLower)) ||
-          responseLower.includes("i'm having trouble") ||
-          responseLower.includes("i'm not able to") ||
-          (hasLowKnowledge && responseLower.includes("don't have"));
-        
+
+        const answerability = detectCannotAnswer({ response, hasLowKnowledge });
+        const indicatesCannotAnswer = answerability.cannotAnswer;
+        if (indicatesCannotAnswer) {
+          console.log('[archy] treating as unanswered:', answerability.reason);
+        }
+
         // Detect nonsensical/trolling questions
         const nonsensicalPatterns = [
           /quantum.*(physics|mechanics|entanglement).*(espresso|coffee|dairy|milk|latte|cappuccino)/i,

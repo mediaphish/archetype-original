@@ -8,6 +8,7 @@ import {
   useArchyCompanionOptional,
 } from '../contexts/ArchyCompanionContext.jsx';
 import { trackArchy } from '../lib/archyTelemetry';
+import { articleQuickPrompts, buildPageContext } from '../lib/archyPageContext';
 
 const DEFAULT_FLOATING_BTN_CLASSES =
   'archy-fab-shift fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[55] h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-ao-red shadow-lg hover:shadow-xl hover:opacity-95 transition-all hover:scale-105 flex items-center justify-center overflow-hidden ring-2 ring-white/25';
@@ -112,6 +113,10 @@ export default function FloatingArchyButton() {
         setContext('methods-consulting');
       } else if (path === '/fractional-roles/cco') {
         setContext('methods-fractional-cco');
+      } else if (path === '/fractional-roles/cto') {
+        // Was falling through to 'default', so the CTO page had no context and
+        // offered the generic company prompts.
+        setContext('methods-fractional-cto');
       } else if (path === '/fractional-roles') {
         setContext('methods-fractional-roles');
       } else if (path.includes('scoreboard-leadership')) {
@@ -170,7 +175,20 @@ export default function FloatingArchyButton() {
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, setIsOpen, showChrome]);
 
-  const quickPrompts = getQuickPromptsForContext(context);
+  // What the visitor is reading right now, resolved when the panel opens rather
+  // than on navigation. The static journal pages hydrate, so reading the h1 too
+  // early can catch the shell instead of the rendered title.
+  const [pageContext, setPageContext] = useState(null);
+  useEffect(() => {
+    if (!isOpen || typeof document === 'undefined') return;
+    setPageContext(buildPageContext(window.location.pathname, document));
+  }, [isOpen, pathname]);
+
+  // On a single piece, the generic prompts are the wrong offer. The reader has
+  // just finished something specific and it raised something specific.
+  const quickPrompts = pageContext?.kind === 'article'
+    ? articleQuickPrompts(pageContext.title)
+    : getQuickPromptsForContext(context);
   const isRemainingHumanDrawer = context === 'remaining-human';
 
   const drawerInner = (
@@ -237,7 +255,7 @@ export default function FloatingArchyButton() {
           isRemainingHumanDrawer ? 'bg-[#061312]' : 'bg-[#FAFAF9]'
         }`}
       >
-        <ChatApp context={context} quickPrompts={quickPrompts} variant="marketing" />
+        <ChatApp context={context} quickPrompts={quickPrompts} pageContext={pageContext} variant="marketing" />
       </div>
     </div>
   );
