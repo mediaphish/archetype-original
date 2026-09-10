@@ -36,12 +36,27 @@ const WRITE = process.argv.includes('--write');
 const SAMPLE = process.argv.includes('--sample');
 const SAMPLE_DIR = '/tmp/ao-image-sample';
 
-/** Every image under public/images, including cards/ and other subfolders. */
+/**
+ * Directories left alone.
+ *
+ * cards/ holds the shot plates. generatePlateCard's measureLockup() finds the
+ * lockup by scanning for neutral-white pixels (luma > 230, chroma < 18), so the
+ * exact pixel values are load-bearing, not decorative. Re-encoding perturbs
+ * precisely the near-white region it reads. All 18 plates are 1448x1086 and
+ * already under the width cap, so there is no resize to gain here anyway, only
+ * risk. 33 MB stays on the table deliberately.
+ *
+ * Optimizing these is possible, but it needs the plate tests run against the
+ * results and a card rendered and looked at. That is its own task.
+ */
+const SKIP_DIRS = new Set(['cards']);
+
 function walk(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(full, out);
-    else if (/\.(jpe?g|png)$/i.test(entry.name)) out.push(full);
+    if (entry.isDirectory()) {
+      if (!SKIP_DIRS.has(entry.name)) walk(full, out);
+    } else if (/\.(jpe?g|png)$/i.test(entry.name)) out.push(full);
   }
   return out;
 }
@@ -60,8 +75,11 @@ async function reencode(file) {
   if (meta.width > MAX_WIDTH) {
     pipe = pipe.resize({ width: MAX_WIDTH, withoutEnlargement: true });
   }
+  // PNG stays lossless. An earlier version passed palette: true, which
+  // quantizes to 256 colours and bands the smooth gradients these images are
+  // mostly made of. The size win is not worth a visible one.
   return /\.png$/i.test(file)
-    ? pipe.png({ compressionLevel: 9, palette: true }).toBuffer()
+    ? pipe.png({ compressionLevel: 9 }).toBuffer()
     : pipe.jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toBuffer();
 }
 
