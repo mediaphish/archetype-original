@@ -105,11 +105,12 @@ function faqCategoryRoutesFromKnowledge() {
   try {
     const faqDocs = loadPublishedFaqDocs();
     const keys = faqCategoryKeysWithContent(faqDocs);
+    // No lastmod. These are generated category pages with no single
+    // modification date, and inventing one is worse than omitting it.
     return keys.map((key) => ({
       path: `/faqs/${key}`,
       priority: '0.7',
       changefreq: 'weekly',
-      lastmod: today,
     }));
   } catch (e) {
     console.warn(`FAQ category sitemap entries skipped: ${e.message}`);
@@ -133,13 +134,22 @@ function generateSitemapWithJournal(journalPosts, podcastPosts) {
 
   for (const route of allRoutes) {
     const url = `${baseUrl}${route.path}`;
-    const lastmod = route.lastmod || today;
     const priority = route.priority || '0.8';
     const changefreq = route.changefreq || 'monthly';
 
+    // lastmod is emitted ONLY when the route actually has one.
+    //
+    // It used to fall back to today, so 37 of 393 URLs claimed to change on
+    // every deploy. Google discounts lastmod when a site reports "now" for
+    // pages that did not change, and it discounts it site-wide, which was
+    // weakening the signal for the 356 journal entries whose dates are real.
+    //
+    // Google's own guidance is to include lastmod only if it is accurate.
+    // An absent date is a missing signal. A false one is a broken signal.
+    const lastmodTag = route.lastmod ? `\n    <lastmod>${route.lastmod}</lastmod>` : '';
+
     xml += `  <url>
-    <loc>${url}</loc>
-    <lastmod>${lastmod}</lastmod>
+    <loc>${url}</loc>${lastmodTag}
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>
