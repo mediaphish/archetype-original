@@ -170,7 +170,7 @@ export default function JournalSubscription({
               href="/rss.xml"
               className="underline underline-offset-2 hover:text-[#DB0812] transition-colors"
             >
-              Entries
+              Journal Entries
             </a>
             {' or the '}
             <a
