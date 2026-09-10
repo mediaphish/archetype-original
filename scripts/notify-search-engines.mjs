@@ -127,8 +127,38 @@ async function submitSitemapToGoogle() {
   let creds;
   try {
     creds = JSON.parse(raw);
+    // A value that was quoted somewhere on its way into the dashboard parses
+    // into a string rather than an object. One more parse recovers it, and
+    // this is a common enough paste accident to be worth handling rather than
+    // reporting as a credential problem.
+    if (typeof creds === 'string') creds = JSON.parse(creds);
   } catch {
     console.warn('notify-search-engines: GOOGLE_SC_SERVICE_ACCOUNT_JSON is not valid JSON, skipping');
+    return;
+  }
+
+  // Check the shape before handing it to Google.
+  //
+  // The library's own failure for a missing private key is "No key or keyFile
+  // set", which says nothing about which field is wrong or what to do. These
+  // messages name the field and never print a value.
+  const problems = [];
+  if (!creds || typeof creds !== 'object') problems.push('the value did not parse into an object');
+  else {
+    if (creds.type !== 'service_account') {
+      problems.push(`"type" is ${JSON.stringify(creds.type)}, expected "service_account" (an OAuth client JSON will not work here)`);
+    }
+    if (!creds.client_email) problems.push('"client_email" is missing');
+    if (!creds.private_key) problems.push('"private_key" is missing');
+    else if (!String(creds.private_key).includes('BEGIN PRIVATE KEY')) {
+      problems.push('"private_key" is present but does not look like a PEM block');
+    }
+  }
+
+  if (problems.length) {
+    console.warn('notify-search-engines: GOOGLE_SC_SERVICE_ACCOUNT_JSON is set but unusable, skipping Google');
+    for (const p of problems) console.warn(`  - ${p}`);
+    console.warn('  Paste the whole downloaded service-account JSON file, unmodified, braces included.');
     return;
   }
 
@@ -150,6 +180,16 @@ async function submitSitemapToGoogle() {
     console.log(`notify-search-engines: submitted ${SITE}/sitemap.xml to Search Console`);
   } catch (err) {
     console.warn('notify-search-engines: Search Console submit failed:', err?.message || err);
+    // The two failures that actually happen, and what each one means. Both
+    // return an opaque status otherwise, and both are fixed in Search Console
+    // rather than in this repo.
+    const status = err?.code || err?.response?.status;
+    if (status === 403) {
+      console.warn(`  403 means ${creds.client_email} is not an owner of ${SC_PROPERTY}.`);
+      console.warn('  Search Console > Settings > Users and permissions > Add user, permission Owner. Full is not enough.');
+    } else if (status === 404) {
+      console.warn(`  404 means the property ${SC_PROPERTY} does not exist under that account, or is a URL-prefix property rather than a domain one.`);
+    }
   }
 }
 
