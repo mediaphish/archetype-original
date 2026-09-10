@@ -11,7 +11,9 @@
  * No dashes in body copy. Bart's rule, enforced by voiceGuardrails on drafts and
  * applied here by hand because static pages do not pass through that gate.
  *
- * SOURCING RULE, set 2026-09-10 and not to be relaxed without Bart saying so.
+ * SOURCING RULE, set 2026-09-10. Bart writes this copy himself, so this note is
+ * for him and for whichever agent is next asked to touch it, arriving with no
+ * memory of why the page reads the way it does.
  *
  * This page must not describe the active engagement. An earlier version named
  * the domain and the incidents closely enough to identify the client, which is
@@ -19,9 +21,9 @@
  * distinctive domain, a distinctive failure mode, or a distinctive number will
  * identify a project just as well as a name.
  *
- * The decisions described below are real and are Bart's own, told as classes of
- * decision rather than as a case study. Keep them that way. If a future example
- * needs the specifics to land, get written client permission first.
+ * The decisions below are real and are Bart's own, told as classes of decision
+ * rather than as a case study. Keep them that way. Adding the specifics back is
+ * Bart's call and nobody else's, and it needs written client permission first.
  */
 import React from 'react';
 import SEO from '../../../components/SEO';
