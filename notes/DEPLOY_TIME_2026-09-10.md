@@ -166,6 +166,27 @@ which lowers the risk but does not remove it. Given the median bundle is 0.9 MB,
 the count is not where the weight is. Do the weight first, then decide whether
 this is still worth it.
 
+## Outcome, measured after the fact
+
+Option 1 shipped (`67f19babe`). Deploys went from about 9m20s to about 7m15s,
+confirmed across two later production builds. Roughly two minutes.
+
+One trap in reading this. The compression merge itself took 8m53s, barely an
+improvement, because all 141 rewritten images were fresh blobs with no cache
+hit and that deploy paid to upload every one. The two deploys after it settled
+at 7m15s. Measuring only the merge would have said the change did nothing.
+
+Search Console submission also went green on that build:
+
+```
+01:50:48  IndexNow 200 for 16 URL(s)
+01:50:50  submitted https://www.archetypeoriginal.com/sitemap.xml to Search Console
+```
+
+Remaining, if seven minutes is still too long: the packaging phase did not
+shrink with bundle size, which suggests it scales with function count rather
+than bytes. That points back at option 3, and it is still the risky one.
+
 ## What was not done
 
 No image was modified, no code path changed, and `vercel.json` was not touched.
