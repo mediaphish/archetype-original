@@ -3,6 +3,7 @@ import MessageBubble from './components/MessageBubble.jsx';
 import EscalationButton from './components/EscalationButton.jsx';
 import InlineContactForm from './components/InlineContactForm.jsx';
 import CannotAnswerContactForm from './components/CannotAnswerContactForm.jsx';
+import { trackArchy } from '../lib/archyTelemetry';
 
 export default function ChatApp({
   context = 'default',
@@ -199,6 +200,12 @@ export default function ChatApp({
 
   const handleSendMessage = async (messageText = inputValue) => {
     if (!messageText.trim() || isLoading || isBlocked) return;
+
+    // Counted here rather than from archy_questions, because that table only
+    // records questions the server finished answering. A question that errored,
+    // timed out, or was blocked still tells us someone tried, and those are the
+    // ones worth knowing about.
+    trackArchy('asked', { context, turn: messages.filter((m) => m.isUser).length + 1 });
 
     const userMessage = { text: messageText, isUser: true };
     setMessages(prev => [...prev, userMessage]);
@@ -676,7 +683,13 @@ export default function ChatApp({
                   type="button"
                   onClick={() => {
                     const text = p.send ?? p.label;
-                    if (!isLoading && !isBlocked && text.trim()) handleSendMessage(text.trim());
+                    if (!isLoading && !isBlocked && text.trim()) {
+                      // Which suggested prompts get used, and whether any do.
+                      // The prompts are identical on every page today, so this
+                      // is the evidence for whether they are worth tailoring.
+                      trackArchy('prompt_clicked', { context, label: p.label });
+                      handleSendMessage(text.trim());
+                    }
                   }}
                   disabled={isLoading || isBlocked}
                   className={`flex-shrink-0 border px-3 py-1.5 text-left text-xs font-medium transition disabled:opacity-50 ${

@@ -442,6 +442,10 @@
       "dest": "/api/chat/question-feedback.js"
     },
     {
+      "src": "/api/chat/engagement",
+      "dest": "/api/chat/engagement.js"
+    },
+    {
       "src": "/api/contact",
       "dest": "/api/contact.js"
     },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import ChatApp from '../app/ChatApp';
 import { OptimizedImage } from './OptimizedImage';
@@ -7,6 +7,7 @@ import {
   shouldShowPublicArchy,
   useArchyCompanionOptional,
 } from '../contexts/ArchyCompanionContext.jsx';
+import { trackArchy } from '../lib/archyTelemetry';
 
 const DEFAULT_FLOATING_BTN_CLASSES =
   'archy-fab-shift fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[55] h-14 w-14 sm:h-20 sm:w-20 rounded-full bg-ao-red shadow-lg hover:shadow-xl hover:opacity-95 transition-all hover:scale-105 flex items-center justify-center overflow-hidden ring-2 ring-white/25';
@@ -45,12 +46,44 @@ export default function FloatingArchyButton() {
     setMobileSlot(el);
   }, []);
 
+  const [pathname, setPathname] = useState(
+    typeof window !== 'undefined' ? window.location.pathname : ''
+  );
+
   useEffect(() => {
-    const tick = () => setShowChrome(shouldShowPublicArchy(window.location.pathname));
+    const tick = () => {
+      setShowChrome(shouldShowPublicArchy(window.location.pathname));
+      setPathname(window.location.pathname);
+    };
     tick();
     window.addEventListener('popstate', tick);
     return () => window.removeEventListener('popstate', tick);
   }, []);
+
+  // One "shown" per path per session.
+  //
+  // This is the denominator. Without it, 10 questions in three weeks could mean
+  // Archy is ignored or that almost nobody reached a page carrying him, and
+  // those call for opposite responses. The ref guards against re-renders
+  // inflating the count, which would quietly make the funnel look worse than it
+  // is.
+  const shownPaths = useRef(new Set());
+  useEffect(() => {
+    if (!showChrome || !pathname) return;
+    if (shownPaths.current.has(pathname)) return;
+    shownPaths.current.add(pathname);
+    trackArchy('shown');
+  }, [showChrome, pathname]);
+
+  // Opens and closes. The gap between shown and opened is the invitation
+  // problem; the gap between opened and asked is the prompt problem.
+  const wasOpen = useRef(isOpen);
+  useEffect(() => {
+    if (isOpen === wasOpen.current) return;
+    wasOpen.current = isOpen;
+    if (!showChrome) return;
+    trackArchy(isOpen ? 'opened' : 'closed');
+  }, [isOpen, showChrome]);
 
   useEffect(() => {
     const updateContext = () => {
