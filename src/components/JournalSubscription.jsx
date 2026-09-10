@@ -151,6 +151,37 @@ export default function JournalSubscription({
             {message}
           </div>
         )}
+
+        {/*
+          RSS was reachable only by a browser extension reading the head tag.
+          Plenty of readers prefer a feed to an inbox, and asking for an email
+          address as the only way to follow the work turns some of them away.
+          Deliberately quiet: this is the secondary path, not a competing offer.
+
+          Two feeds, mirroring the two checkboxes above. Entries are occasional
+          and long; the devotional is daily and short. Someone who wants one
+          usually does not want the other, which is the whole reason they are
+          separate subscriptions in email too.
+        */}
+        {!podcastMode && (
+          <p className="mt-6 text-sm text-[#6B6B6B]">
+            Prefer a reader? Subscribe by RSS to{' '}
+            <a
+              href="/rss.xml"
+              className="underline underline-offset-2 hover:text-[#DB0812] transition-colors"
+            >
+              Entries
+            </a>
+            {' or the '}
+            <a
+              href="/devotionals.xml"
+              className="underline underline-offset-2 hover:text-[#DB0812] transition-colors"
+            >
+              Devotional
+            </a>
+            .
+          </p>
+        )}
       </div>
     </div>
   );

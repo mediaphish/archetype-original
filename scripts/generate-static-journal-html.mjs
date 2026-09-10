@@ -112,6 +112,28 @@ time.pub { margin-top: 1rem; display: block; font-size: 0.875rem; color: #6B6B6B
 .footer-note a:hover { color: #1A1A1A; }
 `;
 
+/**
+ * Autodiscovery links for both feeds, matching one first.
+ *
+ * Journal posts and devotionals both live at /journal/<slug>, so the URL cannot
+ * tell a reader which of the two subscriptions it is looking at. The doc type
+ * can.
+ */
+function feedLinks(doc, siteUrl) {
+  const journal = {
+    href: `${siteUrl}/rss.xml`,
+    title: 'Archetype Original',
+  };
+  const devotional = {
+    href: `${siteUrl}/devotionals.xml`,
+    title: 'Archetype Original: Servant Leadership Devotional',
+  };
+  const ordered = String(doc.type) === 'devotional' ? [devotional, journal] : [journal, devotional];
+  return ordered
+    .map((f) => `<link rel="alternate" type="application/rss+xml" title="${escapeHtml(f.title)}" href="${f.href}" />`)
+    .join('\n  ');
+}
+
 function wrapPage({ doc, htmlBody, canonicalUrl, siteUrl, cssHref, jsHref }) {
   const title = `${escapeHtml(doc.title)} | ${seoConfig.default.siteName}`;
   const desc = escapeHtml((doc.summary || doc.email_summary || '').slice(0, 320));
@@ -141,6 +163,18 @@ function wrapPage({ doc, htmlBody, canonicalUrl, siteUrl, cssHref, jsHref }) {
   <meta name="description" content="${desc}" />
   <meta name="keywords" content="${kw}" />
   <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
+  <!--
+    Feed autodiscovery. index.html carries this, so the SPA-rendered pages had
+    it, but these static files are built here and were missing it. They are the
+    pages people arrive on from search, and finishing a piece is when someone
+    decides they want the next one, so this is the page that most needs to
+    answer "how do I follow this".
+
+    The matching feed comes first. A reader offered two feeds picks the first by
+    default, and someone finishing a devotional wants the daily devotional, not
+    the essays. Both are listed so either is one click away.
+  -->
+  ${feedLinks(doc, siteUrl)}
   <meta property="og:title" content="${escapeHtml(doc.title)}" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:image" content="${escapeHtml(ogImage)}" />
