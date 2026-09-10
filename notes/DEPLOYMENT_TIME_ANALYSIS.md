@@ -1,5 +1,11 @@
 # Deployment Time Analysis - Root Cause
 
+> **STALE. Do not act on this.** Superseded by
+> `notes/DEPLOY_TIME_2026-09-10.md`. Both findings below were fixed long ago:
+> npm install now takes 27 seconds, not 11 minutes, and pre-rendering runs on
+> Vercel successfully. The current cost is serverless function packaging, not
+> install. Kept for history.
+
 ## The Real Problem
 
 Looking at the build logs, the issue is **NOT** the build itself - it's **npm install taking 11 minutes**:
