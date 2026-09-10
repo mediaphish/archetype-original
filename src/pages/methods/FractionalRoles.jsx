@@ -289,7 +289,8 @@ export default function FractionalRoles() {
               <p className="mb-3.5">
                 Most organizations that need a fractional CTO do not need a developer. They need someone to make the
                 decisions that get made before anyone writes code, and to know which of those decisions cannot be undone
-                later.
+                later. This is for organizations building and running software for their own use, not for software
+                companies building a product to sell.
               </p>
               <p className="mb-3.5">
                 I have spent thirty-three years in and around software. For the last four I have been learning something

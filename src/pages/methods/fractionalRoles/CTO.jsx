@@ -57,6 +57,10 @@ export default function CTO() {
                 decisions that get made before anyone writes code, and to know which of those decisions cannot be undone
                 later.
               </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]/60 max-w-3xl mx-auto">
+                For organizations building and running software for their own use. Not for software companies building
+                a product to sell.
+              </p>
             </div>
           </div>
         </section>
@@ -74,8 +78,15 @@ export default function CTO() {
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Let me be direct about something most people in this seat will not say plainly. I am not an engineer.
                 I have never claimed to be one. What I have done for three decades is lead the people who are, decide
-                what gets built and in what order, and carry responsibility for whether the thing works when it reaches
-                a customer. That is the job. Writing the code was never the job.
+                what gets built and in what order, and carry responsibility for whether the thing works when the people
+                who depend on it start using it. That is the job. Writing the code was never the job.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                I should also be direct about who this is for, because it will save us both a conversation. I work with
+                organizations that build and run software for themselves. The internal application nobody outside the
+                company will ever see, the systems the business actually operates on, the tooling that decides whether a
+                team is fast or slow. I do not take engagements building software as a product to sell to third parties.
+                That is a different job with different pressures, and it is not the one I am offering.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 What has changed is how much of the building a small number of people can now do, and where the real
@@ -111,26 +122,25 @@ export default function CTO() {
                 months in, it is a rewrite.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <span className="font-semibold">The insurance gap.</span> Technology errors and omissions policies
-                exclude bodily injury. General liability policies exclude professional services. A software defect that
-                contributes to someone getting hurt falls in the space between those two exclusions, where nothing
-                covers it. There is also case law treating certain data products as products under strict liability,
-                which means a disclaimer binds the customer who agreed to it and not the person who got hurt. Found
-                before launch, that is a conversation with a specialty broker and a policy endorsement. Found after, it
-                is the company.
+                <span className="font-semibold">The identity decision.</span> An internal tool gets built with its own
+                logins, because that is the fastest path on the day it is built and standing up single sign on feels
+                like ceremony for a tool six people use. Then it is forty people, it holds real data, and every
+                departure leaves an account nobody closes. Wiring it to the company identity provider at the start is an
+                afternoon. Retrofitting it later means touching every permission in the system while people are
+                depending on it, and until you do, offboarding is a manual list somebody has to remember.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <span className="font-semibold">The platform gate.</span> An app store policy governing a sensitive
-                permission tightens weeks before a launch window. Clearing it requires a written declaration, a
-                demonstration video, and a manual review that takes two to three weeks and can block publication
-                outright. The fix is submitting to an internal track four months early, when a rejection costs nothing.
-                Discovering that requirement in the launch month is the single likeliest way a date gets missed.
+                <span className="font-semibold">The audit gate.</span> The controls an insurer or an auditor will ask
+                about are not features you can add at the end. Access logs only tell you what happened if they were
+                being written before the thing you are asking about happened. Designed in, that is a schema decision
+                that costs nothing. Discovered during a renewal or an audit, it is a rebuild with a date attached to it
+                that somebody else set, which is the worst kind of date to have.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 <span className="font-semibold">The licensing trap.</span> Seeding a database from an open dataset with
-                a share alike license, then writing your own commercial fields onto those same records, can make the
+                a share alike license, then writing your own proprietary fields onto those same records, can make the
                 whole thing a derivative database subject to that license. Caught at the schema level it costs nothing.
-                Caught later it means unwinding the data model of a shipped product.
+                Caught later it means unwinding the data model of a system the business is already running on.
               </p>
               <p className="text-xl sm:text-2xl leading-relaxed text-[#1A1A1A] italic font-serif pt-2">
                 None of those four are coding problems. All four are decided before the first line of code, and three of
@@ -198,14 +208,17 @@ export default function CTO() {
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Software dates slip because teams protect scope and negotiate the calendar. I do the opposite. Scope is
                 the lever, the date is the commitment, and every remaining unknown gets a fallback in advance that costs
-                revenue or features rather than costing the date. When a partner or an investor asks whether the launch
-                is real, that structure is the answer. Not confidence. Structure.
+                scope or convenience rather than costing the date. When your board, your operating partner, or the
+                department waiting on this asks whether the date is real, that structure is the answer. Not confidence.
+                Structure.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 The same discipline applies to what happens when you are gone. A small AI assisted team concentrates
-                enormous knowledge in very few heads, and that is a real risk, not a talking point. It gets managed the
-                same way anything else does: architecture written down, a data pipeline anyone can reproduce from raw
-                source, and a second person with their hands on the code before launch rather than after an emergency.
+                enormous knowledge in very few heads, and that is a real risk, not a talking point. It matters more for
+                internal systems than most people expect, because the business runs on them every day and there is no
+                vendor to call. It gets managed the same way anything else does: architecture written down, a data
+                pipeline anyone can reproduce from raw source, and a second person with their hands on the code before
+                you need them rather than during the emergency.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 I am also comfortable telling you when the answer is to hire someone rather than to keep me. A
@@ -225,12 +238,13 @@ export default function CTO() {
               </h2>
               <ul className="list-none space-y-0 pt-2">
                 {[
-                  'You are about to start building something and the early decisions have not been made by anyone qualified to make them.',
+                  'You are about to start building something for your own operation and the early decisions have not been made by anyone qualified to make them.',
                   'You have developers, or an agency, or an AI toolchain producing work, and nobody in the company can independently judge whether it is any good.',
                   'A build is underway and the date has started moving, and you need someone who will fix scope instead of renegotiating the calendar.',
-                  'You are evaluating what a small team plus AI can realistically do before you commit to a hiring plan or a raise.',
-                  'You need technical decisions defensible to a board, a partner, or an insurer, in language they can actually act on.',
-                  'You are carrying real world risk in software, where a defect reaches a person rather than a dashboard.',
+                  'You are evaluating what a small team plus AI can realistically do before you commit to a hiring plan or a budget.',
+                  'You need technical decisions defensible to a board, an auditor, or an insurer, in language they can actually act on.',
+                  'The business already depends on systems nobody owns, and the person who built them has left or is about to.',
+                  'You are spending on software and tooling without anyone in the room who can tell you what is worth the money.',
                 ].map((item) => (
                   <li
                     key={item}
@@ -242,10 +256,11 @@ export default function CTO() {
                 ))}
               </ul>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A] pt-2">
-                Where it does not fit: deep platform engineering, a rescue that needs hands on a keyboard tomorrow
-                morning, or an organization that wants a title in the org chart without giving that title any decision
-                authority. In those cases you need a different person, and I would rather tell you that in the first
-                conversation than in the fourth month.
+                Where it does not fit, and I would rather say this in the first conversation than in the fourth month.
+                Software companies building a product to sell: that is a different job, and I am not taking those
+                engagements. Deep platform engineering. A rescue that needs hands on a keyboard tomorrow morning. An
+                organization that wants a title in the org chart without giving that title any decision authority. In
+                each of those cases you need a different person, and you should go find them.
               </p>
             </div>
           </div>
