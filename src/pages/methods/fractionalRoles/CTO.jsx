@@ -70,16 +70,26 @@ export default function CTO() {
           <div className="container mx-auto px-4 sm:px-6 md:px-12">
             <div className="max-w-4xl mx-auto space-y-6">
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                I have spent thirty-three years in and around software. For the last four of those I have been learning
+                I have spent thirty-four years in and around software. For the last four of those I have been learning
                 something specific and fairly new: how to lead the building of real applications with AI doing most of
-                the typing. Not experimenting with it. Shipping with it, in settings where being wrong has consequences
-                that are not measured in support tickets.
+                the typing. I learned it the only way I would trust anyone else to have learned it, which is by building
+                for myself and living with the results.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                Everything this company runs on, I built. This site and every system behind it. Operators, the platform
+                my leadership work runs through. Archy, which answers questions against my written corpus. Auto, which
+                does my publishing and content operations. None of it is for sale. All of it is load bearing, in the
+                sense that when it breaks my business stops working properly and I am the one who finds out. That is a
+                narrow kind of experience and it is exactly the kind that transfers to an organization building systems
+                for itself.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Let me be direct about something most people in this seat will not say plainly. I am not an engineer.
                 I have never claimed to be one. What I have done for three decades is lead the people who are, decide
                 what gets built and in what order, and carry responsibility for whether the thing works when the people
-                who depend on it start using it. That is the job. Writing the code was never the job.
+                who depend on it start using it. That is the job. Writing the code was never the job. What changed in
+                the last four years is that I can now do the building as well, which taught me a great deal about where
+                the leadership decisions actually sit.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 I should also be direct about who this is for, because it will save us both a conversation. I work with
@@ -167,29 +177,31 @@ export default function CTO() {
                 are priced very differently.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                Automated testing is now cheap, because the same tools that write the code will write the tests. Real
-                world validation is not cheap and never will be. It requires conditions you cannot manufacture on
-                demand, and there are only so many of those in a year. A team can build and validate in parallel. One
-                person cannot. Knowing which of your constraints is actually binding, and it is rarely the one everybody
-                is discussing, is most of what this job is.
+                Automated testing is now cheap, because the same tools that write the code will write the tests.
+                Knowing whether the thing is actually working is not cheap, and that is a different question. A team can
+                build and verify in parallel. One person cannot. Knowing which of your constraints is actually binding,
+                and it is rarely the one everybody is discussing, is most of what this job is.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 I will also tell you where AI is weakest, because you should hear it from the person you are hiring
-                rather than discover it later. The first time we ran a new test suite it produced five failures. All
-                five were bugs in the tests. Zero were bugs in the code. AI written tests encode the assumptions of the
-                thing that wrote them, which means they confirm what it already believed. The most serious design flaw
-                we found that month was one number being asked to do two different jobs, and no unit test would ever
-                have caught it. It took a person in the field noticing that the software disagreed with what was
-                actually in front of them.
+                rather than discover it later. Its failures do not look like failures. On my own systems, the ones that
+                cost me the most were all cases where something reported success and had done nothing at all.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                That same test harness paid for itself the day it was written, and the defect it found is worth
-                describing because of what it threatened. A safety warning was being calculated from the wrong slice of
-                the underlying data, and it reported a far tighter margin than the real one. Both readings erred toward
-                caution, so nobody was ever in danger. The damage was subtler than that. Warnings were firing for
-                conditions that were never present, and a warning that fires when nothing is wrong is how a person
-                learns to ignore warnings. That is a leadership failure wearing a technical costume, and it is the kind
-                of thing I am in the room to catch.
+                Three endpoints on this site shipped without being wired into the routing table. A request to a missing
+                endpoint does not fail. It quietly returns the home page with a success code, so the calling screen sees
+                a valid response containing nothing it expected. One of them had disabled a feature I used daily, and I
+                had spent weeks assuming the feature simply did not work well. The site's own feed was doing the same
+                thing to every reader who tried to subscribe. All of it built with AI. None of it caught by AI, because
+                every individual piece was written correctly and the fault lived in the space between two files that
+                were supposed to agree.
+              </p>
+              <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
+                What fixed it was not better prompting. It was deciding that certain classes of mistake get a mechanical
+                check that runs every time, so that agreement between two files is asserted rather than assumed. That is
+                a leadership decision about where to spend verification, not an engineering one, and it is the decision
+                most teams building this way have not made yet. It is also the reason I would rather show you my own
+                systems than a slide about velocity.
               </p>
             </div>
           </div>
