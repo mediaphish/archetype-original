@@ -11,10 +11,17 @@
  * No dashes in body copy. Bart's rule, enforced by voiceGuardrails on drafts and
  * applied here by hand because static pages do not pass through that gate.
  *
- * The evidence in this page is drawn from a navigation product currently in
- * build, deliberately not named because it has not launched. Every figure and
- * every incident described is real. If the product is named later, the copy
- * works unchanged.
+ * SOURCING RULE, set 2026-09-10 and not to be relaxed without Bart saying so.
+ *
+ * This page must not describe the active engagement. An earlier version named
+ * the domain and the incidents closely enough to identify the client, which is
+ * a non-compete exposure. Removing the client's name is not sufficient: a
+ * distinctive domain, a distinctive failure mode, or a distinctive number will
+ * identify a project just as well as a name.
+ *
+ * The decisions described below are real and are Bart's own, told as classes of
+ * decision rather than as a case study. Keep them that way. If a future example
+ * needs the specifics to land, get written client permission first.
  */
 import React from 'react';
 import SEO from '../../../components/SEO';
@@ -59,7 +66,7 @@ export default function CTO() {
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 I have spent thirty-three years in and around software. For the last four of those I have been learning
                 something specific and fairly new: how to lead the building of real applications with AI doing most of
-                the typing. Not experimenting with it. Shipping with it, on a product where being wrong has consequences
+                the typing. Not experimenting with it. Shipping with it, in settings where being wrong has consequences
                 that are not measured in support tickets.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
@@ -88,32 +95,34 @@ export default function CTO() {
                 The decisions that are cheap now and expensive later.
               </h2>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                I am currently the CTO for a navigation product heading toward launch. It is a useful example because
-                the stakes are physical. If the software is wrong, a boat runs aground. That removes the comfortable
-                ambiguity most software projects operate inside, and it makes the real shape of this role visible.
+                The clearest way to show what this seat does is to describe the decisions themselves. These are four I
+                have made, stated as the kinds of decision they are rather than as a case study, because the clients I
+                work with are entitled to their privacy. The shape is what transfers anyway. Every one of them was
+                cheap on the day it was made and expensive on any later day.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <span className="font-semibold">The mapping decision.</span> The obvious hosted vendor is free at our
-                scale for online use. Offline maps bill separately, and offline is not optional on a lake with dead
-                cell coverage. That same vendor runs between $1,270 and $4,195 a month depending on how many people
-                use it. Self hosting the same capability on open tooling costs five to ten dollars a month plus about
-                two weeks of pipeline work. That is roughly fifty thousand dollars a year, and the decision only costs
-                two weeks if it is made before anyone writes map code. Six months in, it is a rewrite.
+                <span className="font-semibold">The vendor decision.</span> The obvious hosted vendor is free at small
+                scale for the ordinary case, and bills separately for the case you actually need. Once real usage
+                arrives it runs four figures a month. Self hosting the same capability on open tooling costs a few
+                dollars a month plus about two weeks of pipeline work. The difference is tens of thousands of dollars a
+                year, and it only costs two weeks if the decision is made before anyone writes against that vendor. Six
+                months in, it is a rewrite.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 <span className="font-semibold">The insurance gap.</span> Technology errors and omissions policies
                 exclude bodily injury. General liability policies exclude professional services. A software defect that
-                puts a boat on a rock falls in the space between those two exclusions, where nothing covers it. There is
-                also case law treating navigation charts as products under strict liability, which means a disclaimer
-                binds the subscriber who agreed to it and not the passenger who got hurt. Found before launch, that is a
-                conversation with a specialty broker and a policy endorsement. Found after, it is the company.
+                contributes to someone getting hurt falls in the space between those two exclusions, where nothing
+                covers it. There is also case law treating certain data products as products under strict liability,
+                which means a disclaimer binds the customer who agreed to it and not the person who got hurt. Found
+                before launch, that is a conversation with a specialty broker and a policy endorsement. Found after, it
+                is the company.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                <span className="font-semibold">The platform gate.</span> An app store policy on precise location
-                tightens weeks before our launch window. Clearing it requires a written declaration, a demonstration
-                video, and a manual review that takes two to three weeks and can block publication outright. The fix is
-                submitting to an internal track four months early, when a rejection costs nothing. Discovering that
-                requirement in the launch month is the single likeliest way the date gets missed.
+                <span className="font-semibold">The platform gate.</span> An app store policy governing a sensitive
+                permission tightens weeks before a launch window. Clearing it requires a written declaration, a
+                demonstration video, and a manual review that takes two to three weeks and can block publication
+                outright. The fix is submitting to an internal track four months early, when a rejection costs nothing.
+                Discovering that requirement in the launch month is the single likeliest way a date gets missed.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 <span className="font-semibold">The licensing trap.</span> Seeding a database from an open dataset with
@@ -140,15 +149,15 @@ export default function CTO() {
                 Code generation stopped being the bottleneck. Verification became it.
               </h2>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
-                A working prototype of that navigation product took hours, not a quarter. That is genuinely new, and it
-                changes what a small team can attempt. It also moves the constraint somewhere most people are not
-                looking. When producing code is fast, the limiting factor becomes proving the code is right, and proof
-                comes in two forms that are priced very differently.
+                A working prototype now takes hours, not a quarter. That is genuinely new, and it changes what a small
+                team can attempt. It also moves the constraint somewhere most people are not looking. When producing
+                code is fast, the limiting factor becomes proving the code is right, and proof comes in two forms that
+                are priced very differently.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 Automated testing is now cheap, because the same tools that write the code will write the tests. Real
-                world validation is not cheap and never will be. On this product it means hours on the water in good
-                weather, and there are only so many of those in a year. A team can build and validate in parallel. One
+                world validation is not cheap and never will be. It requires conditions you cannot manufacture on
+                demand, and there are only so many of those in a year. A team can build and validate in parallel. One
                 person cannot. Knowing which of your constraints is actually binding, and it is rarely the one everybody
                 is discussing, is most of what this job is.
               </p>
@@ -158,15 +167,15 @@ export default function CTO() {
                 five were bugs in the tests. Zero were bugs in the code. AI written tests encode the assumptions of the
                 thing that wrote them, which means they confirm what it already believed. The most serious design flaw
                 we found that month was one number being asked to do two different jobs, and no unit test would ever
-                have caught it. It took a person on a boat with a sonar unit noticing that the chart disagreed with the
-                water.
+                have caught it. It took a person in the field noticing that the software disagreed with what was
+                actually in front of them.
               </p>
               <p className="text-base sm:text-lg leading-relaxed text-[#1A1A1A]">
                 That same test harness paid for itself the day it was written, and the defect it found is worth
-                describing because of what it threatened. A safety warning was being calculated from the wrong set of
-                map cells. It reported two feet of clearance on a route whose actual minimum was nine. Both readings
-                erred toward caution, so nobody was ever in danger. The damage was subtler than that. Routes were being
-                flagged for hazards they never came near, and a warning that fires when nothing is wrong is how a person
+                describing because of what it threatened. A safety warning was being calculated from the wrong slice of
+                the underlying data, and it reported a far tighter margin than the real one. Both readings erred toward
+                caution, so nobody was ever in danger. The damage was subtler than that. Warnings were firing for
+                conditions that were never present, and a warning that fires when nothing is wrong is how a person
                 learns to ignore warnings. That is a leadership failure wearing a technical costume, and it is the kind
                 of thing I am in the room to catch.
               </p>

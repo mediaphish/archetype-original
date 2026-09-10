@@ -294,16 +294,16 @@ export default function FractionalRoles() {
               <p className="mb-3.5">
                 I have spent thirty-three years in and around software. For the last four I have been learning something
                 specific: how to lead the building of real applications with AI doing most of the typing. Not
-                experimenting with it. Shipping with it. I am currently the CTO for a navigation product heading toward
-                launch, where a software defect does not produce a support ticket, it puts a boat on a rock.
+                experimenting with it. Shipping with it, in settings where being wrong is not measured in support
+                tickets.
               </p>
               <p className="mb-3.5">
                 I am not an engineer and have never claimed to be. What I have done for three decades is lead the people
                 who are, decide what gets built and in what order, and carry responsibility for whether it works when it
-                reaches a customer. On that product, the decisions that mattered most were a mapping choice worth about
-                fifty thousand dollars a year, an insurance gap where neither policy covers a software error that hurts
-                someone, and an app store review that can block a launch and takes four months of lead time to clear.
-                None of those are coding problems.
+                reaches a customer. The decisions that matter most are rarely technical ones: a vendor choice that
+                quietly costs tens of thousands a year, an insurance gap where neither policy covers a software error
+                that hurts someone, a platform review that can block a launch and needs months of lead time. None of
+                those are coding problems.
               </p>
               <p className="mb-3.5">
                 What I bring into a CTO role: the early architectural and vendor decisions made deliberately rather than
