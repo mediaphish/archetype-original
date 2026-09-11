@@ -9,6 +9,7 @@
  */
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
+import { signalsImageDiscussion } from '../../../lib/ao/imageDiscussionSignal.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
 import {
   runAutoChat,
@@ -153,12 +154,14 @@ function messageSignalsHeaderImageIntent(userMessage) {
 const IMAGE_DEFERRAL_PATTERN =
   /\b(not|isn'?t|don'?t|doesn'?t|no)\b[\s\S]{0,30}\b(touch(ing)?|ready|now|yet|there|discussing?|talking? about)\b[\s\S]{0,20}\bimages?\b|\blong\s+way\s+from\b|\bhyperfixat(e|ion|ing)\b.{0,30}\bimage\b|\bnot\s+(yet|now)\b/i;
 
-function messageOrHistorySignalsImageDiscussion(userMessage) {
-  const msg = String(userMessage || '');
-  if (IMAGE_DEFERRAL_PATTERN.test(msg)) return false;
-  const pattern =
-    /\b(header|cover)\s*(image|photo|pic)?\b|\bimage\s*(prompt|generation|style|reference)\b|\bdall-?e\b|\bvisual\s*(style|continuity|bar|reference)\b|\bwhat\s+(does|should)\s+the\s+(header|cover|image)\b|\bpropose\s+(the\s+)?(header|cover)?\s*image\b/i;
-  return pattern.test(msg);
+// Moved to lib/ao/imageDiscussionSignal.js so it can be tested, and widened by
+// exactly one message: the reply Auto just gave. Auto announces the header image
+// step and Bart answers "Approve", which named neither an image nor the series,
+// so no series reference images loaded and Auto claimed it had no visual context
+// (Cain thread, 2026-09-10). Lookback stays at one message on purpose; see that
+// file for the runaway this avoids.
+function messageOrHistorySignalsImageDiscussion(userMessage, previousReply = '') {
+  return signalsImageDiscussion(userMessage, previousReply);
 }
 
 /**
@@ -1410,10 +1413,22 @@ export default async function handler(req, res) {
         .slice(-5)
         .reverse();
 
-      if (messageOrHistorySignalsImageDiscussion(userMessage)) {
+      // Auto's own last reply counts. It is what announces the image step.
+      const previousAssistantReply = [...history]
+        .reverse()
+        .find((m) => m.role === 'assistant')?.content || '';
+
+      if (messageOrHistorySignalsImageDiscussion(userMessage, previousAssistantReply)) {
         try {
           const { loadSeriesImageReferenceBlocks } = await import('../../../lib/ao/seriesImageReferences.js');
-          const seriesImageBlocks = await loadSeriesImageReferenceBlocks(userMessage, recentUserMessages);
+          // Auto's own reply is included deliberately. It is usually the only
+          // text that names the series: it announces "the other Archetype
+          // Series entries" and Bart replies "Approve". Detection reading only
+          // Bart's messages found nothing to match (Cain thread, 2026-09-10).
+          const seriesImageBlocks = await loadSeriesImageReferenceBlocks(userMessage, [
+            previousAssistantReply,
+            ...recentUserMessages,
+          ]);
           if (seriesImageBlocks && seriesImageBlocks.length > 0) {
             const existingParts = Array.isArray(currentMessageContent)
               ? currentMessageContent
