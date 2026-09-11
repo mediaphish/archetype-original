@@ -29,6 +29,7 @@ import {
 } from './draftArtifactSync.js';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 import { metricsAlertKeyFor } from '../../lib/metricsAlertKey';
+import { orderDesignImagesNewestFirst } from '../../lib/designImageOrder.js';
 import { KNOWN_REAL_SIGNALS } from '../../../lib/ao/enforceResponseRules.js';
 import {
   MAX_TOTAL_ATTACHMENT_BYTES,
@@ -1290,7 +1291,7 @@ function ArtifactPanel({
           <div className={hasCards ? 'min-h-0 flex-1 overflow-y-auto' : 'min-h-0 flex-1 overflow-y-auto'}>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Images</p>
             <div className="space-y-3">
-              {generatedDesignImages.slice().reverse().map((img) => (
+              {orderDesignImagesNewestFirst(generatedDesignImages).map((img) => (
                 <div key={img.url} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
                   <p className="border-b border-gray-100 bg-gray-50 px-3 py-2 text-xs font-medium text-gray-700">
                     {img.label}
@@ -1931,7 +1932,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
           ...prev,
           {
             url: json.image_url,
-            label: `${json.title || json.slug} (direct to draft — not via chat)`,
+            label: `${json.title || json.slug} (your upload, direct to draft)`,
             addedAt: Date.now(),
             manualUpload: true,
           },
@@ -2573,7 +2574,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
           const older = prevByUrl.get(img.url);
           byLabel.set(key, {
             ...img,
-            addedAt: older?.addedAt ?? Date.now(),
+            // The message's own time, not first-seen time. Manual uploads are
+            // appended after these, so ordering has to come from real time.
+            addedAt: msgTime || older?.addedAt || Date.now(),
           });
         }
       }
