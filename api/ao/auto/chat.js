@@ -9,6 +9,7 @@
  */
 
 import { requireOwnerSession } from '../../../lib/ao/requireAoSession.js';
+import { shouldSavePastedPost } from '../../../lib/ao/pastedPostGate.js';
 import { signalsImageDiscussion } from '../../../lib/ao/imageDiscussionSignal.js';
 import { ensureAutoThread, getAutoThreadState, addAutoMessage } from '../../../lib/ao/autoHub.js';
 import {
@@ -106,7 +107,10 @@ function extractCaptionSetFromTexts(texts = []) {
  * Deliberately conservative (long H1 posts, or very long text regardless) to
  * avoid mistaking a long instruction for a post and overwriting real content.
  */
-function looksLikeFullPastedPost(text) {
+// Superseded by lib/ao/pastedPostGate.js on 2026-09-11. Length alone treated
+// every note over 1,500 characters as a post. Kept only as the record of what
+// the rule used to be; nothing calls it.
+function looksLikeFullPastedPost(text) { // eslint-disable-line no-unused-vars
   const raw = String(text || '');
   const hasH1 = /^#\s+.+$/m.test(raw);
   if (hasH1 && raw.length > 400) return true;
@@ -203,7 +207,10 @@ async function tryBackfillMissingDraftContent(requestedSlug, allMessages, email)
       .filter(Boolean);
 
     for (const raw of userTexts) {
-      if (!looksLikeFullPastedPost(raw)) continue;
+      // Same gate as the direct save path, which this comment already claimed.
+      // Without it a note could backfill its own text into a real draft whose
+      // slug happened to match.
+      if (!shouldSavePastedPost(raw).save) continue;
 
       const h1Match = raw.match(/^#\s+(.+)$/m);
       let title = h1Match ? h1Match[1].trim() : '';
@@ -270,7 +277,19 @@ async function trySaveUserPastedPostDirectly(userMessage, email, recentHistory =
   try {
     if (!email) return null;
     const raw = String(userMessage || '');
-    if (!looksLikeFullPastedPost(raw)) return null;
+
+    // Length alone used to be enough: anything over 1,500 characters was saved
+    // as a post. Bart's editorial notes run 1,500 to 4,000, so detailed
+    // feedback became a journal draft titled with its own first sentence, and
+    // that title became the slug and the public URL. Around twenty such rows
+    // existed by 2026-09-11, several marked approved. See lib/ao/pastedPostGate.js.
+    const pastedVerdict = shouldSavePastedPost(raw);
+    if (!pastedVerdict.save) {
+      if (pastedVerdict.gate !== 'too_short') {
+        console.log(`[chat.js] Not saving pasted text as a post (${pastedVerdict.gate}): ${pastedVerdict.reason}`);
+      }
+      return null;
+    }
 
     // Title: first H1 line, else the first non-empty line, capped to a sane length.
     const h1Match = raw.match(/^#\s+(.+)$/m);
