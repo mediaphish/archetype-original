@@ -263,6 +263,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-09-12 | The Glory of Overlooking an Offense | Proverbs 19:11 (ESV) | `the-glory-of-overlooking-an-offense` | `2026-09-12-the-glory-of-overlooking-an-offense.md` |
 | 2026-09-13 | Charge It to My Account | Philemon 1:10, 15–18 (ESV) | `charge-it-to-my-account` | `2026-09-13-charge-it-to-my-account.md` |
 | 2026-09-14 | He Went to Him | Luke 10:31, 33–35 (ESV) | `he-went-to-him` | `2026-09-14-he-went-to-him.md` |
+| 2026-09-15 | The Lord Disciplines the One He Loves | Hebrews 12:5–6 (ESV) | `the-lord-disciplines-the-one-he-loves` | `2026-09-15-the-lord-disciplines-the-one-he-loves.md` |
+| 2026-09-16 | Do Not Despise the Lord's Discipline | Proverbs 3:11–12 (ESV) | `do-not-despise-the-lords-discipline` | `2026-09-16-do-not-despise-the-lords-discipline.md` |
+| 2026-09-17 | Those Whom I Love, I Reprove | Revelation 3:19 (ESV) | `those-whom-i-love-i-reprove` | `2026-09-17-those-whom-i-love-i-reprove.md` |
+| 2026-09-18 | With Complete Patience and Teaching | 2 Timothy 4:2 (ESV) | `with-complete-patience-and-teaching` | `2026-09-18-with-complete-patience-and-teaching.md` |
+| 2026-09-19 | Bringing Back the One Who Wanders | James 5:19–20 (ESV) | `bringing-back-the-one-who-wanders` | `2026-09-19-bringing-back-the-one-who-wanders.md` |
+| 2026-09-20 | He Gently Leads Those With Young | Isaiah 40:10–11 (ESV) | `he-gently-leads-those-with-young` | `2026-09-20-he-gently-leads-those-with-young.md` |
+| 2026-09-21 | He Does Not Deal With Us According to Our Sins | Psalm 103:8–10 (ESV) | `he-does-not-deal-with-us-according-to-our-sins` | `2026-09-21-he-does-not-deal-with-us-according-to-our-sins.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
