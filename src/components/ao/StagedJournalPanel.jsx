@@ -184,6 +184,10 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
   const [stageInfo, setStageInfo] = useState(null);
   const [draft, setDraft] = useState(null);
   const [loadFailed, setLoadFailed] = useState(false);
+  // The server says there is no such draft. The slug may have come from the
+  // artifact's label, which is a guess; in that case show the post exactly as
+  // the panel always did, with no tabs claiming a stage nobody confirmed.
+  const [notFound, setNotFound] = useState(false);
   const [userTab, setUserTab] = useState(null);
   const [openTab, setOpenTab] = useState(null);
   const [unread, setUnread] = useState({});
@@ -207,10 +211,15 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
         );
         const json = await res.json().catch(() => ({}));
         if (cancelled) return;
+        if (res.status === 404) {
+          setNotFound(true);
+          return;
+        }
         if (!res.ok || !json?.ok) {
           setLoadFailed(true);
           return;
         }
+        setNotFound(false);
         setLoadFailed(false);
         setDraft(json.draft || null);
         const nextStage = json.stage || null;
@@ -263,6 +272,16 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
       setUnread((u) => ({ ...u, image: false }));
     }
   };
+
+  // No tabs until the draft is confirmed. Showing a tab bar before the stage is
+  // known would flash, and for an unconfirmed slug it would be wrong.
+  if (notFound || (!stageInfo && !loadFailed)) {
+    return (
+      <div data-testid="staged-journal-fallback" className="flex min-h-0 flex-1 flex-col">
+        {renderPost?.()}
+      </div>
+    );
+  }
 
   return (
     <div data-testid="staged-journal-panel" className="flex min-h-0 flex-1 flex-col">

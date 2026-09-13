@@ -18,6 +18,7 @@ import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
+import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
 import { abortReasonFor, abortMessageFor } from '../../lib/autoStreamTimeouts.js';
 import {
   buildDraftWordDiff,
@@ -613,8 +614,10 @@ function DraftDiffBody({ priorContent, currentContent }) {
   );
 }
 
-function DraftArtifact({ content, label }) {
-  const slug = useMemo(() => extractSlugFromDraftContent(content), [content]);
+function DraftArtifact({ content, label, slug: slugProp = null }) {
+  // Show changes needs a slug to find version history. Auto-written drafts have
+  // no front matter, so without the resolved slug passed in it never had one.
+  const slug = useMemo(() => slugProp || extractSlugFromDraftContent(content), [slugProp, content]);
   const [showChanges, setShowChanges] = useState(false);
   const [versions, setVersions] = useState([]);
   const [draftId, setDraftId] = useState(null);
@@ -1077,8 +1080,9 @@ function ArtifactPanel({
   const hasAnyGenerated = hasCards || hasDesign;
   // A journal draft gets the staged, tabbed panel (notes/AUTO_STAGED_WORKSPACE_SPEC.md).
   // Every other artifact type keeps the layout it has always had.
-  const stagedJournalSlug =
-    artifact?.type === 'draft' ? extractSlugFromDraftContent(artifact.content) : null;
+  // Front matter alone never identified an Auto-written draft, so the tabs
+  // silently never engaged. See draftArtifactSlug.js.
+  const stagedJournalSlug = resolveDraftArtifactSlug(artifact);
   const stagedJournal = Boolean(stagedJournalSlug);
   return (
     <div className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
@@ -1418,7 +1422,7 @@ function ArtifactPanel({
             onImageError={onGeneratedDesignImageError}
             renderPost={() => (
               <div className="flex flex-col flex-1 min-h-0 gap-3">
-                <DraftArtifact content={artifact.content} label={artifact.label} />
+                <DraftArtifact content={artifact.content} label={artifact.label} slug={stagedJournalSlug} />
                 <div className="flex shrink-0 flex-col gap-2">
                   <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
                     Approve

@@ -97,6 +97,17 @@ describe('StagedJournalPanel', () => {
     expect(screen.getByTestId('stage-tab-post')).toHaveAttribute('aria-selected', 'true');
   });
 
+  it('shows the plain post with no tabs when the server has no such draft', async () => {
+    // The slug may have been derived from the artifact label, which is a guess.
+    // An unconfirmed slug must not produce tabs claiming a stage.
+    global.fetch = jest.fn(async () => ({ ok: false, status: 404, json: async () => ({ ok: false }) }));
+    render(<StagedJournalPanel slug="not-a-real-draft" designImages={[]} renderPost={() => <p>post body</p>} />);
+    expect(await screen.findByText('post body')).toBeInTheDocument();
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    expect(screen.queryByRole('tablist')).toBeNull();
+    expect(screen.getByTestId('staged-journal-fallback')).toBeInTheDocument();
+  });
+
   it('falls back to the Post tab if the stage cannot be loaded', async () => {
     global.fetch = jest.fn(async () => ({ ok: false, json: async () => ({ ok: false }) }));
     render(<StagedJournalPanel slug="x" designImages={[]} renderPost={() => <p>post body</p>} />);

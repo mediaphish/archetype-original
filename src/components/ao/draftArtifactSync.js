@@ -20,11 +20,15 @@ export function parseArtifact(text) {
 
   const typeMatch = attrString.match(/type="([^"]+)"/i);
   const labelMatch = attrString.match(/label="([^"]+)"/i);
+  // slug is written by appendDraftArtifactFromSaveResults from 2026-09-13 on.
+  // Older messages do not carry it; see draftArtifactSlug.js for the fallback.
+  const slugMatch = attrString.match(/slug="([^"]+)"/i);
 
   const artifact = {
     type: typeMatch?.[1] || 'draft',
     label: labelMatch?.[1] || 'Artifact',
     content,
+    ...(slugMatch ? { slug: slugMatch[1].trim() } : {}),
   };
 
   const cleanText = text.replace(tagPattern, '').trim();
