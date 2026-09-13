@@ -17,6 +17,7 @@ import React, {
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
+import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { abortReasonFor, abortMessageFor } from '../../lib/autoStreamTimeouts.js';
 import {
   buildDraftWordDiff,
@@ -1074,6 +1075,11 @@ function ArtifactPanel({
   const hasCards = generatedImages?.length > 0;
   const hasDesign = generatedDesignImages?.length > 0;
   const hasAnyGenerated = hasCards || hasDesign;
+  // A journal draft gets the staged, tabbed panel (notes/AUTO_STAGED_WORKSPACE_SPEC.md).
+  // Every other artifact type keeps the layout it has always had.
+  const stagedJournalSlug =
+    artifact?.type === 'draft' ? extractSlugFromDraftContent(artifact.content) : null;
+  const stagedJournal = Boolean(stagedJournalSlug);
   return (
     <div className="flex h-full min-h-0 min-w-0 w-full flex-shrink-0 flex-col border-l border-gray-200 bg-gray-50">
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-2">
@@ -1287,7 +1293,8 @@ function ArtifactPanel({
           )
         )}
 
-        {hasDesign && (
+        {/* In the staged panel, images live in the Image tab and nowhere else. */}
+        {hasDesign && !stagedJournal && (
           <div className={hasCards ? 'min-h-0 flex-1 overflow-y-auto' : 'min-h-0 flex-1 overflow-y-auto'}>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Generated Images</p>
             <div className="space-y-3">
@@ -1404,7 +1411,28 @@ function ArtifactPanel({
           </div>
         )}
 
-        {artifact?.type === 'draft' && (
+        {stagedJournal && (
+          <StagedJournalPanel
+            slug={stagedJournalSlug}
+            designImages={generatedDesignImages}
+            onImageError={onGeneratedDesignImageError}
+            renderPost={() => (
+              <div className="flex flex-col flex-1 min-h-0 gap-3">
+                <DraftArtifact content={artifact.content} label={artifact.label} />
+                <div className="flex shrink-0 flex-col gap-2">
+                  <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
+                    Approve
+                  </button>
+                  <button type="button" onClick={onRevise} className="w-full py-2 px-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                    Revise
+                  </button>
+                </div>
+              </div>
+            )}
+          />
+        )}
+
+        {artifact?.type === 'draft' && !stagedJournal && (
           <div className="flex flex-col flex-1 min-h-0 gap-3">
             <DraftArtifact content={artifact.content} label={artifact.label} />
             <div className="flex shrink-0 flex-col gap-2">
