@@ -180,6 +180,171 @@ function ImageTab({ designImages, draftImageUrl, onImageError }) {
   );
 }
 
+function CopyButton({ text, label = 'Copy' }) {
+  const [copied, setCopied] = useState(false);
+  if (!text) return null;
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        } catch {
+          setCopied(false);
+        }
+      }}
+      className="text-xs font-medium text-gray-600 hover:text-gray-900"
+    >
+      {copied ? 'Copied' : label}
+    </button>
+  );
+}
+
+function CaptionsTab({ captions }) {
+  const list = Array.isArray(captions) ? captions : [];
+  if (!list.some((c) => c.text)) {
+    return (
+      <EmptyTab
+        title="No captions yet"
+        detail="When Auto writes the captions, every channel shows here together, so notes can happen in the chat."
+      />
+    );
+  }
+  return (
+    <div data-testid="captions-tab" className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
+      {list.map((c) => (
+        <div key={c.key} data-testid={`caption-${c.key}`} className="rounded-xl border border-gray-200 bg-white">
+          <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-3 py-2">
+            <p className="text-xs font-semibold text-gray-800">
+              {c.label}
+              {c.manual ? (
+                <span className="ml-2 rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">posted by hand</span>
+              ) : null}
+            </p>
+            <div className="flex items-center gap-3">
+              {c.text ? <span className="text-[11px] text-gray-400">{c.chars} chars</span> : null}
+              <CopyButton text={c.text} />
+            </div>
+          </div>
+          {c.text ? (
+            <p className="whitespace-pre-wrap px-3 py-2 text-sm leading-relaxed text-gray-800">{c.text}</p>
+          ) : (
+            <p className="px-3 py-2 text-sm italic text-gray-400">No caption for this channel yet.</p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ScheduleTab({ schedule, slug, onChanged }) {
+  const [busy, setBusy] = useState(null);
+  const [error, setError] = useState(null);
+  const rows = schedule?.rows || [];
+  const manual = schedule?.manual || [];
+
+  if (!schedule || (!rows.length && !schedule.publishAt)) {
+    return (
+      <EmptyTab
+        title="Nothing scheduled yet"
+        detail="Once captions are approved and scheduled, what goes out when shows here, with anything you still post by hand."
+      />
+    );
+  }
+
+  const mark = async (channel, posted) => {
+    setBusy(channel);
+    setError(null);
+    try {
+      const res = await fetch('/api/ao/auto/manual-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, channel, posted }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json?.ok) throw new Error(json?.error || 'Could not save that');
+      onChanged?.();
+    } catch (err) {
+      setError(err?.message || 'Could not save that');
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  return (
+    <div data-testid="schedule-tab" className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+          {schedule.publishedAt ? 'Published' : 'Post publishes'}
+        </p>
+        <p className="text-sm text-gray-900">
+          {formatWhen(new Date(schedule.publishedAt || schedule.publishAt).getTime()) || 'Not set'}
+        </p>
+      </div>
+
+      {rows.length ? (
+        <div>
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Scheduled posts</p>
+          <ul className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
+            {rows.map((r, i) => (
+              <li key={`${r.key}-${i}`} data-testid={`schedule-row-${r.key}`} className="flex items-center justify-between gap-2 px-3 py-2 text-sm">
+                <span className="text-gray-800">{r.label}</span>
+                <span className="flex items-center gap-3 text-xs text-gray-500">
+                  <span>{formatWhen(new Date(r.scheduledAt).getTime())}</span>
+                  <span className={r.status === 'posted' ? 'text-green-700' : r.status === 'failed' ? 'text-red-700' : ''}>{r.status}</span>
+                  <span>{r.hasImage ? 'image' : 'no image'}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">Still to post by hand</p>
+        <ul className="space-y-2">
+          {manual.map((m) => (
+            <li key={m.key} data-testid={`manual-${m.key}`} className="rounded-xl border border-gray-200 bg-white px-3 py-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium text-gray-900">{m.label}</span>
+                {m.postedAt ? (
+                  <span className="flex items-center gap-3 text-xs">
+                    <span className="text-green-700">Posted {formatWhen(new Date(m.postedAt).getTime())}</span>
+                    <button type="button" disabled={busy === m.key} onClick={() => mark(m.key, false)} className="text-gray-500 underline">
+                      Undo
+                    </button>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    data-testid={`mark-posted-${m.key}`}
+                    disabled={busy === m.key}
+                    onClick={() => mark(m.key, true)}
+                    className="rounded-md bg-gray-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+                  >
+                    Mark as posted
+                  </button>
+                )}
+              </div>
+              <div className="mt-1 flex items-center gap-3">
+                {m.text ? <CopyButton text={m.text} label="Copy caption" /> : <span className="text-xs italic text-gray-400">No caption written for this channel.</span>}
+                {m.imageUrl ? (
+                  <a href={m.imageUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-gray-600 hover:text-gray-900">
+                    Open image
+                  </a>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {error ? <p className="text-xs text-red-700">{error}</p> : null}
+    </div>
+  );
+}
+
 export default function StagedJournalPanel({ slug, designImages = [], renderPost, onImageError, refreshKey = 0 }) {
   const [stageInfo, setStageInfo] = useState(null);
   const [draft, setDraft] = useState(null);
@@ -188,6 +353,9 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
   // artifact's label, which is a guess; in that case show the post exactly as
   // the panel always did, with no tabs claiming a stage nobody confirmed.
   const [notFound, setNotFound] = useState(false);
+  const [panel, setPanel] = useState(null);
+  // Bumped after a manual post is marked, so the Schedule tab reflects what was saved.
+  const [refreshNonce, setRefreshNonce] = useState(0);
   const [userTab, setUserTab] = useState(null);
   const [openTab, setOpenTab] = useState(null);
   const [unread, setUnread] = useState({});
@@ -222,6 +390,7 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
         setNotFound(false);
         setLoadFailed(false);
         setDraft(json.draft || null);
+        setPanel(json.panel || null);
         const nextStage = json.stage || null;
         setStageInfo(nextStage);
 
@@ -243,7 +412,7 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
     };
     // userTab is read, not reacted to: clicking a tab must not refetch.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, imageKey, refreshKey]);
+  }, [slug, imageKey, refreshKey, refreshNonce]);
 
   // Nothing changes silently. A new image while Bart is on another tab marks
   // the Image tab instead of switching him away from what he is reading.
@@ -294,9 +463,9 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
         ) : activeTab === 'research_brief' ? (
           <EmptyTab title="Research & Brief" detail="The research and brief for this post will live here. Until then they are in the conversation." />
         ) : activeTab === 'captions' ? (
-          <EmptyTab title="Captions" detail="Every channel's caption will show here together, so notes can happen in the chat." />
+          <CaptionsTab captions={panel?.captions} />
         ) : (
-          <EmptyTab title="Schedule & Publish" detail="What goes out when, and anything you still post by hand, will show here." />
+          <ScheduleTab schedule={panel?.schedule} slug={slug} onChanged={() => setRefreshNonce((n) => n + 1)} />
         )}
       </div>
     </div>

@@ -446,6 +446,10 @@
       "dest": "/api/chat/engagement.js"
     },
     {
+      "src": "/api/ao/auto/manual-post",
+      "dest": "/api/ao/auto/manual-post.js"
+    },
+    {
       "src": "/api/contact",
       "dest": "/api/contact.js"
     },

@@ -25,6 +25,7 @@ import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { contentDrafts } from '../../../lib/db/contentDrafts.js';
 import { deriveDraftStage } from '../../../lib/ao/draftStage.js';
 import { loadJournalCaptionRows } from '../../../lib/ao/getScheduleStatus.js';
+import { buildCaptionsPanel, buildSchedulePanel } from '../../../lib/ao/journalPanelData.js';
 
 export default async function handler(req, res) {
   const auth = requireAoSession(req, res);
@@ -44,7 +45,7 @@ export default async function handler(req, res) {
 
   try {
     let query = contentDrafts()
-      .select('id, slug, title, content, kind, status, image_url, approved_at, scheduled_publish_at, published_at, series_slug, part_number, updated_at')
+      .select('id, slug, title, content, kind, status, image_url, approved_at, scheduled_publish_at, published_at, series_slug, part_number, updated_at, metadata')
       .eq('created_by_email', auth.email.toLowerCase().trim())
       .order('approved_at', { ascending: false })
       .limit(1);
@@ -68,6 +69,10 @@ export default async function handler(req, res) {
     }
 
     const draft = data[0];
+    // metadata is read for manual-post marks only. It also holds internal state
+    // (the notes queue, among others), so it never goes back to the client, and
+    // callers without with_stage get exactly the fields they always did.
+    const { metadata, ...draftOut } = draft;
 
     if (withStage && String(draft.kind || 'journal') === 'journal') {
       // A caption lookup failure must not cost Bart the draft itself. The
@@ -78,10 +83,41 @@ export default async function handler(req, res) {
       } catch (captionErr) {
         console.warn('[content-draft] caption lookup for stage failed:', captionErr?.message || captionErr);
       }
-      return res.status(200).json({ ok: true, draft, stage: deriveDraftStage({ draft, captions }) });
+
+      // Manual captions (LinkedIn Business, Facebook Personal) exist only in
+      // the captions draft that shares this slug.
+      let captionsDraftContent = '';
+      try {
+        const { data: capRows } = await contentDrafts()
+          .select('content')
+          .eq('created_by_email', auth.email.toLowerCase().trim())
+          .eq('kind', 'captions')
+          .eq('slug', draft.slug)
+          .neq('status', 'abandoned')
+          .order('updated_at', { ascending: false })
+          .limit(1);
+        captionsDraftContent = capRows?.[0]?.content || '';
+      } catch (capErr) {
+        console.warn('[content-draft] captions draft lookup failed:', capErr?.message || capErr);
+      }
+
+      const captionsPanel = buildCaptionsPanel({ scheduledRows: captions, captionsDraftContent });
+      const schedulePanel = buildSchedulePanel({
+        draft,
+        scheduledRows: captions,
+        manualPosts: metadata?.manual_posts || {},
+        captions: captionsPanel,
+      });
+
+      return res.status(200).json({
+        ok: true,
+        draft: draftOut,
+        stage: deriveDraftStage({ draft, captions }),
+        panel: { captions: captionsPanel, schedule: schedulePanel },
+      });
     }
 
-    return res.status(200).json({ ok: true, draft });
+    return res.status(200).json({ ok: true, draft: draftOut });
   } catch (err) {
     console.error('[content-draft]', err?.message || err);
     return res.status(500).json({ ok: false, error: err?.message || 'Server error' });
