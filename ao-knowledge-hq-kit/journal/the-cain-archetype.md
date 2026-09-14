@@ -5,7 +5,7 @@ publish_date: '2026-09-14T11:00:36.690Z'
 created_at: '2026-09-14'
 updated_at: '2026-09-14'
 summary: >-
-  The Archetype Series, Entry Ten Cain did not fail because no one told him. He failed after being told, in words that named the exact danger and the exact way out of it. That distinguishes him from almost everyone else this series has examined. Saul drifted.
+  Cain did not fail because no one told him. He failed after being told, in words that named the exact danger and the exact way out of it.
 categories:
   - Leadership
   - Servant Leadership
