@@ -1418,6 +1418,7 @@ function ArtifactPanel({
         {stagedJournal && (
           <StagedJournalPanel
             slug={stagedJournalSlug}
+            postContent={artifact.content}
             designImages={generatedDesignImages}
             onImageError={onGeneratedDesignImageError}
             renderPost={() => (

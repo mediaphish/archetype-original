@@ -15,6 +15,9 @@
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { buildTabs, resolveOpenTab, pickImageCandidates } from '../../lib/stagedPanelModel.js';
+// The same measured count Auto reports, so the number on the tab and the number
+// in the chat cannot disagree.
+import { countDraftWords } from '../../../lib/ao/draftStats.js';
 
 function formatWhen(ms) {
   if (!ms) return '';
@@ -25,7 +28,7 @@ function formatWhen(ms) {
   }
 }
 
-function TabBar({ tabs, openTab, unread, onSelect }) {
+function TabBar({ tabs, openTab, unread, onSelect, counts = {} }) {
   return (
     <div role="tablist" aria-label="Workflow" className="flex shrink-0 gap-1 overflow-x-auto border-b border-gray-200 px-2">
       {tabs.map((t) => {
@@ -45,6 +48,7 @@ function TabBar({ tabs, openTab, unread, onSelect }) {
           >
             {t.state === 'done' ? <span aria-label="approved" className="mr-1 text-green-700">✓</span> : null}
             {t.label}
+            {counts?.[t.key] != null ? ` (${Number(counts[t.key]).toLocaleString('en-US')})` : null}
             {t.state === 'current' ? (
               <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-ao-red align-middle" aria-label="in progress" />
             ) : null}
@@ -345,7 +349,7 @@ function ScheduleTab({ schedule, slug, onChanged }) {
   );
 }
 
-export default function StagedJournalPanel({ slug, designImages = [], renderPost, onImageError, refreshKey = 0 }) {
+export default function StagedJournalPanel({ slug, designImages = [], renderPost, onImageError, refreshKey = 0, postContent = null }) {
   const [stageInfo, setStageInfo] = useState(null);
   const [draft, setDraft] = useState(null);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -431,6 +435,11 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
   }, [newestCandidateUrl]);
 
   const tabs = useMemo(() => buildTabs(stageInfo), [stageInfo]);
+  // Recounted whenever the post text changes, so it follows every revision.
+  const postWords = useMemo(
+    () => (postContent && String(postContent).trim() ? countDraftWords(postContent) : null),
+    [postContent]
+  );
   const activeTab = loadFailed ? 'post' : openTab || 'post';
 
   const selectTab = (key) => {
@@ -454,7 +463,7 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
 
   return (
     <div data-testid="staged-journal-panel" className="flex min-h-0 flex-1 flex-col">
-      <TabBar tabs={tabs} openTab={activeTab} unread={unread} onSelect={selectTab} />
+      <TabBar tabs={tabs} openTab={activeTab} unread={unread} onSelect={selectTab} counts={{ post: postWords }} />
       <div className="flex min-h-0 flex-1 flex-col pt-3">
         {activeTab === 'post' ? (
           <div className="flex min-h-0 flex-1 flex-col">{renderPost?.()}</div>
