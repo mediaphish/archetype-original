@@ -1687,6 +1687,29 @@ export default async function handler(req, res) {
         }
       }
 
+      // Prior-coverage check on the pitch itself. The save-time check in
+      // present_outline/save_draft never sees a pitch written straight into chat,
+      // and on 2026-09-15 Auto only admitted the overlap after Bart asked. Any
+      // pitch-shaped reply is checked against the published journal and a match
+      // is shown under it, unasked. Skipped only when Bart already cleared the
+      // overlap this turn.
+      try {
+        const { looksLikeNewPiecePitch, findPriorCoverage, priorCoverageReplyNote } = await import(
+          '../../../lib/ao/priorCoverage.js'
+        );
+        const clearedThisTurn = (streamResult?.toolResults || []).some((r) => r?.result?.prior_coverage_cleared);
+        if (!clearedThisTurn && looksLikeNewPiecePitch(fullReply)) {
+          const matches = await findPriorCoverage({ text: fullReply.slice(0, 6000) });
+          if (matches.length) {
+            const note = priorCoverageReplyNote(matches);
+            fullReply = `${fullReply.trim()}\n\n${note}`;
+            sendEvent('reply_append', { reply_append: true, append_text: `\n\n${note}` });
+          }
+        }
+      } catch (coverageErr) {
+        console.warn('[chat.js] prior-coverage reply check failed (non-fatal):', coverageErr?.message || coverageErr);
+      }
+
       // False-denial gate: Auto saying "I don't see an image/URL" when this turn's
       // injected context actually has one (approved drafts image saved at: / manual upload).
       let approvedDraftsForDenialGate = '';
