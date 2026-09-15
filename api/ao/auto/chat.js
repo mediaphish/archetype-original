@@ -1474,6 +1474,8 @@ export default async function handler(req, res) {
     const toolContext = {
       email: auth.email,
       threadId: thread.id,
+      // approve_stage records an approval only when Bart's own message gives it.
+      userMessage,
       chatAttachedImageUrlsThisTurn,
       chatAttachedImageUrlsPrior,
     };

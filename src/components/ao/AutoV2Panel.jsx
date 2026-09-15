@@ -1077,6 +1077,7 @@ function ArtifactPanel({
   guestRecordLoading,
   chatCaptionsText = null,
   onStageApproved = null,
+  stageRefreshKey = 0,
 }) {
   const hasCards = generatedImages?.length > 0;
   const hasDesign = generatedDesignImages?.length > 0;
@@ -1421,6 +1422,7 @@ function ArtifactPanel({
         {stagedJournal && (
           <StagedJournalPanel
             slug={stagedJournalSlug}
+            refreshKey={stageRefreshKey}
             postContent={artifact.content}
             chatCaptionsText={chatCaptionsText}
             onStageApproved={onStageApproved}
@@ -3524,6 +3526,9 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const artifactPanelProps = {
     artifact,
     chatCaptionsText,
+    // Auto can record an approval in chat (approve_stage). The panel refetches
+    // its stage after each finished turn so it moves on without a reload.
+    stageRefreshKey: messages.filter((m) => m?.role === 'assistant' && !m?.meta?.streaming).length,
     onStageApproved: handleStageApproved,
     generatedImages,
     generatedDesignImages,
