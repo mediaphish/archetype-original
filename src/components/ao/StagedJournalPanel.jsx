@@ -18,6 +18,7 @@ import { buildTabs, resolveOpenTab, pickImageCandidates } from '../../lib/staged
 // The same measured count Auto reports, so the number on the tab and the number
 // in the chat cannot disagree.
 import { countDraftWords } from '../../../lib/ao/draftStats.js';
+import { captionsFromChatText, mergeChatCaptions } from '../../../lib/ao/journalPanelData.js';
 
 function formatWhen(ms) {
   if (!ms) return '';
@@ -30,7 +31,7 @@ function formatWhen(ms) {
 
 function TabBar({ tabs, openTab, unread, onSelect, counts = {} }) {
   return (
-    <div role="tablist" aria-label="Workflow" className="flex shrink-0 gap-1 overflow-x-auto border-b border-gray-200 px-2">
+    <div role="tablist" aria-label="Workflow" className="flex shrink-0 flex-wrap border-b border-gray-200 px-1">
       {tabs.map((t) => {
         const selected = t.key === openTab;
         return (
@@ -42,7 +43,7 @@ function TabBar({ tabs, openTab, unread, onSelect, counts = {} }) {
             data-testid={`stage-tab-${t.key}`}
             data-state={t.state}
             onClick={() => onSelect(t.key)}
-            className={`relative whitespace-nowrap px-3 py-2 text-xs font-medium transition-colors ${
+            className={`relative whitespace-nowrap px-2 py-2 text-xs font-medium transition-colors ${
               selected ? 'text-gray-900' : t.state === 'ahead' ? 'text-gray-400 hover:text-gray-600' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -72,7 +73,7 @@ function EmptyTab({ title, detail }) {
   );
 }
 
-function ImageTab({ designImages, draftImageUrl, onImageError }) {
+function ImageTab({ designImages, draftImageUrl, onImageError, stage = null, imageApproved = false, approving = false, approveError = null, onApprove = null }) {
   const { current, previous, uploads, total } = useMemo(
     () => pickImageCandidates(designImages, draftImageUrl),
     [designImages, draftImageUrl]
@@ -122,6 +123,35 @@ function ImageTab({ designImages, draftImageUrl, onImageError }) {
           onError={() => onImageError?.(shown.url)}
         />
       </div>
+
+      {/*
+        Approval is explicit. The panel used to treat a saved image as an
+        approved one and moved on without Bart. The button approves the image
+        saved on the draft, so it only appears when that is the image on screen.
+      */}
+      {stage === 'image' || imageApproved ? (
+        <div className="flex shrink-0 items-center justify-between gap-2">
+          {imageApproved ? (
+            <p data-testid="image-approved" className="text-xs font-medium text-green-700">✓ Image approved</p>
+          ) : shown.url === draftImageUrl ? (
+            <p className="text-xs text-gray-500">Talk through changes in the chat, then approve to move on.</p>
+          ) : (
+            <p className="text-xs text-amber-800">This is not the image saved on the draft, so it cannot be approved from here.</p>
+          )}
+          {!imageApproved && stage === 'image' && shown.url === draftImageUrl ? (
+            <button
+              type="button"
+              data-testid="approve-image"
+              disabled={approving}
+              onClick={() => onApprove?.()}
+              className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+            >
+              {approving ? 'Approving…' : 'Approve image'}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      {approveError ? <p className="shrink-0 text-xs text-red-700">{approveError}</p> : null}
 
       {!isCurrent ? (
         <button type="button" onClick={() => setViewingUrl(null)} className="shrink-0 text-xs font-medium text-gray-700 underline">
@@ -206,7 +236,7 @@ function CopyButton({ text, label = 'Copy' }) {
   );
 }
 
-function CaptionsTab({ captions }) {
+function CaptionsTab({ captions, stage = null, captionsApproved = false, approving = false, approveError = null, onApprove = null }) {
   const list = Array.isArray(captions) ? captions : [];
   if (!list.some((c) => c.text)) {
     return (
@@ -218,6 +248,27 @@ function CaptionsTab({ captions }) {
   }
   return (
     <div data-testid="captions-tab" className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
+      {stage === 'captions' || captionsApproved ? (
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-2 bg-gray-50 pb-2">
+          {captionsApproved ? (
+            <p data-testid="captions-approved" className="text-xs font-medium text-green-700">✓ Captions approved</p>
+          ) : (
+            <p className="text-xs text-gray-500">Talk through changes in the chat, then approve to move on. Nothing is scheduled by approving.</p>
+          )}
+          {!captionsApproved && stage === 'captions' ? (
+            <button
+              type="button"
+              data-testid="approve-captions"
+              disabled={approving}
+              onClick={() => onApprove?.()}
+              className="shrink-0 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+            >
+              {approving ? 'Approving…' : 'Approve captions'}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      {approveError ? <p className="text-xs text-red-700">{approveError}</p> : null}
       {list.map((c) => (
         <div key={c.key} data-testid={`caption-${c.key}`} className="rounded-xl border border-gray-200 bg-white">
           <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-3 py-2">
@@ -225,6 +276,9 @@ function CaptionsTab({ captions }) {
               {c.label}
               {c.manual ? (
                 <span className="ml-2 rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">posted by hand</span>
+              ) : null}
+              {c.source === 'chat' ? (
+                <span data-testid={`caption-chat-${c.key}`} className="ml-2 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-800">in chat, not scheduled</span>
               ) : null}
             </p>
             <div className="flex items-center gap-3">
@@ -349,7 +403,7 @@ function ScheduleTab({ schedule, slug, onChanged }) {
   );
 }
 
-export default function StagedJournalPanel({ slug, designImages = [], renderPost, onImageError, refreshKey = 0, postContent = null }) {
+export default function StagedJournalPanel({ slug, designImages = [], renderPost, onImageError, refreshKey = 0, postContent = null, chatCaptionsText = null, onStageApproved = null }) {
   const [stageInfo, setStageInfo] = useState(null);
   const [draft, setDraft] = useState(null);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -440,6 +494,54 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
     () => (postContent && String(postContent).trim() ? countDraftWords(postContent) : null),
     [postContent]
   );
+
+  // Captions often exist only in the chat before anything is saved or
+  // scheduled ("Your Tuesday", 2026-09-15). Saved and scheduled text wins; chat
+  // text only fills gaps and is labelled as not scheduled.
+  const captionsForTab = useMemo(
+    () => mergeChatCaptions(panel?.captions, chatCaptionsText),
+    [panel, chatCaptionsText]
+  );
+  const scheduleForTab = useMemo(() => {
+    const schedule = panel?.schedule;
+    if (!schedule) return schedule;
+    const chat = captionsFromChatText(chatCaptionsText);
+    return {
+      ...schedule,
+      manual: (schedule.manual || []).map((m) => (m.text || !chat[m.key] ? m : { ...m, text: chat[m.key] })),
+    };
+  }, [panel, chatCaptionsText]);
+
+  const [approving, setApproving] = useState(null);
+  const [approveError, setApproveError] = useState(null);
+
+  // Records Bart's approval of one step. The stage only moves because this
+  // record exists, never because an image or caption set merely exists.
+  const approveStage = async (stage) => {
+    setApproving(stage);
+    setApproveError(null);
+    try {
+      const body = { slug, stage };
+      if (stage === 'captions') {
+        body.captions = Object.fromEntries(
+          (captionsForTab || []).filter((c) => c.text).map((c) => [c.key, c.text])
+        );
+      }
+      const res = await fetch('/api/ao/auto/approve-stage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json?.ok) throw new Error(json?.error || 'Could not record that approval');
+      setRefreshNonce((n) => n + 1);
+      onStageApproved?.(stage);
+    } catch (err) {
+      setApproveError(err?.message || 'Could not record that approval');
+    } finally {
+      setApproving(null);
+    }
+  };
   const activeTab = loadFailed ? 'post' : openTab || 'post';
 
   const selectTab = (key) => {
@@ -468,13 +570,29 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
         {activeTab === 'post' ? (
           <div className="flex min-h-0 flex-1 flex-col">{renderPost?.()}</div>
         ) : activeTab === 'image' ? (
-          <ImageTab designImages={designImages} draftImageUrl={draft?.image_url} onImageError={onImageError} />
+          <ImageTab
+            designImages={designImages}
+            draftImageUrl={draft?.image_url}
+            onImageError={onImageError}
+            stage={stageInfo?.stage}
+            imageApproved={Boolean(stageInfo?.approvals?.image)}
+            approving={approving === 'image'}
+            approveError={approving === null ? approveError : null}
+            onApprove={() => approveStage('image')}
+          />
         ) : activeTab === 'research_brief' ? (
           <EmptyTab title="Research & Brief" detail="The research and brief for this post will live here. Until then they are in the conversation." />
         ) : activeTab === 'captions' ? (
-          <CaptionsTab captions={panel?.captions} />
+          <CaptionsTab
+            captions={captionsForTab}
+            stage={stageInfo?.stage}
+            captionsApproved={Boolean(stageInfo?.approvals?.captions)}
+            approving={approving === 'captions'}
+            approveError={approving === null ? approveError : null}
+            onApprove={() => approveStage('captions')}
+          />
         ) : (
-          <ScheduleTab schedule={panel?.schedule} slug={slug} onChanged={() => setRefreshNonce((n) => n + 1)} />
+          <ScheduleTab schedule={scheduleForTab} slug={slug} onChanged={() => setRefreshNonce((n) => n + 1)} />
         )}
       </div>
     </div>

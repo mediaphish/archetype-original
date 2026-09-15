@@ -101,7 +101,11 @@ export default async function handler(req, res) {
         console.warn('[content-draft] captions draft lookup failed:', capErr?.message || capErr);
       }
 
-      const captionsPanel = buildCaptionsPanel({ scheduledRows: captions, captionsDraftContent });
+      const captionsPanel = buildCaptionsPanel({
+        scheduledRows: captions,
+        captionsDraftContent,
+        approvedCaptions: metadata?.approved_captions || {},
+      });
       const schedulePanel = buildSchedulePanel({
         draft,
         scheduledRows: captions,
@@ -112,7 +116,8 @@ export default async function handler(req, res) {
       return res.status(200).json({
         ok: true,
         draft: draftOut,
-        stage: deriveDraftStage({ draft, captions }),
+        // draft still carries metadata here, which is where approvals live.
+        stage: deriveDraftStage({ draft }),
         panel: { captions: captionsPanel, schedule: schedulePanel },
       });
     }

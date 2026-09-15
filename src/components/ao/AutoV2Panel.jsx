@@ -19,6 +19,7 @@ import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
+import { findChatCaptionsMessage } from '../../../lib/ao/journalPanelData.js';
 import { abortReasonFor, abortMessageFor } from '../../lib/autoStreamTimeouts.js';
 import {
   buildDraftWordDiff,
@@ -1074,6 +1075,8 @@ function ArtifactPanel({
   seedManifestTotal,
   guestRecord,
   guestRecordLoading,
+  chatCaptionsText = null,
+  onStageApproved = null,
 }) {
   const hasCards = generatedImages?.length > 0;
   const hasDesign = generatedDesignImages?.length > 0;
@@ -1419,6 +1422,8 @@ function ArtifactPanel({
           <StagedJournalPanel
             slug={stagedJournalSlug}
             postContent={artifact.content}
+            chatCaptionsText={chatCaptionsText}
+            onStageApproved={onStageApproved}
             designImages={generatedDesignImages}
             onImageError={onGeneratedDesignImageError}
             renderPost={() => (
@@ -3497,8 +3502,29 @@ export default function AutoV2Panel({ onNavigate, className }) {
     );
   }
 
+  // Captions Auto wrote in chat for the post in the panel, before anything was
+  // saved or scheduled. Plain computation rather than a hook, so it cannot
+  // disturb hook order in this component.
+  const chatCaptionsSlug = resolveDraftArtifactSlug(artifact);
+  const chatCaptionsText = chatCaptionsSlug
+    ? findChatCaptionsMessage(messages, { slug: chatCaptionsSlug, title: artifact?.label })
+    : null;
+
+  // When Bart approves a step in the panel, tell Auto in the conversation, the
+  // same way the Post tab's Approve button always has, so the chat and the
+  // recorded approval agree.
+  const handleStageApproved = (stage) => {
+    if (stage === 'image') {
+      sendMessage('Image approved.');
+    } else if (stage === 'captions') {
+      sendMessage('Captions approved. Do not schedule anything yet; the schedule is the next approval.');
+    }
+  };
+
   const artifactPanelProps = {
     artifact,
+    chatCaptionsText,
+    onStageApproved: handleStageApproved,
     generatedImages,
     generatedDesignImages,
     journalPublishBanner,

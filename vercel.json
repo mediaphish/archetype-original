@@ -450,6 +450,10 @@
       "dest": "/api/ao/auto/manual-post.js"
     },
     {
+      "src": "/api/ao/auto/approve-stage",
+      "dest": "/api/ao/auto/approve-stage.js"
+    },
+    {
       "src": "/api/contact",
       "dest": "/api/contact.js"
     },
