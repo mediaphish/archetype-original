@@ -30,7 +30,7 @@ He fell asleep is a striking way to describe death in this context, language usu
 
 - Notice whether your own capacity for mercy only shows up when it's comfortable to extend.
 - Identify a costly example someone else has modeled for you, and consider applying it in a harder moment than you have so far.
-- Extend grace this week in a situation where it will cost you something real, not just where it's convenient.
+- Extend grace this week in a situation where it will cost you something real, rather than where it's convenient.
 
 ## Takeaways
 

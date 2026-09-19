@@ -16,7 +16,7 @@ summary: "Mercy that keeps the offense easily reachable for later isn't the comp
 
 ## Reflection
 
-Micah opens the month and closes it out in the same book, and the question asked here is worth sitting with rather than rushing past. Who is a God like you. It isn't rhetorical filler. It's an actual claim that this particular character, pardoning iniquity while still calling it iniquity, passing over transgression without pretending it wasn't transgression, is genuinely unusual, not the default posture most people or most gods would take.
+Micah opens the month and closes it out in the same book, and the question asked here is worth slowing down for rather than rushing past. Who is a God like you. It isn't rhetorical filler. It's an actual claim that this particular character, pardoning iniquity while still calling it iniquity, passing over transgression without pretending it wasn't transgression, is genuinely unusual, not the default posture most people or most gods would take.
 
 He does not retain his anger forever names the same restraint the month described back on September 21, anger with real grounds, deliberately not extended past its purpose. Delights in steadfast love goes further than simply tolerating the requirement to be merciful. It describes mercy as something actually desired, not a duty grudgingly fulfilled.
 
