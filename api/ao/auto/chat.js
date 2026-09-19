@@ -2692,6 +2692,34 @@ ${retrievedBlock}
       }
     }
 
+    // Corpus check on every real-world example in the reply (lib/ao/exampleReuse.js).
+    //
+    // 2026-09-19: Auto recommended Mulally/Ford and Stumpf/Wells Fargo after only
+    // a web search; both were already in Bart's published posts, the Ford story
+    // verbatim. Runs here, after synthesis and every other pass, so it sees the
+    // final reply. It appends a note and never changes what Auto wrote. Skipped
+    // when the turn is short of time; a failure adds nothing.
+    try {
+      if (SOFT_TIMEOUT_MS - (Date.now() - streamStartedAt) > 25_000) {
+        const { checkExampleReuse, formatExampleReuseNote } = await import('../../../lib/ao/exampleReuse.js');
+        const corpusCheckedThisTurn = (streamResult?.toolsUsed || []).some(
+          (t) => t === 'search_corpus' || t === 'fetch_full_text'
+        );
+        const bartText = [
+          ...priorMessages.filter((m) => m?.role === 'user').slice(-10).map((m) => String(m?.content || '')),
+          userMessage,
+        ].join('\n\n');
+        const findings = await checkExampleReuse({ reply: fullReply, bartText });
+        const note = formatExampleReuseNote(findings, { corpusCheckedThisTurn });
+        if (note) {
+          fullReply = `${fullReply.trim()}\n\n${note}`;
+          sendEvent('reply_append', { reply_append: true, append_text: `\n\n${note}` });
+        }
+      }
+    } catch (exampleErr) {
+      console.warn('[chat.js] example corpus check failed (non-fatal):', exampleErr?.message || exampleErr);
+    }
+
     // User message was already persisted at the top of the handler (before the
     // model call). Only the assistant reply is written here.
     //
