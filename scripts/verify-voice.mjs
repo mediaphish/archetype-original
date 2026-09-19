@@ -27,8 +27,9 @@
  * Fixing patterns rather than prose is the right move whenever a rule and the
  * writing disagree, because the writing is the thing being protected.
  *
- * With the baseline at zero, any violation fails the build. Keep it there. If a
- * pattern is wrong rather than the writing, change the pattern.
+ * New violations are reported as warnings; they no longer fail the build
+ * (Bart, 2026-09-19). If a pattern is wrong rather than the writing, change the
+ * pattern. VOICE_STRICT=1 makes a manual run fail on new violations.
  */
 
 import fs from 'fs';
@@ -121,15 +122,22 @@ for (const [slug, counts] of Object.entries(found)) {
 const knownTotal = totalOf(baseline);
 const foundTotal = totalOf(found);
 
+// Advisory, not blocking. 2026-09-19: two phrases in new devotionals stopped
+// every production deploy for about three hours, scheduled publishing included,
+// and Bart ruled one of them fine in context. Bart: "these flags should not keep
+// a deploy from happening." They are reported here and the build continues.
+// VOICE_STRICT=1 restores the old fail-the-build behaviour for a manual run.
 if (regressions.length) {
-  console.error(`\nNEW voice violations in published posts. Build stopped.\n`);
-  console.error(regressions.join('\n\n'));
-  console.error(
-    `\nThese are banned patterns from lib/ao/voiceGuardrails.js, the same list that blocks a draft save.` +
-      `\nFix the prose. Do not delete the punctuation and leave a broken sentence.` +
-      `\nIf a pattern is wrong rather than the writing, change the pattern in voiceGuardrails.js.\n`
+  const strict = process.env.VOICE_STRICT === '1';
+  const log = strict ? console.error : console.warn;
+  log(`\nverify-voice: WARNING, new voice flags in published posts${strict ? '. Build stopped (VOICE_STRICT=1).' : ' (build continues).'}\n`);
+  log(regressions.join('\n\n'));
+  log(
+    `\nThese match banned patterns in lib/ao/voiceGuardrails.js, the same list that blocks an Auto draft save.` +
+      `\nReview them in context. If the writing is right, leave it; if a pattern is wrong, change the pattern.\n`
   );
-  process.exit(1);
+  if (strict) process.exit(1);
+  process.exit(0);
 }
 
 if (foundTotal < knownTotal) {
