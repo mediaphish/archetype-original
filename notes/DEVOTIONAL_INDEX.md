@@ -270,6 +270,15 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-09-19 | Bringing Back the One Who Wanders | James 5:19–20 (ESV) | `bringing-back-the-one-who-wanders` | `2026-09-19-bringing-back-the-one-who-wanders.md` |
 | 2026-09-20 | He Gently Leads Those With Young | Isaiah 40:10–11 (ESV) | `he-gently-leads-those-with-young` | `2026-09-20-he-gently-leads-those-with-young.md` |
 | 2026-09-21 | He Does Not Deal With Us According to Our Sins | Psalm 103:8–10 (ESV) | `he-does-not-deal-with-us-according-to-our-sins` | `2026-09-21-he-does-not-deal-with-us-according-to-our-sins.md` |
+| 2026-09-22 | Love Your Enemies, Pray for Those Who Persecute You | Matthew 5:43–44 (ESV) | `love-your-enemies-pray-for-those-who-persecute-you` | `2026-09-22-love-your-enemies-pray-for-those-who-persecute-you.md` |
+| 2026-09-23 | Esau Ran to Meet Him | Genesis 33:1, 4 (ESV) | `esau-ran-to-meet-him` | `2026-09-23-esau-ran-to-meet-him.md` |
+| 2026-09-24 | Father, Forgive Them | Luke 23:34 (ESV) | `father-forgive-them` | `2026-09-24-father-forgive-them.md` |
+| 2026-09-25 | Lord, Do Not Hold This Sin Against Them | Acts 7:59–60 (ESV) | `lord-do-not-hold-this-sin-against-them` | `2026-09-25-lord-do-not-hold-this-sin-against-them.md` |
+| 2026-09-26 | If Your Enemy Is Hungry, Feed Him | Romans 12:19–20 (ESV) | `if-your-enemy-is-hungry-feed-him` | `2026-09-26-if-your-enemy-is-hungry-feed-him.md` |
+| 2026-09-27 | Love Covers a Multitude of Sins | 1 Peter 4:8 (ESV) | `love-covers-a-multitude-of-sins` | `2026-09-27-love-covers-a-multitude-of-sins.md` |
+| 2026-09-28 | Blessed Are the Merciful | Matthew 5:7 (ESV) | `blessed-are-the-merciful` | `2026-09-28-blessed-are-the-merciful.md` |
+| 2026-09-29 | He Delights in Steadfast Love | Micah 7:18–19 (ESV) | `he-delights-in-steadfast-love` | `2026-09-29-he-delights-in-steadfast-love.md` |
+| 2026-09-30 | Mercy Triumphs Over Judgment | James 2:13 (ESV) | `mercy-triumphs-over-judgment` | `2026-09-30-mercy-triumphs-over-judgment.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
