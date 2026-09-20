@@ -19,6 +19,7 @@ import { buildTabs, resolveOpenTab, pickImageCandidates } from '../../lib/staged
 // in the chat cannot disagree.
 import { countDraftWords } from '../../../lib/ao/draftStats.js';
 import { captionsFromChatText, mergeChatCaptions } from '../../../lib/ao/journalPanelData.js';
+import { isPlaceholderArtifactBody } from '../../../lib/ao/artifactPlaceholder.js';
 
 function formatWhen(ms) {
   if (!ms) return '';
@@ -489,10 +490,20 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
   }, [newestCandidateUrl]);
 
   const tabs = useMemo(() => buildTabs(stageInfo), [stageInfo]);
+  // Auto sometimes writes "(same content as above)" into the artifact instead of
+  // the post (2026-09-20). The saved draft is the post, and this panel already
+  // has it, so it stands in for the stub rather than showing Bart a placeholder
+  // and a word count of 4.
+  const postFallback = useMemo(
+    () => (isPlaceholderArtifactBody(postContent) && draft?.content?.trim() ? draft.content : null),
+    [postContent, draft]
+  );
+  const effectivePostContent = postFallback || postContent;
+
   // Recounted whenever the post text changes, so it follows every revision.
   const postWords = useMemo(
-    () => (postContent && String(postContent).trim() ? countDraftWords(postContent) : null),
-    [postContent]
+    () => (effectivePostContent && String(effectivePostContent).trim() ? countDraftWords(effectivePostContent) : null),
+    [effectivePostContent]
   );
 
   // Captions often exist only in the chat before anything is saved or
@@ -568,7 +579,7 @@ export default function StagedJournalPanel({ slug, designImages = [], renderPost
       <TabBar tabs={tabs} openTab={activeTab} unread={unread} onSelect={selectTab} counts={{ post: postWords }} />
       <div className="flex min-h-0 flex-1 flex-col pt-3">
         {activeTab === 'post' ? (
-          <div className="flex min-h-0 flex-1 flex-col">{renderPost?.()}</div>
+          <div className="flex min-h-0 flex-1 flex-col">{renderPost?.(postFallback)}</div>
         ) : activeTab === 'image' ? (
           <ImageTab
             designImages={designImages}

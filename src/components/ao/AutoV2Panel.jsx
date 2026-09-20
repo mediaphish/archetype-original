@@ -1428,9 +1428,9 @@ function ArtifactPanel({
             onStageApproved={onStageApproved}
             designImages={generatedDesignImages}
             onImageError={onGeneratedDesignImageError}
-            renderPost={() => (
+            renderPost={(contentOverride) => (
               <div className="flex flex-col flex-1 min-h-0 gap-3">
-                <DraftArtifact content={artifact.content} label={artifact.label} slug={stagedJournalSlug} />
+                <DraftArtifact content={contentOverride || artifact.content} label={artifact.label} slug={stagedJournalSlug} />
                 <div className="flex shrink-0 flex-col gap-2">
                   <button type="button" onClick={onApprove} className="w-full py-2 px-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
                     Approve

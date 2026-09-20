@@ -2731,6 +2731,35 @@ ${retrievedBlock}
         streamResult?.toolResults || []
       );
       fullReply = bridgedDraft.reply;
+
+      // Still a placeholder body, because the post was saved in an earlier turn
+      // ("(same content as above)", 2026-09-20). The saved draft is the post, so
+      // fill the block from it rather than shipping a stub to the panel.
+      try {
+        const { hasPlaceholderArtifact, replaceArtifactBody, artifactTagSlug } = await import(
+          '../../../lib/ao/artifactPlaceholder.js'
+        );
+        if (hasPlaceholderArtifact(fullReply)) {
+          const slugForArtifact = artifactTagSlug(fullReply);
+          if (slugForArtifact) {
+            const { data: saved } = await contentDrafts()
+              .select('content')
+              .eq('created_by_email', auth.email.toLowerCase().trim())
+              .eq('slug', canonicalizeSlug(slugForArtifact))
+              .in('kind', ['journal', 'devotional'])
+              .neq('status', 'abandoned')
+              .order('updated_at', { ascending: false })
+              .limit(1);
+            const savedContent = saved?.[0]?.content || '';
+            if (savedContent.trim()) {
+              fullReply = replaceArtifactBody(fullReply, savedContent);
+              console.warn('[chat.js] repaired placeholder artifact body from the saved draft:', slugForArtifact);
+            }
+          }
+        }
+      } catch (artifactErr) {
+        console.warn('[chat.js] placeholder artifact repair failed (non-fatal):', artifactErr?.message || artifactErr);
+      }
     }
 
     await addAutoMessage({
