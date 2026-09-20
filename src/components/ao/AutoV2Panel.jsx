@@ -1964,6 +1964,21 @@ export default function AutoV2Panel({ onNavigate, className }) {
           },
         ]);
 
+        // The upload shows in the conversation straight away. Bart had to ask
+        // whether Auto knew about his image (2026-09-20); now it is on screen
+        // before he types anything.
+        if (json.chat_message) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: 'assistant',
+              content: json.chat_message,
+              id: `manual-upload-${Date.now()}`,
+              meta: { manual_header_upload: true },
+            },
+          ]);
+        }
+
         if (json.thread_fact_recorded === false && json.thread_fact_error) {
           setError(
             `Image saved to the draft, but Auto was not notified (${json.thread_fact_error}). Tell Auto the slug and image URL if needed.`

@@ -236,6 +236,33 @@ export default async function handler(req, res) {
       console.error('[upload-header-image] Thread fact not recorded:', factResult.error);
     }
 
+    // Say it in the conversation, not only in a system fact Auto reads later.
+    // 2026-09-20: Bart uploaded the header and nothing in the chat acknowledged
+    // it, so he had to ask ("I provided you the header image") while Auto went
+    // on talking about the image it had generated.
+    const confirmation =
+      `Got your header image for "${resultTitle || resultSlug}". It is saved on the draft as the header` +
+      `${imageApprovalRecorded ? ', and the image step is approved because you supplied it' : ''}.` +
+      `\n\n${imageUrl}`;
+
+    let chatMessageRecorded = false;
+    const confirmationThreadId = factResult.thread_id || thread_id || null;
+    if (confirmationThreadId) {
+      try {
+        const { addAutoMessage } = await import('../../../lib/ao/autoHub.js');
+        await addAutoMessage({
+          threadId: confirmationThreadId,
+          role: 'assistant',
+          mode: 'plan',
+          content: confirmation,
+          meta: { manual_header_upload: true, slug: resultSlug, image_url: imageUrl },
+        });
+        chatMessageRecorded = true;
+      } catch (err) {
+        console.warn('[upload-header-image] confirmation message not saved:', err?.message || err);
+      }
+    }
+
     res.status(200).json({
       ok: true,
       image_url: imageUrl,
@@ -246,6 +273,9 @@ export default async function handler(req, res) {
       thread_fact_recorded: threadFactRecorded,
       thread_fact_error: threadFactError,
       thread_id: factResult.thread_id || null,
+      image_approved: imageApprovalRecorded,
+      chat_message: confirmation,
+      chat_message_recorded: chatMessageRecorded,
     });
   } catch (err) {
     console.error('[upload-header-image] Unexpected error:', err?.message || err);
