@@ -38,9 +38,50 @@ export default async function handler(req, res) {
   try {
     const { slug, image_base64, media_type, thread_id } = req.body || {};
 
-    const safeSlug = canonicalizeSlug(slug);
+    // slug is optional. When the caller does not name a post, the thread does:
+    // the artifact tags carry the slug of whatever is being worked on. Bart,
+    // 2026-09-20: "Auto should be intelligent enough to know what post we are
+    // adding an image to."
+    let safeSlug = canonicalizeSlug(slug);
+    let slugSource = safeSlug ? 'caller' : null;
+
     if (!safeSlug) {
-      res.status(400).json({ ok: false, error: 'slug is required' });
+      try {
+        const { latestSlugInMessages } = await import('../../../lib/ao/uploadTargetSlug.js');
+        const { data: threadRow } = thread_id
+          ? { data: { id: thread_id } }
+          : await supabaseAdmin
+              .from('ao_auto_threads')
+              .select('id')
+              .eq('created_by_email', auth.email.toLowerCase().trim())
+              .eq('status', 'active')
+              .order('last_message_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+
+        if (threadRow?.id) {
+          const { data: messages } = await supabaseAdmin
+            .from('ao_auto_messages')
+            .select('content, created_at')
+            .eq('thread_id', threadRow.id)
+            .order('created_at', { ascending: false })
+            .limit(60);
+          const fromThread = latestSlugInMessages([...(messages || [])].reverse());
+          if (fromThread) {
+            safeSlug = canonicalizeSlug(fromThread);
+            slugSource = 'thread';
+          }
+        }
+      } catch (err) {
+        console.warn('[upload-header-image] slug lookup from thread failed:', err?.message || err);
+      }
+    }
+
+    if (!safeSlug) {
+      res.status(400).json({
+        ok: false,
+        error: 'No post is open and nothing in this conversation names one, so tell me which post this image is for.',
+      });
       return;
     }
 

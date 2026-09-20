@@ -19,6 +19,7 @@ import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
 import StagedJournalPanel from './StagedJournalPanel.jsx';
 import { resolveDraftArtifactSlug } from './draftArtifactSlug.js';
+import { resolveUploadTargetSlug } from '../../../lib/ao/uploadTargetSlug.js';
 import { findChatCaptionsMessage } from '../../../lib/ao/journalPanelData.js';
 import { abortReasonFor, abortMessageFor } from '../../lib/autoStreamTimeouts.js';
 import {
@@ -247,27 +248,6 @@ function extractNavigateToSignal(content) {
   const text = String(content || '');
   const match = text.match(/\[NAVIGATE_TO\s+path="([^"]+)"\]/i);
   return match ? match[1] : null;
-}
-
-/**
- * Best-guess the slug a manual image upload should attach to, by scanning
- * recent messages (most recent first) for a slug="..." attribute on any
- * known content signal. This is only ever a suggested starting value --
- * the person uploading always confirms or corrects it before it's used,
- * so a wrong guess here costs nothing.
- */
-function guessMostRecentDraftSlug(messages) {
-  if (!Array.isArray(messages)) return '';
-  for (let i = messages.length - 1; i >= 0; i -= 1) {
-    const text = String(messages[i]?.content || '');
-    const match =
-      text.match(/\[PUBLISH_JOURNAL[^\]]*\bslug="([^"]+)"/i) ||
-      text.match(/\[PUBLISH_DEVOTIONAL[^\]]*\bslug="([^"]+)"/i) ||
-      text.match(/\[DRAFT_FETCH_FULL_TEXT[^\]]*\bslug="([^"]+)"/i) ||
-      text.match(/\[CORPUS_FETCH_FULL_TEXT[^\]]*\bslug="([^"]+)"/i);
-    if (match) return match[1];
-  }
-  return '';
 }
 
 function stripBareKnownSignalMentions(text) {
@@ -1927,12 +1907,18 @@ export default function AutoV2Panel({ onNavigate, className }) {
       if (e.target) e.target.value = '';
       if (!file) return;
 
-      const suggestedSlug = guessMostRecentDraftSlug(messages);
-      const slug = window.prompt(
-        'Which draft is this header image for? Confirm or correct the slug:',
-        suggestedSlug
-      );
-      if (!slug || !slug.trim()) return;
+      // The post is usually open in the panel, and the thread names it either
+      // way. Asking every time was pure friction (Bart, 2026-09-20: "Auto should
+      // be intelligent enough to know what post we are adding an image to").
+      const target = resolveUploadTargetSlug({
+        artifactSlug: resolveDraftArtifactSlug(artifact),
+        messages,
+      });
+      const slug =
+        target.slug ||
+        window.prompt('Which draft is this header image for? Enter the slug:', '') ||
+        '';
+      if (!slug.trim()) return;
 
       setUploadingHeaderImage(true);
       setError('');
@@ -1989,7 +1975,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
         setUploadingHeaderImage(false);
       }
     },
-    [messages, activeThreadId]
+    [messages, activeThreadId, artifact]
   );
 
   const isJournalEntry = useMemo(() => {
