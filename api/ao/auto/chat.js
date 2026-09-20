@@ -560,12 +560,27 @@ async function trySaveAttachedImageAsHeader(userMessage, attachments, email, rec
     }
 
     if (updatedRow) {
+      // An image Bart supplies is an approved image (2026-09-20). Recording it
+      // here is what stops Auto asking him to approve his own upload.
+      let approvalNote = '';
+      try {
+        const { recordStageApproval } = await import('../../../lib/ao/stageApproval.js');
+        const approval = await recordStageApproval({ email, slug: updatedRow.slug, stage: 'image' });
+        if (approval?.ok) {
+          approvalNote =
+            ' The image stage is recorded as APPROVED, because Bart supplied the image himself. ' +
+            'Do not ask him to approve it; move to the next step.';
+        }
+      } catch (err) {
+        console.warn('[chat.js] image approval from attachment failed:', err?.message || err);
+      }
       return (
         `[SYSTEM FACT -- an image attached to this message was already automatically saved as the ` +
         `header image for the existing draft "${updatedRow.title || updatedRow.slug}" (slug: ${updatedRow.slug}, ` +
         `status: ${updatedRow.status}). Its real, live URL is: ${updatedRow.image_url}. This already ` +
         `happened in the database before you answered. Confirm this plainly to Bart using the exact ` +
-        `URL above. Do not claim you generated a new image. Do not claim this failed or is unverified.]`
+        `URL above. Do not claim you generated a new image. Do not claim this failed or is unverified.` +
+        `${approvalNote}]`
       );
     }
 

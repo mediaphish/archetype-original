@@ -199,6 +199,27 @@ export default async function handler(req, res) {
       createdNewDraft = true;
     }
 
+    // An image Bart supplies is an approved image.
+    //
+    // 2026-09-20: he uploaded the header himself and Auto still spent six turns
+    // demanding the words "I approve the image". "I gave you the image. How
+    // would it not be approved." Recording it here ends that class of argument.
+    let imageApprovalRecorded = false;
+    try {
+      const { recordStageApproval } = await import('../../../lib/ao/stageApproval.js');
+      const approval = await recordStageApproval({
+        email: auth.email,
+        slug: resultSlug,
+        stage: 'image',
+      });
+      imageApprovalRecorded = !!approval?.ok;
+      if (!approval?.ok) {
+        console.warn('[upload-header-image] image approval not recorded:', approval?.error);
+      }
+    } catch (err) {
+      console.warn('[upload-header-image] image approval failed:', err?.message || err);
+    }
+
     let threadFactRecorded = false;
     let threadFactError = null;
     const factResult = await recordManualHeaderUploadFact({
