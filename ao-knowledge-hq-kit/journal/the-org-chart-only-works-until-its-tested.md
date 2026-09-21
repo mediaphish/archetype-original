@@ -5,7 +5,7 @@ publish_date: '2026-09-21T15:42:39.754Z'
 created_at: '2026-09-21'
 updated_at: '2026-09-21'
 summary: >-
-  Interactive EQ ran more than 5,000 role-based workplace simulations across 1,700-plus professionals in 46 organizations this year and published the results as the Behavioral Intelligence Index. The finding that matters isn't complicated. About one in four professionals stall when
+  Interactive EQ ran more than 5,000 role-based workplace simulations across 1,700-plus professionals in 46 organizations this year and published the results as the Behavioral Intelligence Index. The finding that matters isn't complicated. About one in four professionals stall when authority becomes ambiguous, even when they already know the right thing to do.
 categories:
   - Leadership
   - Servant Leadership
