@@ -12,10 +12,12 @@
  *   - any call to OpenAI's chat/completions or responses endpoints
  *   - any gpt-* model string outside the image allowlist
  *
- * Allowed: image generation (gpt-image-1) and, for now, embeddings
- * (text-embedding-3-small). Embeddings are a separate decision because moving
- * them means re-embedding the whole corpus; when that happens, delete the
- * exception rather than widening it.
+ * Allowed: image generation (gpt-image-1) and embeddings
+ * (text-embedding-3-small). Bart settled that on 2026-09-23: OpenAI covers what
+ * Anthropic does not sell, which is pixels and vectors. Anything that produces
+ * words a human reads is Claude. Embeddings produce no prose, and there is no
+ * Claude embedding model, so moving them would mean adding a third vendor
+ * rather than consolidating.
  */
 import fs from 'fs';
 import path from 'path';
@@ -32,7 +34,7 @@ const ALLOWED = new Map([
   ['lib/ao/generateReshareCardImage.js', 'image generation'],
   ['lib/ao/rapidWriteImage.js', 'image generation'],
   ['lib/ao/recentApprovedHeader.js', 'image generation'],
-  ['lib/ao/corpusEmbeddings.js', 'embeddings (open decision)'],
+  ['lib/ao/corpusEmbeddings.js', 'embeddings: no Claude equivalent exists'],
   ['lib/openaiKey.js', 'the key helper itself'],
   ['scripts/verify-no-openai-text.mjs', 'this check'],
   ['lib/ao/textModel.js', 'names the old model in its comment and its error guidance'],
