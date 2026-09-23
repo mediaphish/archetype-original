@@ -5,10 +5,15 @@
  * 
  * Generates 4-5 AI-powered scenario insights for an event based on attendee profiles and current challenges.
  * Only SA, CO, or Accountant can generate scenarios. Requires RSVP to be closed.
+ *
+ * Scenario generation runs on Claude through lib/ao/textModel.js. It called
+ * OpenAI directly until 2026-09-23, and Bart's rule is that OpenAI is for image
+ * creation only, so every text call in the platform goes through the helper.
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { canManageTopics } from '../../../../lib/operators/permissions.js';
+import { completeText, extractJson, textModelConfigured } from '../../../../lib/ao/textModel.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -113,62 +118,29 @@ export default async function handler(req, res) {
       attendees: attendeeData
     };
 
-    // Check if OpenAI API key is configured (this project uses OPEN_API_KEY)
-    const openaiApiKey = process.env.OPEN_API_KEY;
-    if (!openaiApiKey) {
-      console.error('[GENERATE_SCENARIOS] OpenAI API key missing (OPEN_API_KEY)');
-      return res.status(500).json({ ok: false, error: 'OpenAI API key not configured' });
+    if (!textModelConfigured()) {
+      console.error('[GENERATE_SCENARIOS] Text model not configured (ANTHROPIC_API_KEY)');
+      return res.status(500).json({ ok: false, error: 'Text model not configured' });
     }
 
-    // Build prompt for OpenAI
+    // Build the prompt
     const prompt = buildScenarioGenerationPrompt(roomProfile, topicLibrary || [], previousScenarios);
 
-    // Call OpenAI API
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${openaiApiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert at analyzing leadership event rooms and generating realistic, neutralized problem scenarios (1-paragraph stories) that benefit multiple attendees. You create insightful, actionable scenarios based on attendee profiles and current challenges.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 2500
-      })
+    const aiContent = await completeText({
+      prompt,
+      system: 'You are an expert at analyzing leadership event rooms and generating realistic, neutralized problem scenarios (1-paragraph stories) that benefit multiple attendees. You create insightful, actionable scenarios based on attendee profiles and current challenges.',
+      task: 'analysis',
+      maxTokens: 2500,
     });
-
-    if (!openaiResponse.ok) {
-      const errorData = await openaiResponse.json();
-      console.error('[GENERATE_SCENARIOS] OpenAI API error:', errorData);
-      return res.status(500).json({ ok: false, error: 'Failed to generate scenarios from AI service' });
-    }
-
-    const aiData = await openaiResponse.json();
-    const aiContent = aiData.choices?.[0]?.message?.content;
 
     if (!aiContent) {
       return res.status(500).json({ ok: false, error: 'Invalid response from AI service' });
     }
 
     // Parse AI response (expecting JSON array of scenarios)
-    let scenarios;
-    try {
-      // Try to extract JSON from response (might have markdown code blocks)
-      const jsonMatch = aiContent.match(/```json\s*([\s\S]*?)\s*```/) || aiContent.match(/```\s*([\s\S]*?)\s*```/);
-      const jsonStr = jsonMatch ? jsonMatch[1] : aiContent;
-      scenarios = JSON.parse(jsonStr);
-    } catch (parseError) {
-      console.error('[GENERATE_SCENARIOS] Failed to parse AI response:', parseError);
+    const scenarios = extractJson(aiContent);
+    if (!scenarios) {
+      console.error('[GENERATE_SCENARIOS] Failed to parse AI response');
       return res.status(500).json({ ok: false, error: 'Failed to parse AI response. Please try again.' });
     }
 

@@ -1,11 +1,15 @@
 /**
- * AO Automation — Generate draft for writing queue item (OpenAI).
+ * AO Automation — Generate draft for writing queue item.
  * POST /api/ao/writing/[id]/draft?email=xxx
+ *
+ * The draft is prose that goes out under Archetype Original's name, so it runs
+ * on Claude through lib/ao/textModel.js. It called OpenAI directly until
+ * 2026-09-23, and Bart's rule is that OpenAI is for image creation only.
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
-import { getOpenAiKey } from '../../../../lib/openaiKey.js';
+import { completeText, textModelConfigured } from '../../../../lib/ao/textModel.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -38,29 +42,13 @@ export default async function handler(req, res) {
       .update({ status: 'drafting', updated_at: new Date().toISOString() })
       .eq('id', id);
 
-    const apiKey = getOpenAiKey();
     let draftContent = '';
-    if (apiKey) {
+    if (textModelConfigured()) {
       const prompt = `Write a short article draft (2-4 paragraphs) for this topic.\nTitle: ${row.title || 'Untitled'}\nAngle: ${row.angle || 'General'}\nVoice: ${row.voice || 'Professional'}\nLength: ${row.length || 'Medium'}\nSource notes: ${row.source_notes || 'None'}`;
-      const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: 800,
-        }),
-      });
-      if (openaiRes.ok) {
-        const json = await openaiRes.json();
-        draftContent = json.choices?.[0]?.message?.content?.trim() || '';
-      }
+      draftContent = await completeText({ prompt, task: 'voice', maxTokens: 1500 });
     }
     if (!draftContent) {
-      draftContent = `[Draft placeholder for: ${row.title || 'Untitled'}]\n\nAngle: ${row.angle || '—'}\nVoice: ${row.voice || '—'}\n\nAdd OPEN_API_KEY to generate a real draft.`;
+      draftContent = `[Draft placeholder for: ${row.title || 'Untitled'}]\n\nAngle: ${row.angle || '—'}\nVoice: ${row.voice || '—'}\n\nAdd ANTHROPIC_API_KEY to generate a real draft.`;
     }
 
     const { data: updated, error: updateError } = await supabaseAdmin

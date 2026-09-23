@@ -6,11 +6,15 @@
  * - thread_kind: 'quote' | 'idea'
  * - thread_id: string
  * - messages: [{ role: 'user'|'assistant', content: string }]
+ *
+ * The analyst writes prose Bart reads, so it runs on Claude through
+ * lib/ao/textModel.js. It called OpenAI directly until 2026-09-23, and Bart's
+ * rule is that OpenAI is for image creation only.
  */
 
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
-import { getOpenAiKey } from '../../../lib/openaiKey.js';
+import { completeChat, textModelConfigured } from '../../../lib/ao/textModel.js';
 import { parseLooseJson } from '../../../lib/ao/parseLooseJson.js';
 
 function safeText(v, maxLen) {
@@ -39,47 +43,24 @@ function clampMessages(arr, max = 12) {
 /**
  * @param {{ system: string; conversationTurns: { role: string; content: string }[] }} opts
  */
-async function openAiJson(opts) {
+async function analystJson(opts) {
   const { system, conversationTurns } = opts;
-  const apiKey = getOpenAiKey();
-  if (!apiKey) return null;
-  const model = process.env.AO_ANALYST_MODEL || 'gpt-4o-mini';
-  const controller = new AbortController();
+  if (!textModelConfigured()) return null;
   const timeoutMs = Math.max(1500, Math.min(12000, Number(process.env.AO_ANALYST_TIMEOUT_MS || 6500)));
-  const t = setTimeout(() => controller.abort(), timeoutMs);
   const turns = Array.isArray(conversationTurns) ? conversationTurns : [];
-  const openAiMessages = [
-    { role: 'system', content: system },
-    ...turns.map((m) => ({
+  const { text } = await completeChat({
+    messages: turns.map((m) => ({
       role: m.role === 'assistant' ? 'assistant' : 'user',
       content: m.content,
     })),
-  ];
-  try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      signal: controller.signal,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages: openAiMessages,
-        max_tokens: 900,
-        temperature: 0.2,
-      }),
-    });
-    if (!res.ok) return null;
-    const json = await res.json().catch(() => ({}));
-    const content = json.choices?.[0]?.message?.content?.trim() || '';
-    if (!content) return null;
-    return parseLooseJson(content);
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(t);
-  }
+    system,
+    task: 'voice',
+    maxTokens: 1500,
+    timeoutMs,
+  });
+  const content = String(text || '').trim();
+  if (!content) return null;
+  return parseLooseJson(content);
 }
 
 function normalizeGoActions(raw) {
@@ -219,14 +200,14 @@ export default async function handler(req, res) {
     JSON.stringify(ctx),
   ].join('\n');
 
-  const parsed = await openAiJson({
+  const parsed = await analystJson({
     system: systemWithContext,
     conversationTurns: messages,
   });
   if (!parsed || typeof parsed !== 'object') {
     return res.status(200).json({
       ok: true,
-      assistant_message: getOpenAiKey()
+      assistant_message: textModelConfigured()
         ? 'I could not generate a reply right now. Try again in a moment.'
         : 'AI is not configured on the server right now.',
       suggestions: [],

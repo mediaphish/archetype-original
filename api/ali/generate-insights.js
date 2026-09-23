@@ -1,7 +1,16 @@
+/**
+ * ALI — Generate per-metric insights.
+ *
+ * This runs on Claude through lib/ao/textModel.js. It called OpenAI directly
+ * until 2026-09-23, and Bart's rule is that OpenAI is for image creation only,
+ * so every text call in the platform goes through the shared helper now.
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { CONDITION_KEYS, CONDITION_LABELS } from '../../lib/ali-conditions.js';
 import { requireAliSession } from '../../lib/ali-session.js';
+import { completeJson, textModelConfigured } from '../../lib/ao/textModel.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -100,11 +109,9 @@ export default async function handler(req, res) {
       });
     }
 
-    // This project uses OPEN_API_KEY (see `api/chat.js`)
-    const openaiApiKey = process.env.OPEN_API_KEY;
-    if (!openaiApiKey) {
-      console.error('[GENERATE_INSIGHTS] OpenAI API key missing (OPEN_API_KEY)');
-      return res.status(500).json({ ok: false, error: 'OpenAI API key not configured' });
+    if (!textModelConfigured()) {
+      console.error('[GENERATE_INSIGHTS] Text model not configured (ANTHROPIC_API_KEY)');
+      return res.status(500).json({ ok: false, error: 'Text model not configured' });
     }
 
     console.log('[GENERATE_INSIGHTS] Building prompt...');
@@ -128,54 +135,15 @@ ${buildInsightSchemaBlock()}
 Metrics data:
 ${JSON.stringify(metrics, null, 2)}`;
 
-    console.log('[GENERATE_INSIGHTS] Calling OpenAI API...');
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [{ role: 'system', content: systemPrompt }],
-        temperature: 0.7,
-        max_tokens: 800
-      })
-    });
+    console.log('[GENERATE_INSIGHTS] Calling the text model...');
+    const insights = await completeJson({ prompt: systemPrompt, task: 'analysis', maxTokens: 1500 });
 
-    console.log('[GENERATE_INSIGHTS] OpenAI response status:', openaiResponse.status);
-
-    if (!openaiResponse.ok) {
-      const errorText = await openaiResponse.text();
-      console.error('[GENERATE_INSIGHTS] OpenAI API error:', errorText);
-      return res.status(500).json({ ok: false, error: 'Failed to generate insights', details: errorText.substring(0, 200) });
+    if (!insights) {
+      console.error('[GENERATE_INSIGHTS] No JSON found in AI response');
+      return res.status(500).json({ ok: false, error: 'No JSON found in AI response' });
     }
 
-    const aiData = await openaiResponse.json();
-    const aiContent = aiData.choices?.[0]?.message?.content;
-    console.log('[GENERATE_INSIGHTS] Received AI response, length:', aiContent?.length || 0);
-
-    if (!aiContent) {
-      console.error('[GENERATE_INSIGHTS] No content in response');
-      return res.status(500).json({ ok: false, error: 'No content in AI response' });
-    }
-
-    // Parse JSON from response
-    let insights = {};
-    try {
-      const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        insights = JSON.parse(jsonMatch[0]);
-        console.log('[GENERATE_INSIGHTS] Successfully parsed insights for keys:', Object.keys(insights));
-      } else {
-        console.error('[GENERATE_INSIGHTS] No JSON found. Content preview:', aiContent.substring(0, 300));
-        return res.status(500).json({ ok: false, error: 'No JSON found in AI response' });
-      }
-    } catch (e) {
-      console.error('[GENERATE_INSIGHTS] JSON parse error:', e.message);
-      console.error('[GENERATE_INSIGHTS] Content that failed to parse:', aiContent.substring(0, 300));
-      return res.status(500).json({ ok: false, error: 'Failed to parse insights', details: e.message });
-    }
+    console.log('[GENERATE_INSIGHTS] Successfully parsed insights for keys:', Object.keys(insights));
 
     console.log('[GENERATE_INSIGHTS] Returning success with', Object.keys(insights).length, 'insights');
     return res.status(200).json({ ok: true, insights });

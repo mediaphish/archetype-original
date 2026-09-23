@@ -7,6 +7,10 @@
  *
  * Note: This endpoint does NOT write drafts back to the quote item.
  * It only suggests patches; the UI controls what is actually saved/published.
+ *
+ * Studio writes in Bart's voice, so it runs on Claude through
+ * lib/ao/textModel.js. It called OpenAI directly until 2026-09-23, and Bart's
+ * rule is that OpenAI is for image creation only.
  */
 
 import { supabaseAdmin } from '../../../../lib/supabase-admin.js';
@@ -14,7 +18,7 @@ import { requireAoSession } from '../../../../lib/ao/requireAoSession.js';
 import { AO_VOICE_MANIFESTO } from '../../../../lib/ao/voiceManifesto.js';
 import { getVoiceAnchors } from '../../../../lib/ao/voiceAnchors.js';
 import { parseLooseJson } from '../../../../lib/ao/parseLooseJson.js';
-import { getOpenAiKey } from '../../../../lib/openaiKey.js';
+import { completeChat, textModelConfigured } from '../../../../lib/ao/textModel.js';
 
 function safeText(v, maxLen) {
   const s = String(v || '').trim();
@@ -183,39 +187,24 @@ async function getOrCreateSession({ quoteId, email }) {
   return null;
 }
 
-async function openAiJson({ messages, model, timeoutMs = 12000 }) {
-  const apiKey = getOpenAiKey();
-  if (!apiKey) return { ok: false, error: 'AI is not configured (missing OPEN_API_KEY).' };
+async function studioJson({ messages, system, timeoutMs = 12000 }) {
+  if (!textModelConfigured()) return { ok: false, error: 'AI is not configured (missing ANTHROPIC_API_KEY).' };
 
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        max_tokens: 1200,
-      }),
-      signal: controller.signal,
-    });
-    if (!res.ok) return { ok: false, error: 'AI request failed' };
-    const json = await res.json().catch(() => ({}));
-    const content = json.choices?.[0]?.message?.content?.trim() || '';
-    if (!content) return { ok: false, error: 'AI returned an empty response' };
-    const parsed = parseLooseJson(content);
-    return { ok: true, parsed, raw: content };
-  } catch (e) {
-    const msg = String(e?.name || e?.message || e || '');
-    if (msg.toLowerCase().includes('abort')) return { ok: false, error: 'AI did not respond in time. Try again.' };
-    return { ok: false, error: 'AI request failed' };
-  } finally {
-    clearTimeout(t);
-  }
+  const { text, timedOut, error } = await completeChat({
+    messages,
+    system,
+    task: 'voice',
+    maxTokens: 1200,
+    timeoutMs,
+  });
+
+  if (timedOut) return { ok: false, error: 'AI did not respond in time. Try again.' };
+  if (error) return { ok: false, error: 'AI request failed' };
+
+  const content = String(text || '').trim();
+  if (!content) return { ok: false, error: 'AI returned an empty response' };
+  const parsed = parseLooseJson(content);
+  return { ok: true, parsed, raw: content };
 }
 
 export default async function handler(req, res) {
@@ -374,15 +363,11 @@ Return ONLY JSON (no markdown, no code fences) with keys:
       { role: 'user', content: userMessage, at: new Date().toISOString() },
     ].slice(-40);
 
-    const model = process.env.AO_STUDIO_MODEL || 'gpt-4o-mini';
-    const ai = await openAiJson({
-      model,
-      messages: [
-        { role: 'system', content: system },
-        ...newMessages
-          .slice(-16)
-          .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: safeText(m.content, 2000) })),
-      ],
+    const ai = await studioJson({
+      system,
+      messages: newMessages
+        .slice(-16)
+        .map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: safeText(m.content, 2000) })),
       timeoutMs: 14000,
     });
 

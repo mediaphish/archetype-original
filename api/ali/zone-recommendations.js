@@ -1,7 +1,16 @@
+/**
+ * ALI — Generate a zone based "first move" recommendation.
+ *
+ * This runs on Claude through lib/ao/textModel.js. It called OpenAI directly
+ * until 2026-09-23, and Bart's rule is that OpenAI is for image creation only,
+ * so every text call in the platform goes through the shared helper now.
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { CONDITION_LABELS } from '../../lib/ali-conditions.js';
 import { requireAliSession } from '../../lib/ali-session.js';
+import { completeText, extractJson, textModelConfigured } from '../../lib/ao/textModel.js';
 
 function loadKnowledgeCorpus() {
   try {
@@ -73,12 +82,6 @@ function searchKnowledge(query, corpus) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 4)
     .map(item => item.doc);
-}
-
-function requireEnv(name) {
-  const v = process.env[name];
-  if (!v) throw new Error(`${name} is not set`);
-  return v;
 }
 
 export default async function handler(req, res) {
@@ -153,35 +156,16 @@ export default async function handler(req, res) {
       knowledgeContext
     ].join('\n');
 
-    // This project uses OPEN_API_KEY (see `api/chat.js`)
-    const openaiKey = requireEnv('OPEN_API_KEY');
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${openaiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        temperature: 0.4,
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: user }
-        ]
-      })
-    });
+    if (!textModelConfigured()) throw new Error('ANTHROPIC_API_KEY is not set');
 
-    const data = await openaiResponse.json();
-    if (!openaiResponse.ok) {
-      console.error('zone-recommendations: openai error', data);
+    const text = await completeText({ prompt: user, system, task: 'analysis', maxTokens: 1500 });
+    if (!text) {
+      console.error('zone-recommendations: text model returned nothing');
       return res.status(500).json({ error: 'Failed to generate recommendation' });
     }
 
-    const text = data?.choices?.[0]?.message?.content || '';
-    let parsed;
-    try {
-      parsed = JSON.parse(text);
-    } catch {
+    const parsed = extractJson(text);
+    if (!parsed) {
       // Fallback: return raw text for debugging, but still avoid crashing UI
       return res.status(200).json({
         recommendation: null,

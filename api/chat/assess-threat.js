@@ -1,4 +1,13 @@
+/**
+ * Chat — threat assessment for an incoming message.
+ *
+ * The assessment runs on Claude through lib/ao/textModel.js. It called OpenAI
+ * directly until 2026-09-23, and Bart's rule is that OpenAI is for image
+ * creation only, so every text call in the platform goes through the helper.
+ */
+
 import { createClient } from '@supabase/supabase-js';
+import { completeText, textModelConfigured } from '../../lib/ao/textModel.js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -21,7 +30,7 @@ function getClientIP(req) {
 
 // Use AI to assess if message is a real threat vs just casual/unprofessional language
 async function assessThreatWithAI(message, conversationHistory) {
-  if (!process.env.OPEN_API_KEY) {
+  if (!textModelConfigured()) {
     // Fallback: only flag obvious threats
     const obviousThreats = [
       /(kill|murder|harm|hurt)\s+(you|yourself|your|me|myself)/i,
@@ -47,26 +56,15 @@ Respond with ONLY one word: THREAT, HARASSMENT, CASUAL, or NORMAL
 
 Do not flag casual language, swearing, or unprofessional speech unless it's actually threatening or harassing.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPEN_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: 'You are a threat assessment system. Respond with only one word: THREAT, HARASSMENT, CASUAL, or NORMAL.' },
-          { role: 'user', content: assessmentPrompt }
-        ],
-        max_tokens: 10,
-        temperature: 0.3
-      })
+    const raw = await completeText({
+      prompt: assessmentPrompt,
+      system: 'You are a threat assessment system. Respond with only one word: THREAT, HARASSMENT, CASUAL, or NORMAL.',
+      task: 'analysis',
+      maxTokens: 1500,
     });
+    const assessment = raw ? raw.trim().toUpperCase() : undefined;
 
-    const data = await response.json();
-    const assessment = data.choices?.[0]?.message?.content?.trim().toUpperCase();
-    
+
     return {
       isThreat: assessment === 'THREAT',
       isHarassment: assessment === 'HARASSMENT',
