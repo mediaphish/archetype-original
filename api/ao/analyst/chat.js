@@ -54,7 +54,9 @@ async function analystJson(opts) {
       content: m.content,
     })),
     system,
-    task: 'voice',
+    // An interactive desk chat on a few-second budget, not published prose.
+    // Sonnet answers well inside the timeout; Opus thinking hard would not.
+    task: 'analysis',
     maxTokens: 1500,
     timeoutMs,
   });

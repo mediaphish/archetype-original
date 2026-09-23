@@ -193,7 +193,10 @@ async function studioJson({ messages, system, timeoutMs = 12000 }) {
   const { text, timedOut, error } = await completeChat({
     messages,
     system,
+    // Studio shapes card copy with Bart, so it keeps the strong model, held to
+    // low effort to stay inside the 14 second budget this endpoint enforces.
     task: 'voice',
+    effort: 'low',
     maxTokens: 1200,
     timeoutMs,
   });
