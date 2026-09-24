@@ -1585,6 +1585,28 @@ export default async function handler(req, res) {
       return;
     }
 
+    // Ran out of output room. 2026-09-24: a long editing pass filled the
+    // ceiling partway through and the turn ended with nothing on screen, logged
+    // only as a console warning. Bart: "It ran for a while. Then it stopped.
+    // Never returned anything." Whatever else happens, he is told.
+    {
+      const { ranOutOfOutputRoom, truncatedReplyNotice } = await import(
+        '../../../lib/ao/truncatedReplyNotice.js'
+      );
+      if (ranOutOfOutputRoom(streamResult?.stop_reason)) {
+        const savedDraft = (streamResult?.toolResults || []).some(
+          (r) => r?.name === 'save_draft' && r?.result?.ok
+        );
+        const hasPartialText = !!String(fullReply || '').trim();
+        const notice = truncatedReplyNotice({ savedDraft, hasPartialText });
+        console.warn(
+          `[chat.js] turn hit max_tokens (saved_draft=${savedDraft}, partial_text=${hasPartialText})`
+        );
+        fullReply = hasPartialText ? `${fullReply.trim()}\n\n${notice}` : notice;
+        sendEvent('reply_append', { reply_append: true, append_text: hasPartialText ? `\n\n${notice}` : notice });
+      }
+    }
+
     // Facts were included in this turn's system prompt — mark consumed so the
     // next turn does not re-inject the same block forever. Failed turns above
     // leave them unconsumed so a retry still sees them.
