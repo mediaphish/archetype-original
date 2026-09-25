@@ -53,3 +53,6 @@ backups/_cleanup_quarantine/**/dist/
 # Plate originals. The committed plates are the JPEGs; the PNGs that come out
 # of the image tool are ~9x larger for no visible gain and stay local.
 public/images/cards/*.png
+
+# 2027 devotional rework workspace (copies of live posts). Not part of the site build.
+devotionals-2027/

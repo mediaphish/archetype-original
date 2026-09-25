@@ -279,6 +279,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-09-28 | Blessed Are the Merciful | Matthew 5:7 (ESV) | `blessed-are-the-merciful` | `2026-09-28-blessed-are-the-merciful.md` |
 | 2026-09-29 | He Delights in Steadfast Love | Micah 7:18–19 (ESV) | `he-delights-in-steadfast-love` | `2026-09-29-he-delights-in-steadfast-love.md` |
 | 2026-09-30 | Mercy Triumphs Over Judgment | James 2:13 (ESV) | `mercy-triumphs-over-judgment` | `2026-09-30-mercy-triumphs-over-judgment.md` |
+| 2026-10-01 | Work It and Keep It | Genesis 2:15 (ESV) | `work-it-and-keep-it` | `2026-10-01-work-it-and-keep-it.md` |
+| 2026-10-02 | The Earth Is the Lord's | Psalm 24:1–2 (ESV) | `the-earth-is-the-lords` | `2026-10-02-the-earth-is-the-lords.md` |
+| 2026-10-03 | Given to the Children of Man | Psalm 115:16 (ESV) | `given-to-the-children-of-man` | `2026-10-03-given-to-the-children-of-man.md` |
+| 2026-10-04 | Strangers and Sojourners | Leviticus 25:23 (ESV) | `strangers-and-sojourners` | `2026-10-04-strangers-and-sojourners.md` |
+| 2026-10-05 | The Might of My Hand | Deuteronomy 8:17–18 (ESV) | `the-might-of-my-hand` | `2026-10-05-the-might-of-my-hand.md` |
+| 2026-10-06 | He Must Increase | John 3:27–30 (ESV) | `he-must-increase` | `2026-10-06-he-must-increase.md` |
+| 2026-10-07 | The Lord Gave | Job 1:20–21 (ESV) | `the-lord-gave` | `2026-10-07-the-lord-gave.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
