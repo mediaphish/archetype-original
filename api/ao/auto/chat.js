@@ -1792,6 +1792,21 @@ export default async function handler(req, res) {
     const recentHistory = priorMessages.slice(-6);
     fullReply = enforceResponseRules(fullReply, recentHistory);
 
+    // A paragraph repeated word for word inside one reply is never a choice.
+    // 2026-09-25: the Jonathan handoff printed its "Series note" twice.
+    try {
+      const { stripDuplicateParagraphs } = await import('../../../lib/ao/duplicateParagraphs.js');
+      const deduped = stripDuplicateParagraphs(fullReply);
+      if (deduped.removed.length) {
+        console.warn(
+          `[chat.js] dropped ${deduped.removed.length} verbatim duplicate paragraph(s) from the reply`
+        );
+        fullReply = deduped.reply;
+      }
+    } catch (dupErr) {
+      console.warn('[chat.js] duplicate paragraph check failed (non-fatal):', dupErr?.message || dupErr);
+    }
+
     // Voice guardrails run on PROSE ONLY, never on dialogue.
     //
     // Bart, 2026-09-08: "If I say 'sit with,' I'm giving a note... If it's
