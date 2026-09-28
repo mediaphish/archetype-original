@@ -9,6 +9,8 @@ import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyT
 import { searchCorpusChunks, groupChunksByDocument } from '../lib/ao/corpusChunks.js';
 import { stripProseDashes, ARCHY_DASH_RULE } from '../lib/ao/archyVoice.js';
 import { isTestSession } from '../lib/ao/testSession.js';
+import { corpusCoversTopic } from '../lib/ao/archyOnTopic.js';
+import { OFF_TOPIC_REPLIES, CANNOT_ANSWER_REPLY } from '../lib/ao/archyOffTopicReplies.js';
 import { detectCannotAnswer } from '../lib/ao/archyAnswerability.js';
 import {
   archyComplete,
@@ -715,8 +717,19 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         
         let isNonsensical = nonsensicalPatterns.some(pattern => pattern.test(message));
 
+        // If Bart has written about it, it is on topic, and no classifier
+        // working from the question alone gets to say otherwise. This is what
+        // turned "Tell me about the Jonathan Archetype" into "that's a question
+        // for a different AI entirely" on 2026-09-28. See lib/ao/archyOnTopic.js.
+        const corpusSaysOnTopic = corpusCoversTopic(passageHits);
+        if (corpusSaysOnTopic && isNonsensical) {
+          console.log('[archy] corpus covers this topic, ignoring the off-topic pattern match');
+          isNonsensical = false;
+        }
+
         const skipNonsensicalClassifier =
           context === 'remaining-human' ||
+          corpusSaysOnTopic ||
           isLegitimateFollowUpMessage(message);
 
         // Use AI to detect nonsensical questions that don't match patterns
@@ -756,28 +769,7 @@ Respond with ONLY a JSON object:
         }
         
         // Playful responses for nonsensical questions
-        const playfulResponses = [
-          "You know, that's a good question for a different AI. If you'd like to get back on topic, I'm here for it. If not, let's part friends.",
-          "I appreciate the creativity, but I'm focused on leadership, culture, and building things that last. Want to talk about that instead?",
-          "That's... quite a question. I'm more of a leadership and culture kind of AI. If you want to explore those topics, I'm all in.",
-          "I think you might have me confused with a different AI. I'm here to talk about leadership, teams, and building healthy organizations. Interested?",
-          "That's outside my wheelhouse. I'm here for leadership, culture, and helping people build what matters. Want to try again?",
-          "I'm going to be honest—that's not really my thing. But if you want to talk about leadership, teams, or building something real, I'm your AI.",
-          "That's a fascinating question, but probably better suited for a physics or coffee AI. I'm here for leadership and culture. Want to pivot?",
-          "I'm not the right AI for that one. But if you're interested in leadership, building teams, or creating healthy cultures, I'm all ears.",
-          "That's creative, but I'm focused on leadership and organizational health. If you want to explore those topics, let's do it.",
-          "I think we might be on different wavelengths. I'm here to help with leadership, culture, and building things that last. Want to give that a shot?",
-          "That's not really my area of expertise. I'm more about leadership, teams, and helping people build what matters. Interested?",
-          "I appreciate the curveball, but I'm here for leadership and culture conversations. If you want to explore those, I'm ready.",
-          "That's a question for another time—and another AI. I'm here for leadership, culture, and building healthy organizations. Want to talk about that?",
-          "I'm going to pass on that one. But if you want to discuss leadership, building teams, or creating cultures people actually want to belong to, I'm here.",
-          "That's outside my scope. I'm focused on leadership, organizational health, and helping people build what lasts. Want to try a different question?",
-          "I think you might be testing me. That's fine—but I'm here for real conversations about leadership and culture. Want to have one?",
-          "That's not my thing, but I respect the creativity. If you want to talk about leadership, teams, or building something meaningful, I'm all in.",
-          "I'm going to be straight with you—that's not what I do. But leadership, culture, and building healthy organizations? That's my jam.",
-          "That's a question for a different AI entirely. I'm here for leadership and culture. If you want to explore those, let's go.",
-          "I appreciate the originality, but I'm focused on leadership, teams, and organizational health. Want to talk about that instead?",
-        ];
+        const playfulResponses = OFF_TOPIC_REPLIES;
         
         // If nonsensical, return a playful response immediately
         if (isNonsensical) {
@@ -924,7 +916,7 @@ Respond with ONLY a JSON object:
           cannotAnswer = true;
           followUpPrompts = null;
           // Update response to ask for contact info
-          response = "Hey, that's a great question, but I'm having trouble answering it. Can I get your contact information, so I can go talk to Bart and see what his thoughts are?";
+          response = CANNOT_ANSWER_REPLY;
           
           // Generate unique ID for this question notification
           const questionId = `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

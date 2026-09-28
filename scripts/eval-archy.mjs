@@ -18,6 +18,8 @@
  * so the handoff cases do not email Bart or write rows every run.
  */
 
+import { isDecline } from '../lib/ao/archyOffTopicReplies.js';
+
 const BASE = (process.argv[2] || 'https://www.archetypeoriginal.com').replace(/\/$/, '');
 
 /**
@@ -47,8 +49,12 @@ const CASES = [
   { q: 'What is the weather in Branson tomorrow?', answers: false },
 ];
 
-/** The canned line Archy uses when it gives up and asks for contact details. */
-const HANDOFF = /having trouble answering it|contact information/i;
+/**
+ * Archy declines two different ways and the first run of this suite knew only
+ * one of them, so it reported both controls as failures when Archy had in fact
+ * declined exactly as designed. The lines live in lib/ao/archyOffTopicReplies.js
+ * now, and both this suite and the route read the same list.
+ */
 
 async function ask(question, index) {
   const started = Date.now();
@@ -82,7 +88,7 @@ for (const [index, testCase] of CASES.entries()) {
 
   const { text, ms } = result;
   const problems = [];
-  const handedOff = HANDOFF.test(text);
+  const handedOff = isDecline(text);
 
   if (testCase.answers && handedOff) problems.push('handed off a question the corpus answers');
   if (!testCase.answers && !handedOff) problems.push('answered a question it has no source for');
