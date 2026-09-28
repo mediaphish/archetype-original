@@ -7,6 +7,7 @@ import { getArchyRetrievalDepthFromPaid } from '../lib/ao/archyAccess.js';
 import { isArchyPaidSessionAsync } from '../lib/ao/archyEntitlements.js';
 import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyThreadMemory.js';
 import { searchCorpusChunks, groupChunksByDocument } from '../lib/ao/corpusChunks.js';
+import { stripProseDashes, ARCHY_DASH_RULE } from '../lib/ao/archyVoice.js';
 import { detectCannotAnswer } from '../lib/ao/archyAnswerability.js';
 import {
   archyComplete,
@@ -487,7 +488,9 @@ They opened this conversation from that page. Assume "this", "it", "that point" 
 
 You are the visitor-facing assistant named Archy. Do not mention internal automation tools or names that only Bart's team uses; visitors only need to know you as Archy.
 
-Use the retrieved passages below as your primary ground. They are drawn from Bart's published library by meaning, not keyword, and each one is the part of its document that bears on this question — quote and reason from them directly rather than speaking generally.
+${ARCHY_DASH_RULE}
+
+Use the retrieved passages below as your primary ground. They are drawn from Bart's published library by meaning, not keyword, and each one is the part of its document that bears on this question. Quote and reason from them directly rather than speaking generally.
 
 ${readingSection}
 ${archyMemory?.summary ? `\nContinuity from earlier in this conversation (paraphrase, do not quote verbatim):\n${archyMemory.summary.slice(0, 3000)}\n` : ''}
@@ -667,7 +670,9 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
       const responseTime = Date.now() - startTime;
 
       if (data.choices && data.choices[0]) {
-        let response = data.choices[0].message.content;
+        // Archy speaks in public, so the dash rule is enforced here and not
+        // left to the prompt. 2026-09-28: four em dashes in one live answer.
+        let response = stripProseDashes(data.choices[0].message.content);
         let followUpPrompts = null;
         const extracted = extractFollowUpPrompts(response);
         response = extracted.text;
