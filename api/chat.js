@@ -8,6 +8,7 @@ import { isArchyPaidSessionAsync } from '../lib/ao/archyEntitlements.js';
 import { loadArchyThreadMemory, appendArchyThreadMemory } from '../lib/ao/archyThreadMemory.js';
 import { searchCorpusChunks, groupChunksByDocument } from '../lib/ao/corpusChunks.js';
 import { stripProseDashes, ARCHY_DASH_RULE } from '../lib/ao/archyVoice.js';
+import { isTestSession } from '../lib/ao/testSession.js';
 import { detectCannotAnswer } from '../lib/ao/archyAnswerability.js';
 import {
   archyComplete,
@@ -650,7 +651,10 @@ Remember: This is a real conversation. Listen, understand, and respond authentic
         system: systemPrompt,
         history: conversationHistory,
         message,
-        maxTokens: 1024,
+        // 1024 was tight once passages gave Archy real material to quote, and
+        // a ceiling hit used to go out as a fragment. Both halves are fixed:
+        // more room, and a clean trim when the room still runs out.
+        maxTokens: 2000,
       });
 
       console.log(
@@ -927,9 +931,18 @@ Respond with ONLY a JSON object:
           const siteUrl = process.env.PUBLIC_SITE_URL || process.env.VERCEL_URL || 'https://www.archetypeoriginal.com';
           const feedbackUrl = `${siteUrl}/api/chat/question-feedback`;
           
+          // Our own traffic never reaches the alerting path. The regression
+          // suite deliberately asks questions Archy should refuse, and without
+          // this it would email Bart on every deploy and fill the table with
+          // rows that say nothing about visitors. See lib/ao/testSession.js.
+          const ourOwnTraffic = isTestSession(sessionId);
+          if (ourOwnTraffic) {
+            console.log('[archy] cannot-answer on a test session, skipping alert and row:', sessionId);
+          }
+
           // Store the question in Supabase (service role — RLS allows only this path to write)
           let unanswerRowSaved = false;
-          try {
+          if (!ourOwnTraffic) try {
             const { data: insertedUq, error: uqError } = await supabaseAdmin
               .from('unanswered_questions')
               .insert([
@@ -969,7 +982,7 @@ Respond with ONLY a JSON object:
                 <p style="font-size: 12px; color: #996;"><em>Feedback links were omitted because the question could not be saved to the database. Check server logs for [unanswered_questions].</em></p>`;
           
           // Send notification email immediately (even before user provides contact info)
-          try {
+          if (!ourOwnTraffic) try {
             const resend = new Resend(process.env.RESEND_API_KEY);
             const bartEmail = process.env.BART_EMAIL || process.env.CONTACT_EMAIL || "bart@archetypeoriginal.com";
             
