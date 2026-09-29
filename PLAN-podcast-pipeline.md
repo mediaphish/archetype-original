@@ -189,121 +189,157 @@ Ranked by how much it matters to this plan.
 
 ## The plan
 
-### Principle
+### The operating principle, which changed everything below it
 
-One row per person. Six buttons that appear as the work progresses. Every
-artifact is additive: making the show never destroys the brief, publishing never
-destroys the show. No screen exists that only forwards you to another screen.
+Bart, 2026-09-29: Auto is progressing toward being his CMO, and the model for how
+it talks to him is a CEO talking to a fellow C-suite member. There is no question
+of who is the boss. A directive can be assumed. A high functioning CMO does not
+need guardrails, they own the processes in their sphere.
 
-**And one explicit state column**, so the row can say where things are instead of
-five tables being cross-referenced to guess. Something like
-`intake → brief_building → brief_ready → show_ready → published`, plus the error
-text when a step fails. Every button lights up off that one field. This is the
-piece that makes the other five steps simple rather than the other way round.
+That draws a line I had not been drawing, and it decides most of the design:
 
-### Step 1: intake loads them into the system
+**Checks on Auto's own work stay. Gates on Bart's decisions go.**
 
-Already true. `insertGuestIntake` writes the row today, and the mentor
-submission from Matthew Burgess proves it end to end.
+Staying, because this is a professional reviewing their own output before it
+reaches him: the repetition check, voiceGuardrails, the corpus check on examples,
+publish health.
 
-What is missing is that the admin list cannot tell a mentor from a guest.
+Going, because this is a subordinate second-guessing the boss: the stage
+approval gate, and prior-coverage refusing a topic he asked for.
 
-**Work:** add `session_type` and the mentor columns to the `listGuestsPaginated`
-select, and show a small track label on the row. Half an hour.
+### The shape
 
-### Step 2: the brief builds itself
+One thread per person, in the Auto chat he already uses, with the five stages as
+tabs in the artifact panel:
 
-A cron, not an on-insert trigger. Reason: the research call uses web search and
-takes 30 to 90 seconds, and the intake request already sends three emails. A
-slow or failed generation must never make a person's submission fail.
+```
+Intake  →  Research  →  Brief  →  Show Notes  →  Published Episode
+```
+
+Conversation at every stage. The row in the guest list becomes the launcher and
+the status board: its buttons deep link into the right tab.
+
+Every artifact is additive. Making the show never destroys the brief, publishing
+never destroys the show.
+
+**One explicit state column** so the row can say where things are, instead of
+five tables being cross-referenced to guess. Every button and every tab lights up
+off that one field. This is what makes the rest simple.
+
+### Approval: delete the gate, do not widen it
+
+The requirement was always "Auto does not publish or schedule on its own
+initiative." What got built was "Auto must prove Bart approved before believing
+him." Only the first is real.
+
+Measured 2026-09-29, the current phrase list accepts 11 of 34 plausible
+approvals. It accepts "Approved" and "Ship it". It rejects **"Yes"**, "Yep", "Do
+it", "Send it", "Sounds good", "OK", "Sure", "That works". The magic-word problem
+Bart described was real and I wrote it.
 
 **Work:**
-- `api/cron/ao/build-guest-briefs.js`, every 15 minutes, matching the cadence of
-  the existing publish crons.
-- Claims any guest whose brief is missing, oldest first, one per run, so a
-  failure cannot spin.
-- Writes a real status on the row rather than leaving null: `pending`,
-  `building`, `ready`, `failed`, with the error text kept. The current silent
-  `console.error` is how the Theis prep failures stayed invisible.
-- **Uses the mentor answers for a mentor, the guest answers for a guest.** This
-  is the substance of the request. A mentor brief is built on the situation,
-  what they tried, what they think the honest answer is, and the stakes. It is a
-  different prompt and a different shape from a guest brief.
+- Delete the approval gate. No phrase list, no classifier, no confirmation
+  question.
+- Keep one deterministic hard stop on explicit refusal: not yet, hold off, wait,
+  don't. A false advance there is the only expensive error.
+- Everything else is a directive. Auto acts, then states in one line what it did.
+  **Reversibility replaces permission.**
+- Auto never asks him to repeat himself in different words. If it cannot tell
+  what he meant, that is Auto's problem.
 
-**Decision for Bart:** kill `processEpisodeResearchSignal` as part of this, so
-one generator owns the column. I recommend deleting it and the
-`[EPISODE_PROCESS]` signal together.
+Note what this does to the plan's complexity: the largest piece of logic in the
+old flow becomes a four-word refusal check.
 
-### Step 3: the Brief button
+### Stage 1: Intake
 
-**Work:** a `Brief` button on the guest row, enabled when status is `ready`,
-showing a spinner on `building` and the error on `failed`. It opens the brief.
+Already true. `insertGuestIntake` writes the row, and the mentor submission from
+Matthew Burgess on 2026-09-29 proves it end to end.
 
-**The brief gets shorter.** Today it is a research brief plus a producer brief
-plus ten rationalised questions, 15,000 characters across two documents that
-overlap. One document, and for a mentor session it should fit on a screen. The
-old producer brief's opening paragraph was genuinely good, Bart read it on air
-almost verbatim, so that section stays. The rest compresses.
+**Work:** add `session_type` and the mentor columns to the `listGuestsPaginated`
+select so the list can tell a mentor from a guest, and show the track on the row.
+Half an hour.
 
-### Step 4: Create Show
+### Stage 2: Research
 
-This is the new thing, and it is a **run sheet, not a transcript summary**.
+Auto is wearing the Producer hat, building a show for the host. So research is
+**complete, not short**. Everything findable goes in front of Bart.
 
-What Bart works through live: an opening he can read, the four or five moves of
-the conversation in order, the questions that matter with the throwaways cut,
-and what to avoid. It is written to be glanced at while talking, not read.
+Two questions, both asked, because the tracks need different things:
 
-**Work:** a new generator and a `show` record. It reads the brief and the
-intake answers. It does not need a transcript, which is the whole point.
+- **Who they are.** For anyone: what they have built, what is findable that most
+  interviewers miss. Driven by the intake answers, the website, the socials.
+- **What the problem is.** For a mentor session especially: what this problem
+  actually is, how it usually goes wrong, what the web says, and **what Bart's
+  own corpus already says about it**. The corpus half is what makes the answer
+  his rather than generic.
 
-**Decision for Bart:** where to store it. Recommend a new `ao_episode_shows`
-table keyed to the guest, rather than `ao_auto_threads.state`, which is where the
-Riverside link and combined show notes currently hide and which nothing else can
-see.
+A mentor session gets both. Bart, 2026-09-29: "I want to be prepared for the
+problem he brought before we talk... be able to communicate clearly about it on
+air."
 
-### Step 5: the Show button
+**Work:** a cron, not an on-insert trigger, because the research call uses web
+search, takes 30 to 90 seconds, and the intake request already sends three
+emails. A slow generation must never make someone's submission fail.
 
-**Work:** once a show exists, `Show` appears on the row next to `Brief`. Both
-remain. Clicking `Show` opens the run sheet, editable, because Bart will want to
-cut a question the morning of.
+- `api/cron/ao/build-guest-research.js`, every 15 minutes.
+- Claims the oldest unbuilt guest, one per run, so a failure cannot spin.
+- Writes a real status and keeps the error text. Today a failure is a
+  `console.error` that surfaces as the sentence "Not available." That is how the
+  Theis prep failures stayed invisible.
 
-### Step 6: Publish
+### Stage 3: Brief
 
-**Work:** `Publish` opens one page with every field the markdown needs, laid out
-in the order the frontmatter uses, pre-filled from everything already known.
-Guest name, title, bio and links come off the guest row. Summary, show notes and
-takeaways come off the show. Bart fills in what only he has: YouTube id, Spotify,
-Apple URL, duration, season and episode number, publish date.
+The producer's synthesis for the host. Complete and organized.
 
-Then it calls the existing `episode-publish` endpoint. That code already works.
+**Correcting my earlier instinct:** I proposed making the brief shorter. That was
+wrong. The Theis problem was never length. It was two unmerged documents, times
+two people, with nothing synthesizing them, and **no short artifact to actually
+host from**. Bart was trying to run a show off a producer's prep doc. The answer
+is not a shorter brief, it is show notes that did not exist.
+
+Scheduling and the Riverside invite fold in here, since this is the morning-of
+stage. And they stop asking for the date twice: one form, one set of values, both
+the schedule row and the invite email reading from it.
+
+There is no Riverside API integration anywhere in the codebase, and none is
+proposed. Bart creates the studio, pastes the link, Auto emails it out with each
+guest's magic link attached. That division is right.
+
+### Stage 4: Show Notes
+
+The genuinely new thing, and the real design work.
+
+A run sheet, not a transcript summary: an opening he can read, the four or five
+moves of the conversation in order, the questions that matter with the throwaways
+cut, what to avoid. Written to be glanced at while talking.
+
+**This tab opens as its own screen.** Full width, no chat, no chrome. Bart runs
+the show from it while looking at a person on camera. It is the one place the
+chat metaphor actively hurts.
+
+Editable, because he will cut a question the morning of.
+
+### Stage 5: Published Episode
+
+**Work:** one page with every field the markdown needs, in frontmatter order,
+pre-filled from everything already known. Guest name, title, bio and links from
+the guest row. Summary, show notes and takeaways from stage 4. Bart fills in only
+what he alone has: YouTube id, Spotify, Apple URL, duration, season and episode
+number, publish date.
+
+Then it calls the existing `episode-publish` endpoint, which already works.
 
 Two things to fix while building it:
 
-- **The transcript stops being a chat message.** A file or paste field on the
-  publish page, going straight to `episode-process`. No signal tag, no
-  500-character heuristic, no silent failure. This alone removes the most
-  fragile link in the current chain.
-- **Approve and Publish become one button.** Today Approve mints a token held
-  only in React state, so a refresh silently greys out Publish with no
-  explanation on screen. The token has a real purpose as a server-side guard, so
-  keep it, and mint it inside the publish call rather than making Bart click
-  twice for it.
+- **The transcript stops being a chat message.** A paste or file field on this
+  tab, going straight to `episode-process`. No signal tag, no 500-character
+  heuristic, no silent failure. This removes the most fragile link in the chain.
+- **Approve and Publish become one button.** The token has a real purpose as a
+  server-side guard, so keep it and mint it inside the publish call rather than
+  making him click twice for it.
 
 **Multi-guest is designed in from the start**, because Theis is the case that
-broke it. The publish page takes a list of guests, and `episode-publish` already
-accepts `guest_ids`.
-
----
-
-## The open question from tonight
-
-For a two-guest episode: **one merged brief from the start, or one per person
-that gets combined when Bart decides they share an episode?**
-
-My recommendation is per person, combined at the Create Show step. Research is
-genuinely per person, and Bart does not always know at intake who is pairing with
-whom. Erik and Adam submitted a day apart. But this changes the data model, so it
-is the first thing to settle tomorrow.
+broke it. `episode-publish` already accepts `guest_ids`.
 
 ---
 
@@ -311,25 +347,22 @@ is the first thing to settle tomorrow.
 
 | | Work | Why in this order |
 |---|---|---|
-| 1 | The state column, and the guest list reading it | Every button lights up off this. Nothing else is simple without it |
-| 2 | Guest list shows track and real status | Matthew Burgess currently looks like a guest |
-| 3 | Brief cron writing real status and real errors | He is waiting with no brief, and today a failure is invisible |
-| 4 | One brief generator, delete the duplicate | Do it before building on top of it |
-| 5 | Brief button, and the shorter brief | First visible win |
-| 6 | Create Show and the run sheet | The genuinely new thing, and the real design work |
-| 7 | Show button | Small once 6 exists |
-| 8 | Publish page, with the transcript field on it | Endpoint already works |
+| 1 | The state column, and the guest list reading it | Every tab and button lights up off this |
+| 2 | Delete the approval gate, keep the refusal check | Foundational, and it shrinks everything after it |
+| 3 | Guest list shows track and real status | Matthew Burgess currently looks like a guest |
+| 4 | Research cron, with real status and real errors | He is waiting, and today a failure is invisible |
+| 5 | One research generator, delete the duplicate | Do it before building on top of it |
+| 6 | The tabbed artifact panel, Research and Brief tabs live | First visible win |
+| 7 | Show Notes, generator plus the full-screen view | The real design work |
+| 8 | Published Episode tab, with the transcript field | Endpoint already works |
 | 9 | Delete the dead code | Safe only once the new path is proven |
-
-Steps 1 through 5 are about a day. Step 6 is where the thinking goes. Steps 7 and
-8 are mostly UI against endpoints that already exist.
 
 ### What this replaces
 
-21 clicks, four screens, and a chat conversation become: open the row, read the
-brief, make the show, publish. The external excursions to Riverside, YouTube and
-Spotify stay, because those are real tools and their output has to be pasted
-somewhere. Everything else collapses.
+21 clicks, four screens, and a chat conversation that has to emit the right tag
+become: open the row, read the brief, run the show, publish. The trips to
+Riverside, YouTube and Spotify stay, because those are real tools whose output
+has to land somewhere. Everything else collapses.
 
 ---
 
@@ -339,21 +372,16 @@ somewhere. Everything else collapses.
   `PodcastGuestAdminCombined.jsx`, `PodcastGuestAdmin.jsx`, or the broken "Edit
   in Auto" button. All are dead or broken by the evidence, but they are Bart's to
   remove.
-- Change the existing guest-track questions or brief format.
 - Touch `ao_episode_drafts` rows that already exist.
-- Retire the Episode Admin screen. The plan makes the guest row the spine, which
-  leaves that screen's Riverside invite and scheduling without an obvious home.
-  Worth deciding tomorrow whether those move onto the row or the screen stays for
-  them.
+- Retire the Episode Admin screen. The plan makes the guest row the spine and
+  folds scheduling into Brief, which leaves that screen with nothing of its own.
+  Probably it goes, but that is his call.
 
 ---
 
-## Two questions to settle before writing code
+## The one question still open
 
-1. **Multi-guest briefs.** One merged brief from the start, or one per person,
-   combined at Create Show? I recommend per person combined at Create Show, since
-   research is genuinely per person and Erik and Adam submitted a day apart. This
-   changes the data model, so it goes first.
-2. **Does the mentor session publish as a normal episode?** The plan assumes yes,
-   same markdown, same public page. If mentor sessions should look different
-   publicly, say so now, because it changes the publish page and the frontmatter.
+**Multi-guest briefs.** One merged from the start, or one per person combined at
+the Show Notes stage? I recommend per person combined at Show Notes, since
+research is genuinely per person and Erik and Adam submitted a day apart. It
+changes the data model, so it goes first.
