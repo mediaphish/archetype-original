@@ -3499,6 +3499,34 @@ export default function AutoV2Panel({ onNavigate, className,
     }
   }, [generatedImages, activeThreadId, messages, sendMessage]);
 
+  // Kept in refs so the menu effect can stay on primitive deps.
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+  useEffect(() => { publishCardsRef.current = publishCards; }, [publishCards]);
+
+  const messageCount = visibleChatMessages.length;
+  const cardCount = generatedImages?.length || 0;
+  useEffect(() => {
+    if (typeof onActionsChange !== 'function') return;
+    if (!isMobile) {
+      onActionsChange([]);
+      return;
+    }
+    onActionsChange([
+      {
+        key: 'transcript',
+        label: 'Download transcript',
+        disabled: messageCount === 0,
+        onClick: () => downloadTranscriptAsMd(messagesRef.current || [], activeThreadId),
+      },
+      {
+        key: 'publish-cards',
+        label: cardCount > 0 ? `Publish ${cardCount} cards` : 'Publish cards',
+        disabled: cardCount === 0,
+        onClick: () => publishCardsRef.current?.(),
+      },
+    ]);
+  }, [isMobile, messageCount, cardCount, activeThreadId, onActionsChange]);
+
   if (loading && !activeThreadId && visibleChatMessages.length === 0) {
     return (
       <div className={`flex items-center justify-center h-full ${className || ''}`}>
@@ -3571,34 +3599,6 @@ export default function AutoV2Panel({ onNavigate, className,
   // the mobile menu instead of a toolbar row. Library is already a tab there.
   // Deps are primitives on purpose: the effect must not re-run because of the
   // array it just handed up.
-  // Kept in refs so the menu effect can stay on primitive deps.
-  useEffect(() => { messagesRef.current = messages; }, [messages]);
-  useEffect(() => { publishCardsRef.current = publishCards; }, [publishCards]);
-
-  const messageCount = visibleChatMessages.length;
-  const cardCount = generatedImages?.length || 0;
-  useEffect(() => {
-    if (typeof onActionsChange !== 'function') return;
-    if (!isMobile) {
-      onActionsChange([]);
-      return;
-    }
-    onActionsChange([
-      {
-        key: 'transcript',
-        label: 'Download transcript',
-        disabled: messageCount === 0,
-        onClick: () => downloadTranscriptAsMd(messagesRef.current || [], activeThreadId),
-      },
-      {
-        key: 'publish-cards',
-        label: cardCount > 0 ? `Publish ${cardCount} cards` : 'Publish cards',
-        disabled: cardCount === 0,
-        onClick: () => publishCardsRef.current?.(),
-      },
-    ]);
-  }, [isMobile, messageCount, cardCount, activeThreadId, onActionsChange]);
-
   const mobileBottomNavContent = isMobile && !keyboardOpen ? (
     <nav
       className="fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200"
