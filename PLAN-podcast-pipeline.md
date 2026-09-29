@@ -141,12 +141,12 @@ Something went wrong generating it."
 
 ### What is already built and should be reused
 
-- `api/ao/auto/episode-publish.js` — commits the markdown, handles multiple
+- `api/ao/auto/episode-publish.js` commits the markdown, handles multiple
   guests, mints and validates an approval token. Routed and working.
-- `lib/ao/buildEpisodeFrontmatter.js` — the full 19-field YAML builder.
-- `lib/ao/generateGuestResearch.js` — research, questions and producer brief
+- `lib/ao/buildEpisodeFrontmatter.js` builds the full 19-field YAML.
+- `lib/ao/generateGuestResearch.js` holds the research, questions and producer brief
   generators, including the only web-search call in the system.
-- The guest list row in `listGuestsPaginated` — this is where the buttons go.
+- The guest list row in `listGuestsPaginated`. This is where the buttons go.
 
 Step 6 is in far better shape than steps 1 through 5.
 
@@ -174,7 +174,7 @@ Ranked by how much it matters to this plan.
    that file in place for now."
 4. **`guest_brief_questions`** is written by nothing and read by nothing.
 5. **`guest.title` is a phantom field.** It does not exist on the table, yet
-   `episode-seed` hardcodes `**Title:** —` into every seed message and
+   `episode-seed` hardcodes an empty title line into every seed message and
    `processEpisodeTranscript` formats it into a prompt where it is always
    undefined.
 6. **`episode_status` on the guest list is always "No episode"**, because it
