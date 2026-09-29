@@ -14,6 +14,7 @@ import React, {
   useMemo,
 } from 'react';
 
+import { createPortal } from 'react-dom';
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
@@ -3556,7 +3557,13 @@ export default function AutoV2Panel({ onNavigate, className }) {
     guestRecordLoading,
   };
 
-  const mobileBottomNav = isMobile && !keyboardOpen ? (
+  // Portalled to <body> on purpose. ArchySlideContainer wraps the whole app in a
+  // 200vw track that always carries a transform, and a transformed ancestor
+  // becomes the containing block for position:fixed. Rendered in place, this bar
+  // spanned 200vw instead of the screen, so Artifact and Chats sat off the right
+  // edge and Bart could never reach his other chats from his phone.
+  // src/components/Header.jsx does the same thing for the public mobile drawer.
+  const mobileBottomNavContent = isMobile && !keyboardOpen ? (
     <nav
       className="fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200"
       style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 12px)' }}
@@ -3623,6 +3630,11 @@ export default function AutoV2Panel({ onNavigate, className }) {
       </div>
     </nav>
   ) : null;
+
+  const mobileBottomNav =
+    mobileBottomNavContent && typeof document !== 'undefined'
+      ? createPortal(mobileBottomNavContent, document.body)
+      : null;
 
   return (
     <div
