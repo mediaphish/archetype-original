@@ -453,19 +453,38 @@ intros and twenty questions, which is exactly the 26,000 characters that made th
 episode painful. It also loses the only thing that made it a single show rather
 than two.
 
-So the merge prompt has its own job:
+But the merge is not a blend either, and this is the correction that matters
+most. **Every guest still gets introduced to the listener individually.**
 
-- One opening that introduces both people **and the relationship between them**.
-- The through-line. Why these two in one room, said in a sentence.
-- Questions that are better because both are present, which is a different set
-  from the union of two individual question lists. "What does your father see in
-  you that you do not see" only exists when both are there.
-- Deduplication, because two briefs built from one corpus will reach for the same
-  AO material.
+The published episode settles it. Bart's opening runs 412 words and goes: he
+tells them he is going to read an introduction, then Erik's full paragraph, then
+"That's Erik. Adam Theis..." and Adam's full paragraph, then "let's meet Adam and
+Erik." Two distinct introductions, read aloud, in order.
+
+Both came nearly verbatim from each guest's own producer brief, from the section
+headed THE PERSON IN ONE PARAGRAPH. **That paragraph is the single most
+successfully used artifact in the whole system.** It travelled from brief to air
+almost unchanged. Merging it into a blended intro would destroy the one thing
+that demonstrably worked.
+
+So the show notes are structured, not blended:
+
+1. **The openings, one per guest, in order, ready to read aloud.** Lifted from
+   each person's brief, not rewritten and not combined.
+2. **The through-line.** Why these two in one room, in a sentence. This is the
+   part a single brief cannot produce.
+3. **The conversation moves**, four or five, in order.
+4. **The questions**, deduplicated, including the ones that only exist because
+   both are present. "What does your father see in you that you do not see" is in
+   neither individual brief.
+5. **What to avoid.**
+
+Only sections 2, 3 and 4 are genuinely generative. Section 1 is a faithful
+carry-forward, and it should be protected as such.
 
 Length target is the same as any other show notes: tight enough to glance at on
-camera. The completeness lives in the two briefs behind it, which stay intact and
-one tab away.
+camera, with the openings long enough to read out loud. The completeness lives in
+the two briefs behind it, which stay intact and one tab away.
 
 ### What already exists
 
