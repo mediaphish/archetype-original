@@ -347,13 +347,14 @@ broke it. `episode-publish` already accepts `guest_ids`.
 
 | | Work | Why in this order |
 |---|---|---|
-| 1 | The state column, and the guest list reading it | Every tab and button lights up off this |
+| 1 | Create the episode row early, at status planned | It is the spine. Nothing else has somewhere to live until it exists |
+| 1b | The state column, and the guest list reading it | Every tab and button lights up off this |
 | 2 | Delete the approval gate, keep the refusal check | Foundational, and it shrinks everything after it |
 | 3 | Guest list shows track and real status | Matthew Burgess currently looks like a guest |
 | 4 | Research cron, with real status and real errors | He is waiting, and today a failure is invisible |
 | 5 | One research generator, delete the duplicate | Do it before building on top of it |
 | 6 | The tabbed artifact panel, Research and Brief tabs live | First visible win |
-| 7 | Show Notes, generator plus the full-screen view | The real design work |
+| 7 | Show Notes, generator plus the full-screen view | The real design work. The merge is generative, not a join |
 | 8 | Published Episode tab, with the transcript field | Endpoint already works |
 | 9 | Delete the dead code | Safe only once the new path is proven |
 
@@ -379,9 +380,113 @@ has to land somewhere. Everything else collapses.
 
 ---
 
+## Multi-guest episodes, evaluated
+
+Settled 2026-09-29: briefs are per person and merge into one at Show Notes.
+Mentor sessions are always one person. General episodes can be several.
+
+### The structural problem underneath it
+
+**The episode does not exist until after recording.** The only live path that
+creates a row in `ao_episode_drafts` is `episode-process`, which requires a
+transcript. Everything before that, which is pairing, research, briefs, show
+notes and the Riverside invite, has no episode to attach to.
+
+So `episode_thread_id` on the guest row has been standing in for an episode
+entity. A chat thread id is doing the job of the episode, which is why pairing,
+status and publishing are scattered and why the dashboard can show `No episode`
+next to a button reading `Continue episode`. Two different answers to the same
+question because there is no single object holding it.
+
+### The fix: the episode is the spine, and it exists early
+
+Create the `ao_episode_drafts` row **at the moment Bart starts an episode**, with
+status `planned`, rather than waiting for a transcript. No new table is needed.
+That row already has `guest_ids`, `guests`, `title`, `slug`, `show_notes` and
+everything publishing wants. It is just created far too late.
+
+Then state lives at the level it belongs to:
+
+| Lives on the guest row | Lives on the episode row |
+|---|---|
+| Intake answers | Which guests are on it |
+| Research | Show notes |
+| Brief | Transcript |
+| | Publish fields, slug, status |
+| | The Auto thread id |
+| | Scheduling and the Riverside invite |
+
+Research and the brief are genuinely per person and stay per person forever. A
+guest can appear on a later episode and their research is still there.
+
+### One pipeline, never branching on count
+
+A solo episode is an episode with one guest. A mentor session is an episode with
+one guest on the mentor track. The Theis episode is an episode with two. **The
+pipeline never branches on the number of guests**, it only loops where it needs
+to.
+
+This matters because today there are two code paths and two UIs for the same
+thing, and the multi-guest one is unreachable by clicking.
+
+### Pairing
+
+Pairing is manual and can happen any time before Show Notes. Bart selects guests
+in the list and starts an episode from them, which is close to what the dashboard
+already does today.
+
+The useful property: **research and briefs do not depend on pairing.** Both are
+per person, so they can already be finished before Bart decides two people share
+an episode. Erik and Adam submitted a day apart. He never has to decide early.
+
+Unpairing has to work the same way, and it is safe by construction: removing a
+guest from an episode cannot destroy their brief, because the brief was never on
+the episode.
+
+### The merge is a generation step, not a join
+
+This is the part worth getting right, and the Theis episode is the proof.
+
+Erik and Adam are **father and son**, both builders. That relationship is the
+episode. Concatenating two producer briefs gives two "person in one paragraph"
+intros and twenty questions, which is exactly the 26,000 characters that made the
+episode painful. It also loses the only thing that made it a single show rather
+than two.
+
+So the merge prompt has its own job:
+
+- One opening that introduces both people **and the relationship between them**.
+- The through-line. Why these two in one room, said in a sentence.
+- Questions that are better because both are present, which is a different set
+  from the union of two individual question lists. "What does your father see in
+  you that you do not see" only exists when both are there.
+- Deduplication, because two briefs built from one corpus will reach for the same
+  AO material.
+
+Length target is the same as any other show notes: tight enough to glance at on
+camera. The completeness lives in the two briefs behind it, which stay intact and
+one tab away.
+
+### What already exists
+
+- `episode-seed` has a multi-guest branch and runs prep in parallel across guests.
+- `ao_episode_drafts` already carries `guest_ids` and `guests`.
+- `episode-publish` already accepts `guest_ids` and resolves them with
+  `getGuestsByIds`.
+- `api/ao/podcast/episode/guests.js` already fetches every guest on a thread.
+
+The plumbing is largely there. What is missing is the episode existing before the
+transcript, and the merge being a real generation step instead of two documents
+shown side by side.
+
+### What needs deciding
+
+Nothing blocking. One small thing when we get to it: whether an episode gets a
+working title at creation, or stays untitled until Show Notes names it.
+
+---
+
 ## The one question still open
 
-**Multi-guest briefs.** One merged from the start, or one per person combined at
-the Show Notes stage? I recommend per person combined at Show Notes, since
-research is genuinely per person and Erik and Adam submitted a day apart. It
-changes the data model, so it goes first.
+Nothing structural. Multi-guest is settled: per person briefs, merged at Show
+Notes, with the episode record created early so it has somewhere to live.
