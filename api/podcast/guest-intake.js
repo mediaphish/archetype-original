@@ -3,6 +3,12 @@ import { contactFormRecipient } from '../../lib/contact-form-inbox.js';
 import { evaluateSpamGuards } from '../../lib/contact-spam-guard.js';
 import { insertGuestIntake, normalizeSocialLinks, normalizeSchedulePreferredDays } from '../../lib/ao/guestIntakeStore.js';
 import { sendGuestMagicLinkEmail } from '../../lib/ao/podcastGuestAuth.js';
+import {
+  normalizeSessionType,
+  isMentorSession,
+  missingRequiredFor,
+  MENTOR_EMAIL_LABELS,
+} from '../../lib/ao/podcastSessionTracks.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -65,11 +71,33 @@ function schedulePrefsBlock(payload) {
   return `<h3 style="margin:20px 0 8px 0;font-size:15px;">Scheduling preferences</h3>${parts.join('')}`;
 }
 
+/**
+ * The answers, labelled with the questions the person was actually shown.
+ *
+ * The two tracks ask different things, so labelling a mentor session's answers
+ * with the guest questions would put "What's something people get wrong about
+ * you?" above a description of a business problem.
+ */
+function answerBlocks(payload) {
+  if (isMentorSession(payload.session_type)) {
+    return MENTOR_EMAIL_LABELS.map(([column, label]) => fieldBlock(label, payload[column])).join('');
+  }
+  return [
+    payload.question_1,
+    payload.question_2,
+    payload.question_3,
+    payload.question_4,
+    payload.question_5,
+  ]
+    .map((answer, i) => fieldBlock(QUESTIONS[i], answer))
+    .join('');
+}
+
 function buildSubmissionHtml(payload, guestId) {
   const socialLinks = normalizeSocialLinks(payload.social_links);
   let html = `
     <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#0f172a;">
-      <h2 style="margin:0 0 12px 0;">New Podcast Guest Intake</h2>
+      <h2 style="margin:0 0 12px 0;">${isMentorSession(payload.session_type) ? 'New Mentor Session Request' : 'New Podcast Guest Intake'}</h2>
       <p style="font-size:13px;color:#64748b;">Submission ID: ${escapeHtml(guestId || '')}</p>
   `;
 
@@ -96,16 +124,7 @@ function buildSubmissionHtml(payload, guestId) {
 
   html += fieldBlock('Bio', payload.bio_md);
 
-  const answers = [
-    payload.question_1,
-    payload.question_2,
-    payload.question_3,
-    payload.question_4,
-    payload.question_5,
-  ];
-  answers.forEach((answer, i) => {
-    html += fieldBlock(QUESTIONS[i], answer);
-  });
+  html += answerBlocks(payload);
 
   html += schedulePrefsBlock(payload);
 
@@ -121,8 +140,8 @@ function buildGuestConfirmationHtml(payload) {
   const socialLinks = normalizeSocialLinks(payload.social_links);
   let html = `
     <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height:1.6; color:#0f172a;">
-      <h2 style="margin:0 0 12px 0;">Thanks — we received your guest intake</h2>
-      <p>Bart has your information and will reference it before your conversation. Here is a copy of what you submitted.</p>
+      <h2 style="margin:0 0 12px 0;">${isMentorSession(payload.session_type) ? 'Thanks, we have your mentor session request' : 'Thanks, we received your guest intake'}</h2>
+      <p>Bart has your information and will read it before you sit down together. Here is a copy of what you submitted.</p>
   `;
 
   html += fieldBlock('Name', payload.name);
@@ -144,16 +163,7 @@ function buildGuestConfirmationHtml(payload) {
 
   html += fieldBlock('Bio', payload.bio_md);
 
-  const answers = [
-    payload.question_1,
-    payload.question_2,
-    payload.question_3,
-    payload.question_4,
-    payload.question_5,
-  ];
-  answers.forEach((answer, i) => {
-    html += fieldBlock(QUESTIONS[i], answer);
-  });
+  html += answerBlocks(payload);
 
   html += schedulePrefsBlock(payload);
 
@@ -193,12 +203,19 @@ export default async function handler(req, res) {
     const imageUrl = String(body.image_url || '').trim();
     const bioMd = String(body.bio_md || '').trim().slice(0, 5000);
     const releaseAgreed = Boolean(body.release_agreed);
+    const sessionType = normalizeSessionType(body.session_type);
 
     if (!name || !email || !releaseAgreed) {
       return res.status(400).json({ error: 'Name, email, and release agreement are required.' });
     }
     if (!isValidEmail(email)) {
       return res.status(400).json({ error: 'Please enter a valid email address.' });
+    }
+    // A mentor session with no situation is an empty hour for both of them.
+    if (missingRequiredFor(sessionType, body)) {
+      return res.status(400).json({
+        error: 'Tell us what you are working through so the session has somewhere to start.',
+      });
     }
 
     const payload = {
@@ -211,11 +228,17 @@ export default async function handler(req, res) {
       image_url: imageUrl || '',
       social_links: normalizeSocialLinks(body.social_links),
       bio_md: bioMd,
+      session_type: sessionType,
       question_1: String(body.question_1 || '').trim(),
       question_2: String(body.question_2 || '').trim(),
       question_3: String(body.question_3 || '').trim(),
       question_4: String(body.question_4 || '').trim(),
       question_5: String(body.question_5 || '').trim(),
+      mentor_situation: String(body.mentor_situation || '').trim(),
+      mentor_tried: String(body.mentor_tried || '').trim(),
+      mentor_outcome: String(body.mentor_outcome || '').trim(),
+      mentor_role: String(body.mentor_role || '').trim(),
+      mentor_org_size: String(body.mentor_org_size || '').trim(),
       schedule_preferred_days: normalizeSchedulePreferredDays(body.schedule_preferred_days),
       schedule_preferred_time: String(body.schedule_preferred_time || '').trim() || null,
       schedule_avoid_dates: String(body.schedule_avoid_dates || '').trim() || null,
@@ -241,7 +264,7 @@ export default async function handler(req, res) {
     const bartResult = await resend.emails.send({
       from,
       to,
-      subject: `Podcast Guest Intake: ${name}`,
+      subject: `${sessionType === 'mentor' ? 'Mentor Session Request' : 'Podcast Guest Intake'}: ${name}`,
       html: buildSubmissionHtml(payload, stored.guest?.id),
     });
 
@@ -253,7 +276,10 @@ export default async function handler(req, res) {
     const guestResult = await resend.emails.send({
       from,
       to: email,
-      subject: 'Your Archetype Original Podcast guest intake',
+      subject:
+        sessionType === 'mentor'
+          ? 'Your Archetype Original mentor session request'
+          : 'Your Archetype Original Podcast guest intake',
       html: buildGuestConfirmationHtml(payload),
     });
 

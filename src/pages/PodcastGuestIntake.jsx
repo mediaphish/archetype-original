@@ -4,6 +4,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SEO from '../components/SEO';
 import { detectBrowserTimezone, getTimezoneOptionGroups } from '../../lib/ao/podcastTimezones.js';
+import {
+  TRACK_CHOICES,
+  MENTOR_QUESTIONS,
+  MENTOR_CONTEXT_FIELDS,
+  isMentorSession,
+} from '../../lib/ao/podcastSessionTracks.js';
 
 const BIO_MAX = 5000;
 
@@ -11,7 +17,7 @@ const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Satur
 
 const TIME_OF_DAY_OPTIONS = [
   'Morning (before noon)',
-  'Afternoon (noon–5pm)',
+  'Afternoon (noon to 5pm)',
   'Evening (after 5pm)',
   'Flexible',
 ];
@@ -78,6 +84,12 @@ export default function PodcastGuestIntake() {
   const [trapField, setTrapField] = useState('');
 
   const [formData, setFormData] = useState({
+    session_type: 'guest',
+    mentor_situation: '',
+    mentor_tried: '',
+    mentor_outcome: '',
+    mentor_role: '',
+    mentor_org_size: '',
     name: '',
     email: '',
     phone: '',
@@ -103,6 +115,8 @@ export default function PodcastGuestIntake() {
     schedule_avoid_dates: '',
     schedule_timezone: '',
   });
+
+  const mentorTrack = isMentorSession(formData.session_type);
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -210,6 +224,15 @@ export default function PodcastGuestIntake() {
       return;
     }
 
+    if (mentorTrack && !formData.mentor_situation.trim()) {
+      setFormStatus({
+        loading: false,
+        success: false,
+        error: 'Tell us what you are working through so the session has somewhere to start.',
+      });
+      return;
+    }
+
     if (imageUploadStatus === 'uploading') {
       setFormStatus({
         loading: false,
@@ -300,14 +323,14 @@ export default function PodcastGuestIntake() {
         <section className="bg-[#2B2929] px-6 pb-20 pt-24 lg:px-10">
           <div className="mx-auto max-w-[1400px]">
             <p className="mb-4 font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B7D72]">
-              The Archetype Original Podcast — Guest Intake
+              The Archetype Original Podcast
             </p>
             <h1 className="mb-6 max-w-[680px] font-serif text-[clamp(36px,4.5vw,60px)] font-normal leading-[1.1] tracking-[-0.01em] text-white">
               Tell us who you are.
             </h1>
             <p className="max-w-[560px] font-sans text-[16px] leading-[1.8] text-white/65">
-              No box to fit into, no title required. This helps us build your episode page and gives Bart a few
-              threads to pull on before you sit down together. Takes about five minutes.
+              Whether you are coming on as a guest or bringing something you are working through, this gives Bart
+              what he needs before you sit down together. Takes about five minutes.
             </p>
           </div>
         </section>
@@ -339,6 +362,40 @@ export default function PodcastGuestIntake() {
                   value={trapField}
                   onChange={(e) => setTrapField(e.target.value)}
                 />
+              </div>
+
+              <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                <h3 className="mb-2 font-serif text-[18px] font-normal text-[#1A1A1A]">
+                  Which conversation is this?
+                </h3>
+                <p className="mb-5 font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
+                  Both are recorded and published. The questions below change to match.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {TRACK_CHOICES.map((choice) => (
+                    <label
+                      key={choice.value}
+                      className="flex cursor-pointer items-start gap-3 border border-[#1A1A1A]/10 bg-[#FAFAF9] px-4 py-4 transition-all hover:border-[#1A1A1A]/25 hover:bg-white"
+                    >
+                      <input
+                        type="radio"
+                        name="session_type"
+                        value={choice.value}
+                        checked={formData.session_type === choice.value}
+                        onChange={(e) => handleField('session_type', e.target.value)}
+                        className="mt-1 h-4 w-4 border-[#1A1A1A]/20 text-[#DB0812] focus:ring-0"
+                      />
+                      <span className="block">
+                        <span className="block font-sans text-[15px] font-medium leading-[1.4] text-[#1A1A1A]">
+                          {choice.title}
+                        </span>
+                        <span className="mt-1 block font-sans text-[13px] leading-[1.6] text-[#6B6B6B]">
+                          {choice.description}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
@@ -492,7 +549,9 @@ export default function PodcastGuestIntake() {
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
                 <h3 className="mb-2 font-serif text-[18px] font-normal text-[#1A1A1A]">Where to find you</h3>
                 <p className="mb-5 font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
-                  Add as many as you&apos;d like. We&apos;ll link these from your episode page.
+                  {mentorTrack
+                    ? 'Optional. We will link these from the episode page if you want them there.'
+                    : "Add as many as you'd like. We'll link these from your episode page."}
                 </p>
                 <div className="space-y-5">
                   {SOCIAL_FIELDS.map((field) => (
@@ -513,9 +572,13 @@ export default function PodcastGuestIntake() {
               </div>
 
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
-                <h3 className="mb-2 font-serif text-[18px] font-normal text-[#1A1A1A]">A brief bio</h3>
+                <h3 className="mb-2 font-serif text-[18px] font-normal text-[#1A1A1A]">
+                  {mentorTrack ? 'A brief bio (optional)' : 'A brief bio'}
+                </h3>
                 <p className="mb-5 font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
-                  Markdown is fine. Up to 5,000 characters. This appears on your episode page.
+                  {mentorTrack
+                    ? 'Optional. A line or two is plenty. This appears on the episode page.'
+                    : 'Markdown is fine. Up to 5,000 characters. This appears on your episode page.'}
                 </p>
                 <textarea
                   rows={6}
@@ -529,16 +592,45 @@ export default function PodcastGuestIntake() {
                 </p>
               </div>
 
-              {GUEST_QUESTIONS.map((q) => (
+              {mentorTrack && (
+                <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                  <h3 className="mb-2 font-serif text-[18px] font-normal text-[#1A1A1A]">
+                    A little context
+                  </h3>
+                  <p className="mb-5 font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
+                    So Bart knows the shape of the room you are leading in.
+                  </p>
+                  <div className="space-y-5">
+                    {MENTOR_CONTEXT_FIELDS.map((field) => (
+                      <div key={field.key}>
+                        <label className="mb-2 block font-sans text-[13px] font-medium text-[#1A1A1A]">
+                          {field.label}
+                        </label>
+                        <input
+                          type="text"
+                          value={formData[field.key]}
+                          onChange={(e) => handleField(field.key, e.target.value)}
+                          placeholder={field.placeholder}
+                          className={inputClass}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {(mentorTrack ? MENTOR_QUESTIONS : GUEST_QUESTIONS).map((q) => (
                 <div key={q.key} className="border border-[#1A1A1A]/08 bg-white p-8">
                   <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
                     {q.number}
                   </span>
                   <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
                     {q.text}
+                    {q.required && <span className="text-[#DB0812]"> *</span>}
                   </span>
                   <textarea
                     rows={4}
+                    required={Boolean(q.required)}
                     value={formData[q.key]}
                     onChange={(e) => handleField(q.key, e.target.value)}
                     placeholder={q.placeholder}
@@ -552,7 +644,9 @@ export default function PodcastGuestIntake() {
                   Finding a time to record
                 </h3>
                 <p className="mb-6 font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
-                  Recording sessions run about 60-90 minutes on Riverside. Suggest a few windows that work for
+                  {mentorTrack
+                    ? 'Mentor sessions run about 30 to 60 minutes on Riverside. Suggest a few windows that work for'
+                    : 'Recording sessions run about 60-90 minutes on Riverside. Suggest a few windows that work for'}
                   you and Bart will confirm one.
                 </p>
 
@@ -611,7 +705,7 @@ export default function PodcastGuestIntake() {
                       type="text"
                       value={formData.schedule_avoid_dates}
                       onChange={(e) => handleField('schedule_avoid_dates', e.target.value)}
-                      placeholder="e.g. June 28 – July 5, July 20"
+                      placeholder="e.g. June 28 to July 5, July 20"
                       className={inputClass}
                     />
                   </div>
