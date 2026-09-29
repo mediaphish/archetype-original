@@ -101,7 +101,8 @@ export default function PodcastGuestIntake({ track = null }) {
     session_type: lockedTrack === 'mentor' ? 'mentor' : 'guest',
     mentor_situation: '',
     mentor_tried: '',
-    mentor_outcome: '',
+    mentor_honest_answer: '',
+    mentor_stakes: '',
     mentor_role: '',
     mentor_org_size: '',
     name: '',
@@ -661,10 +662,16 @@ export default function PodcastGuestIntake({ track = null }) {
                   <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
                     {q.number}
                   </span>
-                  <span className="mb-5 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
+                  <span className="mb-2 block font-sans text-[16px] font-medium leading-[1.5] text-[#1A1A1A]">
                     {q.text}
                     {q.required && <span className="text-[#DB0812]"> *</span>}
                   </span>
+                  {q.hint && (
+                    <span className="mb-5 block font-sans text-[13px] leading-[1.65] text-[#6B6B6B]">
+                      {q.hint}
+                    </span>
+                  )}
+                  {!q.hint && <span className="mb-5 block" />}
                   <textarea
                     rows={4}
                     required={Boolean(q.required)}
