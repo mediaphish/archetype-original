@@ -78,13 +78,27 @@ const inputClass =
 const textareaClass =
   'w-full resize-y border border-[#1A1A1A]/15 bg-[#FAFAF9] px-4 py-3.5 font-sans text-[14px] text-[#1A1A1A] transition-colors placeholder:text-[#A8A9AD] focus:border-[#1A1A1A] focus:bg-white focus:outline-none';
 
-export default function PodcastGuestIntake() {
+/**
+ * @param {{ track?: 'guest'|'mentor'|null }} props
+ *   track locks the form to one kind of conversation. /podcast/mentor-session
+ *   passes 'mentor' so Bart can hand a link straight to someone he has already
+ *   offered a session to, without making them pick. The picker becomes a quiet
+ *   line out rather than a fork, so a wrong link is still recoverable.
+ */
+export default function PodcastGuestIntake({ track = null }) {
+  const lockedTrack =
+    track ||
+    (typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('session') === 'mentor'
+      ? 'mentor'
+      : null);
+
   const formLoadedAtRef = useRef(null);
   const fileInputRef = useRef(null);
   const [trapField, setTrapField] = useState('');
 
   const [formData, setFormData] = useState({
-    session_type: 'guest',
+    session_type: lockedTrack === 'mentor' ? 'mentor' : 'guest',
     mentor_situation: '',
     mentor_tried: '',
     mentor_outcome: '',
@@ -298,7 +312,7 @@ export default function PodcastGuestIntake() {
   if (formStatus.success) {
     return (
       <>
-        <SEO pageKey="podcast-guest-intake" />
+        <SEO pageKey={lockedTrack === 'mentor' ? 'podcast-mentor-session' : 'podcast-guest-intake'} />
         <div className="min-h-screen bg-[#FAFAF9] font-inter antialiased">
           <section className="border-b border-[#1A1A1A]/08 bg-white px-6 py-20 lg:px-10">
             <div className="mx-auto max-w-[1400px]">
@@ -318,7 +332,7 @@ export default function PodcastGuestIntake() {
 
   return (
     <>
-      <SEO pageKey="podcast-guest-intake" />
+      <SEO pageKey={lockedTrack === 'mentor' ? 'podcast-mentor-session' : 'podcast-guest-intake'} />
       <div className="min-h-screen bg-[#FAFAF9] font-inter antialiased">
         <section className="bg-[#2B2929] px-6 pb-20 pt-24 lg:px-10">
           <div className="mx-auto max-w-[1400px]">
@@ -326,11 +340,12 @@ export default function PodcastGuestIntake() {
               The Archetype Original Podcast
             </p>
             <h1 className="mb-6 max-w-[680px] font-serif text-[clamp(36px,4.5vw,60px)] font-normal leading-[1.1] tracking-[-0.01em] text-white">
-              Tell us who you are.
+              {lockedTrack === 'mentor' ? 'Bring me what you are stuck on.' : 'Tell us who you are.'}
             </h1>
             <p className="max-w-[560px] font-sans text-[16px] leading-[1.8] text-white/65">
-              Whether you are coming on as a guest or bringing something you are working through, this gives Bart
-              what he needs before you sit down together. Takes about five minutes.
+              {lockedTrack === 'mentor'
+                ? 'A few questions so the session starts somewhere real instead of spending the first twenty minutes getting oriented. Takes about five minutes.'
+                : 'Whether you are coming on as a guest or bringing something you are working through, this gives Bart what he needs before you sit down together. Takes about five minutes.'}
             </p>
           </div>
         </section>
@@ -364,6 +379,27 @@ export default function PodcastGuestIntake() {
                 />
               </div>
 
+              {lockedTrack ? (
+                <div className="border border-[#1A1A1A]/08 bg-white p-8">
+                  <span className="mb-2.5 block font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#DB0812]">
+                    {mentorTrack ? 'Mentor session' : 'Guest episode'}
+                  </span>
+                  <p className="font-sans text-[14px] leading-[1.7] text-[#1A1A1A]">
+                    {mentorTrack
+                      ? 'Free, 30 to 60 minutes, recorded for the show. You bring something you are actually working through and we work on it together, out loud.'
+                      : 'A conversation about your work, your story, and what you have learned.'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleField('session_type', mentorTrack ? 'guest' : 'mentor')}
+                    className="mt-4 font-sans text-[13px] text-[#6B6B6B] underline underline-offset-4 transition-colors hover:text-[#1A1A1A]"
+                  >
+                    {mentorTrack
+                      ? 'Actually, I want to come on as a guest instead'
+                      : 'Actually, I want a mentor session instead'}
+                  </button>
+                </div>
+              ) : (
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
                 <h3 className="mb-2 font-serif text-[18px] font-normal text-[#1A1A1A]">
                   Which conversation is this?
@@ -397,6 +433,7 @@ export default function PodcastGuestIntake() {
                   ))}
                 </div>
               </div>
+              )}
 
               <div className="border border-[#1A1A1A]/08 bg-white p-8">
                 <h3 className="mb-6 font-serif text-[18px] font-normal text-[#1A1A1A]">About you</h3>

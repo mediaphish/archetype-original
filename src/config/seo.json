@@ -201,6 +201,12 @@
       "description": "Terms governing the use of Archetype Original and its services.",
       "keywords": "terms and conditions, terms of service, Archetype Original",
       "image": "/og-default.jpg"
+    },
+    "podcast-mentor-session": {
+      "title": "Mentor Session | Archetype Original",
+      "description": "A free recorded mentor session with Bart Paden. Bring something you are working through and we work on it together, out loud, on the podcast.",
+      "keywords": "Bart Paden mentor session, leadership mentoring, free leadership advice, Archetype Original Podcast",
+      "image": "/og-default.jpg"
     }
   }
 }

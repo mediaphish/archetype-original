@@ -122,6 +122,9 @@ export default function App() {
     if (path === '/podcast') return 'podcast';
     if (/^\/podcast\/guest\/[^/]+$/.test(path)) return 'podcast-guest-view';
     if (path === '/podcast/guest-intake') return 'podcast-guest-intake';
+    // The link Bart hands someone he has offered a mentor session to. Same
+    // form, same release, same pipeline: it arrives on the mentor track.
+    if (path === '/podcast/mentor-session') return 'podcast-mentor-session';
     if (path.startsWith('/podcast/')) return 'podcast-episode';
     if (path === '/meet-bart' || path === '/about') return 'about';
     if (path === '/contact') return 'contact';
@@ -537,6 +540,8 @@ export default function App() {
         setCurrentPage('podcast-guest-view');
       } else if (path === '/podcast/guest-intake') {
         setCurrentPage('podcast-guest-intake');
+      } else if (path === '/podcast/mentor-session') {
+        setCurrentPage('podcast-mentor-session');
       } else if (path.startsWith('/podcast/')) {
         setCurrentPage('podcast-episode');
       } else if (path === '/meet-bart') {
@@ -835,11 +840,11 @@ export default function App() {
   }
 
   // Render Podcast guest intake page
-  if (currentPage === 'podcast-guest-intake') {
+  if (currentPage === 'podcast-guest-intake' || currentPage === 'podcast-mentor-session') {
     return (
       <main className="bg-warm-offWhite text-warm-charcoal">
         <Header />
-        <PodcastGuestIntake />
+        <PodcastGuestIntake track={currentPage === 'podcast-mentor-session' ? 'mentor' : null} />
         <Footer />
       </main>
     );
