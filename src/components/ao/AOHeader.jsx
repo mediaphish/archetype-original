@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Menu, X, LogOut } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
 import AOBottomNav from './AOBottomNav';
+import AutoAppMeta from './AutoAppMeta';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 
 const TABS = [
@@ -11,7 +12,14 @@ const TABS = [
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 
-export default function AOHeader({ active, email, onNavigate, hideBottomNav = false }) {
+/**
+ * @param {object} props
+ * @param {Array<{key: string, label: string, onClick: Function, disabled?: boolean}>} [props.menuExtras]
+ *   Page-level actions folded into the mobile menu. Auto sends its Transcript
+ *   and Publish buttons up here so they stop occupying a toolbar row on a
+ *   phone, where the screen is the scarcest thing there is.
+ */
+export default function AOHeader({ active, email, onNavigate, hideBottomNav = false, menuExtras = [] }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const keyboardInset = useKeyboardInset({ enabled: true });
 
@@ -40,13 +48,14 @@ export default function AOHeader({ active, email, onNavigate, hideBottomNav = fa
 
   return (
     <>
+    <AutoAppMeta />
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-4 py-1.5 md:py-4">
+        <div className="flex items-center justify-end md:justify-between">
           <button
             type="button"
             onClick={() => handleNavigate('/ao/analyst')}
-            className="flex items-center gap-2 text-gray-900 min-h-[44px]"
+            className="hidden md:flex items-center gap-2 text-gray-900 min-h-[44px]"
             aria-label="Go to Auto"
           >
             <OptimizedImage src="/brand/ao-icon.svg" alt="" className="w-6 h-6" loading="eager" width={24} height={24} />
@@ -93,7 +102,26 @@ export default function AOHeader({ active, email, onNavigate, hideBottomNav = fa
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-200 space-y-1">
+          <div className="md:hidden mt-2 pt-2 border-t border-gray-200 space-y-1">
+            {menuExtras.length > 0 && (
+              <>
+                {menuExtras.map((item) => (
+                  <button
+                    key={item.key}
+                    type="button"
+                    disabled={item.disabled}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      item.onClick?.();
+                    }}
+                    className="block w-full text-left min-h-[44px] px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-40"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+                <div className="h-px bg-gray-200 my-1" />
+              </>
+            )}
             {TABS.map(({ key, path, label }) => (
               <button
                 key={key}

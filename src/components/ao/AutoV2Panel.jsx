@@ -1835,7 +1835,9 @@ function ThreadSidebar({
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 
-export default function AutoV2Panel({ onNavigate, className }) {
+export default function AutoV2Panel({ onNavigate, className,
+  onActionsChange,
+}) {
   const [messages, setMessages] = useState([]);
   const [threads, setThreads] = useState([]);
   const [archivedThreads, setArchivedThreads] = useState([]);
@@ -1887,6 +1889,8 @@ export default function AutoV2Panel({ onNavigate, className }) {
   const keyboardInset = useKeyboardInset({ enabled: isMobile });
   const keyboardOpen = keyboardInset > 24;
 
+  const messagesRef = useRef([]);
+  const publishCardsRef = useRef(null);
   const splitContainerRef = useRef(null);
   const isMobileRef = useRef(false);
   const userAdjustedSplit = useRef(false);
@@ -3563,6 +3567,38 @@ export default function AutoV2Panel({ onNavigate, className }) {
   // spanned 200vw instead of the screen, so Artifact and Chats sat off the right
   // edge and Bart could never reach his other chats from his phone.
   // src/components/Header.jsx does the same thing for the public mobile drawer.
+  // Auto's own toolbar actions are published up to AOHeader so they can live in
+  // the mobile menu instead of a toolbar row. Library is already a tab there.
+  // Deps are primitives on purpose: the effect must not re-run because of the
+  // array it just handed up.
+  // Kept in refs so the menu effect can stay on primitive deps.
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+  useEffect(() => { publishCardsRef.current = publishCards; }, [publishCards]);
+
+  const messageCount = visibleChatMessages.length;
+  const cardCount = generatedImages?.length || 0;
+  useEffect(() => {
+    if (typeof onActionsChange !== 'function') return;
+    if (!isMobile) {
+      onActionsChange([]);
+      return;
+    }
+    onActionsChange([
+      {
+        key: 'transcript',
+        label: 'Download transcript',
+        disabled: messageCount === 0,
+        onClick: () => downloadTranscriptAsMd(messagesRef.current || [], activeThreadId),
+      },
+      {
+        key: 'publish-cards',
+        label: cardCount > 0 ? `Publish ${cardCount} cards` : 'Publish cards',
+        disabled: cardCount === 0,
+        onClick: () => publishCardsRef.current?.(),
+      },
+    ]);
+  }, [isMobile, messageCount, cardCount, activeThreadId, onActionsChange]);
+
   const mobileBottomNavContent = isMobile && !keyboardOpen ? (
     <nav
       className="fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200"
@@ -3754,7 +3790,7 @@ export default function AutoV2Panel({ onNavigate, className }) {
               <span className="text-sm font-medium text-gray-400">Auto</span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             {!isMobile && artifact && !artifactOpen && (
               <button
                 type="button"
