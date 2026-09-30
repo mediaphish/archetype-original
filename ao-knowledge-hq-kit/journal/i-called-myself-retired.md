@@ -9,7 +9,7 @@ summary: >-
 categories:
   - Leadership
   - Identity
-featured_image: ../images/i-called-myself-retired.jpg
+featured_image: ../images/medium-magazine-article.jpg
 takeaways:
   []
 applications: []
