@@ -3528,11 +3528,17 @@ export default function AutoV2Panel({ onNavigate, className,
     []
   );
 
-  // The artifact is a bottom sheet, not a side panel. It rises from the bottom,
-  // so down is the direction that dismisses it. Swiping it sideways, which is
-  // what I built first, does not match the motion the thing actually makes.
+  // The artifact is a side panel. It lives just off the right edge, comes in
+  // when you pull it in and goes back when you push it away. It was a bottom
+  // sheet until Bart pointed out that swiping in from the right to raise
+  // something from the bottom makes no sense. The gesture was right; the panel
+  // was wrong.
   const artifactSwipe = useMemo(
-    () => createSwipeHandlers((dir) => { if (dir === 'down') setMobileArtifactOpen(false); }),
+    () =>
+      createSwipeHandlers(
+        (dir) => { if (dir === 'right') setMobileArtifactOpen(false); },
+        { allowFromEdge: true }
+      ),
     []
   );
 
@@ -4101,16 +4107,16 @@ export default function AutoV2Panel({ onNavigate, className,
             onClick={() => setMobileArtifactOpen(false)}
           />
           <div
-            className={`absolute bottom-0 left-0 right-0 flex flex-col bg-white rounded-t-2xl shadow-2xl border-t border-gray-200 transition-transform duration-300 ease-out ${
-              mobileArtifactDrawerShown ? 'translate-y-0' : 'translate-y-full'
+            className={`absolute inset-y-0 right-0 flex w-[94%] flex-col border-l border-gray-200 bg-white shadow-2xl transition-transform duration-300 ease-out ${
+              mobileArtifactDrawerShown ? 'translate-x-0' : 'translate-x-full'
             }`}
-            style={{ height: '85vh', maxHeight: '85dvh', touchAction: 'pan-y' }}
+            style={{ touchAction: 'pan-y' }}
             {...artifactSwipe}
           >
-            <div className="flex-shrink-0 flex items-center justify-center py-2">
-              <div className="w-10 h-1 rounded-full bg-gray-300" aria-hidden />
-            </div>
-            <div className="flex-shrink-0 px-4 py-2 flex items-center justify-between border-b border-gray-200">
+            <div
+              className="flex-shrink-0 px-4 flex items-center justify-between border-b border-gray-200"
+              style={{ paddingTop: 'max(env(safe-area-inset-top, 0px), 8px)', paddingBottom: 8 }}
+            >
               <span className="text-sm font-semibold text-gray-900">Artifact</span>
               <button
                 type="button"
