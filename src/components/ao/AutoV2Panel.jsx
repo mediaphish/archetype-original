@@ -15,6 +15,7 @@ import React, {
 } from 'react';
 
 import { createPortal } from 'react-dom';
+import { createSwipeHandlers } from '../../../lib/ao/touchGestures.js';
 import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import EpisodeDraftReview from './EpisodeDraftReview.jsx';
 import HeaderUploadToDraftTrigger from './HeaderUploadToDraftTrigger.jsx';
@@ -1836,7 +1837,6 @@ function ThreadSidebar({
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 export default function AutoV2Panel({ onNavigate, className,
-  onActionsChange,
 }) {
   const [messages, setMessages] = useState([]);
   const [threads, setThreads] = useState([]);
@@ -1882,6 +1882,7 @@ export default function AutoV2Panel({ onNavigate, className,
   const [isMobile, setIsMobile] = useState(false);
   const [mobileTab, setMobileTab] = useState('chat');
   const [mobileArtifactOpen, setMobileArtifactOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileArtifactDrawerShown, setMobileArtifactDrawerShown] = useState(false);
   const [artifactUnread, setArtifactUnread] = useState(false);
   const [guestRecord, setGuestRecord] = useState(null);
@@ -1889,8 +1890,6 @@ export default function AutoV2Panel({ onNavigate, className,
   const keyboardInset = useKeyboardInset({ enabled: isMobile });
   const keyboardOpen = keyboardInset > 24;
 
-  const messagesRef = useRef([]);
-  const publishCardsRef = useRef(null);
   const splitContainerRef = useRef(null);
   const isMobileRef = useRef(false);
   const userAdjustedSplit = useRef(false);
@@ -3499,33 +3498,32 @@ export default function AutoV2Panel({ onNavigate, className,
     }
   }, [generatedImages, activeThreadId, messages, sendMessage]);
 
-  // Kept in refs so the menu effect can stay on primitive deps.
-  useEffect(() => { messagesRef.current = messages; }, [messages]);
-  useEffect(() => { publishCardsRef.current = publishCards; }, [publishCards]);
+  // Gestures. Spatial only: the artifact is a panel that lives off the right
+  // edge, the menu is a sheet that rises from the bottom. Nothing here picks
+  // between threads, and nothing starts at a screen edge iOS has claimed.
+  // Every one of these keeps its button. See lib/ao/touchGestures.js.
+  const messageSwipe = useMemo(
+    () =>
+      createSwipeHandlers((dir) => {
+        if (dir === 'left') {
+          setMobileArtifactOpen(true);
+          setArtifactUnread(false);
+        } else if (dir === 'right') {
+          setMobileArtifactOpen(false);
+        }
+      }),
+    []
+  );
 
-  const messageCount = visibleChatMessages.length;
-  const cardCount = generatedImages?.length || 0;
-  useEffect(() => {
-    if (typeof onActionsChange !== 'function') return;
-    if (!isMobile) {
-      onActionsChange([]);
-      return;
-    }
-    onActionsChange([
-      {
-        key: 'transcript',
-        label: 'Download transcript',
-        disabled: messageCount === 0,
-        onClick: () => downloadTranscriptAsMd(messagesRef.current || [], activeThreadId),
-      },
-      {
-        key: 'publish-cards',
-        label: cardCount > 0 ? `Publish ${cardCount} cards` : 'Publish cards',
-        disabled: cardCount === 0,
-        onClick: () => publishCardsRef.current?.(),
-      },
-    ]);
-  }, [isMobile, messageCount, cardCount, activeThreadId, onActionsChange]);
+  const composerSwipe = useMemo(
+    () => createSwipeHandlers((dir) => { if (dir === 'up') setMobileMenuOpen(true); }),
+    []
+  );
+
+  const sheetSwipe = useMemo(
+    () => createSwipeHandlers((dir) => { if (dir === 'down') setMobileMenuOpen(false); }),
+    []
+  );
 
   if (loading && !activeThreadId && visibleChatMessages.length === 0) {
     return (
@@ -3599,77 +3597,107 @@ export default function AutoV2Panel({ onNavigate, className,
   // the mobile menu instead of a toolbar row. Library is already a tab there.
   // Deps are primitives on purpose: the effect must not re-run because of the
   // array it just handed up.
-  const mobileBottomNavContent = isMobile && !keyboardOpen ? (
-    <nav
-      className="fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200"
-      style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 12px)' }}
-      aria-label="Auto navigation"
-    >
-      <div className="grid grid-cols-4 w-full">
-        <button
-          type="button"
-          onClick={startNewThread}
-          disabled={startingNew || sending || loading}
-          className="flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium text-gray-600 disabled:opacity-40 min-h-[52px]"
-        >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-            <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-          </svg>
-          New
-        </button>
-        <button
-          type="button"
-          onClick={() => setMobileTab('chat')}
-          className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium min-h-[52px] ${
-            mobileTab === 'chat' ? 'text-gray-900' : 'text-gray-500'
-          }`}
-        >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinejoin="round" />
-          </svg>
-          Chat
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setMobileTab('chat');
-            setMobileArtifactOpen(true);
-            setArtifactUnread(false);
-          }}
-          className={`relative flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium min-h-[52px] ${
-            mobileArtifactOpen ? 'text-gray-900' : 'text-gray-500'
-          }`}
-        >
-          <span className="relative">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <path d="M7 7h10M7 12h10M7 17h6" strokeLinecap="round" />
-            </svg>
-            {artifactUnread && hasArtifactContent ? (
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500" aria-hidden />
-            ) : null}
-          </span>
-          Artifact
-        </button>
-        <button
-          type="button"
-          onClick={() => setMobileTab('chats')}
-          className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium min-h-[52px] ${
-            mobileTab === 'chats' ? 'text-gray-900' : 'text-gray-500'
-          }`}
-        >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" strokeLinecap="round" />
-          </svg>
-          Chats
-        </button>
+  // Everything the header used to hold, in a sheet that rises from the thumb.
+  const mobileMenuSheet = isMobile && mobileMenuOpen ? (
+    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Menu">
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/30"
+        aria-label="Close menu"
+        onClick={() => setMobileMenuOpen(false)}
+      />
+      <div
+        className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl"
+        style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 12px)' }}
+        {...sheetSwipe}
+      >
+        <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-gray-300" aria-hidden />
+
+        {/* Threads first. Bart's loudest complaint tonight was that he could not
+            get from one post to another from his phone. */}
+        <div className="px-2 pt-3">
+          <div className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+            Chats
+          </div>
+          {threads.length === 0 ? (
+            <div className="px-4 py-3 text-sm text-gray-400">No other chats yet.</div>
+          ) : (
+            threads.slice(0, 8).map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  loadThread(t);
+                }}
+                className={`block w-full truncate rounded-xl px-4 py-3 text-left text-[15px] ${
+                  t.id === activeThreadId ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-800 hover:bg-gray-50'
+                }`}
+              >
+                {t.title || 'Untitled chat'}
+              </button>
+            ))
+          )}
+        </div>
+        <div className="mx-4 my-2 h-px bg-gray-200" />
+
+        <div className="p-2">
+          <button
+            type="button"
+            disabled={startingNew || sending || loading}
+            onClick={() => {
+              setMobileMenuOpen(false);
+              startNewThread();
+            }}
+            className="block w-full rounded-xl px-4 py-3.5 text-left text-[15px] text-gray-800 hover:bg-gray-50 disabled:opacity-40"
+          >
+            New chat
+          </button>
+          {[
+            { key: 'transcript', label: 'Download transcript', disabled: visibleChatMessages.length === 0, run: () => downloadTranscriptAsMd(messages, activeThreadId) },
+            { key: 'publish', label: generatedImages?.length ? `Publish ${generatedImages.length} cards` : 'Publish cards', disabled: !generatedImages?.length, run: () => publishCards() },
+            { key: 'library', label: 'Library', run: () => onNavigate?.('/ao/library') },
+            { key: 'podcast', label: 'Podcast', run: () => onNavigate?.('/ao/podcast') },
+            { key: 'settings', label: 'Settings', run: () => onNavigate?.('/ao/settings') },
+          ].map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              disabled={item.disabled}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                item.run();
+              }}
+              className="block w-full rounded-xl px-4 py-3.5 text-left text-[15px] text-gray-800 hover:bg-gray-50 disabled:opacity-40"
+            >
+              {item.label}
+            </button>
+          ))}
+          <div className="my-1 h-px bg-gray-200" />
+          <button
+            type="button"
+            onClick={async () => {
+              setMobileMenuOpen(false);
+              try {
+                await fetch('/api/ao/auth/logout', { method: 'POST' });
+              } catch (e) {}
+              onNavigate?.('/ao/login');
+            }}
+            className="block w-full rounded-xl px-4 py-3.5 text-left text-[15px] text-gray-500 hover:bg-gray-50"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
-    </nav>
+    </div>
   ) : null;
 
+  // Portalled to <body>: ArchySlideContainer wraps the app in a 200vw
+  // transformed track, and a transformed ancestor becomes the containing block
+  // for position:fixed. Rendered in place this sheet would span two screens.
   const mobileBottomNav =
-    mobileBottomNavContent && typeof document !== 'undefined'
-      ? createPortal(mobileBottomNavContent, document.body)
+    typeof document !== 'undefined' && mobileMenuSheet
+      ? createPortal(mobileMenuSheet, document.body)
       : null;
 
   return (
@@ -3765,7 +3793,11 @@ export default function AutoV2Panel({ onNavigate, className,
             </button>
           </div>
         )}
-        <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
+        <div
+          className={`flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 ${
+            isMobile ? (contextPill ? 'py-1.5' : 'hidden') : 'py-3'
+          }`}
+        >
           <div className="flex items-center gap-3">
             {!isMobile && (
             <button
@@ -3786,7 +3818,7 @@ export default function AutoV2Panel({ onNavigate, className,
               <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
                 {contextPill}
               </span>
-            ) : (
+            ) : isMobile ? null : (
               <span className="text-sm font-medium text-gray-400">Auto</span>
             )}
           </div>
@@ -3829,7 +3861,10 @@ export default function AutoV2Panel({ onNavigate, className,
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-5 min-h-0 relative">
+        <div
+          className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-5 min-h-0 relative"
+          {...(isMobile ? messageSwipe : {})}
+        >
           {loading && (
             <div className="absolute inset-0 z-10 bg-white/60 flex items-center justify-center pointer-events-none">
               <AOMark className="w-6 h-6 text-gray-300 animate-pulse" />
@@ -3920,6 +3955,21 @@ export default function AutoV2Panel({ onNavigate, className,
           </div>
         )}
 
+        {isMobile && artifactUnread && hasArtifactContent && !mobileArtifactOpen ? (
+          <button
+            type="button"
+            onClick={() => {
+              setMobileArtifactOpen(true);
+              setArtifactUnread(false);
+            }}
+            className="flex-shrink-0 mx-4 mb-1 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-left text-[13px] font-medium text-blue-700"
+          >
+            <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" aria-hidden />
+            <span className="truncate">{artifact?.label || 'Draft ready'}</span>
+            <span className="ml-auto flex-shrink-0 text-blue-400">Open</span>
+          </button>
+        ) : null}
+
         <div
           className="flex-shrink-0 px-4 pb-4 pt-2 border-t border-gray-100 bg-white"
           style={
@@ -3927,6 +3977,7 @@ export default function AutoV2Panel({ onNavigate, className,
               ? { paddingBottom: `max(1rem, ${keyboardInset}px)` }
               : undefined
           }
+          {...(isMobile ? composerSwipe : {})}
         >
           <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 focus-within:border-gray-400 focus-within:bg-white transition-colors">
 
@@ -3956,6 +4007,20 @@ export default function AutoV2Panel({ onNavigate, className,
               disabled={sending || startingNew}
               uploading={uploadingHeaderImage}
             />
+
+            {isMobile && (
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded"
+                aria-label="Menu, chats and actions"
+                title="Chats and actions"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
 
             <textarea
               ref={textareaRef}

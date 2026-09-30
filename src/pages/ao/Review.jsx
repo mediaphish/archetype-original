@@ -6,13 +6,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import AOHeader from '../../components/ao/AOHeader';
+import AutoAppMeta from '../../components/ao/AutoAppMeta';
 import AutoV2Panel from '../../components/ao/AutoV2Panel';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
 
 export default function Review() {
-  // Auto's Transcript and Publish buttons live in the header menu on mobile,
-  // so they stop taking a toolbar row away from the writing area.
-  const [panelActions, setPanelActions] = useState([]);
   const [email, setEmail] = useState('');
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -64,21 +62,15 @@ export default function Review() {
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
         />
       </Helmet>
-      <div className="shrink-0">
-        <AOHeader
-          active="analyst"
-          email={email}
-          onNavigate={handleNavigate}
-          hideBottomNav
-          menuExtras={panelActions}
-        />
+      <AutoAppMeta />
+      {/* No header on a phone. It cost about 90px to show one hamburger, and
+          top-right is the hardest place on a phone to reach. Navigation lives
+          in Auto's own bottom bar now, where the thumb already is. */}
+      <div className="shrink-0 hidden md:block">
+        <AOHeader active="analyst" email={email} onNavigate={handleNavigate} hideBottomNav />
       </div>
       <main className="flex-1 flex flex-col min-h-0 w-full px-0 pt-0 pb-0">
-        <AutoV2Panel
-          className="flex-1 min-h-0 h-full"
-          onNavigate={handleNavigate}
-          onActionsChange={setPanelActions}
-        />
+        <AutoV2Panel className="flex-1 min-h-0 h-full" onNavigate={handleNavigate} />
       </main>
     </div>
   );

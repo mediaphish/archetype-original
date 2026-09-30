@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { Menu, X, LogOut } from 'lucide-react';
 import { OptimizedImage } from '../OptimizedImage';
 import AOBottomNav from './AOBottomNav';
-import AutoAppMeta from './AutoAppMeta';
 import { useKeyboardInset } from '../../hooks/useKeyboardInset';
 
 const TABS = [
@@ -12,14 +11,7 @@ const TABS = [
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
 
-/**
- * @param {object} props
- * @param {Array<{key: string, label: string, onClick: Function, disabled?: boolean}>} [props.menuExtras]
- *   Page-level actions folded into the mobile menu. Auto sends its Transcript
- *   and Publish buttons up here so they stop occupying a toolbar row on a
- *   phone, where the screen is the scarcest thing there is.
- */
-export default function AOHeader({ active, email, onNavigate, hideBottomNav = false, menuExtras = [] }) {
+export default function AOHeader({ active, email, onNavigate, hideBottomNav = false }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const keyboardInset = useKeyboardInset({ enabled: true });
 
@@ -48,7 +40,6 @@ export default function AOHeader({ active, email, onNavigate, hideBottomNav = fa
 
   return (
     <>
-    <AutoAppMeta />
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
       <div className="container mx-auto px-4 py-1.5 md:py-4">
         <div className="flex items-center justify-end md:justify-between">
@@ -103,25 +94,6 @@ export default function AOHeader({ active, email, onNavigate, hideBottomNav = fa
 
         {mobileMenuOpen && (
           <div className="md:hidden mt-2 pt-2 border-t border-gray-200 space-y-1">
-            {menuExtras.length > 0 && (
-              <>
-                {menuExtras.map((item) => (
-                  <button
-                    key={item.key}
-                    type="button"
-                    disabled={item.disabled}
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      item.onClick?.();
-                    }}
-                    className="block w-full text-left min-h-[44px] px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-40"
-                  >
-                    {item.label}
-                  </button>
-                ))}
-                <div className="h-px bg-gray-200 my-1" />
-              </>
-            )}
             {TABS.map(({ key, path, label }) => (
               <button
                 key={key}
