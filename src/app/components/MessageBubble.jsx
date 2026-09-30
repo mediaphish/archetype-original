@@ -131,7 +131,7 @@ export default function MessageBubble({
     ? isRh
       ? 'max-w-[260px] rounded-[2px] border border-[#95DACE]/15 bg-[#0F2E2C] text-[#E7F1EE]'
       : 'max-w-[260px] rounded-[2px] border border-[rgba(26,26,26,0.06)] bg-[#FAFAF9] text-[#1A1A1A]'
-    : 'flex-1 rounded-2xl rounded-bl-md border border-warm-border bg-white text-warm-charcoal';
+    : 'flex-1 text-warm-charcoal sm:rounded-2xl sm:rounded-bl-md sm:border sm:border-warm-border sm:bg-white';
 
   const avatarClass = isDrawer
     ? isRh
@@ -175,7 +175,7 @@ export default function MessageBubble({
             />
           )}
           <div
-            className={`min-w-0 break-words px-3 py-3 sm:px-4 ${isDrawer ? '' : 'rounded-2xl'} ${isUser ? bubbleUser : `${bubbleAssistant} ${!isDrawer ? 'flex-1' : ''}`}`}
+            className={`min-w-0 break-words py-3 ${isDrawer ? '' : 'sm:rounded-2xl'} ${isUser ? 'px-3 sm:px-4' : 'px-0 sm:px-4'} ${isUser ? bubbleUser : `${bubbleAssistant} ${!isDrawer ? 'flex-1' : ''}`}`}
           >
             {isUser ? (
               <p className={`${bodyText} whitespace-pre-wrap`} style={isDrawer ? { lineHeight: 1.7 } : { lineHeight: '1.6' }}>
