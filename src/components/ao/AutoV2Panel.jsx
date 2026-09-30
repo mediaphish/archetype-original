@@ -3525,6 +3525,14 @@ export default function AutoV2Panel({ onNavigate, className,
     []
   );
 
+  // The artifact is a bottom sheet, not a side panel. It rises from the bottom,
+  // so down is the direction that dismisses it. Swiping it sideways, which is
+  // what I built first, does not match the motion the thing actually makes.
+  const artifactSwipe = useMemo(
+    () => createSwipeHandlers((dir) => { if (dir === 'down') setMobileArtifactOpen(false); }),
+    []
+  );
+
   if (loading && !activeThreadId && visibleChatMessages.length === 0) {
     return (
       <div className={`flex items-center justify-center h-full ${className || ''}`}>
@@ -3726,17 +3734,13 @@ export default function AutoV2Panel({ onNavigate, className,
           onSelectThread={handleSelectThread}
           onNewThread={startNewThread}
           onRefresh={loadThreadList}
-          className={`flex-1 w-full min-h-0 overflow-y-auto ${
-            isMobile && !keyboardOpen ? 'pb-[calc(64px+env(safe-area-inset-bottom,0px))]' : ''
-          }`}
+          className="flex-1 w-full min-h-0 overflow-y-auto"
           showHeader={false}
         />
       ) : (
       <div
         ref={splitContainerRef}
-        className={`flex flex-1 min-h-0 min-w-0 flex-row overflow-hidden ${
-          isMobile && !keyboardOpen ? 'pb-[calc(64px+env(safe-area-inset-bottom,0px))]' : ''
-        }`}
+        className="flex flex-1 min-h-0 min-w-0 flex-row overflow-hidden"
       >
         <div
           className={`flex min-h-0 min-w-0 flex-col overflow-hidden ${dividerDragging ? 'select-none' : ''} ${
@@ -4082,7 +4086,8 @@ export default function AutoV2Panel({ onNavigate, className,
 
       {mobileBottomNav}
 
-      {isMobile && mobileArtifactOpen ? (
+      {isMobile && mobileArtifactOpen && typeof document !== 'undefined' ? (
+        createPortal(
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Artifact">
           <button
             type="button"
@@ -4097,6 +4102,7 @@ export default function AutoV2Panel({ onNavigate, className,
               mobileArtifactDrawerShown ? 'translate-y-0' : 'translate-y-full'
             }`}
             style={{ height: '85vh', maxHeight: '85dvh' }}
+            {...artifactSwipe}
           >
             <div className="flex-shrink-0 flex items-center justify-center py-2">
               <div className="w-10 h-1 rounded-full bg-gray-300" aria-hidden />
@@ -4118,7 +4124,9 @@ export default function AutoV2Panel({ onNavigate, className,
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
+        )
       ) : null}
 
     </div>
