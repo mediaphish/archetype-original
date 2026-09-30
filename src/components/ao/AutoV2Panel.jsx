@@ -3504,14 +3504,17 @@ export default function AutoV2Panel({ onNavigate, className,
   // Every one of these keeps its button. See lib/ao/touchGestures.js.
   const messageSwipe = useMemo(
     () =>
-      createSwipeHandlers((dir) => {
-        if (dir === 'left') {
-          setMobileArtifactOpen(true);
-          setArtifactUnread(false);
-        } else if (dir === 'right') {
-          setMobileArtifactOpen(false);
-        }
-      }),
+      createSwipeHandlers(
+        (dir) => {
+          if (dir === 'left') {
+            setMobileArtifactOpen(true);
+            setArtifactUnread(false);
+          } else if (dir === 'right') {
+            setMobileArtifactOpen(false);
+          }
+        },
+        { allowFromEdge: true }
+      ),
     []
   );
 
@@ -3866,7 +3869,8 @@ export default function AutoV2Panel({ onNavigate, className,
         </div>
 
         <div
-          className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-5 min-h-0 relative"
+          className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-5 min-h-0 relative md:px-4"
+          style={isMobile ? { touchAction: 'pan-y', paddingLeft: 12, paddingRight: 12 } : undefined}
           {...(isMobile ? messageSwipe : {})}
         >
           {loading && (
@@ -3976,11 +3980,10 @@ export default function AutoV2Panel({ onNavigate, className,
 
         <div
           className="flex-shrink-0 px-4 pb-4 pt-2 border-t border-gray-100 bg-white"
-          style={
-            keyboardInset > 0
-              ? { paddingBottom: `max(1rem, ${keyboardInset}px)` }
-              : undefined
-          }
+          style={{
+            ...(keyboardInset > 0 ? { paddingBottom: `max(1rem, ${keyboardInset}px)` } : null),
+            ...(isMobile ? { touchAction: 'pan-y' } : null),
+          }}
           {...(isMobile ? composerSwipe : {})}
         >
           <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 focus-within:border-gray-400 focus-within:bg-white transition-colors">
@@ -4101,7 +4104,7 @@ export default function AutoV2Panel({ onNavigate, className,
             className={`absolute bottom-0 left-0 right-0 flex flex-col bg-white rounded-t-2xl shadow-2xl border-t border-gray-200 transition-transform duration-300 ease-out ${
               mobileArtifactDrawerShown ? 'translate-y-0' : 'translate-y-full'
             }`}
-            style={{ height: '85vh', maxHeight: '85dvh' }}
+            style={{ height: '85vh', maxHeight: '85dvh', touchAction: 'pan-y' }}
             {...artifactSwipe}
           >
             <div className="flex-shrink-0 flex items-center justify-center py-2">

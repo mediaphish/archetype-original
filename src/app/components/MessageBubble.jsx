@@ -137,13 +137,13 @@ export default function MessageBubble({
     ? isRh
       ? 'h-7 w-7 shrink-0 rounded-[2px] border border-[#95DACE]/20 object-cover mt-0.5'
       : 'h-7 w-7 shrink-0 rounded-[2px] border border-[rgba(26,26,26,0.1)] object-cover mt-0.5'
-    : 'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 object-cover border-0 mt-0.5';
+    : 'hidden sm:block sm:w-10 sm:h-10 rounded-full flex-shrink-0 object-cover border-0 mt-0.5';
 
   const bodyText = isDrawer
     ? 'text-sm leading-[1.7] break-words [&_a]:break-all'
     : 'text-base sm:text-lg leading-relaxed break-words [&_a]:break-all';
 
-  const rowGap = isDrawer ? 'gap-2.5' : 'gap-2 sm:gap-3';
+  const rowGap = isDrawer ? 'gap-2.5' : 'gap-0 sm:gap-3';
   const rowAnim = isDrawer ? 'archy-msg-in' : '';
 
   return (
@@ -175,7 +175,7 @@ export default function MessageBubble({
             />
           )}
           <div
-            className={`min-w-0 break-words px-4 py-3 ${isDrawer ? '' : 'rounded-2xl'} ${isUser ? bubbleUser : `${bubbleAssistant} ${!isDrawer ? 'flex-1' : ''}`}`}
+            className={`min-w-0 break-words px-3 py-3 sm:px-4 ${isDrawer ? '' : 'rounded-2xl'} ${isUser ? bubbleUser : `${bubbleAssistant} ${!isDrawer ? 'flex-1' : ''}`}`}
           >
             {isUser ? (
               <p className={`${bodyText} whitespace-pre-wrap`} style={isDrawer ? { lineHeight: 1.7 } : { lineHeight: '1.6' }}>
