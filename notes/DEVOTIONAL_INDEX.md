@@ -286,6 +286,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-10-05 | The Might of My Hand | Deuteronomy 8:17–18 (ESV) | `the-might-of-my-hand` | `2026-10-05-the-might-of-my-hand.md` |
 | 2026-10-06 | He Must Increase | John 3:27–30 (ESV) | `he-must-increase` | `2026-10-06-he-must-increase.md` |
 | 2026-10-07 | The Lord Gave | Job 1:20–21 (ESV) | `the-lord-gave` | `2026-10-07-the-lord-gave.md` |
+| 2026-10-08 | The Measure of My Days | Psalm 39:4–5 (ESV) | `the-measure-of-my-days` | `2026-10-08-the-measure-of-my-days.md` |
+| 2026-10-09 | A Mist That Appears for a Little Time | James 4:13–15 (ESV) | `a-mist-that-appears-for-a-little-time` | `2026-10-09-a-mist-that-appears-for-a-little-time.md` |
+| 2026-10-10 | Plow in the Autumn | Proverbs 20:4 (ESV) | `plow-in-the-autumn` | `2026-10-10-plow-in-the-autumn.md` |
+| 2026-10-11 | Go to the Ant | Proverbs 6:6–8 (ESV) | `go-to-the-ant` | `2026-10-11-go-to-the-ant.md` |
+| 2026-10-12 | Whatever Your Hand Finds to Do | Ecclesiastes 9:10 (ESV) | `whatever-your-hand-finds-to-do` | `2026-10-12-whatever-your-hand-finds-to-do.md` |
+| 2026-10-13 | One Thing Is Necessary | Luke 10:38–42 (ESV) | `one-thing-is-necessary` | `2026-10-13-one-thing-is-necessary.md` |
+| 2026-10-14 | Come Away and Rest a While | Mark 6:30–31 (ESV) | `come-away-and-rest-a-while` | `2026-10-14-come-away-and-rest-a-while.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
