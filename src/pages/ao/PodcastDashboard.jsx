@@ -115,6 +115,8 @@ export default function PodcastDashboard() {
   const [threadsLoading, setThreadsLoading] = useState(true);
   const [threadsError, setThreadsError] = useState('');
   const [buildingEpisodeId, setBuildingEpisodeId] = useState(null);
+  const [archivingId, setArchivingId] = useState(null);
+  const [showArchived, setShowArchived] = useState(false);
   const [buildEpisodeError, setBuildEpisodeError] = useState('');
   const [selectedGuestIds, setSelectedGuestIds] = useState([]);
   const [emailSlotStatus, setEmailSlotStatus] = useState({});
@@ -160,13 +162,14 @@ export default function PodcastDashboard() {
     };
   }, []);
 
-  const loadGuests = useCallback(async (query, page) => {
+  const loadGuests = useCallback(async (query, page, archived = false) => {
     setGuestsLoading(true);
     setGuestsError('');
     try {
       const params = new URLSearchParams();
       if (query.trim().length >= 2) params.set('q', query.trim());
       else params.set('page', String(page));
+      if (archived) params.set('archived', '1');
       const res = await fetch(`/api/ao/podcast/guests?${params}`);
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.ok) throw new Error(json.error || 'Could not load guests');
@@ -180,6 +183,30 @@ export default function PodcastDashboard() {
       setGuestsLoading(false);
     }
   }, []);
+
+  // Finished guests come off the working list. Nothing is deleted: their
+  // research and brief are per person and a returning guest still has them.
+  const handleArchiveGuest = useCallback(
+    async (guestId, archived) => {
+      setArchivingId(guestId);
+      try {
+        const res = await fetch('/api/ao/podcast/guest-archive', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guest_id: guestId, archived }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || 'Could not update that guest');
+        setGuests((prev) => prev.filter((g) => g.id !== guestId));
+        setGuestTotal((n) => Math.max(0, n - 1));
+      } catch (e) {
+        setGuestsError(e.message || 'Could not update that guest');
+      } finally {
+        setArchivingId(null);
+      }
+    },
+    []
+  );
 
   const loadEpisodes = useCallback(async () => {
     setEpisodesLoading(true);
@@ -224,9 +251,9 @@ export default function PodcastDashboard() {
     if (!authChecked) return;
     const timer = setTimeout(() => {
       if (guestSearch.trim().length >= 2) {
-        loadGuests(guestSearch, 1);
+        loadGuests(guestSearch, 1, showArchived);
       } else if (guestSearch.trim().length === 0) {
-        loadGuests('', guestPage);
+        loadGuests('', guestPage, showArchived);
       } else {
         setGuests([]);
         setGuestTotal(0);
@@ -234,7 +261,7 @@ export default function PodcastDashboard() {
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [authChecked, guestSearch, guestPage, loadGuests]);
+  }, [authChecked, guestSearch, guestPage, loadGuests, showArchived]);
 
   useEffect(() => {
     if (!showSlotForm || slotGuestQuery.trim().length < 2) {
@@ -388,7 +415,19 @@ export default function PodcastDashboard() {
         {/* Panel 1: Guest Directory */}
         <section className="rounded-xl border border-gray-200 bg-white p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-serif text-lg text-gray-900">Guest directory</h2>
+            <h2 className="font-serif text-lg text-gray-900">
+              {showArchived ? 'Archived guests' : 'Guest directory'}
+            </h2>
+            <button
+              type="button"
+              onClick={() => {
+                setShowArchived((v) => !v);
+                setGuestPage(1);
+              }}
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+            >
+              {showArchived ? 'Back to active' : 'View archived'}
+            </button>
             <a
               href={INTAKE_URL}
               target="_blank"
@@ -465,17 +504,32 @@ export default function PodcastDashboard() {
                   >
                     View
                   </button>
+                  {!guest.is_archived && (
+                    <button
+                      type="button"
+                      onClick={() => handleBuildEpisode(guest.id)}
+                      disabled={buildingEpisodeId === guest.id}
+                      className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      {buildingEpisodeId === guest.id
+                        ? 'Opening…'
+                        : guest.episode_thread_id
+                        ? 'Continue episode'
+                        : 'Build episode'}
+                    </button>
+                  )}
                   <button
                     type="button"
-                    onClick={() => handleBuildEpisode(guest.id)}
-                    disabled={buildingEpisodeId === guest.id}
-                    className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                    onClick={() => handleArchiveGuest(guest.id, !guest.is_archived)}
+                    disabled={archivingId === guest.id}
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    title={
+                      guest.is_archived
+                        ? 'Put this guest back on the working list'
+                        : 'Episode is done. Keeps everything, just clears the list.'
+                    }
                   >
-                    {buildingEpisodeId === guest.id
-                      ? 'Opening…'
-                      : guest.episode_thread_id
-                      ? 'Continue episode'
-                      : 'Build episode'}
+                    {archivingId === guest.id ? '…' : guest.is_archived ? 'Restore' : 'Archive'}
                   </button>
                 </div>
               </li>

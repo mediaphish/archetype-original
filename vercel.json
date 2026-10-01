@@ -1010,6 +1010,10 @@
       "dest": "/api/ao/podcast/guest.js"
     },
     {
+      "src": "/api/ao/podcast/guest-archive",
+      "dest": "/api/ao/podcast/guest-archive.js"
+    },
+    {
       "src": "/api/ao/podcast/guests",
       "dest": "/api/ao/podcast/guests.js"
     },

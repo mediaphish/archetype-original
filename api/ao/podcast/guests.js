@@ -16,6 +16,7 @@ export default async function handler(req, res) {
 
   const query = String(req.query?.q || '').trim();
   const page = parseInt(req.query?.page || '1', 10) || 1;
+  const archived = String(req.query?.archived || '') === '1';
 
   try {
     const statusMap = await getGuestEpisodeStatusMap();
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const result = await listGuestsPaginated({ page, pageSize: 20 });
+    const result = await listGuestsPaginated({ page, pageSize: 20, archived });
     if (!result.ok) {
       const status = result.error === 'guest_intake_table_missing' ? 503 : 500;
       return res.status(status).json({ ok: false, error: result.error });
