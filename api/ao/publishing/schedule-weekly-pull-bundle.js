@@ -44,6 +44,43 @@ function buildCaptionForCardPost(item, platform) {
   return body;
 }
 
+/**
+ * Weekdays only, counting the gap in calendar days and stepping over the
+ * weekend when a slot lands on one.
+ *
+ * Bart, 2026-10-02: "Quotes are every 3 days skipping weekends." A plain
+ * three-day step lands on a Saturday one time in three, and a card posted into
+ * a dead weekend is a card wasted.
+ */
+function nextWeekday(date) {
+  const d = new Date(date.getTime());
+  while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return d;
+}
+
+/** Step forward by whole working days, so the weekend is not part of the count. */
+function addBusinessDays(date, days) {
+  const d = new Date(date.getTime());
+  let left = Math.max(1, days);
+  while (left > 0) {
+    d.setUTCDate(d.getUTCDate() + 1);
+    if (d.getUTCDay() !== 0 && d.getUTCDay() !== 6) left -= 1;
+  }
+  return d;
+}
+
+function slotsSkippingWeekends(start, count, gapDays) {
+  const slots = [];
+  let cursor = nextWeekday(start);
+  for (let i = 0; i < count; i += 1) {
+    slots.push(new Date(cursor.getTime()));
+    cursor = addBusinessDays(cursor, gapDays);
+  }
+  return slots;
+}
+
 const BUNDLE_PLATFORMS = [
   { platform: 'instagram', account_id: 'meta' },
   { platform: 'facebook', account_id: 'meta' },
@@ -62,7 +99,7 @@ export default async function handler(req, res) {
   const quoteId = req.body?.quote_id;
   if (!quoteId) return res.status(400).json({ ok: false, error: 'quote_id required' });
 
-  const gapDays = Math.max(1, Math.min(14, Number.parseInt(String(req.body?.gap_days ?? '1'), 10) || 1));
+  const gapDays = Math.max(1, Math.min(14, Number.parseInt(String(req.body?.gap_days ?? '3'), 10) || 3));
   let start = parseIso(req.body?.start_at);
   if (!start) {
     const t = new Date();
@@ -106,8 +143,9 @@ export default async function handler(req, res) {
     const bundleLogoUrl = (await inlineLogoForQuoteCardSvg(rawLogo)) || null;
 
     const rows = [];
+    const slots = slotsSkippingWeekends(start, items.length, gapDays);
     for (let i = 0; i < items.length; i += 1) {
-      const when = new Date(start.getTime() + i * gapDays * 86400000);
+      const when = slots[i];
       const item = items[i];
       let imageUrl = String(item.quote_card_image_url || '').trim();
       if (imageUrl && !/^https:\/\//i.test(imageUrl)) {

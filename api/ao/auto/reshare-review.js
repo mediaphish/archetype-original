@@ -24,6 +24,16 @@ import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
  * engagement based on day-of-week patterns.
  * Falls back to tomorrow if no data is available.
  */
+/**
+ * Bart, 2026-10-02: "Reshares would be Monday Wednesday and Friday no weekends."
+ *
+ * The engagement data can still choose between those three, but it cannot choose
+ * a Tuesday. Before this the day came purely from whichever weekday scored best,
+ * which is how a cadence he had decided on drifted into whatever the numbers
+ * liked that week.
+ */
+const RESHARE_DAYS = [1, 3, 5];
+
 async function findBestReshareDay() {
   const today = new Date();
 
@@ -43,7 +53,7 @@ async function findBestReshareDay() {
       for (const m of metrics) {
         const d = new Date(m.posted_at_utc);
         const dow = d.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-        if (dow === 0 || dow === 6) continue;
+        if (!RESHARE_DAYS.includes(dow)) continue;
         if (!dayScores[dow]) dayScores[dow] = { total: 0, count: 0 };
         dayScores[dow].total += Number(m.engagement_score);
         dayScores[dow].count += 1;
@@ -79,8 +89,7 @@ async function findBestReshareDay() {
     candidate.setDate(today.getDate() + bestDayOffset + attempt);
     const ymd = candidate.toISOString().split('T')[0];
 
-    const dow = candidate.getDay();
-    if (dow === 0 || dow === 6) continue;
+    if (!RESHARE_DAYS.includes(candidate.getDay())) continue;
 
     const { data: existing } = await scheduledPosts()
       .select('id')
@@ -95,9 +104,13 @@ async function findBestReshareDay() {
     }
   }
 
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
-  return tomorrow;
+  // Nothing free in the next week: fall forward to the next Monday, Wednesday or
+  // Friday rather than to tomorrow, which could be a Saturday.
+  const fallback = new Date(today);
+  do {
+    fallback.setDate(fallback.getDate() + 1);
+  } while (!RESHARE_DAYS.includes(fallback.getDay()));
+  return fallback;
 }
 
 /**

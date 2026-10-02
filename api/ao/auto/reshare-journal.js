@@ -710,6 +710,21 @@ Write four reshare captions for this article. Surface a fresh angle. Do not summ
   }
 }
 
+/**
+ * Bart, 2026-10-02: "Reshares would be Monday Wednesday and Friday no weekends."
+ * The numbers choose between those three days, never outside them.
+ */
+const RESHARE_DAYS = [1, 3, 5];
+
+/** The next Monday, Wednesday or Friday strictly after the given day. */
+function nextReshareDay(from) {
+  const d = new Date(from.getTime());
+  do {
+    d.setDate(d.getDate() + 1);
+  } while (!RESHARE_DAYS.includes(d.getDay()));
+  return d;
+}
+
 async function resolveScheduleDayIfAutoApprove() {
   let autoApprove = false;
   try {
@@ -744,7 +759,7 @@ async function resolveScheduleDayIfAutoApprove() {
       for (const m of metrics) {
         const d = new Date(m.posted_at_utc);
         const dow = d.getDay();
-        if (dow === 0 || dow === 6) continue;
+        if (!RESHARE_DAYS.includes(dow)) continue;
         if (!dayScores[dow]) dayScores[dow] = { total: 0, count: 0 };
         dayScores[dow].total += Number(m.engagement_score);
         dayScores[dow].count += 1;
@@ -774,8 +789,7 @@ async function resolveScheduleDayIfAutoApprove() {
       const candidate = new Date(today);
       candidate.setDate(today.getDate() + bestDayOffset + attempt);
       const ymd = candidate.toISOString().split('T')[0];
-      const dow = candidate.getDay();
-      if (dow === 0 || dow === 6) continue;
+      if (!RESHARE_DAYS.includes(candidate.getDay())) continue;
       const { data: existing } = await scheduledPosts()
         .select('id')
         .eq('source_kind', 'ao_journal_reshare')
@@ -789,15 +803,11 @@ async function resolveScheduleDayIfAutoApprove() {
       }
     }
     if (!scheduleDay) {
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      scheduleDay = tomorrow;
+      scheduleDay = nextReshareDay(today);
     }
   } catch (err) {
     console.warn('[reshare-journal] Day selection failed:', err?.message);
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    scheduleDay = tomorrow;
+    scheduleDay = nextReshareDay(new Date());
   }
 
   return { autoApprove: true, scheduleDay };

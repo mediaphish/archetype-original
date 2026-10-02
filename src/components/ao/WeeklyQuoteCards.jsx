@@ -22,7 +22,7 @@ export default function WeeklyQuoteCards() {
   const [bundles, setBundles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState(() => todayPlus(1));
-  const [gapDays, setGapDays] = useState(2);
+  const [gapDays, setGapDays] = useState(3);
   const [busyId, setBusyId] = useState(null);
   const [result, setResult] = useState({});
 
@@ -98,7 +98,8 @@ export default function WeeklyQuoteCards() {
             </h2>
             <p className="text-sm text-gray-500 mt-1 mb-4">
               Lines from your own writing, each one made into a card. Pick the first day and the spacing, then send the
-              set to Instagram, Facebook, LinkedIn and X.
+              set to Instagram, Facebook, LinkedIn and X. Weekends are skipped, so at three days apart five cards land on
+              a Monday, Thursday, Tuesday, Friday and Wednesday.
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -150,7 +151,7 @@ export default function WeeklyQuoteCards() {
                 >
                   {gapChoices.map((g) => (
                     <option key={g} value={g}>
-                      {g === 1 ? 'day' : g === 7 ? 'week' : `${g} days`}
+                      {g === 1 ? 'working day' : g === 7 ? 'week and a half' : `${g} working days`}
                     </option>
                   ))}
                 </select>
