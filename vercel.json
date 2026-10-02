@@ -1574,6 +1574,14 @@
       "dest": "/api/ao/instagram-login/status.js"
     },
     {
+      "src": "/api/ao/instagram-login/start",
+      "dest": "/api/ao/instagram-login/start.js"
+    },
+    {
+      "src": "/api/ao/instagram-login/callback",
+      "dest": "/api/ao/instagram-login/callback.js"
+    },
+    {
       "src": "/api/providers/meta/test-post-personal",
       "dest": "/api/providers/meta/test-post-personal.js"
     },

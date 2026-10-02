@@ -80,6 +80,7 @@ export default function Settings() {
   const [reshareAutoApprove, setReshareAutoApprove] = useState(false);
   const [reshareAutoApproveLoading, setReshareAutoApproveLoading] = useState(false);
   const [reshareSettingsLoading, setReshareSettingsLoading] = useState(true);
+  const [igConnectOutcome, setIgConnectOutcome] = useState(null);
   const [pendingReshares, setPendingReshares] = useState([]);
   const [pendingResharesLoading, setPendingResharesLoading] = useState(true);
   const [reshareActionLoading, setReshareActionLoading] = useState({});
@@ -116,6 +117,26 @@ export default function Settings() {
     if (params.get('provider') === 'x') {
       setXConnectStatus(params.get('status') || null);
       setXConnectMessage(params.get('message') || '');
+    }
+
+    // The Instagram sign in returns here with its own result on the address.
+    const instagram = params.get('instagram');
+    if (instagram === 'connected') {
+      const username = params.get('username');
+      const expires = params.get('expires');
+      setIgConnectOutcome({
+        ok: true,
+        message: `Instagram connected${username ? ` as @${username}` : ''}${
+          expires ? `. The connection runs to ${expires} and renews itself every Monday.` : '.'
+        }`,
+      });
+    } else if (instagram === 'denied') {
+      setIgConnectOutcome({ ok: false, message: 'Instagram sign in was cancelled, so nothing changed.' });
+    } else if (instagram === 'error') {
+      setIgConnectOutcome({
+        ok: false,
+        message: params.get('message') || 'Instagram could not be connected.',
+      });
     }
   }, []);
 
@@ -1269,7 +1290,11 @@ export default function Settings() {
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Meta (Facebook + Instagram)</h2>
-          <p className="text-gray-600 text-sm mb-4">Connect your Facebook Page and Instagram Business account for publishing.</p>
+          <p className="text-gray-600 text-sm mb-4">
+            Connecting here covers two channels at once: your Facebook Page and the Instagram Business account linked to
+            it. Your personal Instagram is just below and connects on its own, because Meta only reaches an Instagram
+            account through this door when it is attached to a Page, and @mediaphish is not.
+          </p>
           {metaLoading ? (
             <p className="text-gray-500 text-sm">Checking connection…</p>
           ) : metaError ? (
@@ -1320,7 +1345,7 @@ export default function Settings() {
 
                 <div className="p-3 border border-gray-200 rounded">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-900">Instagram</span>
+                    <span className="text-sm font-medium text-gray-900">Instagram Business</span>
                     <StatusPill state={metaStatus?.instagram?.state} />
                   </div>
                   {metaStatus?.instagram?.connected ? (
@@ -1355,9 +1380,11 @@ export default function Settings() {
         </section>
 
         <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Instagram (Personal)</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Instagram Personal</h2>
           <p className="text-gray-600 text-sm mb-4">
-            Status for your personal Instagram account (@mediaphish). This uses a separate connection from Instagram Business above. Status and test only — reconnect is handled offline when needed.
+            Your personal Instagram account (@mediaphish). It signs in separately from the Facebook Page and Instagram
+            Business above, because it is not attached to a Page and Meta will not reach it through that connection.
+            Once connected it renews itself every Monday.
           </p>
           {igPersonalLoading ? (
             <p className="text-gray-500 text-sm">Checking connection…</p>
@@ -1386,7 +1413,13 @@ export default function Settings() {
                     {igPersonalStatus.expiry_warning}
                   </div>
                 )}
-                <div className="mt-3 flex items-center gap-2">
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <a
+                    href="/api/ao/instagram-login/start"
+                    className="inline-block px-4 py-2 text-sm font-semibold rounded bg-gray-900 text-white hover:bg-gray-700"
+                  >
+                    {igPersonalStatus?.connected ? 'Reconnect Instagram' : 'Connect Instagram'}
+                  </a>
                   <button
                     type="button"
                     onClick={handleIgPersonalTestPost}
@@ -1396,6 +1429,18 @@ export default function Settings() {
                     {igPersonalTestLoading ? 'Posting…' : 'Post Instagram Personal Test'}
                   </button>
                 </div>
+                {/* The sign in ends by sending him back here with the outcome on the address. */}
+                {igConnectOutcome ? (
+                  <div
+                    className={`mt-3 p-2 rounded text-sm border ${
+                      igConnectOutcome.ok
+                        ? 'bg-green-50 border-green-200 text-green-800'
+                        : 'bg-red-50 border-red-200 text-red-800'
+                    }`}
+                  >
+                    {igConnectOutcome.message}
+                  </div>
+                ) : null}
                 {igPersonalTestResult === 'success' && (
                   <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded text-green-800 text-sm">
                     Instagram Personal test post published to @mediaphish.
