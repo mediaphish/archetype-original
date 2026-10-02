@@ -105,13 +105,43 @@ export default function PendingReshares({ onCountChange }) {
       <div className="space-y-3">
         {pending.map((reshare) => {
           const day = formatDay(reshare.posts?.[0]?.scheduled_at);
+          // All four channels carry the same picture, so the first one that has
+          // it speaks for the set.
+          const image = (reshare.posts || []).map((p) => p.image_url).find(Boolean) || null;
           const isOpen = !!expanded[reshare.slug];
           return (
             <div key={reshare.slug} className="border border-gray-200 rounded-xl overflow-hidden">
               <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-900">{reshare.title}</p>
+                <div className="flex items-start gap-3">
+                  {/* The picture that goes out, at a size you can actually judge.
+                      Before this the panel named the channels and showed the words
+                      and left the image invisible, so the only way to see what was
+                      about to be published was to ask. */}
+                  {image ? (
+                    <a href={image} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                      <img
+                        src={image}
+                        alt={`Image for ${reshare.title}`}
+                        className="w-28 h-28 sm:w-36 sm:h-36 object-cover rounded-lg border border-gray-200 bg-white"
+                        loading="lazy"
+                      />
+                    </a>
+                  ) : (
+                    <div className="shrink-0 w-28 h-28 sm:w-36 sm:h-36 rounded-lg border border-dashed border-red-300 bg-red-50 flex items-center justify-center p-2">
+                      <span className="text-[11px] font-semibold text-red-700 text-center leading-tight">
+                        No image. Instagram will refuse this.
+                      </span>
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm font-semibold text-gray-900">{reshare.title}</p>
+                      {day && (
+                        <span className="shrink-0 text-xs font-semibold text-gray-700 bg-white border border-gray-200 rounded-full px-3 py-1">
+                          {day}
+                        </span>
+                      )}
+                    </div>
                     <a
                       href={reshare.journal_url}
                       target="_blank"
@@ -120,12 +150,10 @@ export default function PendingReshares({ onCountChange }) {
                     >
                       {reshare.journal_url}
                     </a>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {(reshare.posts || []).map((p) => p.platform).join(', ')}
+                    </p>
                   </div>
-                  {day && (
-                    <span className="shrink-0 text-xs font-semibold text-gray-700 bg-white border border-gray-200 rounded-full px-3 py-1">
-                      {day}
-                    </span>
-                  )}
                 </div>
               </div>
 
