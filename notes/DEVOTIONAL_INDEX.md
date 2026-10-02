@@ -293,6 +293,13 @@ This file is auto-generated from the devotionals folder. It’s meant to be copy
 | 2026-10-12 | Whatever Your Hand Finds to Do | Ecclesiastes 9:10 (ESV) | `whatever-your-hand-finds-to-do` | `2026-10-12-whatever-your-hand-finds-to-do.md` |
 | 2026-10-13 | One Thing Is Necessary | Luke 10:38–42 (ESV) | `one-thing-is-necessary` | `2026-10-13-one-thing-is-necessary.md` |
 | 2026-10-14 | Come Away and Rest a While | Mark 6:30–31 (ESV) | `come-away-and-rest-a-while` | `2026-10-14-come-away-and-rest-a-while.md` |
+| 2026-10-15 | Know Well the Condition of Your Flocks | Proverbs 27:23–24 (ESV) | `know-well-the-condition-of-your-flocks` | `2026-10-15-know-well-the-condition-of-your-flocks.md` |
+| 2026-10-16 | Consider Your Ways | Haggai 1:2–6 (ESV) | `consider-your-ways` | `2026-10-16-consider-your-ways.md` |
+| 2026-10-17 | Where There Are No Oxen | Proverbs 14:4 (ESV) | `where-there-are-no-oxen` | `2026-10-17-where-there-are-no-oxen.md` |
+| 2026-10-18 | That Nothing May Be Lost | John 6:11–12 (ESV) | `that-nothing-may-be-lost` | `2026-10-18-that-nothing-may-be-lost.md` |
+| 2026-10-19 | Leave the Edges | Leviticus 19:9–10 (ESV) | `leave-the-edges` | `2026-10-19-leave-the-edges.md` |
+| 2026-10-20 | Wealth Sprouts Wings | Proverbs 23:4–5 (ESV) | `wealth-sprouts-wings` | `2026-10-20-wealth-sprouts-wings.md` |
+| 2026-10-21 | Rich in Good Works | 1 Timothy 6:17–19 (ESV) | `rich-in-good-works` | `2026-10-21-rich-in-good-works.md` |
 
 ## Possible duplicates (review before writing new devotionals)
 
