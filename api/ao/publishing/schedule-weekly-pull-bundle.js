@@ -10,6 +10,7 @@ import { getDefaultLogoUrl } from '../../../lib/ao/brandLogos.js';
 import { inlineLogoForQuoteCardSvg } from '../../../lib/ao/remoteAssetDataUrl.js';
 import { uploadMinimalQuoteCardToPublicUrl, uploadQuoteCardSvgToPublicUrl } from '../../../lib/ao/quoteCardImageUrl.js';
 import { insertScheduledPostsSafely } from '../../../lib/db/scheduledPosts.js';
+import { slotsSkippingWeekends, QUOTE_CARD_GAP_DAYS } from '../../../lib/ao/postingCadence.js';
 
 function parseIso(v) {
   if (!v) return null;
@@ -52,35 +53,6 @@ function buildCaptionForCardPost(item, platform) {
  * three-day step lands on a Saturday one time in three, and a card posted into
  * a dead weekend is a card wasted.
  */
-function nextWeekday(date) {
-  const d = new Date(date.getTime());
-  while (d.getUTCDay() === 0 || d.getUTCDay() === 6) {
-    d.setUTCDate(d.getUTCDate() + 1);
-  }
-  return d;
-}
-
-/** Step forward by whole working days, so the weekend is not part of the count. */
-function addBusinessDays(date, days) {
-  const d = new Date(date.getTime());
-  let left = Math.max(1, days);
-  while (left > 0) {
-    d.setUTCDate(d.getUTCDate() + 1);
-    if (d.getUTCDay() !== 0 && d.getUTCDay() !== 6) left -= 1;
-  }
-  return d;
-}
-
-function slotsSkippingWeekends(start, count, gapDays) {
-  const slots = [];
-  let cursor = nextWeekday(start);
-  for (let i = 0; i < count; i += 1) {
-    slots.push(new Date(cursor.getTime()));
-    cursor = addBusinessDays(cursor, gapDays);
-  }
-  return slots;
-}
-
 const BUNDLE_PLATFORMS = [
   { platform: 'instagram', account_id: 'meta' },
   { platform: 'facebook', account_id: 'meta' },
@@ -99,7 +71,7 @@ export default async function handler(req, res) {
   const quoteId = req.body?.quote_id;
   if (!quoteId) return res.status(400).json({ ok: false, error: 'quote_id required' });
 
-  const gapDays = Math.max(1, Math.min(14, Number.parseInt(String(req.body?.gap_days ?? '3'), 10) || 3));
+  const gapDays = Math.max(1, Math.min(14, Number.parseInt(String(req.body?.gap_days ?? QUOTE_CARD_GAP_DAYS), 10) || QUOTE_CARD_GAP_DAYS));
   let start = parseIso(req.body?.start_at);
   if (!start) {
     const t = new Date();

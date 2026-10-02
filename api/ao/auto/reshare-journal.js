@@ -17,6 +17,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
+import { RESHARE_DAYS, nextReshareDay } from '../../../lib/ao/postingCadence.js';
 import { getOpenAiKey } from '../../../lib/openaiKey.js';
 import {
   enforceVoiceGuardrails,
@@ -708,21 +709,6 @@ Write four reshare captions for this article. Surface a fresh angle. Do not summ
     console.error('[reshare-journal] Raw response:', text);
     throw new Error('Caption generation returned invalid JSON');
   }
-}
-
-/**
- * Bart, 2026-10-02: "Reshares would be Monday Wednesday and Friday no weekends."
- * The numbers choose between those three days, never outside them.
- */
-const RESHARE_DAYS = [1, 3, 5];
-
-/** The next Monday, Wednesday or Friday strictly after the given day. */
-function nextReshareDay(from) {
-  const d = new Date(from.getTime());
-  do {
-    d.setDate(d.getDate() + 1);
-  } while (!RESHARE_DAYS.includes(d.getDay()));
-  return d;
 }
 
 async function resolveScheduleDayIfAutoApprove() {

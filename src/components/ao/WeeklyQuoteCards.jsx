@@ -11,18 +11,34 @@
  * send them to all four channels.
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { nextOpenCardDay, QUOTE_CARD_GAP_DAYS } from '../../lib/postingCadence';
 
-function todayPlus(days) {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
+function ymd(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function readable(value) {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+function daysUntil(value) {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return Math.ceil((d.getTime() - Date.now()) / 86400000);
 }
 
 export default function WeeklyQuoteCards() {
   const [bundles, setBundles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [startDate, setStartDate] = useState(() => todayPlus(1));
-  const [gapDays, setGapDays] = useState(3);
+  const [startDate, setStartDate] = useState(() => ymd(nextOpenCardDay(null)));
+  const [gapDays, setGapDays] = useState(QUOTE_CARD_GAP_DAYS);
+  // How far the already-scheduled cards reach, so a new run continues the
+  // stream instead of landing on top of it.
+  const [stream, setStream] = useState({ loaded: false, nextAt: null, lastAt: null, count: 0 });
   const [busyId, setBusyId] = useState(null);
   const [result, setResult] = useState({});
 
@@ -35,6 +51,26 @@ export default function WeeklyQuoteCards() {
     } catch (_) {
       // The rest of the queue still renders without this panel.
     }
+
+    // What is already on the calendar. Without this the date box defaulted to
+    // tomorrow, which stacked a new run on top of cards already waiting to go.
+    try {
+      const res = await fetch('/api/ao/scheduled-posts?status=scheduled&limit=100');
+      const json = await res.json().catch(() => ({}));
+      const posts = Array.isArray(json?.posts) ? json.posts : Array.isArray(json) ? json : [];
+      const now = Date.now();
+      const upcoming = posts
+        .filter((p) => p?.source_kind === 'weekly_pull_bundle' && p?.scheduled_at)
+        .filter((p) => new Date(p.scheduled_at).getTime() > now)
+        .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+      const days = [...new Set(upcoming.map((p) => String(p.scheduled_at).slice(0, 10)))];
+      const next = { loaded: true, nextAt: days[0] || null, lastAt: days[days.length - 1] || null, count: days.length };
+      setStream(next);
+      setStartDate(ymd(nextOpenCardDay(next.lastAt)));
+    } catch (_) {
+      setStream({ loaded: true, nextAt: null, lastAt: null, count: 0 });
+    }
+
     setLoading(false);
   }, []);
 
@@ -81,11 +117,53 @@ export default function WeeklyQuoteCards() {
 
   const gapChoices = useMemo(() => [1, 2, 3, 7], []);
 
-  if (loading || bundles.length === 0) return null;
+  const runwayDays = daysUntil(stream.lastAt);
+  const runningDry = stream.loaded && (stream.count === 0 || (runwayDays !== null && runwayDays <= 5));
+
+  // The warning stands on its own: the stream can run dry while no bundle is
+  // waiting, and that is exactly the case worth saying out loud.
+  const banner = stream.loaded ? (
+    <div
+      className={`rounded-xl px-4 py-3 mb-4 border ${
+        runningDry ? 'border-amber-300 bg-amber-50' : 'border-gray-200 bg-gray-50'
+      }`}
+    >
+      {stream.count === 0 ? (
+        <p className="text-sm font-semibold text-gray-900">
+          No quote cards are scheduled. The stream is empty.
+        </p>
+      ) : (
+        <p className="text-sm text-gray-900">
+          <span className="font-semibold">
+            {stream.count} card {stream.count === 1 ? 'day' : 'days'} still scheduled.
+          </span>{' '}
+          Next one {readable(stream.nextAt)}, last one {readable(stream.lastAt)}.
+        </p>
+      )}
+      {runningDry ? (
+        <p className="text-xs text-amber-900 mt-1">
+          {bundles.length > 0
+            ? 'Schedule the set below to carry the stream on from where it ends.'
+            : 'Nothing is waiting to follow it. The next batch arrives Monday.'}
+        </p>
+      ) : null}
+    </div>
+  ) : null;
+
+  if (loading) return null;
+  if (bundles.length === 0) {
+    // Still worth saying when the stream is about to run out and nothing is queued.
+    return runningDry ? (
+      <section className="rounded-2xl border border-gray-200 bg-white p-5 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">Quote cards</h2>
+        {banner}
+      </section>
+    ) : null;
+  }
 
   return (
     <>
-      {bundles.map((bundle) => {
+      {bundles.map((bundle, index) => {
         const pull = bundle?.studio_playbook?.weekly_corpus_pull || {};
         const items = Array.isArray(pull.items) ? pull.items : [];
         if (!items.length) return null;
@@ -96,6 +174,7 @@ export default function WeeklyQuoteCards() {
             <h2 className="text-lg font-semibold text-gray-900">
               Quote cards for the week of {pull.week_start || 'this week'} ({items.length})
             </h2>
+            {index === 0 ? <div className="mt-3">{banner}</div> : null}
             <p className="text-sm text-gray-500 mt-1 mb-4">
               Lines from your own writing, each one made into a card. Pick the first day and the spacing, then send the
               set to Instagram, Facebook, LinkedIn and X. Weekends are skipped, so at three days apart five cards land on

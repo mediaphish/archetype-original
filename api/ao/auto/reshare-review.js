@@ -15,6 +15,7 @@
 import { requireAoSession } from '../../../lib/ao/requireAoSession.js';
 import { supabaseAdmin } from '../../../lib/supabase-admin.js';
 import { toScheduledAt } from '../../../lib/ao/unifiedScheduler.js';
+import { RESHARE_DAYS } from '../../../lib/ao/postingCadence.js';
 import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
 
 /**
@@ -24,16 +25,6 @@ import { scheduledPosts } from '../../../lib/db/scheduledPosts.js';
  * engagement based on day-of-week patterns.
  * Falls back to tomorrow if no data is available.
  */
-/**
- * Bart, 2026-10-02: "Reshares would be Monday Wednesday and Friday no weekends."
- *
- * The engagement data can still choose between those three, but it cannot choose
- * a Tuesday. Before this the day came purely from whichever weekday scored best,
- * which is how a cadence he had decided on drifted into whatever the numbers
- * liked that week.
- */
-const RESHARE_DAYS = [1, 3, 5];
-
 async function findBestReshareDay() {
   const today = new Date();
 
