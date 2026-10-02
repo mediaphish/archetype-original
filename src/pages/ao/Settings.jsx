@@ -948,66 +948,22 @@ export default function Settings() {
             </p>
           </div>
 
-          {/* Pending reshares review */}
-          {pendingResharesLoading ? (
-            <p className="mt-5 text-sm text-gray-400">Loading pending reshares…</p>
-          ) : pendingReshares.length > 0 ? (
-            <div className="mt-6">
-              <p className="text-sm font-semibold text-gray-900 mb-3">Pending review ({pendingReshares.length})</p>
-              <div className="space-y-4">
-                {pendingReshares.map((reshare) => (
-                  <div key={reshare.slug} className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                    <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                      <p className="text-sm font-semibold text-gray-900">{reshare.title}</p>
-                      {reshare.selection_reason && (
-                        <p className="text-xs text-gray-500 mt-1">{reshare.selection_reason}</p>
-                      )}
-                      <a
-                        href={reshare.journal_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:underline mt-1 inline-block"
-                      >
-                        {reshare.journal_url}
-                      </a>
-                    </div>
-                    <div className="px-4 py-3 space-y-3">
-                      {reshare.posts.map((post) => (
-                        <div key={post.id}>
-                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">{post.platform}</p>
-                          <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{post.caption}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="px-4 py-3 border-t border-gray-100 flex items-center gap-3">
-                      {reshareActionResult[reshare.slug] ? (
-                        <p className={`text-xs font-medium ${reshareActionResult[reshare.slug].ok ? 'text-green-700' : 'text-red-700'}`}>
-                          {reshareActionResult[reshare.slug].message}
-                        </p>
-                      ) : (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => handleReshareAction(reshare.slug, 'approve')}
-                            disabled={!!reshareActionLoading[reshare.slug]}
-                            className="px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-700 disabled:opacity-50"
-                          >
-                            {reshareActionLoading[reshare.slug] === 'approve' ? 'Approving…' : 'Approve — schedule this week'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleReshareAction(reshare.slug, 'discard')}
-                            disabled={!!reshareActionLoading[reshare.slug]}
-                            className="px-4 py-2 border border-gray-200 bg-white text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-50 disabled:opacity-50"
-                          >
-                            {reshareActionLoading[reshare.slug] === 'discard' ? 'Discarding…' : 'Discard'}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* The stack itself lives on the Queue. These are the engine's switches. */}
+          {pendingReshares.length > 0 ? (
+            <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3">
+              <p className="text-sm font-semibold text-gray-900">
+                {pendingReshares.length} reshare{pendingReshares.length === 1 ? '' : 's'} waiting for you
+              </p>
+              <p className="text-xs text-gray-600 mt-1">
+                They used to sit on this page, where they went unseen for months. Read and approve them on the Queue.
+              </p>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/ao/library/review-queue')}
+                className="mt-3 px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-700"
+              >
+                Open the Queue
+              </button>
             </div>
           ) : (
             <p className="mt-5 text-sm text-gray-400">No reshares pending review.</p>

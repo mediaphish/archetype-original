@@ -101,8 +101,34 @@ function readJournalFile(slug) {
   }
 }
 
-function extractJournalImageUrl(frontmatter) {
-  return frontmatter?.image_url || frontmatter?.header_image || null;
+/**
+ * The journal entry's own header image, as a full URL.
+ *
+ * 2026-10-02. This is the fallback used whenever the generated card fails, and
+ * it had never once returned an image: it read image_url and header_image, and
+ * no journal file has ever carried either. The field is featured_image, and it
+ * holds a repo-relative path like "../images/slug.jpg". Five of the six reshares
+ * waiting since July went out with no image at all, which Instagram will not
+ * accept, so those five could never have published even once approved.
+ */
+const SITE_ORIGIN = 'https://www.archetypeoriginal.com';
+
+function extractJournalImageUrl(frontmatter, slug = '') {
+  const direct = frontmatter?.image_url || frontmatter?.header_image || null;
+  if (direct) return direct;
+
+  const featured = String(frontmatter?.featured_image || '').trim();
+  if (featured) {
+    if (/^https?:\/\//i.test(featured)) return featured;
+    // Every stored form reduces to the file name under /images.
+    const file = featured.replace(/^.*\//, '');
+    if (file) return `${SITE_ORIGIN}/images/${file}`;
+  }
+
+  // Entries without the field are still published with an image named for the
+  // slug, which is the same rule the knowledge build uses.
+  const clean = String(slug || '').trim();
+  return clean ? `${SITE_ORIGIN}/images/${clean}.jpg` : null;
 }
 
 function normalizeInstagramCaption(text) {
@@ -907,7 +933,7 @@ async function performReshareCycle({ forcedSlug = null, forcePendingReview = fal
   ]);
 
   const generatedImage = await generateReshareImage(title, pullQuote, mood, signalSourceName);
-  const imageUrl = generatedImage?.image_url || extractJournalImageUrl(journal.frontmatter);
+  const imageUrl = generatedImage?.image_url || extractJournalImageUrl(journal.frontmatter, entry.slug);
 
   let captions;
   try {

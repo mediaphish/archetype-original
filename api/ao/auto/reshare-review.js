@@ -127,7 +127,7 @@ export async function approveOrDiscardReshare(action, slug) {
 
   try {
     const { data: pendingRows, error: fetchError } = await scheduledPosts()
-      .select('id, platform, caption, image_url, intent')
+      .select('id, platform, caption, image_url, intent, scheduled_at')
       .eq('status', 'pending_review')
       .eq('source_kind', 'ao_journal_reshare')
       .filter('intent->>slug', 'eq', safeSlug);
@@ -177,11 +177,22 @@ export async function approveOrDiscardReshare(action, slug) {
     }
 
     // action === 'approve'
+    //
+    // A date already sitting in the future on the row was put there on purpose,
+    // by Bart or by a planned run, so approving keeps it. Only a row with no
+    // real date of its own gets this week's best day. Before this, approve
+    // overwrote every date, which meant a reshare planned for a specific day
+    // quietly jumped to whenever the engine liked.
     const scheduleDay = await findBestReshareDay();
+    const keepFloor = Date.now() + 60 * 60 * 1000;
 
     const updates = [];
     for (const row of pendingRows) {
-      const scheduledAt = await toScheduledAt(scheduleDay, row.platform);
+      const existing = row.scheduled_at ? new Date(row.scheduled_at).getTime() : NaN;
+      const keepExisting = Number.isFinite(existing) && existing > keepFloor;
+      const scheduledAt = keepExisting
+        ? new Date(existing).toISOString()
+        : await toScheduledAt(scheduleDay, row.platform);
       updates.push(
         scheduledPosts()
           .update({

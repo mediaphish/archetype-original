@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
+import PendingReshares from '../../components/ao/PendingReshares';
 
 function Pill({ tone = 'gray', children }) {
   const tones = {
@@ -802,7 +803,7 @@ export default function ReviewQueue() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Review queue</h1>
             <p className="text-gray-600 mt-1 text-sm max-w-2xl">
-              Corpus drafts (hero images), held quotes, and profiles — moved here so Auto stays a single chat column.
+              Everything waiting on you: reshares ready to go out, quote picks, held items and profiles.
             </p>
           </div>
           <button
@@ -813,6 +814,8 @@ export default function ReviewQueue() {
             Back to Auto
           </button>
         </div>
+
+        <PendingReshares />
 
         <div className="mb-2">
           <h2 className="text-xl font-bold text-gray-900">
