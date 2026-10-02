@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AOHeader from '../../components/ao/AOHeader';
 import LoadingSpinner from '../../components/operators/LoadingSpinner';
 import PendingReshares from '../../components/ao/PendingReshares';
+import WeeklyQuoteCards from '../../components/ao/WeeklyQuoteCards';
 
 function Pill({ tone = 'gray', children }) {
   const tones = {
@@ -816,6 +817,8 @@ export default function ReviewQueue() {
         </div>
 
         <PendingReshares />
+
+        <WeeklyQuoteCards />
 
         <div className="mb-2">
           <h2 className="text-xl font-bold text-gray-900">
