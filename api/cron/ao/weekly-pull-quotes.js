@@ -18,13 +18,19 @@ export default async function handler(req, res) {
   }
   if (!authorizeCron(req, res)) return;
 
-  const email =
-    String(process.env.AO_WEEKLY_PULL_EMAIL || process.env.AO_CORPUS_SEED_EMAIL || '').trim().toLowerCase();
+  // AO_OWNER_EMAIL is the owner the rest of the desk already runs as, so the
+  // weekly bundle no longer depends on a second variable being set as well.
+  // It used to answer 200 OK with nothing done when neither was set, so months
+  // of Mondays read as healthy while no bundle was ever built.
+  const email = String(
+    process.env.AO_WEEKLY_PULL_EMAIL || process.env.AO_CORPUS_SEED_EMAIL || process.env.AO_OWNER_EMAIL || ''
+  )
+    .trim()
+    .toLowerCase();
   if (!email) {
-    return res.status(200).json({
-      ok: true,
-      skipped: true,
-      message: 'Set AO_WEEKLY_PULL_EMAIL (or AO_CORPUS_SEED_EMAIL) to enable weekly pull-quote bundles.',
+    return res.status(500).json({
+      ok: false,
+      error: 'No owner email configured. Set AO_OWNER_EMAIL (or AO_WEEKLY_PULL_EMAIL) to build weekly pull-quote bundles.',
     });
   }
 

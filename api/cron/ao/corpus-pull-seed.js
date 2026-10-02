@@ -18,12 +18,13 @@ export default async function handler(req, res) {
   }
   if (!authorizeCron(req, res)) return;
 
-  const email = String(process.env.AO_CORPUS_SEED_EMAIL || '').trim().toLowerCase();
+  const email = String(process.env.AO_CORPUS_SEED_EMAIL || process.env.AO_OWNER_EMAIL || '')
+    .trim()
+    .toLowerCase();
   if (!email) {
-    return res.status(200).json({
-      ok: true,
-      skipped: true,
-      message: 'Set AO_CORPUS_SEED_EMAIL to seed corpus pull quotes into the Inbox.',
+    return res.status(500).json({
+      ok: false,
+      error: 'No owner email configured. Set AO_OWNER_EMAIL to seed corpus pull quotes into the Inbox.',
     });
   }
 
