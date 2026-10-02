@@ -796,7 +796,7 @@ export default function ReviewQueue() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AOHeader active="library" email={email} onNavigate={handleNavigate} />
+      <AOHeader active="queue" email={email} onNavigate={handleNavigate} />
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-7xl pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-8">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>

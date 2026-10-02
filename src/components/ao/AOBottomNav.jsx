@@ -3,9 +3,20 @@ import React from 'react';
 const DEFAULT_TABS = [
   { key: 'analyst', path: '/ao/analyst', label: 'Auto' },
   { key: 'library', path: '/ao/library', label: 'Library' },
+  { key: 'queue', path: '/ao/library/review-queue', label: 'Queue' },
   { key: 'podcast', path: '/ao/podcast', label: 'Podcast' },
   { key: 'settings', path: '/ao/settings', label: 'Settings' },
 ];
+
+// Tailwind needs the class written out, so the count maps to a literal.
+const COLUMNS = {
+  1: 'grid-cols-1',
+  2: 'grid-cols-2',
+  3: 'grid-cols-3',
+  4: 'grid-cols-4',
+  5: 'grid-cols-5',
+  6: 'grid-cols-6',
+};
 
 export default function AOBottomNav({
   active,
@@ -28,7 +39,7 @@ export default function AOBottomNav({
       }}
     >
       <div className="mx-auto max-w-7xl px-3">
-        <div className={`grid gap-1 py-2 ${tabs.length <= 3 ? 'grid-cols-3' : 'grid-cols-6'}`}>
+        <div className={`grid gap-1 py-2 ${COLUMNS[Math.min(tabs.length, 6)] || 'grid-cols-6'}`}>
           {tabs.slice(0, 6).map((t) => {
             const isActive = t.key === active;
             return (

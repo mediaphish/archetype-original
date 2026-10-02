@@ -3674,6 +3674,7 @@ export default function AutoV2Panel({ onNavigate, className,
             { key: 'transcript', label: 'Download transcript', disabled: visibleChatMessages.length === 0, run: () => downloadTranscriptAsMd(messages, activeThreadId) },
             { key: 'publish', label: generatedImages?.length ? `Publish ${generatedImages.length} cards` : 'Publish cards', disabled: !generatedImages?.length, run: () => publishCards() },
             { key: 'library', label: 'Library', run: () => onNavigate?.('/ao/library') },
+            { key: 'queue', label: 'Queue', run: () => onNavigate?.('/ao/library/review-queue') },
             { key: 'podcast', label: 'Podcast', run: () => onNavigate?.('/ao/podcast') },
             { key: 'settings', label: 'Settings', run: () => onNavigate?.('/ao/settings') },
           ].map((item) => (
